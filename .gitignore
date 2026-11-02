@@ -1,3 +1,19 @@
+# Planning & Local Documentation
+planning/
+
+# Logs
+*.log
+
+# Editor files
+*.swp
+*.swo
+*~
+
+# macOS/Windows files
+.DS_Store
+desktop.ini
+Thumbs.db
+
 # Visual Studio cache directory
 */.vs/
 .vs/
