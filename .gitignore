@@ -1,5 +1,9 @@
+# Pi.dev
+.pi/*
+!.pi/settings.json
+
 # Planning & Local Documentation
-planning/
+/planning/
 
 # Logs
 *.log
