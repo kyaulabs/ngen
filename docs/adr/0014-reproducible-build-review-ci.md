@@ -25,6 +25,10 @@ Unavailable signing or repository access blocks the affected operation, not usef
 
 M0 policy comparison and merge-semantics check; M1 clean build/test proof; isolated runner threat model before provisioning; milestone evidence tied to exact revision. Review template/hook changes separately from engine changes.
 
+## M1 scope accepted by the implementation request
+
+The 2026-11-04 request approves target-scoped C++20, reproducible native build preparation and meaningful verification while retaining current delivery policy. Conan 2 profiles/lock and shared CMake/Ninja presets now cover the Linux implementation. Windows support is not claimed. Independent review, hosted workflow results and signature-preserving PR delivery remain gates, not inferred approvals. The earlier planning-only restriction is superseded for M1 by that request. See [M1 evidence](../evidence/M1/README.md).
+
 ## Evidence
 
 See the [detailed specification and primary sources](../planning/build-review-infrastructure.md). This record contains a proposed NGEN decision, not a claim that its tests passed. Record accepted/rejected status, approver, revision and test evidence only after the stated gate.

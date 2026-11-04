@@ -25,6 +25,10 @@ Capacity exhaustion needs visible backpressure/admission/failure behavior. Zero 
 
 M1 value/lifetime tests; M3 representative entity churn, allocation traces and 1/2/4/8-worker comparison; TSan on meaningful concurrent paths. Revisit when a trace identifies a concrete scheduler/storage bottleneck.
 
+## M1 scope accepted by the implementation request
+
+The 2026-11-04 request approves RAII, explicit borrowing, strong values, generation checks and bounded work/storage. M1 implements 16 entity slots, 64 commands and 64 pending jobs, with 0–7 worker threads. `std::variant<T, Error>` is the local C++20 result representation. enkiTS 1.12 is the tested scheduler dependency, not a new scheduler or ECS. EnTT and broader memory architecture remain proposed. Jobs borrow callback contexts until draining or shutdown; only cancellation requests may cross the owner-thread API boundary. Startup allocation/configuration exceptions remain exceptions; callbacks must be finite and `noexcept`. See [M1 evidence](../evidence/M1/README.md); independent acceptance is outstanding.
+
 ## Evidence
 
 See the [detailed specification and primary sources](../planning/renderer-core-assets.md). This record contains a proposed NGEN decision, not a claim that its tests passed. Record accepted/rejected status, approver, revision and test evidence only after the stated gate.

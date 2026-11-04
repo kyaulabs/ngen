@@ -25,6 +25,10 @@ Fixed-step rates remain proposed until flight/contact tests pass. AI/strategic p
 
 M1 repeated command fixture, M3 mode-switch/momentum tests, M6 reconciliation and stale-control rejection. Clock-jump/restart/time-dilation tests prove each domain uses its declared clock. Revisit rates only with recorded latency/fidelity/cost evidence.
 
+## M1 scope accepted by the implementation request
+
+The 2026-11-04 request approves fixed simulation ticks, ordered value commands and immutable published snapshots. The fixture uses a nominal 60 ticks/second; explicit `step()` calls alone advance it. Commands must target the next tick and have strictly increasing nonzero sequence numbers. A tick applies its batch transactionally; arithmetic overflow discards that batch without advancing state or the clock, and consumed sequences cannot be replayed. Publication is a bounded value copy with read-only accessors; consumers retain the copy, not a borrowed span into a destroyed snapshot. This is not a concurrent shared-snapshot channel. Unit conversion truncates fractional millimetres toward zero and rejects nonfinite/out-of-range input. Flight rates, durable clocks and network semantics remain proposed. See [M1 evidence](../evidence/M1/README.md).
+
 ## Evidence
 
 See the [detailed specification and primary sources](../planning/simulation-network-persistence.md). This record contains a proposed NGEN decision, not a claim that its tests passed. Record accepted/rejected status, approver, revision and test evidence only after the stated gate.

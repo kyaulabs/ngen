@@ -5,6 +5,10 @@
 # Planning & Local Documentation
 /planning/
 
+# Native build outputs (planning policy unchanged)
+/build/
+/CMakeUserPresets.json
+
 # Logs
 *.log
 

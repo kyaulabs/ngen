@@ -1,6 +1,6 @@
 # Milestones and atomic implementation tasks
 
-Status: proposed roadmap. M0 remains incomplete because the private NGEN checkout and raw hardware profiles are unavailable. Public-template research and this planning package do not close that gate. No engine task below has been implemented or tested in this assignment.
+Status: roadmap with M1 implementation in progress. The 2026-11-04 kickoff reconciled the actual checkout and implemented the Linux CPU fixture. See [M1 status and evidence](../evidence/M1/README.md) for M1-A through M1-F; none is declared fully accepted while compatibility, independent review and delivery gates remain open. M0 remains open for independent acceptance and deferred GPU/WSI evidence. Historical planning-only statements below describe the previous assignment, not the current M1 authorization.
 
 The delivery order is **polished offline flight, miniature offline game, authoritative multiplayer**. Commands, stable IDs, clocks, snapshots and dependency boundaries appear early. Sockets, PostgreSQL, distributed ownership and blockchain appear only when their milestones require them. This document proposes source areas; the actual checkout audit must map them to existing paths and retain working implementations.
 
@@ -72,6 +72,8 @@ Deliver a verified private-repository inventory, template comparison, policy/own
 Performance gate: benchmark manifests identify hardware, fixture and measurement method; no runtime speed claim is required here. Missing checkout, unresolved rights, incompatible CPU dependencies or contradictory review enforcement block the core review subset. Independent acceptance of M0-A–E permits separately authorized M1 work while GPU items remain open. Overall M0 closes only when those audit items close at M2-A. **Neither the core review subset nor M0 is closed in this package.**
 
 ## M1 — Establish the CPU-only foundation
+
+Current status: M1-A has verified Linux build/lock evidence but lacks Windows evidence; M1-B through M1-E are implemented and locally tested, pending independent acceptance; M1-F has local checks and CI configuration but lacks executed hosted CI, Windows checks and independent review. The handoff's M1.1–M1.8 refine these six tasks, not a separate backlog. Full commands, source identity and limits are in [the evidence record](../evidence/M1/README.md).
 
 Deliver a reproducible C++20 build, meaningful tests, bounded ownership primitives, simulation command/snapshot contracts and CPU-only CI. Start with the repository's working tools if they exist. Candidate tool versions belong in the dependency decision, not scattered through task text. This milestone introduces interfaces needed by offline play; it does not implement accounts, network transport or a database.
 

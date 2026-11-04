@@ -25,6 +25,10 @@ Interfaces remain narrow value/command/snapshot contracts. Some services cannot 
 
 M1 clean CPU harness build/start without Vulkan, SDL video or database services; M5 offline gameplay with network unavailable; inspect transitive dependencies. Revisit only when an actual second game or service integration exposes a missing boundary.
 
+## M1 scope accepted by the implementation request
+
+The 2026-11-04 request approves a CPU foundation independently linked from rendering, game content, networking and services. The implementation uses `ngen_core`, `ngen_jobs`, `ngen_simulation` and `sim_harness`. Later offline-game/server adapters remain proposed. The current AGPL-3.0 license and notices remain unchanged; no proprietary distribution rights are inferred. See [M1 evidence](../evidence/M1/README.md).
+
 ## Evidence
 
 See the [detailed specification and primary sources](../planning/build-review-infrastructure.md). This record contains a proposed NGEN decision, not a claim that its tests passed. Record accepted/rejected status, approver, revision and test evidence only after the stated gate.

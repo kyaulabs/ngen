@@ -1,6 +1,6 @@
 # ADR proposals
 
-All records are **Proposed**. Numbering is local to this planning package; reconcile it with the real NGEN ADR index before importing. No record is accepted merely because this file exists. Decision owner: Sean Bruen. Reviewers provide recommendations and evidence.
+This is the authoritative NGEN ADR index. Full records remain **Proposed** unless individually changed. The M1 implementation request accepts only the CPU boundary, C++20/ownership/bounded-work principles, fixed ticks, ordered commands and immutable snapshots described in the scoped notes on 0001, 0005, 0006 and 0014. It does not accept later ECS, physics, renderer, networking or licensing proposals. Decision owner: Sean Bruen. Reviewers provide recommendations and evidence. See [M1 evidence](../evidence/M1/README.md) for implementation and verification status; accepted direction is not milestone acceptance.
 
 | Record | Decision | Earliest gate |
 |---|---|---|

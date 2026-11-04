@@ -1,0 +1,12 @@
+seed=0x4e47454e workers=0 ticks=1000 entities=8 commands=32000 sum=11930
+tick_ns p50=495 p95=518 p99=664 allocation_probe=1 new_allocations=0 scheduler_allocations=0
+seed=0x4e47454e workers=2 ticks=1000 entities=8 commands=32000 sum=11930
+tick_ns p50=4158 p95=5537 p99=5734 allocation_probe=1 new_allocations=0 scheduler_allocations=0
+seed=0x4e47454e workers=0 ticks=1000 entities=8 commands=32000 sum=11930
+tick_ns p50=496 p95=515 p99=529 allocation_probe=1 new_allocations=0 scheduler_allocations=0
+seed=0x4e47454e workers=2 ticks=1000 entities=8 commands=32000 sum=11930
+tick_ns p50=3067 p95=4795 p99=5354 allocation_probe=1 new_allocations=0 scheduler_allocations=0
+seed=0x4e47454e workers=0 ticks=1000 entities=8 commands=32000 sum=11930
+tick_ns p50=495 p95=515 p99=527 allocation_probe=1 new_allocations=0 scheduler_allocations=0
+seed=0x4e47454e workers=2 ticks=1000 entities=8 commands=32000 sum=11930
+tick_ns p50=4684 p95=5522 p99=5835 allocation_probe=1 new_allocations=0 scheduler_allocations=0
