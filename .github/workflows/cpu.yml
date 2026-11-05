@@ -18,6 +18,9 @@ jobs:
         with:
           persist-credentials: false
           fetch-depth: 0
+      - name: Test Windows script boundaries (no Windows build)
+        shell: pwsh
+        run: ./tests/windows_build.ps1
       - name: Install CPU tools
         run: |
           sudo apt-get update
