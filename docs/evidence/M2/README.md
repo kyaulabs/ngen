@@ -1,6 +1,6 @@
 # M2 startup evidence
 
-Status: **M2-A partial; M2 is not complete.** M2-B through M2-F are not implemented. The M1 Windows compatibility/acceptance gate remains open for the owner's manual run. Do not equate this Vulkan startup slice with a renderer, a cooked asset pipeline or the PBR milestone.
+Status: **M2-A partial; M2 is not complete.** M2-B through M2-F are not implemented. The owner's Windows MSVC CPU Debug/Release run passed at `d49b23c`; [its evidence](../M1/windows-msvc/README.md) does not cover clang-cl or Windows graphics. Those checks and formal acceptance remain open. Do not equate this Vulkan startup slice with a renderer, a cooked asset pipeline or the PBR milestone.
 
 The user authorized continuing through M2, supplied `planning/models/frigate/frigate-01.glb`, authorized SSH probing of `apollo.kyaulabs`, and retained Windows/NVIDIA testing as a manual owner task. Existing planning documents and model files remain in place and ignored as before.
 
@@ -44,6 +44,6 @@ SDL/Vulkan system binaries are not rebuilt with sanitizers; owned code is instru
 
 Independent read-only agent reviews are retained in `startup-review.txt` and `startup-rereview.txt`. They are not human approval. Fixed findings: SDL error retrieval ordering, loss of device rejection reasons, sticky/reportable shutdown failure, stale borrowed handles after close, and family-specific rejection diagnostics that previously overwrote one another. The last fix labels and retains each rejected queue's reason. Driver-loss fault injection remains untested; no fault-injection completion is claimed.
 
-Remaining: verified graphics dependency lock and Windows profiles; Windows/NVIDIA manual results; actual surface-format/present-mode negotiation; swapchain creation/resize/minimize; GPU memory and submission/presentation retirement; shaders and reflected layouts; bounded glTF cooking and runtime packages; actual PBR/shadow/transparent/post/UI rendering; queued inspector operations; visual review, performance fixture and independent final graphics acceptance. `render_probe` submits no frames and therefore cannot satisfy those gates.
+Remaining: verified graphics dependency lock and Windows graphics/clang-cl profiles; Windows/NVIDIA graphics results; actual surface-format/present-mode negotiation; swapchain creation/resize/minimize; GPU memory and submission/presentation retirement; shaders and reflected layouts; bounded glTF cooking and runtime packages; actual PBR/shadow/transparent/post/UI rendering; queued inspector operations; visual review, performance fixture and independent final graphics acceptance. `render_probe` submits no frames and therefore cannot satisfy those gates.
 
 See [Windows checks](windows-checks.md). M2-B through M2-F remain behind the prerequisite acceptance gates rather than being filled with placeholder implementations.

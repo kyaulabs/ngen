@@ -1,0 +1,6 @@
+PSVersion: 7.6.9
+OS: Microsoft Windows 10.0.26200
+FileVersion    : 19.44.35229.0
+ProductVersion : 14.44.35229.0
+VCToolsVersion: 14.44.35207
+WindowsSDKVersion: 10.0.26100.0\

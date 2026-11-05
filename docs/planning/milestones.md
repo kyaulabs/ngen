@@ -73,7 +73,7 @@ Performance gate: benchmark manifests identify hardware, fixture and measurement
 
 ## M1 — Establish the CPU-only foundation
 
-Current status: M1-A has verified Linux build/lock evidence but lacks Windows evidence; M1-B through M1-E are implemented and locally tested. Independent agent review has been obtained, its two CI findings corrected, and hosted CPU checks passed at `3b9b077`. M1 still requires the owner's Windows checks and formal acceptance. The handoff's M1.1–M1.8 refine these six tasks, not a separate backlog. See [the initial evidence](../evidence/M1/README.md) and [review follow-up](../evidence/M1/review-followup.md).
+Current status: M1-A has verified Linux and Windows MSVC build/test evidence; M1-B through M1-E are implemented and tested. Independent agent review has been obtained, its two CI findings corrected, and hosted CPU checks passed through `d49b23c`. The owner's MSVC Debug/Release run passed at that revision. Clang-cl compatibility and formal acceptance remain open. See [Windows results](../evidence/M1/windows-msvc/README.md). The handoff's M1.1–M1.8 refine these six tasks, not a separate backlog. See [the initial evidence](../evidence/M1/README.md) and [review follow-up](../evidence/M1/review-followup.md).
 
 Deliver a reproducible C++20 build, meaningful tests, bounded ownership primitives, simulation command/snapshot contracts and CPU-only CI. Start with the repository's working tools if they exist. Candidate tool versions belong in the dependency decision, not scattered through task text. This milestone introduces interfaces needed by offline play; it does not implement accounts, network transport or a database.
 
