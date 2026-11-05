@@ -1,0 +1,55 @@
+Using lockfile: 'D:\Git\kyaulabs\ngen\conan-render.lock'
+
+======== Input profiles ========
+Profile host:
+[settings]
+arch=x86_64
+build_type=Release
+compiler=clang
+compiler.cppstd=20
+compiler.runtime=dynamic
+compiler.runtime_type=Release
+compiler.runtime_version=v144
+compiler.version=19
+os=Windows
+[options]
+&:renderer=True
+[conf]
+tools.build:jobs=2
+tools.cmake.cmaketoolchain:generator=Ninja
+
+Profile build:
+[settings]
+arch=x86_64
+build_type=Release
+compiler=msvc
+compiler.cppstd=20
+compiler.runtime=dynamic
+compiler.runtime_type=Release
+compiler.version=194
+os=Windows
+[conf]
+tools.build:jobs=2
+tools.cmake.cmaketoolchain:generator=Ninja
+
+
+======== Computing dependency graph ========
+Graph root
+    conanfile.py: D:\Git\kyaulabs\ngen\conanfile.py
+Requirements
+    enkits/1.12#66203195b410e9ccba5ac22e3216b7d7 - Cache
+    sdl/3.4.16#fe421775c8e1866eb22a3ba23ef8fd62 - Cache
+Test requirements
+    catch2/3.16.0#95f400ca2fba9f0c5ce5aea6e6fe0055 - Cache
+Build requirements
+    cmake/4.4.4#fec9c7048fae91e03c31e59977cd9c12 - Cache
+
+======== Computing necessary packages ========
+Connecting to remote 'conancenter' anonymously
+Requirements
+    enkits/1.12#66203195b410e9ccba5ac22e3216b7d7:a798c3105a6e78c1b63a42a6baac07629459d8a8#be5274c6ab8834ea1f41aa27c23e46bb - Cache
+    sdl/3.4.16#fe421775c8e1866eb22a3ba23ef8fd62:ea77a51d69817cff4ef74974f2a6e6c84adc7e6a - Build
+Test requirements
+    catch2/3.16.0#95f400ca2fba9f0c5ce5aea6e6fe0055:3a19633556d1517ba86a990dbec131bce56c0ddb#7f71186d6e8481caba21f9c2de40a63b - Cache
+Build requirements
+    cmake/4.4.4#fec9c7048fae91e03c31e59977cd9c12:522dcea5982a3f8a5b624c16477e47195da2f84f#9bdca4f8c6341bd4d9b64aee41c9be05 - Cache
