@@ -7,6 +7,8 @@ param(
     [Parameter(ParameterSetName = 'CPU')]
     [ValidateSet('MSVC', 'ClangCl')]
     [string]$Compiler = 'MSVC',
+    [Parameter(ParameterSetName = 'CPU')]
+    [switch]$Renderer,
     [Parameter(Mandatory, ParameterSetName = 'GPU')]
     [switch]$GpuInfo
 )
@@ -25,6 +27,26 @@ function Invoke-NgenNative {
     $code = $LASTEXITCODE
     if ($code -ne 0) {
         throw "$FilePath failed with exit code $code. See $LogPath"
+    }
+}
+
+function Invoke-NgenRenderer {
+    param(
+        [Parameter(Mandatory)][string]$BuildDirectory,
+        [Parameter(Mandatory)][string]$LogDirectory,
+        [Parameter(Mandatory)][string]$Configuration,
+        [Parameter(Mandatory)][scriptblock]$Checks
+    )
+    # SDL is a locked Conan dependency, not the SDK's optional SDL bundle.
+    # CTest's startup executable needs the same DLL path as the GPU probes.
+    try {
+        . (Join-Path $BuildDirectory 'conanrun.ps1')
+        & $Checks
+        $probe = Join-Path $BuildDirectory 'render_probe.exe'
+        Invoke-NgenNative -FilePath $probe -Arguments @('--check-validation-callback') -LogPath (Join-Path $LogDirectory "$Configuration-validation-callback.txt")
+        Invoke-NgenNative -FilePath $probe -LogPath (Join-Path $LogDirectory "$Configuration-render-startup.txt")
+    } finally {
+        . (Join-Path $BuildDirectory 'deactivate_conanrun.ps1')
     }
 }
 
@@ -202,6 +224,9 @@ try {
         'Debug' { 'Debug' }
         'Release' { 'Release' }
     }
+    $lockfile = if ($Renderer) { 'conan-render.lock' } else { 'conan.lock' }
+    $rendererOption = if ($Renderer) { 'True' } else { 'False' }
+    $rendererBuild = if ($Renderer) { 'ON' } else { 'OFF' }
     foreach ($config in $configurations) {
         $build = Join-Path $run $config
         Invoke-NgenNative -FilePath $conan -Arguments @(
@@ -210,22 +235,35 @@ try {
             '-s:h', "build_type=$config", '-s:b', "build_type=$config",
             '-c:h', 'tools.cmake.cmaketoolchain:generator=Ninja',
             '-c:b', 'tools.cmake.cmaketoolchain:generator=Ninja',
-            '--lockfile', 'conan.lock', '--build=missing', '-of', $build
+            '-c:h', 'tools.build:jobs=2', '-c:b', 'tools.build:jobs=2',
+            '-o:h', "&:renderer=$rendererOption",
+            '--lockfile', $lockfile, '--build=missing', '-of', $build
         ) -LogPath (Join-Path $logs "$config-conan.txt")
         $toolchain = Join-Path $build 'conan_toolchain.cmake'
         Invoke-NgenNative -FilePath $cmake -Arguments @(
             '-S', $root, '-B', $build, '-G', 'Ninja',
             "-DCMAKE_TOOLCHAIN_FILE=$toolchain", "-DCMAKE_BUILD_TYPE=$config",
-            '-DNGEN_BUILD_RENDERER=OFF'
+            "-DNGEN_BUILD_RENDERER=$rendererBuild"
         ) -LogPath (Join-Path $logs "$config-configure.txt")
         Invoke-NgenNative -FilePath $cmake -Arguments @('--build', $build, '-j', '2') -LogPath (Join-Path $logs "$config-build.txt")
-        Invoke-NgenNative -FilePath $ctest -Arguments @('--test-dir', $build, '--show-only') -LogPath (Join-Path $logs "$config-test-list.txt")
-        Invoke-NgenNative -FilePath $ctest -Arguments @('--test-dir', $build, '--output-on-failure', '--no-tests=error') -LogPath (Join-Path $logs "$config-tests.txt")
-        $harness = Join-Path $build 'sim_harness.exe'
-        Invoke-NgenNative -FilePath $harness -LogPath (Join-Path $logs "$config-serial.txt")
-        Invoke-NgenNative -FilePath $harness -Arguments @('--workers=2') -LogPath (Join-Path $logs "$config-workers.txt")
+        $checks = {
+            Invoke-NgenNative -FilePath $ctest -Arguments @('--test-dir', $build, '--show-only') -LogPath (Join-Path $logs "$config-test-list.txt")
+            Invoke-NgenNative -FilePath $ctest -Arguments @('--test-dir', $build, '--output-on-failure', '--no-tests=error') -LogPath (Join-Path $logs "$config-tests.txt")
+            $harness = Join-Path $build 'sim_harness.exe'
+            Invoke-NgenNative -FilePath $harness -LogPath (Join-Path $logs "$config-serial.txt")
+            Invoke-NgenNative -FilePath $harness -Arguments @('--workers=2') -LogPath (Join-Path $logs "$config-workers.txt")
+        }
+        if ($Renderer) {
+            Invoke-NgenRenderer -BuildDirectory $build -LogDirectory $logs -Configuration $config -Checks $checks
+        } else {
+            & $checks
+        }
     }
-    Write-Host "Windows $Compiler CPU verification passed. This is not a Vulkan rendering test."
+    if ($Renderer) {
+        Write-Host "Windows $Compiler CPU tests and validation-enabled Vulkan startup/teardown passed. No drawing or swapchain presentation was tested."
+    } else {
+        Write-Host "Windows $Compiler CPU verification passed. This is not a Vulkan rendering test."
+    }
     $exitCode = 0
 } catch {
     $_ | Out-String | Tee-Object -FilePath (Join-Path $logs 'failure.txt') | Out-Host

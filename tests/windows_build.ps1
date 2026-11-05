@@ -63,6 +63,14 @@ try {
             throw 'GPU capture mode did not reach the Windows prerequisite check'
         }
     }
+    if (-not $IsWindows) {
+        & $pwsh -NoProfile -File $scriptPath -Renderer *> $log
+        if ($LASTEXITCODE -ne 2 -or (Get-Content -Raw $log) -notmatch 'requires Windows') {
+            throw 'Renderer mode did not reach the Windows prerequisite check'
+        }
+    }
+    & $pwsh -NoProfile -File $scriptPath -GpuInfo -Renderer *> $log
+    if ($LASTEXITCODE -eq 0 -or $LASTEXITCODE -eq 2) { throw 'GPU capture and renderer builds were mixed' }
     & $pwsh -NoProfile -File $scriptPath -GpuInfo -Compiler ClangCl *> $log
     if ($LASTEXITCODE -eq 0 -or $LASTEXITCODE -eq 2) { throw 'CPU and GPU modes were mixed instead of rejecting ambiguous input' }
     if (-not $IsWindows) {
@@ -89,6 +97,55 @@ try {
             Invoke-NgenGpuInfo -FilePath $noOutput.Source -LogDirectory $gpuLogs
         } catch { $failed = $_.Exception.Message -match 'Missing Vulkan capabilities' }
         if (-not $failed) { throw 'GPU capture accepted unrelated JSON as a Vulkan profile' }
+    }
+    if (-not $IsWindows) {
+        $rendererDefinition = $ast.Find({
+            param($node)
+            $node -is [System.Management.Automation.Language.FunctionDefinitionAst] -and
+            $node.Name -eq 'Invoke-NgenRenderer'
+        }, $true)
+        if (-not $rendererDefinition) { throw 'Renderer process boundary not found' }
+        . ([scriptblock]::Create($rendererDefinition.Extent.Text))
+        $renderBuild = Join-Path $directory 'renderer build'
+        New-Item -ItemType Directory $renderBuild | Out-Null
+        Set-Content (Join-Path $renderBuild 'conanrun.ps1') '$env:NGEN_RENDER_ENV = "active"'
+        Set-Content (Join-Path $renderBuild 'deactivate_conanrun.ps1') '$env:NGEN_RENDER_ENV = "before"'
+        $probe = Join-Path $renderBuild 'render_probe.exe'
+        Set-Content -LiteralPath $probe -Value @'
+#!/bin/sh
+[ "$NGEN_RENDER_ENV" = active ] || exit 9
+mode=${1:-startup}
+printf '%s\n' "$mode"
+[ "$mode" != "$NGEN_PROBE_FAIL_AT" ] || exit 7
+exit 0
+'@
+        & chmod +x $probe
+        if ($LASTEXITCODE -ne 0) { throw 'Could not prepare renderer subprocess fixture' }
+        foreach ($failAt in @('', 'checks', '--check-validation-callback', 'startup')) {
+            $renderLogs = Join-Path $directory ('render logs ' + [guid]::NewGuid())
+            New-Item -ItemType Directory $renderLogs | Out-Null
+            $env:NGEN_RENDER_ENV = 'before'
+            $env:NGEN_PROBE_FAIL_AT = $failAt
+            $failed = $false
+            $checks = {
+                Invoke-NgenNative -FilePath $probe -Arguments @('checks') -LogPath (Join-Path $renderLogs 'Debug-checks.txt')
+            }
+            try {
+                Invoke-NgenRenderer -BuildDirectory $renderBuild -LogDirectory $renderLogs -Configuration Debug -Checks $checks
+            } catch { $failed = $_.Exception.Message -match 'exit code 7' }
+            if ($failed -ne ($failAt -ne '')) { throw 'Renderer probe failure was lost or falsely reported' }
+            if ($env:NGEN_RENDER_ENV -ne 'before') { throw 'Renderer runtime environment was not restored' }
+            $startupLog = Join-Path $renderLogs 'Debug-render-startup.txt'
+            if ($failAt -eq 'checks' -and (Test-Path (Join-Path $renderLogs 'Debug-validation-callback.txt'))) {
+                throw 'Calibration continued after failed configuration checks'
+            }
+            if ($failAt -in @('checks', '--check-validation-callback')) {
+                if (Test-Path -LiteralPath $startupLog) { throw 'Startup continued after an earlier verification failure' }
+            } elseif ((Get-Content -Raw $startupLog) -notmatch 'startup') {
+                throw 'Renderer startup output was not captured'
+            }
+        }
+        Remove-Item Env:NGEN_RENDER_ENV, Env:NGEN_PROBE_FAIL_AT
     }
     $profileDefinition = $ast.Find({
         param($node)

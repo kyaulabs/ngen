@@ -1,0 +1,31 @@
+device=Intel(R) Iris(R) Xe Graphics (TGL GT2) api=1.4 driver=109060102 queue=0 display=wayland
+
+=================================================================
+==778056==ERROR: LeakSanitizer: detected memory leaks
+
+Direct leak of 480 byte(s) in 5 object(s) allocated from:
+    #0 0x0000004e190e in calloc (/home/kyau/projects/kyaulabs/ngen/build/render-conan-asan/render_probe+0x4e190e) (BuildId: 7336f4137a23cedd796d154af4ed720a1dd16a4c)
+    #1 0x6fc058841b79 in zalloc /home/kyau/.conan2/p/b/wayla064c9fb324c75/b/build-debug/../src/src/wayland-private.h:254:9
+    #2 0x6fc058844c58 in wl_proxy_create_for_id /home/kyau/.conan2/p/b/wayla064c9fb324c75/b/build-debug/../src/src/wayland-client.c:546:10
+    #3 0x6fc058844afc in create_proxies /home/kyau/.conan2/p/b/wayla064c9fb324c75/b/build-debug/../src/src/wayland-client.c:1513:11
+    #4 0x6fc05884495e in queue_event /home/kyau/.conan2/p/b/wayla064c9fb324c75/b/build-debug/../src/src/wayland-client.c:1631:6
+    #5 0x6fc058843647 in read_events /home/kyau/.conan2/p/b/wayla064c9fb324c75/b/build-debug/../src/src/wayland-client.c:1746:11
+    #6 0x6fc058843504 in wl_display_read_events /home/kyau/.conan2/p/b/wayla064c9fb324c75/b/build-debug/../src/src/wayland-client.c:1829:8
+    #7 0x6fc058843988 in wl_display_dispatch_queue_timeout /home/kyau/.conan2/p/b/wayla064c9fb324c75/b/build-debug/../src/src/wayland-client.c:2092:9
+    #8 0x6fc058843400 in wl_display_dispatch_queue /home/kyau/.conan2/p/b/wayla064c9fb324c75/b/build-debug/../src/src/wayland-client.c:2163:8
+    #9 0x6fc0588430dc in wl_display_roundtrip_queue /home/kyau/.conan2/p/b/wayla064c9fb324c75/b/build-debug/../src/src/wayland-client.c:1459:9
+    #10 0x6fc05884348f in wl_display_roundtrip /home/kyau/.conan2/p/b/wayla064c9fb324c75/b/build-debug/../src/src/wayland-client.c:1488:9
+    #11 0x6fc05881cea3 in Wayland_VideoInit /home/kyau/.conan2/p/b/sdl1265989badcaf/b/src/src/video/wayland/SDL_waylandvideo.c:1498:5
+    #12 0x6fc05878bdd6 in SDL_VideoInit /home/kyau/.conan2/p/b/sdl1265989badcaf/b/src/src/video/SDL_video.c:712:10
+    #13 0x6fc0586386b2 in SDL_InitSubSystem_REAL /home/kyau/.conan2/p/b/sdl1265989badcaf/b/src/src/SDL.c:409:18
+    #14 0x6fc058638c02 in SDL_Init_REAL /home/kyau/.conan2/p/b/sdl1265989badcaf/b/src/src/SDL.c:586:12
+    #15 0x6fc05867dd9b in SDL_Init_DEFAULT /home/kyau/.conan2/p/b/sdl1265989badcaf/b/src/src/dynapi/SDL_dynapi_procs.h:638:1
+    #16 0x6fc058668816 in SDL_Init /home/kyau/.conan2/p/b/sdl1265989badcaf/b/src/src/dynapi/SDL_dynapi_procs.h:638:1
+    #17 0x00000052d455 in ngen::render::Context::initialize(ngen::render::Context::Options) /home/kyau/projects/kyaulabs/ngen/engine/render/context.cpp:45:14
+    #18 0x00000052c7fa in ngen::render::Context::create(ngen::render::Context::Options) /home/kyau/projects/kyaulabs/ngen/engine/render/context.cpp:29:18
+    #19 0x000000527a4b in main /home/kyau/projects/kyaulabs/ngen/apps/render_probe/main.cpp:17:19
+    #20 0x6fc057e27780 in __libc_start_call_main /usr/src/debug/glibc/glibc/csu/../sysdeps/nptl/libc_start_call_main.h:59:16
+    #21 0x6fc057e278b8 in __libc_start_main /usr/src/debug/glibc/glibc/csu/../csu/libc-start.c:372:3
+    #22 0x00000042e344 in _start (/home/kyau/projects/kyaulabs/ngen/build/render-conan-asan/render_probe+0x42e344) (BuildId: 7336f4137a23cedd796d154af4ed720a1dd16a4c)
+
+SUMMARY: AddressSanitizer: 480 byte(s) leaked in 5 allocation(s).

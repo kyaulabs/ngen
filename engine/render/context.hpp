@@ -19,6 +19,8 @@ class Context {
     [[nodiscard]] static std::variant<std::unique_ptr<Context>, Failure> create(Options options);
     ~Context();
     [[nodiscard]] bool close() noexcept;
+    // Sticky device-wait result; validation errors are reported separately.
+    [[nodiscard]] VkResult close_result() const { return close_result_; }
     Context(const Context &) = delete;
     Context &operator=(const Context &) = delete;
     [[nodiscard]] SDL_Window *window() const { return window_; }
