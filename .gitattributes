@@ -1,0 +1,2 @@
+# Blank unified-diff context lines (including final hunk lines) are patch syntax.
+recipes/sdl/patches/*.patch whitespace=-blank-at-eol,-blank-at-eof

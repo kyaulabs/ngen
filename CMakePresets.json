@@ -6,20 +6,29 @@
     {"name":"release","inherits":"base","cacheVariables":{"CMAKE_BUILD_TYPE":"Release"}},
     {"name":"gcc","inherits":"base","cacheVariables":{"CMAKE_BUILD_TYPE":"Debug"}},
     {"name":"asan","inherits":"debug","cacheVariables":{"NGEN_SANITIZER":"address,undefined"}},
-    {"name":"tsan","inherits":"debug","cacheVariables":{"NGEN_SANITIZER":"thread"}}
+    {"name":"tsan","inherits":"debug","cacheVariables":{"NGEN_SANITIZER":"thread"}},
+    {"name":"renderer-debug","inherits":"debug","cacheVariables":{"NGEN_BUILD_RENDERER":"ON"}},
+    {"name":"renderer-release","inherits":"release","cacheVariables":{"NGEN_BUILD_RENDERER":"ON"}},
+    {"name":"renderer-asan","inherits":"asan","cacheVariables":{"NGEN_BUILD_RENDERER":"ON"}}
   ],
   "buildPresets": [
     {"name":"debug","configurePreset":"debug","jobs":2},
     {"name":"release","configurePreset":"release","jobs":2},
     {"name":"gcc","configurePreset":"gcc","jobs":2},
     {"name":"asan","configurePreset":"asan","jobs":2},
-    {"name":"tsan","configurePreset":"tsan","jobs":2}
+    {"name":"tsan","configurePreset":"tsan","jobs":2},
+    {"name":"renderer-debug","configurePreset":"renderer-debug","jobs":2},
+    {"name":"renderer-release","configurePreset":"renderer-release","jobs":2},
+    {"name":"renderer-asan","configurePreset":"renderer-asan","jobs":2}
   ],
   "testPresets": [
     {"name":"debug","configurePreset":"debug","output":{"outputOnFailure":true},"execution":{"noTestsAction":"error"}},
     {"name":"release","configurePreset":"release","output":{"outputOnFailure":true},"execution":{"noTestsAction":"error"}},
     {"name":"gcc","configurePreset":"gcc","output":{"outputOnFailure":true},"execution":{"noTestsAction":"error"}},
     {"name":"asan","configurePreset":"asan","output":{"outputOnFailure":true},"execution":{"noTestsAction":"error"},"environment":{"ASAN_OPTIONS":"detect_leaks=1:halt_on_error=1","UBSAN_OPTIONS":"halt_on_error=1:print_stacktrace=1"}},
-    {"name":"tsan","configurePreset":"tsan","output":{"outputOnFailure":true},"execution":{"noTestsAction":"error"},"environment":{"TSAN_OPTIONS":"halt_on_error=1"}}
+    {"name":"tsan","configurePreset":"tsan","output":{"outputOnFailure":true},"execution":{"noTestsAction":"error"},"environment":{"TSAN_OPTIONS":"halt_on_error=1"}},
+    {"name":"renderer-debug","configurePreset":"renderer-debug","output":{"outputOnFailure":true},"execution":{"noTestsAction":"error"}},
+    {"name":"renderer-release","configurePreset":"renderer-release","output":{"outputOnFailure":true},"execution":{"noTestsAction":"error"}},
+    {"name":"renderer-asan","configurePreset":"renderer-asan","output":{"outputOnFailure":true},"execution":{"noTestsAction":"error"},"environment":{"ASAN_OPTIONS":"detect_leaks=1:halt_on_error=1","UBSAN_OPTIONS":"halt_on_error=1:print_stacktrace=1"}}
   ]
 }

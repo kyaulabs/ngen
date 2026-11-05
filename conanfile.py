@@ -21,7 +21,13 @@ class NgenDependencies(ConanFile):
         self.requires("enkits/1.12")
         self.test_requires("catch2/3.16.0")
         if self.options.renderer:
-            self.requires("sdl/3.4.16")
+            # Only Linux needs the local Wayland ownership repair; Windows keeps
+            # the independently verified upstream recipe and binaries.
+            reference = "sdl/3.4.16@ngen/wayland" if self.settings.os == "Linux" else "sdl/3.4.16"
+            self.requires(reference)
+            if self.settings.os == "Linux":
+                # The private protocol peer uses the same locked Wayland ABI as SDL.
+                self.test_requires("wayland/1.24.0")
 
     def generate(self):
         CMakeDeps(self).generate()

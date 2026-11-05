@@ -1,0 +1,12 @@
+sources:
+  3.4.16:
+    sha256: 7322236cd12090c3eb40b9728be4d49c76f66ad17d04369584d4ecad5cf77c68
+    url: https://github.com/libsdl-org/SDL/releases/download/release-3.4.16/SDL3-3.4.16.tar.gz
+patches:
+  3.4.16:
+    - patch_file: patches/0001-wayland-tablet-ownership.patch
+      patch_description: Retain and release Wayland tablet, pad and group proxies
+      patch_type: bugfix
+    - patch_file: patches/0002-clang-shared-asan.patch
+      patch_description: Resolve Clang shared ASan instrumentation through the executable
+      patch_type: portability

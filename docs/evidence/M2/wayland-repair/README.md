@@ -1,0 +1,36 @@
+# Pinned SDL Wayland repair verification
+
+The owner chose a project-local SDL repair after reviewing the [tablet/pad investigation](../wayland-tablet-leak/README.md). Linux now uses `sdl/3.4.16@ngen/wayland#1462763359f081b8fd40be314a673a1d`; Windows retains the original upstream recipe. **The previously failing SDL-only and real Intel/Wayland startup workloads now pass with leak detection enabled.** This clears the demonstrated leak for these workloads, not every SDL failure path or M2 acceptance.
+
+The [recipe and notices](../../../../recipes/sdl/README.md) identify the copied Conan Center recipe, source checksum, two local patches, preparation commands and retirement criterion. Existing cached upstream sources and binaries were not edited: the hashes retained by the original investigation still verify. All original `conan-render.lock` entries remain unchanged; the sole new entry pins the namespaced SDL recipe. The CPU `conan.lock` is unchanged. The test-only direct Wayland edge selects the already locked 1.24.0 ABI, not a new dependency version.
+
+| Check | Result |
+|---|---|
+| Final protocol regression binary with stock SDL substituted process-locally | Both cases fail with zero destruction counts, exit 1 |
+| Clang 23.1.4 Debug | Full configure/build/link; 7/7 CTest entries passed |
+| Clang 23.1.4 Release | Full configure/build/link; 7/7 CTest entries passed |
+| Clang 23.1.4 ASan/UBSan | NGEN and host Conan libraries instrumented; 7/7 passed, no diagnostics |
+| GCC 16.2.1 Debug compatibility | Full configure/build/link; 7/7 passed |
+| Real Iris Xe/Wayland normal startup | All four configurations pass with zero validation errors |
+| Real callback calibration | All four pass with exactly the one labelled intentional error |
+| SDL-only init/quit against instrumented repaired SDL | Exit 0, empty output, leak detection enabled |
+| Injected `vkDeviceWaitIdle` failure during instrumented calibration | Expected exit 1, no sanitizer diagnostics |
+| Default graphics-free CPU graph | 4/4 CTest entries passed |
+| PowerShell native/runtime/profile boundaries | Passed; not Windows binary execution |
+| Both Windows renderer graphs, offline resolution | Unchanged stock SDL; no Wayland dependency |
+| New NGEN C++ fixture clang-tidy | Passed in Debug, Release and ASan/UBSan |
+| SDK C translation unit under NGEN's clang-tidy policy | Not clean; advisory comparison below |
+
+`debug/release/asan/gcc-list.txt` enumerate seven entries each; the corresponding test logs execute all seven with no skips. The new cases use a private Wayland peer, real client/server libraries and SDL's public API. They observe exactly one destruction request for tablet, pad, group, ring and strip objects. The active-device case checks that tablet/pad objects are not destroyed prematurely. The removal case checks destruction before SDL shutdown, so merely accumulating removed devices until quit cannot pass. Queued ring/strip events also exercise safe discard after the ignored leaf proxies are destroyed. The peer is a protocol boundary fixture, not a compositor or presentation implementation.
+
+The caller retains its publicly supplied Wayland display until it can flush and observe teardown requests, then disconnects it. Separate real SDL-owned display probes and the SDL-only lifetime check cover the ordinary ownership path. Successful peer shutdown uses `std::exit` rather than bypassing exit handlers; the parent also exits normally and checks the child's status. Setup failures cannot count as passes. The exact final fixture also fails against the unchanged stock SDL by overriding only that process's library search path. No product configuration or global cache was changed for this control.
+
+Actual GPU runs use the existing isolated Khronos layer package, `LD_BIND_NOW=1`, and, for the instrumented run, `ASAN_OPTIONS=detect_leaks=1:halt_on_error=1` and `UBSAN_OPTIONS=halt_on_error=1:print_stacktrace=1`. Each normal log contains only the device/display line; each calibration contains exactly its intentional error plus that line. Shader compilation, swapchain creation, drawing and presentation still do not occur. The earlier 480-byte/five-allocation and later 192-byte/two-allocation failures remain intact in their original evidence directories; no unsupported attribution of all earlier allocations is made.
+
+The new `renderer-debug`, `renderer-release` and `renderer-asan` presets use separate directories from the earlier CPU/system-SDL experiments. Native preparation exports the local recipe before installing its locked graph. On this hardened host, ASan configure executables initially failed because shadow memory overlapped a PIE mapping. Process/build-local `-no-pie` was required for dependency configure probes and NGEN executables; it does not disable instrumentation. SDL's ordinary shared-library `--no-undefined` link setting also rejected Clang's sanitizer-runtime imports. The second patch follows the compiler's supported shared-ASan link model while retaining strict ordinary linking. `sdk-asan-command.txt` records actual `SDL_waylandevents.c` compilation with address/undefined instrumentation and fail-fast recovery flags. The upstream `SDL_ASAN` option was tried but failed C++ flag checks in the C-only build; the final graph uses the existing native sanitizer profile instead. Host EGL/libdecor/loader/driver and build tools are not all instrumented, so this is not a wholly sanitized graphics stack.
+
+Same-session review checked ownership on removal/shutdown, recursive pad/group cleanup, allocation-failure listener fallbacks, queued leaf events, public display borrowing, child/parent synchronization, unchanged Windows selection, lock isolation and runtime imports. The full SDK C file was analyzed using its actual Ninja compilation database, without changed-line filtering. `sdk-original-tidy.txt` has 116 main-file diagnostics under the NGEN C++-oriented policy; `sdk-patched-tidy.txt` has those same 116 plus two swappable-parameter diagnostics on empty callbacks whose signatures are fixed by the Wayland protocol. No checker was disabled or warning suppressed. The unverified upstream keyboard/touch/drop findings are retained for follow-up, not presented as newly repaired or proven runtime bugs. The new NGEN C++ fixture itself passes strict lint. This review is not independent or human approval.
+
+`inputs.sha256` identifies the lock, recipe, patches, final fixture, actual SDK source/header/library bytes and probe/test executables. Run its check from the repository root. Logs are normalized to LF/trailing whitespace; `files.sha256` identifies retained outputs. `sdl-only-asan.txt` is intentionally empty because the successful fixture prints nothing. Failure histories are not replaced with fabricated green logs.
+
+CI now builds and executes the private-peer Debug/ASan graphs with Clang 18 alongside the separate CPU graph. That configuration is not a hosted result until the workflows run, and it cannot supply physical GPU evidence. M2-A still needs its remaining surface/zero-size behavior and acceptance; M2-B through M2-F, actual resource retirement, shaders, asset cooking, PBR, inspector and performance gates remain open. No new Windows setup is needed for this Linux-only repair; later Windows rendering changes will require actual execution again.

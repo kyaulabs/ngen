@@ -1,15 +1,20 @@
 #!/bin/sh
 set -eu
 preset=${1:-debug}
+if [ "$#" -gt 0 ]; then shift; fi
 profile=linux-clang
 type=Debug
+renderer=false
 case "$preset" in
   debug) ;;
   asan) profile=linux-asan ;;
   tsan) profile=linux-tsan ;;
   release) type=Release ;;
   gcc) profile=linux-gcc ;;
-  *) echo "Usage: sh tools/prepare.sh {debug|release|gcc|asan|tsan}" >&2; exit 2 ;;
+  renderer-debug) renderer=true ;;
+  renderer-release) renderer=true; type=Release ;;
+  renderer-asan) renderer=true; profile=linux-asan ;;
+  *) echo "Usage: sh tools/prepare.sh {debug|release|gcc|asan|tsan|renderer-debug|renderer-release|renderer-asan} [Conan install options]" >&2; exit 2 ;;
 esac
 [ "$(cmake --version | head -1)" = 'cmake version 4.4.5' ] || { echo 'Expected CMake 4.4.5' >&2; exit 2; }
 [ "$(ninja --version)" = '1.13.2' ] || { echo 'Expected Ninja 1.13.2' >&2; exit 2; }
@@ -20,4 +25,9 @@ else
 fi
 command -v conan >/dev/null || { echo 'Conan 2.34.0 required; install it in a virtualenv and add its bin directory to PATH.' >&2; exit 2; }
 [ "$(conan --version)" = 'Conan version 2.34.0' ] || { echo 'Expected Conan 2.34.0' >&2; exit 2; }
-conan install . -pr:h "profiles/$profile" -pr:b profiles/linux-clang -s:h "build_type=$type" --lockfile conan.lock --build=missing -of "build/$preset"
+if [ "$renderer" = true ]; then
+  conan export recipes/sdl --version=3.4.16 --user=ngen --channel=wayland
+  conan install . -pr:h "profiles/$profile" -pr:b profiles/linux-clang -s:h "build_type=$type" -s:b "build_type=$type" -o '&:renderer=True' --lockfile conan-render.lock --build=missing -c tools.build:jobs=2 -of "build/$preset" "$@"
+else
+  conan install . -pr:h "profiles/$profile" -pr:b profiles/linux-clang -s:h "build_type=$type" --lockfile conan.lock --build=missing -of "build/$preset" "$@"
+fi
