@@ -1,6 +1,6 @@
 # Presentation first-light implementation slice
 
-Status: Linux clear-only presentation and two verified resizes now pass in four native configurations; see [first-light evidence](../evidence/M2/presentation-first-light/README.md). Windows execution and milestone acceptance remain pending. This slice follows [ADR 0007](../adr/0007-renderer-organization.md) and does not close M2 or introduce assets/PBR.
+Status: Linux clear-only presentation and two verified resizes now pass in four native configurations; see [first-light evidence](../evidence/M2/presentation-first-light/README.md). Owner [Windows MSVC/clang-cl Debug/Release execution](../evidence/M2/windows-first-light/README.md) now passes the first-light/resize/minimize scenario at `b7f0334`; milestone acceptance remains pending. This slice follows [ADR 0007](../adr/0007-renderer-organization.md) and does not close M2 or introduce assets/PBR.
 
 Build one explicit presentation profile for the verified Intel/Wayland and Windows/NVIDIA targets. Both retained device profiles advertise swapchain maintenance and present-wait support; both instance summaries advertise surface maintenance and `VK_KHR_get_surface_capabilities2`. Use the EXT maintenance names/types supported by the pinned Vulkan 1.3-era CI headers, rather than assuming recent KHR aliases exist everywhere. Query and enable every required extension/feature. The existing startup-only profile remains available and does not silently claim presentation support.
 
