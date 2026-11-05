@@ -7,9 +7,14 @@ set(NGEN_SANITIZER "" CACHE STRING "Sanitizer: address,undefined or thread")
 add_library(ngen_options INTERFACE)
 target_compile_features(ngen_options INTERFACE cxx_std_20)
 set(CMAKE_CXX_EXTENSIONS OFF)
+if(CMAKE_CXX_COMPILER_FRONTEND_VARIANT STREQUAL "MSVC")
+  target_compile_options(ngen_options INTERFACE /W4)
+else()
+  target_compile_options(ngen_options INTERFACE $<$<CXX_COMPILER_ID:Clang,GNU>:-Wall>)
+endif()
 target_compile_options(ngen_options INTERFACE
-  $<$<CXX_COMPILER_ID:Clang,GNU>:-Wall;-Wextra;-Wpedantic;-Wconversion;-Wsign-conversion;-Werror>
-  $<$<CXX_COMPILER_ID:MSVC>:/W4;/WX;/permissive->)
+  $<$<CXX_COMPILER_ID:Clang,GNU>:-Wextra;-Wpedantic;-Wconversion;-Wsign-conversion;-Werror>
+  $<$<CXX_COMPILER_ID:MSVC>:/WX;/permissive->)
 if(NGEN_SANITIZER)
   if(NOT NGEN_SANITIZER MATCHES "^(address,undefined|thread)$" OR MSVC)
     message(FATAL_ERROR "Use address,undefined or thread with a supported Linux compiler")

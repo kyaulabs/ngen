@@ -2,7 +2,9 @@
 
 The owner runs Windows/NVIDIA checks manually. MSVC 19.44.35229, VCTools 14.44.35207 and Windows SDK 10.0.26100.0 passed both CPU Debug and Release at `d49b23c`. See [retained results](../M1/windows-msvc/README.md). Clang-cl and Windows graphics checks remain open.
 
-The next owner check is clang-cl. From the checkout in PowerShell 7.2 or newer:
+The first clang-cl run found version 19.1.5 and configured correctly, but compilation exposed a warning-flag mismatch: clang-cl interpreted `-Wall` as all warnings, including C++98 compatibility. The frontend-aware `/W4` fix is verified in a warning-only regression; [failed-run and regression evidence](../M1/clang-cl-attempt/README.md) is retained. No tool reinstall is needed. The next owner check is the same clang-cl command after pulling the fix.
+
+From the checkout in PowerShell 7.2 or newer:
 
 ```powershell
 git pull --ff-only

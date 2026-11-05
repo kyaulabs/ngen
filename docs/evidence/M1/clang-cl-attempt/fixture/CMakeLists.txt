@@ -1,0 +1,8 @@
+cmake_minimum_required(VERSION 3.28)
+project(ngen_clang_cl_warning_regression LANGUAGES CXX)
+set(BUILD_TESTING OFF CACHE BOOL "" FORCE)
+add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/../.." ngen EXCLUDE_FROM_ALL)
+add_library(valid_cxx20 OBJECT valid.cpp)
+target_link_libraries(valid_cxx20 PRIVATE ngen_options)
+add_library(conversion_error OBJECT conversion.cpp)
+target_link_libraries(conversion_error PRIVATE ngen_options)
