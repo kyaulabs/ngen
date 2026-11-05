@@ -1,0 +1,35 @@
+[1/56] Scanning /home/kyau/projects/kyaulabs/ngen/engine/core/entities.cpp for CXX dependencies
+[2/56] Scanning /home/kyau/projects/kyaulabs/ngen/engine/core/values.cpp for CXX dependencies
+[3/56] Generating CXX dyndep file CMakeFiles/ngen_core.dir/CXX.dd
+[4/53] Scanning /home/kyau/projects/kyaulabs/ngen/engine/render/capabilities.cpp for CXX dependencies
+[5/53] Scanning /home/kyau/projects/kyaulabs/ngen/engine/jobs/jobs.cpp for CXX dependencies
+[6/53] Generating CXX dyndep file CMakeFiles/ngen_jobs.dir/CXX.dd
+[7/51] Generating CXX dyndep file CMakeFiles/ngen_render_contract.dir/CXX.dd
+[8/49] Scanning /home/kyau/projects/kyaulabs/ngen/engine/simulation/simulation.cpp for CXX dependencies
+[9/49] Scanning /home/kyau/projects/kyaulabs/ngen/engine/render/context.cpp for CXX dependencies
+[10/49] Scanning /home/kyau/projects/kyaulabs/ngen/engine/render/surface.cpp for CXX dependencies
+[11/49] Generating CXX dyndep file CMakeFiles/ngen_simulation.dir/CXX.dd
+[12/47] Scanning /home/kyau/projects/kyaulabs/ngen/engine/render/presentation.cpp for CXX dependencies
+[13/47] Generating CXX dyndep file CMakeFiles/ngen_render.dir/CXX.dd
+[14/46] Scanning /home/kyau/projects/kyaulabs/ngen/apps/sim_harness/main.cpp for CXX dependencies
+[15/46] Scanning /home/kyau/projects/kyaulabs/ngen/tests/core.cpp for CXX dependencies
+[16/46] Scanning /home/kyau/projects/kyaulabs/ngen/apps/render_probe/main.cpp for CXX dependencies
+[17/46] Scanning /home/kyau/projects/kyaulabs/ngen/tests/jobs.cpp for CXX dependencies
+[18/46] Scanning /home/kyau/projects/kyaulabs/ngen/tests/simulation.cpp for CXX dependencies
+[19/46] Scanning /home/kyau/projects/kyaulabs/ngen/tests/render_capabilities.cpp for CXX dependencies
+[20/46] Scanning /home/kyau/projects/kyaulabs/ngen/tests/render_startup.cpp for CXX dependencies
+[21/46] Scanning /home/kyau/projects/kyaulabs/ngen/tests/render_surface.cpp for CXX dependencies
+[22/46] Generating CXX dyndep file CMakeFiles/sim_harness.dir/CXX.dd
+[23/44] Scanning /home/kyau/projects/kyaulabs/ngen/tests/wayland_tablets.cpp for CXX dependencies
+[24/44] Building CXX object CMakeFiles/ngen_render.dir/engine/render/presentation.cpp.o
+[25/44] Generating CXX dyndep file CMakeFiles/render_probe.dir/CXX.dd
+[26/44] Generating CXX dyndep file CMakeFiles/ngen_tests.dir/CXX.dd
+[27/40] Generating CXX dyndep file CMakeFiles/render_contract_tests.dir/CXX.dd
+[28/38] Generating CXX dyndep file CMakeFiles/render_startup_tests.dir/CXX.dd
+[29/37] Generating CXX dyndep file CMakeFiles/wayland_tablet_tests.dir/CXX.dd
+[30/35] Building CXX object CMakeFiles/ngen_render.dir/engine/render/context.cpp.o
+[31/35] Linking CXX static library libngen_render.a
+[32/35] Building CXX object CMakeFiles/render_probe.dir/apps/render_probe/main.cpp.o
+[33/35] Linking CXX executable render_probe
+[34/35] Building CXX object CMakeFiles/render_startup_tests.dir/tests/render_startup.cpp.o
+[35/35] Linking CXX executable render_startup_tests

@@ -1,0 +1,14 @@
+[1/6] Processing file /home/kyau/projects/kyaulabs/ngen/engine/render/context.cpp.
+43 warnings generated.
+[2/6] Processing file /home/kyau/projects/kyaulabs/ngen/engine/render/presentation.cpp.
+86 warnings generated.
+[3/6] Processing file /home/kyau/projects/kyaulabs/ngen/engine/render/surface.cpp.
+117 warnings generated.
+[4/6] Processing file /home/kyau/projects/kyaulabs/ngen/apps/render_probe/main.cpp.
+160 warnings generated.
+[5/6] Processing file /home/kyau/projects/kyaulabs/ngen/tests/render_startup.cpp.
+214 warnings generated.
+[6/6] Processing file /home/kyau/projects/kyaulabs/ngen/tests/render_surface.cpp.
+258 warnings generated.
+Suppressed 279 warnings (258 in non-user code, 21 NOLINT).
+Use -header-filter=.* or leave it as default to display errors from all non-system headers. Use -system-headers to display errors from system headers as well.

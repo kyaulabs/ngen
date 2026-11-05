@@ -121,7 +121,7 @@ exit 0
 '@
         & chmod +x $probe
         if ($LASTEXITCODE -ne 0) { throw 'Could not prepare renderer subprocess fixture' }
-        foreach ($failAt in @('', 'checks', '--check-validation-callback', 'startup')) {
+        foreach ($failAt in @('', 'checks', '--check-validation-callback', 'startup', '--check-presentation')) {
             $renderLogs = Join-Path $directory ('render logs ' + [guid]::NewGuid())
             New-Item -ItemType Directory $renderLogs | Out-Null
             $env:NGEN_RENDER_ENV = 'before'
@@ -143,6 +143,12 @@ exit 0
                 if (Test-Path -LiteralPath $startupLog) { throw 'Startup continued after an earlier verification failure' }
             } elseif ((Get-Content -Raw $startupLog) -notmatch 'startup') {
                 throw 'Renderer startup output was not captured'
+            }
+            $presentationLog = Join-Path $renderLogs 'Debug-presentation.txt'
+            if ($failAt -in @('checks', '--check-validation-callback', 'startup')) {
+                if (Test-Path $presentationLog) { throw 'Presentation continued after an earlier failure' }
+            } elseif (-not (Test-Path $presentationLog) -or (Get-Content -Raw $presentationLog) -notmatch '--check-presentation') {
+                throw 'Renderer presentation was not exercised and captured'
             }
         }
         Remove-Item Env:NGEN_RENDER_ENV, Env:NGEN_PROBE_FAIL_AT

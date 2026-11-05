@@ -53,6 +53,7 @@ function Invoke-NgenRenderer {
         $probe = Join-Path $BuildDirectory 'render_probe.exe'
         Invoke-NgenNative -FilePath $probe -Arguments @('--check-validation-callback') -LogPath (Join-Path $LogDirectory "$Configuration-validation-callback.txt")
         Invoke-NgenNative -FilePath $probe -LogPath (Join-Path $LogDirectory "$Configuration-render-startup.txt")
+        Invoke-NgenNative -FilePath $probe -Arguments @('--check-presentation') -LogPath (Join-Path $LogDirectory "$Configuration-presentation.txt")
     } finally {
         . (Join-Path $BuildDirectory 'deactivate_conanrun.ps1')
     }
@@ -276,7 +277,7 @@ try {
         }
     }
     if ($Renderer) {
-        Write-Host "Windows $Compiler CPU tests and validation-enabled Vulkan startup/teardown passed. No drawing or swapchain presentation was tested."
+        Write-Host "Windows $Compiler CPU tests, Vulkan startup and at least 96 clear frames with two verified resizes and minimize/restore passed. This is not PBR or full M2 acceptance."
     } else {
         Write-Host "Windows $Compiler CPU verification passed. This is not a Vulkan rendering test."
     }

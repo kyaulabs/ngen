@@ -1,5 +1,6 @@
 #include "render/context.hpp"
 #include "render/capabilities.hpp"
+#include "render/presentation.hpp"
 #include <SDL3/SDL_vulkan.h>
 #include <algorithm>
 #include <array>
@@ -71,6 +72,7 @@ SurfaceSelection query_surface(VkPhysicalDevice physical, VkSurfaceKHR surface,
     return selection;
 }
 } // namespace
+Context::Context() = default;
 std::variant<std::unique_ptr<Context>, Failure> Context::create(Options options) {
     try {
         auto context = std::unique_ptr<Context>(new Context);
@@ -113,6 +115,42 @@ void Context::initialize(Options options) {
             "VK_LAYER_KHRONOS_validation required; install validation layers or use probe-only "
             "mode");
         extensions.push_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
+        if (options.presentation) {
+            vkcheck(vkEnumerateInstanceExtensionProperties(layer, &count, nullptr),
+                    "count validation extensions");
+            require(count <= 64, "too many validation-layer extensions");
+            std::vector<VkExtensionProperties> available(count);
+            vkcheck(vkEnumerateInstanceExtensionProperties(layer, &count, available.data()),
+                    "query validation extensions");
+            available.resize(count);
+            require(std::any_of(available.begin(), available.end(),
+                                [](const auto &entry) {
+                                    return std::strcmp(entry.extensionName,
+                                                       VK_EXT_VALIDATION_FEATURES_EXTENSION_NAME) ==
+                                           0;
+                                }),
+                    "synchronization validation requires VK_EXT_validation_features");
+            extensions.push_back(VK_EXT_VALIDATION_FEATURES_EXTENSION_NAME);
+        }
+    }
+    if (options.presentation) {
+        std::uint32_t available_count = 0;
+        vkcheck(vkEnumerateInstanceExtensionProperties(nullptr, &available_count, nullptr),
+                "count instance extensions");
+        require(available_count <= 512, "too many instance extensions");
+        std::vector<VkExtensionProperties> available(available_count);
+        vkcheck(vkEnumerateInstanceExtensionProperties(nullptr, &available_count, available.data()),
+                "query instance extensions");
+        available.resize(available_count);
+        for (const auto *name : {VK_KHR_GET_SURFACE_CAPABILITIES_2_EXTENSION_NAME,
+                                 VK_EXT_SURFACE_MAINTENANCE_1_EXTENSION_NAME}) {
+            require(std::any_of(available.begin(), available.end(),
+                                [name](const auto &entry) {
+                                    return std::strcmp(entry.extensionName, name) == 0;
+                                }),
+                    "presentation requires surface-maintenance and capabilities2 extensions");
+            extensions.push_back(name);
+        }
     }
     VkApplicationInfo application{};
     application.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
@@ -128,6 +166,13 @@ void Context::initialize(Options options) {
         VkDebugUtilsMessageTypeFlagsEXT{VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT};
     debug.pfnUserCallback = message;
     debug.pUserData = this;
+    const VkValidationFeatureEnableEXT synchronize =
+        VK_VALIDATION_FEATURE_ENABLE_SYNCHRONIZATION_VALIDATION_EXT;
+    VkValidationFeaturesEXT validation{};
+    validation.sType = VK_STRUCTURE_TYPE_VALIDATION_FEATURES_EXT;
+    validation.pNext = &debug;
+    validation.enabledValidationFeatureCount = 1;
+    validation.pEnabledValidationFeatures = &synchronize;
     VkInstanceCreateInfo instance{};
     instance.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
     instance.pApplicationInfo = &application;
@@ -136,7 +181,8 @@ void Context::initialize(Options options) {
     if (options.validation) {
         instance.enabledLayerCount = 1;
         instance.ppEnabledLayerNames = &layer;
-        instance.pNext = &debug;
+        instance.pNext = options.presentation ? static_cast<const void *>(&validation)
+                                              : static_cast<const void *>(&debug);
     }
     vkcheck(vkCreateInstance(&instance, nullptr, &instance_), "create instance");
     if (options.validation) {
@@ -165,6 +211,10 @@ void Context::initialize(Options options) {
         vkGetPhysicalDeviceProperties(candidate, &properties);
         VkPhysicalDeviceVulkan13Features features13{};
         features13.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_3_FEATURES;
+        VkPhysicalDeviceSwapchainMaintenance1FeaturesEXT maintenance{};
+        maintenance.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SWAPCHAIN_MAINTENANCE_1_FEATURES_EXT;
+        if (options.presentation)
+            features13.pNext = &maintenance;
         VkPhysicalDeviceVulkan12Features features12{};
         features12.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_2_FEATURES;
         features12.pNext = &features13;
@@ -218,6 +268,15 @@ void Context::initialize(Options options) {
                     "queue " + std::to_string(family) + " requires missing VK_KHR_swapchain; ";
                 continue;
             }
+            if (options.presentation &&
+                (!maintenance.swapchainMaintenance1 ||
+                 std::none_of(supported.begin(), supported.end(), [](const auto &entry) {
+                     return std::strcmp(entry.extensionName,
+                                        VK_EXT_SWAPCHAIN_MAINTENANCE_1_EXTENSION_NAME) == 0;
+                 }))) {
+                reason += "presentation requires VK_EXT_swapchain_maintenance1; ";
+                continue;
+            }
             const auto selection = query_surface(candidate, surface_, drawable);
             if (const auto *failure = std::get_if<SurfaceFailure>(&selection);
                 failure && failure->issue != SurfaceIssue::not_drawable) {
@@ -247,20 +306,27 @@ void Context::initialize(Options options) {
     features13.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_3_FEATURES;
     features13.dynamicRendering = VK_TRUE;
     features13.synchronization2 = VK_TRUE;
+    VkPhysicalDeviceSwapchainMaintenance1FeaturesEXT maintenance{};
+    maintenance.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SWAPCHAIN_MAINTENANCE_1_FEATURES_EXT;
+    maintenance.swapchainMaintenance1 = VK_TRUE;
+    if (options.presentation)
+        features13.pNext = &maintenance;
     VkPhysicalDeviceVulkan12Features features12{};
     features12.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_2_FEATURES;
     features12.pNext = &features13;
     features12.timelineSemaphore = VK_TRUE;
-    const char *swapchain = VK_KHR_SWAPCHAIN_EXTENSION_NAME;
+    const std::array device_extensions{VK_KHR_SWAPCHAIN_EXTENSION_NAME,
+                                       VK_EXT_SWAPCHAIN_MAINTENANCE_1_EXTENSION_NAME};
     VkDeviceCreateInfo device{};
     device.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
     device.pNext = &features12;
     device.queueCreateInfoCount = 1;
     device.pQueueCreateInfos = &queue;
-    device.enabledExtensionCount = 1;
-    device.ppEnabledExtensionNames = &swapchain;
+    device.enabledExtensionCount = options.presentation ? 2U : 1U;
+    device.ppEnabledExtensionNames = device_extensions.data();
     vkcheck(vkCreateDevice(physical_, &device, nullptr, &device_), "create device");
     vkGetDeviceQueue(device_, queue_family_, 0, &queue_);
+    presentation_enabled_ = options.presentation;
 }
 SurfaceSelection Context::inspect_surface() const {
     if (!physical_ || !surface_ || !window_)
@@ -276,7 +342,38 @@ SurfaceSelection Context::inspect_surface() const {
     return query_surface(physical_, surface_,
                          {static_cast<std::uint32_t>(width), static_cast<std::uint32_t>(height)});
 }
-Context::~Context() { (void)close(); }
+std::variant<FrameOutcome, Failure> Context::render_frame() {
+    if (!device_ || !presentation_enabled_ || presentation_failed_)
+        return Failure{"presentation is unavailable; create a presentation-enabled context"};
+    try {
+        if (!presentation_) {
+            auto presentation = std::make_unique<Presentation>(*this);
+            presentation->initialize();
+            presentation_ = std::move(presentation);
+        }
+        return presentation_->draw();
+    } catch (const std::exception &error) {
+        presentation_failed_ = true;
+        return Failure{error.what()};
+    }
+}
+PresentationState Context::presentation_state() const {
+    return presentation_ ? presentation_->state() : PresentationState{};
+}
+Context::~Context() {
+    (void)close();
+    // An unrecoverable driver failure must not leave a callback borrowing dead C++ state.
+    destroy_messenger();
+}
+void Context::destroy_messenger() noexcept {
+    if (messenger_) {
+        const auto destroy = reinterpret_cast<PFN_vkDestroyDebugUtilsMessengerEXT>(
+            vkGetInstanceProcAddr(instance_, "vkDestroyDebugUtilsMessengerEXT"));
+        if (destroy)
+            destroy(instance_, messenger_, nullptr);
+    }
+    messenger_ = VK_NULL_HANDLE;
+}
 bool Context::close() noexcept {
     if (device_) {
         // Startup/shutdown only; ordinary frame retirement must not idle the device.
@@ -286,8 +383,20 @@ bool Context::close() noexcept {
             std::fprintf(stderr, "Vulkan shutdown: vkDeviceWaitIdle failed with VkResult %d\n",
                          result);
         }
+        if (result != VK_SUCCESS && result != VK_ERROR_DEVICE_LOST)
+            return false; // Completion is unproven; keep every handle alive for a retry.
+        if (presentation_) {
+            const auto retirement = presentation_->close(result);
+            if (retirement != VK_SUCCESS) {
+                if (close_result_ == VK_SUCCESS)
+                    close_result_ = retirement;
+                return false; // Keep ownership intact for a retry; never destroy in-use objects.
+            }
+            presentation_.reset();
+        }
         vkDestroyDevice(device_, nullptr);
         device_ = VK_NULL_HANDLE;
+        presentation_enabled_ = false;
     }
     queue_ = VK_NULL_HANDLE;
     physical_ = VK_NULL_HANDLE;
@@ -295,13 +404,7 @@ bool Context::close() noexcept {
     if (surface_)
         vkDestroySurfaceKHR(instance_, surface_, nullptr);
     surface_ = VK_NULL_HANDLE;
-    if (messenger_) {
-        const auto destroy = reinterpret_cast<PFN_vkDestroyDebugUtilsMessengerEXT>(
-            vkGetInstanceProcAddr(instance_, "vkDestroyDebugUtilsMessengerEXT"));
-        if (destroy)
-            destroy(instance_, messenger_, nullptr);
-    }
-    messenger_ = VK_NULL_HANDLE;
+    destroy_messenger();
     if (instance_)
         vkDestroyInstance(instance_, nullptr);
     instance_ = VK_NULL_HANDLE;
