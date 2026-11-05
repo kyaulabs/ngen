@@ -147,6 +147,35 @@ exit 0
         }
         Remove-Item Env:NGEN_RENDER_ENV, Env:NGEN_PROBE_FAIL_AT
     }
+    $sdkDefinition = $ast.Find({
+        param($node)
+        $node -is [System.Management.Automation.Language.FunctionDefinitionAst] -and
+        $node.Name -eq 'Get-NgenVulkanSdkRoot'
+    }, $true)
+    if (-not $sdkDefinition) { throw 'Vulkan SDK environment discovery boundary not found' }
+    . ([scriptblock]::Create($sdkDefinition.Extent.Text))
+    $sdkChild = Join-Path $directory 'sdk environment child.ps1'
+    Set-Content -LiteralPath $sdkChild -Value @'
+param([string]$Expected)
+if ([string]$env:VULKAN_SDK -cne $Expected) { exit 11 }
+Write-Output 'SDK environment inherited'
+'@
+    $oldSdk = $env:VULKAN_SDK
+    try {
+        foreach ($case in @(
+            @('', '', 'C:\Vulkan SDK\1.4.363.1', 'C:\Vulkan SDK\1.4.363.1'),
+            @('', 'D:\User SDK', 'C:\Machine SDK', 'D:\User SDK'),
+            @('E:\Process SDK', 'D:\User SDK', 'C:\Machine SDK', 'E:\Process SDK'),
+            @('', '', '', '')
+        )) {
+            $env:VULKAN_SDK = Get-NgenVulkanSdkRoot -ProcessRoot $case[0] -UserRoot $case[1] -MachineRoot $case[2]
+            Invoke-NgenNative -FilePath $pwsh -Arguments @(
+                '-NoProfile', '-File', $sdkChild, $case[3]
+            ) -LogPath $log
+        }
+    } finally {
+        $env:VULKAN_SDK = $oldSdk
+    }
     $profileDefinition = $ast.Find({
         param($node)
         $node -is [System.Management.Automation.Language.FunctionDefinitionAst] -and
@@ -189,7 +218,7 @@ exit 0
         $failed = $true
     }
     if (-not $failed) { throw 'A missing executable was reported as success' }
-    Write-Host 'PASS: process/output boundaries, Clang/MSVC profiles, GPU capture validation and input/platform checks'
+    Write-Host 'PASS: process/output boundaries, Clang/MSVC profiles, GPU/renderer checks, SDK environment inheritance and input/platform checks'
 } finally {
     Remove-Item -LiteralPath $directory -Recurse -Force
 }

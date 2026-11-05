@@ -30,6 +30,14 @@ function Invoke-NgenNative {
     }
 }
 
+function Get-NgenVulkanSdkRoot {
+    param([string]$ProcessRoot, [string]$UserRoot, [string]$MachineRoot)
+    foreach ($sdk in @($ProcessRoot, $UserRoot, $MachineRoot)) {
+        if ($sdk) { return $sdk }
+    }
+    return ''
+}
+
 function Invoke-NgenRenderer {
     param(
         [Parameter(Mandatory)][string]$BuildDirectory,
@@ -180,6 +188,14 @@ try {
     Write-Host "Selected compiler: $Compiler"
     Write-Host "VCToolsVersion: $env:VCToolsVersion"
     Write-Host "WindowsSDKVersion: $env:WindowsSDKVersion"
+    if ($Renderer) {
+        # Existing terminals may predate SDK installation. Preserve an explicit
+        # process setting; otherwise use the configured user/machine SDK.
+        $env:VULKAN_SDK = Get-NgenVulkanSdkRoot -ProcessRoot $env:VULKAN_SDK `
+            -UserRoot ([Environment]::GetEnvironmentVariable('VULKAN_SDK', 'User')) `
+            -MachineRoot ([Environment]::GetEnvironmentVariable('VULKAN_SDK', 'Machine'))
+        "VULKAN_SDK=$env:VULKAN_SDK" | Tee-Object -FilePath (Join-Path $logs 'vulkan-sdk.txt') | Out-Host
+    }
     $python = Join-Path $tools 'Scripts/python.exe'
     if (-not (Test-Path -LiteralPath $python)) {
         if (Get-Command py -ErrorAction SilentlyContinue) {
