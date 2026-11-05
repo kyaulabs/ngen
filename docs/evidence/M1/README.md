@@ -1,11 +1,11 @@
 # M1 CPU foundation evidence
 
-Status: implemented Linux slice; **M1 is not complete or formally accepted**. This record describes the initial `888aa10` evidence. [Independent review and corrections](review-followup.md) and [current startup/status evidence](../M2/README.md) supersede its originally outstanding review/CI entries. [Windows MSVC Debug/Release verification](windows-msvc/README.md) passed at `d49b23c`; clang-cl and formal acceptance remain open.
+Status: implemented Linux slice; **M1 is not complete or formally accepted**. This record describes the initial `888aa10` evidence. [Independent review and corrections](review-followup.md) and [current startup/status evidence](../M2/README.md) supersede its originally outstanding review/CI entries. [Windows MSVC Debug/Release verification](windows-msvc/README.md) passed at `d49b23c`, and [clang-cl Debug/Release](windows-clang-cl/README.md) passed at `54a7a63`. Formal acceptance remains open.
 Recorded 2026-11-04 against base `f6ccd18e47fa066b9e5c8623324d3141d63f0f4a`, on `feat/kyau-ed4dbe-cpu-foundation`. The initial working tree was clean. `sources.sha256` identifies the reviewed implementation/configuration bytes; the commit containing this record supplies the resulting source revision. Subsequent edits require affected checks to be rerun.
 
 | Task | Actual status | Remaining gate |
 |---|---|---|
-| M1-A | Conan lock resolved; Linux builds and Windows MSVC Debug/Release builds/tests passed; verified MSVC profile recorded | Windows clang-cl profile/ABI execution; independent acceptance |
+| M1-A | Conan lock resolved; Linux and Windows MSVC/clang-cl builds/tests passed; verified profiles recorded | Independent acceptance |
 | M1-B | Strong values, checked arithmetic, 16 fixed entity slots and stale-handle rejection tested | Independent acceptance |
 | M1-C | enkiTS adapter, 64-job bound, serial path, dependencies, cancellation/drain/shutdown tested; TSan passed | Independent ownership/concurrency review |
 | M1-D | Ordered commands, atomic fixed-tick batches and immutable snapshot copies tested | Independent acceptance; no broader determinism claim |

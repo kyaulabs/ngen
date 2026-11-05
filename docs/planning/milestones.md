@@ -73,7 +73,7 @@ Performance gate: benchmark manifests identify hardware, fixture and measurement
 
 ## M1 — Establish the CPU-only foundation
 
-Current status: M1-A has verified Linux and Windows MSVC build/test evidence; M1-B through M1-E are implemented and tested. Independent agent review has been obtained, its two CI findings corrected, and hosted CPU checks passed through `d49b23c`. The owner's MSVC Debug/Release run passed at that revision. Clang-cl compatibility and formal acceptance remain open. See [Windows results](../evidence/M1/windows-msvc/README.md). The handoff's M1.1–M1.8 refine these six tasks, not a separate backlog. See [the initial evidence](../evidence/M1/README.md) and [review follow-up](../evidence/M1/review-followup.md).
+Current status: M1-A has verified Linux and Windows MSVC build/test evidence; M1-B through M1-E are implemented and tested. Independent agent review has been obtained, its two CI findings corrected, and hosted CPU checks passed through `d49b23c`. The owner's MSVC Debug/Release run passed at that revision, and clang-cl Debug/Release passed at `54a7a63`. Verified profiles are recorded; formal acceptance remains open. See [MSVC results](../evidence/M1/windows-msvc/README.md) and [clang-cl results](../evidence/M1/windows-clang-cl/README.md). The handoff's M1.1–M1.8 refine these six tasks, not a separate backlog. See [the initial evidence](../evidence/M1/README.md) and [review follow-up](../evidence/M1/review-followup.md).
 
 Deliver a reproducible C++20 build, meaningful tests, bounded ownership primitives, simulation command/snapshot contracts and CPU-only CI. Start with the repository's working tools if they exist. Candidate tool versions belong in the dependency decision, not scattered through task text. This milestone introduces interfaces needed by offline play; it does not implement accounts, network transport or a database.
 
@@ -90,7 +90,7 @@ Performance gate: the fixed fixture has bounded queues/memory and zero unexpecte
 
 ## M2 — Render one imported PBR spacecraft
 
-Current status: M2-A has a tested local SDL/Vulkan startup slice and Intel/NVIDIA capability captures, not full acceptance. Windows checks remain with the owner; the authorized NVIDIA host has no active display session. M2-B through M2-F are not implemented. See [startup evidence and remaining gates](../evidence/M2/README.md). The owner selected `planning/models/frigate/frigate-01.glb`; it remains in its original ignored location.
+Current status: M2-A has a tested local SDL/Vulkan startup slice and Intel/NVIDIA capability captures, not full acceptance. Windows GPU/graphics checks remain with the owner; both Windows CPU compiler modes passed. The authorized NVIDIA host has no active display session. M2-B through M2-F are not implemented. See [startup evidence and remaining gates](../evidence/M2/README.md). The owner selected `planning/models/frigate/frigate-01.glb`; it remains in its original ignored location.
 
 Deliver Vulkan first light, reliable resource lifetimes, one cooked spacecraft, a fixed forward/PBR pass sequence and a small development inspector. Vulkan 1.3 is the baseline; optional capabilities must be independently queryable and force-disableable. The inspector exposes relevant state and diagnostics, not a full editor.
 
