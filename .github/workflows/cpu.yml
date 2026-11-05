@@ -71,7 +71,8 @@ jobs:
         run: |
           clang-format-18 --dry-run --Werror engine/core/*pp engine/jobs/*pp engine/simulation/*pp tests/*.cpp apps/sim_harness/*.cpp
           clang-tidy-18 -p "build/$PRESET" engine/core/values.cpp engine/core/entities.cpp engine/jobs/jobs.cpp engine/simulation/simulation.cpp tests/core.cpp tests/jobs.cpp tests/simulation.cpp apps/sim_harness/main.cpp
-          # The unprivileged child has no network interfaces beyond loopback.
-          unshare -Urn -- env -u DISPLAY -u WAYLAND_DISPLAY "build/$PRESET/sim_harness"
+          # Ubuntu restricts unprivileged user namespaces. Create only the
+          # network namespace with sudo, then drop back to the runner identity.
+          sudo unshare --net -- runuser -u "$(id -un)" -- env -u DISPLAY -u WAYLAND_DISPLAY "$PWD/build/$PRESET/sim_harness"
 # Configuration only until this workflow actually runs. Primary Clang 23,
 # GCC 16, local formatting/tidy 23 and Windows evidence remain separate gates.
