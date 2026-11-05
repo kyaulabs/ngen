@@ -29,22 +29,24 @@ conan profile detect --name ngen-windows-msvc
 if ($LASTEXITCODE) { throw 'Profile detection failed (or profile already exists)' }
 conan profile show -pr:h ngen-windows-msvc -pr:b ngen-windows-msvc
 
-conan install . -pr:h ngen-windows-msvc -pr:b ngen-windows-msvc -s:h compiler.cppstd=20 -s:b compiler.cppstd=20 -s:h build_type=Debug -s:b build_type=Debug --lockfile conan.lock --build=missing -of build/windows-debug
+# Conan and CMake must both select Ninja. Use a fresh directory if a previous
+# attempt generated a Visual Studio toolchain/platform cache.
+conan install . -pr:h ngen-windows-msvc -pr:b ngen-windows-msvc -s:h compiler.cppstd=20 -s:b compiler.cppstd=20 -s:h build_type=Debug -s:b build_type=Debug -c:h tools.cmake.cmaketoolchain:generator=Ninja -c:b tools.cmake.cmaketoolchain:generator=Ninja --lockfile conan.lock --build=missing -of build/windows-debug-ninja
 if ($LASTEXITCODE) { throw 'Conan installation failed' }
-$toolchain = (Resolve-Path build/windows-debug/conan_toolchain.cmake).Path
-cmake -S . -B build/windows-debug -G Ninja "-DCMAKE_TOOLCHAIN_FILE=$toolchain" -DCMAKE_BUILD_TYPE=Debug -DNGEN_BUILD_RENDERER=OFF
+$toolchain = (Resolve-Path build/windows-debug-ninja/conan_toolchain.cmake).Path
+cmake -S . -B build/windows-debug-ninja -G Ninja "-DCMAKE_TOOLCHAIN_FILE=$toolchain" -DCMAKE_BUILD_TYPE=Debug -DNGEN_BUILD_RENDERER=OFF
 if ($LASTEXITCODE) { throw 'Configure failed' }
-cmake --build build/windows-debug -j 2
+cmake --build build/windows-debug-ninja -j 2
 if ($LASTEXITCODE) { throw 'Build failed' }
-ctest --test-dir build/windows-debug --show-only
-ctest --test-dir build/windows-debug --output-on-failure --no-tests=error
+ctest --test-dir build/windows-debug-ninja --show-only
+ctest --test-dir build/windows-debug-ninja --output-on-failure --no-tests=error
 if ($LASTEXITCODE) { throw 'Tests failed' }
-& ./build/windows-debug/sim_harness.exe
+& ./build/windows-debug-ninja/sim_harness.exe
 if ($LASTEXITCODE) { throw 'Serial replay failed' }
-& ./build/windows-debug/sim_harness.exe --workers=2
+& ./build/windows-debug-ninja/sim_harness.exe --workers=2
 if ($LASTEXITCODE) { throw 'Worker replay failed' }
 ```
 
 Return the revision, compiler/profile output and complete configure/build/test output. Four CPU-only CTest entries should execute at this stage. Also report `vulkaninfo --summary` and `vulkaninfo --json` from the Windows SDK when available; retain the generated GPU profile JSON. The eventual M2 Windows gate additionally requires SDL startup, swapchain/resize/lifetime validation, shader output and the actual rendered scene. The CPU commands above do not establish those results or clang-cl compatibility.
 
-No Windows toolset, CRT, shader SDK or driver version has been invented. The verified toolchain/profile values will become the checked-in Windows profile after these results are available. No remote Windows host or account has been accessed.
+The owner's first transcript identifies MSVC 19.44.35229, VCTools 14.44.35207 and Windows SDK 10.0.26100.0. The first configure failed because Conan's default Visual Studio generator emitted `CMAKE_GENERATOR_PLATFORM=x64` while the command selected Ninja. The recipe now selects Ninja explicitly; a generation-only regression probe reproduced the bad platform before the fix and verified its absence afterward. This Linux-hosted probe does not establish a successful Windows build. No unreported Windows toolset, CRT, shader SDK or driver version has been invented. The verified toolchain/profile values will become the checked-in Windows profile after these results are available. No remote Windows host or account has been accessed.

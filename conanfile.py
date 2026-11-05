@@ -11,6 +11,6 @@ class NgenDependencies(ConanFile):
 
     def generate(self):
         CMakeDeps(self).generate()
-        toolchain = CMakeToolchain(self)
+        toolchain = CMakeToolchain(self, generator="Ninja")
         toolchain.user_presets_path = False
         toolchain.generate()
