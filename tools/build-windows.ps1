@@ -1,10 +1,14 @@
 #Requires -Version 7.2
-[CmdletBinding()]
+[CmdletBinding(DefaultParameterSetName = 'CPU')]
 param(
+    [Parameter(ParameterSetName = 'CPU')]
     [ValidateSet('Debug', 'Release', 'All')]
     [string]$Configuration = 'All',
+    [Parameter(ParameterSetName = 'CPU')]
     [ValidateSet('MSVC', 'ClangCl')]
-    [string]$Compiler = 'MSVC'
+    [string]$Compiler = 'MSVC',
+    [Parameter(Mandatory, ParameterSetName = 'GPU')]
+    [switch]$GpuInfo
 )
 
 function Invoke-NgenNative {
@@ -61,6 +65,30 @@ tools.build:compiler_executables=$executables
 "@
 }
 
+function Invoke-NgenGpuInfo {
+    param(
+        [Parameter(Mandatory)][string]$FilePath,
+        [Parameter(Mandatory)][string]$LogDirectory
+    )
+    $LogDirectory = (Resolve-Path -LiteralPath $LogDirectory).Path
+    Invoke-NgenNative -FilePath $FilePath -Arguments @('--summary') -LogPath (Join-Path $LogDirectory 'vulkan-summary.txt')
+    Push-Location $LogDirectory
+    try {
+        Invoke-NgenNative -FilePath $FilePath -Arguments @('--json') -LogPath (Join-Path $LogDirectory 'vulkan-json.txt')
+    } finally {
+        Pop-Location
+    }
+    $profiles = @(Get-ChildItem -LiteralPath $LogDirectory -Filter 'VP_*.json' -File)
+    if (-not $profiles.Count) { throw 'vulkaninfo completed without producing a GPU JSON profile.' }
+    foreach ($profile in $profiles) {
+        $data = Get-Content -LiteralPath $profile.FullName -Raw | ConvertFrom-Json -AsHashtable
+        if ($data -isnot [System.Collections.IDictionary] -or -not $data.Contains('capabilities')) {
+            throw "Missing Vulkan capabilities in $($profile.Name)"
+        }
+    }
+    Write-Host 'GPU capability capture completed. This is not a rendering or presentation test.'
+}
+
 if (-not $IsWindows) {
     [Console]::Error.WriteLine('This build script requires Windows and PowerShell 7.2 or newer.')
     exit 2
@@ -78,7 +106,25 @@ Push-Location $root
 try {
     Start-Transcript -Path (Join-Path $logs 'session.txt') | Out-Host
     $transcribing = $true
-    Write-Host "Build directory: $run"
+    Write-Host "Run directory: $run"
+    Invoke-NgenNative -FilePath 'git' -Arguments @('rev-parse', 'HEAD') -LogPath (Join-Path $logs 'revision.txt')
+    Invoke-NgenNative -FilePath 'git' -Arguments @('status', '--short') -LogPath (Join-Path $logs 'working-tree.txt')
+    if ($GpuInfo) {
+        $vulkan = Get-Command vulkaninfo.exe -CommandType Application -ErrorAction SilentlyContinue | Select-Object -First 1
+        $vulkanPath = if ($vulkan) { $vulkan.Source } else { $null }
+        if (-not $vulkanPath -and $env:VULKAN_SDK) {
+            $candidate = Join-Path $env:VULKAN_SDK 'Bin/vulkaninfo.exe'
+            if (Test-Path -LiteralPath $candidate) { $vulkanPath = $candidate }
+        }
+        if (-not $vulkanPath) {
+            throw 'vulkaninfo was not found. Install the Windows Vulkan SDK with Vulkan Tools from https://vulkan.lunarg.com/sdk/home#windows, open a new PowerShell window and rerun with -GpuInfo. No SDK or driver is installed by this script.'
+        }
+        (Get-Item $vulkanPath).VersionInfo | Format-List FileName, FileVersion, ProductVersion | Out-Host
+        Get-FileHash -LiteralPath $vulkanPath -Algorithm SHA256 | Format-List | Out-File (Join-Path $logs 'vulkan-tool.txt')
+        Invoke-NgenGpuInfo -FilePath $vulkanPath -LogDirectory $logs
+        # exit still runs the shared finally block that packages the evidence.
+        exit 0
+    }
 
     if (-not (Get-Command cl -ErrorAction SilentlyContinue) -or $env:VSCMD_ARG_TGT_ARCH -ne 'x64') {
         $vswhere = Join-Path ${env:ProgramFiles(x86)} 'Microsoft Visual Studio/Installer/vswhere.exe'
@@ -92,11 +138,11 @@ try {
         Import-Module (Join-Path $installation 'Common7/Tools/Microsoft.VisualStudio.DevShell.dll')
         Enter-VsDevShell -VsInstallPath $installation -SkipAutomaticLocation -DevCmdArguments '-arch=x64 -host_arch=x64'
     }
-    $msvc = Get-Command cl -ErrorAction Stop
+    $msvc = Get-Command cl -CommandType Application -ErrorAction Stop | Select-Object -First 1
     (Get-Item $msvc.Source).VersionInfo | Format-List FileName, FileVersion, ProductVersion | Out-Host
     $clangPath = $null
     if ($Compiler -eq 'ClangCl') {
-        $command = Get-Command clang-cl.exe -CommandType Application -ErrorAction SilentlyContinue
+        $command = Get-Command clang-cl.exe -CommandType Application -ErrorAction SilentlyContinue | Select-Object -First 1
         if ($command) { $clangPath = $command.Source }
         foreach ($candidate in @(
             "$env:VSINSTALLDIR/VC/Tools/Llvm/x64/bin/clang-cl.exe",
@@ -112,9 +158,6 @@ try {
     Write-Host "Selected compiler: $Compiler"
     Write-Host "VCToolsVersion: $env:VCToolsVersion"
     Write-Host "WindowsSDKVersion: $env:WindowsSDKVersion"
-    Invoke-NgenNative -FilePath 'git' -Arguments @('rev-parse', 'HEAD') -LogPath (Join-Path $logs 'revision.txt')
-    Invoke-NgenNative -FilePath 'git' -Arguments @('status', '--short') -LogPath (Join-Path $logs 'working-tree.txt')
-
     $python = Join-Path $tools 'Scripts/python.exe'
     if (-not (Test-Path -LiteralPath $python)) {
         if (Get-Command py -ErrorAction SilentlyContinue) {

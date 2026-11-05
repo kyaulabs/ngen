@@ -57,6 +57,39 @@ try {
             throw 'Unsupported host did not fail before build preparation'
         }
     }
+    if (-not $IsWindows) {
+        & $pwsh -NoProfile -File $scriptPath -GpuInfo *> $log
+        if ($LASTEXITCODE -ne 2 -or (Get-Content -Raw $log) -notmatch 'requires Windows') {
+            throw 'GPU capture mode did not reach the Windows prerequisite check'
+        }
+    }
+    & $pwsh -NoProfile -File $scriptPath -GpuInfo -Compiler ClangCl *> $log
+    if ($LASTEXITCODE -eq 0 -or $LASTEXITCODE -eq 2) { throw 'CPU and GPU modes were mixed instead of rejecting ambiguous input' }
+    if (-not $IsWindows) {
+        $gpuDefinition = $ast.Find({
+            param($node)
+            $node -is [System.Management.Automation.Language.FunctionDefinitionAst] -and
+            $node.Name -eq 'Invoke-NgenGpuInfo'
+        }, $true)
+        if (-not $gpuDefinition) { throw 'GPU capture boundary not found' }
+        . ([scriptblock]::Create($gpuDefinition.Extent.Text))
+        $gpuLogs = Join-Path $directory 'gpu logs'
+        New-Item -ItemType Directory $gpuLogs | Out-Null
+        $noOutput = Get-Command true -CommandType Application | Select-Object -First 1
+        $location = (Get-Location).Path
+        $failed = $false
+        try {
+            Invoke-NgenGpuInfo -FilePath $noOutput.Source -LogDirectory $gpuLogs
+        } catch { $failed = $_.Exception.Message -match 'without producing' }
+        if (-not $failed) { throw 'GPU capture accepted a successful process that produced no JSON profile' }
+        if ((Get-Location).Path -ne $location) { throw 'GPU capture did not restore the working directory' }
+        Set-Content -LiteralPath (Join-Path $gpuLogs 'VP_invalid.json') -Value '{"not_capabilities":{}}'
+        $failed = $false
+        try {
+            Invoke-NgenGpuInfo -FilePath $noOutput.Source -LogDirectory $gpuLogs
+        } catch { $failed = $_.Exception.Message -match 'Missing Vulkan capabilities' }
+        if (-not $failed) { throw 'GPU capture accepted unrelated JSON as a Vulkan profile' }
+    }
     $profileDefinition = $ast.Find({
         param($node)
         $node -is [System.Management.Automation.Language.FunctionDefinitionAst] -and
@@ -99,7 +132,7 @@ try {
         $failed = $true
     }
     if (-not $failed) { throw 'A missing executable was reported as success' }
-    Write-Host 'PASS: parsing, process failure/output, argument paths, Clang/MSVC profiles and input/platform validation'
+    Write-Host 'PASS: process/output boundaries, Clang/MSVC profiles, GPU capture validation and input/platform checks'
 } finally {
     Remove-Item -LiteralPath $directory -Recurse -Force
 }
