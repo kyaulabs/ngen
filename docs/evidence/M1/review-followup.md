@@ -21,4 +21,8 @@ git diff --check fde375b
 
 A requested isolated Git fixture was blocked by the safety layer before execution. No safety, hook, signature or secret-check bypass was attempted. The negative message check demonstrates the installed validator rejects an invalid message; it is not a claim that a deliberately invalid commit was created or tested in hosted CI.
 
+Hosted follow-up: run `41964919264` on `3b9b0779bf6d010e3d95ce77aad6fbc70428401e` passed all four CPU jobs (Debug, Release, ASan/UBSan, TSan), including policy, formatting/analysis, build/tests and offline startup. Earlier runs failed first because CMake 4.4.5 is unavailable on PyPI (the compatibility lane now uses 4.4.4), then because Ubuntu restricts unprivileged user namespaces. The offline step now creates only the network namespace with the existing runner sudo permission and drops back to the runner identity before executing the harness.
+
+An intermediate published commit `1c8b523` failed commitlint due to a long body line. It was not forced through or rewritten: replacement branch `feat/kyau-7d227e-render-foundation` starts from the valid `9c33bb6` and contains the corrected signed commit. The abandoned branch is retained because its remote rules prohibit deletion; it is not part of the replacement delivery. The runtime checks above executed on the corrected history. Future commits must explicitly validate their messages while local hooks remain uninstalled.
+
 Windows checks remain for the owner to execute manually. `apollo.kyaulabs` was subsequently authorized for Linux/NVIDIA tests; read-only probing identified a GTX 1660 SUPER with driver 615.78.08. No infrastructure was provisioned. Hosted run outcomes and formal acceptance remain separate from this review.

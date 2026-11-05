@@ -1,6 +1,6 @@
 # M1 CPU foundation evidence
 
-Status: implemented Linux slice; **M1 is not complete or independently accepted**.
+Status: implemented Linux slice; **M1 is not complete or formally accepted**. This record describes the initial `888aa10` evidence. [Independent review and corrections](review-followup.md) and [current startup/status evidence](../M2/README.md) supersede its originally outstanding review/CI entries; Windows verification remains open.
 Recorded 2026-11-04 against base `f6ccd18e47fa066b9e5c8623324d3141d63f0f4a`, on `feat/kyau-ed4dbe-cpu-foundation`. The initial working tree was clean. `sources.sha256` identifies the reviewed implementation/configuration bytes; the commit containing this record supplies the resulting source revision. Subsequent edits require affected checks to be rerun.
 
 | Task | Actual status | Remaining gate |

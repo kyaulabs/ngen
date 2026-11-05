@@ -1,0 +1,2 @@
+'DISPLAY' environment variable not set... skipping surface info
+'DISPLAY' environment variable not set... skipping surface info
