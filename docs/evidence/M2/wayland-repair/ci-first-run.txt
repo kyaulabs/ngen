@@ -1,0 +1,141 @@
+Push run 42102730415; PR run 42102738388 failed the same clang-format-18 check.
+cpu (debug): new headless build/test/tidy step passed at 4d368ab; later format step failed.
+cpu (debug)	Build and test the headless Wayland ownership regression	2026-11-05T20:28:32.2204818Z Test project /home/runner/work/ngen/ngen/build/renderer-debug
+cpu (debug)	Build and test the headless Wayland ownership regression	2026-11-05T20:28:32.2208129Z   Test #1: ngen_tests
+cpu (debug)	Build and test the headless Wayland ownership regression	2026-11-05T20:28:32.2208561Z   Test #2: render_contract_tests
+cpu (debug)	Build and test the headless Wayland ownership regression	2026-11-05T20:28:32.2209030Z   Test #3: render_startup_tests
+cpu (debug)	Build and test the headless Wayland ownership regression	2026-11-05T20:28:32.2209484Z   Test #4: wayland_tablet_shutdown
+cpu (debug)	Build and test the headless Wayland ownership regression	2026-11-05T20:28:32.2209957Z   Test #5: wayland_tablet_removal
+cpu (debug)	Build and test the headless Wayland ownership regression	2026-11-05T20:28:32.2210612Z   Test #6: replay_serial
+cpu (debug)	Build and test the headless Wayland ownership regression	2026-11-05T20:28:32.2211038Z   Test #7: replay_workers
+cpu (debug)	Build and test the headless Wayland ownership regression	2026-11-05T20:28:32.3497147Z Test project /home/runner/work/ngen/ngen/build/renderer-debug
+cpu (debug)	Build and test the headless Wayland ownership regression	2026-11-05T20:28:32.3538208Z 1/7 Test #1: ngen_tests .......................   Passed    0.00 sec
+cpu (debug)	Build and test the headless Wayland ownership regression	2026-11-05T20:28:32.3561887Z 2/7 Test #2: render_contract_tests ............   Passed    0.00 sec
+cpu (debug)	Build and test the headless Wayland ownership regression	2026-11-05T20:28:32.3742842Z 3/7 Test #3: render_startup_tests .............   Passed    0.02 sec
+cpu (debug)	Build and test the headless Wayland ownership regression	2026-11-05T20:28:32.3792256Z 4/7 Test #4: wayland_tablet_shutdown ..........   Passed    0.00 sec
+cpu (debug)	Build and test the headless Wayland ownership regression	2026-11-05T20:28:32.3832812Z 5/7 Test #5: wayland_tablet_removal ...........   Passed    0.00 sec
+cpu (debug)	Build and test the headless Wayland ownership regression	2026-11-05T20:28:32.3920755Z 6/7 Test #6: replay_serial ....................   Passed    0.01 sec
+cpu (debug)	Build and test the headless Wayland ownership regression	2026-11-05T20:28:32.4160200Z 7/7 Test #7: replay_workers ...................   Passed    0.02 sec
+cpu (debug)	Build and test the headless Wayland ownership regression	2026-11-05T20:28:32.4163998Z 100% tests passed out of 7
+cpu (debug)	Build and test the headless Wayland ownership regression	2026-11-05T20:28:32.4164424Z Total Test time (real) =   0.07 sec
+cpu (asan): new headless build/test/tidy step passed at 4d368ab; later format step failed.
+cpu (asan)	Build and test the headless Wayland ownership regression	2026-11-05T20:29:21.5383648Z Test project /home/runner/work/ngen/ngen/build/renderer-asan
+cpu (asan)	Build and test the headless Wayland ownership regression	2026-11-05T20:29:21.5386624Z   Test #1: ngen_tests
+cpu (asan)	Build and test the headless Wayland ownership regression	2026-11-05T20:29:21.5386947Z   Test #2: render_contract_tests
+cpu (asan)	Build and test the headless Wayland ownership regression	2026-11-05T20:29:21.5387267Z   Test #3: render_startup_tests
+cpu (asan)	Build and test the headless Wayland ownership regression	2026-11-05T20:29:21.5387626Z   Test #4: wayland_tablet_shutdown
+cpu (asan)	Build and test the headless Wayland ownership regression	2026-11-05T20:29:21.5387961Z   Test #5: wayland_tablet_removal
+cpu (asan)	Build and test the headless Wayland ownership regression	2026-11-05T20:29:21.5388268Z   Test #6: replay_serial
+cpu (asan)	Build and test the headless Wayland ownership regression	2026-11-05T20:29:21.5388541Z   Test #7: replay_workers
+cpu (asan)	Build and test the headless Wayland ownership regression	2026-11-05T20:29:21.6379130Z Test project /home/runner/work/ngen/ngen/build/renderer-asan
+cpu (asan)	Build and test the headless Wayland ownership regression	2026-11-05T20:29:21.6574909Z 1/7 Test #1: ngen_tests .......................   Passed    0.02 sec
+cpu (asan)	Build and test the headless Wayland ownership regression	2026-11-05T20:29:21.6773113Z 2/7 Test #2: render_contract_tests ............   Passed    0.02 sec
+cpu (asan)	Build and test the headless Wayland ownership regression	2026-11-05T20:29:21.8041670Z 3/7 Test #3: render_startup_tests .............   Passed    0.13 sec
+cpu (asan)	Build and test the headless Wayland ownership regression	2026-11-05T20:29:21.8417655Z 4/7 Test #4: wayland_tablet_shutdown ..........   Passed    0.04 sec
+cpu (asan)	Build and test the headless Wayland ownership regression	2026-11-05T20:29:21.8795025Z 5/7 Test #5: wayland_tablet_removal ...........   Passed    0.04 sec
+cpu (asan)	Build and test the headless Wayland ownership regression	2026-11-05T20:29:21.9054458Z 6/7 Test #6: replay_serial ....................   Passed    0.03 sec
+cpu (asan)	Build and test the headless Wayland ownership regression	2026-11-05T20:29:21.9480117Z 7/7 Test #7: replay_workers ...................   Passed    0.04 sec
+cpu (asan)	Build and test the headless Wayland ownership regression	2026-11-05T20:29:21.9483257Z 100% tests passed out of 7
+cpu (asan)	Build and test the headless Wayland ownership regression	2026-11-05T20:29:21.9483597Z Total Test time (real) =   0.31 sec
+
+Formatter diagnostics from the push run:
+cpu (tsan)	Check whitespace and offline runtime	﻿2026-11-05T20:24:36.0902348Z ##[group]Run clang-format-18 --dry-run --Werror engine/core/*pp engine/jobs/*pp engine/simulation/*pp tests/*.cpp apps/sim_harness/*.cpp
+cpu (tsan)	Check whitespace and offline runtime	2026-11-05T20:24:36.0903326Z ^[[36;1mclang-format-18 --dry-run --Werror engine/core/*pp engine/jobs/*pp engine/simulation/*pp tests/*.cpp apps/sim_harness/*.cpp^[[0m
+cpu (tsan)	Check whitespace and offline runtime	2026-11-05T20:24:36.0904516Z ^[[36;1mclang-tidy-18 -p "build/$PRESET" engine/core/values.cpp engine/core/entities.cpp engine/jobs/jobs.cpp engine/simulation/simulation.cpp tests/core.cpp tests/jobs.cpp tests/simulation.cpp apps/sim_harness/main.cpp^[[0m
+cpu (tsan)	Check whitespace and offline runtime	2026-11-05T20:24:36.0905514Z ^[[36;1m# Ubuntu restricts unprivileged user namespaces. Create only the^[[0m
+cpu (tsan)	Check whitespace and offline runtime	2026-11-05T20:24:36.0906016Z ^[[36;1m# network namespace with sudo, then drop back to the runner identity.^[[0m
+cpu (tsan)	Check whitespace and offline runtime	2026-11-05T20:24:36.0906649Z ^[[36;1msudo unshare --net -- runuser -u "$(id -un)" -- env -u DISPLAY -u WAYLAND_DISPLAY "$PWD/build/$PRESET/sim_harness"^[[0m
+cpu (tsan)	Check whitespace and offline runtime	2026-11-05T20:24:36.0926669Z shell: /usr/bin/bash -e {0}
+cpu (tsan)	Check whitespace and offline runtime	2026-11-05T20:24:36.0926924Z env:
+cpu (tsan)	Check whitespace and offline runtime	2026-11-05T20:24:36.0927226Z   REVIEW_BASE: c9fce21f088d36ab8e82bf7b308bf35fed503591
+cpu (tsan)	Check whitespace and offline runtime	2026-11-05T20:24:36.0927590Z   REVIEW_HEAD: 4d368ab6c364643e2f93cb54854b6ab0749e8960
+cpu (tsan)	Check whitespace and offline runtime	2026-11-05T20:24:36.0927887Z   PRESET: tsan
+cpu (tsan)	Check whitespace and offline runtime	2026-11-05T20:24:36.0928092Z ##[endgroup]
+cpu (tsan)	Check whitespace and offline runtime	2026-11-05T20:24:36.2342646Z tests/wayland_tablets.cpp:155:47: error: code should be clang-formatted [-Wclang-format-violations]
+cpu (tsan)	Check whitespace and offline runtime	2026-11-05T20:24:36.2343998Z     static const struct wl_seat_interface impl{nullptr, nullptr, nullptr, discard};
+cpu (tsan)	Check whitespace and offline runtime	2026-11-05T20:24:36.2344581Z                                               ^
+cpu (tsan)	Check whitespace and offline runtime	2026-11-05T20:24:36.2345198Z tests/wayland_tablets.cpp:155:48: error: code should be clang-formatted [-Wclang-format-violations]
+cpu (tsan)	Check whitespace and offline runtime	2026-11-05T20:24:36.2345979Z     static const struct wl_seat_interface impl{nullptr, nullptr, nullptr, discard};
+cpu (tsan)	Check whitespace and offline runtime	2026-11-05T20:24:36.2346517Z                                                ^
+cpu (tsan)	Check whitespace and offline runtime	2026-11-05T20:24:36.2347103Z tests/wayland_tablets.cpp:155:82: error: code should be clang-formatted [-Wclang-format-violations]
+cpu (tsan)	Check whitespace and offline runtime	2026-11-05T20:24:36.2347878Z     static const struct wl_seat_interface impl{nullptr, nullptr, nullptr, discard};
+cpu (tsan)	Check whitespace and offline runtime	2026-11-05T20:24:36.2348441Z                                                                                  ^
+cpu (tsan)	Check whitespace and offline runtime	2026-11-05T20:24:36.2349383Z tests/wayland_tablets.cpp:182:53: error: code should be clang-formatted [-Wclang-format-violations]
+cpu (tsan)	Check whitespace and offline runtime	2026-11-05T20:24:36.2350037Z     static const struct wl_compositor_interface impl{};
+cpu (tsan)	Check whitespace and offline runtime	2026-11-05T20:24:36.2350448Z                                                     ^
+cpu (tsan)	Check whitespace and offline runtime	2026-11-05T20:24:36.2434612Z ##[error]Process completed with exit code 1.
+cpu (release)	Check whitespace and offline runtime	﻿2026-11-05T20:23:45.7390260Z ##[group]Run clang-format-18 --dry-run --Werror engine/core/*pp engine/jobs/*pp engine/simulation/*pp tests/*.cpp apps/sim_harness/*.cpp
+cpu (release)	Check whitespace and offline runtime	2026-11-05T20:23:45.7391360Z ^[[36;1mclang-format-18 --dry-run --Werror engine/core/*pp engine/jobs/*pp engine/simulation/*pp tests/*.cpp apps/sim_harness/*.cpp^[[0m
+cpu (release)	Check whitespace and offline runtime	2026-11-05T20:23:45.7392211Z ^[[36;1mclang-tidy-18 -p "build/$PRESET" engine/core/values.cpp engine/core/entities.cpp engine/jobs/jobs.cpp engine/simulation/simulation.cpp tests/core.cpp tests/jobs.cpp tests/simulation.cpp apps/sim_harness/main.cpp^[[0m
+cpu (release)	Check whitespace and offline runtime	2026-11-05T20:23:45.7393023Z ^[[36;1m# Ubuntu restricts unprivileged user namespaces. Create only the^[[0m
+cpu (release)	Check whitespace and offline runtime	2026-11-05T20:23:45.7393397Z ^[[36;1m# network namespace with sudo, then drop back to the runner identity.^[[0m
+cpu (release)	Check whitespace and offline runtime	2026-11-05T20:23:45.7393869Z ^[[36;1msudo unshare --net -- runuser -u "$(id -un)" -- env -u DISPLAY -u WAYLAND_DISPLAY "$PWD/build/$PRESET/sim_harness"^[[0m
+cpu (release)	Check whitespace and offline runtime	2026-11-05T20:23:45.7410343Z shell: /usr/bin/bash -e {0}
+cpu (release)	Check whitespace and offline runtime	2026-11-05T20:23:45.7410481Z env:
+cpu (release)	Check whitespace and offline runtime	2026-11-05T20:23:45.7410801Z   REVIEW_BASE: c9fce21f088d36ab8e82bf7b308bf35fed503591
+cpu (release)	Check whitespace and offline runtime	2026-11-05T20:23:45.7411005Z   REVIEW_HEAD: 4d368ab6c364643e2f93cb54854b6ab0749e8960
+cpu (release)	Check whitespace and offline runtime	2026-11-05T20:23:45.7411162Z   PRESET: release
+cpu (release)	Check whitespace and offline runtime	2026-11-05T20:23:45.7411276Z ##[endgroup]
+cpu (release)	Check whitespace and offline runtime	2026-11-05T20:23:46.0992797Z tests/wayland_tablets.cpp:155:47: error: code should be clang-formatted [-Wclang-format-violations]
+cpu (release)	Check whitespace and offline runtime	2026-11-05T20:23:46.0993397Z     static const struct wl_seat_interface impl{nullptr, nullptr, nullptr, discard};
+cpu (release)	Check whitespace and offline runtime	2026-11-05T20:23:46.0993736Z                                               ^
+cpu (release)	Check whitespace and offline runtime	2026-11-05T20:23:46.0994110Z tests/wayland_tablets.cpp:155:48: error: code should be clang-formatted [-Wclang-format-violations]
+cpu (release)	Check whitespace and offline runtime	2026-11-05T20:23:46.0994594Z     static const struct wl_seat_interface impl{nullptr, nullptr, nullptr, discard};
+cpu (release)	Check whitespace and offline runtime	2026-11-05T20:23:46.0994923Z                                                ^
+cpu (release)	Check whitespace and offline runtime	2026-11-05T20:23:46.0995258Z tests/wayland_tablets.cpp:155:82: error: code should be clang-formatted [-Wclang-format-violations]
+cpu (release)	Check whitespace and offline runtime	2026-11-05T20:23:46.0995593Z     static const struct wl_seat_interface impl{nullptr, nullptr, nullptr, discard};
+cpu (release)	Check whitespace and offline runtime	2026-11-05T20:23:46.0995825Z                                                                                  ^
+cpu (release)	Check whitespace and offline runtime	2026-11-05T20:23:46.0996077Z tests/wayland_tablets.cpp:182:53: error: code should be clang-formatted [-Wclang-format-violations]
+cpu (release)	Check whitespace and offline runtime	2026-11-05T20:23:46.0996336Z     static const struct wl_compositor_interface impl{};
+cpu (release)	Check whitespace and offline runtime	2026-11-05T20:23:46.0996508Z                                                     ^
+cpu (release)	Check whitespace and offline runtime	2026-11-05T20:23:46.1065241Z ##[error]Process completed with exit code 1.
+cpu (debug)	Check whitespace and offline runtime	﻿2026-11-05T20:28:37.5257022Z ##[group]Run clang-format-18 --dry-run --Werror engine/core/*pp engine/jobs/*pp engine/simulation/*pp tests/*.cpp apps/sim_harness/*.cpp
+cpu (debug)	Check whitespace and offline runtime	2026-11-05T20:28:37.5257968Z ^[[36;1mclang-format-18 --dry-run --Werror engine/core/*pp engine/jobs/*pp engine/simulation/*pp tests/*.cpp apps/sim_harness/*.cpp^[[0m
+cpu (debug)	Check whitespace and offline runtime	2026-11-05T20:28:37.5259159Z ^[[36;1mclang-tidy-18 -p "build/$PRESET" engine/core/values.cpp engine/core/entities.cpp engine/jobs/jobs.cpp engine/simulation/simulation.cpp tests/core.cpp tests/jobs.cpp tests/simulation.cpp apps/sim_harness/main.cpp^[[0m
+cpu (debug)	Check whitespace and offline runtime	2026-11-05T20:28:37.5260134Z ^[[36;1m# Ubuntu restricts unprivileged user namespaces. Create only the^[[0m
+cpu (debug)	Check whitespace and offline runtime	2026-11-05T20:28:37.5260882Z ^[[36;1m# network namespace with sudo, then drop back to the runner identity.^[[0m
+cpu (debug)	Check whitespace and offline runtime	2026-11-05T20:28:37.5261510Z ^[[36;1msudo unshare --net -- runuser -u "$(id -un)" -- env -u DISPLAY -u WAYLAND_DISPLAY "$PWD/build/$PRESET/sim_harness"^[[0m
+cpu (debug)	Check whitespace and offline runtime	2026-11-05T20:28:37.5281785Z shell: /usr/bin/bash -e {0}
+cpu (debug)	Check whitespace and offline runtime	2026-11-05T20:28:37.5282049Z env:
+cpu (debug)	Check whitespace and offline runtime	2026-11-05T20:28:37.5282326Z   REVIEW_BASE: c9fce21f088d36ab8e82bf7b308bf35fed503591
+cpu (debug)	Check whitespace and offline runtime	2026-11-05T20:28:37.5282685Z   REVIEW_HEAD: 4d368ab6c364643e2f93cb54854b6ab0749e8960
+cpu (debug)	Check whitespace and offline runtime	2026-11-05T20:28:37.5282977Z   PRESET: debug
+cpu (debug)	Check whitespace and offline runtime	2026-11-05T20:28:37.5283170Z ##[endgroup]
+cpu (debug)	Check whitespace and offline runtime	2026-11-05T20:28:37.6694790Z tests/wayland_tablets.cpp:155:47: error: code should be clang-formatted [-Wclang-format-violations]
+cpu (debug)	Check whitespace and offline runtime	2026-11-05T20:28:37.6696414Z     static const struct wl_seat_interface impl{nullptr, nullptr, nullptr, discard};
+cpu (debug)	Check whitespace and offline runtime	2026-11-05T20:28:37.6697094Z                                               ^
+cpu (debug)	Check whitespace and offline runtime	2026-11-05T20:28:37.6697857Z tests/wayland_tablets.cpp:155:48: error: code should be clang-formatted [-Wclang-format-violations]
+cpu (debug)	Check whitespace and offline runtime	2026-11-05T20:28:37.6698636Z     static const struct wl_seat_interface impl{nullptr, nullptr, nullptr, discard};
+cpu (debug)	Check whitespace and offline runtime	2026-11-05T20:28:37.6699166Z                                                ^
+cpu (debug)	Check whitespace and offline runtime	2026-11-05T20:28:37.6699755Z tests/wayland_tablets.cpp:155:82: error: code should be clang-formatted [-Wclang-format-violations]
+cpu (debug)	Check whitespace and offline runtime	2026-11-05T20:28:37.6700924Z     static const struct wl_seat_interface impl{nullptr, nullptr, nullptr, discard};
+cpu (debug)	Check whitespace and offline runtime	2026-11-05T20:28:37.6701508Z                                                                                  ^
+cpu (debug)	Check whitespace and offline runtime	2026-11-05T20:28:37.6702149Z tests/wayland_tablets.cpp:182:53: error: code should be clang-formatted [-Wclang-format-violations]
+cpu (debug)	Check whitespace and offline runtime	2026-11-05T20:28:37.6702810Z     static const struct wl_compositor_interface impl{};
+cpu (debug)	Check whitespace and offline runtime	2026-11-05T20:28:37.6703215Z                                                     ^
+cpu (debug)	Check whitespace and offline runtime	2026-11-05T20:28:37.6782773Z ##[error]Process completed with exit code 1.
+cpu (asan)	Check whitespace and offline runtime	﻿2026-11-05T20:29:28.8808861Z ##[group]Run clang-format-18 --dry-run --Werror engine/core/*pp engine/jobs/*pp engine/simulation/*pp tests/*.cpp apps/sim_harness/*.cpp
+cpu (asan)	Check whitespace and offline runtime	2026-11-05T20:29:28.8809752Z ^[[36;1mclang-format-18 --dry-run --Werror engine/core/*pp engine/jobs/*pp engine/simulation/*pp tests/*.cpp apps/sim_harness/*.cpp^[[0m
+cpu (asan)	Check whitespace and offline runtime	2026-11-05T20:29:28.8810655Z ^[[36;1mclang-tidy-18 -p "build/$PRESET" engine/core/values.cpp engine/core/entities.cpp engine/jobs/jobs.cpp engine/simulation/simulation.cpp tests/core.cpp tests/jobs.cpp tests/simulation.cpp apps/sim_harness/main.cpp^[[0m
+cpu (asan)	Check whitespace and offline runtime	2026-11-05T20:29:28.8811385Z ^[[36;1m# Ubuntu restricts unprivileged user namespaces. Create only the^[[0m
+cpu (asan)	Check whitespace and offline runtime	2026-11-05T20:29:28.8811773Z ^[[36;1m# network namespace with sudo, then drop back to the runner identity.^[[0m
+cpu (asan)	Check whitespace and offline runtime	2026-11-05T20:29:28.8812255Z ^[[36;1msudo unshare --net -- runuser -u "$(id -un)" -- env -u DISPLAY -u WAYLAND_DISPLAY "$PWD/build/$PRESET/sim_harness"^[[0m
+cpu (asan)	Check whitespace and offline runtime	2026-11-05T20:29:28.8830107Z shell: /usr/bin/bash -e {0}
+cpu (asan)	Check whitespace and offline runtime	2026-11-05T20:29:28.8830313Z env:
+cpu (asan)	Check whitespace and offline runtime	2026-11-05T20:29:28.8830558Z   REVIEW_BASE: c9fce21f088d36ab8e82bf7b308bf35fed503591
+cpu (asan)	Check whitespace and offline runtime	2026-11-05T20:29:28.8830853Z   REVIEW_HEAD: 4d368ab6c364643e2f93cb54854b6ab0749e8960
+cpu (asan)	Check whitespace and offline runtime	2026-11-05T20:29:28.8831081Z   PRESET: asan
+cpu (asan)	Check whitespace and offline runtime	2026-11-05T20:29:28.8831248Z ##[endgroup]
+cpu (asan)	Check whitespace and offline runtime	2026-11-05T20:29:29.1261015Z tests/wayland_tablets.cpp:155:47: error: code should be clang-formatted [-Wclang-format-violations]
+cpu (asan)	Check whitespace and offline runtime	2026-11-05T20:29:29.1261864Z     static const struct wl_seat_interface impl{nullptr, nullptr, nullptr, discard};
+cpu (asan)	Check whitespace and offline runtime	2026-11-05T20:29:29.1262350Z                                               ^
+cpu (asan)	Check whitespace and offline runtime	2026-11-05T20:29:29.1262968Z tests/wayland_tablets.cpp:155:48: error: code should be clang-formatted [-Wclang-format-violations]
+cpu (asan)	Check whitespace and offline runtime	2026-11-05T20:29:29.1263770Z     static const struct wl_seat_interface impl{nullptr, nullptr, nullptr, discard};
+cpu (asan)	Check whitespace and offline runtime	2026-11-05T20:29:29.1264483Z                                                ^
+cpu (asan)	Check whitespace and offline runtime	2026-11-05T20:29:29.1265087Z tests/wayland_tablets.cpp:155:82: error: code should be clang-formatted [-Wclang-format-violations]
+cpu (asan)	Check whitespace and offline runtime	2026-11-05T20:29:29.1265893Z     static const struct wl_seat_interface impl{nullptr, nullptr, nullptr, discard};
+cpu (asan)	Check whitespace and offline runtime	2026-11-05T20:29:29.1266463Z                                                                                  ^
+cpu (asan)	Check whitespace and offline runtime	2026-11-05T20:29:29.1267072Z tests/wayland_tablets.cpp:182:53: error: code should be clang-formatted [-Wclang-format-violations]
+cpu (asan)	Check whitespace and offline runtime	2026-11-05T20:29:29.1267703Z     static const struct wl_compositor_interface impl{};
+cpu (asan)	Check whitespace and offline runtime	2026-11-05T20:29:29.1268125Z                                                     ^
+cpu (asan)	Check whitespace and offline runtime	2026-11-05T20:29:29.1340132Z ##[error]Process completed with exit code 1.

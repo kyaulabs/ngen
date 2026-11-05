@@ -152,7 +152,8 @@ void bind_manager(wl_client *client, void *data, std::uint32_t, std::uint32_t id
     wl_resource_set_implementation(resource, &manager_impl, data, nullptr);
 }
 void bind_seat(wl_client *client, void *, std::uint32_t, std::uint32_t id) {
-    static const struct wl_seat_interface impl{nullptr, nullptr, nullptr, discard};
+    using Requests = struct wl_seat_interface;
+    static const Requests impl{nullptr, nullptr, nullptr, discard};
     auto *resource = wl_resource_create(client, &wl_seat_interface, 5, id);
     wl_resource_set_implementation(resource, &impl, nullptr, nullptr);
     wl_seat_send_capabilities(resource, 0);
@@ -179,7 +180,8 @@ void bind_shell(wl_client *client, void *, std::uint32_t, std::uint32_t id) {
     wl_resource_set_implementation(resource, &impl, nullptr, nullptr);
 }
 void bind_compositor(wl_client *client, void *, std::uint32_t, std::uint32_t id) {
-    static const struct wl_compositor_interface impl{};
+    using Requests = struct wl_compositor_interface;
+    static const Requests impl{};
     auto *resource = wl_resource_create(client, &wl_compositor_interface, 4, id);
     wl_resource_set_implementation(resource, &impl, nullptr, nullptr);
 }
