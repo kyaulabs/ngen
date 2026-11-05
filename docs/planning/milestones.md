@@ -90,7 +90,7 @@ Performance gate: the fixed fixture has bounded queues/memory and zero unexpecte
 
 ## M2 — Render one imported PBR spacecraft
 
-Current status: M2-A has a tested local SDL/Vulkan startup slice and Intel/NVIDIA capability captures, not full acceptance. Windows GPU/graphics checks remain with the owner; both Windows CPU compiler modes passed. The authorized NVIDIA host has no active display session. M2-B through M2-F are not implemented. See [startup evidence and remaining gates](../evidence/M2/README.md). The owner selected `planning/models/frigate/frigate-01.glb`; it remains in its original ignored location.
+Current status: M2-A has a tested local SDL/Vulkan startup slice and Intel/NVIDIA capability captures, not full acceptance. Both Windows CPU compiler modes passed, and the owner's RTX 5070 capability capture reports the required queried features. Khronos validation layers are not visible; Windows graphics execution remains with the owner. The authorized NVIDIA host has no active display session. M2-B through M2-F are not implemented. See [startup evidence and remaining gates](../evidence/M2/README.md). The owner selected `planning/models/frigate/frigate-01.glb`; it remains in its original ignored location.
 
 Deliver Vulkan first light, reliable resource lifetimes, one cooked spacecraft, a fixed forward/PBR pass sequence and a small development inspector. Vulkan 1.3 is the baseline; optional capabilities must be independently queryable and force-disableable. The inspector exposes relevant state and diagnostics, not a full editor.
 

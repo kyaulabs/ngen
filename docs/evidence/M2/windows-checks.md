@@ -2,7 +2,7 @@
 
 CPU compiler checks passed: [MSVC 19.44.35229 Debug/Release](../M1/windows-msvc/README.md) at `d49b23c` and [clang-cl 19.1.5 Debug/Release](../M1/windows-clang-cl/README.md) at `54a7a63`. Each configuration passed four tests and both replays with zero measured steady-state allocations. Formal milestone acceptance and Windows graphics checks remain open.
 
-The next owner input is the Windows GPU's Vulkan capabilities. From the checkout in PowerShell 7.2 or newer:
+The [Windows GPU capture](windows-nvidia/README.md) identifies an RTX 5070 with driver 617.42 and the required queried device features. It does not enumerate `VK_LAYER_KHRONOS_validation`, so Windows graphics validation is not ready. Install/enable the Windows Vulkan SDK's validation layers, then open a new PowerShell window and repeat the capture:
 
 ```powershell
 git pull --ff-only
