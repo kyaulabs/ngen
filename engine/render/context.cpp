@@ -22,6 +22,54 @@ void vkcheck(VkResult result, const char *operation) {
     if (result != VK_SUCCESS)
         throw std::runtime_error(std::string(operation) + ": VkResult " + std::to_string(result));
 }
+SurfaceFailure surface_query_failure(VkResult result, const char *operation) {
+    return {SurfaceIssue::query_failed, result,
+            std::string(operation) + ": VkResult " + std::to_string(result)};
+}
+SurfaceSelection query_surface(VkPhysicalDevice physical, VkSurfaceKHR surface,
+                               VkExtent2D drawable) {
+    VkSurfaceCapabilitiesKHR capabilities;
+    auto result = vkGetPhysicalDeviceSurfaceCapabilitiesKHR(physical, surface, &capabilities);
+    if (result != VK_SUCCESS)
+        return surface_query_failure(result, "query surface capabilities");
+    std::uint32_t count = 0;
+    result = vkGetPhysicalDeviceSurfaceFormatsKHR(physical, surface, &count, nullptr);
+    if (result != VK_SUCCESS)
+        return surface_query_failure(result, "count surface formats");
+    if (count > 256)
+        return SurfaceFailure{SurfaceIssue::invalid_capabilities, VK_SUCCESS,
+                              "too many surface formats"};
+    std::vector<VkSurfaceFormatKHR> formats(count);
+    if (count != 0) {
+        result = vkGetPhysicalDeviceSurfaceFormatsKHR(physical, surface, &count, formats.data());
+        if (result != VK_SUCCESS)
+            return surface_query_failure(result, "query surface formats");
+        formats.resize(count);
+    }
+    count = 0;
+    result = vkGetPhysicalDeviceSurfacePresentModesKHR(physical, surface, &count, nullptr);
+    if (result != VK_SUCCESS)
+        return surface_query_failure(result, "count presentation modes");
+    if (count > 64)
+        return SurfaceFailure{SurfaceIssue::invalid_capabilities, VK_SUCCESS,
+                              "too many presentation modes"};
+    std::vector<VkPresentModeKHR> modes(count);
+    if (count != 0) {
+        result = vkGetPhysicalDeviceSurfacePresentModesKHR(physical, surface, &count, modes.data());
+        if (result != VK_SUCCESS)
+            return surface_query_failure(result, "query presentation modes");
+        modes.resize(count);
+    }
+    auto selection = select_surface(capabilities, formats, modes, drawable);
+    if (const auto *plan = std::get_if<SurfacePlan>(&selection)) {
+        VkFormatProperties format{};
+        vkGetPhysicalDeviceFormatProperties(physical, plan->format.format, &format);
+        if ((format.optimalTilingFeatures & VK_FORMAT_FEATURE_COLOR_ATTACHMENT_BIT) == 0)
+            return SurfaceFailure{SurfaceIssue::unsupported_format, VK_SUCCESS,
+                                  "surface format cannot be a color attachment"};
+    }
+    return selection;
+}
 } // namespace
 std::variant<std::unique_ptr<Context>, Failure> Context::create(Options options) {
     try {
@@ -102,6 +150,11 @@ void Context::initialize(Options options) {
     require(count > 0 && count <= 16, "expected 1..16 Vulkan physical devices");
     std::vector<VkPhysicalDevice> devices(count);
     vkcheck(vkEnumeratePhysicalDevices(instance_, &count, devices.data()), "enumerate devices");
+    int drawable_width = 0, drawable_height = 0;
+    sdlcheck(SDL_GetWindowSizeInPixels(window_, &drawable_width, &drawable_height));
+    require(drawable_width >= 0 && drawable_height >= 0, "negative drawable size");
+    const VkExtent2D drawable{static_cast<std::uint32_t>(drawable_width),
+                              static_cast<std::uint32_t>(drawable_height)};
     std::string rejections;
     constexpr std::array missing_names{
         "Vulkan 1.3",       "graphics queue",    "presentation queue",  "dynamicRendering",
@@ -165,6 +218,12 @@ void Context::initialize(Options options) {
                     "queue " + std::to_string(family) + " requires missing VK_KHR_swapchain; ";
                 continue;
             }
+            const auto selection = query_surface(candidate, surface_, drawable);
+            if (const auto *failure = std::get_if<SurfaceFailure>(&selection);
+                failure && failure->issue != SurfaceIssue::not_drawable) {
+                reason += "queue " + std::to_string(family) + ": " + failure->message + "; ";
+                continue;
+            }
             physical_ = candidate;
             queue_family_ = family;
             std::printf("device=%s api=%u.%u driver=%u queue=%u display=%s\n",
@@ -202,6 +261,20 @@ void Context::initialize(Options options) {
     device.ppEnabledExtensionNames = &swapchain;
     vkcheck(vkCreateDevice(physical_, &device, nullptr, &device_), "create device");
     vkGetDeviceQueue(device_, queue_family_, 0, &queue_);
+}
+SurfaceSelection Context::inspect_surface() const {
+    if (!physical_ || !surface_ || !window_)
+        return SurfaceFailure{SurfaceIssue::closed, VK_SUCCESS, "context is closed"};
+    if ((SDL_GetWindowFlags(window_) & SDL_WINDOW_MINIMIZED) != 0)
+        return SurfaceFailure{SurfaceIssue::not_drawable, VK_SUCCESS, "window is minimized"};
+    int width = 0, height = 0;
+    if (!SDL_GetWindowSizeInPixels(window_, &width, &height))
+        return SurfaceFailure{SurfaceIssue::query_failed, VK_SUCCESS, SDL_GetError()};
+    if (width < 0 || height < 0)
+        return SurfaceFailure{SurfaceIssue::invalid_capabilities, VK_SUCCESS,
+                              "negative drawable size"};
+    return query_surface(physical_, surface_,
+                         {static_cast<std::uint32_t>(width), static_cast<std::uint32_t>(height)});
 }
 Context::~Context() { (void)close(); }
 bool Context::close() noexcept {

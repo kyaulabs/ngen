@@ -20,6 +20,15 @@ int main(int argc, char **argv) try {
         return 1;
     }
     const auto &context = std::get<std::unique_ptr<ngen::render::Context>>(result);
+    const auto selection = context->inspect_surface();
+    if (const auto *failure = std::get_if<ngen::render::SurfaceFailure>(&selection)) {
+        std::fprintf(stderr, "Vulkan surface: %s\n", failure->message.c_str());
+        return 1;
+    }
+    const auto &plan = std::get<ngen::render::SurfacePlan>(selection);
+    std::printf("surface=%ux%u format=%d color_space=%d present_mode=%d images=%u\n",
+                plan.extent.width, plan.extent.height, plan.format.format, plan.format.colorSpace,
+                plan.present_mode, plan.image_count);
     if (check_callback) {
         if (context->validation_errors() != 0)
             return 1;
@@ -37,6 +46,10 @@ int main(int argc, char **argv) try {
                VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT, &message);
     }
     const bool closed = context->close();
+    const auto closed_surface = context->inspect_surface();
+    const auto *closed_failure = std::get_if<ngen::render::SurfaceFailure>(&closed_surface);
+    if (!closed_failure || closed_failure->issue != ngen::render::SurfaceIssue::closed)
+        return 1;
     return closed == !check_callback && context->close() == !check_callback &&
                    context->close_result() == VK_SUCCESS && context->device() == VK_NULL_HANDLE &&
                    context->physical_device() == VK_NULL_HANDLE &&

@@ -1,0 +1,9 @@
+[1/11] Scanning /home/kyau/projects/kyaulabs/ngen/engine/render/surface.cpp for CXX dependencies
+[2/11] Generating CXX dyndep file CMakeFiles/ngen_render.dir/CXX.dd
+[3/10] Scanning /home/kyau/projects/kyaulabs/ngen/tests/render_surface.cpp for CXX dependencies
+[4/10] Generating CXX dyndep file CMakeFiles/render_startup_tests.dir/CXX.dd
+[5/9] Building CXX object CMakeFiles/ngen_render.dir/engine/render/surface.cpp.o
+[6/9] Linking CXX static library libngen_render.a
+[7/9] Linking CXX executable render_probe
+[8/9] Building CXX object CMakeFiles/render_startup_tests.dir/tests/render_surface.cpp.o
+[9/9] Linking CXX executable render_startup_tests

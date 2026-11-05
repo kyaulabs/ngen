@@ -1,4 +1,5 @@
 #pragma once
+#include "render/surface.hpp"
 #include <SDL3/SDL.h>
 #include <atomic>
 #include <memory>
@@ -19,6 +20,8 @@ class Context {
     [[nodiscard]] static std::variant<std::unique_ptr<Context>, Failure> create(Options options);
     ~Context();
     [[nodiscard]] bool close() noexcept;
+    // Owner-thread query; refresh after resize/scale changes. A zero drawable suspends rendering.
+    [[nodiscard]] SurfaceSelection inspect_surface() const;
     // Sticky device-wait result; validation errors are reported separately.
     [[nodiscard]] VkResult close_result() const { return close_result_; }
     Context(const Context &) = delete;
