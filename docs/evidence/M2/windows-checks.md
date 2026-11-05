@@ -2,27 +2,29 @@
 
 The owner runs Windows/NVIDIA checks manually. MSVC 19.44.35229, VCTools 14.44.35207 and Windows SDK 10.0.26100.0 passed both CPU Debug and Release at `d49b23c`. See [retained results](../M1/windows-msvc/README.md). Clang-cl and Windows graphics checks remain open.
 
-From the checkout in PowerShell 7.2 or newer:
+The next owner check is clang-cl. From the checkout in PowerShell 7.2 or newer:
 
 ```powershell
 git pull --ff-only
-pwsh -NoProfile -File .\tools\build-windows.ps1
+pwsh -NoProfile -File .\tools\build-windows.ps1 -Compiler ClangCl
 ```
 
-The script finds the installed MSVC environment when `cl` is absent, prepares Conan 2.34.0/CMake 4.4.4/Ninja 1.13.2 in an isolated project-local virtual environment, and builds/tests Debug and Release. Git, Python 3 and Visual Studio C++ Build Tools must already be installed. It does not install Visual Studio, require administrator access, alter execution policy or modify machine-wide settings. If local policy blocks the script, report the error rather than bypassing the policy.
+The script defaults to the already-verified MSVC mode; `-Compiler ClangCl` selects clang-cl without rerunning MSVC. It searches PATH, the active Visual Studio installation's LLVM x64 directory and the standard LLVM installation. If clang-cl is missing, use Visual Studio Installer → Modify → Desktop development with C++ → C++ Clang tools for Windows, then rerun the same command. The script does not install LLVM automatically.
+
+Both modes load the installed MSVC x64 environment when needed, prepare Conan 2.34.0/CMake 4.4.4/Ninja 1.13.2 in an isolated project-local virtual environment, and build/test Debug and Release. Git, Python 3 and Visual Studio C++ Build Tools must already be installed. It does not install Visual Studio, require administrator access, alter execution policy or modify machine-wide settings. If local policy blocks the script, report the error rather than bypassing the policy.
 
 To run only one configuration:
 
 ```powershell
-pwsh -NoProfile -File .\tools\build-windows.ps1 -Configuration Debug
+pwsh -NoProfile -File .\tools\build-windows.ps1 -Compiler ClangCl -Configuration Debug
 ```
 
-Each run uses a fresh `build/windows/<timestamp>/` directory, a detected profile stored in that directory, and explicit Ninja selection for both Conan and CMake. It preserves previous builds and existing user profiles. The original failure was a Visual Studio toolchain emitting `CMAKE_GENERATOR_PLATFORM=x64` into a Ninja build; both the recipe and script now select Ninja explicitly.
+Each run uses a fresh `build/windows/<timestamp>/` directory, profiles stored in that directory, and explicit Ninja selection for both Conan and CMake. The build profile uses detected MSVC; clang-cl mode generates a distinct host profile from the actual clang version, x64 MSVC target and active VCTools runtime family. It passes the absolute clang-cl executable path to Conan rather than labelling clang-cl as MSVC. Both configurations use C++20 and dynamic CRTs with matching Debug/Release runtime types. It preserves previous builds and existing user profiles. The original failure was a Visual Studio toolchain emitting `CMAKE_GENERATOR_PLATFORM=x64` into a Ninja build; both the recipe and script now select Ninja explicitly.
 
 On success or failure, the script prints the path to `evidence.zip` in that run directory. Return that archive. It contains source revision, working-tree state, compiler/profile details and separate native-command output files. A failed command stops the run with a nonzero exit code; there is no success message after a failed build or test. Check logs before sharing and do not send credentials. The script does not read credential files.
 
-Expected CPU results: four CTest entries pass per configuration, both serial/two-worker replays produce sum 11930, and measured steady-state allocations remain zero. `NGEN_BUILD_RENDERER=OFF` is intentional: these checks establish MSVC CPU compatibility, not clang-cl or Vulkan rendering support.
+Expected CPU results: four CTest entries pass per configuration, both serial/two-worker replays produce sum 11930, and measured steady-state allocations remain zero. `NGEN_BUILD_RENDERER=OFF` is intentional: a successful clang-cl run establishes that compiler's CPU compatibility, not Vulkan rendering support. Until the owner's next results arrive, only MSVC is execution-verified on Windows.
 
-Script verification on Linux used PowerShell 7.6.9: parsing, nonzero native exit propagation, stdout/stderr capture, executable/argument paths containing spaces, invalid configuration rejection and refusal to run the Windows build on another OS. `tests/windows_build.ps1` repeats these checks without bootstrapping a Windows build. The first regression run failed because a child exit code of 7 was incorrectly accepted; the corrected native-command wrapper passed. The owner's subsequent Windows execution passed both configurations, confirming the script's MSVC environment setup, dependency preparation, build/test/replay orchestration and evidence capture.
+Script verification on Linux used PowerShell 7.6.9: parsing, nonzero native exit propagation, stdout/stderr capture, executable/argument paths containing spaces, invalid configuration rejection and refusal to run the Windows build on another OS. `tests/windows_build.ps1` repeats these checks without bootstrapping a Windows build. The first regression run failed because a child exit code of 7 was incorrectly accepted; the corrected native-command wrapper passed. The owner's subsequent Windows execution passed both configurations, confirming the script's MSVC environment setup, dependency preparation, build/test/replay orchestration and evidence capture. The new clang-cl mode has Linux-hosted profile/command-boundary tests, not Windows execution evidence. Tests use Conan itself to resolve both configuration profiles and check compiler identity, runtime type/family and paths containing spaces. A generation-only probe verifies Ninja, the explicit clang-cl executable and the Debug DLL CRT. New tests also reproduced and fixed missing/stale evidence files for successful commands with empty output.
 
 When the Vulkan SDK is available, separately return `vulkaninfo --summary` and the JSON generated by `vulkaninfo --json`. Later M2 acceptance also requires actual SDL/swapchain/resize/lifetime, shader and rendered-scene checks; the CPU script does not claim those results.

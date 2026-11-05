@@ -18,9 +18,6 @@ jobs:
         with:
           persist-credentials: false
           fetch-depth: 0
-      - name: Test Windows script boundaries (no Windows build)
-        shell: pwsh
-        run: ./tests/windows_build.ps1
       - name: Install CPU tools
         run: |
           sudo apt-get update
@@ -28,6 +25,9 @@ jobs:
           python3 -m venv "$RUNNER_TEMP/tools"
           "$RUNNER_TEMP/tools/bin/pip" install conan==2.34.0 cmake==4.4.4 ninja==1.13.2
           echo "$RUNNER_TEMP/tools/bin" >> "$GITHUB_PATH"
+      - name: Test Windows script boundaries (no Windows build)
+        shell: pwsh
+        run: ./tests/windows_build.ps1
       - name: Select reviewed revision range
         env:
           EVENT_BASE: ${{ github.event.pull_request.base.sha || github.event.before }}

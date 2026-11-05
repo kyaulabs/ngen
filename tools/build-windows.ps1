@@ -2,7 +2,9 @@
 [CmdletBinding()]
 param(
     [ValidateSet('Debug', 'Release', 'All')]
-    [string]$Configuration = 'All'
+    [string]$Configuration = 'All',
+    [ValidateSet('MSVC', 'ClangCl')]
+    [string]$Compiler = 'MSVC'
 )
 
 function Invoke-NgenNative {
@@ -14,11 +16,49 @@ function Invoke-NgenNative {
     # Capture both streams explicitly; transcript alone can omit native output.
     # We check every exit code ourselves, regardless of the caller's PS setting.
     $PSNativeCommandUseErrorActionPreference = $false
+    [IO.File]::WriteAllText($LogPath, '')
     & $FilePath @Arguments 2>&1 | Tee-Object -FilePath $LogPath | Out-Host
     $code = $LASTEXITCODE
     if ($code -ne 0) {
         throw "$FilePath failed with exit code $code. See $LogPath"
     }
+}
+
+function Get-NgenClangProfile {
+    param(
+        [Parameter(Mandatory)][string]$CompilerPath,
+        [Parameter(Mandatory)][string]$VersionText,
+        [Parameter(Mandatory)][string]$ToolVersion
+    )
+    if ($VersionText -notmatch '(?m)^clang version (\d+)\.') {
+        throw 'Could not determine the clang-cl version.'
+    }
+    $major = $Matches[1]
+    if ($VersionText -notmatch '(?m)^Target:\s*x86_64-[\w-]*windows-msvc\b') {
+        throw 'clang-cl must target x86_64 Windows with the MSVC ABI.'
+    }
+    $version = $null
+    if (-not [version]::TryParse($ToolVersion, [ref]$version) -or $version.Major -ne 14) {
+        throw 'Could not determine a supported MSVC runtime from VCToolsVersion.'
+    }
+    # Conan maps v143 to MSVC 14.3 and v144 to MSVC 14.4. Do not use
+    # Conan detection's assumed v143 when the active toolset is 14.4.
+    $runtime = "v14$([int][math]::Floor($version.Minor / 10))"
+    $executables = @{ c = $CompilerPath; cpp = $CompilerPath } | ConvertTo-Json -Compress
+    return @"
+[settings]
+os=Windows
+arch=x86_64
+compiler=clang
+compiler.version=$major
+compiler.runtime=dynamic
+compiler.runtime_version=$runtime
+compiler.cppstd=20
+build_type=Release
+[conf]
+tools.cmake.cmaketoolchain:generator=Ninja
+tools.build:compiler_executables=$executables
+"@
 }
 
 if (-not $IsWindows) {
@@ -52,8 +92,24 @@ try {
         Import-Module (Join-Path $installation 'Common7/Tools/Microsoft.VisualStudio.DevShell.dll')
         Enter-VsDevShell -VsInstallPath $installation -SkipAutomaticLocation -DevCmdArguments '-arch=x64 -host_arch=x64'
     }
-    $compiler = Get-Command cl -ErrorAction Stop
-    (Get-Item $compiler.Source).VersionInfo | Format-List FileName, FileVersion, ProductVersion | Out-Host
+    $msvc = Get-Command cl -ErrorAction Stop
+    (Get-Item $msvc.Source).VersionInfo | Format-List FileName, FileVersion, ProductVersion | Out-Host
+    $clangPath = $null
+    if ($Compiler -eq 'ClangCl') {
+        $command = Get-Command clang-cl.exe -CommandType Application -ErrorAction SilentlyContinue
+        if ($command) { $clangPath = $command.Source }
+        foreach ($candidate in @(
+            "$env:VSINSTALLDIR/VC/Tools/Llvm/x64/bin/clang-cl.exe",
+            "$env:ProgramFiles/LLVM/bin/clang-cl.exe"
+        )) {
+            if (-not $clangPath -and (Test-Path -LiteralPath $candidate)) { $clangPath = $candidate }
+        }
+        if (-not $clangPath) {
+            throw 'clang-cl was not found. In Visual Studio Installer, Modify > Desktop development with C++ > C++ Clang tools for Windows, then rerun with -Compiler ClangCl.'
+        }
+        Invoke-NgenNative -FilePath $clangPath -Arguments @('--version') -LogPath (Join-Path $logs 'clang-cl-version.txt')
+    }
+    Write-Host "Selected compiler: $Compiler"
     Write-Host "VCToolsVersion: $env:VCToolsVersion"
     Write-Host "WindowsSDKVersion: $env:WindowsSDKVersion"
     Invoke-NgenNative -FilePath 'git' -Arguments @('rev-parse', 'HEAD') -LogPath (Join-Path $logs 'revision.txt')
@@ -79,9 +135,25 @@ try {
     Invoke-NgenNative -FilePath 'ninja' -Arguments @('--version') -LogPath (Join-Path $logs 'ninja-version.txt')
 
     # Detect into this run's generated directory, never overwrite a user profile.
-    $profile = Join-Path $run 'profile'
-    Invoke-NgenNative -FilePath $conan -Arguments @('profile', 'detect', '--name', $profile) -LogPath (Join-Path $logs 'profile-detect.txt')
-    Invoke-NgenNative -FilePath $conan -Arguments @('profile', 'show', '-pr:h', $profile, '-pr:b', $profile) -LogPath (Join-Path $logs 'profile.txt')
+    $buildProfile = Join-Path $run 'msvc-profile'
+    $oldCC, $oldCXX = $env:CC, $env:CXX
+    try {
+        $env:CC = $msvc.Source
+        $env:CXX = $msvc.Source
+        Invoke-NgenNative -FilePath $conan -Arguments @('profile', 'detect', '--name', $buildProfile) -LogPath (Join-Path $logs 'profile-detect.txt')
+    } finally {
+        $env:CC = $oldCC
+        $env:CXX = $oldCXX
+    }
+    $profile = $buildProfile
+    if ($Compiler -eq 'ClangCl') {
+        $profile = Join-Path $run 'clang-cl-profile'
+        Get-NgenClangProfile -CompilerPath $clangPath -VersionText (Get-Content -Raw (Join-Path $logs 'clang-cl-version.txt')) -ToolVersion $env:VCToolsVersion |
+            Set-Content -LiteralPath $profile
+    }
+    Copy-Item -LiteralPath $profile -Destination (Join-Path $logs 'host-profile.txt')
+    Copy-Item -LiteralPath $buildProfile -Destination (Join-Path $logs 'build-profile.txt')
+    Invoke-NgenNative -FilePath $conan -Arguments @('profile', 'show', '-pr:h', $profile, '-pr:b', $buildProfile) -LogPath (Join-Path $logs 'profile.txt')
     $configurations = switch ($Configuration) {
         'All' { 'Debug'; 'Release' }
         'Debug' { 'Debug' }
@@ -90,7 +162,7 @@ try {
     foreach ($config in $configurations) {
         $build = Join-Path $run $config
         Invoke-NgenNative -FilePath $conan -Arguments @(
-            'install', '.', '-pr:h', $profile, '-pr:b', $profile,
+            'install', '.', '-pr:h', $profile, '-pr:b', $buildProfile,
             '-s:h', 'compiler.cppstd=20', '-s:b', 'compiler.cppstd=20',
             '-s:h', "build_type=$config", '-s:b', "build_type=$config",
             '-c:h', 'tools.cmake.cmaketoolchain:generator=Ninja',
@@ -110,7 +182,7 @@ try {
         Invoke-NgenNative -FilePath $harness -LogPath (Join-Path $logs "$config-serial.txt")
         Invoke-NgenNative -FilePath $harness -Arguments @('--workers=2') -LogPath (Join-Path $logs "$config-workers.txt")
     }
-    Write-Host 'Windows CPU verification passed. This is not a Vulkan rendering test.'
+    Write-Host "Windows $Compiler CPU verification passed. This is not a Vulkan rendering test."
     $exitCode = 0
 } catch {
     $_ | Out-String | Tee-Object -FilePath (Join-Path $logs 'failure.txt') | Out-Host
