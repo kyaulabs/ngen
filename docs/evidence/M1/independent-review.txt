@@ -1,0 +1,66 @@
+**Recommendation: do not close M1 yet.** I found two concrete CI defects, but no demonstrated correctness defect in the reviewed engine implementation. The recorded evidence supports a locally tested Linux CPU slice—not full milestone acceptance.
+
+This is independent agent advice, **not human approval or a GitHub review approval**. No files were changed and no Git/remote operations were performed.
+
+## Actionable findings
+
+### 1. Medium — PR commit-policy check normally validates only an ignored merge commit
+**Location:** `.github/workflows/cpu.yml:32`
+
+```sh
+commitlint --from HEAD~1 --to HEAD
+```
+
+On `pull_request`, checkout normally selects GitHub’s synthetic merge commit. This range selects that merge commit rather than the PR’s commits. Commitlint’s default ignores include ordinary merge messages, and `commitlint.config.js` does not disable those ignores.
+
+**Reproduction by reasoning:** Open a PR containing a nonconventional commit message. On the synthetic merge checkout, the configured range includes only the generated merge message; the invalid source commit is not checked. On a multi-commit push, the same command checks only the last commit.
+
+**Consequence:** The “commit policy checks” step can succeed without validating the commits introduced by the change.
+
+**Repair direction:** Select an event-appropriate range: PR base/head SHAs for pull requests and the before/after range for pushes. Verify the lane rejects an intentionally invalid commit in that range.
+
+### 2. Medium — Whitespace check does not examine committed PR changes
+**Location:** `.github/workflows/cpu.yml:53–57`
+
+```sh
+git diff --check
+```
+
+Without revision arguments, this checks unstaged changes against the index. A clean checkout has none; the preceding build writes ignored build outputs rather than modifying tracked source.
+
+**Reproduction by reasoning:** Commit trailing whitespace in an owned source file and run this command from its clean checkout. It produces no whitespace finding because the defect is already committed.
+
+**Consequence:** This step does not enforce whitespace policy on the proposed change.
+
+**Repair direction:** Check the event’s actual base/head diff. Demonstrate failure using committed trailing whitespace, not an uncommitted working-tree edit.
+
+## Missing acceptance evidence
+
+These are closure gaps, separate from demonstrated implementation defects.
+
+- **Executed hosted CI on the reviewed revision.** `docs/evidence/M1/README.md:101` explicitly says the workflow has not run. M1-F also calls for demonstrating a representative failure is reported; no hosted failure-detection evidence is supplied.
+- **Windows compatibility.** The profiles cover Linux only. MSVC/clang-cl profiles, compatible runtime/ABI configuration, dependency resolution, builds and execution remain outstanding, as acknowledged at `docs/evidence/M1/README.md:8`.
+- **Clean no-SDK environment proof.** The offline namespace result and runtime link listing are useful, but they do not establish a clean configure/build on a machine without graphics SDK/display packages. The record correctly leaves this open at `docs/evidence/M1/README.md:95`.
+- **Required source-analysis enforcement.** The workflow contains neither clang-format nor clang-tidy execution. The record acknowledges these are local checks rather than hosted enforcement. Local evidence can support this revision, but does not establish the planned recurring policy/source lane.
+- **Profiling trace.** M1-F requests coverage and a trace from meaningful core paths. The directory contains coverage and timing summaries, but no execution/allocation trace. The allocation claim is appropriately limited to ordinary replacement `new` and enkiTS allocator callbacks; it does not cover every allocation path.
+- **Formal acceptance and delivery.** Accepted M0 core review, human acceptance, completed PR Test Plan and signature-preserving delivery remain separate gates. This review supplies none of those approvals.
+
+## Source assessment
+
+The inspected implementation is consistent with its deliberately narrow contracts:
+
+- Entity, command and job storage have explicit fixed bounds and visible exhaustion errors.
+- Entity reuse advances generations; exhausted generations retire slots rather than wrapping.
+- Job dependencies can reference only earlier submissions, preventing cycles within the admitted graph.
+- Shutdown requests cancellation before draining; borrowed callback contexts are cleared after completion. Cancellation remains cooperative, requiring finite callbacks.
+- Simulation updates a staged entity copy and publishes only after successful batch processing. Overflow discards the batch without advancing published state or tick; sequence consumption matches ADR 0006.
+- Snapshots own their pose storage. Their spans remain borrowed views: callers must retain the snapshot, as the recorded contract states.
+- The CMake target graph and Conan requirements show no graphics, database or network-service dependency in the CPU path.
+
+I found no concrete violation of these contracts through source tracing. That is not proof of all scheduler interleavings or borrowing usage.
+
+## Verification limits
+
+I read `AGENTS.md`, the relevant review/stack guidance, all files under `engine/`, `apps/sim_harness/`, and `tests/`, root CMake/Conan configuration, every profile, the CPU workflow, and all files in `docs/evidence/M1/`. I also traced relevant enkiTS dependency and completion behavior in the locally installed source.
+
+The current branch reference points to `888aa10be749c4ca6c414e404765511a5e60617a`. **Only file-inspection tools were available:** I could not independently verify working-tree cleanliness or source hashes, execute reproductions, or rerun builds, tests, formatting, AST analysis or sanitizers. The recorded five-configuration and clean-directory passes are historical evidence, not fresh results from this review.

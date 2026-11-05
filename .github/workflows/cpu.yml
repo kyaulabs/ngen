@@ -2,7 +2,7 @@ name: CPU foundation
 on:
   pull_request:
   push:
-    branches: [develop]
+    branches: [develop, 'feat/**', 'fix/**', 'ci/**']
   workflow_dispatch:
 permissions:
   contents: read
@@ -21,15 +21,30 @@ jobs:
       - name: Install CPU tools
         run: |
           sudo apt-get update
-          sudo apt-get install -y clang-18
+          sudo apt-get install -y clang-18 clang-format-18 clang-tidy-18
           python3 -m venv "$RUNNER_TEMP/tools"
           "$RUNNER_TEMP/tools/bin/pip" install conan==2.34.0 cmake==4.4.5 ninja==1.13.2
           echo "$RUNNER_TEMP/tools/bin" >> "$GITHUB_PATH"
+      - name: Select reviewed revision range
+        env:
+          EVENT_BASE: ${{ github.event.pull_request.base.sha || github.event.before }}
+          EVENT_HEAD: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          base="$EVENT_BASE"
+          if [ -z "$base" ] || [ "$base" = 0000000000000000000000000000000000000000 ]; then
+            # Dispatch/new branch: compare against the integration merge base.
+            base=$(git merge-base origin/develop "$EVENT_HEAD")
+          fi
+          git rev-parse --verify "$base^{commit}"
+          git rev-parse --verify "$EVENT_HEAD^{commit}"
+          echo "REVIEW_BASE=$base" >> "$GITHUB_ENV"
+          echo "REVIEW_HEAD=$EVENT_HEAD" >> "$GITHUB_ENV"
       - name: Secret and commit policy checks
         run: |
           go run github.com/zricethezav/gitleaks/v8@v8.24.3 git --redact --no-banner
           npm install --no-save --package-lock=false --prefix "$RUNNER_TEMP/commit-policy" @commitlint/cli@19.8.1 @commitlint/config-conventional@19.8.1
-          NODE_PATH="$RUNNER_TEMP/commit-policy/node_modules" "$RUNNER_TEMP/commit-policy/node_modules/.bin/commitlint" --from HEAD~1 --to HEAD
+          NODE_PATH="$RUNNER_TEMP/commit-policy/node_modules" "$RUNNER_TEMP/commit-policy/node_modules/.bin/commitlint" --from "$REVIEW_BASE" --to "$REVIEW_HEAD"
+          git diff --check "$REVIEW_BASE" "$REVIEW_HEAD"
       - name: Prepare locked compatibility graph
         env:
           PRESET: ${{ matrix.preset }}
@@ -54,8 +69,9 @@ jobs:
         env:
           PRESET: ${{ matrix.preset }}
         run: |
-          git diff --check
+          clang-format-18 --dry-run --Werror engine/core/*pp engine/jobs/*pp engine/simulation/*pp tests/*.cpp apps/sim_harness/*.cpp
+          clang-tidy-18 -p "build/$PRESET" engine/core/values.cpp engine/core/entities.cpp engine/jobs/jobs.cpp engine/simulation/simulation.cpp tests/core.cpp tests/jobs.cpp tests/simulation.cpp apps/sim_harness/main.cpp
           # The unprivileged child has no network interfaces beyond loopback.
           unshare -Urn -- env -u DISPLAY -u WAYLAND_DISPLAY "build/$PRESET/sim_harness"
 # Configuration only until this workflow actually runs. Primary Clang 23,
-# GCC 16, formatting/tidy 23 and Windows evidence remain separate gates.
+# GCC 16, local formatting/tidy 23 and Windows evidence remain separate gates.
