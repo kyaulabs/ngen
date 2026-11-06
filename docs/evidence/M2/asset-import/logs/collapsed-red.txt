@@ -1,0 +1,26 @@
+Filters: "*collapsed referenced*"
+Randomness seeded to: 3199475330
+<HOME>/.conan2/p/b/mikkt4beca2ecc9a78/b/src/mikktspace.c:443:21: runtime error: -nan is outside the range of representable values of type 'int'
+    #0 0x000000b56a1c in FindGridCell <HOME>/.conan2/p/b/mikkt4beca2ecc9a78/b/src/mikktspace.c:443:21
+    #1 0x000000b44ba6 in GenerateSharedVerticesIndexList <HOME>/.conan2/p/b/mikkt4beca2ecc9a78/b/src/mikktspace.c:514:21
+    #2 0x000000b3d8bf in genTangSpace <HOME>/.conan2/p/b/mikkt4beca2ecc9a78/b/src/mikktspace.c:275:2
+    #3 0x000000b3cbe4 in genTangSpaceDefault <HOME>/.conan2/p/b/mikkt4beca2ecc9a78/b/src/mikktspace.c:226:9
+    #4 0x0000006804ae in ngen::assetc::regenerate_tangents(ngen::assetc::Primitive&, ngen::assetc::TangentSettings) <REPO>/tools/assetc/tangents.cpp:212:9
+    #5 0x0000005bff40 in ngen::assetc::(anonymous namespace)::extract(fastgltf::Asset const&, ngen::assetc::ImportOptions, std::stop_token const&) <REPO>/tools/assetc/import.cpp:539:32
+    #6 0x0000005b8d4d in ngen::assetc::import_glb(std::span<std::byte const, 18446744073709551615ul>, ngen::assetc::ImportOptions, std::stop_token const&) <REPO>/tools/assetc/import.cpp:596:16
+    #7 0x000000564f3a in CATCH2_INTERNAL_TEST_74() <REPO>/tests/asset_import.cpp:531:23
+    #8 0x000000d6f196 in Catch::(anonymous namespace)::TestInvokerAsFunction::invoke() const <HOME>/.conan2/p/b/catch6ca307d792caf/b/build/Debug/src/catch2/internal/catch_test_registry.cpp:60:44
+    #9 0x000000d12b49 in Catch::TestCaseHandle::invoke() const <HOME>/.conan2/p/b/catch6ca307d792caf/b/build/Debug/src/catch2/../catch2/catch_test_case_info.hpp:124:24
+    #10 0x000000d092eb in Catch::RunContext::invokeActiveTestCase() <HOME>/.conan2/p/b/catch6ca307d792caf/b/build/Debug/src/catch2/internal/catch_run_context.cpp:808:27
+    #11 0x000000d0119a in Catch::RunContext::runCurrentTest() <HOME>/.conan2/p/b/catch6ca307d792caf/b/build/Debug/src/catch2/internal/catch_run_context.cpp:766:17
+    #12 0x000000cffb19 in Catch::RunContext::runTest(Catch::TestCaseHandle const&) <HOME>/.conan2/p/b/catch6ca307d792caf/b/build/Debug/src/catch2/internal/catch_run_context.cpp:420:13
+    #13 0x000000b96635 in Catch::(anonymous namespace)::TestGroup::execute() <HOME>/.conan2/p/b/catch6ca307d792caf/b/build/Debug/src/catch2/catch_session.cpp:113:45
+    #14 0x000000b91767 in Catch::Session::runInternal() <HOME>/.conan2/p/b/catch6ca307d792caf/b/build/Debug/src/catch2/catch_session.cpp:393:39
+    #15 0x000000b8fd35 in Catch::Session::run() <HOME>/.conan2/p/b/catch6ca307d792caf/b/build/Debug/src/catch2/catch_session.cpp:307:24
+    #16 0x000000b7b05c in int Catch::Session::run<char>(int, char const* const*) <HOME>/.conan2/p/b/catch6ca307d792caf/b/build/Debug/src/catch2/../catch2/catch_session.hpp:49:30
+    #17 0x000000b7adb0 in main <HOME>/.conan2/p/b/catch6ca307d792caf/b/build/Debug/src/catch2/internal/catch_main.cpp:36:29
+    #18 0x6bff7f627780 in __libc_start_call_main /usr/src/debug/glibc/glibc/csu/../sysdeps/nptl/libc_start_call_main.h:59:16
+    #19 0x6bff7f6278b8 in __libc_start_main /usr/src/debug/glibc/glibc/csu/../csu/libc-start.c:372:3
+    #20 0x00000043ba44 in _start (<REPO>/build/asset-asan/asset_import_tests+0x43ba44) (BuildId: 8b8597948821dfd69620db9fe13f084b9a17f521)
+
+SUMMARY: UndefinedBehaviorSanitizer: undefined-behavior <HOME>/.conan2/p/b/mikkt4beca2ecc9a78/b/src/mikktspace.c:443:21

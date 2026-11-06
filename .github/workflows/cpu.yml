@@ -90,11 +90,31 @@ jobs:
           ctest --preset "renderer-$PRESET" --show-only
           ctest --preset "renderer-$PRESET"
           clang-tidy-18 -p "build/renderer-$PRESET" engine/render/context.cpp engine/render/surface.cpp engine/render/presentation.cpp engine/render/resources.cpp engine/render/vma.cpp apps/probe/presentation.cpp apps/render_probe/main.cpp apps/resource_probe/main.cpp tests/render_startup.cpp tests/render_surface.cpp tests/wayland_tablets.cpp
+      - name: Build and test bounded offline asset tools
+        if: matrix.preset == 'debug' || matrix.preset == 'asan'
+        env:
+          PRESET: ${{ matrix.preset }}
+        run: |
+          profile=linux-clang
+          conan_args=()
+          cmake_args=()
+          if [ "$PRESET" = asan ]; then
+            profile=linux-asan
+            conan_args=(-c:h 'tools.build:exelinkflags=["-fsanitize=address,undefined", "-no-pie"]')
+            cmake_args=(-DCMAKE_EXE_LINKER_FLAGS=-no-pie)
+          fi
+          conan export recipes/mikktspace --version=cci.20200325 --user=ngen --channel=defined-rotate
+          conan install . -pr:h "profiles/$profile" -pr:h profiles/ci-linux-clang -pr:b profiles/ci-linux-clang -o '&:asset_tools=True' --lockfile conan-assets.lock --build=missing -c tools.build:jobs=2 -of "build/asset-$PRESET" "${conan_args[@]}"
+          cmake --preset "asset-$PRESET" "${cmake_args[@]}"
+          cmake --build --preset "asset-$PRESET"
+          ctest --preset "asset-$PRESET" --show-only
+          sudo unshare --net -- runuser -u "$(id -un)" -- env -u DISPLAY -u WAYLAND_DISPLAY "$(command -v ctest)" --preset "asset-$PRESET"
+          clang-tidy-18 -p "build/asset-$PRESET" tools/assetc/import.cpp tools/assetc/metadata.cpp tools/assetc/png.cpp tools/assetc/tangents.cpp tools/assetc/main.cpp tests/asset_import.cpp
       - name: Check whitespace and offline runtime
         env:
           PRESET: ${{ matrix.preset }}
         run: |
-          clang-format-18 --dry-run --Werror engine/core/*pp engine/jobs/*pp engine/simulation/*pp engine/render/*pp tests/*.cpp apps/sim_harness/*.cpp apps/render_probe/*.cpp apps/resource_probe/*.cpp apps/probe/*pp
+          clang-format-18 --dry-run --Werror engine/core/*pp engine/jobs/*pp engine/simulation/*pp engine/render/*pp tests/*.cpp apps/sim_harness/*.cpp apps/render_probe/*.cpp apps/resource_probe/*.cpp apps/probe/*pp tools/assetc/*pp
           clang-tidy-18 -p "build/$PRESET" engine/core/values.cpp engine/core/entities.cpp engine/jobs/jobs.cpp engine/simulation/simulation.cpp tests/core.cpp tests/jobs.cpp tests/simulation.cpp apps/sim_harness/main.cpp
           # Ubuntu restricts unprivileged user namespaces. Create only the
           # network namespace with sudo, then drop back to the runner identity.

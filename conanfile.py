@@ -5,9 +5,10 @@ from conan.tools.env import VirtualRunEnv
 
 class NgenDependencies(ConanFile):
     settings = "os", "compiler", "build_type", "arch"
-    options = {"renderer": [True, False]}
+    options = {"renderer": [True, False], "asset_tools": [True, False]}
     default_options = {
         "renderer": False,
+        "asset_tools": False,
         "sdl/*:shared": True,
         **{f"sdl/*:{name}": False for name in (
             "audio", "gpu", "render", "camera", "joystick", "haptic", "hidapi",
@@ -20,6 +21,12 @@ class NgenDependencies(ConanFile):
     def requirements(self):
         self.requires("enkits/1.12")
         self.test_requires("catch2/3.16.0")
+        if self.options.asset_tools:
+            self.requires("fastgltf/0.9.1")
+            self.requires("simdjson/4.6.4")
+            self.requires("libpng/1.6.59")
+            self.requires("mikktspace/cci.20200325@ngen/defined-rotate")
+            self.requires("meshoptimizer/1.0")
         if self.options.renderer:
             # Only Linux needs the local Wayland ownership repair; Windows keeps
             # the independently verified upstream recipe and binaries.
@@ -36,4 +43,6 @@ class NgenDependencies(ConanFile):
         VirtualRunEnv(self).generate()
         toolchain = CMakeToolchain(self, generator="Ninja")
         toolchain.user_presets_path = False
+        if self.options.asset_tools:
+            toolchain.variables["NGEN_BUILD_ASSET_TOOLS"] = True
         toolchain.generate()

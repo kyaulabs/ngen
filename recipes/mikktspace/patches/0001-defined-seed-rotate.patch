@@ -1,0 +1,10 @@
+--- a/mikktspace.c
++++ b/mikktspace.c
+@@ -1460 +1460,2 @@
+-	t=(uSeed<<t)|(uSeed>>(32-t));
++	/* NGEN: keep the right shift defined when the rotation count is zero. */
++	t=(uSeed<<t)|(uSeed>>((32-t)&31));
+@@ -1667 +1668,2 @@
+-	t=(uSeed<<t)|(uSeed>>(32-t));
++	/* NGEN: keep the right shift defined when the rotation count is zero. */
++	t=(uSeed<<t)|(uSeed>>((32-t)&31));

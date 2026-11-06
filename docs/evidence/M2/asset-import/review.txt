@@ -1,0 +1,53 @@
+Same-session scoped source/C++ review; not independent or human acceptance.
+Range: integrated foundation e1cc4f4 to the asset-import change, including
+untracked tool sources/tests, CMake/Conan/presets/CI, namespaced recipe and notices.
+
+Reviewed public importer -> metadata/container validation -> fastgltf structural
+validation -> owning extraction -> PNG/MikkTSpace boundaries -> CLI reporting.
+Six affected consumers: import.cpp, metadata.cpp, png.cpp, tangents.cpp, main.cpp,
+asset_import.cpp. Public headers are compiled through these real consumers in
+Clang Debug/Release/ASan and GCC Debug. CPU-only regression/link boundary checked.
+
+Ownership: input bytes/DOM/accessor views borrowed only during the call; scene
+vectors/strings/images own returned values. No native callback escapes its call.
+Tangent output is per-corner before exact complete-record remapping; seam fixture
+requires split shared corners. libpng's mutable C++ owner is outside the setjmp
+frame, with no nontrivial local destruction skipped by a PNG longjmp. Error paths
+are exercised under leak/undefined/address sanitizers, including CRC/truncation.
+
+Trust boundary: finite input/container/JSON/value/depth/array limits before native
+parsing/copying. All resource URIs reject at metadata ingress; binary accessors
+are range/stride/count/index checked before iteration. Unsupported declared
+extensions and vertex semantics do not silently disappear. Node roots/parents/
+cycles, affine/quaternion/singular transforms and world-bound overflow reject.
+Material UV1 references require actual data. Error/cancel paths return no scene.
+Bounds are conservative and source coordinates/units are retained.
+
+Public regressions cover owning storage, indexed/unindexed geometry and
+bounds/transform/light/material handling. Concrete repaired defects include invalid
+tangent frames; per-corner mirrored seams; narrow-angle MikkTSpace zero frames;
+UV-degenerate nonorthogonal reference axes; absent material UVs; silently dropped
+vertex color; and actionable unsupported-required-extension failures.
+
+The instrumented malformed corpus found a NaN-to-int spatial-hash conversion for
+a collapsed referenced triangle whose unused vertices inflated the old admission
+box. Referenced-domain admission now rejects it before the native call. The full
+instrumented frigate then found reference quicksort's shift-by-32. A synthetic
+32x32 shared grid reproduces it independently of the owner's asset. The pinned,
+namespaced recipe fixes both zero rotations; no stock-cache edits, suppressions
+or relaxed tolerances were used. All four full-frigate summaries remain equal.
+
+Primary AST analysis has two retained vendor enum-bitmask diagnostics and exits
+nonzero; fixed/bitmask values 32832 (fastgltf) and 6 (Catch2) are not a remaining
+owned finding or a clean-analysis claim. GCC's actual flags prevent clang-tidy
+parsing. Vendor-wide review/cleanliness and exhaustive input safety are not claimed.
+No additional demonstrated task-related defect remained in this scoped review.
+
+Limits: parser/decoder/tangent calls are not internally cancellable; admission is
+not a hard process memory/time or filesystem sandbox. No concurrency guarantee
+for caller mutation of borrowed input, universal allocation-failure recovery,
+Windows execution, generated texture mip quality, normal-map visual acceptance,
+runtime loading/residency or rendering/performance is established. CPU importer
+success is distinct from all of those gates. Local offline execution was
+unavailable because sudo requires a password; hosted namespace execution must
+be inspected, not assumed. M2 and independent/formal acceptance remain open.

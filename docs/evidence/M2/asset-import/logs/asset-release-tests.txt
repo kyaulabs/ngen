@@ -1,0 +1,17 @@
+Test project <REPO>/build/asset-release
+    Start 1: ngen_tests
+1/6 Test #1: ngen_tests .......................   Passed    0.01 sec
+    Start 2: render_contract_tests
+2/6 Test #2: render_contract_tests ............   Passed    0.01 sec
+    Start 3: asset_import_tests
+3/6 Test #3: asset_import_tests ...............   Passed    0.09 sec
+    Start 4: asset_cli
+4/6 Test #4: asset_cli ........................   Passed    0.27 sec
+    Start 5: replay_serial
+5/6 Test #5: replay_serial ....................   Passed    0.01 sec
+    Start 6: replay_workers
+6/6 Test #6: replay_workers ...................   Passed    0.01 sec
+
+100% tests passed out of 6
+
+Total Test time (real) =   0.41 sec

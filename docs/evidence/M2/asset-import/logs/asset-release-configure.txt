@@ -1,0 +1,16 @@
+-- Using Conan toolchain: <REPO>/build/asset-release/conan_toolchain.cmake
+-- Conan toolchain: Defining architecture flag: -m64
+-- Conan toolchain: Defining libcxx as C++ flags: -stdlib=libstdc++
+-- Conan toolchain: C++ Standard 20 with extensions OFF
+-- Conan: Target declared 'enkiTS::enkiTS'
+-- Conan: Target declared 'fastgltf::fastgltf'
+-- Conan: Target declared 'simdjson::simdjson'
+-- Conan: Target declared 'PNG::PNG'
+-- Conan: Target declared 'ZLIB::ZLIB'
+-- Conan: Target declared 'mikktspace::mikktspace'
+-- Conan: Target declared 'meshoptimizer::meshoptimizer'
+-- Conan: Component target declared 'Catch2::Catch2'
+-- Conan: Component target declared 'Catch2::Catch2WithMain'
+-- Configuring done (0.2s)
+-- Generating done (0.0s)
+-- Build files have been written to: <REPO>/build/asset-release

@@ -1,0 +1,34 @@
+Filters: "*shared indexed grid*"
+Randomness seeded to: 793251625
+<HOME>/.conan2/p/b/mikkt4beca2ecc9a78/b/src/mikktspace.c:1667:21: runtime error: shift exponent 32 is too large for 32-bit type 'unsigned int'
+    #0 0x000000b6bf2d in QuickSortEdges <HOME>/.conan2/p/b/mikkt4beca2ecc9a78/b/src/mikktspace.c:1667:21
+    #1 0x000000b6c9d4 in QuickSortEdges <HOME>/.conan2/p/b/mikkt4beca2ecc9a78/b/src/mikktspace.c:1697:3
+    #2 0x000000b6c9d4 in QuickSortEdges <HOME>/.conan2/p/b/mikkt4beca2ecc9a78/b/src/mikktspace.c:1697:3
+    #3 0x000000b6c9d4 in QuickSortEdges <HOME>/.conan2/p/b/mikkt4beca2ecc9a78/b/src/mikktspace.c:1697:3
+    #4 0x000000b6c9d4 in QuickSortEdges <HOME>/.conan2/p/b/mikkt4beca2ecc9a78/b/src/mikktspace.c:1697:3
+    #5 0x000000b6c9d4 in QuickSortEdges <HOME>/.conan2/p/b/mikkt4beca2ecc9a78/b/src/mikktspace.c:1697:3
+    #6 0x000000b6c9d4 in QuickSortEdges <HOME>/.conan2/p/b/mikkt4beca2ecc9a78/b/src/mikktspace.c:1697:3
+    #7 0x000000b6c9d4 in QuickSortEdges <HOME>/.conan2/p/b/mikkt4beca2ecc9a78/b/src/mikktspace.c:1697:3
+    #8 0x000000b694b0 in BuildNeighborsFast <HOME>/.conan2/p/b/mikkt4beca2ecc9a78/b/src/mikktspace.c:1517:2
+    #9 0x000000b5816f in InitTriInfo <HOME>/.conan2/p/b/mikkt4beca2ecc9a78/b/src/mikktspace.c:1056:4
+    #10 0x000000b490f3 in genTangSpace <HOME>/.conan2/p/b/mikkt4beca2ecc9a78/b/src/mikktspace.c:307:2
+    #11 0x000000b47ac4 in genTangSpaceDefault <HOME>/.conan2/p/b/mikkt4beca2ecc9a78/b/src/mikktspace.c:226:9
+    #12 0x00000068c44c in ngen::assetc::regenerate_tangents(ngen::assetc::Primitive&, ngen::assetc::TangentSettings) <REPO>/tools/assetc/tangents.cpp:227:9
+    #13 0x0000005cb2b7 in ngen::assetc::(anonymous namespace)::extract(fastgltf::Asset const&, ngen::assetc::ImportOptions, std::stop_token const&) <REPO>/tools/assetc/import.cpp:553:32
+    #14 0x0000005c369d in ngen::assetc::import_glb(std::span<std::byte const, 18446744073709551615ul>, ngen::assetc::ImportOptions, std::stop_token const&) <REPO>/tools/assetc/import.cpp:610:16
+    #15 0x00000056d656 in CATCH2_INTERNAL_TEST_82() <REPO>/tests/asset_import.cpp:630:23
+    #16 0x000000d7a186 in Catch::(anonymous namespace)::TestInvokerAsFunction::invoke() const <HOME>/.conan2/p/b/catch6ca307d792caf/b/build/Debug/src/catch2/internal/catch_test_registry.cpp:60:44
+    #17 0x000000d1db39 in Catch::TestCaseHandle::invoke() const <HOME>/.conan2/p/b/catch6ca307d792caf/b/build/Debug/src/catch2/../catch2/catch_test_case_info.hpp:124:24
+    #18 0x000000d142db in Catch::RunContext::invokeActiveTestCase() <HOME>/.conan2/p/b/catch6ca307d792caf/b/build/Debug/src/catch2/internal/catch_run_context.cpp:808:27
+    #19 0x000000d0c18a in Catch::RunContext::runCurrentTest() <HOME>/.conan2/p/b/catch6ca307d792caf/b/build/Debug/src/catch2/internal/catch_run_context.cpp:766:17
+    #20 0x000000d0ab09 in Catch::RunContext::runTest(Catch::TestCaseHandle const&) <HOME>/.conan2/p/b/catch6ca307d792caf/b/build/Debug/src/catch2/internal/catch_run_context.cpp:420:13
+    #21 0x000000ba1515 in Catch::(anonymous namespace)::TestGroup::execute() <HOME>/.conan2/p/b/catch6ca307d792caf/b/build/Debug/src/catch2/catch_session.cpp:113:45
+    #22 0x000000b9c647 in Catch::Session::runInternal() <HOME>/.conan2/p/b/catch6ca307d792caf/b/build/Debug/src/catch2/catch_session.cpp:393:39
+    #23 0x000000b9ac15 in Catch::Session::run() <HOME>/.conan2/p/b/catch6ca307d792caf/b/build/Debug/src/catch2/catch_session.cpp:307:24
+    #24 0x000000b85f3c in int Catch::Session::run<char>(int, char const* const*) <HOME>/.conan2/p/b/catch6ca307d792caf/b/build/Debug/src/catch2/../catch2/catch_session.hpp:49:30
+    #25 0x000000b85c90 in main <HOME>/.conan2/p/b/catch6ca307d792caf/b/build/Debug/src/catch2/internal/catch_main.cpp:36:29
+    #26 0x65c766427780 in __libc_start_call_main /usr/src/debug/glibc/glibc/csu/../sysdeps/nptl/libc_start_call_main.h:59:16
+    #27 0x65c7664278b8 in __libc_start_main /usr/src/debug/glibc/glibc/csu/../csu/libc-start.c:372:3
+    #28 0x00000043c594 in _start (<REPO>/build/asset-asan/asset_import_tests+0x43c594) (BuildId: bb86dadb7ba68eca111f3599ef9f2248fcfc77ba)
+
+SUMMARY: UndefinedBehaviorSanitizer: undefined-behavior <HOME>/.conan2/p/b/mikkt4beca2ecc9a78/b/src/mikktspace.c:1667:21
