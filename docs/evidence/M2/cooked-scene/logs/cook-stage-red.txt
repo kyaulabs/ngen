@@ -1,0 +1,27 @@
+Test project <REPO>/build/asset-debug
+    Start 7: asset_cook_cli
+1/1 Test #7: asset_cook_cli ...................***Failed    0.11 sec
+F
+======================================================================
+FAIL: test_stage_retains_source_and_emits_typed_geometry_sections (__main__.SceneCooking.test_stage_retains_source_and_emits_typed_geometry_sections)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<REPO>/tests/asset_cooking.py", line 25, in test_stage_retains_source_and_emits_typed_geometry_sections
+    self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 2 != 0 : usage: assetc inspect [--rebuild-tangents] <embedded static scene.glb>
+
+
+----------------------------------------------------------------------
+Ran 1 test in 0.004s
+
+FAILED (failures=1)
+
+
+0% tests passed, 1 tests failed out of 1
+
+Total Test time (real) =   0.11 sec
+
+The following tests FAILED:
+	  7 - asset_cook_cli (Failed)
+Errors while running CTest

@@ -1,0 +1,273 @@
+[
+  {
+    "context": "host",
+    "license": "Zlib",
+    "options": {
+      "fPIC": "True",
+      "shared": "False"
+    },
+    "package_id": "493772ddc92cb244fdb16d09cebe2fb65e63d555",
+    "prev": "5dce952807f689f086b41df0ae276c94",
+    "ref": "enkits/1.12#66203195b410e9ccba5ac22e3216b7d7",
+    "rrev": "66203195b410e9ccba5ac22e3216b7d7",
+    "settings": {
+      "arch": "x86_64",
+      "build_type": "Debug",
+      "compiler": "clang",
+      "compiler.cppstd": "20",
+      "compiler.libcxx": "libstdc++11",
+      "compiler.version": "23",
+      "os": "Linux"
+    }
+  },
+  {
+    "context": "host",
+    "license": "BSL-1.0",
+    "options": {
+      "console_width": "80",
+      "default_reporter": null,
+      "fPIC": "True",
+      "no_posix_signals": "False",
+      "shared": "False",
+      "thread_safe_assertions": "False",
+      "with_prefix": "False"
+    },
+    "package_id": "dc20cee61e48ba1571251551711c1071b8328750",
+    "prev": "b31c523a131c4b13eadb6a45696aa3c1",
+    "ref": "catch2/3.16.0#95f400ca2fba9f0c5ce5aea6e6fe0055",
+    "rrev": "95f400ca2fba9f0c5ce5aea6e6fe0055",
+    "settings": {
+      "arch": "x86_64",
+      "build_type": "Debug",
+      "compiler": "clang",
+      "compiler.cppstd": "20",
+      "compiler.libcxx": "libstdc++11",
+      "compiler.version": "23",
+      "os": "Linux"
+    }
+  },
+  {
+    "context": "build",
+    "license": "BSD-3-Clause",
+    "options": {},
+    "package_id": "63fead0844576fc02943e16909f08fcdddd6f44b",
+    "prev": "4d4766f0d30bec6434f5b4962831f86b",
+    "ref": "cmake/4.4.4#fec9c7048fae91e03c31e59977cd9c12",
+    "rrev": "fec9c7048fae91e03c31e59977cd9c12",
+    "settings": {
+      "arch": "x86_64",
+      "os": "Linux"
+    }
+  },
+  {
+    "context": "host",
+    "license": "Zlib",
+    "options": {
+      "fPIC": "True",
+      "shared": "False"
+    },
+    "package_id": "598e6a277b8c26506ffb9f7c0c79632d0584457a",
+    "prev": "4ae7294ce0ecf27211402a1d1d4702b1",
+    "ref": "zlib/1.3.2#1cb806da49011867778ffb6ac7190fcb",
+    "rrev": "1cb806da49011867778ffb6ac7190fcb",
+    "settings": {
+      "arch": "x86_64",
+      "build_type": "Debug",
+      "compiler": "clang",
+      "compiler.version": "23",
+      "os": "Linux"
+    }
+  },
+  {
+    "context": "host",
+    "license": "MIT",
+    "options": {
+      "disable_custom_memory_pool": "False",
+      "enable_small_vector": "False",
+      "fPIC": "True",
+      "shared": "False",
+      "use_64bit_float": "False"
+    },
+    "package_id": "41c2570d6082ed13735593bd2f8fddb93f380ceb",
+    "prev": "d5657dc91bce30b504b3fa40594df30f",
+    "ref": "fastgltf/0.9.1#f28bb910f715de22e19fa7a45b6bdd40",
+    "rrev": "f28bb910f715de22e19fa7a45b6bdd40",
+    "settings": {
+      "arch": "x86_64",
+      "build_type": "Debug",
+      "compiler": "clang",
+      "compiler.cppstd": "20",
+      "compiler.libcxx": "libstdc++11",
+      "compiler.version": "23",
+      "os": "Linux"
+    }
+  },
+  {
+    "context": "host",
+    "license": [
+      "Apache-2.0",
+      "MIT"
+    ],
+    "options": {
+      "fPIC": "True",
+      "shared": "False",
+      "threads": "True"
+    },
+    "package_id": "7a7c592977107fa5314ad883dbb9a6e43b742a91",
+    "prev": "34f8802c5b25d6218988c2eb8223451a",
+    "ref": "simdjson/4.6.4#00493333c58d3e0766bcbd015274a9e2",
+    "rrev": "00493333c58d3e0766bcbd015274a9e2",
+    "settings": {
+      "arch": "x86_64",
+      "build_type": "Debug",
+      "compiler": "clang",
+      "compiler.cppstd": "20",
+      "compiler.libcxx": "libstdc++11",
+      "compiler.version": "23",
+      "os": "Linux"
+    }
+  },
+  {
+    "context": "host",
+    "license": "libpng-2.0",
+    "options": {
+      "api_prefix": "",
+      "fPIC": "True",
+      "shared": "False",
+      "sse": "True"
+    },
+    "package_id": "b60c0ddf164c664f033b79947074c52660e1fa74",
+    "prev": "633639a0643273f5481494466b97f440",
+    "ref": "libpng/1.6.59#4efd2c36e031c80f0bc3c0f3fecf589e",
+    "rrev": "4efd2c36e031c80f0bc3c0f3fecf589e",
+    "settings": {
+      "arch": "x86_64",
+      "build_type": "Debug",
+      "compiler": "clang",
+      "compiler.version": "23",
+      "os": "Linux"
+    }
+  },
+  {
+    "context": "host",
+    "license": "Zlib",
+    "options": {
+      "fPIC": "True",
+      "shared": "False"
+    },
+    "package_id": "598e6a277b8c26506ffb9f7c0c79632d0584457a",
+    "prev": "be9e10c05c561d4c898b8dc1bd7c5bed",
+    "ref": "mikktspace/cci.20200325@ngen/defined-rotate#a0e8f52b1a9c8f0a9bbe3a034750436b",
+    "rrev": "a0e8f52b1a9c8f0a9bbe3a034750436b",
+    "settings": {
+      "arch": "x86_64",
+      "build_type": "Debug",
+      "compiler": "clang",
+      "compiler.version": "23",
+      "os": "Linux"
+    }
+  },
+  {
+    "context": "host",
+    "license": "MIT",
+    "options": {
+      "fPIC": "True",
+      "shared": "False"
+    },
+    "package_id": "493772ddc92cb244fdb16d09cebe2fb65e63d555",
+    "prev": "31785849ce5c331edec377691ab9f632",
+    "ref": "meshoptimizer/1.0#7f529e7abd38fe6534c9ad45ce661d18",
+    "rrev": "7f529e7abd38fe6534c9ad45ce661d18",
+    "settings": {
+      "arch": "x86_64",
+      "build_type": "Debug",
+      "compiler": "clang",
+      "compiler.cppstd": "20",
+      "compiler.libcxx": "libstdc++11",
+      "compiler.version": "23",
+      "os": "Linux"
+    }
+  },
+  {
+    "context": "build",
+    "license": "Apache-2.0",
+    "options": {
+      "fPIC": "True",
+      "shared": "False",
+      "sse": "True",
+      "tools": "True"
+    },
+    "package_id": "b49c7444b34dee546d7417b9b5520f87c42e5303",
+    "prev": "0dc51f4e2d3cedcee36f2de3f497fd6a",
+    "ref": "ktx/4.4.2#6daf9d7c921407bb8af1c923a2b4aaca",
+    "rrev": "6daf9d7c921407bb8af1c923a2b4aaca",
+    "settings": {
+      "arch": "x86_64",
+      "build_type": "Release",
+      "compiler": "clang",
+      "compiler.cppstd": "17",
+      "compiler.libcxx": "libstdc++11",
+      "compiler.version": "23",
+      "os": "Linux"
+    }
+  },
+  {
+    "context": "build",
+    "license": "BSD-3-Clause",
+    "options": {
+      "build_programs": "True",
+      "fPIC": "True",
+      "shared": "False",
+      "threading": "True"
+    },
+    "package_id": "88325c1599b6ec5a67620357c1c12d780a5dfc88",
+    "prev": "3d82b4bda477a4cca9c078a80535824f",
+    "ref": "zstd/1.5.7#b68ca8e3de04ba5957761751d1d661f4",
+    "rrev": "b68ca8e3de04ba5957761751d1d661f4",
+    "settings": {
+      "arch": "x86_64",
+      "build_type": "Release",
+      "compiler": "clang",
+      "compiler.version": "23",
+      "os": "Linux"
+    }
+  },
+  {
+    "context": "build",
+    "license": "MIT",
+    "options": {
+      "fPIC": "True",
+      "header_only": "False",
+      "shared": "False",
+      "with_fmt_alias": "False",
+      "with_os_api": "True",
+      "with_unicode": "True"
+    },
+    "package_id": "944a0fdaaa1bb4cfed637329e6f5044a6d3ede48",
+    "prev": "c72bd5974f26a5e7f10f7fd0c0c99884",
+    "ref": "fmt/11.2.0#15c2efeeecd75ba2fb9dafbec8dfa4cc",
+    "rrev": "15c2efeeecd75ba2fb9dafbec8dfa4cc",
+    "settings": {
+      "arch": "x86_64",
+      "build_type": "Release",
+      "compiler": "clang",
+      "compiler.cppstd": "17",
+      "compiler.libcxx": "libstdc++11",
+      "compiler.version": "23",
+      "os": "Linux"
+    }
+  },
+  {
+    "context": "build",
+    "license": "BSD-3-Clause",
+    "options": {},
+    "package_id": "63fead0844576fc02943e16909f08fcdddd6f44b",
+    "prev": "4d4766f0d30bec6434f5b4962831f86b",
+    "ref": "cmake/4.4.4#fec9c7048fae91e03c31e59977cd9c12",
+    "rrev": "fec9c7048fae91e03c31e59977cd9c12",
+    "settings": {
+      "arch": "x86_64",
+      "os": "Linux"
+    }
+  }
+]

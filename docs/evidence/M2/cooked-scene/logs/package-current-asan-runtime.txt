@@ -1,0 +1,1 @@
+{"package_valid":1,"vertices":1304323,"indices":3309060,"primitives":188,"instances":188,"materials":13,"images":4,"textures":15,"lights":612,"light_instances":612,"texture_bytes":89478480,"lod_triangles":[574136,290804,238080],"checksum":70013633}

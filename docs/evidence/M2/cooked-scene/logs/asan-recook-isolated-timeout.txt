@@ -1,0 +1,1 @@
+asset cook: Command '['<REPO>/build/asset-asan/assetc', 'stage', '--preset', 'laptop', '<REPO>/planning/models/frigate/frigate-01.glb', '<REPO>/build/cooked-candidate/.ngen-cook-ednz32bu/native']' timed out after 180 seconds

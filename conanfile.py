@@ -5,10 +5,11 @@ from conan.tools.env import VirtualRunEnv
 
 class NgenDependencies(ConanFile):
     settings = "os", "compiler", "build_type", "arch"
-    options = {"renderer": [True, False], "asset_tools": [True, False]}
+    options = {"renderer": [True, False], "asset_tools": [True, False], "assets": [True, False]}
     default_options = {
         "renderer": False,
         "asset_tools": False,
+        "assets": False,
         "sdl/*:shared": True,
         **{f"sdl/*:{name}": False for name in (
             "audio", "gpu", "render", "camera", "joystick", "haptic", "hidapi",
@@ -21,6 +22,8 @@ class NgenDependencies(ConanFile):
     def requirements(self):
         self.requires("enkits/1.12")
         self.test_requires("catch2/3.16.0")
+        if self.options.assets or self.options.asset_tools:
+            self.requires("zlib/1.3.2")
         if self.options.asset_tools:
             self.requires("fastgltf/0.9.1")
             self.requires("simdjson/4.6.4")
@@ -38,11 +41,19 @@ class NgenDependencies(ConanFile):
                 # The private protocol peer uses the same locked Wayland ABI as SDL.
                 self.test_requires("wayland/1.24.0")
 
+    def build_requirements(self):
+        if self.options.asset_tools:
+            self.tool_requires("ktx/4.4.2", options={"tools": True})
+
     def generate(self):
         CMakeDeps(self).generate()
         VirtualRunEnv(self).generate()
         toolchain = CMakeToolchain(self, generator="Ninja")
         toolchain.user_presets_path = False
+        if self.options.assets or self.options.asset_tools:
+            toolchain.variables["NGEN_BUILD_ASSETS"] = True
         if self.options.asset_tools:
             toolchain.variables["NGEN_BUILD_ASSET_TOOLS"] = True
+            suffix = ".exe" if self.settings_build.os == "Windows" else ""
+            toolchain.variables["NGEN_KTX_EXECUTABLE"] = self.dependencies.build["ktx"].package_folder.replace("\\", "/") + "/bin/ktx" + suffix
         toolchain.generate()

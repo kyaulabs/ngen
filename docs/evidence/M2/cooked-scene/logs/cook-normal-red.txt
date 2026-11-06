@@ -1,0 +1,42 @@
+Test project <REPO>/build/asset-debug
+    Start 5: asset_cook_tests
+1/1 Test #5: asset_cook_tests .................***Failed    0.00 sec
+Randomness seeded to: 961736060
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+asset_cook_tests is a Catch2 v3.16.0 host application.
+Run with -? for options
+
+-------------------------------------------------------------------------------
+offline cooker renormalizes normal mips with a defined neutral cancellation
+-------------------------------------------------------------------------------
+<REPO>/tests/asset_cook.cpp:134
+...............................................................................
+
+<REPO>/tests/asset_cook.cpp:149: FAILED:
+explicitly with message:
+  non-color mip cooking is not implemented
+
+-------------------------------------------------------------------------------
+offline cooker renormalizes normal mips with a defined neutral cancellation
+-------------------------------------------------------------------------------
+<REPO>/tests/asset_cook.cpp:134
+...............................................................................
+
+<REPO>/tests/asset_cook.cpp:149: FAILED:
+explicitly with message:
+  non-color mip cooking is not implemented
+
+===============================================================================
+test cases:  5 |  4 passed | 1 failed
+assertions: 59 | 57 passed | 2 failed
+
+
+
+0% tests passed, 1 tests failed out of 1
+
+Total Test time (real) =   0.00 sec
+
+The following tests FAILED:
+	  5 - asset_cook_tests (Failed)
+Errors while running CTest

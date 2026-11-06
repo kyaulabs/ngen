@@ -104,7 +104,7 @@ jobs:
             cmake_args=(-DCMAKE_EXE_LINKER_FLAGS=-no-pie)
           fi
           conan export recipes/mikktspace --version=cci.20200325 --user=ngen --channel=defined-rotate
-          conan install . -pr:h "profiles/$profile" -pr:h profiles/ci-linux-clang -pr:b profiles/ci-linux-clang -o '&:asset_tools=True' --lockfile conan-assets.lock --build=missing -c tools.build:jobs=2 -of "build/asset-$PRESET" "${conan_args[@]}"
+          conan install . -pr:h "profiles/$profile" -pr:h profiles/ci-linux-clang -pr:b profiles/ci-linux-clang -s:b build_type=Release -s:b compiler.cppstd=17 -o '&:asset_tools=True' --lockfile conan-assets.lock --build=missing -c tools.build:jobs=2 -of "build/asset-$PRESET" "${conan_args[@]}"
           cmake --preset "asset-$PRESET" "${cmake_args[@]}"
           cmake --build --preset "asset-$PRESET"
           ctest --preset "asset-$PRESET" --show-only
@@ -115,7 +115,7 @@ jobs:
         env:
           PRESET: ${{ matrix.preset }}
         run: |
-          clang-format-18 --dry-run --Werror engine/core/*pp engine/jobs/*pp engine/simulation/*pp engine/render/*pp tests/*.cpp apps/sim_harness/*.cpp apps/render_probe/*.cpp apps/resource_probe/*.cpp apps/probe/*pp tools/assetc/*pp
+          clang-format-18 --dry-run --Werror engine/core/*pp engine/jobs/*pp engine/simulation/*pp engine/render/*pp engine/assets/*pp tests/*.cpp tests/*.hpp apps/sim_harness/*.cpp apps/render_probe/*.cpp apps/resource_probe/*.cpp apps/probe/*pp apps/asset_probe/*.cpp tools/assetc/*pp
           clang-tidy-18 -p "build/$PRESET" engine/core/values.cpp engine/core/entities.cpp engine/jobs/jobs.cpp engine/simulation/simulation.cpp tests/core.cpp tests/jobs.cpp tests/simulation.cpp apps/sim_harness/main.cpp
           # Ubuntu restricts unprivileged user namespaces. Create only the
           # network namespace with sudo, then drop back to the runner identity.

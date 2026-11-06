@@ -1,0 +1,32 @@
+Test project <REPO>/build/asset-debug
+    Start 3: asset_package_tests
+1/1 Test #3: asset_package_tests ..............***Failed    0.00 sec
+Randomness seeded to: 3029173230
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+asset_package_tests is a Catch2 v3.16.0 host application.
+Run with -? for options
+
+-------------------------------------------------------------------------------
+runtime package retains PBR material factors and bounded names
+-------------------------------------------------------------------------------
+<REPO>/tests/assets.cpp:6
+...............................................................................
+
+<REPO>/tests/assets.cpp:16: FAILED:
+explicitly with message:
+  nongeometry package sections are not implemented
+
+===============================================================================
+test cases:  2 |  1 passed | 1 failed
+assertions: 14 | 13 passed | 1 failed
+
+
+
+0% tests passed, 1 tests failed out of 1
+
+Total Test time (real) =   0.01 sec
+
+The following tests FAILED:
+	  3 - asset_package_tests (Failed)
+Errors while running CTest

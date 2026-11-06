@@ -1,6 +1,7 @@
 #include "assetc/import.hpp"
+#include "assetc/source.hpp"
+#include "assetc/stage.hpp"
 #include <filesystem>
-#include <fstream>
 #include <iomanip>
 #include <iostream>
 #include <stdexcept>
@@ -12,25 +13,15 @@ void vector3(const std::array<float, 3> &value) {
 }
 } // namespace
 int main(int argc, char **argv) {
+    if (argc > 1 && std::string_view{argv[1]} == "stage")
+        return ngen::assetc::stage_main(argc, argv);
     if ((argc != 3 && argc != 4) || std::string_view{argv[1]} != "inspect" ||
         (argc == 4 && std::string_view{argv[2]} != "--rebuild-tangents")) {
         std::cerr << "usage: assetc inspect [--rebuild-tangents] <embedded static scene.glb>\n";
         return 2;
     }
     try {
-        const std::filesystem::path path{argv[argc - 1]};
-        if (!std::filesystem::is_regular_file(path))
-            throw std::runtime_error("source is not a readable regular file");
-        const auto size = std::filesystem::file_size(path);
-        if (size > ngen::assetc::source_byte_limit)
-            throw std::runtime_error("source byte limit exceeded");
-        std::ifstream input(path, std::ios::binary);
-        std::vector<std::byte> bytes(static_cast<std::size_t>(size));
-        if (!bytes.empty())
-            input.read(reinterpret_cast<char *>(bytes.data()),
-                       static_cast<std::streamsize>(bytes.size()));
-        if (!input || input.peek() != std::char_traits<char>::eof())
-            throw std::runtime_error("source read failed or file size changed");
+        const auto bytes = ngen::assetc::read_source(std::filesystem::path{argv[argc - 1]});
         auto imported = ngen::assetc::import_glb(bytes, {.rebuild_tangents = argc == 4});
         if (const auto *failure = std::get_if<ngen::assetc::ImportFailure>(&imported))
             throw std::runtime_error(failure->message);

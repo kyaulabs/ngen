@@ -1,0 +1,2 @@
+asset_package_probe: invalid primitive LOD range or error
+asset cook: offline tool failed: asset_package_probe exit=1

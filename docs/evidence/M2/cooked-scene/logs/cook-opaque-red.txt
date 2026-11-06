@@ -1,0 +1,33 @@
+Test project <REPO>/build/asset-debug
+    Start 5: asset_cook_tests
+1/1 Test #5: asset_cook_tests .................***Failed    0.00 sec
+Randomness seeded to: 32455070
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+asset_cook_tests is a Catch2 v3.16.0 host application.
+Run with -? for options
+
+-------------------------------------------------------------------------------
+opaque base-color mips ignore unused alpha
+-------------------------------------------------------------------------------
+<REPO>/tests/asset_cook.cpp:171
+...............................................................................
+
+<REPO>/tests/asset_cook.cpp:180: FAILED:
+  CHECK( mip.pixels==std::vector<std::byte>{std::byte{188},std::byte{188},std::byte{0},std::byte{128}} )
+with expansion:
+  { 0, 255, 0, 128 } == { 188, 188, 0, 128 }
+
+===============================================================================
+test cases:  6 |  5 passed | 1 failed
+assertions: 70 | 69 passed | 1 failed
+
+
+
+0% tests passed, 1 tests failed out of 1
+
+Total Test time (real) =   0.01 sec
+
+The following tests FAILED:
+	  5 - asset_cook_tests (Failed)
+Errors while running CTest

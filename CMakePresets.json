@@ -13,7 +13,8 @@
     {"name":"asset-debug","inherits":"debug","cacheVariables":{"NGEN_BUILD_ASSET_TOOLS":"ON"}},
     {"name":"asset-release","inherits":"release","cacheVariables":{"NGEN_BUILD_ASSET_TOOLS":"ON"}},
     {"name":"asset-asan","inherits":"asan","cacheVariables":{"NGEN_BUILD_ASSET_TOOLS":"ON"}},
-    {"name":"asset-gcc","inherits":"gcc","cacheVariables":{"NGEN_BUILD_ASSET_TOOLS":"ON"}}
+    {"name":"asset-gcc","inherits":"gcc","cacheVariables":{"NGEN_BUILD_ASSET_TOOLS":"ON"}},
+    {"name":"asset-runtime-debug","inherits":"debug","cacheVariables":{"NGEN_BUILD_ASSETS":"ON"}}
   ],
   "buildPresets": [
     {"name":"debug","configurePreset":"debug","jobs":2},
@@ -27,7 +28,8 @@
     {"name":"asset-debug","configurePreset":"asset-debug","jobs":2},
     {"name":"asset-release","configurePreset":"asset-release","jobs":2},
     {"name":"asset-asan","configurePreset":"asset-asan","jobs":2},
-    {"name":"asset-gcc","configurePreset":"asset-gcc","jobs":2}
+    {"name":"asset-gcc","configurePreset":"asset-gcc","jobs":2},
+    {"name":"asset-runtime-debug","configurePreset":"asset-runtime-debug","jobs":2}
   ],
   "testPresets": [
     {"name":"debug","configurePreset":"debug","output":{"outputOnFailure":true},"execution":{"noTestsAction":"error"}},
@@ -41,6 +43,7 @@
     {"name":"asset-debug","configurePreset":"asset-debug","output":{"outputOnFailure":true},"execution":{"noTestsAction":"error"}},
     {"name":"asset-release","configurePreset":"asset-release","output":{"outputOnFailure":true},"execution":{"noTestsAction":"error"}},
     {"name":"asset-asan","configurePreset":"asset-asan","output":{"outputOnFailure":true},"execution":{"noTestsAction":"error"},"environment":{"ASAN_OPTIONS":"detect_leaks=1:halt_on_error=1","UBSAN_OPTIONS":"halt_on_error=1:print_stacktrace=1"}},
-    {"name":"asset-gcc","configurePreset":"asset-gcc","output":{"outputOnFailure":true},"execution":{"noTestsAction":"error"}}
+    {"name":"asset-gcc","configurePreset":"asset-gcc","output":{"outputOnFailure":true},"execution":{"noTestsAction":"error"}},
+    {"name":"asset-runtime-debug","configurePreset":"asset-runtime-debug","output":{"outputOnFailure":true},"execution":{"noTestsAction":"error"}}
   ]
 }

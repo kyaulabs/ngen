@@ -27,4 +27,6 @@ Repeated canonical cooks, shader-layout/static checks, fuzzed import/package inp
 
 ## Evidence
 
+The candidate [checked scene format](../planning/cooked-scene-format.md) and [cooker/runtime evidence](../evidence/M2/cooked-scene/README.md) implement the first local M2-D package boundary. GPU residency, final compiler/platform gates and acceptance remain open; this does not change the proposed status.
+
 See the [detailed specification and primary sources](../planning/renderer-core-assets.md). This record contains a proposed NGEN decision, not a claim that its tests passed. Record accepted/rejected status, approver, revision and test evidence only after the stated gate.
