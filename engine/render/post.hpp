@@ -29,7 +29,8 @@ class PostPipeline {
     VkPipelineLayout layout_{};
     VkDescriptorPool pool_{};
     VkSampler sampler_{};
-    std::array<VkDescriptorSet, 2> sets_{};
-    std::array<VkPipeline, 2> pipelines_{};
+    // Two resource command slots, then two WSI submission-fence slots.
+    std::array<VkDescriptorSet, 4> sets_{};
+    std::array<VkPipeline, 3> pipelines_{};
 };
 } // namespace ngen::render

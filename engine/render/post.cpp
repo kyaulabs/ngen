@@ -52,19 +52,20 @@ PostPipeline::PostPipeline(VkDevice device) : device_(device) {
         check(vkCreatePipelineLayout(device_, &layout, nullptr, &layout_),
               "create post pipeline layout");
         const std::array<VkDescriptorPoolSize, 2> sizes{
-            {{VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE, 2}, {VK_DESCRIPTOR_TYPE_SAMPLER, 2}}};
+            {{VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE, 4}, {VK_DESCRIPTOR_TYPE_SAMPLER, 4}}};
         VkDescriptorPoolCreateInfo pool{};
         pool.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
-        pool.maxSets = 2;
+        pool.maxSets = 4;
         pool.poolSizeCount = static_cast<std::uint32_t>(sizes.size());
         pool.pPoolSizes = sizes.data();
         check(vkCreateDescriptorPool(device_, &pool, nullptr, &pool_),
               "create post descriptor pool");
-        const std::array layouts{descriptor_layout_, descriptor_layout_};
+        const std::array layouts{descriptor_layout_, descriptor_layout_, descriptor_layout_,
+                                 descriptor_layout_};
         VkDescriptorSetAllocateInfo allocate{};
         allocate.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
         allocate.descriptorPool = pool_;
-        allocate.descriptorSetCount = 2;
+        allocate.descriptorSetCount = 4;
         allocate.pSetLayouts = layouts.data();
         check(vkAllocateDescriptorSets(device_, &allocate, sets_.data()),
               "allocate post descriptors");
@@ -131,7 +132,9 @@ PostPipeline::PostPipeline(VkDevice device) : device_(device) {
         dynamic.dynamicStateCount = 2;
         dynamic.pDynamicStates = dynamic_states.data();
         for (std::size_t i = 0; i < pipelines_.size(); ++i) {
-            const auto format = i == 0 ? VK_FORMAT_R8G8B8A8_UNORM : VK_FORMAT_R8G8B8A8_SRGB;
+            constexpr std::array formats{VK_FORMAT_R8G8B8A8_UNORM, VK_FORMAT_R8G8B8A8_SRGB,
+                                         VK_FORMAT_B8G8R8A8_SRGB};
+            const auto format = formats[i];
             VkPipelineRenderingCreateInfo rendering{};
             rendering.sType = VK_STRUCTURE_TYPE_PIPELINE_RENDERING_CREATE_INFO;
             rendering.colorAttachmentCount = 1;
@@ -181,7 +184,9 @@ void PostPipeline::record(const PostDraw &draw) const {
     vkUpdateDescriptorSets(device_, static_cast<std::uint32_t>(writes.size()), writes.data(), 0,
                            nullptr);
     vkCmdBindPipeline(draw.commands, VK_PIPELINE_BIND_POINT_GRAPHICS,
-                      pipelines_[draw.format == VK_FORMAT_R8G8B8A8_SRGB ? 1U : 0U]);
+                      pipelines_[draw.format == VK_FORMAT_R8G8B8A8_UNORM  ? 0U
+                                 : draw.format == VK_FORMAT_R8G8B8A8_SRGB ? 1U
+                                                                          : 2U]);
     vkCmdBindDescriptorSets(draw.commands, VK_PIPELINE_BIND_POINT_GRAPHICS, layout_, 0, 1,
                             &sets_[draw.frame], 0, nullptr);
     const VkViewport viewport{

@@ -1,0 +1,6 @@
+wsi_resource_failure_injected=1
+Vulkan resource tracked image presentation: queue presentation: VkResult -1
+device=Intel(R) Iris(R) Xe Graphics (TGL GT2) api=1.4 driver=109060102 queue=0 display=wayland
+device=Intel(R) Iris(R) Xe Graphics (TGL GT2) api=1.4 driver=109060102 queue=0 display=wayland
+tracked_post_draw=1 hdr_tone_map_pixels=4 asymmetric_orientation=1 exposure_srgb=1 graphics_retirement=1
+fxaa_diagonal=1 fxaa_softened_pixels=8 fxaa_flat_regions=1

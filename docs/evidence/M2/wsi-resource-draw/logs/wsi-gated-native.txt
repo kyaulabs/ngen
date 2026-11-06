@@ -1,0 +1,27 @@
+Vulkan validation: vkQueuePresentKHR(): pPresentInfo->pWaitSemaphores[0] queue (VkQueue 0x843f1a0f2a0) is waiting on binary semaphore (VkSemaphore 0x410000000041) that has an associated signal but it depends on timeline semaphore wait (VkSemaphore 0x490000000049, wait value = 1) that does not have resolving signal submitted yet.
+The Vulkan spec states: All elements of the pWaitSemaphores member of pPresentInfo must reference a semaphore signal operation that has been submitted for execution and any semaphore signal operations on which it depends must have also been submitted for execution (https://docs.vulkan.org/spec/latest/chapters/VK_KHR_surface/wsi.html#VUID-vkQueuePresentKHR-pWaitSemaphores-03268)
+Vulkan validation: vkQueuePresentKHR(): pPresentInfo images passed to present must be in layout VK_IMAGE_LAYOUT_PRESENT_SRC_KHR or VK_IMAGE_LAYOUT_SHARED_PRESENT_KHR but VkImage 0x3a000000003a is in VK_IMAGE_LAYOUT_UNDEFINED.
+The Vulkan spec states: Each element of pImageIndices must be the index of a presentable image acquired from the swapchain specified by the corresponding element of the pSwapchains array, and the presented image subresource must be in the VK_IMAGE_LAYOUT_PRESENT_SRC_KHR or VK_IMAGE_LAYOUT_SHARED_PRESENT_KHR layout at the time the operation is executed on a VkDevice (https://docs.vulkan.org/spec/latest/chapters/VK_KHR_surface/wsi.html#VUID-VkPresentInfoKHR-pImageIndices-01430)
+Vulkan validation: vkQueueSubmit2(): pSubmits[0].pCommandBufferInfos[0] WRITE_AFTER_PRESENT hazard detected. vkCmdPipelineBarrier2 (from VkCommandBuffer 0x843f1bfa4c0 submitted on the current VkQueue 0x843f1a0f2a0) performs image layout transition on the VkImage 0x3a000000003a, which was previously written by vkQueuePresentKHR (submitted on VkQueue 0x843f1a0f2a0).
+No sufficient synchronization is present to ensure that a layout transition does not conflict with a prior swapchain present operation.
+pImageMemoryBarriers[0]: {
+  srcStageMask = VkPipelineStageFlags2(0),
+  srcAccessMask = VkAccessFlags2(0),
+  dstStageMask = VK_PIPELINE_STAGE_2_COLOR_ATTACHMENT_OUTPUT_BIT,
+  dstAccessMask = VK_ACCESS_2_COLOR_ATTACHMENT_WRITE_BIT,
+}
+
+Vulkan validation: vkQueuePresentKHR(): PRESENT_AFTER_WRITE hazard detected. vkQueuePresentKHR presents swapchain image 1 (VkImage 0x3a000000003a from VkSwapchainKHR 0x380000000038), which was previously written during an image layout transition initiated by vkCmdPipelineBarrier2.
+No sufficient synchronization is present to ensure that a swapchain present operation does not conflict with a prior layout transition.
+Vulkan resource: close did not invalidate the outstanding buffer
+device=Intel(R) Iris(R) Xe Graphics (TGL GT2) api=1.4 driver=109060102 queue=0 display=wayland
+device=Intel(R) Iris(R) Xe Graphics (TGL GT2) api=1.4 driver=109060102 queue=0 display=wayland
+tracked_post_draw=1 hdr_tone_map_pixels=4 asymmetric_orientation=1 exposure_srgb=1 graphics_retirement=1
+fxaa_diagonal=1 fxaa_softened_pixels=8 fxaa_flat_regions=1
+sampled_image_presentation=1 wsi_resource_timeline=1 wsi_source_retirement=1 wsi_gate_observed=0
+mip_chain_roundtrip=1 mip_levels=3 mip_bytes=168
+hdr_attachment=1 hdr_roundtrip_bytes=48
+depth_attachment=1 depth_roundtrip_bytes=24
+cube_roundtrip=1 cube_faces=6 cube_mip_levels=3 cube_bytes=504
+queued_frames=96 swapchain_generations=3 verified_resizes=2 minimize_verified=0 sampled_source=1
+presented_image_replacements=550 vma_allocation_bytes=12460 vma_reserved_bytes=3145728

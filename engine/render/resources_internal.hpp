@@ -3,6 +3,16 @@
 #include <memory>
 
 namespace ngen::render {
+struct PostDraw;
+struct GraphicsUse {
+    detail::ResourceKey key;
+    VkImage image{};
+    VkImageView view{};
+    VkExtent2D extent{};
+    std::uint32_t levels{};
+    VkSemaphore timeline{};
+    std::uint64_t serial{};
+};
 // Context owns this state; public resource values borrow it weakly on the owner thread.
 class Resources : public std::enable_shared_from_this<Resources> {
   public:
@@ -19,6 +29,10 @@ class Resources : public std::enable_shared_from_this<Resources> {
     [[nodiscard]] std::variant<Submission, Failure> copy(ImageUpload description);
     [[nodiscard]] std::variant<Submission, Failure> copy(ImageReadback description);
     [[nodiscard]] std::variant<Submission, Failure> post(PostProcess description);
+    [[nodiscard]] std::variant<std::monostate, Failure> presentation_ready();
+    [[nodiscard]] std::variant<GraphicsUse, Failure> prepare_frame(ImageFrame description);
+    void record_frame(const PostDraw &draw) const;
+    [[nodiscard]] Submission submitted_frame(const GraphicsUse &use) noexcept;
     [[nodiscard]] std::variant<bool, Failure> completed(const Submission &submission);
     [[nodiscard]] std::variant<std::monostate, Failure>
     write(detail::ResourceKey key, VkDeviceSize offset, std::span<const std::byte> bytes);

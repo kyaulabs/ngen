@@ -4,6 +4,7 @@
 #include <optional>
 
 namespace ngen::render {
+struct GraphicsUse;
 // Context-owned; every borrowed handle expires only after this object is closed.
 class Presentation {
   public:
@@ -12,7 +13,7 @@ class Presentation {
     Presentation(const Presentation &) = delete;
     Presentation &operator=(const Presentation &) = delete;
     void initialize();
-    [[nodiscard]] FrameOutcome draw();
+    [[nodiscard]] FrameResult draw(const ImageFrame *source, const GraphicsUse *use);
     [[nodiscard]] PresentationState state() const { return {generation_, extent_}; }
     [[nodiscard]] VkResult close(VkResult device_idle) noexcept;
 
@@ -40,7 +41,7 @@ class Presentation {
     void release_acquired();
     void destroy_swapchain() noexcept;
     void rebuild(const SurfacePlan &plan);
-    void record(Frame &frame, const Image &image);
+    void record(Frame &frame, const Image &image, const ImageFrame *source, const GraphicsUse *use);
     Context &owner_;
     PFN_vkReleaseSwapchainImagesEXT release_images_{};
     VkSwapchainKHR swapchain_{};
@@ -50,6 +51,7 @@ class Presentation {
     std::size_t frame_index_{};
     VkExtent2D drawable_{};
     VkExtent2D extent_{};
+    VkFormat format_{};
     std::uint64_t generation_{};
     bool rebuild_requested_{true};
 };

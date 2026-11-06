@@ -7,6 +7,7 @@
 #include <array>
 #include <cstdio>
 #include <cstring>
+#include <optional>
 #include <stdexcept>
 #include <vector>
 
@@ -344,19 +345,42 @@ SurfaceSelection Context::inspect_surface() const {
                          {static_cast<std::uint32_t>(width), static_cast<std::uint32_t>(height)});
 }
 std::variant<FrameOutcome, Failure> Context::render_frame() {
+    auto result = draw_frame(nullptr);
+    if (const auto *failure = std::get_if<Failure>(&result))
+        return *failure;
+    return std::get<FrameResult>(result).outcome;
+}
+std::variant<FrameResult, Failure> Context::draw_frame(const ImageFrame *source) {
     if (!device_ || !presentation_enabled_ || presentation_failed_)
         return Failure{"presentation is unavailable; create a presentation-enabled context"};
     try {
+        if (resources_) {
+            const auto ready = resources_->presentation_ready();
+            if (const auto *failure = std::get_if<Failure>(&ready))
+                return *failure;
+        }
+        std::optional<GraphicsUse> use;
+        if (source) {
+            if (!resources_)
+                return Failure{"sampled image resources are unavailable"};
+            auto prepared = resources_->prepare_frame(*source);
+            if (const auto *failure = std::get_if<Failure>(&prepared))
+                return *failure;
+            use = std::get<GraphicsUse>(prepared);
+        }
         if (!presentation_) {
             auto presentation = std::make_unique<Presentation>(*this);
             presentation->initialize();
             presentation_ = std::move(presentation);
         }
-        return presentation_->draw();
+        return presentation_->draw(source, use ? &*use : nullptr);
     } catch (const std::exception &error) {
         presentation_failed_ = true;
         return Failure{error.what()};
     }
+}
+std::variant<FrameResult, Failure> Context::render_frame(ImageFrame source) {
+    return draw_frame(&source);
 }
 std::variant<Buffer, Failure> Context::create_buffer(BufferDescription description) {
     if (!device_)

@@ -4,7 +4,8 @@
 #include <string_view>
 
 namespace ngen::probe {
-bool presentation(render::Context &context, const std::function<bool()> &step) {
+bool presentation(render::Context &context, const std::function<bool()> &step,
+                  const render::Image *source) {
     if (!SDL_ShowWindow(context.window())) {
         std::fprintf(stderr, "Vulkan probe show window: %s\n", SDL_GetError());
         return false;
@@ -36,6 +37,14 @@ bool presentation(render::Context &context, const std::function<bool()> &step) {
                state.extent.width == static_cast<std::uint32_t>(pixels_wide) &&
                state.extent.height == static_cast<std::uint32_t>(pixels_high);
     };
+    const auto draw = [&]() -> std::variant<render::FrameOutcome, render::Failure> {
+        if (!source)
+            return context.render_frame();
+        const auto frame = context.render_frame({*source, 1, false});
+        if (const auto *failure = std::get_if<render::Failure>(&frame))
+            return *failure;
+        return std::get<render::FrameResult>(frame).outcome;
+    };
     const auto start = SDL_GetTicks();
     while ((queued < 96 || resize_stage != 3) && SDL_GetTicks() - start < 10000) {
         SDL_Event event{};
@@ -45,7 +54,7 @@ bool presentation(render::Context &context, const std::function<bool()> &step) {
         }
         if (step && !step())
             return false;
-        const auto frame = context.render_frame();
+        const auto frame = draw();
         if (const auto *failure = std::get_if<render::Failure>(&frame)) {
             std::fprintf(stderr, "Vulkan presentation: %s\n", failure->message.c_str());
             return false;
@@ -57,7 +66,7 @@ bool presentation(render::Context &context, const std::function<bool()> &step) {
                 std::fputs("Vulkan probe: minimize was not observed\n", stderr);
                 return false;
             }
-            const auto paused = context.render_frame();
+            const auto paused = draw();
             if (!std::holds_alternative<render::FrameOutcome>(paused) ||
                 std::get<render::FrameOutcome>(paused) != render::FrameOutcome::skipped) {
                 std::fputs("Vulkan probe: minimized window did not suspend rendering\n", stderr);
@@ -86,9 +95,9 @@ bool presentation(render::Context &context, const std::function<bool()> &step) {
     }
     const auto state = context.presentation_state();
     std::printf("queued_frames=%u swapchain_generations=%llu verified_resizes=%u "
-                "minimize_verified=%u\n",
+                "minimize_verified=%u sampled_source=%u\n",
                 queued, static_cast<unsigned long long>(state.generation),
-                resize_stage == 3 ? 2U : 0U, minimized_verified ? 1U : 0U);
+                resize_stage == 3 ? 2U : 0U, minimized_verified ? 1U : 0U, source ? 1U : 0U);
     return queued >= 96 && resize_stage == 3;
 }
 } // namespace ngen::probe

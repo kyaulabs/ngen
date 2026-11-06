@@ -321,6 +321,7 @@ bool check_image_scene(ngen::render::Context &context, const ngen::render::Buffe
         return false;
     auto staging = std::get<ngen::render::Buffer>(std::move(created));
     unsigned replacements = 0;
+    ngen::render::Image presented;
     bool warmed = false;
     ngen::render::ResourceStatistics baseline{};
     ngen::render::ResourceStatistics latest{};
@@ -345,7 +346,6 @@ bool check_image_scene(ngen::render::Context &context, const ngen::render::Buffe
         const auto downloaded = context.copy_from_image({image, readback});
         if (failed(downloaded, "scene image readback"))
             return false;
-        image = {};
         if (!wait_submission(context, std::get<ngen::render::Submission>(downloaded)))
             return false;
         std::array<std::byte, expected.size()> actual{};
@@ -353,6 +353,7 @@ bool check_image_scene(ngen::render::Context &context, const ngen::render::Buffe
             std::fputs("Vulkan resource: scene replacement returned stale image pixels\n", stderr);
             return false;
         }
+        presented = std::move(image);
         const auto sampled = context.resource_statistics();
         if (failed(sampled, "scene statistics"))
             return false;
@@ -373,7 +374,12 @@ bool check_image_scene(ngen::render::Context &context, const ngen::render::Buffe
     if (!replace())
         return false;
     warmed = true;
-    if (!ngen::probe::presentation(context, replace))
+#if defined(NGEN_POST_TESTS)
+    const auto *source = &presented;
+#else
+    const ngen::render::Image *source = nullptr;
+#endif
+    if (!ngen::probe::presentation(context, replace, source))
         return false;
     std::printf(
         "presented_image_replacements=%u vma_allocation_bytes=%llu vma_reserved_bytes=%llu\n",
@@ -599,6 +605,97 @@ bool check_fxaa(ngen::render::Context &context, const ngen::render::Buffer &read
     std::printf("fxaa_diagonal=1 fxaa_softened_pixels=%zu fxaa_flat_regions=1\n", softened);
     return true;
 }
+bool check_image_presentation(ngen::render::Context &context) {
+    SDL_ShowWindow(context.window());
+    auto created = context.create_image({{2, 2}, VK_FORMAT_R16G16B16A16_SFLOAT});
+    if (failed(created, "present HDR source"))
+        return false;
+    auto source = std::get<ngen::render::Image>(std::move(created));
+    const std::array<std::uint16_t, 16> pixels{0x3c00, 0x3800, 0x3000, 0x3c00, 0x3000, 0x3c00,
+                                               0x3800, 0x3c00, 0x3800, 0x3000, 0x3c00, 0x3c00,
+                                               0x4000, 0x4000, 0x4000, 0x3c00};
+    auto allocated = context.create_buffer(
+        {sizeof(pixels), VK_BUFFER_USAGE_TRANSFER_SRC_BIT, ngen::render::MemoryAccess::upload});
+    if (failed(allocated, "present staging"))
+        return false;
+    auto staging = std::get<ngen::render::Buffer>(std::move(allocated));
+    if (failed(staging.write(0, std::as_bytes(std::span(pixels))), "present pixels"))
+        return false;
+    const auto upload = context.copy_to_image({staging, source});
+    if (failed(upload, "present source upload"))
+        return false;
+    {
+        auto pending_created =
+            context.create_buffer({sizeof(pixels), VK_BUFFER_USAGE_TRANSFER_DST_BIT,
+                                   ngen::render::MemoryAccess::readback});
+        if (failed(pending_created, "external wait guard target"))
+            return false;
+        auto pending_target = std::get<ngen::render::Buffer>(std::move(pending_created));
+        Gate external(context);
+        const auto blocked = when_ready([&] {
+            return context.copy_buffer(
+                {staging, pending_target, sizeof(pixels), {external.handle, 1}});
+        });
+        if (failed(blocked, "unresolved queue dependency"))
+            return false;
+        external.submitted = true;
+        const auto clear_rejected = context.render_frame();
+        if (!std::holds_alternative<ngen::render::Failure>(clear_rejected)) {
+            std::fputs("Vulkan resource: clear WSI admitted an unresolved queue dependency\n",
+                       stderr);
+            return false;
+        }
+        const auto rejected = context.render_frame({source, 1, false});
+        const auto *failure = std::get_if<ngen::render::Failure>(&rejected);
+        if (!failure ||
+            failure->message !=
+                "presentation cannot queue behind unresolved external timeline dependencies") {
+            std::fputs(
+                "Vulkan resource: WSI admitted an unresolved transitive timeline dependency\n",
+                stderr);
+            return false;
+        }
+        if (!external.signal() ||
+            !wait_submission(context, std::get<ngen::render::Submission>(blocked)))
+            return false;
+        external.retired = true;
+        if (!external.close())
+            return false;
+    }
+    const auto start = SDL_GetTicks();
+    ngen::render::Submission graphics;
+    for (;;) {
+        SDL_PumpEvents();
+        const auto frame = context.render_frame({source, 1, false});
+        if (failed(frame, "tracked image presentation"))
+            return false;
+        const auto &result = std::get<ngen::render::FrameResult>(frame);
+        if (result.outcome == ngen::render::FrameOutcome::queued) {
+            graphics = result.resources;
+            break;
+        }
+        if (SDL_GetTicks() - start >= 2000) {
+            std::fputs("Vulkan resource: sampled image presentation timed out\n", stderr);
+            return false;
+        }
+        SDL_Delay(1);
+    }
+    if (graphics.serial() <= std::get<ngen::render::Submission>(upload).serial()) {
+        std::fputs("Vulkan resource: WSI graphics use did not join the resource timeline\n",
+                   stderr);
+        return false;
+    }
+    source = {};
+    if (!wait_submission(context, graphics))
+        return false;
+    const auto statistics = context.resource_statistics();
+    if (failed(statistics, "WSI source retirement") ||
+        std::get<ngen::render::ResourceStatistics>(statistics).retiring != 0)
+        return false;
+    std::puts("sampled_image_presentation=1 wsi_resource_timeline=1 wsi_source_retirement=1 "
+              "unresolved_dependency_rejected=1");
+    return true;
+}
 #endif
 } // namespace
 int main() try {
@@ -716,7 +813,8 @@ int main() try {
         return 1;
     }
 #if defined(NGEN_POST_TESTS)
-    if (!check_post(*context, readback) || !check_fxaa(*context, readback))
+    if (!check_post(*context, readback) || !check_fxaa(*context, readback) ||
+        !check_image_presentation(*context))
         return 1;
 #endif
     if (!check_mip_chain(*context, readback) || !check_hdr(*context, readback) ||

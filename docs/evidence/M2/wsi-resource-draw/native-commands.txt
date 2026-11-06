@@ -1,0 +1,31 @@
+Existing optional renderer/shader graph, C++20, real Clang 23/GCC 16 databases.
+For renderer-debug/release/asan: cmake --build --preset <preset>; ctest --preset <preset>.
+GCC: cmake --build build/renderer-gcc -j2; ctest --test-dir build/renderer-gcc --output-on-failure --no-tests=error.
+All four 8/8. Actual native image/resize/replacement:
+  timeout 50s env VK_LAYER_PATH="$PWD/build/validation-layer/usr/share/vulkan/explicit_layer.d" LD_LIBRARY_PATH="$PWD/build/validation-layer/usr/lib" ASAN_OPTIONS=detect_leaks=1:halt_on_error=1 UBSAN_OPTIONS=halt_on_error=1:print_stacktrace=1 build/<preset>/resource_probe
+Require sampled_image_presentation=1, wsi_resource_timeline=1,
+wsi_source_retirement=1, unresolved_dependency_rejected=1, 96 queued frames,
+sampled_source=1, three generations/two resizes, stable allocation/reservation.
+Wayland minimize_verified=0 is not minimization proof. Windows remains owner-only.
+
+12 affected TUs x 3 Clang configurations analyzed through actual compile databases;
+after transitive-wait admission changes, Context/resources/resource_probe rerun in
+all three. No argument/check filtering. The initial 400-second combined analysis
+batch did not complete ASan; complete final scopes are retained separately.
+
+Legacy shader-disabled graph: cmake --build build/renderer-no-shaders -j2;
+ctest --test-dir build/renderer-no-shaders --output-on-failure --no-tests=error;
+run its resource_probe with the same validation-layer environment. 7/7 plus
+actual clear/transfer/resize resource verification, not sampled shader drawing.
+CPU ctest --preset debug: 4/4. PowerShell process boundaries also pass.
+
+Native failure controls, Linux-only, process-local (source failure.cpp):
+  clang++ -std=c++20 -fsanitize=address,undefined -fno-sanitize-recover=all -shared -fPIC docs/evidence/M2/wsi-resource-draw/failure.cpp -ldl -o build/post-check/wsi-failure.so
+For submit, retirement, present:
+  timeout 45s env VK_LAYER_PATH="$PWD/build/validation-layer/usr/share/vulkan/explicit_layer.d" LD_LIBRARY_PATH="$PWD/build/validation-layer/usr/lib" ASAN_OPTIONS=detect_leaks=1:halt_on_error=1 UBSAN_OPTIONS=halt_on_error=1:print_stacktrace=1 LD_PRELOAD="$PWD/build/post-check/wsi-failure.so" NGEN_WSI_RESOURCE_FAILURE=<mode> build/renderer-asan/resource_probe
+Expected exit 1/injected marker, no unexpected validation/sanitizer/leak report.
+Preload stays after timeout via env; detector and native failure paths stay enabled.
+The real unresolved-host-wait validation failure is retained as a failed prototype,
+not a supported WSI gate or a passing check. New admission rejects direct/native
+wait options by type and pending transitive Context resource waits by runtime state.
+Resource tickets prove graphics use/completion, not presentation retirement/scanout.

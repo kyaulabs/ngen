@@ -60,6 +60,7 @@ struct Resources::Impl {
     VkDeviceSize allocated{};
     std::uint64_t submitted{};
     std::uint64_t host_acquired{};
+    std::uint64_t external_wait_submission{};
     [[nodiscard]] const Entry *find(detail::ResourceKey key) const noexcept {
         if (!allocator || key.slot >= entries.size())
             return nullptr;
@@ -198,6 +199,8 @@ struct Resources::Impl {
         resource_check(vkQueueSubmit2(queue, 1, &info, VK_NULL_HANDLE), "submit transfer");
         frame.submitted = next;
         submitted = next;
+        if (dependency.semaphore)
+            external_wait_submission = next;
         return next;
     }
 };
@@ -697,6 +700,44 @@ std::variant<Submission, Failure> Resources::post(PostProcess description) {
     target.last_use = next;
     target.image_layout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
     return Submission{weak_from_this(), next};
+}
+std::variant<std::monostate, Failure> Resources::presentation_ready() {
+    if (impl_->collect() < impl_->external_wait_submission)
+        return Failure{
+            "presentation cannot queue behind unresolved external timeline dependencies"};
+    return std::monostate{};
+}
+std::variant<GraphicsUse, Failure> Resources::prepare_frame(ImageFrame description) {
+    if (description.source.owner_.lock().get() != this)
+        return Failure{"frame image belongs to another context"};
+    const auto key = description.source.key_;
+    if (!image_native(key))
+        return Failure{"frame image is stale or closed"};
+    if (!std::isfinite(description.exposure) || description.exposure < 0 ||
+        description.exposure > 64)
+        return Failure{"frame exposure must be finite in 0..64"};
+    if (impl_->submitted == UINT64_MAX)
+        return Failure{"resource submission counter exhausted"};
+    const auto &entry = impl_->entries[key.slot];
+    if (entry.aspect != VK_IMAGE_ASPECT_COLOR_BIT || entry.layers != 1 ||
+        !entry.linear_filterable || (entry.image_usage & VK_IMAGE_USAGE_SAMPLED_BIT) == 0 ||
+        entry.image_layout != VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL)
+        return Failure{"frame image must be initialized filterable 2D color"};
+    if (!impl_->post_pipeline)
+        impl_->post_pipeline = std::make_unique<PostPipeline>(impl_->device);
+    return GraphicsUse{key,
+                       entry.image,
+                       entry.view,
+                       entry.image_extent,
+                       entry.mip_levels,
+                       impl_->timeline,
+                       impl_->submitted + 1};
+}
+void Resources::record_frame(const PostDraw &draw) const { impl_->post_pipeline->record(draw); }
+Submission Resources::submitted_frame(const GraphicsUse &use) noexcept {
+    impl_->entries[use.key.slot].last_use = use.serial;
+    impl_->submitted = use.serial;
+    return Submission{weak_from_this(), use.serial};
 }
 std::variant<bool, Failure> Resources::completed(const Submission &submission) {
     if (submission.owner_.lock().get() != this || submission.value_ == 0 ||
