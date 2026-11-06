@@ -118,4 +118,13 @@ struct ImageReadback {
     const Buffer &destination;
     TimelineWait wait{};
 };
+// Distinct initialized filterable 2D source and single-mip RGBA8 color target.
+// Returns explicit backpressure; no owner-thread waiting or ordinary device idle.
+struct PostProcess {
+    const Image &source;
+    const Image &destination;
+    float exposure{1}; // Finite linear multiplier in 0..64.
+    bool fxaa{true};
+    TimelineWait wait{};
+};
 } // namespace ngen::render

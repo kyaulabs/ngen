@@ -41,6 +41,8 @@ int main() {
     report(
         "CullConstants", sizeof(CullConstants), alignof(CullConstants),
         {{"planes", offsetof(CullConstants, planes)}, {"count", offsetof(CullConstants, count)}});
+    report("PostConstants", sizeof(PostConstants), alignof(PostConstants),
+           {{"exposureFxaaTexel", offsetof(PostConstants, exposureFxaaTexel)}});
     report("Vertex", sizeof(Vertex), alignof(Vertex),
            {{"position", offsetof(Vertex, position)},
             {"normal", offsetof(Vertex, normal)},

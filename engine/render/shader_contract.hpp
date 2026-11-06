@@ -43,6 +43,10 @@ struct alignas(16) MaterialConstants {
     std::array<std::uint32_t, 4> flags{}; // opaque=0, mask=1, blend=2 in flags[0].
 };
 
+struct alignas(16) PostConstants {
+    Float4 exposureFxaaTexel{1, 1, 1, 1};
+};
+
 struct alignas(16) CullConstants {
     std::array<Float4, 6> planes{};
     std::uint32_t count{};
@@ -62,6 +66,7 @@ static_assert(sizeof(LocalLight) == 32);
 static_assert(sizeof(LightConstants) == 528);
 static_assert(sizeof(MaterialConstants) == 64);
 static_assert(sizeof(CullConstants) == 112);
+static_assert(sizeof(PostConstants) == 16);
 static_assert(sizeof(Vertex) == 48);
 static_assert(std::is_standard_layout_v<FrameConstants> &&
               std::is_trivially_copyable_v<FrameConstants>);
@@ -69,6 +74,8 @@ static_assert(std::is_standard_layout_v<LightConstants> &&
               std::is_trivially_copyable_v<LightConstants>);
 static_assert(std::is_standard_layout_v<MaterialConstants> &&
               std::is_trivially_copyable_v<MaterialConstants>);
+static_assert(std::is_standard_layout_v<PostConstants> &&
+              std::is_trivially_copyable_v<PostConstants>);
 static_assert(std::is_standard_layout_v<CullConstants> &&
               std::is_trivially_copyable_v<CullConstants>);
 static_assert(std::is_standard_layout_v<Vertex> && std::is_trivially_copyable_v<Vertex>);

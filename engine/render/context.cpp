@@ -407,6 +407,15 @@ std::variant<Submission, Failure> Context::copy_from_image(ImageReadback descrip
         return Failure{error.what()};
     }
 }
+std::variant<Submission, Failure> Context::post_process(PostProcess description) {
+    if (!device_ || !resources_)
+        return Failure{"resource context is unavailable"};
+    try {
+        return resources_->post(description);
+    } catch (const std::exception &error) {
+        return Failure{error.what()};
+    }
+}
 std::variant<bool, Failure> Context::submission_complete(const Submission &submission) {
     if (!device_ || !resources_)
         return Failure{"resource context is unavailable"};

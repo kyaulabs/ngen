@@ -1,7 +1,9 @@
+#include "render/post.hpp"
 #include "render/resources_internal.hpp"
 #include <algorithm>
 #include <array>
 #include <bit>
+#include <cmath>
 #include <cstdio>
 #include <cstring>
 #include <stdexcept>
@@ -32,6 +34,8 @@ struct Resources::Impl {
         std::uint32_t texel_bytes{4};
         std::uint32_t layers{1};
         VkImageAspectFlags aspect{VK_IMAGE_ASPECT_COLOR_BIT};
+        VkFormat format{};
+        bool linear_filterable{};
         VkImageLayout image_layout{VK_IMAGE_LAYOUT_UNDEFINED};
         MemoryAccess memory{MemoryAccess::device};
         std::uint64_t last_use{};
@@ -43,6 +47,7 @@ struct Resources::Impl {
         VkCommandBuffer commands{};
         std::uint64_t submitted{};
     };
+    std::unique_ptr<PostPipeline> post_pipeline;
     VmaAllocator allocator{};
     VkDevice device{};
     VkPhysicalDevice physical{};
@@ -116,8 +121,8 @@ struct Resources::Impl {
         memory.sType = VK_STRUCTURE_TYPE_MEMORY_BARRIER_2;
         memory.srcStageMask = VK_PIPELINE_STAGE_2_ALL_COMMANDS_BIT;
         memory.srcAccessMask = VK_ACCESS_2_MEMORY_READ_BIT | VK_ACCESS_2_MEMORY_WRITE_BIT;
-        memory.dstStageMask = VK_PIPELINE_STAGE_2_COPY_BIT;
-        memory.dstAccessMask = VK_ACCESS_2_TRANSFER_READ_BIT | VK_ACCESS_2_TRANSFER_WRITE_BIT;
+        memory.dstStageMask = VK_PIPELINE_STAGE_2_ALL_COMMANDS_BIT;
+        memory.dstAccessMask = VK_ACCESS_2_MEMORY_READ_BIT | VK_ACCESS_2_MEMORY_WRITE_BIT;
         VkDependencyInfo dependency{};
         dependency.sType = VK_STRUCTURE_TYPE_DEPENDENCY_INFO;
         dependency.memoryBarrierCount = 1;
@@ -454,6 +459,9 @@ std::variant<Image, Failure> Resources::create(ImageDescription description) {
     free->texel_bytes = texel_bytes;
     free->layers = layers;
     free->aspect = aspect;
+    free->format = description.format;
+    free->linear_filterable =
+        (properties.optimalTilingFeatures & VK_FORMAT_FEATURE_SAMPLED_IMAGE_FILTER_LINEAR_BIT) != 0;
     free->size = image_bytes;
     free->view = view;
     free->allocation = memory;
@@ -603,6 +611,93 @@ std::variant<Submission, Failure> Resources::copy(ImageReadback description) {
     target.last_use = next;
     return Submission{weak_from_this(), next};
 }
+std::variant<Submission, Failure> Resources::post(PostProcess description) {
+    if (description.source.owner_.lock().get() != this ||
+        description.destination.owner_.lock().get() != this)
+        return Failure{"post resources belong to another context"};
+    const auto source_key = description.source.key_;
+    const auto target_key = description.destination.key_;
+    if (!image_native(source_key) || !image_native(target_key) ||
+        source_key.slot == target_key.slot)
+        return Failure{"post requires distinct live images"};
+    auto &source = impl_->entries[source_key.slot];
+    auto &target = impl_->entries[target_key.slot];
+    if (!std::isfinite(description.exposure) || description.exposure < 0 ||
+        description.exposure > 64)
+        return Failure{"post exposure must be finite in 0..64"};
+    if (source.aspect != VK_IMAGE_ASPECT_COLOR_BIT || source.layers != 1 ||
+        !source.linear_filterable || (source.image_usage & VK_IMAGE_USAGE_SAMPLED_BIT) == 0 ||
+        source.image_layout != VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL)
+        return Failure{"post source must be an initialized filterable 2D color image"};
+    if (target.layers != 1 || target.mip_levels != 1 ||
+        (target.format != VK_FORMAT_R8G8B8A8_UNORM && target.format != VK_FORMAT_R8G8B8A8_SRGB) ||
+        (target.image_usage & VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT) == 0)
+        return Failure{"post target must be a single-mip RGBA8 color attachment"};
+    if (!impl_->post_pipeline)
+        impl_->post_pipeline = std::make_unique<PostPipeline>(impl_->device);
+    auto recording = impl_->begin(description.wait);
+    if (const auto *failure = std::get_if<Failure>(&recording))
+        return *failure;
+    auto &frame = *std::get<Impl::Frame *>(recording);
+    VkImageMemoryBarrier2 input{};
+    input.image = source.image;
+    input.oldLayout = source.image_layout;
+    input.newLayout = source.image_layout;
+    input.subresourceRange.aspectMask = source.aspect;
+    input.subresourceRange.layerCount = source.layers;
+    input.srcStageMask = VK_PIPELINE_STAGE_2_ALL_COMMANDS_BIT;
+    input.srcAccessMask = VK_ACCESS_2_MEMORY_READ_BIT | VK_ACCESS_2_MEMORY_WRITE_BIT;
+    input.dstStageMask = VK_PIPELINE_STAGE_2_FRAGMENT_SHADER_BIT;
+    input.dstAccessMask = VK_ACCESS_2_SHADER_SAMPLED_READ_BIT;
+    Impl::image_barrier(frame, input, source.mip_levels);
+    VkImageMemoryBarrier2 output{};
+    output.image = target.image;
+    output.oldLayout = target.image_layout;
+    output.newLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+    output.subresourceRange.aspectMask = target.aspect;
+    output.subresourceRange.layerCount = target.layers;
+    output.srcStageMask = target.image_layout == VK_IMAGE_LAYOUT_UNDEFINED
+                              ? VK_PIPELINE_STAGE_2_NONE
+                              : VK_PIPELINE_STAGE_2_ALL_COMMANDS_BIT;
+    output.srcAccessMask = target.image_layout == VK_IMAGE_LAYOUT_UNDEFINED
+                               ? VK_ACCESS_2_NONE
+                               : VK_ACCESS_2_MEMORY_READ_BIT | VK_ACCESS_2_MEMORY_WRITE_BIT;
+    output.dstStageMask = VK_PIPELINE_STAGE_2_COLOR_ATTACHMENT_OUTPUT_BIT;
+    output.dstAccessMask = VK_ACCESS_2_COLOR_ATTACHMENT_WRITE_BIT;
+    Impl::image_barrier(frame, output, target.mip_levels);
+    VkRenderingAttachmentInfo color{};
+    color.sType = VK_STRUCTURE_TYPE_RENDERING_ATTACHMENT_INFO;
+    color.imageView = target.view;
+    color.imageLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+    color.loadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
+    color.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
+    VkRenderingInfo rendering{};
+    rendering.sType = VK_STRUCTURE_TYPE_RENDERING_INFO;
+    rendering.renderArea.extent = target.image_extent;
+    rendering.layerCount = 1;
+    rendering.colorAttachmentCount = 1;
+    rendering.pColorAttachments = &color;
+    vkCmdBeginRendering(frame.commands, &rendering);
+    const shader::PostConstants constants{{description.exposure, description.fxaa ? 1.0F : 0.0F,
+                                           1.0F / static_cast<float>(source.image_extent.width),
+                                           1.0F / static_cast<float>(source.image_extent.height)}};
+    impl_->post_pipeline->record({frame.commands,
+                                  static_cast<std::size_t>(&frame - impl_->frames.data()),
+                                  target.format, source.view, target.image_extent, constants});
+    vkCmdEndRendering(frame.commands);
+    output.oldLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+    output.newLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+    output.srcStageMask = VK_PIPELINE_STAGE_2_COLOR_ATTACHMENT_OUTPUT_BIT;
+    output.srcAccessMask = VK_ACCESS_2_COLOR_ATTACHMENT_WRITE_BIT;
+    output.dstStageMask = VK_PIPELINE_STAGE_2_ALL_COMMANDS_BIT;
+    output.dstAccessMask = VK_ACCESS_2_SHADER_SAMPLED_READ_BIT;
+    Impl::image_barrier(frame, output, target.mip_levels);
+    const auto next = impl_->submit(frame, description.wait);
+    source.last_use = next;
+    target.last_use = next;
+    target.image_layout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+    return Submission{weak_from_this(), next};
+}
 std::variant<bool, Failure> Resources::completed(const Submission &submission) {
     if (submission.owner_.lock().get() != this || submission.value_ == 0 ||
         submission.value_ > impl_->submitted)
@@ -682,6 +777,10 @@ void Resources::close() noexcept {
         if (frame.pool)
             vkDestroyCommandPool(impl_->device, frame.pool, nullptr);
         frame = {};
+    }
+    if (impl_->post_pipeline) {
+        impl_->post_pipeline->close();
+        impl_->post_pipeline.reset();
     }
     for (auto &entry : impl_->entries)
         impl_->destroy(entry);

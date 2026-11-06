@@ -2,6 +2,7 @@
 import hashlib
 import json
 import os
+import re
 from pathlib import Path
 import shutil
 import struct
@@ -37,10 +38,12 @@ class ShaderCompilation(unittest.TestCase):
 
     def test_compile_and_validate_finite_shader_set(self):
         self.assertEqual({x.name for x in self.output.glob("*.spv")},
-                         {"cull.spv", "pbr-vertex.spv", "pbr-fragment.spv"})
+                         {"cull.spv", "pbr-vertex.spv", "pbr-fragment.spv", "post-vertex.spv", "post-fragment.spv"})
         for name, stage, entry in (("cull", "compute", "cullMain"),
                                    ("pbr-vertex", "vertex", "vertexMain"),
-                                   ("pbr-fragment", "fragment", "fragmentMain")):
+                                   ("pbr-fragment", "fragment", "fragmentMain"),
+                                   ("post-vertex", "vertex", "postVertex"),
+                                   ("post-fragment", "fragment", "postFragment")):
             with self.subTest(stage=stage):
                 module = (self.output / (name + ".spv")).read_bytes()
                 self.assertEqual(struct.unpack_from("<II", module), (0x07230203, 0x00010500))
@@ -93,12 +96,12 @@ class ShaderCompilation(unittest.TestCase):
                     self.assertEqual(element["uniformStride"], layouts[element["elementType"]["name"]]["size"])
             checked.add(name)
 
-        for name in ("cull", "pbr-vertex", "pbr-fragment"):
+        for name in ("cull", "pbr-vertex", "pbr-fragment", "post-vertex", "post-fragment"):
             reflected = json.loads((self.output / (name + ".reflection.json")).read_text())
             for parameter in reflected["parameters"]:
                 if parameter["type"]["kind"] == "constantBuffer":
                     check_struct(parameter["type"]["elementType"])
-        self.assertEqual(checked, {"FrameConstants", "LightConstants", "LocalLight", "MaterialConstants", "CullConstants"})
+        self.assertEqual(checked, {"FrameConstants", "LightConstants", "LocalLight", "MaterialConstants", "CullConstants", "PostConstants"})
         vertex = json.loads((self.output / "pbr-vertex.reflection.json").read_text())
         fields = vertex["entryPoints"][0]["parameters"][0]["type"]["fields"]
         self.assertEqual([(x["name"], x["binding"]["index"], x["type"]["elementCount"]) for x in fields],
@@ -120,6 +123,17 @@ class ShaderCompilation(unittest.TestCase):
         for shader in metadata["shaders"]:
             self.assertEqual(shader["sha256"], hashlib.sha256((self.output / (shader["name"] + ".spv")).read_bytes()).hexdigest())
             self.assertEqual(shader["reflection_sha256"], hashlib.sha256((self.output / (shader["name"] + ".reflection.json")).read_bytes()).hexdigest())
+
+    def test_embedded_runtime_modules_match_validated_artifact_bytes(self):
+        header = self.output / "ngen_shader_code.hpp"
+        self.assertTrue(header.is_file(), "shipping shader modules were not embedded")
+        metadata = json.loads((self.output / "manifest.json").read_text())
+        self.assertEqual(metadata["runtime_header_sha256"], hashlib.sha256(header.read_bytes()).hexdigest())
+        modules = {name: bytes().join(struct.pack("<I", int(word, 16)) for word in re.findall(r"0x[0-9a-f]{8}", words))
+                   for name, words in re.findall(r"std::array<std::uint32_t, \d+> (\w+) = \{([^}]+)\};", header.read_text())}
+        self.assertEqual(set(modules), {shader["name"].replace("-", "_") for shader in metadata["shaders"]})
+        for shader in metadata["shaders"]:
+            self.assertEqual(modules[shader["name"].replace("-", "_")], (self.output / (shader["name"] + ".spv")).read_bytes())
 
     def test_oversized_source_is_rejected_before_publication(self):
         with tempfile.TemporaryDirectory(prefix="ngen shader size ") as directory:
@@ -202,6 +216,20 @@ class ShaderCompilation(unittest.TestCase):
             result = compile_shaders(source, output)
             self.assertNotEqual(result.returncode, 0, "compiler warning was silently admitted")
             self.assertIn("NGEN_SHADER_WARNING_FIXTURE", result.stderr)
+            self.assertFalse(output.exists())
+
+    def test_reject_unenabled_draw_parameters_semantic(self):
+        with tempfile.TemporaryDirectory(prefix="ngen post baseline ") as directory:
+            source = Path(directory) / "source"
+            shutil.copytree(ROOT / "shaders", source)
+            post = source / "post.slang"
+            text = post.read_text()
+            self.assertIn("SV_VulkanVertexID", text)
+            post.write_text(text.replace("SV_VulkanVertexID", "SV_VertexID"))
+            output = Path(directory) / "package"
+            result = compile_shaders(source, output)
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn("unsupported SPIR-V capability 4427", result.stderr)
             self.assertFalse(output.exists())
 
     def test_reject_unenabled_float64_without_publishing_package(self):

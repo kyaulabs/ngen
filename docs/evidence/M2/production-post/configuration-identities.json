@@ -1,0 +1,22 @@
+{
+  "renderer-asan": {
+    "compile_db_sha256": "70d755fb0d068f4af29bfeb6dfd3ff6fec81e56f7513ae24617fe0490d45ccb0",
+    "header_sha256": "b2a82a1588348f846529d9d61a57e46b26b2dde030273e4edec2ca1b7179a49b",
+    "manifest_sha256": "76fdee97cded8dd9d3792fd031b126db7e781cfba098919acb13c31c688c7867"
+  },
+  "renderer-debug": {
+    "compile_db_sha256": "f71d307acb28ffd325834dcf8aa6942acbf34d445d1549a3b6fd071703d9df5d",
+    "header_sha256": "b2a82a1588348f846529d9d61a57e46b26b2dde030273e4edec2ca1b7179a49b",
+    "manifest_sha256": "76fdee97cded8dd9d3792fd031b126db7e781cfba098919acb13c31c688c7867"
+  },
+  "renderer-gcc": {
+    "compile_db_sha256": "8be6ad0a08f68abe7d34f09d9bf2c80c3b67c4ecc51b900b393abffa8970a93b",
+    "header_sha256": "b2a82a1588348f846529d9d61a57e46b26b2dde030273e4edec2ca1b7179a49b",
+    "manifest_sha256": "76fdee97cded8dd9d3792fd031b126db7e781cfba098919acb13c31c688c7867"
+  },
+  "renderer-release": {
+    "compile_db_sha256": "2294743724befe7555b26dc69430be93cacaa22f58d63f093d3ddb1a86979df4",
+    "header_sha256": "b2a82a1588348f846529d9d61a57e46b26b2dde030273e4edec2ca1b7179a49b",
+    "manifest_sha256": "76fdee97cded8dd9d3792fd031b126db7e781cfba098919acb13c31c688c7867"
+  }
+}

@@ -35,6 +35,9 @@ class Context {
     [[nodiscard]] std::variant<Submission, Failure> copy_buffer(BufferCopy description);
     [[nodiscard]] std::variant<Submission, Failure> copy_to_image(ImageUpload description);
     [[nodiscard]] std::variant<Submission, Failure> copy_from_image(ImageReadback description);
+    // Fixed asynchronous HDR -> LDR pass; warm pipelines before the measured play loop.
+    // Uses the same bounded resource command contexts, timeline and retirement as transfers.
+    [[nodiscard]] std::variant<Submission, Failure> post_process(PostProcess description);
     [[nodiscard]] std::variant<bool, Failure> submission_complete(const Submission &submission);
     [[nodiscard]] std::variant<ResourceStatistics, Failure> resource_statistics();
     // Sticky shutdown failure; validation errors are reported separately.

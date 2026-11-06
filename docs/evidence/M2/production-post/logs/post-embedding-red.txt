@@ -1,0 +1,26 @@
+Test project <REPO>/build/renderer-debug
+    Start 1: shader_offline
+1/1 Test #1: shader_offline ...................***Failed   37.90 sec
+..F..........
+======================================================================
+FAIL: test_embedded_runtime_modules_match_validated_artifact_bytes (__main__.ShaderCompilation.test_embedded_runtime_modules_match_validated_artifact_bytes)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<REPO>/tests/shaders.py", line 129, in test_embedded_runtime_modules_match_validated_artifact_bytes
+    self.assertTrue(header.is_file(), "shipping shader modules were not embedded")
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: False is not true : shipping shader modules were not embedded
+
+----------------------------------------------------------------------
+Ran 13 tests in 37.785s
+
+FAILED (failures=1)
+
+
+0% tests passed, 1 tests failed out of 1
+
+Total Test time (real) =  37.90 sec
+
+The following tests FAILED:
+	  1 - shader_offline (Failed)
+Errors while running CTest

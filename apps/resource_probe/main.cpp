@@ -1,7 +1,9 @@
 #include "probe/presentation.hpp"
 #include "render/context.hpp"
 #include <array>
+#include <cmath>
 #include <cstdio>
+#include <limits>
 #include <stdexcept>
 #include <utility>
 
@@ -12,6 +14,19 @@ bool failed(const auto &result, const char *operation) {
         return true;
     }
     return false;
+}
+// Verification may wait; production callers retain the same explicit bounded backpressure.
+std::variant<ngen::render::Submission, ngen::render::Failure> when_ready(const auto &operation) {
+    const auto started = SDL_GetTicks();
+    for (;;) {
+        auto result = operation();
+        const auto *failure = std::get_if<ngen::render::Failure>(&result);
+        if (!failure || failure->message != "transfer contexts are busy")
+            return result;
+        if (SDL_GetTicks() - started >= 2000)
+            return ngen::render::Failure{"resource command admission timed out"};
+        SDL_Delay(1);
+    }
 }
 bool wait_submission(ngen::render::Context &context, const ngen::render::Submission &submission) {
     const auto started = SDL_GetTicks();
@@ -411,6 +426,180 @@ class Gate {
     ngen::render::Context &context_;
     bool signaled_{};
 };
+#if defined(NGEN_POST_TESTS)
+bool check_post(ngen::render::Context &context, const ngen::render::Buffer &readback) {
+    auto source_created =
+        context.create_image({{2, 2},
+                              VK_FORMAT_R16G16B16A16_SFLOAT,
+                              static_cast<VkImageUsageFlags>(VK_IMAGE_USAGE_TRANSFER_DST_BIT) |
+                                  VK_IMAGE_USAGE_SAMPLED_BIT});
+    auto target_created =
+        context.create_image({{2, 2},
+                              VK_FORMAT_R8G8B8A8_UNORM,
+                              static_cast<VkImageUsageFlags>(VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT) |
+                                  VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_TRANSFER_SRC_BIT});
+    if (failed(source_created, "post HDR source") || failed(target_created, "post color target"))
+        return false;
+    auto source = std::get<ngen::render::Image>(std::move(source_created));
+    auto target = std::get<ngen::render::Image>(std::move(target_created));
+    const std::array<std::uint16_t, 16> pixels{0,      0x3000, 0x3800, 0x3c00, 0x3c00, 0x4000,
+                                               0x4400, 0x3c00, 0x4400, 0x3800, 0x3000, 0x3c00,
+                                               0x3400, 0x3c00, 0,      0x3c00};
+    const std::array<float, 12> linear{0, .125F, .5F, 1, 2, 4, 4, .5F, .125F, .25F, 1, 0};
+    auto allocated = context.create_buffer(
+        {sizeof(pixels), VK_BUFFER_USAGE_TRANSFER_SRC_BIT, ngen::render::MemoryAccess::upload});
+    if (failed(allocated, "post upload"))
+        return false;
+    auto staging = std::get<ngen::render::Buffer>(std::move(allocated));
+    if (failed(staging.write(0, std::as_bytes(std::span(pixels))), "post source pixels") ||
+        failed(context.copy_to_image({staging, source}), "post source transfer"))
+        return false;
+    if (!std::holds_alternative<ngen::render::Failure>(context.post_process({source, source})) ||
+        !std::holds_alternative<ngen::render::Failure>(
+            context.post_process({source, target, std::numeric_limits<float>::quiet_NaN()}))) {
+        std::fputs("Vulkan resource: invalid post request admitted\n", stderr);
+        return false;
+    }
+    const auto drawn = when_ready([&] { return context.post_process({source, target, 1, false}); });
+    if (failed(drawn, "tracked post draw"))
+        return false;
+    const auto copied = when_ready([&] { return context.copy_from_image({target, readback}); });
+    if (failed(copied, "post readback") ||
+        !wait_submission(context, std::get<ngen::render::Submission>(copied)))
+        return false;
+    std::array<std::byte, 16> actual{};
+    if (failed(readback.read(0, actual), "post color bytes"))
+        return false;
+    for (std::size_t pixel = 0; pixel < 4; ++pixel) {
+        for (std::size_t channel = 0; channel < 3; ++channel) {
+            const auto x = linear[pixel * 3 + channel];
+            const auto mapped = (x * (2.51F * x + .03F)) / (x * (2.43F * x + .59F) + .14F);
+            const auto expected = static_cast<int>(std::lround(mapped * 255));
+            if (std::abs(std::to_integer<int>(actual[pixel * 4 + channel]) - expected) > 1) {
+                std::fputs("Vulkan resource: actual tone-map/orientation pixels differ\n", stderr);
+                return false;
+            }
+        }
+        if (actual[pixel * 4 + 3] != std::byte{255})
+            return false;
+    }
+    auto srgb_created =
+        context.create_image({{2, 2},
+                              VK_FORMAT_R8G8B8A8_SRGB,
+                              static_cast<VkImageUsageFlags>(VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT) |
+                                  VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_TRANSFER_SRC_BIT});
+    if (failed(srgb_created, "post sRGB target"))
+        return false;
+    auto srgb = std::get<ngen::render::Image>(std::move(srgb_created));
+    if (failed(when_ready([&] { return context.post_process({source, srgb, .5F, false}); }),
+               "post exposure/sRGB draw"))
+        return false;
+    const auto srgb_copy = when_ready([&] { return context.copy_from_image({srgb, readback}); });
+    if (failed(srgb_copy, "post sRGB readback") ||
+        !wait_submission(context, std::get<ngen::render::Submission>(srgb_copy)) ||
+        failed(readback.read(0, actual), "post sRGB bytes"))
+        return false;
+    for (std::size_t pixel = 0; pixel < 4; ++pixel)
+        for (std::size_t channel = 0; channel < 3; ++channel) {
+            const auto x = linear[pixel * 3 + channel] * .5F;
+            const auto mapped = (x * (2.51F * x + .03F)) / (x * (2.43F * x + .59F) + .14F);
+            const auto encoded = mapped <= .0031308F
+                                     ? 12.92F * mapped
+                                     : 1.055F * std::pow(mapped, 1.0F / 2.4F) - .055F;
+            if (std::abs(std::to_integer<int>(actual[pixel * 4 + channel]) -
+                         static_cast<int>(std::lround(encoded * 255))) > 1) {
+                std::fputs("Vulkan resource: post exposure or single sRGB encoding differs\n",
+                           stderr);
+                return false;
+            }
+        }
+    srgb = {};
+    Gate gate(context);
+    const auto held = when_ready(
+        [&] { return context.post_process({source, target, 1, false, {gate.handle, 1}}); });
+    if (failed(held, "gated post draw"))
+        return false;
+    gate.submitted = true;
+    const auto pending = std::get<ngen::render::Submission>(held);
+    source = {};
+    target = {};
+    const auto statistics = context.resource_statistics();
+    if (failed(statistics, "pending graphics retirement") ||
+        std::get<ngen::render::ResourceStatistics>(statistics).retiring != 2) {
+        std::fputs("Vulkan resource: graphics release did not retain both images\n", stderr);
+        return false;
+    }
+    if (!gate.signal() || !wait_submission(context, pending))
+        return false;
+    gate.retired = true;
+    const auto finished = context.resource_statistics();
+    if (failed(finished, "completed graphics retirement") ||
+        std::get<ngen::render::ResourceStatistics>(finished).retiring != 0 || !gate.close())
+        return false;
+    std::puts("tracked_post_draw=1 hdr_tone_map_pixels=4 asymmetric_orientation=1 exposure_srgb=1 "
+              "graphics_retirement=1");
+    return true;
+}
+bool check_fxaa(ngen::render::Context &context, const ngen::render::Buffer &readback) {
+    auto source_created =
+        context.create_image({{8, 8},
+                              VK_FORMAT_R16G16B16A16_SFLOAT,
+                              static_cast<VkImageUsageFlags>(VK_IMAGE_USAGE_TRANSFER_DST_BIT) |
+                                  VK_IMAGE_USAGE_SAMPLED_BIT});
+    auto target_created =
+        context.create_image({{8, 8},
+                              VK_FORMAT_R8G8B8A8_UNORM,
+                              static_cast<VkImageUsageFlags>(VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT) |
+                                  VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_TRANSFER_SRC_BIT});
+    if (failed(source_created, "AA source") || failed(target_created, "AA target"))
+        return false;
+    auto source = std::get<ngen::render::Image>(std::move(source_created));
+    auto target = std::get<ngen::render::Image>(std::move(target_created));
+    std::array<std::uint16_t, 256> pixels{};
+    for (std::size_t y = 0; y < 8; ++y)
+        for (std::size_t x = 0; x < 8; ++x) {
+            for (std::size_t channel = 0; channel < 3; ++channel)
+                pixels[(y * 8 + x) * 4 + channel] = x <= y ? 0x3c00 : 0;
+            pixels[(y * 8 + x) * 4 + 3] = 0x3c00;
+        }
+    auto allocated = context.create_buffer(
+        {sizeof(pixels), VK_BUFFER_USAGE_TRANSFER_SRC_BIT, ngen::render::MemoryAccess::upload});
+    if (failed(allocated, "AA upload allocation"))
+        return false;
+    auto staging = std::get<ngen::render::Buffer>(std::move(allocated));
+    if (failed(staging.write(0, std::as_bytes(std::span(pixels))), "AA staging") ||
+        failed(context.copy_to_image({staging, source}), "AA source upload"))
+        return false;
+    std::array<std::array<std::byte, 256>, 2> results{};
+    for (std::size_t mode = 0; mode < 2; ++mode) {
+        if (failed(when_ready([&] { return context.post_process({source, target, 1, mode != 0}); }),
+                   "AA draw"))
+            return false;
+        const auto copied = when_ready([&] { return context.copy_from_image({target, readback}); });
+        if (failed(copied, "AA readback") ||
+            !wait_submission(context, std::get<ngen::render::Submission>(copied)) ||
+            failed(readback.read(0, results[mode]), "AA pixels"))
+            return false;
+    }
+    std::size_t softened = 0;
+    for (std::size_t pixel = 0; pixel < 64; ++pixel) {
+        const auto before = std::to_integer<unsigned>(results[0][pixel * 4]);
+        const auto after = std::to_integer<unsigned>(results[1][pixel * 4]);
+        if (after > 0 && after < before)
+            ++softened;
+        if (results[1][pixel * 4 + 3] != std::byte{255})
+            return false;
+    }
+    if (softened < 4 || results[0][28] != results[1][28] || results[0][224] != results[1][224]) {
+        std::fputs(
+            "Vulkan resource: FXAA did not soften diagonal edges while preserving flat regions\n",
+            stderr);
+        return false;
+    }
+    std::printf("fxaa_diagonal=1 fxaa_softened_pixels=%zu fxaa_flat_regions=1\n", softened);
+    return true;
+}
+#endif
 } // namespace
 int main() try {
     auto creation = ngen::render::Context::create({true, false, true});
@@ -526,6 +715,10 @@ int main() try {
         std::fputs("Vulkan resource: completed transfer did not reclaim safely\n", stderr);
         return 1;
     }
+#if defined(NGEN_POST_TESTS)
+    if (!check_post(*context, readback) || !check_fxaa(*context, readback))
+        return 1;
+#endif
     if (!check_mip_chain(*context, readback) || !check_hdr(*context, readback) ||
         !check_depth(*context, readback) || !check_cube(*context, readback) ||
         !check_capacity(*context) || !check_replacement(*context, readback))

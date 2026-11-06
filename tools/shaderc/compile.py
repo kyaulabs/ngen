@@ -11,7 +11,9 @@ import tempfile
 
 ENTRIES = (("cull", "cull", "compute", "cullMain"),
            ("pbr-vertex", "pbr", "vertex", "vertexMain"),
-           ("pbr-fragment", "pbr", "fragment", "fragmentMain"))
+           ("pbr-fragment", "pbr", "fragment", "fragmentMain"),
+           ("post-vertex", "post", "vertex", "postVertex"),
+           ("post-fragment", "post", "fragment", "postFragment"))
 MAX_ARTIFACT_BYTES = 4 * 1024 * 1024
 
 
@@ -107,6 +109,20 @@ def compile_package(slang_root, validator, source_dir, output, verify_existing=F
             manifest["shaders"].append({"name": name, "stage": stage, "entry": entry,
                                         "source_sha256": digest(source), "sha256": digest(module),
                                         "reflection_sha256": digest(reflection)})
+        header = ["#pragma once", "#include <array>", "#include <cstdint>", "namespace ngen::render::compiled {"]
+        for shader in manifest["shaders"]:
+            data = (temporary / (shader["name"] + ".spv")).read_bytes()
+            words = struct.unpack("<" + "I" * (len(data) // 4), data)
+            header.append("inline constexpr std::array<std::uint32_t, " + str(len(words)) + "> " + shader["name"].replace("-", "_") + " = {")
+            for offset in range(0, len(words), 8):
+                header.append("    " + ", ".join(f"0x{word:08x}" for word in words[offset:offset + 8]) + ",")
+            header.append("};")
+        header.append("} // namespace ngen::render::compiled")
+        runtime_header = temporary / "ngen_shader_code.hpp"
+        runtime_header.write_text("\n".join(header) + "\n", encoding="utf-8")
+        if runtime_header.stat().st_size > MAX_ARTIFACT_BYTES:
+            raise ValueError("embedded shader header size exceeds admitted range")
+        manifest["runtime_header_sha256"] = digest(runtime_header)
         (temporary / "manifest.json").write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")
         if existing:
             if output.is_symlink() or not output.is_dir():

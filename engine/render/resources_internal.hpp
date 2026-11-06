@@ -18,6 +18,7 @@ class Resources : public std::enable_shared_from_this<Resources> {
     [[nodiscard]] std::variant<Submission, Failure> copy(BufferCopy description);
     [[nodiscard]] std::variant<Submission, Failure> copy(ImageUpload description);
     [[nodiscard]] std::variant<Submission, Failure> copy(ImageReadback description);
+    [[nodiscard]] std::variant<Submission, Failure> post(PostProcess description);
     [[nodiscard]] std::variant<bool, Failure> completed(const Submission &submission);
     [[nodiscard]] std::variant<std::monostate, Failure>
     write(detail::ResourceKey key, VkDeviceSize offset, std::span<const std::byte> bytes);
