@@ -1,5 +1,7 @@
 #include "probe/presentation.hpp"
 #include "render/context.hpp"
+#include "render/mesh.hpp"
+#include <algorithm>
 #include <array>
 #include <cmath>
 #include <cstdio>
@@ -433,6 +435,176 @@ class Gate {
     bool signaled_{};
 };
 #if defined(NGEN_POST_TESTS)
+bool check_mesh(ngen::render::Context &context, const ngen::render::Buffer &readback) {
+    using namespace ngen::render;
+    const auto buffer = [&](BufferDescription description) {
+        auto result = context.create_buffer(description);
+        if (failed(result, "mesh buffer allocation"))
+            throw std::runtime_error("mesh buffer unavailable");
+        return std::get<Buffer>(std::move(result));
+    };
+    const auto image = [&](ImageDescription description) {
+        auto result = context.create_image(description);
+        if (failed(result, "mesh image allocation"))
+            throw std::runtime_error("mesh image unavailable");
+        return std::get<Image>(std::move(result));
+    };
+    const auto upload = [&](const Image &target, std::span<const std::byte> bytes) {
+        auto staging =
+            buffer({bytes.size(), VK_BUFFER_USAGE_TRANSFER_SRC_BIT, MemoryAccess::upload});
+        if (failed(staging.write(0, bytes), "mesh texture write"))
+            return false;
+        auto result = when_ready([&] { return context.copy_to_image({staging, target}); });
+        return !failed(result, "mesh texture upload") &&
+               wait_submission(context, std::get<Submission>(result));
+    };
+    auto white = image({{1, 1},
+                        VK_FORMAT_R8G8B8A8_UNORM,
+                        static_cast<VkImageUsageFlags>(VK_IMAGE_USAGE_SAMPLED_BIT) |
+                            VK_IMAGE_USAGE_TRANSFER_DST_BIT});
+    const std::array<std::byte, 4> white_pixel{std::byte{255}, std::byte{255}, std::byte{255},
+                                               std::byte{255}};
+    if (!upload(white, white_pixel))
+        return false;
+    auto environment = image({{1, 1},
+                              VK_FORMAT_R8G8B8A8_UNORM,
+                              static_cast<VkImageUsageFlags>(VK_IMAGE_USAGE_SAMPLED_BIT) |
+                                  VK_IMAGE_USAGE_TRANSFER_DST_BIT,
+                              1,
+                              true});
+    const std::array<std::byte, 24> black_faces{};
+    if (!upload(environment, black_faces))
+        return false;
+    auto shadow = image({{1, 1},
+                         VK_FORMAT_D32_SFLOAT,
+                         static_cast<VkImageUsageFlags>(VK_IMAGE_USAGE_SAMPLED_BIT) |
+                             VK_IMAGE_USAGE_TRANSFER_DST_BIT});
+    const float depth_one = 1;
+    if (!upload(shadow, std::as_bytes(std::span{&depth_one, 1})))
+        return false;
+    auto color = image({{16, 16},
+                        VK_FORMAT_R16G16B16A16_SFLOAT,
+                        static_cast<VkImageUsageFlags>(VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT) |
+                            VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_TRANSFER_SRC_BIT});
+    auto depth =
+        image({{16, 16}, VK_FORMAT_D32_SFLOAT, VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT});
+    std::array<shader::Vertex, 6> vertices{};
+    const std::array<std::array<float, 3>, 6> positions{{{-.9F, -.8F, .7F},
+                                                         {.4F, -.8F, .7F},
+                                                         {-.25F, .8F, .7F},
+                                                         {-.4F, -.8F, .3F},
+                                                         {.9F, -.8F, .3F},
+                                                         {.25F, .8F, .3F}}};
+    for (std::size_t i = 0; i < vertices.size(); ++i) {
+        vertices[i].position = positions[i];
+        vertices[i].normal = {0, 0, 1};
+        vertices[i].tangent = {1, 0, 0, 1};
+    }
+    const std::array<std::uint32_t, 9> indices{0, 0, 0, 0, 1, 2, 0, 1, 2};
+    auto vertex_buffer =
+        buffer({sizeof(vertices), VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, MemoryAccess::upload});
+    auto index_buffer =
+        buffer({sizeof(indices), VK_BUFFER_USAGE_INDEX_BUFFER_BIT, MemoryAccess::upload});
+    if (failed(vertex_buffer.write(0, std::as_bytes(std::span(vertices))), "mesh vertices") ||
+        failed(index_buffer.write(0, std::as_bytes(std::span(indices))), "mesh indices"))
+        return false;
+    std::array<MeshDraw, 2> draws{};
+    const shader::Matrix identity{{1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1}};
+    for (auto &draw : draws) {
+        draw.frame.model = draw.frame.viewProjection = draw.frame.normalMatrix =
+            draw.frame.lightViewProjection = identity;
+        draw.frame.cameraPosition = {0, 0, 3, 0};
+        draw.frame.keyDirectionIntensity = {0, 0, -1, 0};
+        draw.material.flags[2] = 1;
+        draw.maps.fill(&white);
+        draw.index_count = 3;
+        draw.facing = MeshFacing::both;
+    }
+    // Near green is intentionally drawn before far red: overlap proves depth testing.
+    draws[0].first_index = 6;
+    draws[0].vertex_offset = 3;
+    draws[0].material.emissiveAlphaCutoff = {0, 1, 0, .5F};
+    draws[1].first_index = 3;
+    draws[1].material.emissiveAlphaCutoff = {1, 0, 0, .5F};
+    const MeshPass pass{vertex_buffer, index_buffer, color, depth, shadow,
+                        environment,   environment,  white, {},    draws};
+    const auto result = when_ready([&] { return context.draw_mesh(pass); });
+    if (failed(result, "tracked indexed mesh draw"))
+        return false;
+    const auto copied = when_ready([&] { return context.copy_from_image({color, readback}); });
+    if (failed(copied, "mesh readback") || !wait_submission(context, std::get<Submission>(copied)))
+        return false;
+    std::array<std::uint16_t, std::size_t{16} * 16 * 4> actual{};
+    if (failed(readback.read(0, std::as_writable_bytes(std::span(actual))), "mesh pixels"))
+        return false;
+    const auto pixel = [&](std::size_t x, std::size_t y) {
+        std::array<std::uint16_t, 4> value{};
+        std::copy_n(actual.begin() + static_cast<std::ptrdiff_t>((y * 16 + x) * 4), 4,
+                    value.begin());
+        return value;
+    };
+    if (pixel(3, 5) != std::array<std::uint16_t, 4>{0x3c00, 0, 0, 0x3c00} ||
+        pixel(12, 5) != std::array<std::uint16_t, 4>{0, 0x3c00, 0, 0x3c00} ||
+        pixel(8, 5) != std::array<std::uint16_t, 4>{0, 0x3c00, 0, 0x3c00} ||
+        pixel(0, 0) != std::array<std::uint16_t, 4>{0, 0, 0, 0x3c00}) {
+        std::fputs("Vulkan resource: tracked mesh indexed/depth pixels differ\n", stderr);
+        return false;
+    }
+    auto invalid = pass;
+    invalid.draws = {};
+    if (!std::holds_alternative<Failure>(context.draw_mesh(invalid)))
+        return false;
+    const auto baseline_result = context.resource_statistics();
+    if (failed(baseline_result, "mesh baseline"))
+        return false;
+    const auto baseline = std::get<ResourceStatistics>(baseline_result);
+    Gate gate(context);
+    auto gated = pass;
+    gated.wait = {gate.handle, 1};
+    const auto held = context.draw_mesh(gated);
+    if (failed(held, "gated mesh draw"))
+        return false;
+    gate.submitted = true;
+    const auto second = context.draw_mesh(pass);
+    if (failed(second, "second mesh command slot"))
+        return false;
+    const auto busy = context.draw_mesh(pass);
+    const auto *backpressure = std::get_if<Failure>(&busy);
+    if (!backpressure || backpressure->message != "transfer contexts are busy")
+        return false;
+    const auto &last = std::get<Submission>(second);
+    const auto complete = context.submission_complete(last);
+    if (failed(complete, "pending mesh completion") || std::get<bool>(complete))
+        return false;
+    vertex_buffer = {};
+    index_buffer = {};
+    white = {};
+    environment = {};
+    shadow = {};
+    depth = {};
+    const auto pending_result = context.resource_statistics();
+    if (failed(pending_result, "mesh pending ownership"))
+        return false;
+    const auto pending = std::get<ResourceStatistics>(pending_result);
+    if (pending.retiring != 6 || pending.live + 6 != baseline.live ||
+        pending.allocation_bytes != baseline.allocation_bytes) {
+        std::fputs("Vulkan resource: mesh sources reclaimed before graphics completion\n", stderr);
+        return false;
+    }
+    if (!gate.signal() || !wait_submission(context, last))
+        return false;
+    gate.retired = true;
+    const auto retired_result = context.resource_statistics();
+    if (failed(retired_result, "mesh reclaimed ownership"))
+        return false;
+    const auto retired = std::get<ResourceStatistics>(retired_result);
+    if (retired.retiring != 0 || retired.allocation_bytes >= pending.allocation_bytes ||
+        !gate.close())
+        return false;
+    std::puts(
+        "tracked_indexed_pbr=1 mesh_depth=1 mesh_materials=2 mesh_retirement=1 mesh_two_slots=1");
+    return true;
+}
 bool check_post(ngen::render::Context &context, const ngen::render::Buffer &readback) {
     auto source_created =
         context.create_image({{2, 2},
@@ -926,6 +1098,10 @@ int main() try {
     }
     if (!image.native() || !image.view() || !check_image_scene(*context, readback))
         return 1;
+#if defined(NGEN_POST_TESTS)
+    if (!check_mesh(*context, readback))
+        return 1;
+#endif
     if (!context->close() || buffer.native() != VK_NULL_HANDLE ||
         readback.native() != VK_NULL_HANDLE || image.native() != VK_NULL_HANDLE ||
         image.view() != VK_NULL_HANDLE) {

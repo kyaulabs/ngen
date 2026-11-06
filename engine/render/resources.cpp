@@ -1,3 +1,4 @@
+#include "render/mesh_internal.hpp"
 #include "render/post.hpp"
 #include "render/resources_internal.hpp"
 #include <algorithm>
@@ -48,6 +49,8 @@ struct Resources::Impl {
         std::uint64_t submitted{};
     };
     std::unique_ptr<PostPipeline> post_pipeline;
+    std::unique_ptr<MeshPipeline> mesh_pipeline;
+    std::array<Buffer, 2> mesh_uniforms;
     VmaAllocator allocator{};
     VkDevice device{};
     VkPhysicalDevice physical{};
@@ -701,6 +704,226 @@ std::variant<Submission, Failure> Resources::post(PostProcess description) {
     target.image_layout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
     return Submission{weak_from_this(), next};
 }
+std::variant<Submission, Failure> Resources::mesh(MeshPass description) {
+    if (description.draws.empty() || description.draws.size() > MeshPipeline::draw_limit)
+        return Failure{"mesh draw count is outside 1..256"};
+    if (description.vertices.owner_.lock().get() != this ||
+        description.indices.owner_.lock().get() != this || !native(description.vertices.key_) ||
+        !native(description.indices.key_))
+        return Failure{"mesh geometry must be live same-context buffers"};
+    const auto vertex_key = description.vertices.key_, index_key = description.indices.key_;
+    auto &vertices = impl_->entries[vertex_key.slot];
+    auto &indices = impl_->entries[index_key.slot];
+    if ((vertices.usage & VK_BUFFER_USAGE_VERTEX_BUFFER_BIT) == 0 ||
+        (indices.usage & VK_BUFFER_USAGE_INDEX_BUFFER_BIT) == 0 ||
+        vertices.size % sizeof(shader::Vertex) != 0 || indices.size % sizeof(std::uint32_t) != 0)
+        return Failure{"mesh geometry has incompatible usage or record size"};
+    const auto owned_image = [&](const Image &image) {
+        return image.owner_.lock().get() == this && image_native(image.key_) != VK_NULL_HANDLE;
+    };
+    if (!owned_image(description.color) || !owned_image(description.depth) ||
+        description.color.key_.slot == description.depth.key_.slot)
+        return Failure{"mesh attachments must be distinct live same-context images"};
+    const auto color_key = description.color.key_, depth_key = description.depth.key_;
+    auto &color = impl_->entries[color_key.slot];
+    auto &depth = impl_->entries[depth_key.slot];
+    if (color.format != VK_FORMAT_R16G16B16A16_SFLOAT || color.mip_levels != 1 ||
+        color.layers != 1 || (color.image_usage & VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT) == 0 ||
+        (color.image_usage & VK_IMAGE_USAGE_SAMPLED_BIT) == 0 ||
+        depth.format != VK_FORMAT_D32_SFLOAT || depth.mip_levels != 1 || depth.layers != 1 ||
+        (depth.image_usage & VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT) == 0 ||
+        depth.image_extent.width != color.image_extent.width ||
+        depth.image_extent.height != color.image_extent.height)
+        return Failure{"mesh requires matching single-mip HDR/depth attachments"};
+    std::array<bool, Impl::capacity> used{};
+    used[vertex_key.slot] = used[index_key.slot] = used[color_key.slot] = used[depth_key.slot] =
+        true;
+    const auto sampled = [&](const Image &image, std::uint32_t layers, VkImageAspectFlags aspect,
+                             bool filterable) {
+        if (!owned_image(image) || image.key_.slot == color_key.slot ||
+            image.key_.slot == depth_key.slot)
+            return false;
+        const auto &entry = impl_->entries[image.key_.slot];
+        if (entry.layers != layers || entry.aspect != aspect ||
+            (filterable && !entry.linear_filterable) ||
+            (entry.image_usage & VK_IMAGE_USAGE_SAMPLED_BIT) == 0 ||
+            entry.image_layout != VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL)
+            return false;
+        used[image.key_.slot] = true;
+        return true;
+    };
+    if (!sampled(description.shadow, 1, VK_IMAGE_ASPECT_DEPTH_BIT, false) ||
+        !sampled(description.irradiance, 6, VK_IMAGE_ASPECT_COLOR_BIT, true) ||
+        !sampled(description.prefiltered, 6, VK_IMAGE_ASPECT_COLOR_BIT, true) ||
+        !sampled(description.brdf, 1, VK_IMAGE_ASPECT_COLOR_BIT, true))
+        return Failure{
+            "mesh environment/shadow inputs must be initialized compatible sampled images"};
+    const auto finite = [](const auto &values) {
+        return std::all_of(values.begin(), values.end(),
+                           [](float value) { return std::isfinite(value); });
+    };
+    if (description.lights.count > 16)
+        return Failure{"mesh local light count exceeds 16"};
+    for (const auto &light : description.lights.lights)
+        if (!finite(light.positionRange) || !finite(light.colorIntensity))
+            return Failure{"mesh light values must be finite"};
+    const auto address = [](VkSamplerAddressMode mode) {
+        return mode == VK_SAMPLER_ADDRESS_MODE_REPEAT ||
+               mode == VK_SAMPLER_ADDRESS_MODE_MIRRORED_REPEAT ||
+               mode == VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE;
+    };
+    std::array<MeshNativeDraw, MeshPipeline::draw_limit> bindings{};
+    for (std::size_t i = 0; i < description.draws.size(); ++i) {
+        const auto &draw = description.draws[i];
+        const auto &frame = draw.frame;
+        const auto &material = draw.material;
+        if (draw.index_count == 0 || draw.index_count % 3 != 0 ||
+            static_cast<std::uint64_t>(draw.first_index) + draw.index_count >
+                indices.size / sizeof(std::uint32_t) ||
+            draw.vertex_offset < 0 ||
+            static_cast<std::uint64_t>(draw.vertex_offset) >=
+                vertices.size / sizeof(shader::Vertex))
+            return Failure{"mesh indexed draw range is invalid"};
+        if (static_cast<unsigned>(draw.facing) > 2 || material.flags[0] > 2 ||
+            material.flags[1] > 31 || material.flags[2] > 1 || material.flags[3] != 0 ||
+            !finite(material.baseColor) || !finite(material.emissiveAlphaCutoff) ||
+            !finite(material.metallicRoughnessNormalOcclusion) || !finite(frame.model.columns) ||
+            !finite(frame.viewProjection.columns) || !finite(frame.normalMatrix.columns) ||
+            !finite(frame.lightViewProjection.columns) || !finite(frame.cameraPosition) ||
+            !finite(frame.keyDirectionIntensity) || !finite(frame.keyColor))
+            return Failure{"mesh constants are invalid or nonfinite"};
+        for (std::size_t map = 0; map < 5; ++map) {
+            if (!draw.maps[map] || !sampled(*draw.maps[map], 1, VK_IMAGE_ASPECT_COLOR_BIT, true))
+                return Failure{"mesh material texture must be initialized same-context 2D color"};
+            const auto &sampler = draw.samplers[map];
+            if ((sampler.min != VK_FILTER_NEAREST && sampler.min != VK_FILTER_LINEAR) ||
+                (sampler.mag != VK_FILTER_NEAREST && sampler.mag != VK_FILTER_LINEAR) ||
+                (sampler.mip != VK_SAMPLER_MIPMAP_MODE_NEAREST &&
+                 sampler.mip != VK_SAMPLER_MIPMAP_MODE_LINEAR) ||
+                !address(sampler.u) || !address(sampler.v))
+                return Failure{"mesh sampler is outside the fixed profile"};
+            bindings[i].maps[map] = impl_->entries[draw.maps[map]->key_.slot].view;
+        }
+    }
+    if (!impl_->mesh_pipeline)
+        impl_->mesh_pipeline = std::make_unique<MeshPipeline>(impl_->device, impl_->physical);
+    for (auto &uniform : impl_->mesh_uniforms)
+        if (!uniform.native()) {
+            auto created = create({impl_->mesh_pipeline->uniform_bytes(),
+                                   VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, MemoryAccess::upload});
+            if (const auto *failure = std::get_if<Failure>(&created))
+                return *failure;
+            uniform = std::get<Buffer>(std::move(created));
+        }
+    auto recording = impl_->begin(description.wait);
+    if (const auto *failure = std::get_if<Failure>(&recording))
+        return *failure;
+    auto &frame = *std::get<Impl::Frame *>(recording);
+    const auto slot = static_cast<std::size_t>(&frame - impl_->frames.data());
+    auto &uniform = impl_->mesh_uniforms[slot];
+    const auto written = uniform.write(0, impl_->mesh_pipeline->prepare(description));
+    if (const auto *failure = std::get_if<Failure>(&written))
+        return *failure;
+    used[uniform.key_.slot] = true;
+    VkMemoryBarrier2 host{};
+    host.sType = VK_STRUCTURE_TYPE_MEMORY_BARRIER_2;
+    host.srcStageMask = VK_PIPELINE_STAGE_2_HOST_BIT;
+    host.srcAccessMask = VK_ACCESS_2_HOST_WRITE_BIT;
+    host.dstStageMask = VK_PIPELINE_STAGE_2_ALL_GRAPHICS_BIT;
+    host.dstAccessMask = VK_ACCESS_2_UNIFORM_READ_BIT | VK_ACCESS_2_VERTEX_ATTRIBUTE_READ_BIT |
+                         VK_ACCESS_2_INDEX_READ_BIT;
+    VkDependencyInfo dependency{};
+    dependency.sType = VK_STRUCTURE_TYPE_DEPENDENCY_INFO;
+    dependency.memoryBarrierCount = 1;
+    dependency.pMemoryBarriers = &host;
+    vkCmdPipelineBarrier2(frame.commands, &dependency);
+    for (std::size_t i = 0; i < used.size(); ++i) {
+        const auto &entry = impl_->entries[i];
+        if (!used[i] || !entry.image || i == color_key.slot || i == depth_key.slot)
+            continue;
+        VkImageMemoryBarrier2 barrier{};
+        barrier.image = entry.image;
+        barrier.oldLayout = barrier.newLayout = entry.image_layout;
+        barrier.subresourceRange.aspectMask = entry.aspect;
+        barrier.subresourceRange.layerCount = entry.layers;
+        barrier.srcStageMask = VK_PIPELINE_STAGE_2_ALL_COMMANDS_BIT;
+        barrier.srcAccessMask = VK_ACCESS_2_MEMORY_READ_BIT | VK_ACCESS_2_MEMORY_WRITE_BIT;
+        barrier.dstStageMask = VK_PIPELINE_STAGE_2_FRAGMENT_SHADER_BIT;
+        barrier.dstAccessMask = VK_ACCESS_2_SHADER_SAMPLED_READ_BIT;
+        Impl::image_barrier(frame, barrier, entry.mip_levels);
+    }
+    const auto attachment = [&](const Impl::Entry &entry, VkImageLayout layout) {
+        VkImageMemoryBarrier2 barrier{};
+        barrier.image = entry.image;
+        barrier.oldLayout = entry.image_layout;
+        barrier.newLayout = layout;
+        barrier.subresourceRange.aspectMask = entry.aspect;
+        barrier.subresourceRange.layerCount = 1;
+        barrier.srcStageMask = entry.image_layout == VK_IMAGE_LAYOUT_UNDEFINED
+                                   ? VK_PIPELINE_STAGE_2_NONE
+                                   : VK_PIPELINE_STAGE_2_ALL_COMMANDS_BIT;
+        barrier.srcAccessMask = entry.image_layout == VK_IMAGE_LAYOUT_UNDEFINED
+                                    ? VK_ACCESS_2_NONE
+                                    : VK_ACCESS_2_MEMORY_READ_BIT | VK_ACCESS_2_MEMORY_WRITE_BIT;
+        const bool depth_attachment = entry.aspect == VK_IMAGE_ASPECT_DEPTH_BIT;
+        barrier.dstStageMask = depth_attachment ? VK_PIPELINE_STAGE_2_EARLY_FRAGMENT_TESTS_BIT |
+                                                      VK_PIPELINE_STAGE_2_LATE_FRAGMENT_TESTS_BIT
+                                                : VK_PIPELINE_STAGE_2_COLOR_ATTACHMENT_OUTPUT_BIT;
+        barrier.dstAccessMask = depth_attachment
+                                    ? VK_ACCESS_2_DEPTH_STENCIL_ATTACHMENT_READ_BIT |
+                                          VK_ACCESS_2_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT
+                                    : VK_ACCESS_2_COLOR_ATTACHMENT_WRITE_BIT;
+        Impl::image_barrier(frame, barrier, 1);
+    };
+    attachment(color, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL);
+    attachment(depth, VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL);
+    VkRenderingAttachmentInfo color_info{};
+    color_info.sType = VK_STRUCTURE_TYPE_RENDERING_ATTACHMENT_INFO;
+    color_info.imageView = color.view;
+    color_info.imageLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+    color_info.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
+    color_info.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
+    color_info.clearValue.color.float32[3] = 1;
+    VkRenderingAttachmentInfo depth_info{};
+    depth_info.sType = VK_STRUCTURE_TYPE_RENDERING_ATTACHMENT_INFO;
+    depth_info.imageView = depth.view;
+    depth_info.imageLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
+    depth_info.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
+    depth_info.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
+    depth_info.clearValue.depthStencil.depth = 1;
+    VkRenderingInfo rendering{};
+    rendering.sType = VK_STRUCTURE_TYPE_RENDERING_INFO;
+    rendering.renderArea.extent = color.image_extent;
+    rendering.layerCount = 1;
+    rendering.colorAttachmentCount = 1;
+    rendering.pColorAttachments = &color_info;
+    rendering.pDepthAttachment = &depth_info;
+    vkCmdBeginRendering(frame.commands, &rendering);
+    impl_->mesh_pipeline->record({frame.commands, slot, uniform.native(), vertices.buffer,
+                                  indices.buffer, color.image_extent, description.shadow.view(),
+                                  description.irradiance.view(), description.prefiltered.view(),
+                                  description.brdf.view(), description.draws,
+                                  std::span(bindings).first(description.draws.size())});
+    vkCmdEndRendering(frame.commands);
+    VkImageMemoryBarrier2 output{};
+    output.image = color.image;
+    output.oldLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+    output.newLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+    output.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+    output.subresourceRange.layerCount = 1;
+    output.srcStageMask = VK_PIPELINE_STAGE_2_COLOR_ATTACHMENT_OUTPUT_BIT;
+    output.srcAccessMask = VK_ACCESS_2_COLOR_ATTACHMENT_WRITE_BIT;
+    output.dstStageMask = VK_PIPELINE_STAGE_2_ALL_COMMANDS_BIT;
+    output.dstAccessMask = VK_ACCESS_2_SHADER_SAMPLED_READ_BIT;
+    Impl::image_barrier(frame, output, 1);
+    const auto next = impl_->submit(frame, description.wait);
+    for (std::size_t i = 0; i < used.size(); ++i)
+        if (used[i])
+            impl_->entries[i].last_use = next;
+    color.image_layout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+    depth.image_layout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
+    return Submission{weak_from_this(), next};
+}
 std::variant<std::monostate, Failure> Resources::presentation_ready() {
     if (impl_->collect() < impl_->external_wait_submission)
         return Failure{
@@ -823,6 +1046,11 @@ void Resources::close() noexcept {
         impl_->post_pipeline->close();
         impl_->post_pipeline.reset();
     }
+    if (impl_->mesh_pipeline) {
+        impl_->mesh_pipeline->close();
+        impl_->mesh_pipeline.reset();
+    }
+    impl_->mesh_uniforms = {};
     for (auto &entry : impl_->entries)
         impl_->destroy(entry);
     if (impl_->timeline)

@@ -29,6 +29,7 @@ class Resources : public std::enable_shared_from_this<Resources> {
     [[nodiscard]] std::variant<Submission, Failure> copy(ImageUpload description);
     [[nodiscard]] std::variant<Submission, Failure> copy(ImageReadback description);
     [[nodiscard]] std::variant<Submission, Failure> post(PostProcess description);
+    [[nodiscard]] std::variant<Submission, Failure> mesh(MeshPass description);
     [[nodiscard]] std::variant<std::monostate, Failure> presentation_ready();
     [[nodiscard]] std::variant<GraphicsUse, Failure> prepare_frame(ImageFrame description);
     void record_frame(const PostDraw &draw) const;

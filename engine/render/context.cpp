@@ -1,5 +1,6 @@
 #include "render/context.hpp"
 #include "render/capabilities.hpp"
+#include "render/mesh.hpp"
 #include "render/presentation.hpp"
 #include "render/resources_internal.hpp"
 #include <SDL3/SDL_vulkan.h>
@@ -436,6 +437,15 @@ std::variant<Submission, Failure> Context::post_process(PostProcess description)
         return Failure{"resource context is unavailable"};
     try {
         return resources_->post(description);
+    } catch (const std::exception &error) {
+        return Failure{error.what()};
+    }
+}
+std::variant<Submission, Failure> Context::draw_mesh(MeshPass description) {
+    if (!device_ || !resources_)
+        return Failure{"resource context is unavailable"};
+    try {
+        return resources_->mesh(description);
     } catch (const std::exception &error) {
         return Failure{error.what()};
     }
