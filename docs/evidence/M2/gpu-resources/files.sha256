@@ -79,7 +79,7 @@ eae4a668d804a7b2aef8de8ec5abca85a4fd9968d0100a359f165e7197ee5946  docs/evidence/
 2ff7e9699046e83e1dd5ee87f9af77d960a01dc3f1b5dd51881e43d96302d5dd  docs/evidence/M2/gpu-resources/ngen-resource-vma-vendor-tidy.txt
 460fe71b1112bf53617138546e9d817a8665b297cbc3f276b09cd7143bd15f01  docs/evidence/M2/gpu-resources/ngen-resource-windows-boundary-final.txt
 6755a64ef18bb02568e009a2567aae87eb4ce8be541cc4015ffde3cfa16d29d7  docs/evidence/M2/gpu-resources/ngen-resource-windows-boundary-red.txt
-114702d30e97125e1bec8b25cf8957a33c2d1b94789bce9c1f08a8f30cd518d3  docs/evidence/M2/gpu-resources/README.md
+3378c449bf45382dcbb0f844b8df2c972270b9502ee7f6c3a4be2cf08f2bfd6a  docs/evidence/M2/gpu-resources/README.md
 c7663f0ca5742708687fb0a171cdc0b1e18398fc9e5453c780186fc2acd0bb26  docs/evidence/M2/gpu-resources/review.txt
 b3db7a5dac657fec9893d1e4063a959f750a1e88ca9eac3a258528428cc77836  docs/evidence/M2/gpu-resources/verify-faults.sh
 3a8053c59e23bc856c0b5e7dc58202af73b5c02f7a95bc1e9be3eb749bbeb51d  docs/evidence/M2/gpu-resources/verify-native.sh

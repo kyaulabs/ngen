@@ -4,7 +4,7 @@ CPU compiler checks passed: [MSVC 19.44.35229 Debug/Release](../M1/windows-msvc/
 
 The [Windows GPU capture](windows-nvidia/README.md) identifies an RTX 5070 with driver 617.42 and the required queried device features. The [follow-up capture](windows-validation/README.md) now enumerates `VK_LAYER_KHRONOS_validation` 1.4.363 without the earlier loader warning. The [MSVC renderer run](windows-msvc/README.md) and [clang-cl renderer run](windows-clang-cl/README.md) at `c730a18` both pass Debug/Release builds, 5/5 tests each, callback calibration and clean validation-enabled Win32 startup/teardown. Frame rendering and swapchain presentation remain untested.
 
-**Both compiler modes pass [Windows clear/resize/minimize presentation](windows-first-light/README.md) at `b7f0334`; that first-light check needs no further setup.** The new [GPU resource slice](gpu-resources/README.md) now needs MSVC and clang-cl Debug/Release execution. From MSYS2 fish, run:
+**Both compiler modes pass [Windows clear/resize/minimize presentation](windows-first-light/README.md) at `b7f0334`; that first-light check needs no further setup.** The [GPU resource slice](gpu-resources/README.md) now also passes [MSVC and clang-cl Debug/Release execution](windows-resources/README.md) at `dbdd3ba`: 66/66 build steps, 5/5 tests, exact transfers/retirement, stable replacement plateau and clear/resize/minimize checks. No further setup or rerun is needed for this slice. For a later deliberate regression from MSYS2 fish:
 
 ```fish
 cd /d/Git/kyaulabs/ngen
@@ -27,7 +27,7 @@ foreach ($compiler in 'MSVC', 'ClangCl') {
 }
 ```
 
-Send both newly printed evidence archives, or the failure archive if a run stops. Each compiler runs Debug and Release. The visible test window resizes, minimizes, restores and exits automatically; do not close it manually. No new SDK/driver setup is requested.
+If a later regression is requested, send both newly printed evidence archives, or the failure archive if a run stops. Each compiler runs Debug and Release. The visible test window resizes, minimizes, restores and exits automatically; do not close it manually. No new SDK/driver setup is requested.
 
 ClangCl uses the detected clang-cl host compiler and MSVC build profile; MSVC uses its detected native profile. Both use the separate `conan-render.lock` and project-managed SDL 3.4.16. It needs the core x64 Vulkan SDK headers/library and visible validation layers, not the SDK's optional SDL bundle. Conan's runtime environment supplies SDL's DLL path per configuration and is restored afterward. Append `-Configuration Debug` to test one configuration first. Use `-Compiler MSVC` or `-Compiler ClangCl` to select one compiler when investigating a failure.
 
