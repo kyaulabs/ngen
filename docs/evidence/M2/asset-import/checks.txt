@@ -27,8 +27,13 @@ Unavailable: GCC clang-tidy parsing of actual module-dependency flags. No filter
 Unavailable locally: headless/offline namespace execution (sudo requires password).
 Not run locally: Windows MSVC/clang-cl; actual normal-map visual comparison;
 runtime package loading, residency, scene rendering or performance acceptance.
-Pending publication: actual hosted workflows, including headless/offline asset
-CTest in the existing namespace/drop-user CI pattern. Do not assume their result.
+Hosted first PR workflow 42243728988: actual headless/offline asset CTest passes
+6/6 in Debug and ASan, but the workflow fails on those same vendor findings.
+Follow-up: report policy retains all diagnostics/native status; only the two
+exact known findings in Conan headers are advisory, not clean passes. Owned/new,
+malformed and unavailable AST results remain fatal; three process-boundary tests
+cover those distinctions, including owned diagnostics with native exit zero.
+No checker/argument/warning is disabled. Follow-up workflows remain pending.
 
 Legal notices remain byte-exact; selected log normalization and original hashes
 are explicit. No source asset, decoded textures, cooked package or credentials

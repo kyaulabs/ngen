@@ -109,7 +109,8 @@ jobs:
           cmake --build --preset "asset-$PRESET"
           ctest --preset "asset-$PRESET" --show-only
           sudo unshare --net -- runuser -u "$(id -un)" -- env -u DISPLAY -u WAYLAND_DISPLAY "$(command -v ctest)" --preset "asset-$PRESET"
-          clang-tidy-18 -p "build/asset-$PRESET" tools/assetc/import.cpp tools/assetc/metadata.cpp tools/assetc/png.cpp tools/assetc/tangents.cpp tools/assetc/main.cpp tests/asset_import.cpp
+          python3 tests/asset_tidy.py
+          python3 tools/assetc/check_tidy.py --build "build/asset-$PRESET" --tidy clang-tidy-18
       - name: Check whitespace and offline runtime
         env:
           PRESET: ${{ matrix.preset }}

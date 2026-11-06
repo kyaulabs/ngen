@@ -49,5 +49,10 @@ for caller mutation of borrowed input, universal allocation-failure recovery,
 Windows execution, generated texture mip quality, normal-map visual acceptance,
 runtime loading/residency or rendering/performance is established. CPU importer
 success is distinct from all of those gates. Local offline execution was
-unavailable because sudo requires a password; hosted namespace execution must
-be inspected, not assumed. M2 and independent/formal acceptance remain open.
+unavailable because sudo requires a password. The first hosted PR run then
+proves Debug/ASan 6/6 asset tests offline/headless, but fails on the two retained
+vendor findings. The follow-up report policy keeps the native diagnostics and
+status visible and admits only those exact Conan-header findings as advisory,
+not clean analysis. Process controls prove owned/new/mixed/malformed/setup
+results and zero-exit owned diagnostics still fail. No check or compiler argument
+is disabled. M2 and independent/formal acceptance remain open.
