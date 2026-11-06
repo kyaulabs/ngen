@@ -23,7 +23,7 @@ struct MaterialConstants
     float4 baseColor;
     float4 emissiveAlphaCutoff;
     float4 metallicRoughnessNormalOcclusion;
-    uint4 flags; // x: opaque=0, mask=1, blend=2; remaining values reserved.
+    uint4 flags; // x: alpha mode; y: per-map UV1 bits; z bit0: no normal texture; w reserved.
 };
 [[vk::binding(0, 0)]] ConstantBuffer<FrameConstants> frame;
 [[vk::binding(1, 0)]] ConstantBuffer<LightConstants> localLights;
@@ -35,16 +35,18 @@ struct MaterialConstants
 [[vk::binding(3, 1)]] Texture2D<float4> metallicRoughnessMap;
 [[vk::binding(4, 1)]] Texture2D<float4> occlusionMap;
 [[vk::binding(5, 1)]] Texture2D<float4> emissiveMap;
-[[vk::binding(6, 1)]] SamplerState materialSampler;
+[[vk::binding(6, 1)]] SamplerState materialSamplers[5];
 [[vk::binding(7, 1)]] TextureCube<float4> irradianceMap;
 [[vk::binding(8, 1)]] TextureCube<float4> prefilteredMap;
 [[vk::binding(9, 1)]] Texture2D<float2> brdfMap;
+[[vk::binding(10, 1)]] SamplerState environmentSampler;
 
 struct Vertex
 {
     [[vk::location(0)]] float3 position : POSITION;
     [[vk::location(1)]] float3 normal : NORMAL;
     [[vk::location(2)]] float2 uv : TEXCOORD0;
+    [[vk::location(4)]] float2 uv1 : TEXCOORD1;
     [[vk::location(3)]] float4 tangent : TANGENT;
 };
 struct Varying
@@ -55,6 +57,7 @@ struct Varying
     float2 uv : TEXCOORD2;
     float4 tangent : TEXCOORD3;
     float4 shadowPosition : TEXCOORD4;
+    float2 uv1 : TEXCOORD5;
 };
 [shader("vertex")]
 Varying vertexMain(Vertex input)
@@ -67,6 +70,7 @@ Varying vertexMain(Vertex input)
     float handedness = determinant((float3x3)frame.model) < 0 ? -1.0 : 1.0;
     output.tangent = float4(mul((float3x3)frame.model, input.tangent.xyz), input.tangent.w * handedness);
     output.uv = input.uv;
+    output.uv1 = input.uv1;
     output.shadowPosition = mul(frame.lightViewProjection, world);
     return output;
 }
@@ -102,21 +106,28 @@ float shadowVisibility(float4 position)
         return 1;
     return shadowMap.SampleCmpLevelZero(shadowSampler, uv, ndc.z - 0.001);
 }
+float2 textureUv(Varying input, uint slot)
+{
+    return (material.flags.y & (1u << slot)) != 0 ? input.uv1 : input.uv;
+}
 [shader("fragment")]
 float4 fragmentMain(Varying input) : SV_Target0
 {
     // Color/emissive views decode sRGB; all other texture inputs are linear.
-    float4 albedo = baseColorMap.Sample(materialSampler, input.uv) * material.baseColor;
+    float4 albedo = baseColorMap.Sample(materialSamplers[0], textureUv(input, 0)) * material.baseColor;
     if (material.flags.x == 1 && albedo.a < material.emissiveAlphaCutoff.w)
         discard;
     float3 n = normalize(input.normal);
-    float3 t = normalize(input.tangent.xyz - n * dot(n, input.tangent.xyz));
-    float3 b = cross(n, t) * input.tangent.w;
-    float3 sampled = normalMap.Sample(materialSampler, input.uv).xyz * 2 - 1;
-    sampled.xy *= material.metallicRoughnessNormalOcclusion.z;
-    n = normalize(t * sampled.x + b * sampled.y + n * sampled.z);
+    if ((material.flags.z & 1u) == 0)
+    {
+        float3 t = normalize(input.tangent.xyz - n * dot(n, input.tangent.xyz));
+        float3 b = cross(n, t) * input.tangent.w;
+        float3 sampled = normalMap.Sample(materialSamplers[2], textureUv(input, 2)).xyz * 2 - 1;
+        sampled.xy *= material.metallicRoughnessNormalOcclusion.z;
+        n = normalize(t * sampled.x + b * sampled.y + n * sampled.z);
+    }
     float3 v = normalize(frame.cameraPosition.xyz - input.worldPosition);
-    float4 mr = metallicRoughnessMap.Sample(materialSampler, input.uv);
+    float4 mr = metallicRoughnessMap.Sample(materialSamplers[1], textureUv(input, 1));
     float metal = saturate(mr.b * material.metallicRoughnessNormalOcclusion.x);
     float rough = clamp(mr.g * material.metallicRoughnessNormalOcclusion.y, 0.045, 1.0);
     float3 key = normalize(-frame.keyDirectionIntensity.xyz);
@@ -139,13 +150,13 @@ float4 fragmentMain(Varying input) : SV_Target0
     }
     float nv = saturate(dot(n, v));
     float3 f = fresnel(nv, lerp(float3(0.04), albedo.rgb, metal));
-    float3 diffuse = irradianceMap.SampleLevel(materialSampler, n, 0).rgb * albedo.rgb / PI;
+    float3 diffuse = irradianceMap.SampleLevel(environmentSampler, n, 0).rgb * albedo.rgb / PI;
     float3 reflected = reflect(-v, n);
-    float3 prefiltered = prefilteredMap.SampleLevel(materialSampler, reflected, rough * 4).rgb;
-    float2 brdf = brdfMap.SampleLevel(materialSampler, float2(nv, rough), 0);
-    float occlusion = lerp(1.0, occlusionMap.Sample(materialSampler, input.uv).r,
+    float3 prefiltered = prefilteredMap.SampleLevel(environmentSampler, reflected, rough * 4).rgb;
+    float2 brdf = brdfMap.SampleLevel(environmentSampler, float2(nv, rough), 0);
+    float occlusion = lerp(1.0, occlusionMap.Sample(materialSamplers[3], textureUv(input, 3)).r,
                            material.metallicRoughnessNormalOcclusion.w);
     color += ((1 - f) * (1 - metal) * diffuse + prefiltered * (f * brdf.x + brdf.y)) * occlusion;
-    color += emissiveMap.Sample(materialSampler, input.uv).rgb * material.emissiveAlphaCutoff.rgb;
+    color += emissiveMap.Sample(materialSamplers[4], textureUv(input, 4)).rgb * material.emissiveAlphaCutoff.rgb;
     return float4(color, albedo.a); // Linear HDR; tone mapping belongs to the post pass.
 }

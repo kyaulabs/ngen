@@ -89,7 +89,7 @@ class Fixture {
         const std::array sizes{VkDescriptorPoolSize{VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, 8},
                                VkDescriptorPoolSize{VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, 4},
                                VkDescriptorPoolSize{VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE, 16},
-                               VkDescriptorPoolSize{VK_DESCRIPTOR_TYPE_SAMPLER, 4}};
+                               VkDescriptorPoolSize{VK_DESCRIPTOR_TYPE_SAMPLER, 7}};
         VkDescriptorPoolCreateInfo descriptors{};
         descriptors.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
         descriptors.maxSets = 8;
@@ -361,11 +361,12 @@ class Fixture {
         dependency.pImageMemoryBarriers = &memory;
         vkCmdPipelineBarrier2(commands, &dependency);
     }
-    Image texture(VkFormat format, std::span<const std::byte> bytes, bool cube = false) {
+    Image texture(VkFormat format, std::span<const std::byte> bytes, bool cube = false,
+                  VkExtent2D extent = {1, 1}) {
         const auto staging =
             buffer({.size = bytes.size(), .usage = VK_BUFFER_USAGE_TRANSFER_SRC_BIT});
         write(staging, bytes);
-        auto result = image(format, {1, 1, 1},
+        auto result = image(format, {extent.width, extent.height, 1},
                             VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT, cube);
         begin();
         barrier({.srcStageMask = VK_PIPELINE_STAGE_2_HOST_BIT,
@@ -379,7 +380,7 @@ class Fixture {
                                .newLayout = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL});
         VkBufferImageCopy copy{};
         copy.imageSubresource = {result.aspect, 0, 0, result.layers};
-        copy.imageExtent = {1, 1, 1};
+        copy.imageExtent = {extent.width, extent.height, 1};
         vkCmdCopyBufferToImage(commands, staging.handle, result.handle,
                                VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &copy);
         image_barrier(result, {.srcStageMask = VK_PIPELINE_STAGE_2_COPY_BIT,
@@ -397,7 +398,8 @@ class Fixture {
         return texture(VK_FORMAT_R32G32B32A32_SFLOAT,
                        std::as_bytes(std::span{faces.data(), cube ? 6U : 1U}), cube);
     }
-    VkSampler sampler(bool comparison) {
+    enum class Wrap : std::uint8_t { clamp, repeat };
+    VkSampler sampler(bool comparison, Wrap wrap = Wrap::clamp) {
         require(samplers.size() < 4, "shader sampler fixture limit");
         VkSamplerCreateInfo info{};
         info.sType = VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO;
@@ -405,7 +407,8 @@ class Fixture {
         info.minFilter = VK_FILTER_NEAREST;
         info.mipmapMode = VK_SAMPLER_MIPMAP_MODE_NEAREST;
         info.addressModeU = info.addressModeV = info.addressModeW =
-            VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE;
+            wrap == Wrap::repeat ? VK_SAMPLER_ADDRESS_MODE_REPEAT
+                                 : VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE;
         info.compareEnable = comparison ? VK_TRUE : VK_FALSE;
         info.compareOp = VK_COMPARE_OP_LESS_OR_EQUAL;
         VkSampler result{};
@@ -425,16 +428,23 @@ class Fixture {
         info.pImageInfo = &image_info;
         vkUpdateDescriptorSets(device(), 1, &info, 0, nullptr);
     }
-    void sampler_descriptor(VkDescriptorSet set, std::uint32_t binding, VkSampler value) {
-        const VkDescriptorImageInfo image_info{value, VK_NULL_HANDLE, VK_IMAGE_LAYOUT_UNDEFINED};
+    void sampler_descriptors(VkDescriptorSet set, std::uint32_t binding,
+                             std::span<const VkSampler> values) {
+        require(!values.empty() && values.size() <= 5, "bounded sampler descriptor array");
+        std::array<VkDescriptorImageInfo, 5> image_info{};
+        for (std::size_t i = 0; i < values.size(); ++i)
+            image_info[i] = {values[i], VK_NULL_HANDLE, VK_IMAGE_LAYOUT_UNDEFINED};
         VkWriteDescriptorSet info{};
         info.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
         info.dstSet = set;
         info.dstBinding = binding;
-        info.descriptorCount = 1;
+        info.descriptorCount = static_cast<std::uint32_t>(values.size());
         info.descriptorType = VK_DESCRIPTOR_TYPE_SAMPLER;
-        info.pImageInfo = &image_info;
+        info.pImageInfo = image_info.data();
         vkUpdateDescriptorSets(device(), 1, &info, 0, nullptr);
+    }
+    void sampler_descriptor(VkDescriptorSet set, std::uint32_t binding, VkSampler value) {
+        sampler_descriptors(set, binding, std::span{&value, 1});
     }
     void compute(const std::filesystem::path &package) {
         const auto empty = set_layout({});
@@ -539,13 +549,13 @@ class Fixture {
                                          VK_SHADER_STAGE_FRAGMENT_BIT, nullptr},
             VkDescriptorSetLayoutBinding{3, VK_DESCRIPTOR_TYPE_SAMPLER, 1,
                                          VK_SHADER_STAGE_FRAGMENT_BIT, nullptr}};
-        std::array<VkDescriptorSetLayoutBinding, 10> material_bindings{};
+        std::array<VkDescriptorSetLayoutBinding, 11> material_bindings{};
         for (std::uint32_t i = 0; i < material_bindings.size(); ++i)
-            material_bindings[i] = {
-                i,
-                i == 0 ? VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER
-                       : (i == 6 ? VK_DESCRIPTOR_TYPE_SAMPLER : VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE),
-                1, VK_SHADER_STAGE_FRAGMENT_BIT, nullptr};
+            material_bindings[i] = {i,
+                                    i == 0 ? VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER
+                                           : (i == 6 || i == 10 ? VK_DESCRIPTOR_TYPE_SAMPLER
+                                                                : VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE),
+                                    i == 6 ? 5U : 1U, VK_SHADER_STAGE_FRAGMENT_BIT, nullptr};
         const std::array layouts{set_layout(frame_bindings), set_layout(material_bindings)};
         const auto layout = pipeline_layout(layouts);
         const std::array sets{descriptor_set(layouts[0]), descriptor_set(layouts[1])};
@@ -581,7 +591,9 @@ class Fixture {
             VkVertexInputAttributeDescription{2, 0, VK_FORMAT_R32G32_SFLOAT,
                                               offsetof(shader::Vertex, uv)},
             VkVertexInputAttributeDescription{3, 0, VK_FORMAT_R32G32B32A32_SFLOAT,
-                                              offsetof(shader::Vertex, tangent)}};
+                                              offsetof(shader::Vertex, tangent)},
+            VkVertexInputAttributeDescription{4, 0, VK_FORMAT_R32G32_SFLOAT,
+                                              offsetof(shader::Vertex, uv1)}};
         VkPipelineVertexInputStateCreateInfo vertex_info{};
         vertex_info.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
         vertex_info.vertexBindingDescriptionCount = 1;
@@ -690,7 +702,11 @@ class Fixture {
         image_descriptor(sets[1], 3, mr);
         image_descriptor(sets[1], 4, occlusion);
         image_descriptor(sets[1], 5, emissive);
-        sampler_descriptor(sets[1], 6, sampler(false));
+        const auto material_sampler = sampler(false);
+        const std::array material_samplers{material_sampler, material_sampler, material_sampler,
+                                           material_sampler, material_sampler};
+        sampler_descriptors(sets[1], 6, material_samplers);
+        sampler_descriptor(sets[1], 10, sampler(false));
         image_descriptor(sets[1], 7, irradiance);
         image_descriptor(sets[1], 8, prefiltered);
         image_descriptor(sets[1], 9, brdf);
@@ -704,7 +720,8 @@ class Fixture {
         for (std::size_t i = 0; i < vertices.size(); ++i) {
             vertices[i].position = {positions[i][0], positions[i][1], 0};
             vertices[i].normal = {0, 0, 1};
-            vertices[i].uv = {0.5F, 0.5F};
+            vertices[i].uv = {0.75F, 0.75F};
+            vertices[i].uv1 = {0.25F, 0.25F};
             vertices[i].tangent = {1, 0, 0, 1};
         }
         const auto vertex_buffer =
@@ -882,14 +899,57 @@ class Fixture {
         draw();
         equal_pixel(pixel(40, 28), reference(true), 0.004F);
         lights = {};
+        const std::array<shader::Float4, 4> uv_colors{
+            {{1, 0, 0, 1}, {0, 1, 0, 1}, {0, 0, 1, 1}, {1, 1, 0, 1}}};
+        const auto uv_texture = texture(VK_FORMAT_R32G32B32A32_SFLOAT,
+                                        std::as_bytes(std::span(uv_colors)), false, {2, 2});
+        image_descriptor(sets[1], 5, uv_texture);
+        material.emissiveAlphaCutoff = {1, 1, 1, .5F};
+        draw();
+        const auto uv0_pixel = pixel(40, 28);
+        material.flags[1] = 1U << 4U;
+        draw();
+        const auto uv1_pixel = pixel(40, 28);
+        equal_pixel({uv0_pixel[0] - uv1_pixel[0], uv0_pixel[1] - uv1_pixel[1],
+                     uv0_pixel[2] - uv1_pixel[2], uv0_pixel[3] - uv1_pixel[3]},
+                    {0, 1, 0, 0}, .004F);
+        for (auto &vertex : vertices)
+            vertex.uv1 = {1.25F, .25F};
+        write(vertex_buffer, vertices);
+        draw();
+        const auto clamped_uv = pixel(40, 28);
+        auto per_map_samplers = material_samplers;
+        per_map_samplers[4] = sampler(false, Wrap::repeat);
+        sampler_descriptors(sets[1], 6, per_map_samplers);
+        draw();
+        const auto repeated_uv = pixel(40, 28);
+        equal_pixel({repeated_uv[0] - clamped_uv[0], repeated_uv[1] - clamped_uv[1],
+                     repeated_uv[2] - clamped_uv[2], repeated_uv[3] - clamped_uv[3]},
+                    {1, -1, 0, 0}, .004F);
+        sampler_descriptors(sets[1], 6, material_samplers);
+        for (auto &vertex : vertices)
+            vertex.uv1 = {.25F, .25F};
+        write(vertex_buffer, vertices);
+        material.flags[1] = 0;
+        material.emissiveAlphaCutoff = {0, 0, 0, .5F};
+        image_descriptor(sets[1], 5, emissive);
         image_descriptor(sets[1], 2, reverse_normal);
         draw();
         equal_pixel(pixel(40, 28), {0.056F, 0.07F, 0.084F, 1}, 0.004F);
+        material.flags[2] = 1;
+        frame.keyDirectionIntensity[3] = 1;
+        draw();
+        equal_pixel(pixel(40, 28), reference(true), .004F);
+        material.flags[2] = 0;
+        frame.keyDirectionIntensity[3] = 0;
         material.flags[0] = 1;
         material.baseColor[3] = 0.25F;
         draw();
         equal_pixel(pixel(40, 28), {0.03125F, 0.0625F, 0.125F, 0}, 0.00001F);
-        std::cout << "pbr_draws=9 matrix_coverage_pixels=4096 srgb_linear=1 metallic_roughness=1 "
+        std::cout << "pbr_draws=14 uv1_selection=1 per_map_sampler=1 absent_normal_map=1 "
+                     "matrix_coverage_pixels=4096 "
+                     "srgb_linear=1 "
+                     "metallic_roughness=1 "
                      "local_light_clamp=1 normal_map=1 alpha_mask=1 emissive=1 shadow_compare=1\n";
     }
     std::unique_ptr<Context> context;

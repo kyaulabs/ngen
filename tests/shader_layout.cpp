@@ -47,5 +47,6 @@ int main() {
            {{"position", offsetof(Vertex, position)},
             {"normal", offsetof(Vertex, normal)},
             {"uv", offsetof(Vertex, uv)},
+            {"uv1", offsetof(Vertex, uv1)},
             {"tangent", offsetof(Vertex, tangent)}});
 }

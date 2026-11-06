@@ -305,6 +305,16 @@ int main(int argc, char **argv) try {
         "resident_vertices=%zu resident_indices=%zu resident_images=%zu retained_lights=%zu\n",
         version->package()->vertices.size(), version->package()->indices.size(),
         version->package()->images.size(), version->package()->lights.size());
+    std::array<std::size_t, 3> kinds{};
+    for (const auto &light : version->package()->lights)
+        ++kinds[light.type];
+    std::size_t uv1_maps = 0;
+    for (const auto &material : version->package()->materials)
+        for (const auto &map : material.maps)
+            if (map.texture != UINT32_MAX && map.uv_set == 1)
+                ++uv1_maps;
+    std::printf("source_directional=%zu source_point=%zu source_spot=%zu source_uv1_maps=%zu\n",
+                kinds[0], kinds[1], kinds[2], uv1_maps);
     return 0;
 } catch (const std::exception &error) {
     std::fprintf(stderr, "Scene probe: %s\n", error.what());

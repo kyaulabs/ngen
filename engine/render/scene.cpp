@@ -1,10 +1,15 @@
 #include "render/scene.hpp"
+#include "render/shader_contract.hpp"
 #include <exception>
 #include <span>
 #include <type_traits>
 
 namespace ngen::render {
-static_assert(sizeof(assets::Vertex) == 56 && std::is_trivially_copyable_v<assets::Vertex>);
+static_assert(sizeof(assets::Vertex) == sizeof(shader::Vertex) &&
+              std::is_trivially_copyable_v<assets::Vertex>);
+static_assert(offsetof(assets::Vertex, uv) == offsetof(shader::Vertex, uv) &&
+              offsetof(assets::Vertex, uv1) == offsetof(shader::Vertex, uv1) &&
+              offsetof(assets::Vertex, tangent) == offsetof(shader::Vertex, tangent));
 struct SceneUpload::Impl {
     std::shared_ptr<SceneVersion> pending;
     ScenePin ready;

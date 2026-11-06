@@ -67,8 +67,13 @@ class ShaderCompilation(unittest.TestCase):
                 "frame": (0, 0), "localLights": (0, 1), "shadowMap": (0, 2), "shadowSampler": (0, 3),
                 "material": (1, 0), "baseColorMap": (1, 1), "normalMap": (1, 2),
                 "metallicRoughnessMap": (1, 3), "occlusionMap": (1, 4), "emissiveMap": (1, 5),
-                "materialSampler": (1, 6), "irradianceMap": (1, 7), "prefilteredMap": (1, 8), "brdfMap": (1, 9),
+                "materialSamplers": (1, 6), "irradianceMap": (1, 7), "prefilteredMap": (1, 8), "brdfMap": (1, 9),
+                "environmentSampler": (1, 10),
             })
+
+            samplers = next(p for p in pbr["parameters"] if p["name"] == "materialSamplers")
+            self.assertEqual(samplers["type"]["kind"], "array")
+            self.assertEqual(samplers["type"]["elementCount"], 5)
 
     def test_uniform_layouts_match_compiled_cpu_types(self):
         native = subprocess.run([os.environ["NGEN_SHADER_LAYOUT"]], capture_output=True,
@@ -105,9 +110,9 @@ class ShaderCompilation(unittest.TestCase):
         vertex = json.loads((self.output / "pbr-vertex.reflection.json").read_text())
         fields = vertex["entryPoints"][0]["parameters"][0]["type"]["fields"]
         self.assertEqual([(x["name"], x["binding"]["index"], x["type"]["elementCount"]) for x in fields],
-                         [("position", 0, 3), ("normal", 1, 3), ("uv", 2, 2), ("tangent", 3, 4)])
-        self.assertEqual(layouts["Vertex"]["size"], 48)
-        self.assertEqual(layouts["Vertex"]["fields"], {"position": 0, "normal": 12, "uv": 24, "tangent": 32})
+                         [("position", 0, 3), ("normal", 1, 3), ("uv", 2, 2), ("uv1", 4, 2), ("tangent", 3, 4)])
+        self.assertEqual(layouts["Vertex"]["size"], 56)
+        self.assertEqual(layouts["Vertex"]["fields"], {"position": 0, "normal": 12, "uv": 24, "uv1": 32, "tangent": 40})
 
     def test_tool_and_artifact_identity(self):
         metadata = json.loads((self.output / "manifest.json").read_text())

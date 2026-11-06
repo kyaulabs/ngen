@@ -40,7 +40,10 @@ struct alignas(16) MaterialConstants {
     Float4 baseColor{1, 1, 1, 1};
     Float4 emissiveAlphaCutoff{0, 0, 0, 0.5F};
     Float4 metallicRoughnessNormalOcclusion{1, 1, 1, 1};
-    std::array<std::uint32_t, 4> flags{}; // opaque=0, mask=1, blend=2 in flags[0].
+    // [0]: opaque=0, mask=1, blend=2; [1]: UV1 bits in package map order
+    // (base, metallic/roughness, normal, occlusion, emissive); [2] bit0: no normal
+    // texture. All remaining bits, including [3], are reserved.
+    std::array<std::uint32_t, 4> flags{};
 };
 
 struct alignas(16) PostConstants {
@@ -56,6 +59,7 @@ struct Vertex {
     std::array<float, 3> position{};
     std::array<float, 3> normal{};
     std::array<float, 2> uv{};
+    std::array<float, 2> uv1{};
     Float4 tangent{};
 };
 
@@ -67,7 +71,7 @@ static_assert(sizeof(LightConstants) == 528);
 static_assert(sizeof(MaterialConstants) == 64);
 static_assert(sizeof(CullConstants) == 112);
 static_assert(sizeof(PostConstants) == 16);
-static_assert(sizeof(Vertex) == 48);
+static_assert(sizeof(Vertex) == 56);
 static_assert(std::is_standard_layout_v<FrameConstants> &&
               std::is_trivially_copyable_v<FrameConstants>);
 static_assert(std::is_standard_layout_v<LightConstants> &&
