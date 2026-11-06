@@ -1,0 +1,21 @@
+Test project <REPO>/build/renderer-asan
+    Start 1: shader_offline
+1/8 Test #1: shader_offline ...................   Passed   15.97 sec
+    Start 2: ngen_tests
+2/8 Test #2: ngen_tests .......................   Passed    0.06 sec
+    Start 3: render_contract_tests
+3/8 Test #3: render_contract_tests ............   Passed    0.05 sec
+    Start 4: render_startup_tests
+4/8 Test #4: render_startup_tests .............   Passed    0.13 sec
+    Start 5: wayland_tablet_shutdown
+5/8 Test #5: wayland_tablet_shutdown ..........   Passed    1.45 sec
+    Start 6: wayland_tablet_removal
+6/8 Test #6: wayland_tablet_removal ...........   Passed    0.65 sec
+    Start 7: replay_serial
+7/8 Test #7: replay_serial ....................   Passed    0.09 sec
+    Start 8: replay_workers
+8/8 Test #8: replay_workers ...................   Passed    0.07 sec
+
+100% tests passed out of 8
+
+Total Test time (real) =  18.49 sec

@@ -63,6 +63,59 @@ if(NGEN_BUILD_ASSET_TOOLS)
   add_executable(assetc tools/assetc/main.cpp)
   target_link_libraries(assetc PRIVATE ngen_asset_cook)
 endif()
+option(NGEN_BUILD_SHADERS "Build offline shader interface verification" OFF)
+if(NGEN_BUILD_SHADERS)
+  find_package(Python3 3.11 REQUIRED COMPONENTS Interpreter)
+  find_program(NGEN_SPIRV_VAL_EXECUTABLE NAMES spirv-val HINTS "$ENV{VULKAN_SDK}/Bin" REQUIRED)
+  if(NOT NGEN_SLANG_ROOT)
+    message(FATAL_ERROR "NGEN_SLANG_ROOT must name the pinned offline compiler package")
+  endif()
+  # Immutable input-keyed packages let builds publish atomically without removing
+  # a previous package or mixing artifacts after a failed incremental compile.
+  if(CMAKE_HOST_WIN32)
+    set(slangc "${NGEN_SLANG_ROOT}/bin/slangc.exe")
+  else()
+    set(slangc "${NGEN_SLANG_ROOT}/bin/slangc")
+  endif()
+  if(NOT EXISTS "${slangc}")
+    message(FATAL_ERROR "The pinned offline Slang executable is missing: ${slangc}")
+  endif()
+  set(shader_inputs tools/shaderc/compile.py shaders/cull.slang shaders/pbr.slang)
+  set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS ${shader_inputs})
+  set(shader_identity "")
+  foreach(input IN LISTS shader_inputs)
+    file(SHA256 "${CMAKE_CURRENT_SOURCE_DIR}/${input}" input_hash)
+    string(APPEND shader_identity "${input_hash}")
+  endforeach()
+  file(GLOB_RECURSE shader_tool_inputs CONFIGURE_DEPENDS LIST_DIRECTORIES false
+    "${NGEN_SLANG_ROOT}/bin/*" "${NGEN_SLANG_ROOT}/lib/*")
+  set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS ${shader_tool_inputs})
+  foreach(tool IN ITEMS "${NGEN_SPIRV_VAL_EXECUTABLE}" ${shader_tool_inputs})
+    file(SHA256 "${tool}" tool_hash)
+    string(APPEND shader_identity "${tool_hash}")
+  endforeach()
+  string(SHA256 shader_key "${shader_identity}")
+  set(NGEN_SHADER_PACKAGE_DIR "${CMAKE_CURRENT_BINARY_DIR}/shaders/${shader_key}")
+  add_custom_command(OUTPUT "${NGEN_SHADER_PACKAGE_DIR}/manifest.json"
+    COMMAND ${Python3_EXECUTABLE} "${CMAKE_CURRENT_SOURCE_DIR}/tools/shaderc/compile.py"
+      --slang-root "${NGEN_SLANG_ROOT}" --validator "${NGEN_SPIRV_VAL_EXECUTABLE}"
+      --source-dir "${CMAKE_CURRENT_SOURCE_DIR}/shaders" --output "${NGEN_SHADER_PACKAGE_DIR}" --verify-existing
+    DEPENDS ${shader_inputs} ${shader_tool_inputs} "${NGEN_SPIRV_VAL_EXECUTABLE}"
+    VERBATIM)
+  add_custom_target(ngen_shaders ALL DEPENDS "${NGEN_SHADER_PACKAGE_DIR}/manifest.json")
+  if(BUILD_TESTING)
+    add_executable(shader_contract_layout tests/shader_layout.cpp)
+    add_dependencies(shader_contract_layout ngen_shaders)
+    target_include_directories(shader_contract_layout PRIVATE engine)
+    target_link_libraries(shader_contract_layout PRIVATE ngen_options)
+    add_test(NAME shader_offline COMMAND ${CMAKE_COMMAND} -E env
+      "NGEN_SLANG_ROOT=${NGEN_SLANG_ROOT}" "NGEN_SPIRV_VAL=${NGEN_SPIRV_VAL_EXECUTABLE}"
+      "NGEN_SHADER_LAYOUT=$<TARGET_FILE:shader_contract_layout>"
+      "NGEN_SHADER_PACKAGE=${NGEN_SHADER_PACKAGE_DIR}"
+      ${Python3_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/tests/shaders.py)
+    set_tests_properties(shader_offline PROPERTIES TIMEOUT 180)
+  endif()
+endif()
 option(NGEN_BUILD_RENDERER "Build the Vulkan/SDL startup path" OFF)
 if(NGEN_BUILD_RENDERER)
   find_package(SDL3 3.4 CONFIG REQUIRED)
@@ -110,14 +163,24 @@ if(BUILD_TESTING)
       "NGEN_ASSETC_EXE=$<TARGET_FILE:assetc>"
       ${Python3_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/tests/asset_cli.py)
     set_tests_properties(asset_cli PROPERTIES TIMEOUT 90)
+    add_executable(asset_verification_stub tests/asset_probe_failure.cpp)
+    target_link_libraries(asset_verification_stub PRIVATE ngen_options)
     add_test(NAME asset_cook_cli COMMAND ${CMAKE_COMMAND} -E env
       "NGEN_ASSETC_EXE=$<TARGET_FILE:assetc>"
       "NGEN_KTX_EXE=${NGEN_KTX_EXECUTABLE}"
       "NGEN_PACKAGE_PROBE=$<TARGET_FILE:asset_package_probe>"
+      "NGEN_PACKAGE_FAILURE_PROBE=$<TARGET_FILE:asset_verification_stub>"
       ${Python3_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/tests/asset_cooking.py)
     set_tests_properties(asset_cook_cli PROPERTIES TIMEOUT 180)
   endif()
   if(NGEN_BUILD_RENDERER)
+    if(NGEN_BUILD_SHADERS)
+      add_executable(shader_gpu_probe tests/shader_gpu.cpp)
+      target_link_libraries(shader_gpu_probe PRIVATE ngen_render ngen_vma)
+      target_compile_definitions(shader_gpu_probe PRIVATE NGEN_SHADER_PACKAGE_DIR="${NGEN_SHADER_PACKAGE_DIR}")
+      add_dependencies(shader_gpu_probe ngen_shaders)
+      # Physical-device evidence is run explicitly, never inferred from hosted CTest.
+    endif()
     add_executable(render_startup_tests tests/render_startup.cpp tests/render_surface.cpp)
     target_link_libraries(render_startup_tests PRIVATE ngen_render Catch2::Catch2WithMain)
     add_test(NAME render_startup_tests COMMAND render_startup_tests)

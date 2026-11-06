@@ -15,7 +15,7 @@ SOURCES = ["engine/assets/package.cpp", "apps/asset_probe/main.cpp",
            "tools/assetc/import.cpp", "tools/assetc/metadata.cpp", "tools/assetc/png.cpp",
            "tools/assetc/tangents.cpp", "tools/assetc/main.cpp", "tools/assetc/cook.cpp",
            "tools/assetc/stage.cpp", "tools/assetc/source.cpp", "tests/asset_import.cpp",
-           "tests/assets.cpp", "tests/asset_cook.cpp"]
+           "tests/assets.cpp", "tests/asset_cook.cpp", "tests/asset_probe_failure.cpp"]
 KNOWN = {
     ("fastgltf/core.hpp", "The value '32832' provided to the cast expression is not in the valid range of values for 'Extensions'"),
     ("catch2/internal/catch_result_type.hpp", "The value '6' provided to the cast expression is not in the valid range of values for 'Flags'"),

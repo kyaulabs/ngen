@@ -5,3 +5,8 @@ recipes/sdl/patches/*.patch whitespace=-blank-at-eol,-blank-at-eof
 docs/evidence/M2/cooked-scene/licenses/ktx/Apache-2.0.txt whitespace=-blank-at-eol
 docs/evidence/M2/cooked-scene/licenses/ktx/CC-BY-4.0.txt whitespace=-blank-at-eof
 docs/evidence/M2/cooked-scene/licenses/ktx/LICENSE.md whitespace=-blank-at-eol
+
+# Preserve these upstream legal notices byte-for-byte, including their line endings.
+docs/evidence/M2/shader-interface/licenses/slangc/third-party-notices/miniz-LICENSE -text whitespace=cr-at-eol
+docs/evidence/M2/shader-interface/licenses/spirv-headers/LICENSE whitespace=-blank-at-eof
+docs/evidence/M2/shader-interface/licenses/spirv-headers/LICENSES/MIT.txt whitespace=-blank-at-eol

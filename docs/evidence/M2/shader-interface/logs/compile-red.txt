@@ -1,0 +1,15 @@
+F
+======================================================================
+FAIL: test_compile_culling_for_minimum_vulkan_profile (__main__.ShaderCompilation.test_compile_culling_for_minimum_vulkan_profile)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<ROOT>/tests/shaders.py", line 28, in test_compile_culling_for_minimum_vulkan_profile
+    self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != 0 : shader compilation is not implemented
+
+
+----------------------------------------------------------------------
+Ran 1 test in 0.147s
+
+FAILED (failures=1)

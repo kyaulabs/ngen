@@ -39,7 +39,8 @@ elif [ "$assets" = true ]; then
   conan install . -pr:h "profiles/$profile" -pr:b profiles/linux-clang -s:h "build_type=$type" -o '&:assets=True' --lockfile conan-runtime-assets.lock --build=missing -c tools.build:jobs=2 -of "build/$preset" "$@"
 elif [ "$renderer" = true ]; then
   conan export recipes/sdl --version=3.4.16 --user=ngen --channel=wayland
-  conan install . -pr:h "profiles/$profile" -pr:b profiles/linux-clang -s:h "build_type=$type" -s:b "build_type=$type" -o '&:renderer=True' --lockfile conan-render.lock --build=missing -c tools.build:jobs=2 -of "build/$preset" "$@"
+  conan export recipes/slangc --version=2026.21 --user=ngen --channel=tools
+  conan install . -pr:h "profiles/$profile" -pr:b profiles/linux-clang -s:h "build_type=$type" -s:b build_type=Release -o '&:renderer=True' -o '&:shaders=True' --lockfile conan-render.lock --build=missing -c tools.build:jobs=2 -of "build/$preset" "$@"
 else
   conan install . -pr:h "profiles/$profile" -pr:b profiles/linux-clang -s:h "build_type=$type" --lockfile conan.lock --build=missing -of "build/$preset" "$@"
 fi

@@ -5,11 +5,12 @@ from conan.tools.env import VirtualRunEnv
 
 class NgenDependencies(ConanFile):
     settings = "os", "compiler", "build_type", "arch"
-    options = {"renderer": [True, False], "asset_tools": [True, False], "assets": [True, False]}
+    options = {"renderer": [True, False], "asset_tools": [True, False], "assets": [True, False], "shaders": [True, False]}
     default_options = {
         "renderer": False,
         "asset_tools": False,
         "assets": False,
+        "shaders": False,
         "sdl/*:shared": True,
         **{f"sdl/*:{name}": False for name in (
             "audio", "gpu", "render", "camera", "joystick", "haptic", "hidapi",
@@ -44,6 +45,9 @@ class NgenDependencies(ConanFile):
     def build_requirements(self):
         if self.options.asset_tools:
             self.tool_requires("ktx/4.4.2", options={"tools": True})
+        if self.options.shaders:
+            self.tool_requires("slangc/2026.21@ngen/tools")
+            self.tool_requires("spirv-tools/1.4.357.0", options={"shared": False, "build_executables": True})
 
     def generate(self):
         CMakeDeps(self).generate()
@@ -56,4 +60,10 @@ class NgenDependencies(ConanFile):
             toolchain.variables["NGEN_BUILD_ASSET_TOOLS"] = True
             suffix = ".exe" if self.settings_build.os == "Windows" else ""
             toolchain.variables["NGEN_KTX_EXECUTABLE"] = self.dependencies.build["ktx"].package_folder.replace("\\", "/") + "/bin/ktx" + suffix
+        if self.options.shaders:
+            toolchain.variables["NGEN_BUILD_SHADERS"] = True
+            toolchain.variables["NGEN_SLANG_ROOT"] = self.dependencies.build["slangc"].package_folder.replace("\\", "/")
+            validator = self.dependencies.build["spirv-tools"]
+            suffix = ".exe" if self.settings_build.os == "Windows" else ""
+            toolchain.variables["NGEN_SPIRV_VAL_EXECUTABLE"] = (validator.package_folder.replace("\\", "/") + "/bin/spirv-val" + suffix)
         toolchain.generate()

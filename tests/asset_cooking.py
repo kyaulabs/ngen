@@ -3,6 +3,7 @@ import hashlib
 import json
 import os
 from pathlib import Path
+import shutil
 import subprocess
 import struct
 import zlib
@@ -15,6 +16,7 @@ from asset_cli import triangle
 EXE = os.environ["NGEN_ASSETC_EXE"]
 KTX = os.environ["NGEN_KTX_EXE"]
 PROBE = os.environ["NGEN_PACKAGE_PROBE"]
+FAILURE_PROBE = Path(os.environ["NGEN_PACKAGE_FAILURE_PROBE"])
 COOK = Path(__file__).resolve().parents[1] / "tools/assetc/cook.py"
 
 
@@ -66,9 +68,8 @@ class SceneCooking(unittest.TestCase):
             root = Path(directory)
             source = root / "triangle.glb"
             source.write_bytes(triangle())
-            probe = root / "rejecting probe"
-            probe.write_text("#!" + sys.executable + "\nprint('{\"package_valid\":0,\"lod_triangles\":[1,1,1],\"texture_bytes\":0}')\n")
-            probe.chmod(0o700)
+            probe = root / ("rejecting probe" + FAILURE_PROBE.suffix)
+            shutil.copy2(FAILURE_PROBE, probe)
             output = root / "package"
             result = cook(source, output, probe)
             self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
@@ -80,9 +81,8 @@ class SceneCooking(unittest.TestCase):
             root = Path(directory)
             source = root / "triangle.glb"
             source.write_bytes(triangle())
-            probe = root / "failing probe"
-            probe.write_text("#!" + sys.executable + "\nimport sys\nprint('EXPECTED_SCENE_VERIFY_FAILURE')\nsys.exit(7)\n")
-            probe.chmod(0o700)
+            probe = root / ("diagnostic-probe" + FAILURE_PROBE.suffix)
+            shutil.copy2(FAILURE_PROBE, probe)
             result = cook(source, root / "package", probe)
             self.assertNotEqual(result.returncode, 0)
             self.assertIn("EXPECTED_SCENE_VERIFY_FAILURE", result.stderr)
