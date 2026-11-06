@@ -1,0 +1,2 @@
+culling-guard: expected_exit=1 behavioral_failure=1 validation_diagnostic=0
+matrix-convention: expected_exit=1 behavioral_failure=1 validation_diagnostic=0

@@ -1,0 +1,13 @@
+[1/2] Processing file <ROOT>/tests/shader_gpu.cpp.
+48 warnings and 3 errors generated.
+Error while processing <ROOT>/tests/shader_gpu.cpp.
+[2/2] Processing file <ROOT>/tests/shader_layout.cpp.
+77 warnings and 6 errors generated.
+Error while processing <ROOT>/tests/shader_layout.cpp.
+error: unknown argument: '-fdeps-format=p1689r5' [clang-diagnostic-error]
+error: unknown argument: '-fmodule-mapper=CMakeFiles/shader_contract_layout.dir/tests/shader_layout.cpp.o.modmap' [clang-diagnostic-error]
+error: unknown argument: '-fmodule-mapper=CMakeFiles/shader_gpu_probe.dir/tests/shader_gpu.cpp.o.modmap' [clang-diagnostic-error]
+error: unknown argument: '-fmodules-ts' [clang-diagnostic-error]
+Suppressed 77 warnings (77 in non-user code).
+Use -header-filter=.* or leave it as default to display errors from all non-system headers. Use -system-headers to display errors from system headers as well.
+Found compiler error(s).

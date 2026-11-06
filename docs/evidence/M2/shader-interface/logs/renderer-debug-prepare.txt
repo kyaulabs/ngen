@@ -1,0 +1,166 @@
+
+======== Exporting recipe to the cache ========
+sdl/3.4.16@ngen/wayland export
+Exporting package recipe: <ROOT>/recipes/sdl/conanfile.py
+sdl/3.4.16@ngen/wayland: exports: File 'conandata.yml' found. Exporting it...
+Copied 1 '.recipe' file: LICENSE.recipe
+Copied 1 '.py' file: conanfile.py
+Copied 1 '.yml' file: conandata.yml
+Copied 1 '.sdl' file: LICENSE.sdl
+Copied 2 '.patch' files: 0001-wayland-tablet-ownership.patch, 0002-clang-shared-asan.patch
+Exported to cache folder: <CONAN>/p/sdlaedd920c8cf43/e
+Exported: sdl/3.4.16@ngen/wayland#1462763359f081b8fd40be314a673a1d (2026-11-06 02:55:51 UTC)
+
+======== Exporting recipe to the cache ========
+slangc/2026.21@ngen/tools export
+Exporting package recipe: <ROOT>/recipes/slangc/conanfile.py
+slangc/2026.21@ngen/tools: exports: File 'conandata.yml' found. Exporting it...
+Copied 1 '.py' file: conanfile.py
+Copied 1 '.yml' file: conandata.yml
+Exported to cache folder: <CONAN>/p/slang9200e97ca728a/e
+Exported: slangc/2026.21@ngen/tools#6e871398eae564c7e6333ddea199e050 (2026-11-06 02:55:51 UTC)
+Using lockfile: '<ROOT>/conan-render.lock'
+
+======== Input profiles ========
+Profile host:
+[settings]
+arch=x86_64
+build_type=Debug
+compiler=clang
+compiler.cppstd=20
+compiler.libcxx=libstdc++11
+compiler.version=23
+os=Linux
+[options]
+&:renderer=True
+&:shaders=True
+[conf]
+tools.build:compiler_executables={'c': 'clang', 'cpp': 'clang++'}
+tools.build:jobs=2
+tools.cmake.cmaketoolchain:generator=Ninja
+
+Profile build:
+[settings]
+arch=x86_64
+build_type=Release
+compiler=clang
+compiler.cppstd=20
+compiler.libcxx=libstdc++11
+compiler.version=23
+os=Linux
+[conf]
+tools.build:compiler_executables={'c': 'clang', 'cpp': 'clang++'}
+tools.build:jobs=2
+tools.cmake.cmaketoolchain:generator=Ninja
+
+
+======== Computing dependency graph ========
+Graph root
+    conanfile.py: <ROOT>/conanfile.py
+Requirements
+    egl/system#9d33d024a47d4b3fec1d0fcc7cb2717f - Cache
+    enkits/1.12#66203195b410e9ccba5ac22e3216b7d7 - Cache
+    expat/2.10.0#93425119c70db4e470b3d7d9b5daf3e6 - Cache
+    libffi/3.4.8#a045c00fb26779635e3bed40e80c5254 - Cache
+    libiconv/1.17#9923bc6dc6f106646d6967e0039a5ada - Cache
+    libxml2/2.15.4#9a0c674e87edc8d5bca8ccdb6761e4f8 - Cache
+    sdl/3.4.16@ngen/wayland#1462763359f081b8fd40be314a673a1d - Cache
+    vulkan-headers/1.3.296.0#4ea73880426698c2e903c3e7acd892dc - Cache
+    vulkan-memory-allocator/3.3.0#5393b5bc9a6b8a2fb9612df877706608 - Cache
+    wayland/1.24.0#ac40d5647b1ce948e185c1a849f63cb6 - Cache
+    xkbcommon/1.6.0#a66a2c7f73998ec9c99b38abc521b145 - Cache
+    xkeyboard-config/system#74aea985b91f987b93b220b44963d7ed - Cache
+    zlib/1.3.2#1cb806da49011867778ffb6ac7190fcb - Cache
+Test requirements
+    catch2/3.16.0#95f400ca2fba9f0c5ce5aea6e6fe0055 - Cache
+Build requirements
+    bison/3.8.2#3a45a2c96da8e866d7c3e35855bae257 - Cache
+    cmake/4.4.4#fec9c7048fae91e03c31e59977cd9c12 - Cache
+    expat/2.10.0#93425119c70db4e470b3d7d9b5daf3e6 - Cache
+    flex/2.6.4#efa781fc5088b47c895bd4eef6911f2e - Cache
+    gnu-config/cci.20210814#466e9d4d7779e1c142443f7ea44b4284 - Cache
+    libffi/3.4.8#a045c00fb26779635e3bed40e80c5254 - Cache
+    libiconv/1.17#9923bc6dc6f106646d6967e0039a5ada - Cache
+    libxml2/2.15.4#9a0c674e87edc8d5bca8ccdb6761e4f8 - Cache
+    m4/1.4.19#1727f439cf74e83826ec96d0b4904eee - Cache
+    meson/1.10.2#9d2d10681fe7fe61c788c58626c89b25 - Cache
+    ninja/1.13.2#c8c5dc2a52ed6e4e42a66d75b4717ceb - Cache
+    pkgconf/2.5.1#93c2051284cba1279494a43a4fcfeae2 - Cache
+    slangc/2026.21@ngen/tools#6e871398eae564c7e6333ddea199e050 - Cache
+    spirv-headers/1.4.357.0#9a9853ce0dd278c90c13c95ac1d02993 - Cache
+    spirv-tools/1.4.357.0#b6f5de6ef73ab1887deb9da902f8a719 - Cache
+    wayland/1.24.0#ac40d5647b1ce948e185c1a849f63cb6 - Cache
+    wayland-protocols/1.45#79bbdf84ebb0fcc3353686529e0a2322 - Cache
+    zlib/1.3.2#1cb806da49011867778ffb6ac7190fcb - Cache
+Overrides
+    vulkan-headers/[~1]: ['vulkan-headers/1.3.296.0']
+
+======== Computing necessary packages ========
+Connecting to remote 'conancenter' anonymously
+wayland/1.24.0: WARN: risk: Transitive dependencies with 'headers=False' effect in 'package_id' is not necessary and suboptimal. Use required_conan_version='>=2.28' to activate it
+wayland/1.24.0: WARN: risk: Transitive dependencies with 'headers=False' effect in 'package_id' is not necessary and suboptimal. Use required_conan_version='>=2.28' to activate it
+wayland/1.24.0: WARN: risk: Transitive dependencies with 'headers=False' effect in 'package_id' is not necessary and suboptimal. Use required_conan_version='>=2.28' to activate it
+xkbcommon/1.6.0: WARN: risk: Transitive dependencies with 'headers=False' effect in 'package_id' is not necessary and suboptimal. Use required_conan_version='>=2.28' to activate it
+Requirements
+    egl/system#9d33d024a47d4b3fec1d0fcc7cb2717f:da39a3ee5e6b4b0d3255bfef95601890afd80709#0ba8627bd47edc3a501e8f0eb9a79e5e - Cache
+    enkits/1.12#66203195b410e9ccba5ac22e3216b7d7:493772ddc92cb244fdb16d09cebe2fb65e63d555#5dce952807f689f086b41df0ae276c94 - Cache
+    expat/2.10.0#93425119c70db4e470b3d7d9b5daf3e6:2a381af9234132e1fb621b94bd18f9808de67ecf#300e8e07b26ec895f75a5b05e6b1eeb7 - Cache
+    libffi/3.4.8#a045c00fb26779635e3bed40e80c5254:598e6a277b8c26506ffb9f7c0c79632d0584457a#ea2f36889d394aa8e74015b46b0adf77 - Cache
+    libiconv/1.17#9923bc6dc6f106646d6967e0039a5ada:598e6a277b8c26506ffb9f7c0c79632d0584457a#c67bab38cc4c206e48371107adffc4a6 - Cache
+    libxml2/2.15.4#9a0c674e87edc8d5bca8ccdb6761e4f8:bca090a3c3106ca9a6f88955f37fc34990cb923e#f9e8bc69e07c16e902630c152e9f9861 - Cache
+    sdl/3.4.16@ngen/wayland#1462763359f081b8fd40be314a673a1d:81d9c0295208e39a65f28e366b30533ec7340302#8c49dd06f2bf70bfbb4a2fb4350a7d63 - Cache
+    vulkan-headers/1.3.296.0#4ea73880426698c2e903c3e7acd892dc:da39a3ee5e6b4b0d3255bfef95601890afd80709#471ebde28e91a7fb21437f3478e03f2f - Cache
+    vulkan-memory-allocator/3.3.0#5393b5bc9a6b8a2fb9612df877706608:da39a3ee5e6b4b0d3255bfef95601890afd80709#54c9d6d67f9971b448f5a47a878b23bf - Cache
+    wayland/1.24.0#ac40d5647b1ce948e185c1a849f63cb6:ef92d77d1465785b069f05800397711b02b19b39#8760828a8cbf9ab82364c1edb9840674 - Cache
+    xkbcommon/1.6.0#a66a2c7f73998ec9c99b38abc521b145:7dd712bdf96c57c987f550bb6dfb152a982776c4#7520babebe4c7479b85784f4a1ee6c7b - Cache
+    xkeyboard-config/system#74aea985b91f987b93b220b44963d7ed:da39a3ee5e6b4b0d3255bfef95601890afd80709#0ba8627bd47edc3a501e8f0eb9a79e5e - Cache
+    zlib/1.3.2#1cb806da49011867778ffb6ac7190fcb:598e6a277b8c26506ffb9f7c0c79632d0584457a#4ae7294ce0ecf27211402a1d1d4702b1 - Cache
+Test requirements
+    catch2/3.16.0#95f400ca2fba9f0c5ce5aea6e6fe0055:dc20cee61e48ba1571251551711c1071b8328750#b31c523a131c4b13eadb6a45696aa3c1 - Cache
+Build requirements
+    slangc/2026.21@ngen/tools#6e871398eae564c7e6333ddea199e050:63fead0844576fc02943e16909f08fcdddd6f44b#ac448c984bb95690768a6f32adb9a18f - Cache
+    spirv-tools/1.4.357.0#b6f5de6ef73ab1887deb9da902f8a719:609e88e19e5f81480dd09ce2581d77e682c7db05#d395957b94c1e334ee7eb83fec58c796 - Cache
+Skipped build binaries
+    bison/3.8.2, cmake/4.4.4, expat/2.10.0, flex/2.6.4, gnu-config/cci.20210814, libffi/3.4.8, libiconv/1.17, libxml2/2.15.4, m4/1.4.19, meson/1.10.2, ninja/1.13.2, pkgconf/2.5.1, spirv-headers/1.4.357.0, wayland-protocols/1.45, wayland/1.24.0, zlib/1.3.2
+egl/system: System requirements: libglvnd already installed
+xkeyboard-config/system: System requirements: xkeyboard-config already installed
+
+======== Installing packages ========
+egl/system: Already installed! (1 of 16)
+enkits/1.12: Already installed! (2 of 16)
+libffi/3.4.8: Already installed! (3 of 16)
+libiconv/1.17: Already installed! (4 of 16)
+slangc/2026.21@ngen/tools: Already installed! (5 of 16)
+vulkan-headers/1.3.296.0: Already installed! (6 of 16)
+xkeyboard-config/system: Already installed! (7 of 16)
+zlib/1.3.2: Already installed! (8 of 16)
+catch2/3.16.0: Already installed! (9 of 16)
+expat/2.10.0: Already installed! (10 of 16)
+spirv-tools/1.4.357.0: Already installed! (11 of 16)
+libxml2/2.15.4: Already installed! (12 of 16)
+vulkan-memory-allocator/3.3.0: Already installed! (13 of 16)
+wayland/1.24.0: Already installed! (14 of 16)
+xkbcommon/1.6.0: Already installed! (15 of 16)
+sdl/3.4.16@ngen/wayland: Already installed! (16 of 16)
+
+======== Finalizing install (deploy, generators) ========
+>>> Generate step for conanfile.py
+Generators folder: <ROOT>/build/renderer-debug
+Calling generate() method in recipe
+CMakeDeps necessary find_package() and targets for your CMakeLists.txt
+    find_package(enkiTS)
+    find_package(SDL3)
+    find_package(VulkanMemoryAllocator)
+    find_package(wayland)
+    find_package(Catch2)
+    target_link_libraries(... enkiTS::enkiTS sdl::sdl GPUOpen::VulkanMemoryAllocator wayland::wayland Catch2::Catch2WithMain)
+CMakeToolchain generated: conan_toolchain.cmake
+CMakeToolchain: Preset 'conan-debug' added to CMakePresets.json.
+    (cmake>=3.23) cmake --preset conan-debug
+    (cmake<3.23) cmake <path> -G Ninja
+                 -DCMAKE_TOOLCHAIN_FILE=<output_folder>/conan_toolchain.cmake
+                 -DCMAKE_POLICY_DEFAULT_CMP0091=NEW -DCMAKE_BUILD_TYPE=Debug
+CMakeToolchain generated: <ROOT>/build/renderer-debug/CMakePresets.json
+Generating aggregated env files
+Generated aggregated env files: ['conanrun.sh', 'conanrun.ps1', 'conanbuild.sh', 'conanbuild.ps1']
+Install finished successfully

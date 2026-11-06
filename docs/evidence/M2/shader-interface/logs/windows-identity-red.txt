@@ -1,0 +1,14 @@
+stdout marker
+stderr marker
+one argument with spaces
+checks
+--check-validation-callback
+startup
+--check-presentation
+resources
+shaders
+Exception: <ROOT>/tests/windows_build.ps1:184
+Line |
+ 184 |  …              throw 'Actual shader compiler identity was not retained'
+     |                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     | Actual shader compiler identity was not retained

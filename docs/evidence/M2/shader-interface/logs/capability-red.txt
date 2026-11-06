@@ -1,0 +1,14 @@
+F
+======================================================================
+FAIL: test_reject_unenabled_float64_without_publishing_package (__main__.ShaderCompilation.test_reject_unenabled_float64_without_publishing_package)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<ROOT>/tests/shaders.py", line 32, in test_reject_unenabled_float64_without_publishing_package
+    self.assertNotEqual(result.returncode, 0, "shader package admitted unenabled Float64")
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 == 0 : shader package admitted unenabled Float64
+
+----------------------------------------------------------------------
+Ran 1 test in 6.383s
+
+FAILED (failures=1)

@@ -1,0 +1,16 @@
+F
+======================================================================
+FAIL: test_compile_pbr_pair_for_minimum_vulkan_profile (__main__.ShaderCompilation.test_compile_pbr_pair_for_minimum_vulkan_profile)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<ROOT>/tests/shaders.py", line 84, in test_compile_pbr_pair_for_minimum_vulkan_profile
+    self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != 0 : shader compilation: spirv-val exited 99: wrong PATH validator invoked
+
+
+
+----------------------------------------------------------------------
+Ran 1 test in 1.707s
+
+FAILED (failures=1)

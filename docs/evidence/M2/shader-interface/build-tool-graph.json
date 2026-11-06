@@ -1,0 +1,46 @@
+[
+  {
+    "ref": "slangc/2026.21@ngen/tools#6e871398eae564c7e6333ddea199e050",
+    "context": "build",
+    "settings": {
+      "os": "Linux",
+      "arch": "x86_64"
+    },
+    "options": {},
+    "license": "Apache-2.0 WITH LLVM-exception"
+  },
+  {
+    "ref": "spirv-tools/1.4.357.0#b6f5de6ef73ab1887deb9da902f8a719",
+    "context": "build",
+    "settings": {
+      "os": "Linux",
+      "arch": "x86_64",
+      "compiler": "clang",
+      "compiler.cppstd": "20",
+      "compiler.libcxx": "libstdc++11",
+      "compiler.version": "23",
+      "build_type": "Release"
+    },
+    "options": {
+      "build_executables": "True",
+      "fPIC": "True",
+      "shared": "False"
+    },
+    "license": "Apache-2.0"
+  },
+  {
+    "ref": "spirv-headers/1.4.357.0#9a9853ce0dd278c90c13c95ac1d02993",
+    "context": "build",
+    "settings": {
+      "os": "Linux",
+      "arch": "x86_64",
+      "compiler": "clang",
+      "compiler.cppstd": "20",
+      "compiler.libcxx": "libstdc++11",
+      "compiler.version": "23",
+      "build_type": "Release"
+    },
+    "options": {},
+    "license": "MIT-KhronosGroup"
+  }
+]
