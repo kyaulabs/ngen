@@ -1,0 +1,5 @@
+network probe errno: 101
+seed=0x4e47454e workers=0 ticks=1000 entities=8 commands=32000 sum=11930
+tick_ns p50=512 p95=542 p99=761 allocation_probe=1 new_allocations=0 scheduler_allocations=0
+seed=0x4e47454e workers=2 ticks=1000 entities=8 commands=32000 sum=11930
+tick_ns p50=4719 p95=5153 p99=5831 allocation_probe=1 new_allocations=0 scheduler_allocations=0

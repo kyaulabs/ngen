@@ -1,0 +1,15 @@
+Expected and observed final process outcomes:
+Four normal native frame scenarios: 0 each, 96 accepted, 3 generations, 2 resizes.
+Four startup scenarios: 0 each, no validation diagnostics.
+Four callback calibration scenarios: 0 each, one intentional labelled error.
+Suboptimal-acquire, present-outdated, event-flood instrumented scenarios: 0 each.
+Missing maintenance, excessive images, idle retry: 1 each (controlled failure).
+Pool:2, fence:3, fence:7, view:2, semaphore:3, swapchain:2, wait:1: 1 each.
+Initial first-light, resize, suboptimal, outdated, idle and synchronization controls: 1 each.
+Initial event-flood control: 124 (external three-second timeout, empty output).
+Initial Windows helper contract: 1; repaired boundary suite: 0.
+All four native CTest configurations: 7/7, none skipped. CPU: 4/4.
+Clang Debug/Release/ASan six-TU analysis: 0 each.
+GCC clang-tidy: 1 (unsupported database flags, AST evidence unavailable).
+Required format 18: 0. Workflow YAML/Bash/ShellCheck: 0.
+Actual Windows first-light execution: not run. Wayland minimize: not run.

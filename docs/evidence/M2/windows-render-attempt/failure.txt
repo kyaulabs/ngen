@@ -1,0 +1,6 @@
+Exception: D:\git\kyaulabs\ngen\tools\build-windows.ps1:29
+Line |
+  29 |          throw "$FilePath failed with exit code $code. See $LogPath"
+     |          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     | D:\git\kyaulabs\ngen\build\windows-tools\Scripts\cmake.exe failed with exit code 1. See
+     | D:\git\kyaulabs\ngen\build\windows\20261104-235620-314\logs\Debug-configure.txt

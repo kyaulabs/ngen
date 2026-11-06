@@ -1,0 +1,4 @@
+[1/4] Scanning /home/kyau/projects/kyaulabs/ngen/tests/wayland_tablets.cpp for CXX dependencies
+[2/4] Generating CXX dyndep file CMakeFiles/wayland_tablet_tests.dir/CXX.dd
+[3/4] Building CXX object CMakeFiles/wayland_tablet_tests.dir/tests/wayland_tablets.cpp.o
+[4/4] Linking CXX executable wayland_tablet_tests

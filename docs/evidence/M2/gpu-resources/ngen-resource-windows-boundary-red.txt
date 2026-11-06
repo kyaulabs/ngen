@@ -1,0 +1,12 @@
+stdout marker
+stderr marker
+one argument with spaces
+checks
+--check-validation-callback
+startup
+--check-presentation
+Exception: <repo>/tests/windows_build.ps1:160
+Line |
+ 160 |                  throw 'GPU resources were not exercised and captured'
+     |                  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     | GPU resources were not exercised and captured

@@ -1,0 +1,28 @@
+
+=================================================================
+==879945==ERROR: LeakSanitizer: detected memory leaks
+
+Direct leak of 192 byte(s) in 2 object(s) allocated from:
+    #0 0x0000004df6de in calloc (/home/kyau/projects/kyaulabs/ngen/build/render-conan/sdl-lifetime+0x4df6de) (BuildId: dcd6903013ab9f662661a3541bb708c688c11604)
+    #1 0x6cec24c41b79 in zalloc /home/kyau/.conan2/p/b/wayla064c9fb324c75/b/build-debug/../src/src/wayland-private.h:254:9
+    #2 0x6cec24c44c58 in wl_proxy_create_for_id /home/kyau/.conan2/p/b/wayla064c9fb324c75/b/build-debug/../src/src/wayland-client.c:546:10
+    #3 0x6cec24c44afc in create_proxies /home/kyau/.conan2/p/b/wayla064c9fb324c75/b/build-debug/../src/src/wayland-client.c:1513:11
+    #4 0x6cec24c4495e in queue_event /home/kyau/.conan2/p/b/wayla064c9fb324c75/b/build-debug/../src/src/wayland-client.c:1631:6
+    #5 0x6cec24c43647 in read_events /home/kyau/.conan2/p/b/wayla064c9fb324c75/b/build-debug/../src/src/wayland-client.c:1746:11
+    #6 0x6cec24c43504 in wl_display_read_events /home/kyau/.conan2/p/b/wayla064c9fb324c75/b/build-debug/../src/src/wayland-client.c:1829:8
+    #7 0x6cec24c43988 in wl_display_dispatch_queue_timeout /home/kyau/.conan2/p/b/wayla064c9fb324c75/b/build-debug/../src/src/wayland-client.c:2092:9
+    #8 0x6cec24c43400 in wl_display_dispatch_queue /home/kyau/.conan2/p/b/wayla064c9fb324c75/b/build-debug/../src/src/wayland-client.c:2163:8
+    #9 0x6cec24c430dc in wl_display_roundtrip_queue /home/kyau/.conan2/p/b/wayla064c9fb324c75/b/build-debug/../src/src/wayland-client.c:1459:9
+    #10 0x6cec24c4348f in wl_display_roundtrip /home/kyau/.conan2/p/b/wayla064c9fb324c75/b/build-debug/../src/src/wayland-client.c:1488:9
+    #11 0x6cec24c1cea3 in Wayland_VideoInit /home/kyau/.conan2/p/b/sdl1265989badcaf/b/src/src/video/wayland/SDL_waylandvideo.c:1498:5
+    #12 0x6cec24b8bdd6 in SDL_VideoInit /home/kyau/.conan2/p/b/sdl1265989badcaf/b/src/src/video/SDL_video.c:712:10
+    #13 0x6cec24a386b2 in SDL_InitSubSystem_REAL /home/kyau/.conan2/p/b/sdl1265989badcaf/b/src/src/SDL.c:409:18
+    #14 0x6cec24a38c02 in SDL_Init_REAL /home/kyau/.conan2/p/b/sdl1265989badcaf/b/src/src/SDL.c:586:12
+    #15 0x6cec24a7dd9b in SDL_Init_DEFAULT /home/kyau/.conan2/p/b/sdl1265989badcaf/b/src/src/dynapi/SDL_dynapi_procs.h:638:1
+    #16 0x6cec24a68816 in SDL_Init /home/kyau/.conan2/p/b/sdl1265989badcaf/b/src/src/dynapi/SDL_dynapi_procs.h:638:1
+    #17 0x0000005252c0 in main (/home/kyau/projects/kyaulabs/ngen/build/render-conan/sdl-lifetime+0x5252c0) (BuildId: dcd6903013ab9f662661a3541bb708c688c11604)
+    #18 0x6cec24227780 in __libc_start_call_main /usr/src/debug/glibc/glibc/csu/../sysdeps/nptl/libc_start_call_main.h:59:16
+    #19 0x6cec242278b8 in __libc_start_main /usr/src/debug/glibc/glibc/csu/../csu/libc-start.c:372:3
+    #20 0x00000042c114 in _start (/home/kyau/projects/kyaulabs/ngen/build/render-conan/sdl-lifetime+0x42c114) (BuildId: dcd6903013ab9f662661a3541bb708c688c11604)
+
+SUMMARY: AddressSanitizer: 192 byte(s) leaked in 2 allocation(s).

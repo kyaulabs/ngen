@@ -1,0 +1,29 @@
+[1/6] Processing file /home/kyau/projects/kyaulabs/ngen/engine/render/context.cpp.
+43 warnings and 3 errors generated.
+Error while processing /home/kyau/projects/kyaulabs/ngen/engine/render/context.cpp.
+[2/6] Processing file /home/kyau/projects/kyaulabs/ngen/engine/render/presentation.cpp.
+86 warnings and 6 errors generated.
+Error while processing /home/kyau/projects/kyaulabs/ngen/engine/render/presentation.cpp.
+[3/6] Processing file /home/kyau/projects/kyaulabs/ngen/engine/render/surface.cpp.
+117 warnings and 9 errors generated.
+Error while processing /home/kyau/projects/kyaulabs/ngen/engine/render/surface.cpp.
+[4/6] Processing file /home/kyau/projects/kyaulabs/ngen/apps/render_probe/main.cpp.
+160 warnings and 12 errors generated.
+Error while processing /home/kyau/projects/kyaulabs/ngen/apps/render_probe/main.cpp.
+[5/6] Processing file /home/kyau/projects/kyaulabs/ngen/tests/render_startup.cpp.
+214 warnings and 15 errors generated.
+Error while processing /home/kyau/projects/kyaulabs/ngen/tests/render_startup.cpp.
+[6/6] Processing file /home/kyau/projects/kyaulabs/ngen/tests/render_surface.cpp.
+258 warnings and 18 errors generated.
+Error while processing /home/kyau/projects/kyaulabs/ngen/tests/render_surface.cpp.
+error: unknown argument: '-fdeps-format=p1689r5' [clang-diagnostic-error]
+error: unknown argument: '-fmodule-mapper=CMakeFiles/ngen_render.dir/engine/render/context.cpp.o.modmap' [clang-diagnostic-error]
+error: unknown argument: '-fmodule-mapper=CMakeFiles/ngen_render.dir/engine/render/presentation.cpp.o.modmap' [clang-diagnostic-error]
+error: unknown argument: '-fmodule-mapper=CMakeFiles/ngen_render.dir/engine/render/surface.cpp.o.modmap' [clang-diagnostic-error]
+error: unknown argument: '-fmodule-mapper=CMakeFiles/render_probe.dir/apps/render_probe/main.cpp.o.modmap' [clang-diagnostic-error]
+error: unknown argument: '-fmodule-mapper=CMakeFiles/render_startup_tests.dir/tests/render_startup.cpp.o.modmap' [clang-diagnostic-error]
+error: unknown argument: '-fmodule-mapper=CMakeFiles/render_startup_tests.dir/tests/render_surface.cpp.o.modmap' [clang-diagnostic-error]
+error: unknown argument: '-fmodules-ts' [clang-diagnostic-error]
+Suppressed 279 warnings (258 in non-user code, 21 NOLINT).
+Use -header-filter=.* or leave it as default to display errors from all non-system headers. Use -system-headers to display errors from system headers as well.
+Found compiler error(s).

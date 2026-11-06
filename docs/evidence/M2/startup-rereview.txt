@@ -1,0 +1,18 @@
+**One concrete residual defect found (P2): rejection diagnostics can report the wrong device limitation.**
+
+- **Location:** `engine/render/context.cpp:145–147`, in the queue-family loop.
+- **Trigger:** A device has a graphics/presentation family but lacks `dynamicRendering`; a later transfer-only family fails the graphics check.
+- **Result:** Each family overwrites `reason`, so the final device report says `missing graphics queue`, discarding the actual device-wide feature failure. The same overwrite can hide `VK_KHR_swapchain` rejection behind a later family’s queue limitation.
+- **Repair direction:** Preserve device-wide failures separately from queue-family suitability, or report family-indexed reasons. Add a multi-family regression case. Device acceptance remains correctly rejected in this example; the defect is misleading diagnostics.
+
+The three earlier findings, as inspected:
+
+| Earlier finding | Current assessment |
+|---|---|
+| Discarded device rejection reasons | **Partially fixed.** Device names and rejection strings now reach `Failure.message` and the probe’s stderr output. The overwrite defect above remains. |
+| Non-sticky shutdown failure without `VkResult` | **Fixed in source.** `close_result_` retains the first failed `vkDeviceWaitIdle` result, stderr includes its numeric `VkResult`, and subsequent `close()` calls still return false. |
+| Stale borrowed handles after close | **Fixed in source.** Teardown clears window, instance, surface, device, physical-device and queue handles, and resets the queue-family index to `UINT32_MAX`. Previously copied borrowed handles still expire on close, as documented. |
+
+**Coverage and limits:** `tests/render_capabilities.cpp` checks individual baseline failures; `tests/render_startup.cpp` exercises unavailable-video-driver failure only. Neither tests multi-family rejection reporting or failed-idle shutdown stickiness. `render_probe` inspects successful-close idempotence and cleared getters, but its `&&` short-circuit skips the second explicit close when the first fails.
+
+This was inspection only: no edits, command execution, builds, tests, static analysis or Vulkan runtime validation. No other concrete defect was established in the requested files. This is not full M2 acceptance.

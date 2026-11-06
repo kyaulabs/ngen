@@ -1,0 +1,10 @@
+PASS (queried): Vulkan API >= 1.3
+PASS (queried): dynamicRendering
+PASS (queried): synchronization2
+PASS (queried): timelineSemaphore
+PASS (queried): VK_KHR_swapchain
+PASS (queried): graphics queue family
+PASS (queried): B8G8R8A8_SRGB optimal color attachment
+PASS (queried): D32_SFLOAT optimal depth attachment
+NOT RUN: SDL/Win32 surface creation and presentation support
+UNAVAILABLE in capture: VK_LAYER_KHRONOS_validation

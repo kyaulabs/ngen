@@ -1,0 +1,47 @@
+Reviewed `AGENTS.md`, all files in `engine/render/` and `apps/render_probe/`, both `tests/render*.cpp`, and `CMakeLists.txt`, with relevant capability-contract context. This is a source-only review of the current files—not full renderer acceptance. No commands, edits, commits, or credential access.
+
+## Concrete findings
+
+1. **Medium — device rejection loses the actual compatibility reason.**
+   **Location:** `engine/render/context.cpp:138–165`
+   `check(capabilities)` returns a specific missing requirement, but initialization discards it. Missing `VK_KHR_swapchain` also silently rejects the candidate, while the final error does not mention that extension.
+
+   **Trigger/consequence:** A device satisfying every requirement named in the final error can still be rejected solely for missing swapchain support. Users cannot identify which device or requirement caused rejection, weakening expected-failure reporting.
+
+   **Repair direction:** Retain concise per-device rejection reasons, including swapchain support, and include them in `Failure`. Keep unsupported hardware as an ordinary reported failure; no fallback renderer is needed.
+
+2. **Medium — shutdown failure loses its diagnostic and can subsequently appear successful.**
+   **Location:** `engine/render/context.cpp:192–219`; `apps/render_probe/main.cpp:20`
+   `vkDeviceWaitIdle` is reduced to a Boolean, losing the `VkResult`. The probe returns exit status 1 without explaining that failure. After destroying the device, a second `close()` starts with `success = true` and can return true if there were no validation errors.
+
+   **Trigger/consequence:** A wait-idle failure, including device loss, produces an unexplained failed probe; repeated close calls can conceal the earlier shutdown failure.
+
+   **Repair direction:** Preserve the first shutdown failure/result, report its operation and `VkResult`, and make repeated `close()` calls retain that outcome while remaining destruction-idempotent.
+
+3. **Low — closed contexts expose stale borrowed Vulkan handles.**
+   **Location:** `engine/render/context.cpp:194–218`; `engine/render/context.hpp:26–30`
+   Closing clears the owning device and instance handles but leaves `queue_` and `physical_` unchanged. Their getters therefore return non-null handles whose lifetimes have ended.
+
+   **Trigger/consequence:** A caller retaining the `Context` after explicit close can retrieve apparently usable, invalid handles. The current probe does not exercise this.
+
+   **Repair direction:** Clear these borrowed handles during teardown and document that all borrowed handles expire on close. Reset queue-family metadata consistently.
+
+## Ownership and negotiation assessment
+
+- The partial-initialization cleanup structure is sound by inspection: the local `unique_ptr` destroys the context when initialization throws.
+- Teardown ordering is appropriate for the resources currently created: device, surface, debug messenger, instance, SDL window, then the acquired video-subsystem reference.
+- The callback’s `Context` storage remains alive during Vulkan teardown. Validation errors are counted atomically and affect explicit-close success.
+- Required dynamic rendering, synchronization2, and timeline-semaphore features are queried and explicitly enabled. Optional modern rendering features are not unnecessarily required.
+- No high-severity ownership defect was identified in this startup-only path.
+
+## Limitations and defensible claims
+
+These are **not defects in the requested startup slice**:
+
+- Color attachment format support is not proof that the surface offers that format/color-space pair. There is no surface-format, present-mode, or surface-capability negotiation yet.
+- There is no swapchain, acquisition, submission, presentation, resize/minimize handling, or in-flight resource retirement. Shutdown idling here does not establish production presentation-lifetime correctness.
+- The tests cover the pure capability predicate and failure at SDL video initialization. They do not establish successful Vulkan startup, later partial-failure cleanup, repeated close behavior, or preservation of pre-existing SDL video ownership.
+- `NGEN_BUILD_RENDERER` defaults to `OFF`; default builds/tests do not cover `context.cpp` or the startup test.
+- A successful validation-enabled probe could establish creation and teardown of this limited resource set on the tested configuration—not rendering correctness. `--without-validation` cannot establish validation cleanliness.
+
+**Verification:** source inspection only; build, tests, sanitizers, and GPU execution were not run, as requested. Without Git commands, I also did not establish the exact uncommitted diff or distinguish new defects from pre-existing ones. Formatting-only differences were not treated as findings.

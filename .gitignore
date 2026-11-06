@@ -1,3 +1,27 @@
+# Pi.dev
+.pi/*
+!.pi/settings.json
+
+# Planning & Local Documentation
+/planning/
+
+# Native build outputs (planning policy unchanged)
+/build/
+/CMakeUserPresets.json
+
+# Logs
+*.log
+
+# Editor files
+*.swp
+*.swo
+*~
+
+# macOS/Windows files
+.DS_Store
+desktop.ini
+Thumbs.db
+
 # Visual Studio cache directory
 */.vs/
 .vs/

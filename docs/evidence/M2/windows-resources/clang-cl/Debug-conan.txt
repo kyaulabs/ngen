@@ -1,0 +1,90 @@
+Using lockfile: 'D:\Git\kyaulabs\ngen\conan-render.lock'
+
+======== Input profiles ========
+Profile host:
+[settings]
+arch=x86_64
+build_type=Debug
+compiler=clang
+compiler.cppstd=20
+compiler.runtime=dynamic
+compiler.runtime_type=Debug
+compiler.runtime_version=v144
+compiler.version=19
+os=Windows
+[options]
+&:renderer=True
+[conf]
+tools.build:compiler_executables={'cpp': 'C:\\Program Files (x86)\\Microsoft Visual Studio\\2022\\BuildTools\\VC\\Tools\\Llvm\\x64\\bin\\clang-cl.exe', 'c': 'C:\\Program Files (x86)\\Microsoft Visual Studio\\2022\\BuildTools\\VC\\Tools\\Llvm\\x64\\bin\\clang-cl.exe'}
+tools.build:jobs=2
+tools.cmake.cmaketoolchain:generator=Ninja
+
+Profile build:
+[settings]
+arch=x86_64
+build_type=Debug
+compiler=msvc
+compiler.cppstd=20
+compiler.runtime=dynamic
+compiler.runtime_type=Debug
+compiler.version=194
+os=Windows
+[conf]
+tools.build:jobs=2
+tools.cmake.cmaketoolchain:generator=Ninja
+
+
+======== Computing dependency graph ========
+Graph root
+    conanfile.py: D:\Git\kyaulabs\ngen\conanfile.py
+Requirements
+    enkits/1.12#66203195b410e9ccba5ac22e3216b7d7 - Cache
+    sdl/3.4.16#fe421775c8e1866eb22a3ba23ef8fd62 - Cache
+    vulkan-headers/1.3.296.0#4ea73880426698c2e903c3e7acd892dc - Cache
+    vulkan-memory-allocator/3.3.0#5393b5bc9a6b8a2fb9612df877706608 - Cache
+Test requirements
+    catch2/3.16.0#95f400ca2fba9f0c5ce5aea6e6fe0055 - Cache
+Build requirements
+    cmake/4.4.4#fec9c7048fae91e03c31e59977cd9c12 - Cache
+Overrides
+    vulkan-headers/[~1]: ['vulkan-headers/1.3.296.0']
+
+======== Computing necessary packages ========
+Requirements
+    enkits/1.12#66203195b410e9ccba5ac22e3216b7d7:9f312dcab7897c366f2f97f0b64836205aead749#43e2386a1d54692a69f7e7fcb3001c4a - Cache
+    sdl/3.4.16#fe421775c8e1866eb22a3ba23ef8fd62:8b42fbbebbd5046803f11ef031d7353e8bb7475a#ba942656e0aec0318ec266eaf86e9cfb - Cache
+    vulkan-headers/1.3.296.0#4ea73880426698c2e903c3e7acd892dc:da39a3ee5e6b4b0d3255bfef95601890afd80709#471ebde28e91a7fb21437f3478e03f2f - Cache
+    vulkan-memory-allocator/3.3.0#5393b5bc9a6b8a2fb9612df877706608:da39a3ee5e6b4b0d3255bfef95601890afd80709#54c9d6d67f9971b448f5a47a878b23bf - Cache
+Test requirements
+    catch2/3.16.0#95f400ca2fba9f0c5ce5aea6e6fe0055:5d0e61b2295a0795bd06c5cd3488b47d4e41676c#f3df81edd6e9e4cde28ffa3d4d44b3af - Cache
+Build requirements
+Skipped build binaries
+    cmake/4.4.4
+
+======== Installing packages ========
+enkits/1.12: Already installed! (1 of 5)
+vulkan-headers/1.3.296.0: Already installed! (2 of 5)
+catch2/3.16.0: Already installed! (3 of 5)
+sdl/3.4.16: Already installed! (4 of 5)
+vulkan-memory-allocator/3.3.0: Already installed! (5 of 5)
+
+======== Finalizing install (deploy, generators) ========
+>>> Generate step for conanfile.py
+Generators folder: D:\git\kyaulabs\ngen\build\windows\20261105-170801-850\Debug
+Calling generate() method in recipe
+CMakeDeps necessary find_package() and targets for your CMakeLists.txt
+    find_package(enkiTS)
+    find_package(SDL3)
+    find_package(VulkanMemoryAllocator)
+    find_package(Catch2)
+    target_link_libraries(... enkiTS::enkiTS sdl::sdl GPUOpen::VulkanMemoryAllocator Catch2::Catch2WithMain)
+CMakeToolchain generated: conan_toolchain.cmake
+CMakeToolchain: Preset 'conan-debug' added to CMakePresets.json.
+    (cmake>=3.23) cmake --preset conan-debug
+    (cmake<3.23) cmake <path> -G Ninja
+                 -DCMAKE_TOOLCHAIN_FILE=<output_folder>/conan_toolchain.cmake
+                 -DCMAKE_POLICY_DEFAULT_CMP0091=NEW -DCMAKE_BUILD_TYPE=Debug -DCMAKE_C_COMPILER="C:/Program Files (x86)/Microsoft Visual Studio/2022/BuildTools/VC/Tools/Llvm/x64/bin/clang-cl.exe" -DCMAKE_CXX_COMPILER="C:/Program Files (x86)/Microsoft Visual Studio/2022/BuildTools/VC/Tools/Llvm/x64/bin/clang-cl.exe"
+CMakeToolchain generated: D:\git\kyaulabs\ngen\build\windows\20261105-170801-850\Debug\CMakePresets.json
+Generating aggregated env files
+Generated aggregated env files: ['conanrun.bat', 'conanrun.ps1', 'conanbuild.bat', 'conanbuild.ps1']
+Install finished successfully

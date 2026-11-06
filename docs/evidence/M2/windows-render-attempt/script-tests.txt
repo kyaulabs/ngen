@@ -1,0 +1,17 @@
+stdout marker
+stderr marker
+one argument with spaces
+checks
+--check-validation-callback
+startup
+checks
+checks
+--check-validation-callback
+checks
+--check-validation-callback
+startup
+SDK environment inherited
+SDK environment inherited
+SDK environment inherited
+SDK environment inherited
+PASS: process/output boundaries, Clang/MSVC profiles, GPU/renderer checks, SDK environment inheritance and input/platform checks

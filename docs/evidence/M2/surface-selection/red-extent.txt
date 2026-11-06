@@ -1,0 +1,55 @@
+Filters: "*surface extent*"
+Randomness seeded to: 2858955229
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+render_startup_tests is a Catch2 v3.16.0 host application.
+Run with -? for options
+
+-------------------------------------------------------------------------------
+surface extent follows fixed size or clamps variable drawable size
+-------------------------------------------------------------------------------
+/home/kyau/projects/kyaulabs/ngen/tests/render_surface.cpp:39
+...............................................................................
+
+/home/kyau/projects/kyaulabs/ngen/tests/render_surface.cpp:59: FAILED:
+  REQUIRE( plan.extent.width == expected.width )
+with expansion:
+  1280 (0x500) == 320 (0x140)
+
+-------------------------------------------------------------------------------
+surface extent follows fixed size or clamps variable drawable size
+-------------------------------------------------------------------------------
+/home/kyau/projects/kyaulabs/ngen/tests/render_surface.cpp:39
+...............................................................................
+
+/home/kyau/projects/kyaulabs/ngen/tests/render_surface.cpp:59: FAILED:
+  REQUIRE( plan.extent.width == expected.width )
+with expansion:
+  1280 (0x500) == 1920 (0x780)
+
+-------------------------------------------------------------------------------
+surface extent follows fixed size or clamps variable drawable size
+  zero fixed size suspends
+-------------------------------------------------------------------------------
+/home/kyau/projects/kyaulabs/ngen/tests/render_surface.cpp:46
+...............................................................................
+
+/home/kyau/projects/kyaulabs/ngen/tests/render_surface.cpp:50: FAILED:
+  REQUIRE( std::holds_alternative<SurfaceFailure>(result) )
+with expansion:
+  false
+
+-------------------------------------------------------------------------------
+surface extent follows fixed size or clamps variable drawable size
+-------------------------------------------------------------------------------
+/home/kyau/projects/kyaulabs/ngen/tests/render_surface.cpp:39
+...............................................................................
+
+/home/kyau/projects/kyaulabs/ngen/tests/render_surface.cpp:59: FAILED:
+  REQUIRE( plan.extent.width == expected.width )
+with expansion:
+  1280 (0x500) == 64
+
+===============================================================================
+test cases: 1 | 1 failed
+assertions: 7 | 3 passed | 4 failed

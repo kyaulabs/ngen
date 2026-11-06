@@ -1,0 +1,3 @@
+Both Windows compiler graphs resolve offline through the unchanged upstream SDL recipe.
+msvc: sdl/3.4.16#fe421775c8e1866eb22a3ba23ef8fd62
+clang-cl: sdl/3.4.16#fe421775c8e1866eb22a3ba23ef8fd62

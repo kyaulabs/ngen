@@ -1,0 +1,21 @@
+Filters: "*undefined surface*"
+Randomness seeded to: 2751653110
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+render_startup_tests is a Catch2 v3.16.0 host application.
+Run with -? for options
+
+-------------------------------------------------------------------------------
+undefined surface format permits the explicit sRGB choice
+-------------------------------------------------------------------------------
+/home/kyau/projects/kyaulabs/ngen/tests/render_surface.cpp:39
+...............................................................................
+
+/home/kyau/projects/kyaulabs/ngen/tests/render_surface.cpp:42: FAILED:
+  REQUIRE( std::holds_alternative<SurfacePlan>(result) )
+with expansion:
+  false
+
+===============================================================================
+test cases: 1 | 1 failed
+assertions: 1 | 1 failed

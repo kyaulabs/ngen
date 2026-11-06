@@ -1,0 +1,44 @@
+Same-session resource slice review; not independent/human acceptance.
+Range: f86f1c9 plus inputs.sha256; intended untracked sources included.
+
+Reviewed Context/resources ownership and partial construction, weak ticket identity,
+moves/destruction, shared slot/budget accounting, overflow-safe ranges/dimensions,
+format/usage admission, allocator/view cleanup, command-context reuse, timeline
+host acquisition, submit-success-only state publication, image barriers/layouts,
+shutdown ordering, shared presentation callback lifetime and Windows process scope.
+
+Fixed findings:
+- Missing exact per-format extent/usage query could admit dimensions legal under
+  the device-wide maximum but outside the queried format limits. Synthetic native
+  query reproduction previously created images without querying; now rejects
+  before creation (one format query, zero native images).
+- Transfer-only image descriptions passed admission although all Images create
+  views. Public regression produced VUID-VkImageViewCreateInfo-image-04441.
+  Admission now requires sampled or color-attachment usage before native creation.
+
+Build/link/runtime: Clang 23.1.4 Debug/Release/ASan+UBSan and GCC 16.2.1 Debug;
+7/7 CTest each; separate startup, intentional calibration, first light and resource
+scenario in each. 21 controlled ASan/UBSan/leak scenarios rejected as expected.
+CPU Debug 4/4; PowerShell subprocess boundaries and pinned format 18 passed.
+No current actionable owned-code defect found after these fixes/checks.
+
+AST scope in each actual Clang database (33 invocations total):
+engine/render/{context,surface,presentation,resources,vma}.cpp
+apps/probe/presentation.cpp
+apps/{render_probe,resource_probe}/main.cpp
+tests/{render_startup,render_surface,wayland_tablets}.cpp
+Public context/resources headers and private VMA macros are covered by these
+consumers. CPU capability policy remains graphics-independent and unchanged.
+Native metadata/commands and compile database hashes are retained. GCC native
+build/runtime pass; its actual module dependency flags prevent clang-tidy parsing.
+No metadata was stripped to manufacture an AST pass.
+
+Advisory/exclusions: VMA system-header analysis produced 107 project-profile
+warnings promoted to errors (no clang-analyzer diagnostic); retained, not repaired
+or suppressed. Existing SDL vendor baseline is unchanged. Native raw handles and
+TimelineWait require valid owner-thread/same-device borrowing; opaque resource
+identity does not make arbitrary native integration safe. Draw use must join
+resource tracking before shaders consume these objects. WSI retirement remains
+separate. Persistent backend failures can retain native ownership; general device
+loss/recovery is untested. Windows resource execution is pending. No rendered
+texture, screenshot, scanout, PBR, performance or full milestone acceptance claim.

@@ -1,0 +1,62 @@
+[
+  {
+    "ref": "enkits/1.12#66203195b410e9ccba5ac22e3216b7d7",
+    "package_id": "493772ddc92cb244fdb16d09cebe2fb65e63d555",
+    "prev": "5dce952807f689f086b41df0ae276c94",
+    "binary": "Cache",
+    "settings": {
+      "os": "Linux",
+      "arch": "x86_64",
+      "compiler": "clang",
+      "compiler.cppstd": "20",
+      "compiler.libcxx": "libstdc++11",
+      "compiler.version": "23",
+      "build_type": "Debug"
+    },
+    "options": {
+      "fPIC": "True",
+      "shared": "False"
+    },
+    "conf_info": {},
+    "license": "Zlib"
+  },
+  {
+    "ref": "catch2/3.16.0#95f400ca2fba9f0c5ce5aea6e6fe0055",
+    "package_id": "dc20cee61e48ba1571251551711c1071b8328750",
+    "prev": "b31c523a131c4b13eadb6a45696aa3c1",
+    "binary": "Cache",
+    "settings": {
+      "os": "Linux",
+      "arch": "x86_64",
+      "compiler": "clang",
+      "compiler.cppstd": "20",
+      "compiler.libcxx": "libstdc++11",
+      "compiler.version": "23",
+      "build_type": "Debug"
+    },
+    "options": {
+      "console_width": "80",
+      "default_reporter": null,
+      "fPIC": "True",
+      "no_posix_signals": "False",
+      "shared": "False",
+      "thread_safe_assertions": "False",
+      "with_prefix": "False"
+    },
+    "conf_info": {},
+    "license": "BSL-1.0"
+  },
+  {
+    "ref": "cmake/4.4.4#fec9c7048fae91e03c31e59977cd9c12",
+    "package_id": "63fead0844576fc02943e16909f08fcdddd6f44b",
+    "prev": "4d4766f0d30bec6434f5b4962831f86b",
+    "binary": "Skip",
+    "settings": {
+      "os": "Linux",
+      "arch": "x86_64"
+    },
+    "options": {},
+    "conf_info": {},
+    "license": "BSD-3-Clause"
+  }
+]

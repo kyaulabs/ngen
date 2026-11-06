@@ -1,0 +1,66 @@
+[1/66] Scanning D:\Git\kyaulabs\ngen\engine\core\entities.cpp for CXX dependencies
+[2/66] Scanning D:\Git\kyaulabs\ngen\engine\core\values.cpp for CXX dependencies
+[3/66] Scanning D:\Git\kyaulabs\ngen\engine\render\capabilities.cpp for CXX dependencies
+[4/66] Generating CXX dyndep file CMakeFiles\ngen_core.dir\CXX.dd
+[5/66] Scanning D:\Git\kyaulabs\ngen\engine\render\vma.cpp for CXX dependencies
+[6/66] Generating CXX dyndep file CMakeFiles\ngen_render_contract.dir\CXX.dd
+[7/66] Generating CXX dyndep file CMakeFiles\ngen_vma.dir\CXX.dd
+[8/66] Scanning D:\Git\kyaulabs\ngen\engine\jobs\jobs.cpp for CXX dependencies
+[9/66] Scanning D:\Git\kyaulabs\ngen\engine\render\context.cpp for CXX dependencies
+[10/66] Scanning D:\Git\kyaulabs\ngen\engine\render\surface.cpp for CXX dependencies
+[11/66] Scanning D:\Git\kyaulabs\ngen\engine\render\presentation.cpp for CXX dependencies
+[12/66] Scanning D:\Git\kyaulabs\ngen\engine\render\resources.cpp for CXX dependencies
+[13/66] Building CXX object CMakeFiles\ngen_core.dir\engine\core\entities.cpp.obj
+[14/66] Building CXX object CMakeFiles\ngen_core.dir\engine\core\values.cpp.obj
+[15/66] Generating CXX dyndep file CMakeFiles\ngen_jobs.dir\CXX.dd
+[16/66] Scanning D:\Git\kyaulabs\ngen\engine\simulation\simulation.cpp for CXX dependencies
+[17/66] Building CXX object CMakeFiles\ngen_render_contract.dir\engine\render\capabilities.cpp.obj
+[18/66] Generating CXX dyndep file CMakeFiles\ngen_render.dir\CXX.dd
+[19/66] Scanning D:\Git\kyaulabs\ngen\apps\probe\presentation.cpp for CXX dependencies
+[20/66] Linking CXX static library ngen_core.lib
+[21/66] Building CXX object CMakeFiles\ngen_jobs.dir\engine\jobs\jobs.cpp.obj
+[22/66] Generating CXX dyndep file CMakeFiles\ngen_simulation.dir\CXX.dd
+[23/66] Building CXX object CMakeFiles\ngen_vma.dir\engine\render\vma.cpp.obj
+[24/66] Linking CXX static library ngen_render_contract.lib
+[25/66] Linking CXX static library ngen_vma.lib
+[26/66] Scanning D:\Git\kyaulabs\ngen\apps\sim_harness\main.cpp for CXX dependencies
+[27/66] Building CXX object CMakeFiles\ngen_render.dir\engine\render\surface.cpp.obj
+[28/66] Building CXX object CMakeFiles\ngen_render.dir\engine\render\context.cpp.obj
+[29/66] Building CXX object CMakeFiles\ngen_render.dir\engine\render\presentation.cpp.obj
+[30/66] Generating CXX dyndep file CMakeFiles\ngen_probe_support.dir\CXX.dd
+[31/66] Scanning D:\Git\kyaulabs\ngen\apps\render_probe\main.cpp for CXX dependencies
+[32/66] Scanning D:\Git\kyaulabs\ngen\apps\resource_probe\main.cpp for CXX dependencies
+[33/66] Scanning D:\Git\kyaulabs\ngen\tests\core.cpp for CXX dependencies
+[34/66] Scanning D:\Git\kyaulabs\ngen\tests\jobs.cpp for CXX dependencies
+[35/66] Building CXX object CMakeFiles\ngen_render.dir\engine\render\resources.cpp.obj
+[36/66] Scanning D:\Git\kyaulabs\ngen\tests\simulation.cpp for CXX dependencies
+[37/66] Scanning D:\Git\kyaulabs\ngen\tests\render_capabilities.cpp for CXX dependencies
+[38/66] Scanning D:\Git\kyaulabs\ngen\tests\render_startup.cpp for CXX dependencies
+[39/66] Linking CXX static library ngen_jobs.lib
+[40/66] Scanning D:\Git\kyaulabs\ngen\tests\render_surface.cpp for CXX dependencies
+[41/66] Generating CXX dyndep file CMakeFiles\sim_harness.dir\CXX.dd
+[42/66] Linking CXX static library ngen_render.lib
+[43/66] Building CXX object CMakeFiles\ngen_simulation.dir\engine\simulation\simulation.cpp.obj
+[44/66] Generating CXX dyndep file CMakeFiles\render_probe.dir\CXX.dd
+[45/66] Generating CXX dyndep file CMakeFiles\resource_probe.dir\CXX.dd
+[46/66] Generating CXX dyndep file CMakeFiles\ngen_tests.dir\CXX.dd
+[47/66] Generating CXX dyndep file CMakeFiles\render_contract_tests.dir\CXX.dd
+[48/66] Generating CXX dyndep file CMakeFiles\render_startup_tests.dir\CXX.dd
+[49/66] Linking CXX static library ngen_simulation.lib
+[50/66] Building CXX object CMakeFiles\ngen_probe_support.dir\apps\probe\presentation.cpp.obj
+[51/66] Linking CXX static library ngen_probe_support.lib
+[52/66] Building CXX object CMakeFiles\render_probe.dir\apps\render_probe\main.cpp.obj
+[53/66] Building CXX object CMakeFiles\sim_harness.dir\apps\sim_harness\main.cpp.obj
+[54/66] Building CXX object CMakeFiles\resource_probe.dir\apps\resource_probe\main.cpp.obj
+[55/66] Building CXX object CMakeFiles\ngen_tests.dir\tests\core.cpp.obj
+[56/66] Building CXX object CMakeFiles\ngen_tests.dir\tests\jobs.cpp.obj
+[57/66] Building CXX object CMakeFiles\ngen_tests.dir\tests\simulation.cpp.obj
+[58/66] Building CXX object CMakeFiles\render_contract_tests.dir\tests\render_capabilities.cpp.obj
+[59/66] Building CXX object CMakeFiles\render_startup_tests.dir\tests\render_startup.cpp.obj
+[60/66] Linking CXX executable sim_harness.exe
+[61/66] Linking CXX executable render_probe.exe
+[62/66] Linking CXX executable resource_probe.exe
+[63/66] Linking CXX executable ngen_tests.exe
+[64/66] Building CXX object CMakeFiles\render_startup_tests.dir\tests\render_surface.cpp.obj
+[65/66] Linking CXX executable render_contract_tests.exe
+[66/66] Linking CXX executable render_startup_tests.exe

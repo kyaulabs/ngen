@@ -1,0 +1,6 @@
+libdecor-gtk-WARNING: Could not get required globals
+Failed to load plugin 'libdecor-gtk.so': failed to init
+libdecor-cairo-WARNING: Could not get required globals
+Failed to load plugin 'libdecor-cairo.so': failed to init
+No plugins found, falling back on no decorations
+tablet=0 pad=0 group=0 ring=0 strip=0

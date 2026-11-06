@@ -1,0 +1,10 @@
+Test project /home/kyau/projects/kyaulabs/ngen/build/renderer-debug
+  Test #1: ngen_tests
+  Test #2: render_contract_tests
+  Test #3: render_startup_tests
+  Test #4: wayland_tablet_shutdown
+  Test #5: wayland_tablet_removal
+  Test #6: replay_serial
+  Test #7: replay_workers
+
+Total Tests: 7

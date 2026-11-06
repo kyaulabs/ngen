@@ -1,0 +1,5 @@
+Vulkan shutdown: vkDeviceWaitIdle failed with VkResult -1000011001
+device=Intel(R) Iris(R) Xe Graphics (TGL GT2) api=1.4 driver=109060102 queue=0 display=wayland
+surface=1280x720 format=50 color_space=0 present_mode=2 images=4
+queued_frames=96 swapchain_generations=4 verified_resizes=2 minimize_verified=0
+accepted_after_outdated=95

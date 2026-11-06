@@ -1,0 +1,11 @@
+Change Dir: '/home/kyau/projects/kyaulabs/ngen/build/clang-warning-red'
+
+Run Build Command(s): /bin/ninja -v valid_cxx20
+[0/1] /bin/cmake --regenerate-during-build -S/home/kyau/projects/kyaulabs/ngen/build/clang-warning-fixture -B/home/kyau/projects/kyaulabs/ngen/build/clang-warning-red
+-- Conan: Target declared 'enkiTS::enkiTS'
+-- Configuring done (0.0s)
+-- Generating done (0.0s)
+-- Build files have been written to: /home/kyau/projects/kyaulabs/ngen/build/clang-warning-red
+[1/4] "/usr/bin/clang-scan-deps" -format=p1689 -- /bin/clang-cl   /DWIN32 /D_WINDOWS /EHsc /Ob0 /Od /RTC1 -std:c++20 -MDd -Zi /W4 -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror -x c++ -c -clang:-o -clang:CMakeFiles/valid_cxx20.dir/valid.cpp.obj -clang:-MT -clang:CMakeFiles/valid_cxx20.dir/valid.cpp.obj.ddi -clang:-MD -clang:-MF -clang:CMakeFiles/valid_cxx20.dir/valid.cpp.obj.ddi.d -- /home/kyau/projects/kyaulabs/ngen/build/clang-warning-fixture/valid.cpp > CMakeFiles/valid_cxx20.dir/valid.cpp.obj.ddi.tmp && mv CMakeFiles/valid_cxx20.dir/valid.cpp.obj.ddi.tmp CMakeFiles/valid_cxx20.dir/valid.cpp.obj.ddi
+[2/4] /bin/cmake -E cmake_ninja_dyndep --tdi=CMakeFiles/valid_cxx20.dir/CXXDependInfo.json --lang=CXX --modmapfmt=clang --dd=CMakeFiles/valid_cxx20.dir/CXX.dd @CMakeFiles/valid_cxx20.dir/CXX.dd.rsp
+[3/4] /bin/clang-cl  /nologo -TP   /DWIN32 /D_WINDOWS /EHsc /Ob0 /Od /RTC1 -std:c++20 -MDd -Zi /W4 -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror -clang:-MD -clang:-MTCMakeFiles/valid_cxx20.dir/valid.cpp.obj -clang:-MFCMakeFiles/valid_cxx20.dir/valid.cpp.obj.d @CMakeFiles/valid_cxx20.dir/valid.cpp.obj.modmap /FoCMakeFiles/valid_cxx20.dir/valid.cpp.obj /FdCMakeFiles/valid_cxx20.dir/ -c -- /home/kyau/projects/kyaulabs/ngen/build/clang-warning-fixture/valid.cpp

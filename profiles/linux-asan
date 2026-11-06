@@ -1,0 +1,8 @@
+include(linux-clang)
+[conf]
+user.ngen:sanitizer=address,undefined
+tools.info.package_id:confs=["user.ngen:sanitizer"]
+tools.build:cflags=["-fsanitize=address,undefined", "-fno-sanitize-recover=all", "-fno-omit-frame-pointer"]
+tools.build:cxxflags=["-fsanitize=address,undefined", "-fno-sanitize-recover=all", "-fno-omit-frame-pointer"]
+tools.build:exelinkflags=["-fsanitize=address,undefined"]
+tools.build:sharedlinkflags=["-fsanitize=address,undefined"]
