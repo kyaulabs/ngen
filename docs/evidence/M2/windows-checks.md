@@ -4,7 +4,21 @@ CPU compiler checks passed: [MSVC 19.44.35229 Debug/Release](../M1/windows-msvc/
 
 The [Windows GPU capture](windows-nvidia/README.md) identifies an RTX 5070 with driver 617.42 and the required queried device features. The [follow-up capture](windows-validation/README.md) now enumerates `VK_LAYER_KHRONOS_validation` 1.4.363 without the earlier loader warning. The [MSVC renderer run](windows-msvc/README.md) and [clang-cl renderer run](windows-clang-cl/README.md) at `c730a18` both pass Debug/Release builds, 5/5 tests each, callback calibration and clean validation-enabled Win32 startup/teardown. Frame rendering and swapchain presentation remain untested.
 
-**Both compiler modes now pass [Windows clear/resize/minimize presentation](windows-first-light/README.md) at `b7f0334`. No further setup or rerun is needed for this slice.** For a later deliberate regression check from PowerShell 7:
+**Both compiler modes pass [Windows clear/resize/minimize presentation](windows-first-light/README.md) at `b7f0334`; that first-light check needs no further setup.** The new [GPU resource slice](gpu-resources/README.md) now needs MSVC and clang-cl Debug/Release execution. From MSYS2 fish, run:
+
+```fish
+cd /d/Git/kyaulabs/ngen
+and git switch feat/kyau-7d227e-render-foundation
+and git pull --ff-only
+and begin
+    for compiler in MSVC ClangCl
+        pwsh.exe -NoProfile -File (cygpath -w "$PWD/tools/build-windows.ps1") -Renderer -Compiler $compiler
+        or break
+    end
+end
+```
+
+Or, from PowerShell 7:
 
 ```powershell
 foreach ($compiler in 'MSVC', 'ClangCl') {
@@ -13,13 +27,13 @@ foreach ($compiler in 'MSVC', 'ClangCl') {
 }
 ```
 
-If a later check is requested, send both newly printed evidence archives, or the failure archive if a run stops. Each compiler runs Debug and Release. The visible test window resizes, minimizes, restores and exits automatically; do not close it manually. No new SDK/driver setup is requested.
+Send both newly printed evidence archives, or the failure archive if a run stops. Each compiler runs Debug and Release. The visible test window resizes, minimizes, restores and exits automatically; do not close it manually. No new SDK/driver setup is requested.
 
 ClangCl uses the detected clang-cl host compiler and MSVC build profile; MSVC uses its detected native profile. Both use the separate `conan-render.lock` and project-managed SDL 3.4.16. It needs the core x64 Vulkan SDK headers/library and visible validation layers, not the SDK's optional SDL bundle. Conan's runtime environment supplies SDL's DLL path per configuration and is restored afterward. Append `-Configuration Debug` to test one configuration first. Use `-Compiler MSVC` or `-Compiler ClangCl` to select one compiler when investigating a failure.
 
 The [first renderer attempt](windows-render-attempt/README.md) stopped at CMake discovery because the terminal lacked `VULKAN_SDK`, although the machine setting and `vulkan-1.lib` existed. The script now reads process → user → machine SDK settings, preserving an explicit process override and setting only its own process environment. `vulkan-sdk.txt` records the selected path. The MSVC rerun confirmed SDK discovery at `C:\VulkanSDK\1.4.363.1`, without a terminal restart or persistent environment edit.
 
-Each current Windows configuration runs five CTest entries, the two CPU replays, callback calibration, hidden-window startup and a separate visible presentation scenario. Calibration deliberately prints `expected NGEN validation callback self-test`; that diagnostic is expected only in `*-validation-callback.txt`. Both `*-render-startup.txt` and `*-presentation.txt` must be free of validation diagnostics. The presentation log must report at least `queued_frames=96`, at least three `swapchain_generations`, `verified_resizes=2` and `minimize_verified=1`. Synchronization validation is explicitly enabled for this scenario. Startup remains a separate no-frame check; the visible scenario clears images but does not load shaders/assets or render PBR. Report unexpected window behavior; no desktop screenshot or further setup change is requested.
+Each current Windows configuration runs five CTest entries, the two CPU replays, callback calibration, hidden-window startup a separate visible presentation scenario and `resource_probe` captured in `*-resources.txt`. Calibration deliberately prints `expected NGEN validation callback self-test`; that diagnostic is expected only in `*-validation-callback.txt`. `*-render-startup.txt`, `*-presentation.txt` and `*-resources.txt` must be free of unexpected validation diagnostics. The resource log must report buffer/image lifetime, exact GPU roundtrip, pending retirement and close invalidation markers, 128 buffer replacements and a stable allocation/reservation plateau during image replacement across 96 clear requests/three generations/two resizes; Windows also requires `minimize_verified=1`. Image bytes are transferred alongside clear-only presentation, not drawn. The renderer-only graph now also resolves pinned VMA 3.3.0/Vulkan-Headers 1.3.296.0; no SDK/driver change is requested. The presentation log must report at least `queued_frames=96`, at least three `swapchain_generations`, `verified_resizes=2` and `minimize_verified=1`. Synchronization validation is explicitly enabled for this scenario. Startup remains a separate no-frame check; the visible scenario clears images but does not load shaders/assets or render PBR. Report unexpected window behavior; no desktop screenshot or further setup change is requested.
 
 The script prints a new `build/windows/<timestamp>/evidence.zip` path on success or failure. Send that archive, not an earlier run's ZIP. No SDK, driver or system package is installed by the script; it does not require administrator access or alter execution policy. Failed native commands stop the run and retain diagnostics.
 

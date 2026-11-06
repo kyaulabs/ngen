@@ -25,6 +25,8 @@ class NgenDependencies(ConanFile):
             # the independently verified upstream recipe and binaries.
             reference = "sdl/3.4.16@ngen/wayland" if self.settings.os == "Linux" else "sdl/3.4.16"
             self.requires(reference)
+            self.requires("vulkan-memory-allocator/3.3.0")
+            self.requires("vulkan-headers/1.3.296.0", override=True)
             if self.settings.os == "Linux":
                 # The private protocol peer uses the same locked Wayland ABI as SDL.
                 self.test_requires("wayland/1.24.0")

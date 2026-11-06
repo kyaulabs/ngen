@@ -1,0 +1,16 @@
+debug startup exit=0
+debug calibration exit=0
+debug presentation exit=0
+debug resources exit=0
+release startup exit=0
+release calibration exit=0
+release presentation exit=0
+release resources exit=0
+asan startup exit=0
+asan calibration exit=0
+asan presentation exit=0
+asan resources exit=0
+gcc startup exit=0
+gcc calibration exit=0
+gcc presentation exit=0
+gcc resources exit=0

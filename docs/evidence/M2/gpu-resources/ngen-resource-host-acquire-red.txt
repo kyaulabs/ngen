@@ -1,0 +1,5 @@
+resource_observer: host acquisition missing after completion query
+Vulkan resource readback: query resource completion: VkResult -1000011001
+Vulkan resource: GPU roundtrip data mismatch
+host_acquires=0 missing_acquires=1 blocking_waits=0
+device=Intel(R) Iris(R) Xe Graphics (TGL GT2) api=1.4 driver=109060102 queue=0 display=wayland

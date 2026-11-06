@@ -1,6 +1,7 @@
 #include "render/context.hpp"
 #include "render/capabilities.hpp"
 #include "render/presentation.hpp"
+#include "render/resources_internal.hpp"
 #include <SDL3/SDL_vulkan.h>
 #include <algorithm>
 #include <array>
@@ -357,6 +358,73 @@ std::variant<FrameOutcome, Failure> Context::render_frame() {
         return Failure{error.what()};
     }
 }
+std::variant<Buffer, Failure> Context::create_buffer(BufferDescription description) {
+    if (!device_)
+        return Failure{"resource context is closed"};
+    try {
+        if (!resources_)
+            resources_ = std::make_shared<Resources>(*this);
+        return resources_->create(description);
+    } catch (const std::exception &error) {
+        return Failure{error.what()};
+    }
+}
+std::variant<Image, Failure> Context::create_image(ImageDescription description) {
+    if (!device_)
+        return Failure{"resource context is closed"};
+    try {
+        if (!resources_)
+            resources_ = std::make_shared<Resources>(*this);
+        return resources_->create(description);
+    } catch (const std::exception &error) {
+        return Failure{error.what()};
+    }
+}
+std::variant<Submission, Failure> Context::copy_buffer(BufferCopy description) {
+    if (!device_ || !resources_)
+        return Failure{"resource context is unavailable"};
+    try {
+        return resources_->copy(description);
+    } catch (const std::exception &error) {
+        return Failure{error.what()};
+    }
+}
+std::variant<Submission, Failure> Context::copy_to_image(ImageUpload description) {
+    if (!device_ || !resources_)
+        return Failure{"resource context is unavailable"};
+    try {
+        return resources_->copy(description);
+    } catch (const std::exception &error) {
+        return Failure{error.what()};
+    }
+}
+std::variant<Submission, Failure> Context::copy_from_image(ImageReadback description) {
+    if (!device_ || !resources_)
+        return Failure{"resource context is unavailable"};
+    try {
+        return resources_->copy(description);
+    } catch (const std::exception &error) {
+        return Failure{error.what()};
+    }
+}
+std::variant<bool, Failure> Context::submission_complete(const Submission &submission) {
+    if (!device_ || !resources_)
+        return Failure{"resource context is unavailable"};
+    try {
+        return resources_->completed(submission);
+    } catch (const std::exception &error) {
+        return Failure{error.what()};
+    }
+}
+std::variant<ResourceStatistics, Failure> Context::resource_statistics() {
+    if (!device_)
+        return Failure{"resource context is closed"};
+    try {
+        return resources_ ? resources_->statistics() : ResourceStatistics{};
+    } catch (const std::exception &error) {
+        return Failure{error.what()};
+    }
+}
 PresentationState Context::presentation_state() const {
     return presentation_ ? presentation_->state() : PresentationState{};
 }
@@ -393,6 +461,10 @@ bool Context::close() noexcept {
                 return false; // Keep ownership intact for a retry; never destroy in-use objects.
             }
             presentation_.reset();
+        }
+        if (resources_) {
+            resources_->close();
+            resources_.reset();
         }
         vkDestroyDevice(device_, nullptr);
         device_ = VK_NULL_HANDLE;

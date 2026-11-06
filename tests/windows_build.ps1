@@ -115,13 +115,16 @@ try {
 #!/bin/sh
 [ "$NGEN_RENDER_ENV" = active ] || exit 9
 mode=${1:-startup}
+case "$0" in */resource_probe.exe) mode=resources ;; esac
 printf '%s\n' "$mode"
 [ "$mode" != "$NGEN_PROBE_FAIL_AT" ] || exit 7
 exit 0
 '@
-        & chmod +x $probe
+        $resourceProbe = Join-Path $renderBuild 'resource_probe.exe'
+        Copy-Item -LiteralPath $probe -Destination $resourceProbe
+        & chmod +x $probe $resourceProbe
         if ($LASTEXITCODE -ne 0) { throw 'Could not prepare renderer subprocess fixture' }
-        foreach ($failAt in @('', 'checks', '--check-validation-callback', 'startup', '--check-presentation')) {
+        foreach ($failAt in @('', 'checks', '--check-validation-callback', 'startup', '--check-presentation', 'resources')) {
             $renderLogs = Join-Path $directory ('render logs ' + [guid]::NewGuid())
             New-Item -ItemType Directory $renderLogs | Out-Null
             $env:NGEN_RENDER_ENV = 'before'
@@ -149,6 +152,12 @@ exit 0
                 if (Test-Path $presentationLog) { throw 'Presentation continued after an earlier failure' }
             } elseif (-not (Test-Path $presentationLog) -or (Get-Content -Raw $presentationLog) -notmatch '--check-presentation') {
                 throw 'Renderer presentation was not exercised and captured'
+            }
+            $resourceLog = Join-Path $renderLogs 'Debug-resources.txt'
+            if ($failAt -in @('checks', '--check-validation-callback', 'startup', '--check-presentation')) {
+                if (Test-Path $resourceLog) { throw 'Resource checks continued after an earlier failure' }
+            } elseif (-not (Test-Path $resourceLog) -or (Get-Content -Raw $resourceLog) -notmatch 'resources') {
+                throw 'GPU resources were not exercised and captured'
             }
         }
         Remove-Item Env:NGEN_RENDER_ENV, Env:NGEN_PROBE_FAIL_AT

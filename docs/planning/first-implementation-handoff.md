@@ -1,5 +1,7 @@
 # First implementation hand-off
 
+Current checkpoint: the [GPU resource slice](../evidence/M2/gpu-resources/README.md) passes Linux Debug/Release/ASan/GCC resource ownership, transfer, retirement and clear-only resize checks. The [Windows handoff](../evidence/M2/windows-checks.md) requests both compilers/configurations for this new code; earlier first-light acceptance does not cover it. Next: review owner archives, then continue shaders/reflection and the bounded cooked-asset/PBR pipeline. M1 formal acceptance and M2 remain open. The planning brief below is historical, not a replacement for the current authorization or repository state.
+
 This document prepares the next work; it does not authorize implementation during the present planning assignment. M0 is incomplete because the actual private checkout and raw hardware profile are unavailable here. The destination paths below are proposals and must be mapped to the checkout before editing. ADR numbers are provisional and may collide with existing records.
 
 ## Ready-to-use Codex prompt

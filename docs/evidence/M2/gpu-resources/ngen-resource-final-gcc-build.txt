@@ -1,0 +1,10 @@
+[1/13] Scanning <repo>/engine/render/resources.cpp for CXX dependencies
+[2/13] Scanning <repo>/apps/resource_probe/main.cpp for CXX dependencies
+[3/13] Generating CXX dyndep file CMakeFiles/ngen_render.dir/CXX.dd
+[4/10] Generating CXX dyndep file CMakeFiles/resource_probe.dir/CXX.dd
+[5/10] Building CXX object CMakeFiles/ngen_render.dir/engine/render/resources.cpp.o
+[6/10] Building CXX object CMakeFiles/resource_probe.dir/apps/resource_probe/main.cpp.o
+[7/10] Linking CXX static library libngen_render.a
+[8/10] Linking CXX executable render_probe
+[9/10] Linking CXX executable resource_probe
+[10/10] Linking CXX executable render_startup_tests
