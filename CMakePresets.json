@@ -14,7 +14,11 @@
     {"name":"asset-release","inherits":"release","cacheVariables":{"NGEN_BUILD_ASSET_TOOLS":"ON"}},
     {"name":"asset-asan","inherits":"asan","cacheVariables":{"NGEN_BUILD_ASSET_TOOLS":"ON"}},
     {"name":"asset-gcc","inherits":"gcc","cacheVariables":{"NGEN_BUILD_ASSET_TOOLS":"ON"}},
-    {"name":"asset-runtime-debug","inherits":"debug","cacheVariables":{"NGEN_BUILD_ASSETS":"ON"}}
+    {"name":"asset-runtime-debug","inherits":"debug","cacheVariables":{"NGEN_BUILD_ASSETS":"ON"}},
+    {"name":"scene-debug","inherits":"renderer-debug","cacheVariables":{"NGEN_BUILD_ASSETS":"ON"}},
+    {"name":"scene-release","inherits":"renderer-release","cacheVariables":{"NGEN_BUILD_ASSETS":"ON"}},
+    {"name":"scene-asan","inherits":"renderer-asan","cacheVariables":{"NGEN_BUILD_ASSETS":"ON"}},
+    {"name":"scene-gcc","inherits":"gcc","cacheVariables":{"NGEN_BUILD_RENDERER":"ON","NGEN_BUILD_ASSETS":"ON"}}
   ],
   "buildPresets": [
     {"name":"debug","configurePreset":"debug","jobs":2},
@@ -29,7 +33,11 @@
     {"name":"asset-release","configurePreset":"asset-release","jobs":2},
     {"name":"asset-asan","configurePreset":"asset-asan","jobs":2},
     {"name":"asset-gcc","configurePreset":"asset-gcc","jobs":2},
-    {"name":"asset-runtime-debug","configurePreset":"asset-runtime-debug","jobs":2}
+    {"name":"asset-runtime-debug","configurePreset":"asset-runtime-debug","jobs":2},
+    {"name":"scene-debug","configurePreset":"scene-debug","jobs":2},
+    {"name":"scene-release","configurePreset":"scene-release","jobs":2},
+    {"name":"scene-asan","configurePreset":"scene-asan","jobs":2},
+    {"name":"scene-gcc","configurePreset":"scene-gcc","jobs":2}
   ],
   "testPresets": [
     {"name":"debug","configurePreset":"debug","output":{"outputOnFailure":true},"execution":{"noTestsAction":"error"}},
@@ -44,6 +52,10 @@
     {"name":"asset-release","configurePreset":"asset-release","output":{"outputOnFailure":true},"execution":{"noTestsAction":"error"}},
     {"name":"asset-asan","configurePreset":"asset-asan","output":{"outputOnFailure":true},"execution":{"noTestsAction":"error"},"environment":{"ASAN_OPTIONS":"detect_leaks=1:halt_on_error=1","UBSAN_OPTIONS":"halt_on_error=1:print_stacktrace=1"}},
     {"name":"asset-gcc","configurePreset":"asset-gcc","output":{"outputOnFailure":true},"execution":{"noTestsAction":"error"}},
-    {"name":"asset-runtime-debug","configurePreset":"asset-runtime-debug","output":{"outputOnFailure":true},"execution":{"noTestsAction":"error"}}
+    {"name":"asset-runtime-debug","configurePreset":"asset-runtime-debug","output":{"outputOnFailure":true},"execution":{"noTestsAction":"error"}},
+    {"name":"scene-debug","configurePreset":"scene-debug","output":{"outputOnFailure":true},"execution":{"noTestsAction":"error"}},
+    {"name":"scene-release","configurePreset":"scene-release","output":{"outputOnFailure":true},"execution":{"noTestsAction":"error"}},
+    {"name":"scene-asan","configurePreset":"scene-asan","output":{"outputOnFailure":true},"execution":{"noTestsAction":"error"},"environment":{"ASAN_OPTIONS":"detect_leaks=1:halt_on_error=1","UBSAN_OPTIONS":"halt_on_error=1:print_stacktrace=1"}},
+    {"name":"scene-gcc","configurePreset":"scene-gcc","output":{"outputOnFailure":true},"execution":{"noTestsAction":"error"}}
   ]
 }

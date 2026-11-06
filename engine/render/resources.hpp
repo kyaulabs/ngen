@@ -9,6 +9,9 @@
 #include <vulkan/vulkan.h>
 
 namespace ngen::render {
+inline constexpr std::uint32_t resource_record_limit = 64;
+// Two pinned laptop scene versions plus one bounded staging allocation; excludes WSI/driver.
+inline constexpr VkDeviceSize resource_allocation_limit = 512ULL * 1024 * 1024;
 struct Failure {
     std::string message;
 };

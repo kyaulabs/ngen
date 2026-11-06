@@ -60,6 +60,20 @@ inline Sections triangle() {
         f32(instance, value);
     return sections;
 }
+inline Sections textured_triangle(std::span<const std::byte> texture, bool linear = false) {
+    auto sections = triangle();
+    auto &record = sections[6];
+    u64(record, 0);
+    u64(record, texture.size());
+    for (auto value : std::array<std::uint32_t, 4>{2, 2, 2, linear ? 1U : 2U})
+        u32(record, value);
+    sections[7].assign(texture.begin(), texture.end());
+    u32(sections[4], 0);
+    u32(sections[4], 0);
+    for (auto value : std::array<std::uint32_t, 4>{9987, 9729, 33071, 10497})
+        u32(sections[5], value);
+    return sections;
+}
 inline std::vector<std::byte> encode(const Sections &sections = triangle()) {
     constexpr std::array<std::uint32_t, 13> strides{56, 4, 80, 128, 8, 16, 32, 1, 72, 32, 72, 1, 1};
     std::vector<std::byte> out(480, std::byte{0});

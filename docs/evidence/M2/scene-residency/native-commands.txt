@@ -1,0 +1,35 @@
+Existing Conan environment, C++20, pinned renderer/runtime dependencies. No
+new external dependency. Prepare scene-debug/release/gcc with tools/prepare.sh;
+scene-asan additionally passes the existing instrumented executable/no-PIE flags:
+  sh tools/prepare.sh scene-asan -c:h 'tools.build:exelinkflags=["-fsanitize=address,undefined", "-no-pie"]'
+  cmake --preset scene-asan -DCMAKE_EXE_LINKER_FLAGS=-no-pie
+For all four scene presets: cmake --preset <preset>; cmake --build --preset
+<preset>; ctest --preset <preset> --show-only; ctest --preset <preset>.
+Actual 9/9 each; no physical GPU probe is inferred from headless CTest.
+
+Native synthetic fixture and actual package (repeat each configuration):
+  timeout 25s env VK_LAYER_PATH="$PWD/build/validation-layer/usr/share/vulkan/explicit_layer.d" LD_LIBRARY_PATH="$PWD/build/validation-layer/usr/lib" ASAN_OPTIONS=detect_leaks=1:halt_on_error=1 UBSAN_OPTIONS=halt_on_error=1:print_stacktrace=1 build/<preset>/scene_probe
+  timeout 40s env VK_LAYER_PATH="$PWD/build/validation-layer/usr/share/vulkan/explicit_layer.d" LD_LIBRARY_PATH="$PWD/build/validation-layer/usr/lib" ASAN_OPTIONS=detect_leaks=1:halt_on_error=1 UBSAN_OPTIONS=halt_on_error=1:print_stacktrace=1 build/<preset>/scene_probe build/cooked-candidate/frigate-canonical-first/scene.ngas
+The explicit package path does not open the synthetic fixture/source importer.
+Require complete native vertex/index/mip equality, all CPU definitions retained,
+real in-flight cancellation/retirement, active version preserved, two distinct
+ready versions and post-close handle invalidation. Native fixture code is test-only.
+
+Real consumers in scene-debug/release/asan actual databases:
+  clang-tidy -p build/<preset> engine/render/context.cpp engine/render/resources.cpp engine/render/scene.cpp apps/resource_probe/main.cpp apps/scene_probe/main.cpp tests/assets.cpp
+All 18 selected analyses exit 0. GCC native graph passes; no filtered GCC AST claim.
+
+Current-limit preflight controls (derived from original admission.cpp; source here):
+  clang++ -std=c++20 -fsanitize=address,undefined -fno-sanitize-recover=all -shared -fPIC -Iengine [ -DNGEN_IMAGE_ADMISSION ] docs/evidence/M2/scene-residency/budget.cpp -ldl -o build/resident-check/budget-<kind>.so
+Run scene-asan/scene_probe with the normal layer/sanitizer environment and
+LD_PRELOAD after timeout via env. Each buffer/image case exits 1, prints the
+expected requirements/admission failure and preflight_queries=1 native_objects=0,
+without unexpected validation/sanitizer/leak output. The public limit remains a
+finite cap; original 256 MiB source-time controls are not counted for 512 MiB.
+
+No default CPU/renderer/import/runtime lock is changed. New conan-scene.lock is a
+clean derived renderer + runtime assets + offline shaders graph, not asset_tools.
+Inspect actual Ninja link commands rather than executing extracted command text.
+Format 18, shell/Python/JSON/YAML, local links, source/evidence hashes, staged
+paths/whitespace/redacted secrets, conventional message and GPG checks precede
+publication. Final PBR/frame/inspector/Windows/performance/acceptance stay open.

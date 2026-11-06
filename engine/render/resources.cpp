@@ -18,8 +18,8 @@ void resource_check(VkResult result, const char *operation) {
 }
 } // namespace
 struct Resources::Impl {
-    static constexpr std::size_t capacity = 64;
-    static constexpr VkDeviceSize budget = 256ULL * 1024 * 1024;
+    static constexpr std::size_t capacity = resource_record_limit;
+    static constexpr VkDeviceSize budget = resource_allocation_limit;
     struct Entry {
         VkBuffer buffer{};
         VkImage image{};

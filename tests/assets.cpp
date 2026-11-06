@@ -54,18 +54,7 @@ package_fixture::Sections textured_triangle(bool linear = false) {
                static_cast<std::streamsize>(texture.size()));
     if (!input)
         throw std::runtime_error("truncated synthetic texture fixture");
-    auto sections = package_fixture::triangle();
-    auto &record = sections[6];
-    package_fixture::u64(record, 0);
-    package_fixture::u64(record, texture.size());
-    for (auto value : std::array<std::uint32_t, 4>{2, 2, 2, linear ? 1U : 2U})
-        package_fixture::u32(record, value);
-    sections[7] = texture;
-    package_fixture::u32(sections[4], 0);
-    package_fixture::u32(sections[4], 0);
-    for (auto value : std::array<std::uint32_t, 4>{9987, 9729, 33071, 10497})
-        package_fixture::u32(sections[5], value);
-    return sections;
+    return package_fixture::textured_triangle(texture, linear);
 }
 } // namespace
 
