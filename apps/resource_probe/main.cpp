@@ -61,6 +61,177 @@ bool check_foreign(ngen::render::Context &context, const ngen::render::Buffer &r
     }
     return other->close() && source.native() == VK_NULL_HANDLE && target.native() == VK_NULL_HANDLE;
 }
+bool check_mip_chain(ngen::render::Context &context, const ngen::render::Buffer &readback) {
+    auto allocated = context.create_buffer(
+        {168, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, ngen::render::MemoryAccess::upload});
+    if (failed(allocated, "mip staging allocation"))
+        return false;
+    auto staging = std::get<ngen::render::Buffer>(std::move(allocated));
+    std::array<std::byte, 168> pixels;
+    pixels.fill(std::byte{0xee});
+    if (failed(staging.write(0, pixels), "mip guard write"))
+        return false;
+    const auto guard = context.copy_buffer({staging, readback, pixels.size()});
+    if (failed(guard, "mip readback guard") ||
+        !wait_submission(context, std::get<ngen::render::Submission>(guard)))
+        return false;
+    for (std::size_t i = 0; i < pixels.size(); ++i)
+        pixels[i] = std::byte{static_cast<unsigned char>((i * 37U + 19U) % 256U)};
+    if (failed(staging.write(0, pixels), "mip pixels"))
+        return false;
+    auto created =
+        context.create_image({{7, 5},
+                              VK_FORMAT_R8G8B8A8_UNORM,
+                              static_cast<VkImageUsageFlags>(VK_IMAGE_USAGE_TRANSFER_SRC_BIT) |
+                                  VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT,
+                              3});
+    if (failed(created, "mip image allocation"))
+        return false;
+    auto image = std::get<ngen::render::Image>(std::move(created));
+    auto short_created = context.create_buffer(
+        {140, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, ngen::render::MemoryAccess::upload});
+    if (failed(short_created, "short mip staging"))
+        return false;
+    const auto short_staging = std::get<ngen::render::Buffer>(std::move(short_created));
+    if (!std::holds_alternative<ngen::render::Failure>(
+            context.copy_to_image({short_staging, image}))) {
+        std::fputs("Vulkan resource: mip-chain admitted a base-level-only staging buffer\n",
+                   stderr);
+        return false;
+    }
+    const auto upload = context.copy_to_image({staging, image});
+    if (failed(upload, "mip upload"))
+        return false;
+    const auto download = context.copy_from_image({image, readback});
+    if (failed(download, "mip readback") ||
+        !wait_submission(context, std::get<ngen::render::Submission>(download)))
+        return false;
+    std::array<std::byte, 168> actual{};
+    if (failed(readback.read(0, actual), "mip pixels readback") || actual != pixels) {
+        std::fputs("Vulkan resource: mip-chain GPU roundtrip pixels differ\n", stderr);
+        return false;
+    }
+    std::puts("mip_chain_roundtrip=1 mip_levels=3 mip_bytes=168");
+    return true;
+}
+
+bool check_hdr(ngen::render::Context &context, const ngen::render::Buffer &readback) {
+    auto created =
+        context.create_image({{3, 2},
+                              VK_FORMAT_R16G16B16A16_SFLOAT,
+                              static_cast<VkImageUsageFlags>(VK_IMAGE_USAGE_TRANSFER_SRC_BIT) |
+                                  VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT |
+                                  VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT});
+    if (failed(created, "HDR attachment allocation"))
+        return false;
+    auto image = std::get<ngen::render::Image>(std::move(created));
+    const std::array<std::uint16_t, 24> pixels{0x3c00, 0x4000, 0x3800, 0x3c00, 0x0000, 0x3c00,
+                                               0x4200, 0x3c00, 0x4400, 0x3800, 0x4000, 0x3c00,
+                                               0x3800, 0x4400, 0x0000, 0x3c00, 0x4000, 0x4200,
+                                               0x4400, 0x3c00, 0x3c00, 0x3c00, 0x3c00, 0x3c00};
+    auto allocated = context.create_buffer(
+        {sizeof(pixels), VK_BUFFER_USAGE_TRANSFER_SRC_BIT, ngen::render::MemoryAccess::upload});
+    if (failed(allocated, "HDR staging allocation"))
+        return false;
+    auto staging = std::get<ngen::render::Buffer>(std::move(allocated));
+    if (failed(staging.write(0, std::as_bytes(std::span(pixels))), "HDR staging"))
+        return false;
+    const auto upload = context.copy_to_image({staging, image});
+    if (failed(upload, "HDR upload"))
+        return false;
+    const auto download = context.copy_from_image({image, readback});
+    if (failed(download, "HDR readback") ||
+        !wait_submission(context, std::get<ngen::render::Submission>(download)))
+        return false;
+    std::array<std::uint16_t, 24> actual{};
+    if (failed(readback.read(0, std::as_writable_bytes(std::span(actual))), "HDR pixel bytes") ||
+        actual != pixels) {
+        std::fputs("Vulkan resource: HDR GPU roundtrip differs\n", stderr);
+        return false;
+    }
+    std::puts("hdr_attachment=1 hdr_roundtrip_bytes=48");
+    return true;
+}
+
+bool check_depth(ngen::render::Context &context, const ngen::render::Buffer &readback) {
+    auto created =
+        context.create_image({{3, 2},
+                              VK_FORMAT_D32_SFLOAT,
+                              static_cast<VkImageUsageFlags>(VK_IMAGE_USAGE_TRANSFER_SRC_BIT) |
+                                  VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT |
+                                  VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT});
+    if (failed(created, "depth attachment allocation"))
+        return false;
+    auto image = std::get<ngen::render::Image>(std::move(created));
+    const std::array<float, 6> pixels{0.0F, 0.125F, 0.375F, 0.625F, 0.875F, 1.0F};
+    auto allocated = context.create_buffer(
+        {sizeof(pixels), VK_BUFFER_USAGE_TRANSFER_SRC_BIT, ngen::render::MemoryAccess::upload});
+    if (failed(allocated, "depth staging allocation"))
+        return false;
+    auto staging = std::get<ngen::render::Buffer>(std::move(allocated));
+    if (failed(staging.write(0, std::as_bytes(std::span(pixels))), "depth staging"))
+        return false;
+    const auto upload = context.copy_to_image({staging, image});
+    if (failed(upload, "depth upload"))
+        return false;
+    const auto download = context.copy_from_image({image, readback});
+    if (failed(download, "depth readback") ||
+        !wait_submission(context, std::get<ngen::render::Submission>(download)))
+        return false;
+    std::array<float, 6> actual{};
+    if (failed(readback.read(0, std::as_writable_bytes(std::span(actual))), "depth pixel bytes") ||
+        actual != pixels) {
+        std::fputs("Vulkan resource: depth GPU roundtrip differs\n", stderr);
+        return false;
+    }
+    std::puts("depth_attachment=1 depth_roundtrip_bytes=24");
+    return true;
+}
+
+bool check_cube(ngen::render::Context &context, const ngen::render::Buffer &readback) {
+    auto allocated = context.create_buffer(
+        {504, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, ngen::render::MemoryAccess::upload});
+    if (failed(allocated, "cube staging allocation"))
+        return false;
+    auto staging = std::get<ngen::render::Buffer>(std::move(allocated));
+    std::array<std::byte, 504> pixels;
+    pixels.fill(std::byte{0xee});
+    if (failed(staging.write(0, pixels), "cube guard write"))
+        return false;
+    const auto guard = context.copy_buffer({staging, readback, pixels.size()});
+    if (failed(guard, "cube readback guard") ||
+        !wait_submission(context, std::get<ngen::render::Submission>(guard)))
+        return false;
+    for (std::size_t i = 0; i < pixels.size(); ++i)
+        pixels[i] = std::byte{static_cast<unsigned char>((i * 23U + 47U) % 256U)};
+    if (failed(staging.write(0, pixels), "cube pixels"))
+        return false;
+    auto created =
+        context.create_image({{4, 4},
+                              VK_FORMAT_R8G8B8A8_UNORM,
+                              static_cast<VkImageUsageFlags>(VK_IMAGE_USAGE_TRANSFER_SRC_BIT) |
+                                  VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT,
+                              3,
+                              true});
+    if (failed(created, "cube image allocation"))
+        return false;
+    auto image = std::get<ngen::render::Image>(std::move(created));
+    const auto upload = context.copy_to_image({staging, image});
+    if (failed(upload, "cube upload"))
+        return false;
+    const auto download = context.copy_from_image({image, readback});
+    if (failed(download, "cube readback") ||
+        !wait_submission(context, std::get<ngen::render::Submission>(download)))
+        return false;
+    std::array<std::byte, 504> actual{};
+    if (failed(readback.read(0, actual), "cube pixels readback") || actual != pixels) {
+        std::fputs("Vulkan resource: cube mip/face GPU roundtrip pixels differ\n", stderr);
+        return false;
+    }
+    std::puts("cube_roundtrip=1 cube_faces=6 cube_mip_levels=3 cube_bytes=504");
+    return true;
+}
+
 bool check_capacity(ngen::render::Context &context) {
     const auto initial = context.resource_statistics();
     if (failed(initial, "capacity baseline"))
@@ -355,7 +526,9 @@ int main() try {
         std::fputs("Vulkan resource: completed transfer did not reclaim safely\n", stderr);
         return 1;
     }
-    if (!check_capacity(*context) || !check_replacement(*context, readback))
+    if (!check_mip_chain(*context, readback) || !check_hdr(*context, readback) ||
+        !check_depth(*context, readback) || !check_cube(*context, readback) ||
+        !check_capacity(*context) || !check_replacement(*context, readback))
         return 1;
     if (!std::holds_alternative<ngen::render::Failure>(context->create_image(
             {{7, 5}, VK_FORMAT_R8G8B8A8_UNORM, VK_IMAGE_USAGE_TRANSFER_DST_BIT}))) {
@@ -372,11 +545,25 @@ int main() try {
         std::fputs("Vulkan resource: invalid image request was accepted\n", stderr);
         return 1;
     }
+    const std::array<ngen::render::ImageDescription, 6> invalid_images{
+        {{{4, 4}, VK_FORMAT_R8G8B8A8_UNORM, VK_IMAGE_USAGE_SAMPLED_BIT, 0},
+         {{4, 4}, VK_FORMAT_R8G8B8A8_UNORM, VK_IMAGE_USAGE_SAMPLED_BIT, 4},
+         {{4, 2}, VK_FORMAT_R8G8B8A8_UNORM, VK_IMAGE_USAGE_SAMPLED_BIT, 1, true},
+         {{4, 4}, VK_FORMAT_D32_SFLOAT, VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT},
+         {{4, 4}, VK_FORMAT_R8G8B8A8_UNORM, VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT},
+         {{4, 4}, VK_FORMAT_D32_SFLOAT, VK_IMAGE_USAGE_SAMPLED_BIT, 1, true}}};
+    for (const auto &description : invalid_images)
+        if (!std::holds_alternative<ngen::render::Failure>(context->create_image(description))) {
+            std::fputs("Vulkan resource: incompatible mip/cube/depth image admitted\n", stderr);
+            return 1;
+        }
     auto image_creation =
-        context->create_image({{7, 5},
+        context->create_image({{4, 4},
                                VK_FORMAT_R8G8B8A8_SRGB,
                                static_cast<VkImageUsageFlags>(VK_IMAGE_USAGE_TRANSFER_SRC_BIT) |
-                                   VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT});
+                                   VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT,
+                               3,
+                               true});
     if (failed(image_creation, "image allocation"))
         return 1;
     auto image = std::get<ngen::render::Image>(std::move(image_creation));
@@ -390,11 +577,11 @@ int main() try {
         return 1;
     }
     auto image_staging_creation = context->create_buffer(
-        {140, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, ngen::render::MemoryAccess::upload});
+        {504, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, ngen::render::MemoryAccess::upload});
     if (failed(image_staging_creation, "image staging allocation"))
         return 1;
     auto image_staging = std::get<ngen::render::Buffer>(std::move(image_staging_creation));
-    std::array<std::byte, 140> pixels{};
+    std::array<std::byte, 504> pixels{};
     for (std::size_t i = 0; i < pixels.size(); ++i)
         pixels[i] = std::byte{static_cast<unsigned char>((i * 29 + 17) % 256)};
     if (failed(image_staging.write(0, pixels), "image staging write"))
@@ -464,6 +651,7 @@ int main() try {
     }
     std::puts("buffer_lifetime=1 gpu_roundtrip=1 pending_retirement=1 resource_slots=64 "
               "replacement_cycles=128 image_lifetime=1 image_roundtrip=1 image_retirement=1 "
+              "cube_retirement=1 "
               "close_invalidated=1");
     return 0;
 } catch (const std::exception &error) {

@@ -1,0 +1,22 @@
+[1/10] Processing file <REPO>/engine/render/context.cpp.
+42 warnings generated.
+[2/10] Processing file <REPO>/engine/render/surface.cpp.
+72 warnings generated.
+[3/10] Processing file <REPO>/engine/render/presentation.cpp.
+114 warnings generated.
+[4/10] Processing file <REPO>/engine/render/resources.cpp.
+156 warnings generated.
+[5/10] Processing file <REPO>/apps/probe/presentation.cpp.
+200 warnings generated.
+[6/10] Processing file <REPO>/apps/render_probe/main.cpp.
+244 warnings generated.
+[7/10] Processing file <REPO>/apps/resource_probe/main.cpp.
+288 warnings generated.
+[8/10] Processing file <REPO>/tests/render_startup.cpp.
+341 warnings generated.
+[9/10] Processing file <REPO>/tests/render_surface.cpp.
+384 warnings generated.
+[10/10] Processing file <REPO>/tests/shader_gpu.cpp.
+431 warnings generated.
+Suppressed 452 warnings (431 in non-user code, 21 NOLINT).
+Use -header-filter=.* or leave it as default to display errors from all non-system headers. Use -system-headers to display errors from system headers as well.

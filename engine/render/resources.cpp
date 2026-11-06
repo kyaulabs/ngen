@@ -1,6 +1,7 @@
 #include "render/resources_internal.hpp"
 #include <algorithm>
 #include <array>
+#include <bit>
 #include <cstdio>
 #include <cstring>
 #include <stdexcept>
@@ -27,6 +28,10 @@ struct Resources::Impl {
         VkBufferUsageFlags usage{};
         VkImageUsageFlags image_usage{};
         VkExtent2D image_extent{};
+        std::uint32_t mip_levels{1};
+        std::uint32_t texel_bytes{4};
+        std::uint32_t layers{1};
+        VkImageAspectFlags aspect{VK_IMAGE_ASPECT_COLOR_BIT};
         VkImageLayout image_layout{VK_IMAGE_LAYOUT_UNDEFINED};
         MemoryAccess memory{MemoryAccess::device};
         std::uint64_t last_use{};
@@ -42,6 +47,7 @@ struct Resources::Impl {
     VkDevice device{};
     VkPhysicalDevice physical{};
     std::uint32_t max_image_dimension{};
+    std::uint32_t max_cube_dimension{};
     VkQueue queue{};
     VkSemaphore timeline{};
     std::array<Frame, 2> frames{};
@@ -132,11 +138,27 @@ struct Resources::Impl {
         dependency.pMemoryBarriers = &memory;
         vkCmdPipelineBarrier2(frame.commands, &dependency);
     }
-    static void image_barrier(Frame &frame, VkImageMemoryBarrier2 barrier) {
+    static std::array<VkBufferImageCopy, 32> image_regions(const Entry &entry) {
+        std::array<VkBufferImageCopy, 32> regions{};
+        auto width = entry.image_extent.width;
+        auto height = entry.image_extent.height;
+        VkDeviceSize offset = 0;
+        for (std::uint32_t level = 0; level < entry.mip_levels; ++level) {
+            regions[level].bufferOffset = offset;
+            regions[level].imageSubresource = {entry.aspect, level, 0, entry.layers};
+            regions[level].imageExtent = {width, height, 1};
+            offset += static_cast<VkDeviceSize>(width) * height * entry.texel_bytes * entry.layers;
+            width = std::max(1U, width / 2);
+            height = std::max(1U, height / 2);
+        }
+        return regions;
+    }
+    static void image_barrier(Frame &frame, VkImageMemoryBarrier2 barrier, std::uint32_t levels) {
         barrier.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER_2;
         barrier.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
         barrier.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
-        barrier.subresourceRange = {VK_IMAGE_ASPECT_COLOR_BIT, 0, 1, 0, 1};
+        barrier.subresourceRange = {barrier.subresourceRange.aspectMask, 0, levels, 0,
+                                    barrier.subresourceRange.layerCount};
         VkDependencyInfo dependency{};
         dependency.sType = VK_STRUCTURE_TYPE_DEPENDENCY_INFO;
         dependency.imageMemoryBarrierCount = 1;
@@ -180,6 +202,7 @@ Resources::Resources(const Context &owner) : impl_(std::make_unique<Impl>()) {
     VkPhysicalDeviceProperties properties{};
     vkGetPhysicalDeviceProperties(impl_->physical, &properties);
     impl_->max_image_dimension = properties.limits.maxImageDimension2D;
+    impl_->max_cube_dimension = properties.limits.maxImageDimensionCube;
     impl_->queue = owner.queue();
     try {
         VmaAllocatorCreateInfo info{};
@@ -296,22 +319,49 @@ std::variant<Image, Failure> Resources::create(ImageDescription description) {
         description.extent.height > impl_->max_image_dimension)
         return Failure{"invalid image extent"};
     if (description.format != VK_FORMAT_R8G8B8A8_SRGB &&
-        description.format != VK_FORMAT_R8G8B8A8_UNORM)
+        description.format != VK_FORMAT_R8G8B8A8_UNORM &&
+        description.format != VK_FORMAT_R16G16B16A16_SFLOAT &&
+        description.format != VK_FORMAT_D32_SFLOAT)
         return Failure{"unsupported image format"};
+    const std::uint32_t texel_bytes = description.format == VK_FORMAT_R16G16B16A16_SFLOAT ? 8U : 4U;
+    const bool depth = description.format == VK_FORMAT_D32_SFLOAT;
+    const auto layers = description.cube ? 6U : 1U;
+    const VkImageCreateFlags flags =
+        description.cube ? static_cast<VkImageCreateFlags>(VK_IMAGE_CREATE_CUBE_COMPATIBLE_BIT)
+                         : 0U;
+    if (description.cube && (depth || description.extent.width != description.extent.height ||
+                             description.extent.width > impl_->max_cube_dimension))
+        return Failure{"invalid color cubemap extent or format"};
+    const auto aspect = depth ? VK_IMAGE_ASPECT_DEPTH_BIT : VK_IMAGE_ASPECT_COLOR_BIT;
+    if ((description.usage & (depth ? VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT
+                                    : VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT)) != 0)
+        return Failure{"image format and attachment usage are incompatible"};
     constexpr VkImageUsageFlags allowed =
         static_cast<VkImageUsageFlags>(VK_IMAGE_USAGE_TRANSFER_SRC_BIT) |
         VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT |
-        VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
+        VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT;
     constexpr VkImageUsageFlags view_usage =
         static_cast<VkImageUsageFlags>(VK_IMAGE_USAGE_SAMPLED_BIT) |
-        VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
+        VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT;
     if ((description.usage & view_usage) == 0 || (description.usage & ~allowed) != 0)
         return Failure{"image usage must support an owned view"};
+    if (description.mip_levels == 0 ||
+        description.mip_levels > static_cast<std::uint32_t>(std::bit_width(std::max(
+                                     description.extent.width, description.extent.height))))
+        return Failure{"invalid image mip count"};
     const auto available = Impl::budget - impl_->allocated;
-    if (description.extent.width > available / 4 ||
-        description.extent.height >
-            available / (static_cast<VkDeviceSize>(description.extent.width) * 4))
-        return Failure{"image dimensions exceed the resource admission budget"};
+    VkDeviceSize image_bytes = 0;
+    auto width = description.extent.width;
+    auto height = description.extent.height;
+    for (std::uint32_t level = 0; level < description.mip_levels; ++level) {
+        const auto remaining = available - image_bytes;
+        const auto row_bytes = static_cast<VkDeviceSize>(width) * texel_bytes * layers;
+        if (row_bytes > remaining || height > remaining / row_bytes)
+            return Failure{"image dimensions exceed the resource admission budget"};
+        image_bytes += row_bytes * height;
+        width = std::max(1U, width / 2);
+        height = std::max(1U, height / 2);
+    }
     VkFormatFeatureFlags required{};
     if ((description.usage & VK_IMAGE_USAGE_TRANSFER_SRC_BIT) != 0)
         required |= VK_FORMAT_FEATURE_TRANSFER_SRC_BIT;
@@ -321,6 +371,8 @@ std::variant<Image, Failure> Resources::create(ImageDescription description) {
         required |= VK_FORMAT_FEATURE_SAMPLED_IMAGE_BIT;
     if ((description.usage & VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT) != 0)
         required |= VK_FORMAT_FEATURE_COLOR_ATTACHMENT_BIT;
+    if ((description.usage & VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT) != 0)
+        required |= VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT;
     VkFormatProperties properties{};
     vkGetPhysicalDeviceFormatProperties(impl_->physical, description.format, &properties);
     if ((properties.optimalTilingFeatures & required) != required)
@@ -328,17 +380,15 @@ std::variant<Image, Failure> Resources::create(ImageDescription description) {
     VkImageFormatProperties format_limits{};
     const auto format_result = vkGetPhysicalDeviceImageFormatProperties(
         impl_->physical, description.format, VK_IMAGE_TYPE_2D, VK_IMAGE_TILING_OPTIMAL,
-        description.usage, 0, &format_limits);
+        description.usage, flags, &format_limits);
     if (format_result != VK_SUCCESS)
         return Failure{"query image format: VkResult " + std::to_string(format_result)};
     if (description.extent.width > format_limits.maxExtent.width ||
         description.extent.height > format_limits.maxExtent.height ||
-        format_limits.maxExtent.depth == 0 || format_limits.maxMipLevels == 0 ||
-        format_limits.maxArrayLayers == 0 ||
+        format_limits.maxExtent.depth == 0 || format_limits.maxMipLevels < description.mip_levels ||
+        format_limits.maxArrayLayers < layers ||
         (format_limits.sampleCounts & VK_SAMPLE_COUNT_1_BIT) == 0)
         return Failure{"image extent or samples exceed format limits"};
-    const auto image_bytes =
-        static_cast<VkDeviceSize>(description.extent.width) * description.extent.height * 4;
     if (image_bytes > format_limits.maxResourceSize)
         return Failure{"image pixels exceed format resource limit"};
     const auto free =
@@ -349,12 +399,12 @@ std::variant<Image, Failure> Resources::create(ImageDescription description) {
         return Failure{"resource slot capacity exhausted"};
     VkImageCreateInfo info{.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO,
                            .pNext = nullptr,
-                           .flags = 0,
+                           .flags = flags,
                            .imageType = VK_IMAGE_TYPE_2D,
                            .format = description.format,
                            .extent = {description.extent.width, description.extent.height, 1},
-                           .mipLevels = 1,
-                           .arrayLayers = 1,
+                           .mipLevels = description.mip_levels,
+                           .arrayLayers = layers,
                            .samples = VK_SAMPLE_COUNT_1_BIT,
                            .tiling = VK_IMAGE_TILING_OPTIMAL,
                            .usage = description.usage,
@@ -388,9 +438,9 @@ std::variant<Image, Failure> Resources::create(ImageDescription description) {
     VkImageViewCreateInfo view_info{};
     view_info.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
     view_info.image = handle;
-    view_info.viewType = VK_IMAGE_VIEW_TYPE_2D;
+    view_info.viewType = description.cube ? VK_IMAGE_VIEW_TYPE_CUBE : VK_IMAGE_VIEW_TYPE_2D;
     view_info.format = description.format;
-    view_info.subresourceRange = {VK_IMAGE_ASPECT_COLOR_BIT, 0, 1, 0, 1};
+    view_info.subresourceRange = {aspect, 0, description.mip_levels, 0, layers};
     VkImageView view{};
     const auto view_result = vkCreateImageView(impl_->device, &view_info, nullptr, &view);
     if (view_result != VK_SUCCESS) {
@@ -400,6 +450,10 @@ std::variant<Image, Failure> Resources::create(ImageDescription description) {
     free->image = handle;
     free->image_usage = description.usage;
     free->image_extent = description.extent;
+    free->mip_levels = description.mip_levels;
+    free->texel_bytes = texel_bytes;
+    free->layers = layers;
+    free->aspect = aspect;
     free->size = image_bytes;
     free->view = view;
     free->allocation = memory;
@@ -472,6 +526,8 @@ std::variant<Submission, Failure> Resources::copy(ImageUpload description) {
     auto &frame = *std::get<Impl::Frame *>(recording);
     VkImageMemoryBarrier2 barrier{};
     barrier.image = target.image;
+    barrier.subresourceRange.aspectMask = target.aspect;
+    barrier.subresourceRange.layerCount = target.layers;
     barrier.oldLayout = target.image_layout;
     barrier.newLayout = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;
     barrier.srcStageMask = target.image_layout == VK_IMAGE_LAYOUT_UNDEFINED
@@ -482,19 +538,17 @@ std::variant<Submission, Failure> Resources::copy(ImageUpload description) {
                                 : VK_ACCESS_2_MEMORY_READ_BIT | VK_ACCESS_2_MEMORY_WRITE_BIT;
     barrier.dstStageMask = VK_PIPELINE_STAGE_2_COPY_BIT;
     barrier.dstAccessMask = VK_ACCESS_2_TRANSFER_WRITE_BIT;
-    Impl::image_barrier(frame, barrier);
-    VkBufferImageCopy region{};
-    region.imageSubresource = {VK_IMAGE_ASPECT_COLOR_BIT, 0, 0, 1};
-    region.imageExtent = {target.image_extent.width, target.image_extent.height, 1};
+    Impl::image_barrier(frame, barrier, target.mip_levels);
+    const auto regions = Impl::image_regions(target);
     vkCmdCopyBufferToImage(frame.commands, source.buffer, target.image,
-                           VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &region);
+                           VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, target.mip_levels, regions.data());
     barrier.oldLayout = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;
     barrier.newLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
     barrier.srcStageMask = VK_PIPELINE_STAGE_2_COPY_BIT;
     barrier.srcAccessMask = VK_ACCESS_2_TRANSFER_WRITE_BIT;
     barrier.dstStageMask = VK_PIPELINE_STAGE_2_ALL_COMMANDS_BIT;
     barrier.dstAccessMask = VK_ACCESS_2_SHADER_SAMPLED_READ_BIT;
-    Impl::image_barrier(frame, barrier);
+    Impl::image_barrier(frame, barrier, target.mip_levels);
     const auto next = impl_->submit(frame, description.wait);
     source.last_use = next;
     target.last_use = next;
@@ -524,25 +578,25 @@ std::variant<Submission, Failure> Resources::copy(ImageReadback description) {
     auto &frame = *std::get<Impl::Frame *>(recording);
     VkImageMemoryBarrier2 barrier{};
     barrier.image = source.image;
+    barrier.subresourceRange.aspectMask = source.aspect;
+    barrier.subresourceRange.layerCount = source.layers;
     barrier.oldLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
     barrier.newLayout = VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL;
     barrier.srcStageMask = VK_PIPELINE_STAGE_2_ALL_COMMANDS_BIT;
     barrier.srcAccessMask = VK_ACCESS_2_MEMORY_READ_BIT | VK_ACCESS_2_MEMORY_WRITE_BIT;
     barrier.dstStageMask = VK_PIPELINE_STAGE_2_COPY_BIT;
     barrier.dstAccessMask = VK_ACCESS_2_TRANSFER_READ_BIT;
-    Impl::image_barrier(frame, barrier);
-    VkBufferImageCopy region{};
-    region.imageSubresource = {VK_IMAGE_ASPECT_COLOR_BIT, 0, 0, 1};
-    region.imageExtent = {source.image_extent.width, source.image_extent.height, 1};
+    Impl::image_barrier(frame, barrier, source.mip_levels);
+    const auto regions = Impl::image_regions(source);
     vkCmdCopyImageToBuffer(frame.commands, source.image, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL,
-                           target.buffer, 1, &region);
+                           target.buffer, source.mip_levels, regions.data());
     barrier.oldLayout = VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL;
     barrier.newLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
     barrier.srcStageMask = VK_PIPELINE_STAGE_2_COPY_BIT;
     barrier.srcAccessMask = VK_ACCESS_2_TRANSFER_READ_BIT;
     barrier.dstStageMask = VK_PIPELINE_STAGE_2_ALL_COMMANDS_BIT;
     barrier.dstAccessMask = VK_ACCESS_2_SHADER_SAMPLED_READ_BIT;
-    Impl::image_barrier(frame, barrier);
+    Impl::image_barrier(frame, barrier, source.mip_levels);
     Impl::host_read(frame);
     const auto next = impl_->submit(frame, description.wait);
     source.last_use = next;
