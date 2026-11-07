@@ -1,4 +1,5 @@
 #include "draw.hpp"
+#include "render/environment.hpp"
 #include <algorithm>
 #include <array>
 #include <cmath>
@@ -77,13 +78,6 @@ bool draw_scene(render::Context &context, render::ScenePin &version,
                                    VK_FORMAT_R8G8B8A8_UNORM,
                                    static_cast<VkImageUsageFlags>(VK_IMAGE_USAGE_SAMPLED_BIT) |
                                        VK_IMAGE_USAGE_TRANSFER_DST_BIT}));
-    auto cube =
-        take(context.create_image({{1, 1},
-                                   VK_FORMAT_R8G8B8A8_UNORM,
-                                   static_cast<VkImageUsageFlags>(VK_IMAGE_USAGE_SAMPLED_BIT) |
-                                       VK_IMAGE_USAGE_TRANSFER_DST_BIT,
-                                   1,
-                                   true}));
     auto shadow =
         take(context.create_image({{1, 1},
                                    VK_FORMAT_D32_SFLOAT,
@@ -97,12 +91,17 @@ bool draw_scene(render::Context &context, render::ScenePin &version,
     };
     const std::array<std::byte, 4> pixel{std::byte{255}, std::byte{255}, std::byte{255},
                                          std::byte{255}};
-    const std::array<std::byte, 24> black{};
     const float depth_one = 1;
     upload(white, pixel);
-    upload(cube, black);
     upload(shadow, std::as_bytes(std::span{&depth_one, 1}));
-    SceneTargets targets{color, depth, shadow, cube, cube, white, white};
+    const auto generated = take(generate_environment(Sky{}));
+    std::array<Image, 3> environment;
+    for (std::size_t i = 0; i < environment.size(); ++i) {
+        environment[i] = take(context.create_image(generated.images[i].description));
+        upload(environment[i], generated.images[i].texels);
+    }
+    SceneTargets targets{color,          depth,          shadow, environment[0],
+                         environment[1], environment[2], white};
     SceneView view{};
     const auto &bounds = package->bounds;
     std::array<float, 3> center{};
@@ -190,7 +189,8 @@ bool draw_scene(render::Context &context, render::ScenePin &version,
         SDL_Delay(1);
     }
     require(presented, "scene HDR output did not reach a queued WSI frame");
-    std::printf("checked_scene_pbr=1 frame_version_pin=1 frame_versions=2 frame_pin_retired=1 "
+    std::printf("checked_scene_pbr=1 generated_ibl=1 frame_version_pin=1 frame_versions=2 "
+                "frame_pin_retired=1 "
                 "scene_lit_pixels=%zu "
                 "scene_wsi_queued=1\n",
                 lit);

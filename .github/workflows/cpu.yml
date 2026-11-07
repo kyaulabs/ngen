@@ -90,7 +90,7 @@ jobs:
           cmake --build --preset "renderer-$PRESET"
           ctest --preset "renderer-$PRESET" --show-only
           ctest --preset "renderer-$PRESET"
-          clang-tidy-18 -p "build/renderer-$PRESET" engine/render/context.cpp engine/render/surface.cpp engine/render/presentation.cpp engine/render/resources.cpp engine/render/post.cpp engine/render/mesh.cpp engine/render/vma.cpp apps/probe/presentation.cpp apps/render_probe/main.cpp apps/resource_probe/main.cpp tests/render_startup.cpp tests/render_surface.cpp tests/wayland_tablets.cpp tests/shader_layout.cpp tests/shader_gpu.cpp engine/render/scene.cpp engine/render/scene_draw.cpp apps/scene_probe/main.cpp apps/scene_probe/draw.cpp apps/asset_probe/main.cpp tests/assets.cpp
+          clang-tidy-18 -p "build/renderer-$PRESET" engine/render/context.cpp engine/render/surface.cpp engine/render/presentation.cpp engine/render/resources.cpp engine/render/post.cpp engine/render/mesh.cpp engine/render/environment.cpp tests/render_environment.cpp engine/render/vma.cpp apps/probe/presentation.cpp apps/render_probe/main.cpp apps/resource_probe/main.cpp tests/render_startup.cpp tests/render_surface.cpp tests/wayland_tablets.cpp tests/shader_layout.cpp tests/shader_gpu.cpp engine/render/scene.cpp engine/render/scene_draw.cpp apps/scene_probe/main.cpp apps/scene_probe/draw.cpp apps/asset_probe/main.cpp tests/assets.cpp
       - name: Build and test bounded offline asset tools
         if: matrix.preset == 'debug' || matrix.preset == 'asan'
         env:

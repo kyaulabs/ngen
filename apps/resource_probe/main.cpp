@@ -1,5 +1,6 @@
 #include "probe/presentation.hpp"
 #include "render/context.hpp"
+#include "render/environment.hpp"
 #include "render/mesh.hpp"
 #include <algorithm>
 #include <array>
@@ -550,6 +551,63 @@ bool check_mesh(ngen::render::Context &context, const ngen::render::Buffer &read
         std::fputs("Vulkan resource: tracked mesh indexed/depth pixels differ\n", stderr);
         return false;
     }
+    Sky sky;
+    sky.horizon = sky.zenith = sky.ground = {.25F, .5F, 1};
+    auto generated = generate_environment(sky);
+    if (failed(generated, "generated environment"))
+        return false;
+    const auto &data = std::get<EnvironmentData>(generated);
+    std::array<Image, 3> ibl;
+    for (std::size_t i = 0; i < ibl.size(); ++i) {
+        ibl[i] = image(data.images[i].description);
+        if (!upload(ibl[i], data.images[i].texels))
+            return false;
+    }
+    auto ibl_draw = draws[0];
+    ibl_draw.material.emissiveAlphaCutoff = {0, 0, 0, .5F};
+    ibl_draw.material.metallicRoughnessNormalOcclusion[1] = .045F;
+    const MeshPass ibl_pass{vertex_buffer, index_buffer, color,  depth, shadow,
+                            ibl[0],        ibl[1],       ibl[2], {},    std::span{&ibl_draw, 1}};
+    const auto shaded = when_ready([&] { return context.draw_mesh(ibl_pass); });
+    if (failed(shaded, "generated IBL draw"))
+        return false;
+    const auto ibl_copied = when_ready([&] { return context.copy_from_image({color, readback}); });
+    if (failed(ibl_copied, "IBL readback") ||
+        !wait_submission(context, std::get<Submission>(ibl_copied)) ||
+        failed(readback.read(0, std::as_writable_bytes(std::span(actual))), "IBL pixels"))
+        return false;
+    const auto half = [](std::uint32_t bits) {
+        const auto exponent = (bits >> 10U) & 31U;
+        const auto mantissa = bits & 1023U;
+        return exponent == 0 ? std::ldexp(static_cast<float>(mantissa), -24)
+                             : std::ldexp(1 + static_cast<float>(mantissa) / 1024,
+                                          static_cast<int>(exponent) - 15);
+    };
+    const auto shaded_pixel = pixel(12, 5);
+    const std::array<float, 3> expected_ibl{.25F, .5F, 1};
+    for (std::size_t channel = 0; channel < 3; ++channel)
+        if (std::abs(half(shaded_pixel[channel]) - expected_ibl[channel]) > .05F) {
+            std::fputs("Vulkan resource: generated cube/BRDF IBL pixels differ\n", stderr);
+            return false;
+        }
+    ibl_draw.material.metallicRoughnessNormalOcclusion[1] = 1;
+    const auto rough_shaded = when_ready([&] { return context.draw_mesh(ibl_pass); });
+    if (failed(rough_shaded, "rough generated IBL draw"))
+        return false;
+    const auto rough_copied =
+        when_ready([&] { return context.copy_from_image({color, readback}); });
+    if (failed(rough_copied, "rough IBL readback") ||
+        !wait_submission(context, std::get<Submission>(rough_copied)) ||
+        failed(readback.read(0, std::as_writable_bytes(std::span(actual))), "rough IBL pixels"))
+        return false;
+    const auto rough_pixel = pixel(12, 5);
+    for (std::size_t channel = 0; channel < 3; ++channel)
+        if (std::abs(half(rough_pixel[channel]) - expected_ibl[channel] * (1 - std::log(2.0F))) >
+            .05F) {
+            std::fputs("Vulkan resource: rough generated IBL pixels differ\n", stderr);
+            return false;
+        }
+    std::puts("generated_ibl_draw=1 generated_ibl_channels=6 generated_ibl_roughness_tail=1");
     auto invalid = pass;
     invalid.draws = {};
     if (!std::holds_alternative<Failure>(context.draw_mesh(invalid)))
