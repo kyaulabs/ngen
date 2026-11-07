@@ -10,6 +10,9 @@ struct SceneView {
     shader::Float4 key_direction_intensity{0, -1, 0, 1};
     shader::Float4 key_color{1, 1, 1, 0};
     std::uint32_t lod{2};
+    // Empty uses authored factors; otherwise a complete material-indexed table.
+    // Borrowed only through draw(); immutable package/map/facing data is unchanged.
+    std::span<const assets::MaterialFactors> material_factors{};
 };
 struct SceneTargets {
     const Image &color;

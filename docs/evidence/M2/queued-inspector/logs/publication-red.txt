@@ -1,0 +1,22 @@
+Filters: "prepared reload publication*"
+Randomness seeded to: 2701240637
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+inspector_tests is a Catch2 v3.16.0 host application.
+Run with -? for options
+
+-------------------------------------------------------------------------------
+prepared reload publication rejects old commands and preserves owning old
+snapshots
+-------------------------------------------------------------------------------
+$REPO/tests/inspector.cpp:38
+...............................................................................
+
+$REPO/tests/inspector.cpp:49: FAILED:
+  REQUIRE( std::holds_alternative<std::monostate>(inspector.stage_package(second)) )
+with expansion:
+  false
+
+===============================================================================
+test cases: 1 | 1 failed
+assertions: 5 | 4 passed | 1 failed

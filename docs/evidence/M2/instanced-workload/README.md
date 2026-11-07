@@ -1,7 +1,8 @@
 # Instanced ship workload
 
-**M2 remains open.** This implements the ship-plus-100-asteroid workload and
-bounded GPU timing diagnostics. It does not implement the inspector or bloom,
+**M2 remains open.** Source `a346c29ae95596d16cf8623f68a5396b2a095432`
+implements the ship-plus-100-asteroid workload and bounded GPU timing diagnostics.
+Its four hosted jobs passed in run `42412652348`; that is not GPU/owner acceptance. It does not implement the inspector or bloom,
 prove reload/resize memory plateau, or replace final Windows/independent/owner
 acceptance. The earlier Windows results remain valid only for `ef984ef`.
 

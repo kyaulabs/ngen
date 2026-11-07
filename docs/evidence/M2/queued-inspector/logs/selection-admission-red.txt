@@ -1,0 +1,22 @@
+Filters: "inspector rejects*"
+Randomness seeded to: 3577414260
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+inspector_tests is a Catch2 v3.16.0 host application.
+Run with -? for options
+
+-------------------------------------------------------------------------------
+inspector rejects stale and out-of-range selection without consuming queue
+capacity
+-------------------------------------------------------------------------------
+$REPO/tests/inspector.cpp:5
+...............................................................................
+
+$REPO/tests/inspector.cpp:11: FAILED:
+  REQUIRE( inspector.enqueue(ngen::tools::Select{initial.generation, 1}) == ngen::Result<std::monostate>{ngen::Error::invalid} )
+with expansion:
+  {?} == {?}
+
+===============================================================================
+test cases: 1 | 1 failed
+assertions: 1 | 1 failed

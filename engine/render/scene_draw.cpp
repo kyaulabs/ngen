@@ -177,6 +177,14 @@ std::variant<Submission, Failure> SceneRenderer::draw(Context &context, ScenePin
     if (extras.size() > draw_limit - package->instances.size())
         return Failure{"scene extras exceed the fixed draw profile"};
     const auto count = package->instances.size() + extras.size();
+    if (!view.material_factors.empty() && view.material_factors.size() != package->materials.size())
+        return Failure{"scene material factor table must match the immutable package"};
+    const auto unit = [](float value) { return std::isfinite(value) && value >= 0 && value <= 1; };
+    for (const auto &factors : view.material_factors)
+        if (!std::all_of(factors.base_color.begin(), factors.base_color.end(), unit) ||
+            !unit(factors.metallic) || !unit(factors.roughness) ||
+            !std::isfinite(factors.emissive_strength) || factors.emissive_strength < 0)
+            return Failure{"scene material factors must be finite and within authored domains"};
     for (const auto &light : package->lights)
         if (light.type != 1)
             return Failure{"scene forward tier currently requires point-light definitions"};
@@ -208,14 +216,20 @@ std::variant<Submission, Failure> SceneRenderer::draw(Context &context, ScenePin
         draw.facing = material.double_sided ? MeshFacing::both
                                             : (*determinant < 0 ? MeshFacing::clockwise
                                                                 : MeshFacing::counter_clockwise);
-        draw.material.baseColor = material.base_color;
+        const auto *factors = primitive.material == UINT32_MAX || view.material_factors.empty()
+                                  ? nullptr
+                                  : &view.material_factors[primitive.material];
+        draw.material.baseColor = factors ? factors->base_color : material.base_color;
+        const auto emissive_strength =
+            factors ? factors->emissive_strength : material.emissive_strength;
         for (std::size_t channel = 0; channel < 3; ++channel)
             draw.material.emissiveAlphaCutoff[channel] =
-                material.emissive[channel] * material.emissive_strength;
+                material.emissive[channel] * emissive_strength;
         draw.material.emissiveAlphaCutoff[3] = material.alpha_cutoff;
-        draw.material.metallicRoughnessNormalOcclusion = {material.metallic, material.roughness,
-                                                          material.normal_scale,
-                                                          material.occlusion_strength};
+        draw.material.metallicRoughnessNormalOcclusion = {
+            factors ? factors->metallic : material.metallic,
+            factors ? factors->roughness : material.roughness, material.normal_scale,
+            material.occlusion_strength};
         draw.material.flags[0] = material.alpha;
         draw.material.flags[2] =
             (material.maps[2].texture == UINT32_MAX ? 1U : 0U) | (material.double_sided ? 2U : 0U);

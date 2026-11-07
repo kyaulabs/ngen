@@ -1,0 +1,20 @@
+Randomness seeded to: 3036184638
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+inspector_tests is a Catch2 v3.16.0 host application.
+Run with -? for options
+
+-------------------------------------------------------------------------------
+inspector selection applies at the next frame without changing old snapshots
+-------------------------------------------------------------------------------
+$REPO/tests/inspector.cpp:5
+...............................................................................
+
+$REPO/tests/inspector.cpp:19: FAILED:
+  REQUIRE( applied.applied == 1 )
+with expansion:
+  0 == 1
+
+===============================================================================
+test cases: 1 | 1 failed
+assertions: 7 | 6 passed | 1 failed

@@ -1,0 +1,21 @@
+Filters: "queued material edits*"
+Randomness seeded to: 2235066491
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+inspector_tests is a Catch2 v3.16.0 host application.
+Run with -? for options
+
+-------------------------------------------------------------------------------
+queued material edits change only the next owning inspector snapshot
+-------------------------------------------------------------------------------
+$REPO/tests/inspector.cpp:37
+...............................................................................
+
+$REPO/tests/inspector.cpp:49: FAILED:
+  REQUIRE( inspector.advance().applied == 1 )
+with expansion:
+  0 == 1
+
+===============================================================================
+test cases: 1 | 1 failed
+assertions: 3 | 2 passed | 1 failed
