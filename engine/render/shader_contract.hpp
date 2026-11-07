@@ -53,6 +53,7 @@ struct alignas(16) PostConstants {
 struct alignas(16) CullConstants {
     std::array<Float4, 6> planes{};
     std::uint32_t count{};
+    std::array<std::uint32_t, 3> reserved{};
 };
 
 struct Vertex {
@@ -70,6 +71,7 @@ static_assert(sizeof(LocalLight) == 32);
 static_assert(sizeof(LightConstants) == 528);
 static_assert(sizeof(MaterialConstants) == 64);
 static_assert(sizeof(CullConstants) == 112);
+static_assert(offsetof(CullConstants, count) == 96 && offsetof(CullConstants, reserved) == 100);
 static_assert(sizeof(PostConstants) == 16);
 static_assert(sizeof(Vertex) == 56);
 static_assert(std::is_standard_layout_v<FrameConstants> &&

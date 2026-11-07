@@ -687,9 +687,12 @@ std::variant<Submission, Failure> Resources::post(PostProcess description) {
     const shader::PostConstants constants{{description.exposure, description.fxaa ? 1.0F : 0.0F,
                                            1.0F / static_cast<float>(source.image_extent.width),
                                            1.0F / static_cast<float>(source.image_extent.height)}};
-    impl_->post_pipeline->record({frame.commands,
-                                  static_cast<std::size_t>(&frame - impl_->frames.data()),
-                                  target.format, source.view, target.image_extent, constants});
+    impl_->post_pipeline->record({.commands = frame.commands,
+                                  .frame = static_cast<std::size_t>(&frame - impl_->frames.data()),
+                                  .format = target.format,
+                                  .source = source.view,
+                                  .extent = target.image_extent,
+                                  .constants = constants});
     vkCmdEndRendering(frame.commands);
     output.oldLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
     output.newLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
