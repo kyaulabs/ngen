@@ -42,7 +42,7 @@ struct alignas(16) MaterialConstants {
     Float4 metallicRoughnessNormalOcclusion{1, 1, 1, 1};
     // [0]: opaque=0, mask=1, blend=2; [1]: UV1 bits in package map order
     // (base, metallic/roughness, normal, occlusion, emissive); [2] bit0: no normal
-    // texture. All remaining bits, including [3], are reserved.
+    // texture, bit1: double-sided normal flip. Remaining bits, including [3], are reserved.
     std::array<std::uint32_t, 4> flags{};
 };
 

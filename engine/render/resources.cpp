@@ -785,7 +785,7 @@ std::variant<Submission, Failure> Resources::mesh(MeshPass description) {
                 vertices.size / sizeof(shader::Vertex))
             return Failure{"mesh indexed draw range is invalid"};
         if (static_cast<unsigned>(draw.facing) > 2 || material.flags[0] > 2 ||
-            material.flags[1] > 31 || material.flags[2] > 1 || material.flags[3] != 0 ||
+            material.flags[1] > 31 || material.flags[2] > 3 || material.flags[3] != 0 ||
             !finite(material.baseColor) || !finite(material.emissiveAlphaCutoff) ||
             !finite(material.metallicRoughnessNormalOcclusion) || !finite(frame.model.columns) ||
             !finite(frame.viewProjection.columns) || !finite(frame.normalMatrix.columns) ||

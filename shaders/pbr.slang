@@ -23,7 +23,7 @@ struct MaterialConstants
     float4 baseColor;
     float4 emissiveAlphaCutoff;
     float4 metallicRoughnessNormalOcclusion;
-    uint4 flags; // x: alpha mode; y: per-map UV1 bits; z bit0: no normal texture; w reserved.
+    uint4 flags; // x: alpha mode; y: per-map UV1 bits; z bits: no normal texture, double sided; w reserved.
 };
 [[vk::binding(0, 0)]] ConstantBuffer<FrameConstants> frame;
 [[vk::binding(1, 0)]] ConstantBuffer<LightConstants> localLights;
@@ -111,7 +111,7 @@ float2 textureUv(Varying input, uint slot)
     return (material.flags.y & (1u << slot)) != 0 ? input.uv1 : input.uv;
 }
 [shader("fragment")]
-float4 fragmentMain(Varying input) : SV_Target0
+float4 fragmentMain(Varying input, bool frontFace : SV_IsFrontFace) : SV_Target0
 {
     // Color/emissive views decode sRGB; all other texture inputs are linear.
     float4 albedo = baseColorMap.Sample(materialSamplers[0], textureUv(input, 0)) * material.baseColor;
@@ -126,6 +126,8 @@ float4 fragmentMain(Varying input) : SV_Target0
         sampled.xy *= material.metallicRoughnessNormalOcclusion.z;
         n = normalize(t * sampled.x + b * sampled.y + n * sampled.z);
     }
+    if ((material.flags.z & 2u) != 0 && !frontFace)
+        n = -n;
     float3 v = normalize(frame.cameraPosition.xyz - input.worldPosition);
     float4 mr = metallicRoughnessMap.Sample(materialSamplers[1], textureUv(input, 1));
     float metal = saturate(mr.b * material.metallicRoughnessNormalOcclusion.x);
