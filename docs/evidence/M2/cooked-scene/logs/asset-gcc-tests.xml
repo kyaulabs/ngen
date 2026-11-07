@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="(empty)"
+	tests="9"
+	failures="0"
+	disabled="0"
+	skipped="0"
+	hostname=""
+	time="1"
+	timestamp="2026-11-06T10:10:24"
+	>
+	<testcase name="ngen_tests" classname="ngen_tests" time="0.0333462" status="run">
+		<properties/>
+		<system-out>Randomness seeded to: 280845896
+===============================================================================
+All tests passed (281 assertions in 10 test cases)
+
+</system-out>
+	</testcase>
+	<testcase name="render_contract_tests" classname="render_contract_tests" time="0.0165179" status="run">
+		<properties/>
+		<system-out>Randomness seeded to: 2235340195
+===============================================================================
+All tests passed (9 assertions in 1 test case)
+
+</system-out>
+	</testcase>
+	<testcase name="asset_package_tests" classname="asset_package_tests" time="0.133335" status="run">
+		<properties/>
+		<system-out>Randomness seeded to: 577255663
+===============================================================================
+All tests passed (25998 assertions in 13 test cases)
+
+</system-out>
+	</testcase>
+	<testcase name="asset_import_tests" classname="asset_import_tests" time="0.450475" status="run">
+		<properties/>
+		<system-out>Randomness seeded to: 737966384
+===============================================================================
+All tests passed (29412 assertions in 26 test cases)
+
+</system-out>
+	</testcase>
+	<testcase name="asset_cook_tests" classname="asset_cook_tests" time="0.00888003" status="run">
+		<properties/>
+		<system-out>Randomness seeded to: 706712935
+===============================================================================
+All tests passed (97 assertions in 12 test cases)
+
+</system-out>
+	</testcase>
+	<testcase name="asset_cli" classname="asset_cli" time="0.163313" status="run">
+		<properties/>
+		<system-out>....
+----------------------------------------------------------------------
+Ran 4 tests in 0.029s
+
+OK
+</system-out>
+	</testcase>
+	<testcase name="asset_cook_cli" classname="asset_cook_cli" time="1.06789" status="run">
+		<properties/>
+		<system-out>......
+----------------------------------------------------------------------
+Ran 6 tests in 0.953s
+
+OK
+</system-out>
+	</testcase>
+	<testcase name="replay_serial" classname="replay_serial" time="0.0171616" status="run">
+		<properties/>
+		<system-out>seed=0x4e47454e workers=0 ticks=1000 entities=8 commands=32000 sum=11930
+tick_ns p50=7904 p95=12872 p99=13543 allocation_probe=1 new_allocations=0 scheduler_allocations=0
+</system-out>
+	</testcase>
+	<testcase name="replay_workers" classname="replay_workers" time="0.0156292" status="run">
+		<properties/>
+		<system-out>seed=0x4e47454e workers=2 ticks=1000 entities=8 commands=32000 sum=11930
+tick_ns p50=10977 p95=18465 p99=30848 allocation_probe=1 new_allocations=0 scheduler_allocations=0
+</system-out>
+	</testcase>
+</testsuite>

@@ -1,0 +1,28 @@
+Passed: Clang 23 Debug/Release/ASan+UBSan+leak and GCC 16 Debug native
+configure/build/list/execute: 9/9 tests each, no skips/failures.
+Passed: runtime package cases 13 / 25,998 assertions; native cooker cases 12;
+real-process cooking cases 6, including canonical repeats and failed publication.
+Passed: runtime-only C++20 graph 5/5, actual full-frigate load, no importer,
+PNG/KTX/compiler/graphics linkage; original simulation linkage remains isolated.
+Passed: actual Debug/Release/GCC package cooking and runtime loading with all
+612 lights, LOD0 574136, LOD1 290804, LOD2 238080 and 89478480 mip bytes.
+Passed: canonical Release output equality at
+  e0ee6a023900c78b2c313f493f2a0e78c9639c39b6d830a1eaf3a3f6c0a29b6d
+Passed: original source SHA remains
+  e68cd409c479036556446ed1753b287c0e7a40260109b3cd442abe7f533941fe
+Passed/scoped reuse: earlier full instrumented cook uses byte-identical current
+assetc and source; current instrumented runtime reader independently loads it.
+Failed/timeouts: two later instrumented full recooks exceed the existing
+180-second native-stage deadline. No success is claimed for those attempts.
+Passed: owned diagnostics fixed in thirteen actual consumers × three Clang
+configurations; the unchanged native analyzer still reports two vendor findings
+and exits 1. Exact vendor-only reports are advisory, not clean AST passes.
+Unavailable: GCC clang-tidy AST parsing with its real module-dependency flags;
+no manufactured compile commands or warning suppression is used.
+Passed: pinned format 18, shell/Python/JSON/YAML checks, retained report-policy
+process tests and redacted selected-evidence scan. Final staged manifests,
+whitespace/security/conventional/signature checks run before commit.
+Pending: hosted workflow on this candidate revision; do not infer a result.
+Not run in this slice: Windows execution, GPU residency/last-use drawing,
+fixed passes, inspector, visual comparisons, frame/memory performance,
+independent/formal acceptance. M2 remains open.

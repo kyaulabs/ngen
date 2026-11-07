@@ -1,4 +1,6 @@
 #include "render/presentation.hpp"
+#include "render/post.hpp"
+#include "render/resources_internal.hpp"
 #include <cstdio>
 #include <stdexcept>
 
@@ -163,15 +165,36 @@ void Presentation::rebuild(const SurfacePlan &plan) {
                 "create present retirement fence");
     }
     extent_ = plan.extent;
+    format_ = plan.format.format;
     ++generation_;
     rebuild_requested_ = false;
 }
-void Presentation::record(Frame &frame, const Image &image) {
+void Presentation::record(Frame &frame, const Image &image, const ImageFrame *source,
+                          const GraphicsUse *use) {
     checked(vkResetCommandPool(owner_.device(), frame.pool, 0), "reset frame pool");
     VkCommandBufferBeginInfo begin{};
     begin.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
     begin.flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
     checked(vkBeginCommandBuffer(frame.commands, &begin), "begin frame");
+    if (use) {
+        VkImageMemoryBarrier2 input{};
+        input.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER_2;
+        input.srcStageMask = VK_PIPELINE_STAGE_2_ALL_COMMANDS_BIT;
+        input.srcAccessMask = VK_ACCESS_2_MEMORY_READ_BIT | VK_ACCESS_2_MEMORY_WRITE_BIT;
+        input.dstStageMask = VK_PIPELINE_STAGE_2_FRAGMENT_SHADER_BIT;
+        input.dstAccessMask = VK_ACCESS_2_SHADER_SAMPLED_READ_BIT;
+        input.oldLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+        input.newLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+        input.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+        input.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+        input.image = use->image;
+        input.subresourceRange = {VK_IMAGE_ASPECT_COLOR_BIT, 0, use->levels, 0, 1};
+        VkDependencyInfo reads{};
+        reads.sType = VK_STRUCTURE_TYPE_DEPENDENCY_INFO;
+        reads.imageMemoryBarrierCount = 1;
+        reads.pImageMemoryBarriers = &input;
+        vkCmdPipelineBarrier2(frame.commands, &reads);
+    }
     VkImageMemoryBarrier2 barrier{};
     barrier.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER_2;
     barrier.srcStageMask = VK_PIPELINE_STAGE_2_NONE;
@@ -192,7 +215,7 @@ void Presentation::record(Frame &frame, const Image &image) {
     color.sType = VK_STRUCTURE_TYPE_RENDERING_ATTACHMENT_INFO;
     color.imageView = image.view;
     color.imageLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
-    color.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
+    color.loadOp = use ? VK_ATTACHMENT_LOAD_OP_DONT_CARE : VK_ATTACHMENT_LOAD_OP_CLEAR;
     color.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
     color.clearValue.color = {{0.04F, 0.09F, 0.18F, 1.0F}};
     VkRenderingInfo rendering{};
@@ -202,6 +225,17 @@ void Presentation::record(Frame &frame, const Image &image) {
     rendering.colorAttachmentCount = 1;
     rendering.pColorAttachments = &color;
     vkCmdBeginRendering(frame.commands, &rendering);
+    if (use) {
+        const shader::PostConstants constants{{source->exposure, source->fxaa ? 1.0F : 0.0F,
+                                               1.0F / static_cast<float>(use->extent.width),
+                                               1.0F / static_cast<float>(use->extent.height)}};
+        owner_.resources_->record_frame({.commands = frame.commands,
+                                         .frame = frame_index_ + 2,
+                                         .format = format_,
+                                         .source = use->view,
+                                         .extent = extent_,
+                                         .constants = constants});
+    }
     vkCmdEndRendering(frame.commands);
     barrier.srcStageMask = VK_PIPELINE_STAGE_2_COLOR_ATTACHMENT_OUTPUT_BIT;
     barrier.srcAccessMask = VK_ACCESS_2_COLOR_ATTACHMENT_WRITE_BIT;
@@ -212,12 +246,12 @@ void Presentation::record(Frame &frame, const Image &image) {
     vkCmdPipelineBarrier2(frame.commands, &dependency);
     checked(vkEndCommandBuffer(frame.commands), "end frame");
 }
-FrameOutcome Presentation::draw() {
+FrameResult Presentation::draw(const ImageFrame *source, const GraphicsUse *use) {
     int width = 0, height = 0;
     if (!SDL_GetWindowSizeInPixels(owner_.window(), &width, &height))
         throw std::runtime_error(SDL_GetError());
     if (width <= 0 || height <= 0 || (SDL_GetWindowFlags(owner_.window()) & SDL_WINDOW_MINIMIZED))
-        return FrameOutcome::skipped;
+        return {FrameOutcome::skipped, {}};
     const VkExtent2D drawable{static_cast<std::uint32_t>(width),
                               static_cast<std::uint32_t>(height)};
     if (rebuild_requested_ || drawable.width != drawable_.width ||
@@ -225,11 +259,11 @@ FrameOutcome Presentation::draw() {
         const auto selection = owner_.inspect_surface();
         if (const auto *failure = std::get_if<SurfaceFailure>(&selection)) {
             if (failure->issue == SurfaceIssue::not_drawable)
-                return FrameOutcome::skipped;
+                return {FrameOutcome::skipped, {}};
             throw std::runtime_error(failure->message);
         }
         if (!retire(false))
-            return FrameOutcome::skipped;
+            return {FrameOutcome::skipped, {}};
         rebuild(std::get<SurfacePlan>(selection));
         drawable_ = drawable;
     }
@@ -237,7 +271,7 @@ FrameOutcome Presentation::draw() {
     const auto device = owner_.device();
     if (frame.submitted) {
         if (!fence_ready(device, frame.submitted_fence, false))
-            return FrameOutcome::skipped;
+            return {FrameOutcome::skipped, {}};
         frame.submitted = false;
     }
     if (!frame.acquired) {
@@ -246,10 +280,10 @@ FrameOutcome Presentation::draw() {
         const auto result = vkAcquireNextImageKHR(device, swapchain_, 0, VK_NULL_HANDLE,
                                                   frame.acquired_fence, &index);
         if (result == VK_NOT_READY || result == VK_TIMEOUT)
-            return FrameOutcome::skipped;
+            return {FrameOutcome::skipped, {}};
         if (result == VK_ERROR_OUT_OF_DATE_KHR) {
             rebuild_requested_ = true;
-            return FrameOutcome::skipped;
+            return {FrameOutcome::skipped, {}};
         }
         if (result != VK_SUBOPTIMAL_KHR)
             checked(result, "acquire swapchain image");
@@ -260,30 +294,39 @@ FrameOutcome Presentation::draw() {
         frame.suboptimal = result == VK_SUBOPTIMAL_KHR;
     }
     if (!fence_ready(device, frame.acquired_fence, false))
-        return FrameOutcome::skipped;
+        return {FrameOutcome::skipped, {}};
     auto &image = images_[*frame.acquired];
     if (image.present_pending) {
         if (!fence_ready(device, image.retired, false))
-            return FrameOutcome::skipped;
+            return {FrameOutcome::skipped, {}};
         image.present_pending = false;
     }
-    record(frame, image);
+    record(frame, image, source, use);
     checked(vkResetFences(device, 1, &frame.submitted_fence), "reset submission fence");
     VkCommandBufferSubmitInfo command{};
     command.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_SUBMIT_INFO;
     command.commandBuffer = frame.commands;
     command.deviceMask = 1;
-    VkSemaphoreSubmitInfo signal{};
-    signal.sType = VK_STRUCTURE_TYPE_SEMAPHORE_SUBMIT_INFO;
-    signal.semaphore = image.ready;
-    signal.stageMask = VK_PIPELINE_STAGE_2_ALL_COMMANDS_BIT;
+    std::array<VkSemaphoreSubmitInfo, 2> signals{};
+    signals[0].sType = VK_STRUCTURE_TYPE_SEMAPHORE_SUBMIT_INFO;
+    signals[0].semaphore = image.ready;
+    signals[0].stageMask = VK_PIPELINE_STAGE_2_ALL_COMMANDS_BIT;
+    if (use) {
+        signals[1].sType = VK_STRUCTURE_TYPE_SEMAPHORE_SUBMIT_INFO;
+        signals[1].semaphore = use->timeline;
+        signals[1].value = use->serial;
+        signals[1].stageMask = VK_PIPELINE_STAGE_2_ALL_COMMANDS_BIT;
+    }
     VkSubmitInfo2 submit{};
     submit.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO_2;
     submit.commandBufferInfoCount = 1;
     submit.pCommandBufferInfos = &command;
-    submit.signalSemaphoreInfoCount = 1;
-    submit.pSignalSemaphoreInfos = &signal;
+    submit.signalSemaphoreInfoCount = use ? 2U : 1U;
+    submit.pSignalSemaphoreInfos = signals.data();
     checked(vkQueueSubmit2(owner_.queue(), 1, &submit, frame.submitted_fence), "submit frame");
+    Submission resources;
+    if (use)
+        resources = owner_.resources_->submitted_frame(*use);
     frame.submitted = true;
     checked(vkResetFences(device, 1, &image.retired), "reset present retirement fence");
     VkSwapchainPresentFenceInfoEXT fence{};
@@ -312,7 +355,8 @@ FrameOutcome Presentation::draw() {
         rebuild_requested_ = true;
     frame.suboptimal = false;
     frame_index_ = (frame_index_ + 1) % frames_.size();
-    return result == VK_ERROR_OUT_OF_DATE_KHR ? FrameOutcome::skipped : FrameOutcome::queued;
+    return {result == VK_ERROR_OUT_OF_DATE_KHR ? FrameOutcome::skipped : FrameOutcome::queued,
+            resources};
 }
 VkResult Presentation::close(VkResult device_idle) noexcept {
     if (!owner_.device())

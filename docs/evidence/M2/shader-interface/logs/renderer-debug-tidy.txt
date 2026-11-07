@@ -1,0 +1,6 @@
+[1/2] Processing file <ROOT>/tests/shader_gpu.cpp.
+48 warnings generated.
+[2/2] Processing file <ROOT>/tests/shader_layout.cpp.
+77 warnings generated.
+Suppressed 77 warnings (77 in non-user code).
+Use -header-filter=.* or leave it as default to display errors from all non-system headers. Use -system-headers to display errors from system headers as well.

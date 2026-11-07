@@ -1,0 +1,15 @@
+F
+======================================================================
+FAIL: test_incremental_recompile_verifies_identical_package_without_modification (__main__.ShaderCompilation.test_incremental_recompile_verifies_identical_package_without_modification)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<REPO>/tests/shaders.py", line 165, in test_incremental_recompile_verifies_identical_package_without_modification
+    self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != 0 : shader compilation: output must be absent or an empty directory
+
+
+----------------------------------------------------------------------
+Ran 1 test in 0.085s
+
+FAILED (failures=1)

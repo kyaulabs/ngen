@@ -1,0 +1,35 @@
+-- Using Conan toolchain: <ROOT>/build/renderer-release/conan_toolchain.cmake
+-- Conan toolchain: Defining architecture flag: -m64
+-- Conan toolchain: Defining libcxx as C++ flags: -stdlib=libstdc++
+-- Conan toolchain: C++ Standard 20 with extensions OFF
+-- Conan: Target declared 'enkiTS::enkiTS'
+-- Found Python3: /bin/python3.14 (found suitable version "3.14.9", minimum required is "3.11") found components: Interpreter
+-- Conan: Component target declared 'SDL3::Headers'
+-- Conan: Component target declared 'SDL3::SDL3'
+-- Conan: Target declared 'sdl::sdl'
+-- Conan: Component target declared 'xkbcommon::libxkbcommon'
+-- Conan: Component target declared 'xkbcommon::libxkbregistry'
+-- Conan: Component target declared 'xkbcommon::xkbcli-interactive-wayland'
+-- Conan: Target declared 'xkbcommon::xkbcommon'
+-- Conan: Target declared 'xkeyboard-config::xkeyboard-config'
+-- Conan: Component target declared 'wayland::wayland-scanner'
+-- Conan: Component target declared 'wayland::wayland-server'
+-- Conan: Component target declared 'wayland::wayland-client'
+-- Conan: Component target declared 'wayland::wayland-egl-backend'
+-- Conan: Component target declared 'wayland::wayland-cursor'
+-- Conan: Component target declared 'wayland::wayland-egl'
+-- Conan: Target declared 'wayland::wayland'
+-- Conan: Target declared 'libffi::libffi'
+-- Conan: Target declared 'LibXml2::LibXml2'
+-- Conan: Target declared 'Iconv::Iconv'
+-- Conan: Target declared 'ZLIB::ZLIB'
+-- Conan: Target declared 'expat::expat'
+-- Conan: Target declared 'egl::egl'
+-- Conan: Target declared 'GPUOpen::VulkanMemoryAllocator'
+-- Conan: Component target declared 'Vulkan::Registry'
+-- Conan: Target declared 'vulkan-headers::vulkan-headers'
+-- Conan: Component target declared 'Catch2::Catch2'
+-- Conan: Component target declared 'Catch2::Catch2WithMain'
+-- Configuring done (1.2s)
+-- Generating done (0.1s)
+-- Build files have been written to: <ROOT>/build/renderer-release

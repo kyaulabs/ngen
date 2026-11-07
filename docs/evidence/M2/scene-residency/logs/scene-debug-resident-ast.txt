@@ -1,0 +1,14 @@
+[1/6] Processing file <REPO>/engine/render/context.cpp.
+43 warnings generated.
+[2/6] Processing file <REPO>/engine/render/resources.cpp.
+86 warnings generated.
+[3/6] Processing file <REPO>/engine/render/scene.cpp.
+133 warnings generated.
+[4/6] Processing file <REPO>/apps/resource_probe/main.cpp.
+178 warnings generated.
+[5/6] Processing file <REPO>/apps/scene_probe/main.cpp.
+237 warnings generated.
+[6/6] Processing file <REPO>/tests/assets.cpp.
+293 warnings generated.
+Suppressed 360 warnings (293 in non-user code, 67 NOLINT).
+Use -header-filter=.* or leave it as default to display errors from all non-system headers. Use -system-headers to display errors from system headers as well.

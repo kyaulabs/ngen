@@ -1,0 +1,50 @@
+[0/2] Re-checking globbed directories...
+[1/2] Re-running CMake...
+-- Using Conan toolchain: <ROOT>/build/renderer-release/conan_toolchain.cmake
+-- Conan toolchain: Defining architecture flag: -m64
+-- Conan toolchain: Defining libcxx as C++ flags: -stdlib=libstdc++
+-- Conan toolchain: C++ Standard 20 with extensions OFF
+-- Conan: Target declared 'enkiTS::enkiTS'
+-- Conan: Component target declared 'SDL3::Headers'
+-- Conan: Component target declared 'SDL3::SDL3'
+-- Conan: Target declared 'sdl::sdl'
+-- Conan: Component target declared 'xkbcommon::libxkbcommon'
+-- Conan: Component target declared 'xkbcommon::libxkbregistry'
+-- Conan: Component target declared 'xkbcommon::xkbcli-interactive-wayland'
+-- Conan: Target declared 'xkbcommon::xkbcommon'
+-- Conan: Target declared 'xkeyboard-config::xkeyboard-config'
+-- Conan: Component target declared 'wayland::wayland-scanner'
+-- Conan: Component target declared 'wayland::wayland-server'
+-- Conan: Component target declared 'wayland::wayland-client'
+-- Conan: Component target declared 'wayland::wayland-egl-backend'
+-- Conan: Component target declared 'wayland::wayland-cursor'
+-- Conan: Component target declared 'wayland::wayland-egl'
+-- Conan: Target declared 'wayland::wayland'
+-- Conan: Target declared 'libffi::libffi'
+-- Conan: Target declared 'LibXml2::LibXml2'
+-- Conan: Target declared 'Iconv::Iconv'
+-- Conan: Target declared 'ZLIB::ZLIB'
+-- Conan: Target declared 'expat::expat'
+-- Conan: Target declared 'egl::egl'
+-- Conan: Target declared 'GPUOpen::VulkanMemoryAllocator'
+-- Conan: Component target declared 'Vulkan::Registry'
+-- Conan: Target declared 'vulkan-headers::vulkan-headers'
+-- Conan: Component target declared 'Catch2::Catch2'
+-- Conan: Component target declared 'Catch2::Catch2WithMain'
+-- Configuring done (0.9s)
+-- Generating done (0.1s)
+-- Build files have been written to: <ROOT>/build/renderer-release
+[0/4] Re-checking globbed directories...
+[1/25] Scanning <ROOT>/engine/render/capabilities.cpp for CXX dependencies
+[2/25] Generating CXX dyndep file CMakeFiles/ngen_render_contract.dir/CXX.dd
+[3/23] Scanning <ROOT>/engine/render/vma.cpp for CXX dependencies
+[4/23] Generating CXX dyndep file CMakeFiles/ngen_vma.dir/CXX.dd
+[5/21] Scanning <ROOT>/engine/render/surface.cpp for CXX dependencies
+[6/21] Scanning <ROOT>/engine/render/context.cpp for CXX dependencies
+[7/21] Scanning <ROOT>/engine/render/presentation.cpp for CXX dependencies
+[8/21] Scanning <ROOT>/engine/render/resources.cpp for CXX dependencies
+[9/21] Generating CXX dyndep file CMakeFiles/ngen_render.dir/CXX.dd
+[10/16] Scanning <ROOT>/tests/shader_gpu.cpp for CXX dependencies
+[11/16] Generating CXX dyndep file CMakeFiles/shader_gpu_probe.dir/CXX.dd
+[12/16] Building CXX object CMakeFiles/shader_gpu_probe.dir/tests/shader_gpu.cpp.o
+[13/16] Linking CXX executable shader_gpu_probe

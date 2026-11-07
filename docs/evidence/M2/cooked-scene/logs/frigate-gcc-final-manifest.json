@@ -1,0 +1,50 @@
+{
+  "default_lod": 2,
+  "invalid_source_tangents": 349,
+  "ktx_reported_version": "ktx version: exitcode-128-NOTFOUND",
+  "lod_target_ratios": [
+    1,
+    0.4,
+    0.1
+  ],
+  "maximum_texture_dimension": 2048,
+  "normal_attribute_weight": 0.5,
+  "package_sha256": "eabb5f0f79dce6a33c1db1ffd0d4d23ac6cbee7f151583b84fe8cda602b30904",
+  "preset": "laptop",
+  "rebuilt_corners": 1722408,
+  "relative_combined_error_bound": 0.01,
+  "rights": "owner-provided development input; redistribution not approved",
+  "runtime": {
+    "checksum": 1824818769,
+    "images": 4,
+    "indices": 3309060,
+    "instances": 188,
+    "light_instances": 612,
+    "lights": 612,
+    "lod_triangles": [
+      574136,
+      290804,
+      238080
+    ],
+    "materials": 13,
+    "package_valid": 1,
+    "primitives": 188,
+    "texture_bytes": 89478480,
+    "textures": 15,
+    "vertices": 1304323
+  },
+  "schema": 1,
+  "source_manifest_sha256": "068b0587e2bc55c7732d9d506d45d8ccbe3e1f8ce5030733af3c5a7507e30e99",
+  "source_meshes": 41,
+  "source_nodes": 654,
+  "source_sha256": "e68cd409c479036556446ed1753b287c0e7a40260109b3cd442abe7f533941fe",
+  "source_vertices": 1442025,
+  "tool_sha256": {
+    "assembler": "6fe337dc2bc563ee3ea40f8f82d9db0736697773be40e96627a9c156f8d6df4b",
+    "assetc": "ff65289ab8c989d15b49ccac0cb40efaaf91ad41c9cfd73b20ed57d14ba6801b",
+    "ktx": "415cc81715d1b5e4661b5077ecfde9ba207c7fbd997f0b78a44c57dfe6ceca97",
+    "runtime_probe": "48d8ff44f3e64179a8a36707d2135679c0f99be35d4ac57017ccaf7b9c9cdf95"
+  },
+  "used_uv_seams": "protected",
+  "vertex_fetch_order": "coarsest-first"
+}

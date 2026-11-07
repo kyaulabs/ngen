@@ -1,0 +1,13 @@
+{
+    "version": "0.5",
+    "requires": [
+        "zlib/1.3.2#1cb806da49011867778ffb6ac7190fcb%1777558780.503",
+        "enkits/1.12#66203195b410e9ccba5ac22e3216b7d7%1784804063.998",
+        "catch2/3.16.0#95f400ca2fba9f0c5ce5aea6e6fe0055%1788523836.458"
+    ],
+    "build_requires": [
+        "cmake/4.4.4#fec9c7048fae91e03c31e59977cd9c12%1791276141.315"
+    ],
+    "python_requires": [],
+    "config_requires": []
+}

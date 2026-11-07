@@ -1,0 +1,32 @@
+Test project <REPO>/build/asset-debug
+    Start 3: asset_import_tests
+1/1 Test #3: asset_import_tests ...............***Failed    0.00 sec
+Randomness seeded to: 4095842924
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+asset_import_tests is a Catch2 v3.16.0 host application.
+Run with -? for options
+
+-------------------------------------------------------------------------------
+static GLB import returns owning indexed triangle values
+-------------------------------------------------------------------------------
+<REPO>/tests/asset_import.cpp:58
+...............................................................................
+
+<REPO>/tests/asset_import.cpp:62: FAILED:
+explicitly with message:
+  static GLB import is not implemented
+
+===============================================================================
+test cases: 1 | 1 failed
+assertions: 1 | 1 failed
+
+
+
+0% tests passed, 1 tests failed out of 1
+
+Total Test time (real) =   0.01 sec
+
+The following tests FAILED:
+	  3 - asset_import_tests (Failed)
+Errors while running CTest

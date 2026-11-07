@@ -1,0 +1,6 @@
+device=Intel(R) Iris(R) Xe Graphics (TGL GT2) api=1.4 driver=109060102 queue=0 display=wayland
+cancelled_inflight_scene=1 unpublished_version=1 active_pin_preserved=1 submitted_retirement=1
+pinned_versions=2 resident_allocation_bytes=374669680 resident_reserved_bytes=376766832
+resident_verified_mip_bytes=89478480
+checked_scene_upload=1 immutable_version=1 owning_cpu_pin=1 resident_vertex_readback=1 resident_index_readback=1 resident_mip_readback=1 cancelled_replacement=1 close_invalidated=1
+resident_vertices=1304323 resident_indices=3309060 resident_images=4 retained_lights=612

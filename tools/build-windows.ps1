@@ -55,6 +55,13 @@ function Invoke-NgenRenderer {
         Invoke-NgenNative -FilePath $probe -LogPath (Join-Path $LogDirectory "$Configuration-render-startup.txt")
         Invoke-NgenNative -FilePath $probe -Arguments @('--check-presentation') -LogPath (Join-Path $LogDirectory "$Configuration-presentation.txt")
         Invoke-NgenNative -FilePath (Join-Path $BuildDirectory 'resource_probe.exe') -LogPath (Join-Path $LogDirectory "$Configuration-resources.txt")
+        Invoke-NgenNative -FilePath (Join-Path $BuildDirectory 'shader_gpu_probe.exe') -LogPath (Join-Path $LogDirectory "$Configuration-shaders.txt")
+        $manifests = @(Get-ChildItem -LiteralPath (Join-Path $BuildDirectory 'shaders') -Filter 'manifest.json' -Recurse -File)
+        if ($manifests.Count -ne 1) { throw 'Expected one immutable shader package in the fresh build.' }
+        Copy-Item -LiteralPath $manifests[0].FullName -Destination (Join-Path $LogDirectory "$Configuration-shader-manifest.json")
+        foreach ($shader in @('cull', 'pbr-vertex', 'pbr-fragment', 'post-vertex', 'post-fragment')) {
+            Copy-Item -LiteralPath (Join-Path $manifests[0].DirectoryName "$shader.reflection.json") -Destination (Join-Path $LogDirectory "$Configuration-$shader.reflection.json")
+        }
     } finally {
         . (Join-Path $BuildDirectory 'deactivate_conanrun.ps1')
     }
@@ -242,19 +249,23 @@ try {
         'Debug' { 'Debug' }
         'Release' { 'Release' }
     }
+    if ($Renderer) {
+        Invoke-NgenNative -FilePath $conan -Arguments @('export', 'recipes/slangc', '--version=2026.21', '--user=ngen', '--channel=tools') -LogPath (Join-Path $logs 'slang-recipe.txt')
+    }
     $lockfile = if ($Renderer) { 'conan-render.lock' } else { 'conan.lock' }
     $rendererOption = if ($Renderer) { 'True' } else { 'False' }
     $rendererBuild = if ($Renderer) { 'ON' } else { 'OFF' }
     foreach ($config in $configurations) {
         $build = Join-Path $run $config
+        $buildType = if ($Renderer) { 'Release' } else { $config }
         Invoke-NgenNative -FilePath $conan -Arguments @(
             'install', '.', '-pr:h', $profile, '-pr:b', $buildProfile,
             '-s:h', 'compiler.cppstd=20', '-s:b', 'compiler.cppstd=20',
-            '-s:h', "build_type=$config", '-s:b', "build_type=$config",
+            '-s:h', "build_type=$config", '-s:b', "build_type=$buildType",
             '-c:h', 'tools.cmake.cmaketoolchain:generator=Ninja',
             '-c:b', 'tools.cmake.cmaketoolchain:generator=Ninja',
             '-c:h', 'tools.build:jobs=2', '-c:b', 'tools.build:jobs=2',
-            '-o:h', "&:renderer=$rendererOption",
+            '-o:h', "&:renderer=$rendererOption", '-o:h', "&:shaders=$rendererOption",
             '--lockfile', $lockfile, '--build=missing', '-of', $build
         ) -LogPath (Join-Path $logs "$config-conan.txt")
         $toolchain = Join-Path $build 'conan_toolchain.cmake'
@@ -278,7 +289,7 @@ try {
         }
     }
     if ($Renderer) {
-        Write-Host "Windows $Compiler CPU tests, Vulkan startup, clear presentation, GPU resource roundtrips/retirement and replacement across two verified resizes and minimize/restore passed. This is not PBR or full M2 acceptance."
+        Write-Host "Windows $Compiler CPU tests, Vulkan startup/presentation, GPU resource retirement and native shader culling/PBR fixture checks passed. This is not the imported-ship rendering path or full M2 acceptance."
     } else {
         Write-Host "Windows $Compiler CPU verification passed. This is not a Vulkan rendering test."
     }

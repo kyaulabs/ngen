@@ -110,21 +110,32 @@ try {
         New-Item -ItemType Directory $renderBuild | Out-Null
         Set-Content (Join-Path $renderBuild 'conanrun.ps1') '$env:NGEN_RENDER_ENV = "active"'
         Set-Content (Join-Path $renderBuild 'deactivate_conanrun.ps1') '$env:NGEN_RENDER_ENV = "before"'
+        $shaderPackage = Join-Path $renderBuild 'shaders/cooked'
+        New-Item -ItemType Directory $shaderPackage | Out-Null
+        Set-Content (Join-Path $shaderPackage 'manifest.json') '{"schema":1,"compiler":{"sha256":"fixture compiler identity"}}'
+        foreach ($shader in @('cull', 'pbr-vertex', 'pbr-fragment', 'post-vertex', 'post-fragment')) {
+            Set-Content (Join-Path $shaderPackage "$shader.reflection.json") '{"fixture":"reflected layout"}'
+        }
         $probe = Join-Path $renderBuild 'render_probe.exe'
         Set-Content -LiteralPath $probe -Value @'
 #!/bin/sh
 [ "$NGEN_RENDER_ENV" = active ] || exit 9
 mode=${1:-startup}
-case "$0" in */resource_probe.exe) mode=resources ;; esac
+case "$0" in
+  */resource_probe.exe) mode=resources ;;
+  */shader_gpu_probe.exe) mode=shaders ;;
+esac
 printf '%s\n' "$mode"
 [ "$mode" != "$NGEN_PROBE_FAIL_AT" ] || exit 7
 exit 0
 '@
         $resourceProbe = Join-Path $renderBuild 'resource_probe.exe'
         Copy-Item -LiteralPath $probe -Destination $resourceProbe
-        & chmod +x $probe $resourceProbe
+        $shaderProbe = Join-Path $renderBuild 'shader_gpu_probe.exe'
+        Copy-Item -LiteralPath $probe -Destination $shaderProbe
+        & chmod +x $probe $resourceProbe $shaderProbe
         if ($LASTEXITCODE -ne 0) { throw 'Could not prepare renderer subprocess fixture' }
-        foreach ($failAt in @('', 'checks', '--check-validation-callback', 'startup', '--check-presentation', 'resources')) {
+        foreach ($failAt in @('', 'checks', '--check-validation-callback', 'startup', '--check-presentation', 'resources', 'shaders')) {
             $renderLogs = Join-Path $directory ('render logs ' + [guid]::NewGuid())
             New-Item -ItemType Directory $renderLogs | Out-Null
             $env:NGEN_RENDER_ENV = 'before'
@@ -158,6 +169,25 @@ exit 0
                 if (Test-Path $resourceLog) { throw 'Resource checks continued after an earlier failure' }
             } elseif (-not (Test-Path $resourceLog) -or (Get-Content -Raw $resourceLog) -notmatch 'resources') {
                 throw 'GPU resources were not exercised and captured'
+            }
+            $shaderLog = Join-Path $renderLogs 'Debug-shaders.txt'
+            if ($failAt -in @('checks', '--check-validation-callback', 'startup', '--check-presentation', 'resources')) {
+                if (Test-Path $shaderLog) { throw 'Shader checks continued after an earlier failure' }
+            } elseif (-not (Test-Path $shaderLog) -or (Get-Content -Raw $shaderLog) -notmatch 'shaders') {
+                throw 'GPU shaders were not exercised and captured'
+            }
+            $manifestLog = Join-Path $renderLogs 'Debug-shader-manifest.json'
+            if ($failAt -ne '') {
+                if (Test-Path $manifestLog) { throw 'Shader metadata was captured after a verification failure' }
+            } else {
+                if (-not (Test-Path $manifestLog) -or (Get-Content -Raw $manifestLog) -cne (Get-Content -Raw (Join-Path $shaderPackage 'manifest.json'))) {
+                    throw 'Actual shader compiler identity was not retained'
+                }
+                foreach ($shader in @('cull', 'pbr-vertex', 'pbr-fragment', 'post-vertex', 'post-fragment')) {
+                    if (-not (Test-Path (Join-Path $renderLogs "Debug-$shader.reflection.json"))) {
+                        throw 'Shader reflection was not retained'
+                    }
+                }
             }
         }
         Remove-Item Env:NGEN_RENDER_ENV, Env:NGEN_PROBE_FAIL_AT

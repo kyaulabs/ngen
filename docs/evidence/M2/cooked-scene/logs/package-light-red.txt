@@ -1,0 +1,32 @@
+Test project <REPO>/build/asset-debug
+    Start 3: asset_package_tests
+1/1 Test #3: asset_package_tests ..............***Failed    0.00 sec
+Randomness seeded to: 2029630962
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+asset_package_tests is a Catch2 v3.16.0 host application.
+Run with -? for options
+
+-------------------------------------------------------------------------------
+runtime package preserves punctual light definitions and instances
+-------------------------------------------------------------------------------
+<REPO>/tests/assets.cpp:44
+...............................................................................
+
+<REPO>/tests/assets.cpp:51: FAILED:
+explicitly with message:
+  nongeometry package sections are not implemented
+
+===============================================================================
+test cases:  3 |  2 passed | 1 failed
+assertions: 27 | 26 passed | 1 failed
+
+
+
+0% tests passed, 1 tests failed out of 1
+
+Total Test time (real) =   0.00 sec
+
+The following tests FAILED:
+	  3 - asset_package_tests (Failed)
+Errors while running CTest

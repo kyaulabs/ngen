@@ -1,0 +1,2 @@
+shader fixture synchronization validation was not enabled
+shader GPU probe: create instance: VkResult -1000011001

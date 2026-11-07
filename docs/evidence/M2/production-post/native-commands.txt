@@ -1,0 +1,49 @@
+From repository root; existing Clang 23.1.4/GCC 16.2.1, C++20 and optional
+Conan renderer/shader graph. No host/driver/authentication policy changes.
+
+For renderer-debug, renderer-release, renderer-asan:
+  cmake --build --preset <preset>
+  ctest --preset <preset> --show-only
+  ctest --preset <preset>
+Actual 8/8 in each; shader_offline now runs fourteen public process cases.
+GCC uses its existing real build database:
+  cmake --build build/renderer-gcc -j2
+  ctest --test-dir build/renderer-gcc --output-on-failure --no-tests=error
+Actual 8/8, not a GCC clang-tidy AST pass.
+
+For all four matching binaries:
+  timeout 50s env VK_LAYER_PATH="$PWD/build/validation-layer/usr/share/vulkan/explicit_layer.d" LD_LIBRARY_PATH="$PWD/build/validation-layer/usr/lib" ASAN_OPTIONS=detect_leaks=1:halt_on_error=1 UBSAN_OPTIONS=halt_on_error=1:print_stacktrace=1 build/<preset>/resource_probe
+Expected new successful native controls:
+  tracked_post_draw=1 hdr_tone_map_pixels=4 asymmetric_orientation=1 exposure_srgb=1 graphics_retirement=1
+  fxaa_diagonal=1 fxaa_softened_pixels=8 fxaa_flat_regions=1
+Prior complete mip/HDR/depth/cube, slot, replacement, WSI-clear and close controls
+also pass. These are actual offscreen draws/readback, not scanout/scene acceptance.
+
+Twelve affected consumers x Debug/Release/ASan actual databases:
+  clang-tidy -p build/<preset> engine/render/context.cpp engine/render/surface.cpp engine/render/presentation.cpp engine/render/resources.cpp engine/render/post.cpp apps/probe/presentation.cpp apps/render_probe/main.cpp apps/resource_probe/main.cpp tests/render_startup.cpp tests/render_surface.cpp tests/shader_gpu.cpp tests/shader_layout.cpp
+Native exit 0, no owned/vendor finding in this selected scope. Initial owned
+invalid-enum initialization and widening findings were repaired, not filtered.
+
+Disabled shader configuration:
+  conan install . -pr:h profiles/linux-clang -pr:b profiles/linux-clang -o '&:renderer=True' -o '&:shaders=False' --lockfile=conan-render.lock --build=missing -c tools.build:jobs=2 -of build/renderer-no-shaders
+  cmake -S . -B build/renderer-no-shaders -G Ninja -DCMAKE_TOOLCHAIN_FILE="$PWD/build/renderer-no-shaders/conan_toolchain.cmake" -DCMAKE_BUILD_TYPE=Debug -DNGEN_BUILD_RENDERER=ON -DNGEN_BUILD_SHADERS=OFF -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+  cmake --build build/renderer-no-shaders -j2
+  ctest --test-dir build/renderer-no-shaders --output-on-failure --no-tests=error
+Actual 7/7. Its actual Context/resources/post AST scope also passes. Do not equate
+this build/headless verification with a Windows or disabled-shader GPU test.
+
+Linux-only process-local native error controls (source retained as failure.cpp):
+  clang++ -std=c++20 -fsanitize=address,undefined -fno-sanitize-recover=all -shared -fPIC docs/evidence/M2/production-post/failure.cpp -ldl -o build/post-check/failure.so
+For modes pool, sets, sampler, shader2, pipeline2, submit:
+  timeout 45s env VK_LAYER_PATH="$PWD/build/validation-layer/usr/share/vulkan/explicit_layer.d" LD_LIBRARY_PATH="$PWD/build/validation-layer/usr/lib" ASAN_OPTIONS=detect_leaks=1:halt_on_error=1 UBSAN_OPTIONS=halt_on_error=1:print_stacktrace=1 LD_PRELOAD="$PWD/build/post-check/failure.so" NGEN_POST_FAILURE=<mode> build/renderer-asan/resource_probe
+Each must exit 1, print post_control_injected=1 and the expected API failure, with
+no unexpected validation/sanitizer/leak output. Preload stays AFTER timeout via env.
+No detector or native engine failure path is disabled. These are controlled
+cleanup failures, not universal recovery or submission-publication proof.
+
+  PATH=/tmp/prism-conan-venv/bin:$PATH build/powershell/pwsh -NoProfile -File tests/windows_build.ps1
+  ctest --preset debug
+  ctest --preset asset-debug
+Actual process-boundary, CPU 4/4 and asset 9/9 regressions pass. No Windows native
+build/run is inferred. Staged paths, whitespace, redacted secrets, hashes, formats,
+syntax, local links and conventional signed commit are checked before publication.

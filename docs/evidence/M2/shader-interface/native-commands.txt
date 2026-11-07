@@ -1,0 +1,44 @@
+# From repository root; the helper preserves CPU pins and prepares build-only tools.
+PATH=/tmp/prism-conan-venv/bin:$PATH sh tools/prepare.sh renderer-debug
+cmake --preset renderer-debug
+cmake --build --preset renderer-debug
+ctest --preset renderer-debug --show-only
+ctest --preset renderer-debug
+
+# Only when returning from this slice's earlier manual compiler/validator overrides:
+cmake --preset renderer-debug -UNGEN_SLANG_ROOT -UNGEN_SPIRV_VAL_EXECUTABLE
+
+PATH=/tmp/prism-conan-venv/bin:$PATH sh tools/prepare.sh renderer-release
+cmake --preset renderer-release
+cmake --build --preset renderer-release
+ctest --preset renderer-release
+
+PATH=/tmp/prism-conan-venv/bin:$PATH sh tools/prepare.sh renderer-asan -c:h 'tools.build:exelinkflags=["-fsanitize=address,undefined", "-no-pie"]'
+cmake --preset renderer-asan -DCMAKE_EXE_LINKER_FLAGS=-no-pie
+cmake --build --preset renderer-asan
+ctest --preset renderer-asan
+
+# GCC uses its actual database; native compilation succeeds, clang-tidy does not.
+conan install . -pr:h profiles/linux-gcc -pr:b profiles/linux-clang -s:b build_type=Release -o '&:renderer=True' -o '&:shaders=True' --lockfile conan-render.lock --build=missing -c tools.build:jobs=2 -of build/renderer-gcc
+cmake -S . -B build/renderer-gcc -G Ninja -DCMAKE_TOOLCHAIN_FILE="$PWD/build/renderer-gcc/conan_toolchain.cmake" -DCMAKE_BUILD_TYPE=Debug -DNGEN_BUILD_RENDERER=ON -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+cmake --build build/renderer-gcc -j2
+ctest --test-dir build/renderer-gcc --output-on-failure --no-tests=error
+
+clang++ -std=c++20 -shared -fPIC docs/evidence/M2/shader-interface/require-sync-validation.cpp -ldl -o build/slang-candidate/require-sync-validation.so
+
+# Repeat for renderer-debug, renderer-release, renderer-asan and renderer-gcc.
+# The optional observer is Linux-only. Put preloads AFTER timeout via env.
+timeout 50s env VK_LAYER_PATH="$PWD/build/validation-layer/usr/share/vulkan/explicit_layer.d" LD_LIBRARY_PATH="$PWD/build/validation-layer/usr/lib" LD_BIND_NOW=1 ASAN_OPTIONS=detect_leaks=1:halt_on_error=1 UBSAN_OPTIONS=halt_on_error=1:print_stacktrace=1 LD_PRELOAD="$PWD/build/slang-candidate/require-sync-validation.so" build/renderer-asan/shader_gpu_probe
+
+# Optional trusted shader package path and new float capture path:
+build/renderer-debug/shader_gpu_probe <package-directory> <new-capture.pfm>
+magick <new-capture.pfm> -set colorspace RGB -colorspace sRGB <display-copy.png>
+
+# Exact tool paths come from each generated Conan toolchain/CTest command.
+python docs/evidence/M2/shader-interface/verify-controls.py --root "$PWD" --slang-root <conan-slang-package> --validator <conan-spirv-val> --probe "$PWD/build/renderer-asan/shader_gpu_probe" --logs <new-log-directory>
+clang-tidy -p build/renderer-debug tests/shader_gpu.cpp tests/shader_layout.cpp
+clang-tidy -p build/renderer-release tests/shader_gpu.cpp tests/shader_layout.cpp
+clang-tidy -p build/renderer-asan tests/shader_gpu.cpp tests/shader_layout.cpp
+clang-tidy -p build/renderer-gcc tests/shader_gpu.cpp tests/shader_layout.cpp
+build/format-tools/bin/clang-format --dry-run --Werror engine/render/shader_contract.hpp tests/shader_gpu.cpp tests/shader_layout.cpp docs/evidence/M2/shader-interface/require-sync-validation.cpp
+PATH=/tmp/prism-conan-venv/bin:$PATH build/powershell/pwsh -NoProfile -File tests/windows_build.ps1

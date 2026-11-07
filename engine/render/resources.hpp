@@ -9,6 +9,9 @@
 #include <vulkan/vulkan.h>
 
 namespace ngen::render {
+inline constexpr std::uint32_t resource_record_limit = 64;
+// Two pinned laptop scene versions plus one bounded staging allocation; excludes WSI/driver.
+inline constexpr VkDeviceSize resource_allocation_limit = 512ULL * 1024 * 1024;
 struct Failure {
     std::string message;
 };
@@ -66,8 +69,11 @@ struct ImageDescription {
     VkFormat format{VK_FORMAT_R8G8B8A8_SRGB};
     VkImageUsageFlags usage{static_cast<VkImageUsageFlags>(VK_IMAGE_USAGE_TRANSFER_DST_BIT) |
                             VK_IMAGE_USAGE_SAMPLED_BIT};
+    // 1..full chain; color formats RGBA8 sRGB/UNORM, RGBA16F, or 2D D32 depth.
+    std::uint32_t mip_levels{1};
+    bool cube{false}; // Six square color faces and one owned cube view.
 };
-// Same owner-thread/borrowing contract as Buffer; currently single-mip 2D RGBA8.
+// Same owner-thread/borrowing contract as Buffer; whole-image layout/last-use tracking.
 class Image {
   public:
     Image() = default;
@@ -103,6 +109,8 @@ struct BufferCopy {
     VkDeviceSize bytes{};
     TimelineWait wait{};
 };
+// Whole-image tight packing: increasing mip, then cube face (+X,-X,+Y,-Y,+Z,-Z).
+// Transfer buffers must cover every requested mip/face in the native texel format.
 struct ImageUpload {
     const Buffer &source;
     const Image &destination;
@@ -111,6 +119,15 @@ struct ImageUpload {
 struct ImageReadback {
     const Image &source;
     const Buffer &destination;
+    TimelineWait wait{};
+};
+// Distinct initialized filterable 2D source and single-mip RGBA8 color target.
+// Returns explicit backpressure; no owner-thread waiting or ordinary device idle.
+struct PostProcess {
+    const Image &source;
+    const Image &destination;
+    float exposure{1}; // Finite linear multiplier in 0..64.
+    bool fxaa{true};
     TimelineWait wait{};
 };
 } // namespace ngen::render

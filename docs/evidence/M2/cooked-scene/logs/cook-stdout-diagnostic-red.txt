@@ -1,0 +1,26 @@
+Test project <REPO>/build/asset-debug
+    Start 7: asset_cook_cli
+1/1 Test #7: asset_cook_cli ...................***Failed    1.02 sec
+...F..
+======================================================================
+FAIL: test_failed_native_tool_stdout_diagnostic_is_retained (__main__.SceneCooking.test_failed_native_tool_stdout_diagnostic_is_retained)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<REPO>/tests/asset_cooking.py", line 88, in test_failed_native_tool_stdout_diagnostic_is_retained
+    self.assertIn("EXPECTED_SCENE_VERIFY_FAILURE", result.stderr)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'EXPECTED_SCENE_VERIFY_FAILURE' not found in 'asset cook: offline tool failed: failing probe exit=7\n'
+
+----------------------------------------------------------------------
+Ran 6 tests in 0.912s
+
+FAILED (failures=1)
+
+
+0% tests passed, 1 tests failed out of 1
+
+Total Test time (real) =   1.02 sec
+
+The following tests FAILED:
+	  7 - asset_cook_cli (Failed)
+Errors while running CTest

@@ -10,11 +10,24 @@
 
 namespace ngen::render {
 enum class FrameOutcome : std::uint8_t { queued, skipped };
+// Uses only Context's ordered graphics/resource queue, not unresolved external waits.
+struct ImageFrame {
+    const Image &source;
+    float exposure{1};
+    bool fxaa{true};
+};
+struct FrameResult {
+    FrameOutcome outcome{FrameOutcome::skipped};
+    // Nonempty for successfully submitted resource use, even if present was out-of-date.
+    // It proves graphics completion only, never WSI/display retirement.
+    Submission resources;
+};
 struct PresentationState {
     std::uint64_t generation{};
     VkExtent2D extent{};
 };
 class Presentation;
+struct MeshPass;
 class Context {
   public:
     struct Options {
@@ -29,12 +42,18 @@ class Context {
     [[nodiscard]] SurfaceSelection inspect_surface() const;
     // Owner-thread first light. Queued is not proof that pixels reached a display.
     [[nodiscard]] std::variant<FrameOutcome, Failure> render_frame();
+    [[nodiscard]] std::variant<FrameResult, Failure> render_frame(ImageFrame frame);
     [[nodiscard]] PresentationState presentation_state() const;
     [[nodiscard]] std::variant<Buffer, Failure> create_buffer(BufferDescription description);
     [[nodiscard]] std::variant<Image, Failure> create_image(ImageDescription description);
     [[nodiscard]] std::variant<Submission, Failure> copy_buffer(BufferCopy description);
     [[nodiscard]] std::variant<Submission, Failure> copy_to_image(ImageUpload description);
     [[nodiscard]] std::variant<Submission, Failure> copy_from_image(ImageReadback description);
+    // Fixed asynchronous HDR -> LDR pass; warm pipelines before the measured play loop.
+    // Uses the same bounded resource command contexts, timeline and retirement as transfers.
+    [[nodiscard]] std::variant<Submission, Failure> post_process(PostProcess description);
+    // Bounded indexed HDR/depth batch; all native resources join the same timeline.
+    [[nodiscard]] std::variant<Submission, Failure> draw_mesh(MeshPass description);
     [[nodiscard]] std::variant<bool, Failure> submission_complete(const Submission &submission);
     [[nodiscard]] std::variant<ResourceStatistics, Failure> resource_statistics();
     // Sticky shutdown failure; validation errors are reported separately.
@@ -52,7 +71,9 @@ class Context {
     [[nodiscard]] unsigned validation_errors() const { return validation_errors_.load(); }
 
   private:
+    friend class Presentation;
     Context();
+    [[nodiscard]] std::variant<FrameResult, Failure> draw_frame(const ImageFrame *source);
     void initialize(Options options);
     void destroy_messenger() noexcept;
     static VKAPI_ATTR VkBool32 VKAPI_CALL message(VkDebugUtilsMessageSeverityFlagBitsEXT,
