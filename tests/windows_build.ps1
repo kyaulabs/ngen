@@ -69,6 +69,12 @@ try {
             throw 'Renderer mode did not reach the Windows prerequisite check'
         }
     }
+    if (-not $IsWindows) {
+        & $pwsh -NoProfile -File $scriptPath -Scene *> $log
+        if ($LASTEXITCODE -ne 2 -or (Get-Content -Raw $log) -notmatch 'requires Windows') { throw 'Scene mode did not reach the Windows prerequisite check' }
+    }
+    & $pwsh -NoProfile -File $scriptPath -GpuInfo -Scene *> $log
+    if ($LASTEXITCODE -eq 0 -or $LASTEXITCODE -eq 2) { throw 'GPU capture and scene builds were mixed' }
     & $pwsh -NoProfile -File $scriptPath -GpuInfo -Renderer *> $log
     if ($LASTEXITCODE -eq 0 -or $LASTEXITCODE -eq 2) { throw 'GPU capture and renderer builds were mixed' }
     & $pwsh -NoProfile -File $scriptPath -GpuInfo -Compiler ClangCl *> $log
@@ -124,6 +130,7 @@ mode=${1:-startup}
 case "$0" in
   */resource_probe.exe) mode=resources ;;
   */shader_gpu_probe.exe) mode=shaders ;;
+  */scene_probe.exe) mode=scene ;;
 esac
 printf '%s\n' "$mode"
 [ "$mode" != "$NGEN_PROBE_FAIL_AT" ] || exit 7
@@ -133,9 +140,11 @@ exit 0
         Copy-Item -LiteralPath $probe -Destination $resourceProbe
         $shaderProbe = Join-Path $renderBuild 'shader_gpu_probe.exe'
         Copy-Item -LiteralPath $probe -Destination $shaderProbe
-        & chmod +x $probe $resourceProbe $shaderProbe
+        $sceneProbe = Join-Path $renderBuild 'scene_probe.exe'
+        Copy-Item -LiteralPath $probe -Destination $sceneProbe
+        & chmod +x $probe $resourceProbe $shaderProbe $sceneProbe
         if ($LASTEXITCODE -ne 0) { throw 'Could not prepare renderer subprocess fixture' }
-        foreach ($failAt in @('', 'checks', '--check-validation-callback', 'startup', '--check-presentation', 'resources', 'shaders')) {
+        foreach ($failAt in @('', 'checks', '--check-validation-callback', 'startup', '--check-presentation', 'resources', 'shaders', 'scene')) {
             $renderLogs = Join-Path $directory ('render logs ' + [guid]::NewGuid())
             New-Item -ItemType Directory $renderLogs | Out-Null
             $env:NGEN_RENDER_ENV = 'before'
@@ -145,7 +154,7 @@ exit 0
                 Invoke-NgenNative -FilePath $probe -Arguments @('checks') -LogPath (Join-Path $renderLogs 'Debug-checks.txt')
             }
             try {
-                Invoke-NgenRenderer -BuildDirectory $renderBuild -LogDirectory $renderLogs -Configuration Debug -Checks $checks
+                Invoke-NgenRenderer -BuildDirectory $renderBuild -LogDirectory $renderLogs -Configuration Debug -Checks $checks -Scene
             } catch { $failed = $_.Exception.Message -match 'exit code 7' }
             if ($failed -ne ($failAt -ne '')) { throw 'Renderer probe failure was lost or falsely reported' }
             if ($env:NGEN_RENDER_ENV -ne 'before') { throw 'Renderer runtime environment was not restored' }
@@ -176,6 +185,12 @@ exit 0
             } elseif (-not (Test-Path $shaderLog) -or (Get-Content -Raw $shaderLog) -notmatch 'shaders') {
                 throw 'GPU shaders were not exercised and captured'
             }
+            $sceneLog = Join-Path $renderLogs 'Debug-scene.txt'
+            if ($failAt -in @('checks', '--check-validation-callback', 'startup', '--check-presentation', 'resources', 'shaders')) {
+                if (Test-Path $sceneLog) { throw 'Scene checks continued after an earlier failure' }
+            } elseif (-not (Test-Path $sceneLog) -or (Get-Content -Raw $sceneLog) -notmatch 'scene') {
+                throw 'Checked scene process was not exercised and captured'
+            }
             $manifestLog = Join-Path $renderLogs 'Debug-shader-manifest.json'
             if ($failAt -ne '') {
                 if (Test-Path $manifestLog) { throw 'Shader metadata was captured after a verification failure' }
@@ -190,6 +205,11 @@ exit 0
                 }
             }
         }
+        $rendererOnlyLogs = Join-Path $directory 'renderer-only logs'
+        New-Item -ItemType Directory $rendererOnlyLogs | Out-Null
+        $env:NGEN_PROBE_FAIL_AT = 'scene'
+        Invoke-NgenRenderer -BuildDirectory $renderBuild -LogDirectory $rendererOnlyLogs -Configuration Debug -Checks { }
+        if (Test-Path (Join-Path $rendererOnlyLogs 'Debug-scene.txt')) { throw 'Renderer-only mode unexpectedly ran checked-scene probes' }
         Remove-Item Env:NGEN_RENDER_ENV, Env:NGEN_PROBE_FAIL_AT
     }
     $sdkDefinition = $ast.Find({

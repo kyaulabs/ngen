@@ -9,6 +9,8 @@ param(
     [string]$Compiler = 'MSVC',
     [Parameter(ParameterSetName = 'CPU')]
     [switch]$Renderer,
+    [Parameter(ParameterSetName = 'CPU')]
+    [switch]$Scene,
     [Parameter(Mandatory, ParameterSetName = 'GPU')]
     [switch]$GpuInfo
 )
@@ -43,7 +45,8 @@ function Invoke-NgenRenderer {
         [Parameter(Mandatory)][string]$BuildDirectory,
         [Parameter(Mandatory)][string]$LogDirectory,
         [Parameter(Mandatory)][string]$Configuration,
-        [Parameter(Mandatory)][scriptblock]$Checks
+        [Parameter(Mandatory)][scriptblock]$Checks,
+        [switch]$Scene
     )
     # SDL is a locked Conan dependency, not the SDK's optional SDL bundle.
     # CTest's startup executable needs the same DLL path as the GPU probes.
@@ -56,6 +59,9 @@ function Invoke-NgenRenderer {
         Invoke-NgenNative -FilePath $probe -Arguments @('--check-presentation') -LogPath (Join-Path $LogDirectory "$Configuration-presentation.txt")
         Invoke-NgenNative -FilePath (Join-Path $BuildDirectory 'resource_probe.exe') -LogPath (Join-Path $LogDirectory "$Configuration-resources.txt")
         Invoke-NgenNative -FilePath (Join-Path $BuildDirectory 'shader_gpu_probe.exe') -LogPath (Join-Path $LogDirectory "$Configuration-shaders.txt")
+        if ($Scene) {
+            Invoke-NgenNative -FilePath (Join-Path $BuildDirectory 'scene_probe.exe') -LogPath (Join-Path $LogDirectory "$Configuration-scene.txt")
+        }
         $manifests = @(Get-ChildItem -LiteralPath (Join-Path $BuildDirectory 'shaders') -Filter 'manifest.json' -Recurse -File)
         if ($manifests.Count -ne 1) { throw 'Expected one immutable shader package in the fresh build.' }
         Copy-Item -LiteralPath $manifests[0].FullName -Destination (Join-Path $LogDirectory "$Configuration-shader-manifest.json")
@@ -127,6 +133,9 @@ function Invoke-NgenGpuInfo {
     }
     Write-Host 'GPU capability capture completed. This is not a rendering or presentation test.'
 }
+
+# Scene verification is the combined renderer + checked runtime-assets graph.
+if ($Scene) { $Renderer = $true }
 
 if (-not $IsWindows) {
     [Console]::Error.WriteLine('This build script requires Windows and PowerShell 7.2 or newer.')
@@ -252,7 +261,9 @@ try {
     if ($Renderer) {
         Invoke-NgenNative -FilePath $conan -Arguments @('export', 'recipes/slangc', '--version=2026.21', '--user=ngen', '--channel=tools') -LogPath (Join-Path $logs 'slang-recipe.txt')
     }
-    $lockfile = if ($Renderer) { 'conan-render.lock' } else { 'conan.lock' }
+    $lockfile = if ($Scene) { 'conan-scene.lock' } elseif ($Renderer) { 'conan-render.lock' } else { 'conan.lock' }
+    $assetsOption = if ($Scene) { 'True' } else { 'False' }
+    $assetsBuild = if ($Scene) { 'ON' } else { 'OFF' }
     $rendererOption = if ($Renderer) { 'True' } else { 'False' }
     $rendererBuild = if ($Renderer) { 'ON' } else { 'OFF' }
     foreach ($config in $configurations) {
@@ -265,14 +276,14 @@ try {
             '-c:h', 'tools.cmake.cmaketoolchain:generator=Ninja',
             '-c:b', 'tools.cmake.cmaketoolchain:generator=Ninja',
             '-c:h', 'tools.build:jobs=2', '-c:b', 'tools.build:jobs=2',
-            '-o:h', "&:renderer=$rendererOption", '-o:h', "&:shaders=$rendererOption",
+            '-o:h', "&:renderer=$rendererOption", '-o:h', "&:shaders=$rendererOption", '-o:h', "&:assets=$assetsOption",
             '--lockfile', $lockfile, '--build=missing', '-of', $build
         ) -LogPath (Join-Path $logs "$config-conan.txt")
         $toolchain = Join-Path $build 'conan_toolchain.cmake'
         Invoke-NgenNative -FilePath $cmake -Arguments @(
             '-S', $root, '-B', $build, '-G', 'Ninja',
             "-DCMAKE_TOOLCHAIN_FILE=$toolchain", "-DCMAKE_BUILD_TYPE=$config",
-            "-DNGEN_BUILD_RENDERER=$rendererBuild"
+            "-DNGEN_BUILD_RENDERER=$rendererBuild", "-DNGEN_BUILD_ASSETS=$assetsBuild"
         ) -LogPath (Join-Path $logs "$config-configure.txt")
         Invoke-NgenNative -FilePath $cmake -Arguments @('--build', $build, '-j', '2') -LogPath (Join-Path $logs "$config-build.txt")
         $checks = {
@@ -283,12 +294,14 @@ try {
             Invoke-NgenNative -FilePath $harness -Arguments @('--workers=2') -LogPath (Join-Path $logs "$config-workers.txt")
         }
         if ($Renderer) {
-            Invoke-NgenRenderer -BuildDirectory $build -LogDirectory $logs -Configuration $config -Checks $checks
+            Invoke-NgenRenderer -BuildDirectory $build -LogDirectory $logs -Configuration $config -Checks $checks -Scene:$Scene
         } else {
             & $checks
         }
     }
-    if ($Renderer) {
+    if ($Scene) {
+        Write-Host "Windows $Compiler CPU, renderer/shader, checked-scene fixture upload/PBR/frame-pin checks passed. This does not validate Windows frigate rendering, final performance or full M2 acceptance."
+    } elseif ($Renderer) {
         Write-Host "Windows $Compiler CPU tests, Vulkan startup/presentation, GPU resource retirement and native shader culling/PBR fixture checks passed. This is not the imported-ship rendering path or full M2 acceptance."
     } else {
         Write-Host "Windows $Compiler CPU verification passed. This is not a Vulkan rendering test."
