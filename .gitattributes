@@ -10,3 +10,6 @@ docs/evidence/M2/cooked-scene/licenses/ktx/LICENSE.md whitespace=-blank-at-eol
 docs/evidence/M2/shader-interface/licenses/slangc/third-party-notices/miniz-LICENSE -text whitespace=cr-at-eol
 docs/evidence/M2/shader-interface/licenses/spirv-headers/LICENSE whitespace=-blank-at-eof
 docs/evidence/M2/shader-interface/licenses/spirv-headers/LICENSES/MIT.txt whitespace=-blank-at-eol
+
+# Preserve byte-exact Windows tool manifests/reflections with native CRLF endings.
+docs/evidence/M2/windows-scene-debug/*/*.json -text whitespace=cr-at-eol
