@@ -330,6 +330,7 @@ void Context::initialize(Options options) {
     vkcheck(vkCreateDevice(physical_, &device, nullptr, &device_), "create device");
     vkGetDeviceQueue(device_, queue_family_, 0, &queue_);
     presentation_enabled_ = options.presentation;
+    timings_enabled_ = options.gpu_timings;
 }
 SurfaceSelection Context::inspect_surface() const {
     if (!physical_ || !surface_ || !window_)
@@ -458,6 +459,19 @@ std::variant<bool, Failure> Context::submission_complete(const Submission &submi
     } catch (const std::exception &error) {
         return Failure{error.what()};
     }
+}
+std::variant<std::optional<GpuTimings>, Failure>
+Context::submission_timings(const Submission &submission) {
+    if (!device_ || !resources_)
+        return Failure{"resource context is unavailable"};
+    try {
+        return resources_->timings(submission);
+    } catch (const std::exception &error) {
+        return Failure{error.what()};
+    }
+}
+bool Context::gpu_timings_available() const {
+    return device_ && resources_ && resources_->timings_supported();
 }
 std::variant<ResourceStatistics, Failure> Context::resource_statistics() {
     if (!device_)

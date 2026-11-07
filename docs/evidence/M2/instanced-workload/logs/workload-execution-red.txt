@@ -1,0 +1,15 @@
+F
+======================================================================
+FAIL: test_checked_ship_and_hundred_instanced_asteroids_are_presented (__main__.Workload.test_checked_ship_and_hundred_instanced_asteroids_are_presented)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "$REPO/tests/workload_cli.py", line 21, in test_checked_ship_and_hundred_instanced_asteroids_are_presented
+    self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != 0 : scene_workload: ship/asteroid workload execution is not implemented
+
+
+----------------------------------------------------------------------
+Ran 1 test in 0.019s
+
+FAILED (failures=1)

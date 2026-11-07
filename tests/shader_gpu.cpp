@@ -548,7 +548,9 @@ class Fixture {
             VkDescriptorSetLayoutBinding{2, VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE, 1,
                                          VK_SHADER_STAGE_FRAGMENT_BIT, nullptr},
             VkDescriptorSetLayoutBinding{3, VK_DESCRIPTOR_TYPE_SAMPLER, 1,
-                                         VK_SHADER_STAGE_FRAGMENT_BIT, nullptr}};
+                                         VK_SHADER_STAGE_FRAGMENT_BIT, nullptr},
+            VkDescriptorSetLayoutBinding{4, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, 1,
+                                         VK_SHADER_STAGE_VERTEX_BIT, nullptr}};
         std::array<VkDescriptorSetLayoutBinding, 11> material_bindings{};
         for (std::uint32_t i = 0; i < material_bindings.size(); ++i)
             material_bindings[i] = {i,
@@ -677,6 +679,12 @@ class Fixture {
         descriptor(sets[0], 0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, frame_buffer);
         descriptor(sets[0], 1, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, light_buffer);
         descriptor(sets[1], 0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, material_buffer);
+        shader::InstanceConstants instance_constants{};
+        instance_constants.transforms[0] = {identity, identity};
+        const auto instance_buffer = buffer(
+            {.size = sizeof(instance_constants), .usage = VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT});
+        write(instance_buffer, instance_constants);
+        descriptor(sets[0], 4, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, instance_buffer);
         const std::array<std::uint8_t, 4> color_bytes{128, 64, 32, 255};
         const auto srgb = texture(VK_FORMAT_R8G8B8A8_SRGB, std::as_bytes(std::span{color_bytes}));
         const auto linear =

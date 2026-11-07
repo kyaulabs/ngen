@@ -28,10 +28,11 @@ class SceneRenderer {
     ~SceneRenderer();
     SceneRenderer(const SceneRenderer &) = delete;
     SceneRenderer &operator=(const SceneRenderer &) = delete;
-    [[nodiscard]] std::variant<Submission, Failure> draw(Context &context, ScenePin version,
-                                                         const SceneView &view,
-                                                         SceneTargets targets,
-                                                         TimelineWait wait = {});
+    // Extra opaque/masked meshes share this view/lighting/schedule; their geometry
+    // and instance spans borrow only for this call and join Context retirement.
+    [[nodiscard]] std::variant<Submission, Failure>
+    draw(Context &context, ScenePin version, const SceneView &view, SceneTargets targets,
+         TimelineWait wait = {}, std::span<const MeshDraw> extras = {});
     [[nodiscard]] std::variant<std::size_t, Failure> collect(Context &context);
 
   private:

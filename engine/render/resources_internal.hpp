@@ -33,8 +33,13 @@ class Resources : public std::enable_shared_from_this<Resources> {
     [[nodiscard]] std::variant<std::monostate, Failure> presentation_ready();
     [[nodiscard]] std::variant<GraphicsUse, Failure> prepare_frame(ImageFrame description);
     void record_frame(const PostDraw &draw) const;
+    void start_frame_timing(VkCommandBuffer commands, std::size_t slot);
+    void finish_frame_timing(VkCommandBuffer commands, std::size_t slot);
     [[nodiscard]] Submission submitted_frame(const GraphicsUse &use) noexcept;
     [[nodiscard]] std::variant<bool, Failure> completed(const Submission &submission);
+    [[nodiscard]] std::variant<std::optional<GpuTimings>, Failure>
+    timings(const Submission &submission);
+    [[nodiscard]] bool timings_supported() const;
     [[nodiscard]] std::variant<std::monostate, Failure>
     write(detail::ResourceKey key, VkDeviceSize offset, std::span<const std::byte> bytes);
     [[nodiscard]] std::variant<std::monostate, Failure>

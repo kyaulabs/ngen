@@ -66,7 +66,7 @@ class ShaderCompilation(unittest.TestCase):
             pbr = json.loads((self.output / (name + ".reflection.json")).read_text())
             bindings = {p["name"]: (p["binding"].get("space", 0), p["binding"]["index"]) for p in pbr["parameters"]}
             self.assertEqual(bindings, {
-                "frame": (0, 0), "localLights": (0, 1), "shadowMap": (0, 2), "shadowSampler": (0, 3),
+                "frame": (0, 0), "localLights": (0, 1), "shadowMap": (0, 2), "shadowSampler": (0, 3), "instances": (0, 4),
                 "material": (1, 0), "baseColorMap": (1, 1), "normalMap": (1, 2),
                 "metallicRoughnessMap": (1, 3), "occlusionMap": (1, 4), "emissiveMap": (1, 5),
                 "materialSamplers": (1, 6), "irradianceMap": (1, 7), "prefilteredMap": (1, 8), "brdfMap": (1, 9),
@@ -108,7 +108,7 @@ class ShaderCompilation(unittest.TestCase):
             for parameter in reflected["parameters"]:
                 if parameter["type"]["kind"] == "constantBuffer":
                     check_struct(parameter["type"]["elementType"])
-        self.assertEqual(checked, {"FrameConstants", "LightConstants", "LocalLight", "MaterialConstants", "CullConstants", "PostConstants"})
+        self.assertEqual(checked, {"FrameConstants", "InstanceConstants", "InstanceTransform", "LightConstants", "LocalLight", "MaterialConstants", "CullConstants", "PostConstants"})
         vertex = json.loads((self.output / "pbr-vertex.reflection.json").read_text())
         fields = vertex["entryPoints"][0]["parameters"][0]["type"]["fields"]
         self.assertEqual([(x["name"], x["binding"]["index"], x["type"]["elementCount"]) for x in fields],

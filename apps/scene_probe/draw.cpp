@@ -1,4 +1,5 @@
 #include "draw.hpp"
+#include "probe/capture.hpp"
 #include "render/environment.hpp"
 #include <algorithm>
 #include <array>
@@ -134,6 +135,52 @@ bool draw_scene(render::Context &context, render::ScenePin &version, const rende
     require(std::holds_alternative<Failure>(renderer.draw(context, version, invalid, targets)) &&
                 take(renderer.collect(context)) == 0,
             "invalid scene view changed frame ownership");
+    {
+        constexpr shader::Matrix identity{{1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1}};
+        std::array<shader::Vertex, 3> marker{};
+        const std::array<std::array<float, 2>, 3> corners{
+            {{-.96F, -.82F}, {-.88F, -.82F}, {-.92F, -.70F}}};
+        for (std::size_t i = 0; i < marker.size(); ++i) {
+            for (std::size_t axis = 0; axis < 3; ++axis)
+                marker[i].position[axis] = center[axis] + right[axis] * corners[i][0] * half_width -
+                                           up[axis] * corners[i][1] * radius * .9F;
+            marker[i].normal = back;
+            marker[i].tangent = {right[0], right[1], right[2], 1};
+        }
+        const std::array<std::uint32_t, 3> indices{0, 1, 2};
+        auto marker_vertices = take(context.create_buffer(
+            {sizeof(marker), VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, MemoryAccess::upload}));
+        auto marker_indices = take(context.create_buffer(
+            {sizeof(indices), VK_BUFFER_USAGE_INDEX_BUFFER_BIT, MemoryAccess::upload}));
+        (void)take(marker_vertices.write(0, std::as_bytes(std::span(marker))));
+        (void)take(marker_indices.write(0, std::as_bytes(std::span(indices))));
+        MeshDraw extra{};
+        extra.frame.model = extra.frame.normalMatrix = identity;
+        extra.material.baseColor = {0, 0, 0, 1};
+        extra.material.emissiveAlphaCutoff = {4, 0, 4, .5F};
+        extra.material.flags[2] = 1;
+        extra.maps.fill(&white);
+        extra.index_count = 3;
+        extra.facing = MeshFacing::both;
+        extra.vertices = &marker_vertices;
+        extra.indices = &marker_indices;
+        // Camera/light matrices deliberately remain zero: the scene view must apply.
+        const auto extra_submission =
+            take(renderer.draw(context, version, view, targets, {}, std::span{&extra, 1}));
+        wait(context, extra_submission);
+        require(take(renderer.collect(context)) == 0, "completed extra scene pin did not retire");
+        const auto marker_bytes = VkDeviceSize{extent.width} * extent.height * 8;
+        auto marker_readback = take(context.create_buffer(
+            {marker_bytes, VK_BUFFER_USAGE_TRANSFER_DST_BIT, MemoryAccess::readback}));
+        wait(context, take(context.copy_from_image({color, marker_readback})));
+        std::vector<std::uint16_t> marker_pixels(std::size_t{extent.width} * extent.height * 4);
+        (void)take(marker_readback.read(0, std::as_writable_bytes(std::span(marker_pixels))));
+        const auto marker_x = extent.width * 4 / 100, marker_y = extent.height * 12 / 100;
+        const auto at = (std::size_t{marker_y} * extent.width + marker_x) * 4;
+        require(marker_pixels[at] >= 0x4400 && marker_pixels[at + 2] >= 0x4400,
+                "scene extra geometry/view was not submitted");
+        std::puts("scene_extra_geometry=1 extra_scene_view=1 extra_frame_pin=1");
+    }
     DrawGate gate(context);
     const std::weak_ptr<const SceneVersion> weak = version;
     auto first = renderer.draw(context, version, view, targets, {gate.handle, 1});
@@ -174,44 +221,7 @@ bool draw_scene(render::Context &context, render::ScenePin &version, const rende
     }
     require(lit > 0, "scene geometry did not draw any material pixels");
     if (!capture.empty()) {
-        auto ldr = take(context.create_image(
-            {extent, VK_FORMAT_R8G8B8A8_SRGB,
-             static_cast<VkImageUsageFlags>(VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT) |
-                 VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_TRANSFER_SRC_BIT}));
-        wait(context, take(context.post_process({color, ldr})));
-        wait(context, take(context.copy_from_image({ldr, readback})));
-        std::vector<std::byte> pixels(std::size_t{extent.width} * extent.height * 4);
-        (void)take(readback.read(0, pixels));
-        const auto surface = std::unique_ptr<SDL_Surface, decltype(&SDL_DestroySurface)>(
-            SDL_CreateSurfaceFrom(static_cast<int>(extent.width), static_cast<int>(extent.height),
-                                  SDL_PIXELFORMAT_RGBA32, pixels.data(),
-                                  static_cast<int>(extent.width * 4)),
-            SDL_DestroySurface);
-        require(surface != nullptr, "scene capture surface creation failed");
-        // Encode into bounded memory, then create exclusively: GPU preparation
-        // must not let a concurrent writer's file be overwritten after admission.
-        std::vector<std::byte> encoded(std::size_t{4} * 1024 * 1024);
-        const auto stream = std::unique_ptr<SDL_IOStream, decltype(&SDL_CloseIO)>(
-            SDL_IOFromMem(encoded.data(), encoded.size()), SDL_CloseIO);
-        require(stream != nullptr && SDL_SaveBMP_IO(surface.get(), stream.get(), false),
-                "scene post-processed BMP encoding failed");
-        const auto length = SDL_TellIO(stream.get());
-        require(length > 0 && static_cast<std::uint64_t>(length) <= encoded.size(),
-                "scene BMP capture exceeded its bounded encoding storage");
-        std::FILE *file{};
-#if defined(_WIN32)
-        (void)fopen_s(&file, capture.string().c_str(), "wbx");
-#else
-        file = std::fopen(capture.string().c_str(), "wbx");
-#endif
-        const auto close_file = [](std::FILE *value) { (void)std::fclose(value); };
-        auto output = std::unique_ptr<std::FILE, decltype(close_file)>(file, close_file);
-        require(output != nullptr, "scene capture path exists or cannot be created");
-        const auto written =
-            std::fwrite(encoded.data(), 1, static_cast<std::size_t>(length), output.get());
-        const bool closed = std::fclose(output.release()) == 0;
-        require(written == static_cast<std::size_t>(length) && closed,
-                "scene BMP capture write/close failed");
+        (void)take(ngen::probe::capture(context, color, extent, capture));
         require(SDL_SetWindowSize(context.window(), static_cast<int>(extent.width),
                                   static_cast<int>(extent.height)),
                 "scene target-resolution window resize failed");

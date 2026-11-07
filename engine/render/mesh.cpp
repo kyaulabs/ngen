@@ -47,7 +47,11 @@ MeshPipeline::MeshPipeline(VkDevice device, VkPhysicalDevice physical) : device_
         light_offset_ = frame_stride_ * draw_limit;
         material_stride_ = aligned(sizeof(shader::MaterialConstants));
         material_offset_ = light_offset_ + aligned(sizeof(shader::LightConstants));
-        scratch_.resize(static_cast<std::size_t>(material_offset_ + material_stride_ * draw_limit));
+        if (sizeof(shader::InstanceConstants) > properties.limits.maxUniformBufferRange)
+            throw std::runtime_error("mesh instance constants exceed the uniform range");
+        instance_offset_ = material_offset_ + material_stride_ * draw_limit;
+        instance_stride_ = aligned(sizeof(shader::InstanceConstants));
+        scratch_.resize(static_cast<std::size_t>(instance_offset_ + instance_stride_ * draw_limit));
         const std::array frame_bindings{
             VkDescriptorSetLayoutBinding{0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, 1,
                                          VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT,
@@ -57,7 +61,9 @@ MeshPipeline::MeshPipeline(VkDevice device, VkPhysicalDevice physical) : device_
             VkDescriptorSetLayoutBinding{2, VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE, 1,
                                          VK_SHADER_STAGE_FRAGMENT_BIT, nullptr},
             VkDescriptorSetLayoutBinding{3, VK_DESCRIPTOR_TYPE_SAMPLER, 1,
-                                         VK_SHADER_STAGE_FRAGMENT_BIT, nullptr}};
+                                         VK_SHADER_STAGE_FRAGMENT_BIT, nullptr},
+            VkDescriptorSetLayoutBinding{4, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, 1,
+                                         VK_SHADER_STAGE_VERTEX_BIT, nullptr}};
         std::array<VkDescriptorSetLayoutBinding, 11> material_bindings{};
         for (std::uint32_t i = 0; i < material_bindings.size(); ++i)
             material_bindings[i] = {i,
@@ -82,7 +88,7 @@ MeshPipeline::MeshPipeline(VkDevice device, VkPhysicalDevice physical) : device_
         check(vkCreatePipelineLayout(device_, &layout, nullptr, &layout_),
               "create mesh pipeline layout");
         constexpr auto records = static_cast<std::uint32_t>(2 * draw_limit);
-        const std::array sizes{VkDescriptorPoolSize{VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, records * 3},
+        const std::array sizes{VkDescriptorPoolSize{VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, records * 4},
                                VkDescriptorPoolSize{VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE, records * 9},
                                VkDescriptorPoolSize{VK_DESCRIPTOR_TYPE_SAMPLER, records * 7}};
         VkDescriptorPoolCreateInfo pool{};
@@ -297,6 +303,15 @@ std::span<const std::byte> MeshPipeline::prepare(const MeshPass &pass) {
                     sizeof(shader::FrameConstants));
         std::memcpy(scratch_.data() + material_offset_ + i * material_stride_,
                     &pass.draws[i].material, sizeof(shader::MaterialConstants));
+        auto *target = scratch_.data() + instance_offset_ + i * instance_stride_;
+        if (pass.draws[i].instances.empty()) {
+            constexpr shader::Matrix identity{{1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1}};
+            constexpr shader::InstanceTransform instance{identity, identity};
+            std::memcpy(target, &instance, sizeof(instance));
+        } else {
+            std::memcpy(target, pass.draws[i].instances.data(),
+                        pass.draws[i].instances.size_bytes());
+        }
     }
     return scratch_;
 }
@@ -305,13 +320,15 @@ void MeshPipeline::descriptors(const MeshRecording &recording) {
         const auto &draw = recording.draws[i];
         const auto set_index = (recording.slot * draw_limit + i) * 2;
         const std::array sets{sets_[set_index], sets_[set_index + 1]};
-        const std::array buffers{VkDescriptorBufferInfo{recording.uniform, i * frame_stride_,
-                                                        sizeof(shader::FrameConstants)},
-                                 VkDescriptorBufferInfo{recording.uniform, light_offset_,
-                                                        sizeof(shader::LightConstants)},
-                                 VkDescriptorBufferInfo{recording.uniform,
-                                                        material_offset_ + i * material_stride_,
-                                                        sizeof(shader::MaterialConstants)}};
+        const std::array buffers{
+            VkDescriptorBufferInfo{recording.uniform, i * frame_stride_,
+                                   sizeof(shader::FrameConstants)},
+            VkDescriptorBufferInfo{recording.uniform, light_offset_,
+                                   sizeof(shader::LightConstants)},
+            VkDescriptorBufferInfo{recording.uniform, material_offset_ + i * material_stride_,
+                                   sizeof(shader::MaterialConstants)},
+            VkDescriptorBufferInfo{recording.uniform, instance_offset_ + i * instance_stride_,
+                                   sizeof(shader::InstanceConstants)}};
         std::array<VkDescriptorImageInfo, 9> images{};
         images[0] = {VK_NULL_HANDLE, recording.shadow, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL};
         constexpr std::array<std::size_t, 5> slots{0, 2, 1, 3, 4};
@@ -328,7 +345,7 @@ void MeshPipeline::descriptors(const MeshRecording &recording) {
         samplers[6].sampler = environment_sampler_;
         for (std::size_t map = 0; map < 5; ++map)
             samplers[map + 1].sampler = sampler(draw.samplers[map]);
-        std::array<VkWriteDescriptorSet, 15> writes{};
+        std::array<VkWriteDescriptorSet, 16> writes{};
         std::size_t count = 0;
         const auto add = [&](VkDescriptorSet set, std::uint32_t binding, VkDescriptorType type,
                              std::uint32_t size, const VkDescriptorBufferInfo *buffer,
@@ -346,6 +363,7 @@ void MeshPipeline::descriptors(const MeshRecording &recording) {
         add(sets[0], 1, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, 1, &buffers[1], nullptr);
         add(sets[0], 2, VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE, 1, nullptr, &images[0]);
         add(sets[0], 3, VK_DESCRIPTOR_TYPE_SAMPLER, 1, nullptr, &samplers[0]);
+        add(sets[0], 4, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, 1, &buffers[3], nullptr);
         add(sets[1], 0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, 1, &buffers[2], nullptr);
         for (std::uint32_t map = 0; map < 5; ++map)
             add(sets[1], map + 1, VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE, 1, nullptr, &images[map + 1]);
@@ -370,10 +388,20 @@ void MeshPipeline::record(const MeshRecording &recording) {
     const VkDeviceSize offset = 0;
     vkCmdBindVertexBuffers(recording.commands, 0, 1, &recording.vertices, &offset);
     vkCmdBindIndexBuffer(recording.commands, recording.indices, 0, VK_INDEX_TYPE_UINT32);
+    VkBuffer vertices = recording.vertices, indices = recording.indices;
     for (std::size_t i = 0; i < recording.draws.size(); ++i) {
         const auto &draw = recording.draws[i];
         if (recording.shadow_pass && draw.material.flags[0] == 2)
             continue;
+        const auto &geometry = recording.bindings[i];
+        if (geometry.vertices != vertices) {
+            vertices = geometry.vertices;
+            vkCmdBindVertexBuffers(recording.commands, 0, 1, &vertices, &offset);
+        }
+        if (geometry.indices != indices) {
+            indices = geometry.indices;
+            vkCmdBindIndexBuffer(recording.commands, indices, 0, VK_INDEX_TYPE_UINT32);
+        }
         const auto set_index = (recording.slot * draw_limit + i) * 2;
         const std::array sets{sets_[set_index], sets_[set_index + 1]};
         const auto pipeline =
@@ -383,7 +411,9 @@ void MeshPipeline::record(const MeshRecording &recording) {
                           pipelines_[pipeline]);
         vkCmdBindDescriptorSets(recording.commands, VK_PIPELINE_BIND_POINT_GRAPHICS, layout_, 0, 2,
                                 sets.data(), 0, nullptr);
-        vkCmdDrawIndexed(recording.commands, draw.index_count, 1, draw.first_index,
+        const auto instances =
+            static_cast<std::uint32_t>(std::max(std::size_t{1}, draw.instances.size()));
+        vkCmdDrawIndexed(recording.commands, draw.index_count, instances, draw.first_index,
                          draw.vertex_offset, 0);
     }
 }

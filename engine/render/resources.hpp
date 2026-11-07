@@ -2,6 +2,7 @@
 #include <cstddef>
 #include <cstdint>
 #include <memory>
+#include <optional>
 #include <span>
 #include <string>
 #include <utility>
@@ -98,6 +99,11 @@ struct ResourceStatistics {
     std::uint32_t retiring{};
     std::uint64_t allocation_bytes{};
     std::uint64_t reserved_bytes{};
+};
+// GPU timestamp intervals; pipeline stages may overlap across passes.
+// Not host frame latency, summed device-busy time, or display retirement.
+struct GpuTimings {
+    double shadow_ns{}, pbr_ns{}, post_ns{};
 };
 struct TimelineWait {
     VkSemaphore semaphore{}; // Borrowed timeline; caller retains it through submission completion.

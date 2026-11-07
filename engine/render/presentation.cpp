@@ -224,6 +224,8 @@ void Presentation::record(Frame &frame, const Image &image, const ImageFrame *so
     rendering.layerCount = 1;
     rendering.colorAttachmentCount = 1;
     rendering.pColorAttachments = &color;
+    if (use)
+        owner_.resources_->start_frame_timing(frame.commands, frame_index_ + 2);
     vkCmdBeginRendering(frame.commands, &rendering);
     if (use) {
         const shader::PostConstants constants{{source->exposure, source->fxaa ? 1.0F : 0.0F,
@@ -237,6 +239,8 @@ void Presentation::record(Frame &frame, const Image &image, const ImageFrame *so
                                          .constants = constants});
     }
     vkCmdEndRendering(frame.commands);
+    if (use)
+        owner_.resources_->finish_frame_timing(frame.commands, frame_index_ + 2);
     barrier.srcStageMask = VK_PIPELINE_STAGE_2_COLOR_ATTACHMENT_OUTPUT_BIT;
     barrier.srcAccessMask = VK_ACCESS_2_COLOR_ATTACHMENT_WRITE_BIT;
     barrier.dstStageMask = VK_PIPELINE_STAGE_2_NONE;

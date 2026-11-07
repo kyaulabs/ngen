@@ -1,0 +1,14 @@
+F.
+======================================================================
+FAIL: test_checked_ship_and_hundred_instanced_asteroids_are_presented (__main__.Workload.test_checked_ship_and_hundred_instanced_asteroids_are_presented)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "$REPO/tests/workload_cli.py", line 31, in test_checked_ship_and_hundred_instanced_asteroids_are_presented
+    self.assertIn("gpu_timestamps=available", result.stdout)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'gpu_timestamps=available' not found in 'device=Intel(R) Iris(R) Xe Graphics (TGL GT2) api=1.4 driver=109060102 queue=0 display=wayland\nasteroid_instances=100 asteroid_triangles=80 ship_triangles=238080 total_triangles=246080 scene_draws=189 fixture_seed=0x4e47454e fixture_crc32=469853e1 package_crc32=04a13010\nworkload_frames=2 workload_warmup=1 workload_wsi_queued=2 workload_hdr_finite=1 workload_lit_pixels=33468 workload_capture=1 width=1280 height=720 shadow_extent=1024 validation=1\nframe_ns p50=14671711 p95=17621591 p99=17621591 max=17621591 gpu_timestamps=unavailable allocation_probe=1 warm_cpp_allocations=29703 vma_allocation_bytes=210844808 vma_reserved_bytes=214396216\n'
+
+----------------------------------------------------------------------
+Ran 2 tests in 6.022s
+
+FAILED (failures=1)

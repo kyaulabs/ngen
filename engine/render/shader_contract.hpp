@@ -25,6 +25,15 @@ struct alignas(16) FrameConstants {
     Float4 keyColor{};
 };
 
+struct alignas(16) InstanceTransform {
+    Matrix model;
+    Matrix normalMatrix;
+};
+inline constexpr std::size_t instance_capacity = 100;
+struct alignas(16) InstanceConstants {
+    std::array<InstanceTransform, instance_capacity> transforms{};
+};
+
 struct alignas(16) LocalLight {
     Float4 positionRange{};
     Float4 colorIntensity{};
@@ -67,6 +76,7 @@ struct Vertex {
 static_assert(sizeof(float) == 4);
 static_assert(sizeof(Matrix) == 64);
 static_assert(sizeof(FrameConstants) == 304);
+static_assert(sizeof(InstanceTransform) == 128 && sizeof(InstanceConstants) == 12800);
 static_assert(sizeof(LocalLight) == 32);
 static_assert(sizeof(LightConstants) == 528);
 static_assert(sizeof(MaterialConstants) == 64);

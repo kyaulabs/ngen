@@ -22,6 +22,13 @@ struct MeshDraw {
     std::uint32_t first_index{}, index_count{};
     std::int32_t vertex_offset{};
     MeshFacing facing{MeshFacing::counter_clockwise};
+    // Empty means one identity instance; otherwise 1..100 copied transforms.
+    // Instance transforms compose inside frame.model/normalMatrix. Facing applies
+    // to every instance: use both or separate draws for mixed determinant signs.
+    std::span<const shader::InstanceTransform> instances{};
+    // Optional paired geometry override for another mesh in this fixed batch.
+    const Buffer *vertices{};
+    const Buffer *indices{};
 };
 struct MeshPass {
     // Owner-thread borrowing for this call only. Geometry content is trusted:

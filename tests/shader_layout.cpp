@@ -26,6 +26,11 @@ int main() {
             {"cameraPosition", offsetof(FrameConstants, cameraPosition)},
             {"keyDirectionIntensity", offsetof(FrameConstants, keyDirectionIntensity)},
             {"keyColor", offsetof(FrameConstants, keyColor)}});
+    report("InstanceConstants", sizeof(InstanceConstants), alignof(InstanceConstants),
+           {{"transforms", offsetof(InstanceConstants, transforms)}});
+    report("InstanceTransform", sizeof(InstanceTransform), alignof(InstanceTransform),
+           {{"model", offsetof(InstanceTransform, model)},
+            {"normalMatrix", offsetof(InstanceTransform, normalMatrix)}});
     report(
         "LightConstants", sizeof(LightConstants), alignof(LightConstants),
         {{"lights", offsetof(LightConstants, lights)}, {"count", offsetof(LightConstants, count)}});
