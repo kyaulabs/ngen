@@ -1,0 +1,110 @@
+[0/2] Re-checking globbed directories...
+[1/110] Scanning <repo>\engine\core\entities.cpp for CXX dependencies
+[2/110] Scanning <repo>\engine\core\values.cpp for CXX dependencies
+[3/110] Scanning <repo>\engine\render\capabilities.cpp for CXX dependencies
+[4/110] Scanning <repo>\engine\render\vma.cpp for CXX dependencies
+[5/110] Generating CXX dyndep file CMakeFiles\ngen_core.dir\CXX.dd
+[6/110] Scanning <repo>\engine\jobs\jobs.cpp for CXX dependencies
+[7/110] Generating CXX dyndep file CMakeFiles\ngen_render_contract.dir\CXX.dd
+[8/110] Scanning <repo>\engine\assets\package.cpp for CXX dependencies
+[9/110] Generating CXX dyndep file CMakeFiles\ngen_vma.dir\CXX.dd
+[10/110] Building CXX object CMakeFiles\ngen_core.dir\engine\core\values.cpp.obj
+[11/110] Generating shaders/87dad6985b0cfbafe3249746054d134fd5837efc4c80e0f9b7a0a2ce05f9b13c/manifest.json
+[12/110] Building CXX object CMakeFiles\ngen_core.dir\engine\core\entities.cpp.obj
+[13/110] Scanning <repo>\engine\render\surface.cpp for CXX dependencies
+[14/110] Scanning <repo>\engine\render\presentation.cpp for CXX dependencies
+[15/110] Scanning <repo>\engine\render\context.cpp for CXX dependencies
+[16/110] Scanning <repo>\engine\render\post.cpp for CXX dependencies
+[17/110] Scanning <repo>\engine\render\resources.cpp for CXX dependencies
+[18/110] Scanning <repo>\engine\render\mesh.cpp for CXX dependencies
+[19/110] Scanning <repo>\engine\render\environment.cpp for CXX dependencies
+[20/110] Generating CXX dyndep file CMakeFiles\ngen_jobs.dir\CXX.dd
+[21/110] Scanning <repo>\engine\simulation\simulation.cpp for CXX dependencies
+[22/110] Generating CXX dyndep file CMakeFiles\ngen_assets.dir\CXX.dd
+[23/110] Building CXX object CMakeFiles\ngen_render_contract.dir\engine\render\capabilities.cpp.obj
+[24/110] Generating CXX dyndep file CMakeFiles\ngen_render.dir\CXX.dd
+[25/110] Scanning <repo>\apps\probe\presentation.cpp for CXX dependencies
+[26/110] Scanning <repo>\engine\render\scene.cpp for CXX dependencies
+[27/110] Scanning <repo>\engine\render\scene_draw.cpp for CXX dependencies
+[28/110] Linking CXX static library ngen_core.lib
+[29/110] Building CXX object CMakeFiles\ngen_vma.dir\engine\render\vma.cpp.obj
+[30/110] Generating CXX dyndep file CMakeFiles\ngen_simulation.dir\CXX.dd
+[31/110] Scanning <repo>\apps\sim_harness\main.cpp for CXX dependencies
+[32/110] Linking CXX static library ngen_render_contract.lib
+[33/110] Building CXX object CMakeFiles\ngen_jobs.dir\engine\jobs\jobs.cpp.obj
+[34/110] Scanning <repo>\apps\asset_probe\main.cpp for CXX dependencies
+[35/110] Scanning <repo>\tests\shader_layout.cpp for CXX dependencies
+[36/110] Linking CXX static library ngen_vma.lib
+[37/110] Building CXX object CMakeFiles\ngen_assets.dir\engine\assets\package.cpp.obj
+[38/110] Building CXX object CMakeFiles\ngen_render.dir\engine\render\context.cpp.obj
+[39/110] Building CXX object CMakeFiles\ngen_render.dir\engine\render\surface.cpp.obj
+[40/110] Building CXX object CMakeFiles\ngen_render.dir\engine\render\presentation.cpp.obj
+[41/110] Building CXX object CMakeFiles\ngen_render.dir\engine\render\post.cpp.obj
+[42/110] Building CXX object CMakeFiles\ngen_render.dir\engine\render\resources.cpp.obj
+[43/110] Building CXX object CMakeFiles\ngen_render.dir\engine\render\mesh.cpp.obj
+[44/110] Generating CXX dyndep file CMakeFiles\ngen_probe_support.dir\CXX.dd
+[45/110] Scanning <repo>\apps\render_probe\main.cpp for CXX dependencies
+[46/110] Building CXX object CMakeFiles\ngen_render.dir\engine\render\environment.cpp.obj
+[47/110] Generating CXX dyndep file CMakeFiles\ngen_scene.dir\CXX.dd
+[48/110] Scanning <repo>\apps\resource_probe\main.cpp for CXX dependencies
+[49/110] Scanning <repo>\apps\scene_probe\main.cpp for CXX dependencies
+[50/110] Scanning <repo>\apps\scene_probe\draw.cpp for CXX dependencies
+[51/110] Scanning <repo>\tests\core.cpp for CXX dependencies
+[52/110] Scanning <repo>\tests\jobs.cpp for CXX dependencies
+[53/110] Scanning <repo>\tests\simulation.cpp for CXX dependencies
+[54/110] Scanning <repo>\tests\render_capabilities.cpp for CXX dependencies
+[55/110] Scanning <repo>\tests\render_environment.cpp for CXX dependencies
+[56/110] Scanning <repo>\tests\assets.cpp for CXX dependencies
+[57/110] Scanning <repo>\tests\shader_gpu.cpp for CXX dependencies
+[58/110] Scanning <repo>\tests\render_startup.cpp for CXX dependencies
+[59/110] Linking CXX static library ngen_jobs.lib
+[60/110] Scanning <repo>\tests\render_surface.cpp for CXX dependencies
+[61/110] Generating CXX dyndep file CMakeFiles\sim_harness.dir\CXX.dd
+[62/110] Linking CXX static library ngen_assets.lib
+[63/110] Generating CXX dyndep file CMakeFiles\asset_package_probe.dir\CXX.dd
+[64/110] Generating CXX dyndep file CMakeFiles\shader_contract_layout.dir\CXX.dd
+[65/110] Linking CXX static library ngen_render.lib
+[66/110] Building CXX object CMakeFiles\ngen_simulation.dir\engine\simulation\simulation.cpp.obj
+[67/110] Generating CXX dyndep file CMakeFiles\render_probe.dir\CXX.dd
+[68/110] Generating CXX dyndep file CMakeFiles\resource_probe.dir\CXX.dd
+[69/110] Building CXX object CMakeFiles\ngen_probe_support.dir\apps\probe\presentation.cpp.obj
+[70/110] Building CXX object CMakeFiles\ngen_scene.dir\engine\render\scene.cpp.obj
+[71/110] Generating CXX dyndep file CMakeFiles\scene_probe.dir\CXX.dd
+[72/110] Generating CXX dyndep file CMakeFiles\ngen_tests.dir\CXX.dd
+[73/110] Generating CXX dyndep file CMakeFiles\render_contract_tests.dir\CXX.dd
+[74/110] Generating CXX dyndep file CMakeFiles\render_environment_tests.dir\CXX.dd
+[75/110] Generating CXX dyndep file CMakeFiles\asset_package_tests.dir\CXX.dd
+[76/110] Generating CXX dyndep file CMakeFiles\shader_gpu_probe.dir\CXX.dd
+[77/110] Generating CXX dyndep file CMakeFiles\render_startup_tests.dir\CXX.dd
+[78/110] Linking CXX static library ngen_simulation.lib
+[79/110] Building CXX object CMakeFiles\ngen_scene.dir\engine\render\scene_draw.cpp.obj
+[80/110] Building CXX object CMakeFiles\sim_harness.dir\apps\sim_harness\main.cpp.obj
+[81/110] Building CXX object CMakeFiles\asset_package_probe.dir\apps\asset_probe\main.cpp.obj
+[82/110] Linking CXX static library ngen_probe_support.lib
+[83/110] Building CXX object CMakeFiles\shader_contract_layout.dir\tests\shader_layout.cpp.obj
+[84/110] Building CXX object CMakeFiles\render_probe.dir\apps\render_probe\main.cpp.obj
+[85/110] Linking CXX static library ngen_scene.lib
+[86/110] Building CXX object CMakeFiles\resource_probe.dir\apps\resource_probe\main.cpp.obj
+[87/110] Building CXX object CMakeFiles\scene_probe.dir\apps\scene_probe\main.cpp.obj
+[88/110] Building CXX object CMakeFiles\scene_probe.dir\apps\scene_probe\draw.cpp.obj
+[89/110] Building CXX object CMakeFiles\ngen_tests.dir\tests\core.cpp.obj
+[90/110] Building CXX object CMakeFiles\ngen_tests.dir\tests\jobs.cpp.obj
+[91/110] Building CXX object CMakeFiles\ngen_tests.dir\tests\simulation.cpp.obj
+[92/110] Building CXX object CMakeFiles\render_contract_tests.dir\tests\render_capabilities.cpp.obj
+[93/110] Building CXX object CMakeFiles\render_environment_tests.dir\tests\render_environment.cpp.obj
+[94/110] Building CXX object CMakeFiles\asset_package_tests.dir\tests\assets.cpp.obj
+[95/110] Building CXX object CMakeFiles\shader_gpu_probe.dir\tests\shader_gpu.cpp.obj
+[96/110] Building CXX object CMakeFiles\render_startup_tests.dir\tests\render_startup.cpp.obj
+[97/110] Linking CXX executable sim_harness.exe
+[98/110] Linking CXX executable asset_package_probe.exe
+[99/110] Linking CXX executable shader_contract_layout.exe
+[100/110] Linking CXX executable render_probe.exe
+[101/110] Building CXX object CMakeFiles\render_startup_tests.dir\tests\render_surface.cpp.obj
+[102/110] Linking CXX executable resource_probe.exe
+[103/110] Linking CXX executable scene_probe.exe
+[104/110] Linking CXX executable ngen_tests.exe
+[105/110] Linking CXX executable render_contract_tests.exe
+[106/110] Linking CXX executable render_environment_tests.exe
+[107/110] Linking CXX executable asset_package_tests.exe
+[108/110] Linking CXX executable shader_gpu_probe.exe
+[109/110] Linking CXX executable render_startup_tests.exe

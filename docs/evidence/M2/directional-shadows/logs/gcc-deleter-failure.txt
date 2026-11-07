@@ -1,0 +1,110 @@
+[0/2] Re-checking globbed directories...
+[1/2] Re-running CMake...
+-- Using Conan toolchain: <repo>/build/scene-gcc/conan_toolchain.cmake
+-- Conan toolchain: Defining architecture flag: -m64
+-- Conan toolchain: C++ Standard 20 with extensions OFF
+-- Conan: Target declared 'enkiTS::enkiTS'
+-- Conan: Target declared 'ZLIB::ZLIB'
+-- Conan: Component target declared 'SDL3::Headers'
+-- Conan: Component target declared 'SDL3::SDL3'
+-- Conan: Target declared 'sdl::sdl'
+-- Conan: Component target declared 'xkbcommon::libxkbcommon'
+-- Conan: Component target declared 'xkbcommon::libxkbregistry'
+-- Conan: Component target declared 'xkbcommon::xkbcli-interactive-wayland'
+-- Conan: Target declared 'xkbcommon::xkbcommon'
+-- Conan: Target declared 'xkeyboard-config::xkeyboard-config'
+-- Conan: Component target declared 'wayland::wayland-scanner'
+-- Conan: Component target declared 'wayland::wayland-server'
+-- Conan: Component target declared 'wayland::wayland-client'
+-- Conan: Component target declared 'wayland::wayland-egl-backend'
+-- Conan: Component target declared 'wayland::wayland-cursor'
+-- Conan: Component target declared 'wayland::wayland-egl'
+-- Conan: Target declared 'wayland::wayland'
+-- Conan: Target declared 'libffi::libffi'
+-- Conan: Target declared 'LibXml2::LibXml2'
+-- Conan: Target declared 'Iconv::Iconv'
+-- Conan: Target declared 'expat::expat'
+-- Conan: Target declared 'egl::egl'
+-- Conan: Target declared 'GPUOpen::VulkanMemoryAllocator'
+-- Conan: Component target declared 'Vulkan::Registry'
+-- Conan: Target declared 'vulkan-headers::vulkan-headers'
+-- Conan: Component target declared 'Catch2::Catch2'
+-- Conan: Component target declared 'Catch2::Catch2WithMain'
+-- Configuring done (0.6s)
+-- Generating done (0.1s)
+-- Build files have been written to: <repo>/build/scene-gcc
+[0/4] Re-checking globbed directories...
+[1/103] Generating CXX dyndep file CMakeFiles/ngen_core.dir/CXX.dd
+[2/100] Generating CXX dyndep file CMakeFiles/ngen_render_contract.dir/CXX.dd
+[3/98] Scanning <repo>/engine/assets/package.cpp for CXX dependencies
+[4/98] Generating CXX dyndep file CMakeFiles/ngen_vma.dir/CXX.dd
+[5/96] Generating CXX dyndep file CMakeFiles/ngen_jobs.dir/CXX.dd
+[6/94] Generating CXX dyndep file CMakeFiles/ngen_assets.dir/CXX.dd
+[7/94] Generating CXX dyndep file CMakeFiles/ngen_simulation.dir/CXX.dd
+[8/92] Building CXX object CMakeFiles/ngen_assets.dir/engine/assets/package.cpp.o
+[9/92] Scanning <repo>/apps/asset_probe/main.cpp for CXX dependencies
+[10/92] Scanning <repo>/tests/assets.cpp for CXX dependencies
+[11/92] Generating CXX dyndep file CMakeFiles/sim_harness.dir/CXX.dd
+[12/90] Generating shaders/ffb4444e7b4e41d6045e5b5a0d004da741065c6f52dd513f688bb6d98e8b504c/manifest.json
+[13/90] Linking CXX static library libngen_assets.a
+[14/90] Scanning <repo>/engine/render/surface.cpp for CXX dependencies
+[15/90] Scanning <repo>/engine/render/context.cpp for CXX dependencies
+[16/90] Scanning <repo>/engine/render/presentation.cpp for CXX dependencies
+[17/90] Scanning <repo>/engine/render/resources.cpp for CXX dependencies
+[18/90] Scanning <repo>/engine/render/post.cpp for CXX dependencies
+[19/90] Scanning <repo>/engine/render/mesh.cpp for CXX dependencies
+[20/90] Scanning <repo>/engine/render/environment.cpp for CXX dependencies
+[21/90] Generating CXX dyndep file CMakeFiles/ngen_render.dir/CXX.dd
+[22/90] Scanning <repo>/apps/probe/presentation.cpp for CXX dependencies
+[23/90] Scanning <repo>/engine/render/scene.cpp for CXX dependencies
+[24/90] Scanning <repo>/tests/shader_layout.cpp for CXX dependencies
+[25/90] Scanning <repo>/engine/render/scene_draw.cpp for CXX dependencies
+[26/90] Building CXX object CMakeFiles/ngen_render.dir/engine/render/surface.cpp.o
+[27/90] Building CXX object CMakeFiles/ngen_render.dir/engine/render/presentation.cpp.o
+[28/90] Building CXX object CMakeFiles/ngen_render.dir/engine/render/context.cpp.o
+[29/90] Building CXX object CMakeFiles/ngen_render.dir/engine/render/post.cpp.o
+[30/90] Building CXX object CMakeFiles/ngen_render.dir/engine/render/resources.cpp.o
+[31/90] Building CXX object CMakeFiles/ngen_render.dir/engine/render/mesh.cpp.o
+[32/90] Generating CXX dyndep file CMakeFiles/ngen_probe_support.dir/CXX.dd
+[33/90] Scanning <repo>/apps/render_probe/main.cpp for CXX dependencies
+[34/90] Scanning <repo>/apps/resource_probe/main.cpp for CXX dependencies
+[35/90] Generating CXX dyndep file CMakeFiles/ngen_scene.dir/CXX.dd
+[36/90] Scanning <repo>/apps/scene_probe/main.cpp for CXX dependencies
+[37/90] Scanning <repo>/apps/scene_probe/draw.cpp for CXX dependencies
+[38/90] Building CXX object CMakeFiles/ngen_render.dir/engine/render/environment.cpp.o
+[39/90] Scanning <repo>/tests/render_environment.cpp for CXX dependencies
+[40/90] Scanning <repo>/tests/shader_gpu.cpp for CXX dependencies
+[41/90] Generating CXX dyndep file CMakeFiles/asset_package_probe.dir/CXX.dd
+[42/90] Generating CXX dyndep file CMakeFiles/shader_contract_layout.dir/CXX.dd
+[43/90] Scanning <repo>/tests/render_startup.cpp for CXX dependencies
+[44/90] Linking CXX static library libngen_render.a
+[45/90] Generating CXX dyndep file CMakeFiles/render_probe.dir/CXX.dd
+[46/90] Generating CXX dyndep file CMakeFiles/resource_probe.dir/CXX.dd
+[47/90] Building CXX object CMakeFiles/ngen_probe_support.dir/apps/probe/presentation.cpp.o
+[48/90] Building CXX object CMakeFiles/ngen_scene.dir/engine/render/scene.cpp.o
+[49/90] Generating CXX dyndep file CMakeFiles/scene_probe.dir/CXX.dd
+[50/90] Generating CXX dyndep file CMakeFiles/ngen_tests.dir/CXX.dd
+[51/86] Generating CXX dyndep file CMakeFiles/render_contract_tests.dir/CXX.dd
+[52/84] Generating CXX dyndep file CMakeFiles/render_environment_tests.dir/CXX.dd
+[53/84] Generating CXX dyndep file CMakeFiles/asset_package_tests.dir/CXX.dd
+[54/84] Generating CXX dyndep file CMakeFiles/shader_gpu_probe.dir/CXX.dd
+[55/84] Generating CXX dyndep file CMakeFiles/render_startup_tests.dir/CXX.dd
+[56/83] Generating CXX dyndep file CMakeFiles/wayland_tablet_tests.dir/CXX.dd
+[57/81] Building CXX object CMakeFiles/ngen_scene.dir/engine/render/scene_draw.cpp.o
+[58/81] Building CXX object CMakeFiles/asset_package_probe.dir/apps/asset_probe/main.cpp.o
+[59/81] Linking CXX static library libngen_probe_support.a
+[60/81] Building CXX object CMakeFiles/shader_contract_layout.dir/tests/shader_layout.cpp.o
+[61/81] Building CXX object CMakeFiles/render_probe.dir/apps/render_probe/main.cpp.o
+[62/81] Linking CXX static library libngen_scene.a
+[63/81] Building CXX object CMakeFiles/resource_probe.dir/apps/resource_probe/main.cpp.o
+[64/81] Building CXX object CMakeFiles/scene_probe.dir/apps/scene_probe/main.cpp.o
+[65/81] Building CXX object CMakeFiles/scene_probe.dir/apps/scene_probe/draw.cpp.o
+FAILED: [code=1] CMakeFiles/scene_probe.dir/apps/scene_probe/draw.cpp.o
+/bin/g++ -DFFI_STATIC_BUILD -DLIBXML_STATIC -DNGEN_TEST_FIXTURES=\"<repo>/tests/fixtures\" -DXML_STATIC -I<repo>/tests -I<repo>/engine -isystem <conan-cache>/p/b/sdl112350e9e86a3/p/include -isystem <conan-cache>/p/b/waylad435838a1c9eb/p/include -isystem <conan-cache>/p/b/zlib750e96fdb7096/p/include -isystem <conan-cache>/p/vulkabd7575518f65a/p/include -m64 -g -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror -MD -MT CMakeFiles/scene_probe.dir/apps/scene_probe/draw.cpp.o -MF CMakeFiles/scene_probe.dir/apps/scene_probe/draw.cpp.o.d -fmodules-ts -fmodule-mapper=CMakeFiles/scene_probe.dir/apps/scene_probe/draw.cpp.o.modmap -MD -fdeps-format=p1689r5 -x c++ -o CMakeFiles/scene_probe.dir/apps/scene_probe/draw.cpp.o -c <repo>/apps/scene_probe/draw.cpp
+<repo>/apps/scene_probe/draw.cpp: In function ‘bool ngen::probe::draw_scene(ngen::render::Context&, ngen::render::ScenePin&, const ngen::render::ScenePin&, const std::filesystem::__cxx11::path&)’:
+<repo>/apps/scene_probe/draw.cpp:207:72: error: ignoring attributes on template argument ‘int (*)(FILE*)’ [-Werror=ignored-attributes]
+  207 |         auto output = std::unique_ptr<std::FILE, decltype(&std::fclose)>(file, std::fclose);
+      |                                                                        ^
+cc1plus: all warnings being treated as errors
+[66/81] Building CXX object CMakeFiles/render_environment_tests.dir/tests/render_environment.cpp.o
+ninja: build stopped: subcommand failed.

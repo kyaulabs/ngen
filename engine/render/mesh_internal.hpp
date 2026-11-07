@@ -14,6 +14,7 @@ struct MeshRecording {
     VkImageView shadow{}, irradiance{}, prefiltered{}, brdf{};
     std::span<const MeshDraw> draws;
     std::span<const MeshNativeDraw> bindings;
+    bool shadow_pass{false};
 };
 class MeshPipeline {
   public:
@@ -24,6 +25,8 @@ class MeshPipeline {
     MeshPipeline &operator=(const MeshPipeline &) = delete;
     [[nodiscard]] VkDeviceSize uniform_bytes() const { return scratch_.size(); }
     [[nodiscard]] std::span<const std::byte> prepare(const MeshPass &pass);
+    // Update each slot's sets once, before either pass binds them.
+    void descriptors(const MeshRecording &recording);
     void record(const MeshRecording &recording);
     void close() noexcept;
 
@@ -34,7 +37,7 @@ class MeshPipeline {
     VkPipelineLayout layout_{};
     VkDescriptorPool pool_{};
     std::array<VkDescriptorSet, 2 * draw_limit * 2> sets_{};
-    std::array<VkPipeline, 6> pipelines_{};
+    std::array<VkPipeline, 9> pipelines_{};
     VkSampler shadow_sampler_{}, environment_sampler_{};
     struct SamplerEntry {
         MeshSampler description;

@@ -756,8 +756,21 @@ std::variant<Submission, Failure> Resources::mesh(MeshPass description) {
         used[image.key_.slot] = true;
         return true;
     };
-    if (!sampled(description.shadow, 1, VK_IMAGE_ASPECT_DEPTH_BIT, false) ||
-        !sampled(description.irradiance, 6, VK_IMAGE_ASPECT_COLOR_BIT, true) ||
+    if (description.generate_shadow) {
+        if (!owned_image(description.shadow) || description.shadow.key_.slot == color_key.slot ||
+            description.shadow.key_.slot == depth_key.slot)
+            return Failure{"generated shadow must be a distinct live same-context image"};
+        const auto &shadow = impl_->entries[description.shadow.key_.slot];
+        constexpr auto usage = static_cast<VkImageUsageFlags>(VK_IMAGE_USAGE_SAMPLED_BIT) |
+                               VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT;
+        if (shadow.format != VK_FORMAT_D32_SFLOAT || shadow.mip_levels != 1 || shadow.layers != 1 ||
+            (shadow.image_usage & usage) != usage)
+            return Failure{"generated shadow requires a single-mip sampled D32 depth attachment"};
+        used[description.shadow.key_.slot] = true;
+    } else if (!sampled(description.shadow, 1, VK_IMAGE_ASPECT_DEPTH_BIT, false)) {
+        return Failure{"mesh shadow input must be an initialized sampled depth image"};
+    }
+    if (!sampled(description.irradiance, 6, VK_IMAGE_ASPECT_COLOR_BIT, true) ||
         !sampled(description.prefiltered, 6, VK_IMAGE_ASPECT_COLOR_BIT, true) ||
         !sampled(description.brdf, 1, VK_IMAGE_ASPECT_COLOR_BIT, true))
         return Failure{
@@ -789,7 +802,7 @@ std::variant<Submission, Failure> Resources::mesh(MeshPass description) {
                 vertices.size / sizeof(shader::Vertex))
             return Failure{"mesh indexed draw range is invalid"};
         if (static_cast<unsigned>(draw.facing) > 2 || material.flags[0] > 2 ||
-            material.flags[1] > 31 || material.flags[2] > 1 || material.flags[3] != 0 ||
+            material.flags[1] > 31 || material.flags[2] > 3 || material.flags[3] != 0 ||
             !finite(material.baseColor) || !finite(material.emissiveAlphaCutoff) ||
             !finite(material.metallicRoughnessNormalOcclusion) || !finite(frame.model.columns) ||
             !finite(frame.viewProjection.columns) || !finite(frame.normalMatrix.columns) ||
@@ -841,9 +854,15 @@ std::variant<Submission, Failure> Resources::mesh(MeshPass description) {
     dependency.memoryBarrierCount = 1;
     dependency.pMemoryBarriers = &host;
     vkCmdPipelineBarrier2(frame.commands, &dependency);
+    impl_->mesh_pipeline->descriptors(
+        {frame.commands, slot, uniform.native(), vertices.buffer, indices.buffer,
+         color.image_extent, description.shadow.view(), description.irradiance.view(),
+         description.prefiltered.view(), description.brdf.view(), description.draws,
+         std::span(bindings).first(description.draws.size())});
     for (std::size_t i = 0; i < used.size(); ++i) {
         const auto &entry = impl_->entries[i];
-        if (!used[i] || !entry.image || i == color_key.slot || i == depth_key.slot)
+        if (!used[i] || !entry.image || i == color_key.slot || i == depth_key.slot ||
+            (description.generate_shadow && i == description.shadow.key_.slot))
             continue;
         VkImageMemoryBarrier2 barrier{};
         barrier.image = entry.image;
@@ -879,6 +898,41 @@ std::variant<Submission, Failure> Resources::mesh(MeshPass description) {
                                     : VK_ACCESS_2_COLOR_ATTACHMENT_WRITE_BIT;
         Impl::image_barrier(frame, barrier, 1);
     };
+    if (description.generate_shadow) {
+        const auto &shadow = impl_->entries[description.shadow.key_.slot];
+        attachment(shadow, VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL);
+        VkRenderingAttachmentInfo shadow_info{};
+        shadow_info.sType = VK_STRUCTURE_TYPE_RENDERING_ATTACHMENT_INFO;
+        shadow_info.imageView = shadow.view;
+        shadow_info.imageLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
+        shadow_info.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
+        shadow_info.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
+        shadow_info.clearValue.depthStencil.depth = 1;
+        VkRenderingInfo rendering{};
+        rendering.sType = VK_STRUCTURE_TYPE_RENDERING_INFO;
+        rendering.renderArea.extent = shadow.image_extent;
+        rendering.layerCount = 1;
+        rendering.pDepthAttachment = &shadow_info;
+        vkCmdBeginRendering(frame.commands, &rendering);
+        impl_->mesh_pipeline->record({frame.commands, slot, uniform.native(), vertices.buffer,
+                                      indices.buffer, shadow.image_extent, shadow.view,
+                                      description.irradiance.view(), description.prefiltered.view(),
+                                      description.brdf.view(), description.draws,
+                                      std::span(bindings).first(description.draws.size()), true});
+        vkCmdEndRendering(frame.commands);
+        VkImageMemoryBarrier2 readable{};
+        readable.image = shadow.image;
+        readable.oldLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
+        readable.newLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+        readable.subresourceRange.aspectMask = VK_IMAGE_ASPECT_DEPTH_BIT;
+        readable.subresourceRange.layerCount = 1;
+        readable.srcStageMask = VK_PIPELINE_STAGE_2_EARLY_FRAGMENT_TESTS_BIT |
+                                VK_PIPELINE_STAGE_2_LATE_FRAGMENT_TESTS_BIT;
+        readable.srcAccessMask = VK_ACCESS_2_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT;
+        readable.dstStageMask = VK_PIPELINE_STAGE_2_FRAGMENT_SHADER_BIT;
+        readable.dstAccessMask = VK_ACCESS_2_SHADER_SAMPLED_READ_BIT;
+        Impl::image_barrier(frame, readable, 1);
+    }
     attachment(color, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL);
     attachment(depth, VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL);
     VkRenderingAttachmentInfo color_info{};
@@ -926,6 +980,9 @@ std::variant<Submission, Failure> Resources::mesh(MeshPass description) {
             impl_->entries[i].last_use = next;
     color.image_layout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
     depth.image_layout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
+    if (description.generate_shadow)
+        impl_->entries[description.shadow.key_.slot].image_layout =
+            VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
     return Submission{weak_from_this(), next};
 }
 std::variant<std::monostate, Failure> Resources::presentation_ready() {

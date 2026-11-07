@@ -1,0 +1,19 @@
+Test project <REPO>/build/windows/20261106-182203-283/Debug
+    Start 1: shader_offline
+1/7 Test #1: shader_offline ...................   Passed   10.84 sec
+    Start 2: ngen_tests
+2/7 Test #2: ngen_tests .......................   Passed    0.04 sec
+    Start 3: render_contract_tests
+3/7 Test #3: render_contract_tests ............   Passed    0.04 sec
+    Start 4: asset_package_tests
+4/7 Test #4: asset_package_tests ..............   Passed    0.19 sec
+    Start 5: render_startup_tests
+5/7 Test #5: render_startup_tests .............   Passed    0.04 sec
+    Start 6: replay_serial
+6/7 Test #6: replay_serial ....................   Passed    0.04 sec
+    Start 7: replay_workers
+7/7 Test #7: replay_workers ...................   Passed    0.02 sec
+
+100% tests passed out of 7
+
+Total Test time (real) =  11.21 sec

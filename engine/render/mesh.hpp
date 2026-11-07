@@ -37,5 +37,9 @@ struct MeshPass {
     shader::LightConstants lights;
     std::span<const MeshDraw> draws; // 1..256, copied before return; no retained CPU borrow.
     TimelineWait wait{};
+    // Generate shadow depth from opaque/masked draws before the color batch.
+    // Requires a distinct sampled D32 depth attachment; blend draws do not cast.
+    bool generate_shadow{false};
+    std::array<std::byte, 15> shadow_padding{};
 };
 } // namespace ngen::render
