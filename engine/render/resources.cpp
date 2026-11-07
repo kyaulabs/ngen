@@ -343,7 +343,8 @@ std::variant<Image, Failure> Resources::create(ImageDescription description) {
     if (description.cube && (depth || description.extent.width != description.extent.height ||
                              description.extent.width > impl_->max_cube_dimension))
         return Failure{"invalid color cubemap extent or format"};
-    const auto aspect = depth ? VK_IMAGE_ASPECT_DEPTH_BIT : VK_IMAGE_ASPECT_COLOR_BIT;
+    const auto aspect = static_cast<VkImageAspectFlags>(depth ? VK_IMAGE_ASPECT_DEPTH_BIT
+                                                              : VK_IMAGE_ASPECT_COLOR_BIT);
     if ((description.usage & (depth ? VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT
                                     : VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT)) != 0)
         return Failure{"image format and attachment usage are incompatible"};

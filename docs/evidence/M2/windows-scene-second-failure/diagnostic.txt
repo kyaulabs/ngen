@@ -1,0 +1,20 @@
+Archive SHA256: d1d6be180e268d870bcc48d0e9959aadf64824ee141315e40e15e730b3914cd9
+Source: 354e11e3f7f971661508cac7f2da8226a36d9202
+Working tree: clean
+Configuration: MSVC x64 Debug, toolset 14.44.35207, C++20, /W4 /WX /permissive-
+
+[36/104] Building CXX object CMakeFiles/ngen_render.dir/engine/render/context.cpp.obj
+[39/104] Building CXX object CMakeFiles/ngen_render.dir/engine/render/presentation.cpp.obj
+[40/104] Building CXX object CMakeFiles/ngen_render.dir/engine/render/post.cpp.obj
+[41/104] Building CXX object CMakeFiles/ngen_render.dir/engine/render/resources.cpp.obj
+FAILED: [code=2] CMakeFiles/ngen_render.dir/engine/render/resources.cpp.obj
+<REPO>/engine/render/resources.cpp(454): error C2397: conversion from 'const VkImageAspectFlagBits' to 'VkImageAspectFlags' requires a narrowing conversion
+[42/104] Building CXX object CMakeFiles/ngen_render.dir/engine/render/mesh.cpp.obj
+ninja: build stopped: subcommand failed.
+
+Local Clang Windows-ABI language negative control (real pinned Vulkan headers):
+error: non-constant-expression cannot be narrowed from type 'VkImageAspectFlagBits' to 'VkImageAspectFlags' (aka 'unsigned int') in initializer list [-Wc++11-narrowing]
+    return {aspect, 0, 1, 0, 1};
+Corrected expression: exit 0, no compiler diagnostics.
+
+No CTest or GPU execution occurred in the uploaded MSVC run.
