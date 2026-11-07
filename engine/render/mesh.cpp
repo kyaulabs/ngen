@@ -32,7 +32,7 @@ MeshPipeline::MeshPipeline(VkDevice device, VkPhysicalDevice physical) : device_
     device_ = VK_NULL_HANDLE;
     throw std::runtime_error("mesh shaders unavailable; enable the offline shader build");
 #else
-    std::array<VkShaderModule, 2> modules{};
+    std::array<VkShaderModule, 4> modules{};
     try {
         VkPhysicalDeviceProperties properties{};
         vkGetPhysicalDeviceProperties(physical, &properties);
@@ -122,6 +122,8 @@ MeshPipeline::MeshPipeline(VkDevice device, VkPhysicalDevice physical) : device_
               "create mesh environment sampler");
         modules[0] = module(device_, compiled::pbr_vertex);
         modules[1] = module(device_, compiled::pbr_fragment);
+        modules[2] = module(device_, compiled::shadow_vertex);
+        modules[3] = module(device_, compiled::shadow_fragment);
         std::array stages{VkPipelineShaderStageCreateInfo{
                               VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO, nullptr, 0,
                               VK_SHADER_STAGE_VERTEX_BIT, modules[0], "main", nullptr},
@@ -141,6 +143,7 @@ MeshPipeline::MeshPipeline(VkDevice device, VkPhysicalDevice physical) : device_
                                               offsetof(shader::Vertex, tangent)},
             VkVertexInputAttributeDescription{4, 0, VK_FORMAT_R32G32_SFLOAT,
                                               offsetof(shader::Vertex, uv1)}};
+        const std::array shadow_attributes{attributes[0], attributes[2], attributes[4]};
         VkPipelineVertexInputStateCreateInfo vertex{};
         vertex.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
         vertex.vertexBindingDescriptionCount = 1;
@@ -212,7 +215,15 @@ MeshPipeline::MeshPipeline(VkDevice device, VkPhysicalDevice physical) : device_
         info.layout = layout_;
         for (std::size_t i = 0; i < pipelines_.size(); ++i) {
             const auto facing = i % 3;
-            const bool transparent = i >= 3;
+            const bool shadow = i >= 6, transparent = i >= 3 && !shadow;
+            stages[0].module = modules[shadow ? 2 : 0];
+            stages[1].module = modules[shadow ? 3 : 1];
+            vertex.vertexAttributeDescriptionCount =
+                static_cast<std::uint32_t>(shadow ? shadow_attributes.size() : attributes.size());
+            vertex.pVertexAttributeDescriptions =
+                shadow ? shadow_attributes.data() : attributes.data();
+            rendering.colorAttachmentCount = blend.attachmentCount = shadow ? 0U : 1U;
+            rendering.pColorAttachmentFormats = shadow ? nullptr : &color_format;
             raster.cullMode = facing == 0 ? VK_CULL_MODE_NONE : VK_CULL_MODE_BACK_BIT;
             raster.frontFace =
                 facing == 1 ? VK_FRONT_FACE_CLOCKWISE : VK_FRONT_FACE_COUNTER_CLOCKWISE;
@@ -289,19 +300,7 @@ std::span<const std::byte> MeshPipeline::prepare(const MeshPass &pass) {
     }
     return scratch_;
 }
-void MeshPipeline::record(const MeshRecording &recording) {
-    const VkViewport viewport{0,
-                              0,
-                              static_cast<float>(recording.extent.width),
-                              static_cast<float>(recording.extent.height),
-                              0,
-                              1};
-    const VkRect2D scissor{{0, 0}, recording.extent};
-    vkCmdSetViewport(recording.commands, 0, 1, &viewport);
-    vkCmdSetScissor(recording.commands, 0, 1, &scissor);
-    const VkDeviceSize offset = 0;
-    vkCmdBindVertexBuffers(recording.commands, 0, 1, &recording.vertices, &offset);
-    vkCmdBindIndexBuffer(recording.commands, recording.indices, 0, VK_INDEX_TYPE_UINT32);
+void MeshPipeline::descriptors(const MeshRecording &recording) {
     for (std::size_t i = 0; i < recording.draws.size(); ++i) {
         const auto &draw = recording.draws[i];
         const auto set_index = (recording.slot * draw_limit + i) * 2;
@@ -356,8 +355,30 @@ void MeshPipeline::record(const MeshRecording &recording) {
         add(sets[1], 10, VK_DESCRIPTOR_TYPE_SAMPLER, 1, nullptr, &samplers[6]);
         vkUpdateDescriptorSets(device_, static_cast<std::uint32_t>(count), writes.data(), 0,
                                nullptr);
+    }
+}
+void MeshPipeline::record(const MeshRecording &recording) {
+    const VkViewport viewport{0,
+                              0,
+                              static_cast<float>(recording.extent.width),
+                              static_cast<float>(recording.extent.height),
+                              0,
+                              1};
+    const VkRect2D scissor{{0, 0}, recording.extent};
+    vkCmdSetViewport(recording.commands, 0, 1, &viewport);
+    vkCmdSetScissor(recording.commands, 0, 1, &scissor);
+    const VkDeviceSize offset = 0;
+    vkCmdBindVertexBuffers(recording.commands, 0, 1, &recording.vertices, &offset);
+    vkCmdBindIndexBuffer(recording.commands, recording.indices, 0, VK_INDEX_TYPE_UINT32);
+    for (std::size_t i = 0; i < recording.draws.size(); ++i) {
+        const auto &draw = recording.draws[i];
+        if (recording.shadow_pass && draw.material.flags[0] == 2)
+            continue;
+        const auto set_index = (recording.slot * draw_limit + i) * 2;
+        const std::array sets{sets_[set_index], sets_[set_index + 1]};
         const auto pipeline =
-            static_cast<std::size_t>(draw.facing) + (draw.material.flags[0] == 2 ? 3U : 0U);
+            static_cast<std::size_t>(draw.facing) +
+            (recording.shadow_pass ? 6U : (draw.material.flags[0] == 2 ? 3U : 0U));
         vkCmdBindPipeline(recording.commands, VK_PIPELINE_BIND_POINT_GRAPHICS,
                           pipelines_[pipeline]);
         vkCmdBindDescriptorSets(recording.commands, VK_PIPELINE_BIND_POINT_GRAPHICS, layout_, 0, 2,

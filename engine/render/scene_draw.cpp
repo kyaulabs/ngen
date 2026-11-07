@@ -267,7 +267,8 @@ std::variant<Submission, Failure> SceneRenderer::draw(Context &context, ScenePin
                         targets.brdf,
                         point_lights,
                         std::span(impl_->ordered).first(count),
-                        wait};
+                        wait,
+                        true};
     auto result = context.draw_mesh(pass);
     if (const auto *submission = std::get_if<Submission>(&result)) {
         impl_->owner = &context;

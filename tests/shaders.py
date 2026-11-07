@@ -38,10 +38,12 @@ class ShaderCompilation(unittest.TestCase):
 
     def test_compile_and_validate_finite_shader_set(self):
         self.assertEqual({x.name for x in self.output.glob("*.spv")},
-                         {"cull.spv", "pbr-vertex.spv", "pbr-fragment.spv", "post-vertex.spv", "post-fragment.spv"})
+                         {"cull.spv", "pbr-vertex.spv", "pbr-fragment.spv", "shadow-vertex.spv", "shadow-fragment.spv", "post-vertex.spv", "post-fragment.spv"})
         for name, stage, entry in (("cull", "compute", "cullMain"),
                                    ("pbr-vertex", "vertex", "vertexMain"),
                                    ("pbr-fragment", "fragment", "fragmentMain"),
+                                   ("shadow-vertex", "vertex", "shadowVertex"),
+                                   ("shadow-fragment", "fragment", "shadowFragment"),
                                    ("post-vertex", "vertex", "postVertex"),
                                    ("post-fragment", "fragment", "postFragment")):
             with self.subTest(stage=stage):
@@ -60,7 +62,7 @@ class ShaderCompilation(unittest.TestCase):
         bindings = {p["name"]: (p["binding"]["space"], p["binding"]["index"]) for p in cull["parameters"]}
         self.assertEqual(bindings, {"cull": (2, 0), "spheres": (2, 1), "visible": (2, 2)})
         self.assertEqual(cull["entryPoints"][0]["threadGroupSize"], [64, 1, 1])
-        for name in ("pbr-vertex", "pbr-fragment"):
+        for name in ("pbr-vertex", "pbr-fragment", "shadow-vertex", "shadow-fragment"):
             pbr = json.loads((self.output / (name + ".reflection.json")).read_text())
             bindings = {p["name"]: (p["binding"].get("space", 0), p["binding"]["index"]) for p in pbr["parameters"]}
             self.assertEqual(bindings, {
@@ -101,7 +103,7 @@ class ShaderCompilation(unittest.TestCase):
                     self.assertEqual(element["uniformStride"], layouts[element["elementType"]["name"]]["size"])
             checked.add(name)
 
-        for name in ("cull", "pbr-vertex", "pbr-fragment", "post-vertex", "post-fragment"):
+        for name in ("cull", "pbr-vertex", "pbr-fragment", "shadow-vertex", "shadow-fragment", "post-vertex", "post-fragment"):
             reflected = json.loads((self.output / (name + ".reflection.json")).read_text())
             for parameter in reflected["parameters"]:
                 if parameter["type"]["kind"] == "constantBuffer":

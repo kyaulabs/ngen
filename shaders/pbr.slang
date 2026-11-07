@@ -75,6 +75,33 @@ Varying vertexMain(Vertex input)
     return output;
 }
 
+struct ShadowVarying
+{
+    float4 position : SV_Position;
+    float2 uv : TEXCOORD0;
+    float2 uv1 : TEXCOORD1;
+};
+[shader("vertex")]
+ShadowVarying shadowVertex(Vertex input)
+{
+    ShadowVarying output;
+    output.position = mul(frame.lightViewProjection, mul(frame.model, float4(input.position, 1)));
+    output.uv = input.uv;
+    output.uv1 = input.uv1;
+    return output;
+}
+[shader("fragment")]
+void shadowFragment(ShadowVarying input)
+{
+    if (material.flags.x == 1)
+    {
+        float2 uv = (material.flags.y & 1u) != 0 ? input.uv1 : input.uv;
+        float alpha = baseColorMap.Sample(materialSamplers[0], uv).a * material.baseColor.a;
+        if (alpha < material.emissiveAlphaCutoff.w)
+            discard;
+    }
+}
+
 static const float PI = 3.141592653589793;
 float3 fresnel(float cosine, float3 f0)
 {

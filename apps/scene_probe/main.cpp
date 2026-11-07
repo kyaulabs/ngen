@@ -134,11 +134,17 @@ ngen::assets::PackageResult fixture() {
 }
 } // namespace
 int main(int argc, char **argv) try {
-    if (argc > 2) {
-        std::fputs("Usage: scene_probe [scene.ngas]\n", stderr);
+    if (argc > 3) {
+        std::fputs("Usage: scene_probe [scene.ngas [capture.bmp]]\n", stderr);
         return 2;
     }
-    auto loaded = argc == 2 ? ngen::assets::load_package_file(argv[1]) : fixture();
+    if (argc == 3 && (std::filesystem::exists(std::filesystem::symlink_status(argv[2])) ||
+                      std::filesystem::path(argv[2]).extension() != ".bmp")) {
+        std::fputs("Scene capture must be a new .bmp path; existing files/links are preserved\n",
+                   stderr);
+        return 2;
+    }
+    auto loaded = argc >= 2 ? ngen::assets::load_package_file(argv[1]) : fixture();
     if (const auto *failure = std::get_if<ngen::assets::Failure>(&loaded)) {
         std::fprintf(stderr, "Scene fixture: %s\n", failure->message.c_str());
         return 1;
@@ -295,7 +301,8 @@ int main(int argc, char **argv) try {
     }
     std::printf("resident_verified_mip_bytes=%llu\n",
                 static_cast<unsigned long long>(verified_mip_bytes));
-    if (!ngen::probe::draw_scene(*context, next, version))
+    std::fflush(stdout);
+    if (!ngen::probe::draw_scene(*context, next, version, argc == 3 ? argv[2] : ""))
         return 1;
     if (!context->close() || version->vertices().native() || version->indices().native() ||
         version->images()[0].native())

@@ -62,11 +62,11 @@ class DrawGate {
     bool signaled_{};
 };
 } // namespace
-bool draw_scene(render::Context &context, render::ScenePin &version,
-                const render::ScenePin &active) {
+bool draw_scene(render::Context &context, render::ScenePin &version, const render::ScenePin &active,
+                const std::filesystem::path &capture) {
     using namespace render;
     const auto package = version->package();
-    constexpr VkExtent2D extent{256, 128};
+    const VkExtent2D extent = capture.empty() ? VkExtent2D{256, 128} : VkExtent2D{1280, 720};
     auto color = take(
         context.create_image({extent, VK_FORMAT_R16G16B16A16_SFLOAT,
                               static_cast<VkImageUsageFlags>(VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT) |
@@ -79,10 +79,10 @@ bool draw_scene(render::Context &context, render::ScenePin &version,
                                    static_cast<VkImageUsageFlags>(VK_IMAGE_USAGE_SAMPLED_BIT) |
                                        VK_IMAGE_USAGE_TRANSFER_DST_BIT}));
     auto shadow =
-        take(context.create_image({{1, 1},
+        take(context.create_image({{1024, 1024},
                                    VK_FORMAT_D32_SFLOAT,
                                    static_cast<VkImageUsageFlags>(VK_IMAGE_USAGE_SAMPLED_BIT) |
-                                       VK_IMAGE_USAGE_TRANSFER_DST_BIT}));
+                                       VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT}));
     const auto upload = [&](const Image &target, std::span<const std::byte> bytes) {
         auto staging = take(context.create_buffer(
             {bytes.size(), VK_BUFFER_USAGE_TRANSFER_SRC_BIT, MemoryAccess::upload}));
@@ -91,9 +91,7 @@ bool draw_scene(render::Context &context, render::ScenePin &version,
     };
     const std::array<std::byte, 4> pixel{std::byte{255}, std::byte{255}, std::byte{255},
                                          std::byte{255}};
-    const float depth_one = 1;
     upload(white, pixel);
-    upload(shadow, std::as_bytes(std::span{&depth_one, 1}));
     const auto generated = take(generate_environment(Sky{}));
     std::array<Image, 3> environment;
     for (std::size_t i = 0; i < environment.size(); ++i) {
@@ -110,11 +108,13 @@ bool draw_scene(render::Context &context, render::ScenePin &version,
         center[i] = (bounds.minimum[i] + bounds.maximum[i]) * .5F;
         radius = std::max(radius, (bounds.maximum[i] - bounds.minimum[i]) * .5F);
     }
+    const auto half_width =
+        radius * .9F * static_cast<float>(extent.width) / static_cast<float>(extent.height);
     const std::array<float, 3> right{.70710678F, 0, -.70710678F},
         up{-.40824829F, .81649658F, -.40824829F}, back{.57735027F, .57735027F, .57735027F};
     float r_center = 0, u_center = 0, b_center = 0;
     for (std::size_t i = 0; i < 3; ++i) {
-        view.view_projection.columns[i * 4] = right[i] / (radius * 1.8F);
+        view.view_projection.columns[i * 4] = right[i] / half_width;
         view.view_projection.columns[i * 4 + 1] = -up[i] / (radius * .9F);
         view.view_projection.columns[i * 4 + 2] = -back[i] / (radius * 6);
         r_center += right[i] * center[i];
@@ -122,7 +122,7 @@ bool draw_scene(render::Context &context, render::ScenePin &version,
         b_center += back[i] * center[i];
         view.camera_position[i] = center[i] + back[i] * radius * 3;
     }
-    view.view_projection.columns[12] = -r_center / (radius * 1.8F);
+    view.view_projection.columns[12] = -r_center / half_width;
     view.view_projection.columns[13] = u_center / (radius * .9F);
     view.view_projection.columns[14] = .5F + b_center / (radius * 6);
     view.view_projection.columns[15] = 1;
@@ -156,11 +156,11 @@ bool draw_scene(render::Context &context, render::ScenePin &version,
     gate.completed = true;
     require(take(renderer.collect(context)) == 0 && weak.expired(),
             "completed frame version did not release its owning pin");
-    constexpr auto bytes = VkDeviceSize{extent.width} * extent.height * 8;
+    const auto bytes = VkDeviceSize{extent.width} * extent.height * 8;
     auto readback = take(
         context.create_buffer({bytes, VK_BUFFER_USAGE_TRANSFER_DST_BIT, MemoryAccess::readback}));
     wait(context, take(context.copy_from_image({color, readback})));
-    std::array<std::uint16_t, std::size_t{extent.width} * extent.height * 4> actual{};
+    std::vector<std::uint16_t> actual(std::size_t{extent.width} * extent.height * 4);
     (void)take(readback.read(0, std::as_writable_bytes(std::span(actual))));
     std::size_t lit = 0;
     for (std::size_t i = 0; i < actual.size(); i += 4) {
@@ -173,6 +173,49 @@ bool draw_scene(render::Context &context, render::ScenePin &version,
             ++lit;
     }
     require(lit > 0, "scene geometry did not draw any material pixels");
+    if (!capture.empty()) {
+        auto ldr = take(context.create_image(
+            {extent, VK_FORMAT_R8G8B8A8_SRGB,
+             static_cast<VkImageUsageFlags>(VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT) |
+                 VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_TRANSFER_SRC_BIT}));
+        wait(context, take(context.post_process({color, ldr})));
+        wait(context, take(context.copy_from_image({ldr, readback})));
+        std::vector<std::byte> pixels(std::size_t{extent.width} * extent.height * 4);
+        (void)take(readback.read(0, pixels));
+        const auto surface = std::unique_ptr<SDL_Surface, decltype(&SDL_DestroySurface)>(
+            SDL_CreateSurfaceFrom(static_cast<int>(extent.width), static_cast<int>(extent.height),
+                                  SDL_PIXELFORMAT_RGBA32, pixels.data(),
+                                  static_cast<int>(extent.width * 4)),
+            SDL_DestroySurface);
+        require(surface != nullptr, "scene capture surface creation failed");
+        // Encode into bounded memory, then create exclusively: GPU preparation
+        // must not let a concurrent writer's file be overwritten after admission.
+        std::vector<std::byte> encoded(std::size_t{4} * 1024 * 1024);
+        const auto stream = std::unique_ptr<SDL_IOStream, decltype(&SDL_CloseIO)>(
+            SDL_IOFromMem(encoded.data(), encoded.size()), SDL_CloseIO);
+        require(stream != nullptr && SDL_SaveBMP_IO(surface.get(), stream.get(), false),
+                "scene post-processed BMP encoding failed");
+        const auto length = SDL_TellIO(stream.get());
+        require(length > 0 && static_cast<std::uint64_t>(length) <= encoded.size(),
+                "scene BMP capture exceeded its bounded encoding storage");
+        std::FILE *file{};
+#if defined(_WIN32)
+        (void)fopen_s(&file, capture.string().c_str(), "wbx");
+#else
+        file = std::fopen(capture.string().c_str(), "wbx");
+#endif
+        const auto close_file = [](std::FILE *value) { (void)std::fclose(value); };
+        auto output = std::unique_ptr<std::FILE, decltype(close_file)>(file, close_file);
+        require(output != nullptr, "scene capture path exists or cannot be created");
+        const auto written =
+            std::fwrite(encoded.data(), 1, static_cast<std::size_t>(length), output.get());
+        const bool closed = std::fclose(output.release()) == 0;
+        require(written == static_cast<std::size_t>(length) && closed,
+                "scene BMP capture write/close failed");
+        require(SDL_SetWindowSize(context.window(), static_cast<int>(extent.width),
+                                  static_cast<int>(extent.height)),
+                "scene target-resolution window resize failed");
+    }
     require(SDL_ShowWindow(context.window()), "scene presentation window did not show");
     const auto start = SDL_GetTicks();
     bool presented = false;
@@ -189,7 +232,21 @@ bool draw_scene(render::Context &context, render::ScenePin &version,
         SDL_Delay(1);
     }
     require(presented, "scene HDR output did not reach a queued WSI frame");
-    std::printf("checked_scene_pbr=1 generated_ibl=1 frame_version_pin=1 frame_versions=2 "
+    std::uint64_t triangles = 0;
+    for (const auto &instance : package->instances) {
+        const auto &lods = package->primitives[instance.primitive].lods;
+        triangles += lods[std::min(std::size_t{view.lod}, lods.size() - 1)].index_count / 3;
+    }
+    const auto wsi = context.presentation_state().extent;
+    std::printf("scene_hdr_width=%u scene_hdr_height=%u scene_wsi_width=%u scene_wsi_height=%u "
+                "scene_capture=%u scene_lod=%u scene_triangles=%llu scene_draws=%zu "
+                "scene_primitives=%zu scene_materials=%zu scene_light_instances=%zu\n",
+                extent.width, extent.height, wsi.width, wsi.height, capture.empty() ? 0U : 1U,
+                view.lod, static_cast<unsigned long long>(triangles), package->instances.size(),
+                package->primitives.size(), package->materials.size(),
+                package->light_instances.size());
+    std::printf("checked_scene_pbr=1 generated_ibl=1 generated_shadow=1 shadow_extent=1024 "
+                "frame_version_pin=1 frame_versions=2 "
                 "frame_pin_retired=1 "
                 "scene_lit_pixels=%zu "
                 "scene_wsi_queued=1\n",

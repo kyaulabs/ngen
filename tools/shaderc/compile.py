@@ -12,6 +12,8 @@ import tempfile
 ENTRIES = (("cull", "cull", "compute", "cullMain"),
            ("pbr-vertex", "pbr", "vertex", "vertexMain"),
            ("pbr-fragment", "pbr", "fragment", "fragmentMain"),
+           ("shadow-vertex", "pbr", "vertex", "shadowVertex"),
+           ("shadow-fragment", "pbr", "fragment", "shadowFragment"),
            ("post-vertex", "post", "vertex", "postVertex"),
            ("post-fragment", "post", "fragment", "postFragment"))
 MAX_ARTIFACT_BYTES = 4 * 1024 * 1024

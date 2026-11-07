@@ -476,12 +476,14 @@ bool check_mesh(ngen::render::Context &context, const ngen::render::Buffer &read
     const std::array<std::byte, 24> black_faces{};
     if (!upload(environment, black_faces))
         return false;
-    auto shadow = image({{1, 1},
+    auto shadow = image({{16, 16},
                          VK_FORMAT_D32_SFLOAT,
                          static_cast<VkImageUsageFlags>(VK_IMAGE_USAGE_SAMPLED_BIT) |
-                             VK_IMAGE_USAGE_TRANSFER_DST_BIT});
-    const float depth_one = 1;
-    if (!upload(shadow, std::as_bytes(std::span{&depth_one, 1})))
+                             VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_TRANSFER_SRC_BIT |
+                             VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT});
+    std::array<float, std::size_t{16} * 16> unoccluded{};
+    unoccluded.fill(1);
+    if (!upload(shadow, std::as_bytes(std::span(unoccluded))))
         return false;
     auto color = image({{16, 16},
                         VK_FORMAT_R16G16B16A16_SFLOAT,
@@ -551,6 +553,142 @@ bool check_mesh(ngen::render::Context &context, const ngen::render::Buffer &read
         std::fputs("Vulkan resource: tracked mesh indexed/depth pixels differ\n", stderr);
         return false;
     }
+    auto shadow_pass = pass;
+    shadow_pass.generate_shadow = true;
+    for (auto &draw : draws) {
+        draw.frame.lightViewProjection.columns[10] = .5F;
+        draw.frame.lightViewProjection.columns[14] = .1F;
+    }
+    draws[0].frame.model.columns[14] = .2F;
+    auto shadow_result = when_ready([&] { return context.draw_mesh(shadow_pass); });
+    if (failed(shadow_result, "generated directional shadow"))
+        return false;
+    auto shadow_copy = when_ready([&] { return context.copy_from_image({shadow, readback}); });
+    std::array<float, std::size_t{16} * 16> shadow_pixels{};
+    if (failed(shadow_copy, "generated shadow depth readback") ||
+        !wait_submission(context, std::get<Submission>(shadow_copy)) ||
+        failed(readback.read(0, std::as_writable_bytes(std::span(shadow_pixels))), "shadow depths"))
+        return false;
+    if (std::abs(shadow_pixels[5 * 16 + 3] - .45F) > .0001F ||
+        std::abs(shadow_pixels[5 * 16 + 12] - .35F) > .0001F ||
+        std::abs(shadow_pixels[5 * 16 + 8] - .35F) > .0001F || shadow_pixels[0] != 1) {
+        std::fputs(
+            "Vulkan resource: generated indexed shadow depth/model/light transform differs\n",
+            stderr);
+        return false;
+    }
+    const auto depth_pixels = [&] {
+        const auto drawn = when_ready([&] { return context.draw_mesh(shadow_pass); });
+        if (failed(drawn, "shadow cutout draw"))
+            return false;
+        const auto copied_depth =
+            when_ready([&] { return context.copy_from_image({shadow, readback}); });
+        return !failed(copied_depth, "shadow cutout readback") &&
+               wait_submission(context, std::get<Submission>(copied_depth)) &&
+               !failed(readback.read(0, std::as_writable_bytes(std::span(shadow_pixels))),
+                       "shadow cutout pixels");
+    };
+    auto cutout = image({{2, 1},
+                         VK_FORMAT_R8G8B8A8_UNORM,
+                         static_cast<VkImageUsageFlags>(VK_IMAGE_USAGE_SAMPLED_BIT) |
+                             VK_IMAGE_USAGE_TRANSFER_DST_BIT});
+    const std::array<std::byte, 8> cutout_pixels{std::byte{255}, std::byte{255}, std::byte{255},
+                                                 std::byte{0},   std::byte{255}, std::byte{255},
+                                                 std::byte{255}, std::byte{255}};
+    if (!upload(cutout, cutout_pixels))
+        return false;
+    for (auto &vertex : vertices) {
+        vertex.uv = {1.25F, .5F};
+        vertex.uv1 = {.75F, .5F};
+    }
+    if (failed(vertex_buffer.write(0, std::as_bytes(std::span(vertices))), "shadow UV vertices"))
+        return false;
+    draws[0].material.flags[0] = 2; // Near transparent geometry must not cast.
+    draws[1].material.flags[0] = 1;
+    draws[1].maps[0] = &cutout;
+    draws[1].samplers[0].min = draws[1].samplers[0].mag = VK_FILTER_NEAREST;
+    if (!depth_pixels() || shadow_pixels[5 * 16 + 8] != 1) {
+        std::fputs("Vulkan resource: mask/repeat or transparent shadow exclusion differs\n",
+                   stderr);
+        return false;
+    }
+    draws[1].material.flags[1] = 1;
+    if (!depth_pixels() || std::abs(shadow_pixels[5 * 16 + 8] - .45F) > .0001F) {
+        std::fputs("Vulkan resource: shadow base-map UV1 selection differs\n", stderr);
+        return false;
+    }
+    draws[1].material.baseColor[3] = .25F;
+    if (!depth_pixels() || shadow_pixels[5 * 16 + 8] != 1) {
+        std::fputs("Vulkan resource: shadow material alpha cutoff differs\n", stderr);
+        return false;
+    }
+    draws[1].material.baseColor[3] = 1;
+    draws[1].material.flags[1] = 0;
+    draws[1].samplers[0].u = VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE;
+    if (!depth_pixels() || std::abs(shadow_pixels[5 * 16 + 8] - .45F) > .0001F) {
+        std::fputs("Vulkan resource: shadow base-map clamp sampler differs\n", stderr);
+        return false;
+    }
+    draws[1].facing = MeshFacing::clockwise;
+    if (!depth_pixels())
+        return false;
+    const auto clockwise_depth = shadow_pixels[5 * 16 + 8];
+    draws[1].facing = MeshFacing::counter_clockwise;
+    if (!depth_pixels())
+        return false;
+    const auto counter_depth = shadow_pixels[5 * 16 + 8];
+    if (!((clockwise_depth == 1 && std::abs(counter_depth - .45F) < .0001F) ||
+          (counter_depth == 1 && std::abs(clockwise_depth - .45F) < .0001F))) {
+        std::fputs("Vulkan resource: shadow facing variants differ\n", stderr);
+        return false;
+    }
+    draws[1].frame.model.columns[0] = -1;
+    if (!depth_pixels() || std::abs(shadow_pixels[5 * 16 + 8] - clockwise_depth) > .0001F) {
+        std::fputs("Vulkan resource: mirrored shadow facing differs\n", stderr);
+        return false;
+    }
+    draws[1].facing = MeshFacing::both;
+    draws[1].maps[0] = &white;
+    cutout = {};
+    for (auto &draw : draws) {
+        draw.frame.lightViewProjection = identity;
+        draw.frame.model = identity;
+        draw.material.flags[0] = 0;
+    }
+    // The near caster is offscreen only in the camera view. The far receiver
+    // remains visible, distinguishing an actual sampled shadow from camera depth.
+    draws[0].frame.viewProjection.columns[12] = 4;
+    draws[1].material.emissiveAlphaCutoff = {0, 0, 0, .5F};
+    draws[1].frame.keyDirectionIntensity = {0, 0, -1, 1};
+    draws[1].frame.keyColor = {1, 1, 1, 0};
+    const auto color_pixels = [&](const MeshPass &description) {
+        const auto drawn = when_ready([&] { return context.draw_mesh(description); });
+        if (failed(drawn, "shadow receiver draw"))
+            return false;
+        const auto copied_color =
+            when_ready([&] { return context.copy_from_image({color, readback}); });
+        return !failed(copied_color, "shadow receiver readback") &&
+               wait_submission(context, std::get<Submission>(copied_color)) &&
+               !failed(readback.read(0, std::as_writable_bytes(std::span(actual))),
+                       "shadow receiver pixels");
+    };
+    if (!upload(shadow, std::as_bytes(std::span(unoccluded))) || !color_pixels(pass))
+        return false;
+    const auto unshadowed = pixel(8, 5);
+    if (!color_pixels(shadow_pass) || unshadowed[0] == 0 || pixel(8, 5)[0] != 0 ||
+        pixel(3, 5)[0] == 0) {
+        std::fputs("Vulkan resource: generated key-shadow receiver visibility differs\n", stderr);
+        return false;
+    }
+    // Restore the original emissive/IBL fixture and its provided-shadow path.
+    draws[0].frame.viewProjection = identity;
+    draws[1].frame.keyDirectionIntensity[3] = 0;
+    draws[1].material.emissiveAlphaCutoff = {1, 0, 0, .5F};
+    if (!upload(shadow, std::as_bytes(std::span(unoccluded))))
+        return false;
+    std::puts("generated_shadow=1 shadow_indexed_transform=1 shadow_mask_uv1_sampler=1 "
+              "shadow_blend_excluded=1 shadow_receiver_visibility=1 shadow_facing=1 "
+              "shadow_mirrored=1");
     Sky sky;
     sky.horizon = sky.zenith = sky.ground = {.25F, .5F, 1};
     auto generated = generate_environment(sky);
@@ -616,17 +754,21 @@ bool check_mesh(ngen::render::Context &context, const ngen::render::Buffer &read
     if (failed(baseline_result, "mesh baseline"))
         return false;
     const auto baseline = std::get<ResourceStatistics>(baseline_result);
+    const MeshPass wrong_shadow{vertex_buffer, index_buffer, color, depth, white, environment,
+                                environment,   white,        {},    draws, {},    true};
+    if (!std::holds_alternative<Failure>(context.draw_mesh(wrong_shadow)))
+        return false;
     Gate gate(context);
-    auto gated = pass;
+    auto gated = shadow_pass;
     gated.wait = {gate.handle, 1};
     const auto held = context.draw_mesh(gated);
     if (failed(held, "gated mesh draw"))
         return false;
     gate.submitted = true;
-    const auto second = context.draw_mesh(pass);
+    const auto second = context.draw_mesh(shadow_pass);
     if (failed(second, "second mesh command slot"))
         return false;
-    const auto busy = context.draw_mesh(pass);
+    const auto busy = context.draw_mesh(shadow_pass);
     const auto *backpressure = std::get_if<Failure>(&busy);
     if (!backpressure || backpressure->message != "transfer contexts are busy")
         return false;

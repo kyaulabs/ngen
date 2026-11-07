@@ -11,6 +11,8 @@ param(
     [switch]$Renderer,
     [Parameter(ParameterSetName = 'CPU')]
     [switch]$Scene,
+    [Parameter(ParameterSetName = 'CPU')]
+    [string]$ScenePackage = '',
     [Parameter(Mandatory, ParameterSetName = 'GPU')]
     [switch]$GpuInfo
 )
@@ -40,14 +42,31 @@ function Get-NgenVulkanSdkRoot {
     return ''
 }
 
+function Get-NgenSceneIdentity {
+    param([Parameter(Mandatory)][string]$Path)
+    $item = Get-Item -LiteralPath $Path -Force -ErrorAction Stop
+    if ($item -isnot [IO.FileInfo] -or ($item.Attributes -band [IO.FileAttributes]::ReparsePoint) -or
+        $item.Extension -ine '.ngas' -or $item.Length -lt 1 -or $item.Length -gt 268435456) {
+        throw 'ScenePackage must be a nonempty regular .ngas file of at most 256 MiB, not a directory or link.'
+    }
+    return [ordered]@{
+        schema = 1
+        name = $item.Name
+        bytes = $item.Length
+        sha256 = (Get-FileHash -LiteralPath $item.FullName -Algorithm SHA256).Hash.ToLowerInvariant()
+    }
+}
+
 function Invoke-NgenRenderer {
     param(
         [Parameter(Mandatory)][string]$BuildDirectory,
         [Parameter(Mandatory)][string]$LogDirectory,
         [Parameter(Mandatory)][string]$Configuration,
         [Parameter(Mandatory)][scriptblock]$Checks,
-        [switch]$Scene
+        [switch]$Scene,
+        [string]$ScenePackage = ''
     )
+    if ($ScenePackage) { $Scene = $true }
     # SDL is a locked Conan dependency, not the SDK's optional SDL bundle.
     # CTest's startup executable needs the same DLL path as the GPU probes.
     try {
@@ -60,12 +79,26 @@ function Invoke-NgenRenderer {
         Invoke-NgenNative -FilePath (Join-Path $BuildDirectory 'resource_probe.exe') -LogPath (Join-Path $LogDirectory "$Configuration-resources.txt")
         Invoke-NgenNative -FilePath (Join-Path $BuildDirectory 'shader_gpu_probe.exe') -LogPath (Join-Path $LogDirectory "$Configuration-shaders.txt")
         if ($Scene) {
-            Invoke-NgenNative -FilePath (Join-Path $BuildDirectory 'scene_probe.exe') -LogPath (Join-Path $LogDirectory "$Configuration-scene.txt")
+            $sceneProbe = Join-Path $BuildDirectory 'scene_probe.exe'
+            Invoke-NgenNative -FilePath $sceneProbe -LogPath (Join-Path $LogDirectory "$Configuration-scene.txt")
+            if ($ScenePackage) {
+                $identity = Get-NgenSceneIdentity -Path $ScenePackage | ConvertTo-Json
+                $identity | Set-Content -LiteralPath (Join-Path $LogDirectory "$Configuration-scene-package.json")
+                $capture = Join-Path $LogDirectory "$Configuration-scene-package.bmp"
+                if (Test-Path -LiteralPath $capture) { throw 'Scene capture path is not fresh.' }
+                Invoke-NgenNative -FilePath $sceneProbe -Arguments @($ScenePackage, $capture) -LogPath (Join-Path $LogDirectory "$Configuration-scene-package.txt")
+                if (-not (Test-Path -LiteralPath $capture -PathType Leaf) -or (Get-Item -LiteralPath $capture).Length -eq 0) {
+                    throw 'Scene probe completed without the requested image evidence.'
+                }
+                if ((Get-NgenSceneIdentity -Path $ScenePackage | ConvertTo-Json) -cne $identity) {
+                    throw 'ScenePackage changed during native verification.'
+                }
+            }
         }
         $manifests = @(Get-ChildItem -LiteralPath (Join-Path $BuildDirectory 'shaders') -Filter 'manifest.json' -Recurse -File)
         if ($manifests.Count -ne 1) { throw 'Expected one immutable shader package in the fresh build.' }
         Copy-Item -LiteralPath $manifests[0].FullName -Destination (Join-Path $LogDirectory "$Configuration-shader-manifest.json")
-        foreach ($shader in @('cull', 'pbr-vertex', 'pbr-fragment', 'post-vertex', 'post-fragment')) {
+        foreach ($shader in @('cull', 'pbr-vertex', 'pbr-fragment', 'shadow-vertex', 'shadow-fragment', 'post-vertex', 'post-fragment')) {
             Copy-Item -LiteralPath (Join-Path $manifests[0].DirectoryName "$shader.reflection.json") -Destination (Join-Path $LogDirectory "$Configuration-$shader.reflection.json")
         }
     } finally {
@@ -135,6 +168,7 @@ function Invoke-NgenGpuInfo {
 }
 
 # Scene verification is the combined renderer + checked runtime-assets graph.
+if ($ScenePackage) { $Scene = $true }
 if ($Scene) { $Renderer = $true }
 
 if (-not $IsWindows) {
@@ -174,6 +208,10 @@ try {
         exit 0
     }
 
+    if ($ScenePackage) {
+        Get-NgenSceneIdentity -Path $ScenePackage | Out-Null
+        $ScenePackage = (Resolve-Path -LiteralPath $ScenePackage).ProviderPath
+    }
     if (-not (Get-Command cl -ErrorAction SilentlyContinue) -or $env:VSCMD_ARG_TGT_ARCH -ne 'x64') {
         $vswhere = Join-Path ${env:ProgramFiles(x86)} 'Microsoft Visual Studio/Installer/vswhere.exe'
         if (-not (Test-Path -LiteralPath $vswhere)) {
@@ -294,12 +332,14 @@ try {
             Invoke-NgenNative -FilePath $harness -Arguments @('--workers=2') -LogPath (Join-Path $logs "$config-workers.txt")
         }
         if ($Renderer) {
-            Invoke-NgenRenderer -BuildDirectory $build -LogDirectory $logs -Configuration $config -Checks $checks -Scene:$Scene
+            Invoke-NgenRenderer -BuildDirectory $build -LogDirectory $logs -Configuration $config -Checks $checks -Scene:$Scene -ScenePackage $ScenePackage
         } else {
             & $checks
         }
     }
-    if ($Scene) {
+    if ($ScenePackage) {
+        Write-Host "Windows $Compiler CPU, renderer/shader, built-in fixture and supplied checked-package upload/PBR/frame-pin checks passed. See the package hash and separate scene-package logs. This is not final visual, performance or M2 acceptance."
+    } elseif ($Scene) {
         Write-Host "Windows $Compiler CPU, renderer/shader, checked-scene fixture upload/PBR/frame-pin checks passed. This does not validate Windows frigate rendering, final performance or full M2 acceptance."
     } elseif ($Renderer) {
         Write-Host "Windows $Compiler CPU tests, Vulkan startup/presentation, GPU resource retirement and native shader culling/PBR fixture checks passed. This is not the imported-ship rendering path or full M2 acceptance."
