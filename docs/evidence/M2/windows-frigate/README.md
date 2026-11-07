@@ -1,6 +1,6 @@
 # Full-frigate Windows validation
 
-This is a **new execution handoff**, not a retained NVIDIA success or final M2 acceptance. It covers generated IBL, real directional shadows and the complete checked frigate, beyond the [successful earlier Debug fixture](../windows-scene-debug/README.md). No new SDK, driver or persistent environment setup is requested.
+**Completed at `ef984ef`: [genuine MSVC/clang-cl Debug and Release full-frigate NVIDIA execution](../windows-frigate-verified/README.md), 8/8 tests each, generated IBL/shadows and matching 1280×720 captures.** No repeat or SDK/driver setup is requested for this slice. Instructions below are retained for reproduction, not final M2 acceptance.
 
 Copy the private development input into `build/windows-frigate-input/` on Windows: `scene.ngas` and its existing cook `manifest.json`. A local transfer archive is prepared at `build/windows-frigate-input.zip`; extract it into the checkout's `build/` directory. It contains the cooked package, manifest, checksums and private-use notice, **not** the original GLB. The prepared ZIP is 47,520,371 bytes, SHA256 `6065233462583b2691e236922adb0c097d0df252c1872bd2fe0c089a6e131c54`. Do not commit or publicly upload the archive/package/captures: redistribution is not approved.
 
@@ -11,8 +11,7 @@ From MSYS2 fish, after copying the input:
 ```fish
 cd /d/Git/kyaulabs/ngen
 and git fetch origin
-and git switch feat/kyau-e39ea3-scene-frames
-and git pull --ff-only
+and git switch --detach ef984ef18c6fb6ed9886f45003dc67e85d42170c
 and begin
     set package (cygpath -w "$PWD/build/windows-frigate-input/scene.ngas")
     for compiler in MSVC ClangCl
@@ -22,7 +21,7 @@ and begin
 end
 ```
 
-Each compiler runs **Debug and Release** for the new combined source. This is not a request to reconfirm the old padding/narrowing fixes: it adds later environment/shadow code and actual full-package execution. To isolate Release first, append `-Configuration Release`; that result would not cover the new Debug tree.
+Each compiler runs **Debug and Release** for the tested combined source. The detached checkout reproduces that exact source after feature-branch cleanup; it is not a work branch. These results add later environment/shadow code and actual full-package execution beyond the old padding/narrowing corrections. To isolate Release first, append `-Configuration Release`; that result would not cover the new Debug tree.
 
 Keep the ordinary small fixture (`*-scene.txt`) and the full package (`*-scene-package.txt`) separate. Each configuration records `*-scene-package.json` with actual package byte count/SHA256 before execution, verifies unchanged identity afterward, and retains `*-scene-package.bmp`: a **1280×720 GPU post-processed sRGB capture**, not a desktop/scanout screenshot. The fresh-output guard also rejects existing files/links and concurrent file creation rather than overwriting owner data. Missing image output, changed input or failed native execution stops verification.
 

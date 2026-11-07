@@ -1,0 +1,46 @@
+[
+  {
+    "compiler": "msvc",
+    "configuration": "Debug",
+    "file": "Debug-scene-package.bmp",
+    "bytes": 3686538,
+    "width": 1280,
+    "height": 720,
+    "rgb_nonblack_pixels": 66244,
+    "sha256": "621978da723790ad88190eae45ebf08fb2b20875e67ec3d48a57248108f3b924",
+    "retained": "ignored owner extraction only; redistribution not approved"
+  },
+  {
+    "compiler": "msvc",
+    "configuration": "Release",
+    "file": "Release-scene-package.bmp",
+    "bytes": 3686538,
+    "width": 1280,
+    "height": 720,
+    "rgb_nonblack_pixels": 66244,
+    "sha256": "621978da723790ad88190eae45ebf08fb2b20875e67ec3d48a57248108f3b924",
+    "retained": "ignored owner extraction only; redistribution not approved"
+  },
+  {
+    "compiler": "clang-cl",
+    "configuration": "Debug",
+    "file": "Debug-scene-package.bmp",
+    "bytes": 3686538,
+    "width": 1280,
+    "height": 720,
+    "rgb_nonblack_pixels": 66244,
+    "sha256": "621978da723790ad88190eae45ebf08fb2b20875e67ec3d48a57248108f3b924",
+    "retained": "ignored owner extraction only; redistribution not approved"
+  },
+  {
+    "compiler": "clang-cl",
+    "configuration": "Release",
+    "file": "Release-scene-package.bmp",
+    "bytes": 3686538,
+    "width": 1280,
+    "height": 720,
+    "rgb_nonblack_pixels": 66244,
+    "sha256": "621978da723790ad88190eae45ebf08fb2b20875e67ec3d48a57248108f3b924",
+    "retained": "ignored owner extraction only; redistribution not approved"
+  }
+]

@@ -1,13 +1,13 @@
 # M2 acceptance gates
 
-**Open.** Implementation integration and automated fixtures are not independent graphics review or owner acceptance. The latest retained NVIDIA execution is MSVC/clang-cl **Debug at `e387dde`**, not this later IBL/shadow renderer or the full frigate.
+**Open.** Implementation integration and automated fixtures are not independent graphics review or owner acceptance. The [owner's full-frigate NVIDIA execution](windows-frigate-verified/README.md) now passes genuine MSVC/clang-cl **Debug and Release at `ef984ef`**, 8/8 tests each, including generated IBL/shadows and target-resolution captures. That execution slice is complete; later workload, quality and acceptance gates are not.
 
 | Requirement | Current evidence | Still required |
 |---|---|---|
 | M2-A: platform/capabilities | Intel/Wayland and owner Windows/RTX 5070 startup, surface selection, clear/resize/minimize checks | Final combined required-platform execution; scope recovery claims to exercised scenarios |
 | M2-B: ownership/retirement | Tracked buffers/images, two pinned frigate versions, gated mesh/shadow resources, failed-submit controls | Whole-scene resize/reload memory plateau and final graphics-memory accounting, not just tiny-resource replacement or VMA counters |
-| M2-C: offline shader contract | Seven finite validated/embedded entries; compiled reflection; native Intel material, IBL and shadow controls | New NVIDIA execution and compiler-choice acceptance; earlier five-entry Debug evidence remains revision-specific |
-| M2-D: checked imported ship | Original source preserved; canonical package retains LOD0, all materials/lights and complete native mip/geometry readbacks | Full-package NVIDIA execution; redistribution remains unapproved |
+| M2-C: offline shader contract | Seven finite validated/embedded entries; compiled reflection; native Intel material, IBL and shadow controls | Compiler-choice acceptance; seven-entry NVIDIA execution now passes at `ef984ef`, while earlier five-entry Debug evidence remains revision-specific |
+| M2-D: checked imported ship | Original source preserved; canonical package retains LOD0, all materials/lights and complete native mip/geometry readbacks | Full-package NVIDIA execution passes at `ef984ef`; redistribution remains unapproved |
 | M2-E: fixed rendering schedule | Owning checked scene, generated IBL, indexed shadow → opaque/mask/sorted blend → post/WSI; target-resolution ship capture | 100-instanced-asteroid workload, restrained bloom, final material/scheduling/visual acceptance and optional UI composition |
 | M2-F: queued inspector | Contract/planning only | Bounded next-frame selection/material/reload commands, inspector UI/walkthrough, disabled-tooling Release graph |
 

@@ -1,6 +1,6 @@
 # Windows verification handoff
 
-Latest combined [MSVC/clang-cl Debug execution](windows-scene-debug/README.md) at `e387dde` passes 7/7 tests each and native RTX 5070 shader/resource/scene-fixture checks. The reported padding and enum-mask compile failures are resolved. Release and full-frigate NVIDIA verification remain open; these archives do not validate later IBL/pass changes. Commands below describe future combined runs, not a request to repeat the completed Debug checks. For the later generated IBL/shadow renderer and actual frigate, use the [full-package workflow](windows-frigate/README.md), which retains separate input hashes, logs and 1280×720 captures. That handoff has not yet been executed on NVIDIA.
+Latest combined [MSVC/clang-cl Debug and Release execution](windows-frigate-verified/README.md) at `ef984ef` passes 8/8 tests each and native RTX 5070 full-frigate checks, including generated IBL/shadows, complete readbacks and byte-identical 1280×720 post-processed captures. The full-package Windows execution slice is complete; no duplicate run or SDK/driver setup is requested. [Earlier Debug fixture evidence](windows-scene-debug/README.md) at `e387dde` remains historical and does not itself validate later passes. Commands below and the [full-package workflow](windows-frigate/README.md) are retained for reproduction, not final M2 acceptance.
 
 CPU compiler checks passed: [MSVC 19.44.35229 Debug/Release](../M1/windows-msvc/README.md) at `d49b23c` and [clang-cl 19.1.5 Debug/Release](../M1/windows-clang-cl/README.md) at `54a7a63`. Each configuration passed four tests and both replays with zero measured steady-state allocations. Formal milestone acceptance and Windows frame-rendering checks remain open.
 
@@ -11,8 +11,7 @@ The [Windows GPU capture](windows-nvidia/README.md) identifies an RTX 5070 with 
 ```fish
 cd /d/Git/kyaulabs/ngen
 and git fetch --prune origin
-and git switch feat/kyau-e39ea3-scene-frames
-and git pull --ff-only
+and git switch --detach ef984ef18c6fb6ed9886f45003dc67e85d42170c
 and begin
     for compiler in MSVC ClangCl
         pwsh.exe -NoProfile -File (cygpath -w "$PWD/tools/build-windows.ps1") -Scene -Compiler $compiler
