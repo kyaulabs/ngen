@@ -1,0 +1,122 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720" role="img" aria-labelledby="title description">
+  <title id="title">NGEN development inspector — static visual mockup</title>
+  <desc id="description">Original EVE-inspired art direction: compact dark panels, tabular diagnostics and restrained cyan/amber highlights. The spacecraft is an original schematic, not the supplied frigate. Controls and telemetry are not connected to the engine.</desc>
+  <defs>
+    <radialGradient id="space"><stop stop-color="#182632"/><stop offset="1" stop-color="#070b10"/></radialGradient>
+    <linearGradient id="hull" x2="0" y2="1"><stop stop-color="#52616d"/><stop offset=".45" stop-color="#263844"/><stop offset="1" stop-color="#111b24"/></linearGradient>
+    <linearGradient id="engine"><stop stop-color="#70bfcf" stop-opacity=".7"/><stop offset="1" stop-color="#70bfcf" stop-opacity="0"/></linearGradient>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M40 0H0V40" fill="none" stroke="#71889a" stroke-opacity=".025"/></pattern>
+    <g id="rock"><path d="M-5-3 0-7 6-3 7 3 1 7-6 3Z" fill="#56606b" stroke="#788490" stroke-width=".5"/><path d="m-5-3 6 2 5-2M1-1 1 7" fill="none" stroke="#2a343e"/></g>
+    <style>
+      text { font-family: 'DejaVu Sans', sans-serif; fill: #cbd6de; font-size: 12px; }
+      .muted { fill: #96a6b3; }
+      .small { font-size: 10px; letter-spacing: 1px; }
+      .mono { font-family: 'DejaVu Sans Mono', monospace; font-variant-numeric: tabular-nums; }
+      .heading { font-size: 11px; letter-spacing: 1.3px; fill: #dae4eb; }
+      .cyan { fill: #8ad1d6; }
+      .amber { fill: #e0b67d; }
+      .panel { fill: #111923; fill-opacity: .97; stroke: #34434f; stroke-width: 1; }
+      .divider { stroke: #2a3642; stroke-width: 1; }
+    </style>
+  </defs>
+  <rect width="1280" height="720" fill="url(#space)"/>
+  <rect x="42" y="52" width="1238" height="616" fill="url(#grid)"/>
+  <g fill="#bac9d6" opacity=".45">
+    <circle cx="364" cy="121" r="1"/><circle cx="870" cy="97" r=".8"/><circle cx="691" cy="162" r="1"/>
+    <circle cx="544" cy="92" r=".7"/><circle cx="402" cy="576" r=".8"/><circle cx="818" cy="597" r="1"/>
+    <circle cx="590" cy="528" r=".8"/><circle cx="886" cy="229" r="1"/><circle cx="725" cy="648" r=".8"/>
+    <circle cx="302" cy="462" r=".7"/><circle cx="927" cy="519" r=".9"/><circle cx="761" cy="278" r=".7"/>
+  </g>
+  <g opacity=".75">
+    <use href="#rock" x="352" y="369" transform="rotate(17 352 369)"/>
+    <use href="#rock" x="386" y="243" transform="scale(.7) translate(165 104)"/>
+    <use href="#rock" x="457" y="206"/><use href="#rock" x="544" y="185"/>
+    <use href="#rock" x="657" y="205"/><use href="#rock" x="752" y="229"/>
+    <use href="#rock" x="866" y="275"/><use href="#rock" x="922" y="344"/>
+    <use href="#rock" x="899" y="421"/><use href="#rock" x="837" y="493"/>
+    <use href="#rock" x="746" y="531"/><use href="#rock" x="639" y="554"/>
+    <use href="#rock" x="532" y="538"/><use href="#rock" x="437" y="489"/>
+    <use href="#rock" x="374" y="441"/><use href="#rock" x="714" y="178"/>
+    <use href="#rock" x="568" y="608"/><use href="#rock" x="797" y="575"/>
+  </g>
+  <g stroke="#7a929f" stroke-width="1">
+    <path d="m360 371 72-14 74-2 42-14 108 2 31 17 146 2 23 12-23 14-147 2-28 14-107-2-41-12-79-3Z" fill="url(#hull)"/>
+    <path d="m525 353 35-30 83 4 21 21-8 9M528 387l30 28 87-4 19-19" fill="#283b48"/>
+    <path d="m671 360 25-20 70 2 16 19M672 389l24 21 72-3 12-18" fill="#24343e"/>
+    <path d="M412 369h406M503 356v32M550 342v60M658 347v49M704 360v29M759 360v28" stroke="#71818a" stroke-opacity=".65"/>
+    <rect x="804" y="363" width="28" height="8" fill="#172831"/><rect x="804" y="379" width="28" height="8" fill="#172831"/>
+    <path d="m833 363 66-6v17l-66-3M833 379l75-2v18l-75-8" fill="url(#engine)" stroke="none"/>
+    <path d="M804 365h28M804 383h28" stroke="#a9e9eb" stroke-width="2"/>
+    <path d="M563 337h28M563 407h28" stroke="#83b9c7" stroke-width="2"/>
+  </g>
+  <g stroke="#87bdc8" stroke-width="1" fill="none" opacity=".8">
+    <path d="M344 340v-12h22M830 328h22v12M344 402v14h22M830 416h22v-14"/>
+    <path d="m633 405 21 33h91"/>
+  </g>
+  <text x="663" y="454" class="small cyan">FRIGATE / SELECTION PREVIEW</text>
+  <text x="63" y="633" class="small muted">ORIGINAL SCHEMATIC · NOT AN ENGINE CAPTURE</text>
+  <rect width="1280" height="52" fill="#10171f"/>
+  <path d="M0 51.5h1280" class="divider"/>
+  <text x="19" y="32" font-size="16" letter-spacing="3">NGEN</text>
+  <path d="M104 15v23" class="divider"/>
+  <text x="122" y="26" class="heading">SCENE INSPECTOR</text>
+  <text x="122" y="41" class="small muted">DEVELOPMENT / LAPTOP PROFILE</text>
+  <text x="676" y="31" class="mono muted">1280 × 720</text>
+  <text x="826" y="31" class="mono muted">LOD 2</text>
+  <rect x="1048" y="15" width="212" height="24" rx="2" fill="#29251f" stroke="#67543c"/>
+  <text x="1060" y="31" class="small amber">STATIC MOCKUP · NOT LIVE</text>
+  <rect y="52" width="42" height="668" fill="#10171f"/>
+  <path d="M41.5 52v668" class="divider"/>
+  <rect x="6" y="86" width="30" height="34" rx="2" fill="#253842" stroke="#79b4c0"/>
+  <path d="M13 96h16v13H13ZM17 92v4M25 109v4" fill="none" stroke="#afd8df"/>
+  <text x="10" y="151" class="small muted">MAT</text>
+  <text x="10" y="194" class="small muted">GPU</text>
+  <text x="10" y="237" class="small muted">LOG</text>
+  <rect x="62" y="86" width="250" height="234" rx="2" class="panel"/>
+  <text x="78" y="109" class="heading">SCENE</text><text x="261" y="109" class="mono muted">02</text>
+  <path d="M63 122h248" class="divider"/>
+  <text x="78" y="145" class="mono muted">▾</text><text x="97" y="145">frigate-01</text>
+  <text x="97" y="164" class="small muted">188 PRIMITIVES / 13 MATERIALS</text>
+  <rect x="73" y="178" width="227" height="29" rx="1" fill="#213540"/>
+  <rect x="73" y="178" width="2" height="29" fill="#81c1c9"/>
+  <text x="98" y="197" class="cyan">Hull / selection preview</text>
+  <text x="98" y="229" class="muted">Transforms &amp; bounds</text>
+  <path d="M78 247h218" class="divider"/>
+  <text x="78" y="270" class="mono muted">▸</text><text x="97" y="270">Asteroid shell</text>
+  <text x="97" y="291" class="small muted">100 INSTANCES / SHARED MESH</text>
+  <rect x="956" y="86" width="308" height="548" rx="2" class="panel"/>
+  <text x="972" y="109" class="heading">INSPECTOR</text><text x="1194" y="109" class="small muted">PREVIEW</text>
+  <path d="M957 122h306" class="divider"/>
+  <text x="973" y="145" class="small cyan">MATERIAL</text><text x="1078" y="145" class="small muted">RENDER</text><text x="1167" y="145" class="small muted">ASSET</text>
+  <path d="M970 154h80" stroke="#81c1c9" stroke-width="2"/>
+  <text x="973" y="181">Hull material</text><text x="1239" y="181" text-anchor="end" class="mono muted">01 / 13</text>
+  <text x="973" y="208" class="small muted">PBR / METALLIC–ROUGHNESS</text>
+  <text x="973" y="239" class="muted">Base color</text>
+  <rect x="1114" y="224" width="132" height="22" rx="1" fill="#77858f" stroke="#a9b7c2"/>
+  <text x="973" y="273" class="muted">Metallic</text><text x="1246" y="273" text-anchor="end" class="mono">0.850</text>
+  <path d="M974 289h270" stroke="#30404c" stroke-width="5"/><path d="M974 289h230" stroke="#81afb9" stroke-width="5"/>
+  <text x="973" y="319" class="muted">Roughness</text><text x="1246" y="319" text-anchor="end" class="mono">0.420</text>
+  <path d="M974 335h270" stroke="#30404c" stroke-width="5"/><path d="M974 335h113" stroke="#81afb9" stroke-width="5"/>
+  <text x="973" y="367" class="muted">Emissive strength</text><text x="1246" y="367" text-anchor="end" class="mono">1.000</text>
+  <text x="973" y="397" class="muted">Alpha / facing</text><text x="1246" y="397" text-anchor="end" class="mono">OPAQUE / BOTH</text>
+  <path d="M973 415h273" class="divider"/>
+  <text x="973" y="440" class="heading">FIXED SCHEDULE</text>
+  <text x="973" y="466" class="muted">01  Shadow</text><text x="1246" y="466" text-anchor="end" class="mono">1024²</text>
+  <text x="973" y="491" class="muted">02  Opaque / mask / blend</text><text x="1246" y="491" text-anchor="end" class="small cyan">PBR</text>
+  <text x="973" y="516" class="muted">03  Bloom / tone map / FXAA</text>
+  <text x="973" y="541" class="muted">04  Development overlay</text>
+  <path d="M973 557h273" class="divider"/>
+  <rect x="973" y="574" width="132" height="37" rx="2" fill="#203039" stroke="#9cd8df" stroke-width="2"/>
+  <text x="1039" y="597" text-anchor="middle">Queue change</text>
+  <rect x="1118" y="574" width="128" height="37" rx="2" fill="#19242e" stroke="#425463"/>
+  <text x="1182" y="597" text-anchor="middle">Reload asset</text>
+  <rect x="62" y="650" width="1202" height="54" rx="2" class="panel"/>
+  <text x="78" y="672" class="small muted">SCENE TRIANGLES</text><text x="78" y="691" class="mono">246,080 / 250,000</text>
+  <path d="M280 662v30M406 662v30M532 662v30M681 662v30M925 662v30" class="divider"/>
+  <text x="297" y="672" class="small muted">CPU FRAME</text><text x="297" y="691" class="mono">— ms</text>
+  <text x="423" y="672" class="small muted">GPU PASSES</text><text x="423" y="691" class="mono">— ms</text>
+  <text x="549" y="672" class="small muted">VMA / DRIVER</text><text x="549" y="691" class="mono">— / — MiB</text>
+  <text x="698" y="672" class="small amber">NEXT-FRAME COMMANDS</text><text x="698" y="691" class="mono">1 / 16 · preview only</text>
+  <text x="942" y="672" class="small muted">TAB · INSPECT   F · FOCUS   R · RELOAD</text>
+  <text x="942" y="691" class="small muted">TELEMETRY AND CONTROLS NOT CONNECTED</text>
+</svg>
