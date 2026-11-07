@@ -229,8 +229,12 @@ void Presentation::record(Frame &frame, const Image &image, const ImageFrame *so
         const shader::PostConstants constants{{source->exposure, source->fxaa ? 1.0F : 0.0F,
                                                1.0F / static_cast<float>(use->extent.width),
                                                1.0F / static_cast<float>(use->extent.height)}};
-        owner_.resources_->record_frame(
-            {frame.commands, frame_index_ + 2, format_, use->view, extent_, constants});
+        owner_.resources_->record_frame({.commands = frame.commands,
+                                         .frame = frame_index_ + 2,
+                                         .format = format_,
+                                         .source = use->view,
+                                         .extent = extent_,
+                                         .constants = constants});
     }
     vkCmdEndRendering(frame.commands);
     barrier.srcStageMask = VK_PIPELINE_STAGE_2_COLOR_ATTACHMENT_OUTPUT_BIT;
