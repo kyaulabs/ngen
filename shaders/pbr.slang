@@ -23,7 +23,7 @@ struct MaterialConstants
     float4 baseColor;
     float4 emissiveAlphaCutoff;
     float4 metallicRoughnessNormalOcclusion;
-    uint4 flags; // x: alpha mode; y: per-map UV1 bits; z bit0: no normal texture; w reserved.
+    uint4 flags; // x: alpha mode; y: per-map UV1 bits; z bits: no normal texture, double sided; w reserved.
 };
 [[vk::binding(0, 0)]] ConstantBuffer<FrameConstants> frame;
 [[vk::binding(1, 0)]] ConstantBuffer<LightConstants> localLights;
@@ -75,6 +75,33 @@ Varying vertexMain(Vertex input)
     return output;
 }
 
+struct ShadowVarying
+{
+    float4 position : SV_Position;
+    float2 uv : TEXCOORD0;
+    float2 uv1 : TEXCOORD1;
+};
+[shader("vertex")]
+ShadowVarying shadowVertex(Vertex input)
+{
+    ShadowVarying output;
+    output.position = mul(frame.lightViewProjection, mul(frame.model, float4(input.position, 1)));
+    output.uv = input.uv;
+    output.uv1 = input.uv1;
+    return output;
+}
+[shader("fragment")]
+void shadowFragment(ShadowVarying input)
+{
+    if (material.flags.x == 1)
+    {
+        float2 uv = (material.flags.y & 1u) != 0 ? input.uv1 : input.uv;
+        float alpha = baseColorMap.Sample(materialSamplers[0], uv).a * material.baseColor.a;
+        if (alpha < material.emissiveAlphaCutoff.w)
+            discard;
+    }
+}
+
 static const float PI = 3.141592653589793;
 float3 fresnel(float cosine, float3 f0)
 {
@@ -111,7 +138,7 @@ float2 textureUv(Varying input, uint slot)
     return (material.flags.y & (1u << slot)) != 0 ? input.uv1 : input.uv;
 }
 [shader("fragment")]
-float4 fragmentMain(Varying input) : SV_Target0
+float4 fragmentMain(Varying input, bool frontFace : SV_IsFrontFace) : SV_Target0
 {
     // Color/emissive views decode sRGB; all other texture inputs are linear.
     float4 albedo = baseColorMap.Sample(materialSamplers[0], textureUv(input, 0)) * material.baseColor;
@@ -126,6 +153,8 @@ float4 fragmentMain(Varying input) : SV_Target0
         sampled.xy *= material.metallicRoughnessNormalOcclusion.z;
         n = normalize(t * sampled.x + b * sampled.y + n * sampled.z);
     }
+    if ((material.flags.z & 2u) != 0 && !frontFace)
+        n = -n;
     float3 v = normalize(frame.cameraPosition.xyz - input.worldPosition);
     float4 mr = metallicRoughnessMap.Sample(materialSamplers[1], textureUv(input, 1));
     float metal = saturate(mr.b * material.metallicRoughnessNormalOcclusion.x);

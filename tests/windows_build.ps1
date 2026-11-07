@@ -69,6 +69,18 @@ try {
             throw 'Renderer mode did not reach the Windows prerequisite check'
         }
     }
+    if (-not $IsWindows) {
+        & $pwsh -NoProfile -File $scriptPath -Scene *> $log
+        if ($LASTEXITCODE -ne 2 -or (Get-Content -Raw $log) -notmatch 'requires Windows') { throw 'Scene mode did not reach the Windows prerequisite check' }
+    }
+    if (-not $IsWindows) {
+        & $pwsh -NoProfile -File $scriptPath -ScenePackage 'not present.ngas' *> $log
+        if ($LASTEXITCODE -ne 2 -or (Get-Content -Raw $log) -notmatch 'requires Windows') { throw 'Package scene mode did not reach the Windows prerequisite check' }
+    }
+    & $pwsh -NoProfile -File $scriptPath -GpuInfo -ScenePackage 'not present.ngas' *> $log
+    if ($LASTEXITCODE -eq 0 -or $LASTEXITCODE -eq 2) { throw 'GPU capture and package scene builds were mixed' }
+    & $pwsh -NoProfile -File $scriptPath -GpuInfo -Scene *> $log
+    if ($LASTEXITCODE -eq 0 -or $LASTEXITCODE -eq 2) { throw 'GPU capture and scene builds were mixed' }
     & $pwsh -NoProfile -File $scriptPath -GpuInfo -Renderer *> $log
     if ($LASTEXITCODE -eq 0 -or $LASTEXITCODE -eq 2) { throw 'GPU capture and renderer builds were mixed' }
     & $pwsh -NoProfile -File $scriptPath -GpuInfo -Compiler ClangCl *> $log
@@ -106,6 +118,13 @@ try {
         }, $true)
         if (-not $rendererDefinition) { throw 'Renderer process boundary not found' }
         . ([scriptblock]::Create($rendererDefinition.Extent.Text))
+        $identityDefinition = $ast.Find({
+            param($node)
+            $node -is [System.Management.Automation.Language.FunctionDefinitionAst] -and
+            $node.Name -eq 'Get-NgenSceneIdentity'
+        }, $true)
+        if (-not $identityDefinition) { throw 'Checked package identity boundary not found' }
+        . ([scriptblock]::Create($identityDefinition.Extent.Text))
         $renderBuild = Join-Path $directory 'renderer build'
         New-Item -ItemType Directory $renderBuild | Out-Null
         Set-Content (Join-Path $renderBuild 'conanrun.ps1') '$env:NGEN_RENDER_ENV = "active"'
@@ -113,7 +132,7 @@ try {
         $shaderPackage = Join-Path $renderBuild 'shaders/cooked'
         New-Item -ItemType Directory $shaderPackage | Out-Null
         Set-Content (Join-Path $shaderPackage 'manifest.json') '{"schema":1,"compiler":{"sha256":"fixture compiler identity"}}'
-        foreach ($shader in @('cull', 'pbr-vertex', 'pbr-fragment', 'post-vertex', 'post-fragment')) {
+        foreach ($shader in @('cull', 'pbr-vertex', 'pbr-fragment', 'shadow-vertex', 'shadow-fragment', 'post-vertex', 'post-fragment')) {
             Set-Content (Join-Path $shaderPackage "$shader.reflection.json") '{"fixture":"reflected layout"}'
         }
         $probe = Join-Path $renderBuild 'render_probe.exe'
@@ -124,6 +143,19 @@ mode=${1:-startup}
 case "$0" in
   */resource_probe.exe) mode=resources ;;
   */shader_gpu_probe.exe) mode=shaders ;;
+  */scene_probe.exe)
+    mode=scene
+    if [ "$#" -gt 0 ]; then
+      [ "$#" -le 2 ] && [ -f "$1" ] || exit 9
+      mode=scene-package
+      printf 'package argument: %s\n' "$1"
+      if [ "$#" -eq 2 ] && [ "$NGEN_PROBE_FAIL_AT" != no-capture ]; then
+        printf 'fixture capture' > "$2"
+        printf 'capture argument: %s\n' "$2"
+      fi
+      if [ "$NGEN_PACKAGE_MUTATE" = 1 ]; then printf 'changed' >> "$1"; fi
+    fi
+    ;;
 esac
 printf '%s\n' "$mode"
 [ "$mode" != "$NGEN_PROBE_FAIL_AT" ] || exit 7
@@ -133,9 +165,11 @@ exit 0
         Copy-Item -LiteralPath $probe -Destination $resourceProbe
         $shaderProbe = Join-Path $renderBuild 'shader_gpu_probe.exe'
         Copy-Item -LiteralPath $probe -Destination $shaderProbe
-        & chmod +x $probe $resourceProbe $shaderProbe
+        $sceneProbe = Join-Path $renderBuild 'scene_probe.exe'
+        Copy-Item -LiteralPath $probe -Destination $sceneProbe
+        & chmod +x $probe $resourceProbe $shaderProbe $sceneProbe
         if ($LASTEXITCODE -ne 0) { throw 'Could not prepare renderer subprocess fixture' }
-        foreach ($failAt in @('', 'checks', '--check-validation-callback', 'startup', '--check-presentation', 'resources', 'shaders')) {
+        foreach ($failAt in @('', 'checks', '--check-validation-callback', 'startup', '--check-presentation', 'resources', 'shaders', 'scene')) {
             $renderLogs = Join-Path $directory ('render logs ' + [guid]::NewGuid())
             New-Item -ItemType Directory $renderLogs | Out-Null
             $env:NGEN_RENDER_ENV = 'before'
@@ -145,7 +179,7 @@ exit 0
                 Invoke-NgenNative -FilePath $probe -Arguments @('checks') -LogPath (Join-Path $renderLogs 'Debug-checks.txt')
             }
             try {
-                Invoke-NgenRenderer -BuildDirectory $renderBuild -LogDirectory $renderLogs -Configuration Debug -Checks $checks
+                Invoke-NgenRenderer -BuildDirectory $renderBuild -LogDirectory $renderLogs -Configuration Debug -Checks $checks -Scene
             } catch { $failed = $_.Exception.Message -match 'exit code 7' }
             if ($failed -ne ($failAt -ne '')) { throw 'Renderer probe failure was lost or falsely reported' }
             if ($env:NGEN_RENDER_ENV -ne 'before') { throw 'Renderer runtime environment was not restored' }
@@ -176,6 +210,12 @@ exit 0
             } elseif (-not (Test-Path $shaderLog) -or (Get-Content -Raw $shaderLog) -notmatch 'shaders') {
                 throw 'GPU shaders were not exercised and captured'
             }
+            $sceneLog = Join-Path $renderLogs 'Debug-scene.txt'
+            if ($failAt -in @('checks', '--check-validation-callback', 'startup', '--check-presentation', 'resources', 'shaders')) {
+                if (Test-Path $sceneLog) { throw 'Scene checks continued after an earlier failure' }
+            } elseif (-not (Test-Path $sceneLog) -or (Get-Content -Raw $sceneLog) -notmatch 'scene') {
+                throw 'Checked scene process was not exercised and captured'
+            }
             $manifestLog = Join-Path $renderLogs 'Debug-shader-manifest.json'
             if ($failAt -ne '') {
                 if (Test-Path $manifestLog) { throw 'Shader metadata was captured after a verification failure' }
@@ -183,13 +223,58 @@ exit 0
                 if (-not (Test-Path $manifestLog) -or (Get-Content -Raw $manifestLog) -cne (Get-Content -Raw (Join-Path $shaderPackage 'manifest.json'))) {
                     throw 'Actual shader compiler identity was not retained'
                 }
-                foreach ($shader in @('cull', 'pbr-vertex', 'pbr-fragment', 'post-vertex', 'post-fragment')) {
+                foreach ($shader in @('cull', 'pbr-vertex', 'pbr-fragment', 'shadow-vertex', 'shadow-fragment', 'post-vertex', 'post-fragment')) {
                     if (-not (Test-Path (Join-Path $renderLogs "Debug-$shader.reflection.json"))) {
                         throw 'Shader reflection was not retained'
                     }
                 }
             }
         }
+        $scenePackage = Join-Path $directory 'checked ship with spaces.ngas'
+        foreach ($failAt in @('', 'scene', 'scene-package', 'mutate-package', 'no-capture')) {
+            [IO.File]::WriteAllText($scenePackage, 'checked package fixture bytes')
+            $expectedHash = (Get-FileHash -LiteralPath $scenePackage -Algorithm SHA256).Hash.ToLowerInvariant()
+            $packageLogs = Join-Path $directory ('scene package logs ' + [guid]::NewGuid())
+            New-Item -ItemType Directory $packageLogs | Out-Null
+            $env:NGEN_PROBE_FAIL_AT = $failAt
+            $env:NGEN_PACKAGE_MUTATE = if ($failAt -eq 'mutate-package') { '1' } else { '0' }
+            $failed = $false
+            try {
+                Invoke-NgenRenderer -BuildDirectory $renderBuild -LogDirectory $packageLogs -Configuration Release -Checks { } -ScenePackage $scenePackage
+            } catch { $failed = $true }
+            if ($failAt -eq '' -and -not (Test-Path (Join-Path $packageLogs 'Release-scene-package.bmp'))) { throw 'A requested native scene capture was not retained' }
+            if ($failed -ne ($failAt -ne '')) { throw 'Explicit checked package failure, mutation or missing capture was lost or falsely reported' }
+            if ($env:NGEN_RENDER_ENV -ne 'before') { throw 'Package verification did not restore the runtime environment' }
+            $packageLog = Join-Path $packageLogs 'Release-scene-package.txt'
+            if ($failAt -eq 'scene') {
+                if (Test-Path $packageLog) { throw 'Package verification continued after failed built-in scene checks' }
+            } else {
+                if (-not (Test-Path $packageLog) -or (Get-Content -Raw $packageLog) -notmatch 'scene-package' -or
+                    -not (Get-Content -Raw $packageLog).Contains($scenePackage)) { throw 'Explicit checked package was not executed as one native argument and captured separately' }
+                $identity = Get-Content -Raw (Join-Path $packageLogs 'Release-scene-package.json') | ConvertFrom-Json
+                if ($identity.schema -ne 1 -or $identity.name -cne 'checked ship with spaces.ngas' -or
+                    $identity.bytes -ne 29 -or $identity.sha256 -cne $expectedHash) { throw 'Actual package bytes were not identified before native execution' }
+            }
+            if ($failAt -ne '' -and (Test-Path (Join-Path $packageLogs 'Release-shader-manifest.json'))) { throw 'Verification continued after a package failure' }
+        }
+        Remove-Item Env:NGEN_PACKAGE_MUTATE
+        $emptyPackage = Join-Path $directory 'empty.ngas'
+        [IO.File]::WriteAllText($emptyPackage, '')
+        $oversized = Join-Path $directory 'oversized.ngas'
+        $stream = [IO.File]::Create($oversized)
+        try { $stream.SetLength(268435457) } finally { $stream.Dispose() }
+        $link = Join-Path $directory 'link.ngas'
+        New-Item -ItemType SymbolicLink -Path $link -Target $scenePackage | Out-Null
+        foreach ($bad in @($directory, $emptyPackage, $oversized, $link, (Join-Path $directory 'missing.ngas'), $child)) {
+            $failed = $false
+            try { Get-NgenSceneIdentity -Path $bad | Out-Null } catch { $failed = $true }
+            if (-not $failed) { throw 'An invalid, oversized, missing, linked or wrong-format package path was accepted' }
+        }
+        $rendererOnlyLogs = Join-Path $directory 'renderer-only logs'
+        New-Item -ItemType Directory $rendererOnlyLogs | Out-Null
+        $env:NGEN_PROBE_FAIL_AT = 'scene'
+        Invoke-NgenRenderer -BuildDirectory $renderBuild -LogDirectory $rendererOnlyLogs -Configuration Debug -Checks { }
+        if (Test-Path (Join-Path $rendererOnlyLogs 'Debug-scene.txt')) { throw 'Renderer-only mode unexpectedly ran checked-scene probes' }
         Remove-Item Env:NGEN_RENDER_ENV, Env:NGEN_PROBE_FAIL_AT
     }
     $sdkDefinition = $ast.Find({

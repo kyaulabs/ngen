@@ -1,3 +1,4 @@
+#include "draw.hpp"
 #include "package_fixture.hpp"
 #include "render/scene.hpp"
 #include <algorithm>
@@ -133,11 +134,17 @@ ngen::assets::PackageResult fixture() {
 }
 } // namespace
 int main(int argc, char **argv) try {
-    if (argc > 2) {
-        std::fputs("Usage: scene_probe [scene.ngas]\n", stderr);
+    if (argc > 3) {
+        std::fputs("Usage: scene_probe [scene.ngas [capture.bmp]]\n", stderr);
         return 2;
     }
-    auto loaded = argc == 2 ? ngen::assets::load_package_file(argv[1]) : fixture();
+    if (argc == 3 && (std::filesystem::exists(std::filesystem::symlink_status(argv[2])) ||
+                      std::filesystem::path(argv[2]).extension() != ".bmp")) {
+        std::fputs("Scene capture must be a new .bmp path; existing files/links are preserved\n",
+                   stderr);
+        return 2;
+    }
+    auto loaded = argc >= 2 ? ngen::assets::load_package_file(argv[1]) : fixture();
     if (const auto *failure = std::get_if<ngen::assets::Failure>(&loaded)) {
         std::fprintf(stderr, "Scene fixture: %s\n", failure->message.c_str());
         return 1;
@@ -178,10 +185,10 @@ int main(int argc, char **argv) try {
         return 1;
     auto next_upload =
         std::get<std::unique_ptr<ngen::render::SceneUpload>>(std::move(next_created));
-    const auto next_completed = finish(*context, *next_upload);
+    auto next_completed = finish(*context, *next_upload);
     if (failed(next_completed, "replacement publication"))
         return 1;
-    const auto next = std::get<ngen::render::ScenePin>(next_completed);
+    auto next = std::get<ngen::render::ScenePin>(std::move(next_completed));
     next_upload.reset();
     if (next == version || next->vertices().native() == version->vertices().native() ||
         !version->vertices().native()) {
@@ -294,8 +301,11 @@ int main(int argc, char **argv) try {
     }
     std::printf("resident_verified_mip_bytes=%llu\n",
                 static_cast<unsigned long long>(verified_mip_bytes));
+    std::fflush(stdout);
+    if (!ngen::probe::draw_scene(*context, next, version, argc == 3 ? argv[2] : ""))
+        return 1;
     if (!context->close() || version->vertices().native() || version->indices().native() ||
-        version->images()[0].native() || next->vertices().native())
+        version->images()[0].native())
         return 1;
     std::puts("checked_scene_upload=1 immutable_version=1 owning_cpu_pin=1 "
               "resident_vertex_readback=1 resident_index_readback=1 resident_mip_readback=1 "
@@ -315,6 +325,14 @@ int main(int argc, char **argv) try {
                 ++uv1_maps;
     std::printf("source_directional=%zu source_point=%zu source_spot=%zu source_uv1_maps=%zu\n",
                 kinds[0], kinds[1], kinds[2], uv1_maps);
+    std::array<std::size_t, 3> alpha{};
+    std::size_t two_sided = 0;
+    for (const auto &material : version->package()->materials) {
+        ++alpha[material.alpha];
+        two_sided += material.double_sided ? 1U : 0U;
+    }
+    std::printf("source_opaque=%zu source_mask=%zu source_blend=%zu source_double_sided=%zu\n",
+                alpha[0], alpha[1], alpha[2], two_sided);
     return 0;
 } catch (const std::exception &error) {
     std::fprintf(stderr, "Scene probe: %s\n", error.what());

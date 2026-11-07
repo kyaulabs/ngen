@@ -940,13 +940,33 @@ class Fixture {
         frame.keyDirectionIntensity[3] = 1;
         draw();
         equal_pixel(pixel(40, 28), reference(true), .004F);
+        material.flags[2] = 3;
+        draw();
+        const auto two_sided_a = pixel(40, 28);
+        std::swap(vertices[1], vertices[2]);
+        std::swap(vertices[4], vertices[5]);
+        write(vertex_buffer, vertices);
+        draw();
+        const auto two_sided_b = pixel(40, 28);
+        const shader::Float4 back_reference{.056F, .07F, .084F, 1};
+        if (std::abs(two_sided_a[0] - reference(true)[0]) < .004F) {
+            equal_pixel(two_sided_a, reference(true), .004F);
+            equal_pixel(two_sided_b, back_reference, .004F);
+        } else {
+            equal_pixel(two_sided_a, back_reference, .004F);
+            equal_pixel(two_sided_b, reference(true), .004F);
+        }
+        std::swap(vertices[1], vertices[2]);
+        std::swap(vertices[4], vertices[5]);
+        write(vertex_buffer, vertices);
         material.flags[2] = 0;
         frame.keyDirectionIntensity[3] = 0;
         material.flags[0] = 1;
         material.baseColor[3] = 0.25F;
         draw();
         equal_pixel(pixel(40, 28), {0.03125F, 0.0625F, 0.125F, 0}, 0.00001F);
-        std::cout << "pbr_draws=14 uv1_selection=1 per_map_sampler=1 absent_normal_map=1 "
+        std::cout << "pbr_draws=16 two_sided_normal=1 uv1_selection=1 per_map_sampler=1 "
+                     "absent_normal_map=1 "
                      "matrix_coverage_pixels=4096 "
                      "srgb_linear=1 "
                      "metallic_roughness=1 "
