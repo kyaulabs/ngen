@@ -224,8 +224,15 @@ void Presentation::record(Frame &frame, const Image &image, const ImageFrame *so
     rendering.layerCount = 1;
     rendering.colorAttachmentCount = 1;
     rendering.pColorAttachments = &color;
-    if (use)
-        owner_.resources_->start_frame_timing(frame.commands, frame_index_ + 2);
+    if (use) {
+        if (source->overlay)
+            // CPU layout predates drawable acquisition. Preserve profile admission
+            // across a resize race; recording intersects clips with the actual target.
+            owner_.resources_->prepare_overlay(frame.commands, frame_index_ + 2, *source->overlay,
+                                               {8192, 8192});
+        owner_.resources_->start_frame_timing(frame.commands, frame_index_ + 2,
+                                              source->overlay != nullptr);
+    }
     vkCmdBeginRendering(frame.commands, &rendering);
     if (use) {
         const shader::PostConstants constants{{source->exposure, source->fxaa ? 1.0F : 0.0F,
@@ -239,8 +246,12 @@ void Presentation::record(Frame &frame, const Image &image, const ImageFrame *so
                                          .constants = constants});
     }
     vkCmdEndRendering(frame.commands);
-    if (use)
+    if (use) {
         owner_.resources_->finish_frame_timing(frame.commands, frame_index_ + 2);
+        if (source->overlay)
+            owner_.resources_->record_overlay(frame.commands, frame_index_ + 2, *source->overlay,
+                                              {image.image, image.view, format_, extent_});
+    }
     barrier.srcStageMask = VK_PIPELINE_STAGE_2_COLOR_ATTACHMENT_OUTPUT_BIT;
     barrier.srcAccessMask = VK_ACCESS_2_COLOR_ATTACHMENT_WRITE_BIT;
     barrier.dstStageMask = VK_PIPELINE_STAGE_2_NONE;
@@ -330,7 +341,7 @@ FrameResult Presentation::draw(const ImageFrame *source, const GraphicsUse *use)
     checked(vkQueueSubmit2(owner_.queue(), 1, &submit, frame.submitted_fence), "submit frame");
     Submission resources;
     if (use)
-        resources = owner_.resources_->submitted_frame(*use);
+        resources = owner_.resources_->submitted_frame(*use, frame_index_ + 2);
     frame.submitted = true;
     checked(vkResetFences(device, 1, &image.retired), "reset present retirement fence");
     VkSwapchainPresentFenceInfoEXT fence{};

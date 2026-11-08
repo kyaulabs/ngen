@@ -98,7 +98,7 @@ function Invoke-NgenRenderer {
         $manifests = @(Get-ChildItem -LiteralPath (Join-Path $BuildDirectory 'shaders') -Filter 'manifest.json' -Recurse -File)
         if ($manifests.Count -ne 1) { throw 'Expected one immutable shader package in the fresh build.' }
         Copy-Item -LiteralPath $manifests[0].FullName -Destination (Join-Path $LogDirectory "$Configuration-shader-manifest.json")
-        foreach ($shader in @('cull', 'pbr-vertex', 'pbr-fragment', 'shadow-vertex', 'shadow-fragment', 'post-vertex', 'post-fragment')) {
+        foreach ($shader in @('cull', 'pbr-vertex', 'pbr-fragment', 'shadow-vertex', 'shadow-fragment', 'post-vertex', 'post-fragment', 'overlay-vertex', 'overlay-fragment')) {
             Copy-Item -LiteralPath (Join-Path $manifests[0].DirectoryName "$shader.reflection.json") -Destination (Join-Path $LogDirectory "$Configuration-$shader.reflection.json")
         }
     } finally {

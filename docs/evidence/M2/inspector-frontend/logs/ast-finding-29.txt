@@ -1,0 +1,10 @@
+62 warnings generated.
+<ROOT>/apps/scene_workload/main.cpp:318:43: error: std::move of the variable 'candidate_fixture' of the trivially-copyable type 'ngen::workload::Fixture' has no effect; remove std::move() [performance-move-const-arg,-warnings-as-errors]
+  318 |                     replacement_fixture = std::move(candidate_fixture);
+      |                                           ^~~~~~~~~~                 ~
+<ROOT>/apps/scene_workload/main.cpp:592:9: error: either cast from 'unsigned long' to 'unsigned long long' is ineffective, or there is loss of precision before the conversion [bugprone-misplaced-widening-cast,-warnings-as-errors]
+  592 |         static_cast<unsigned long long>(ship_triangles + asteroid_triangles),
+      |         ^
+Suppressed 60 warnings (60 in non-user code).
+Use -header-filter=.* or leave it as default to display errors from all non-system headers. Use -system-headers to display errors from system headers as well.
+2 warnings treated as errors

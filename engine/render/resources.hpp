@@ -1,4 +1,5 @@
 #pragma once
+#include "render/shader_contract.hpp"
 #include <cstddef>
 #include <cstdint>
 #include <memory>
@@ -93,6 +94,20 @@ class Image {
     std::weak_ptr<Resources> owner_;
     detail::ResourceKey key_;
 };
+inline constexpr std::size_t overlay_vertex_limit = 8192;
+inline constexpr std::size_t overlay_index_limit = 16384;
+inline constexpr std::size_t overlay_draw_limit = 128;
+struct OverlayDraw {
+    VkRect2D clip{};
+    std::uint32_t first_index{}, index_count{};
+};
+// CPU spans borrow for the submission call only; native buffers/font use Context retirement.
+struct Overlay {
+    const Image &font;
+    std::span<const shader::OverlayVertex> vertices;
+    std::span<const std::uint32_t> indices;
+    std::span<const OverlayDraw> draws;
+};
 // Collection is nonblocking. Bytes cover VMA allocations/reservations, not WSI or driver memory.
 struct ResourceStatistics {
     std::uint32_t live{};
@@ -103,7 +118,7 @@ struct ResourceStatistics {
 // GPU timestamp intervals; pipeline stages may overlap across passes.
 // Not host frame latency, summed device-busy time, or display retirement.
 struct GpuTimings {
-    double shadow_ns{}, pbr_ns{}, post_ns{};
+    double shadow_ns{}, pbr_ns{}, post_ns{}, ui_ns{};
 };
 struct TimelineWait {
     VkSemaphore semaphore{}; // Borrowed timeline; caller retains it through submission completion.
@@ -135,5 +150,6 @@ struct PostProcess {
     float exposure{1}; // Finite linear multiplier in 0..64.
     bool fxaa{true};
     TimelineWait wait{};
+    const Overlay *overlay{};
 };
 } // namespace ngen::render

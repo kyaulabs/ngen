@@ -3,7 +3,9 @@
 **This is the inspector's command/ownership model and GPU material bridge, not
 its runtime frontend.** The [static mockup](../../../mockups/README.md) remains a
 visual study. Workload event/UI wiring, interactive reload/upload publication,
-walkthrough and the final combined M2 gates remain open.
+walkthrough were open at this `87fe98c` checkpoint. The later
+[tracked frontend](../inspector-frontend/README.md) now implements and verifies
+that integration; final combined M2 gates remain open.
 
 `ngen::tools::Inspector` owns a checked CPU package and scalar material factors.
 Its 16-command FIFO accepts generation-bound selection, material, exposure/FXAA
@@ -51,7 +53,8 @@ replace unnecessary optional thread storage with `std::jthread`'s empty state.
 Test completion helpers unwrap results under explicit presence checks instead of
 relying on assertion-macro flow analysis. No diagnostic was disabled.
 
-Reproduce the model/native probe with prepared scene dependencies:
+These commands describe the recorded `87fe98c` model-only tree with prepared
+scene dependencies. Current frontend builds use the linked `inspector-*` presets:
 
 ```sh
 cmake --preset scene-debug -DNGEN_BUILD_INSPECTOR=ON
@@ -62,8 +65,8 @@ build/scene-debug/inspector_probe
 ```
 
 The default remains `NGEN_BUILD_INSPECTOR=OFF`. No new dependency is added in this
-slice. The current disabled Release proof concerns this model/probe; repeat the
-graph/link checks after adding the actual frontend. Later renderer/UI/bloom code
+slice. This historical disabled Release proof concerns the model/probe; the frontend
+follow-up now repeats graph/link checks after integration. Later renderer/UI/bloom code
 also needs new required-platform execution and performance/memory evidence.
 
 Text paths/whitespace are normalized; original and retained hashes are separate.

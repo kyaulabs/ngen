@@ -48,7 +48,7 @@ class Workload(unittest.TestCase):
             self.assertIn("allocation_probe=0", result.stdout)  # Sanitizer allocator untouched.
 
     def test_bad_controls_and_existing_outputs_reject_before_native_execution(self):
-        for argument in ("--frames=0", "--frames=-1", "--frames=3601", "--warmup=601", "--unknown"):
+        for argument in ("--frames=0", "--frames=-1", "--frames=3601", "--warmup=601", "--unknown", "--walkthrough"):
             with self.subTest(argument=argument):
                 result = subprocess.run([str(PROBE), str(PACKAGE), argument],
                                         capture_output=True, text=True, timeout=10, check=False)

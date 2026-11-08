@@ -15,6 +15,7 @@ struct ImageFrame {
     const Image &source;
     float exposure{1};
     bool fxaa{true};
+    const Overlay *overlay{};
 };
 struct FrameResult {
     FrameOutcome outcome{FrameOutcome::skipped};

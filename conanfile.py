@@ -1,16 +1,18 @@
 from conan import ConanFile
+from conan.errors import ConanInvalidConfiguration
 from conan.tools.cmake import CMakeDeps, CMakeToolchain
 from conan.tools.env import VirtualRunEnv
 
 
 class NgenDependencies(ConanFile):
     settings = "os", "compiler", "build_type", "arch"
-    options = {"renderer": [True, False], "asset_tools": [True, False], "assets": [True, False], "shaders": [True, False]}
+    options = {"renderer": [True, False], "asset_tools": [True, False], "assets": [True, False], "shaders": [True, False], "inspector": [True, False]}
     default_options = {
         "renderer": False,
         "asset_tools": False,
         "assets": False,
         "shaders": False,
+        "inspector": False,
         "sdl/*:shared": True,
         **{f"sdl/*:{name}": False for name in (
             "audio", "gpu", "render", "camera", "joystick", "haptic", "hidapi",
@@ -20,9 +22,17 @@ class NgenDependencies(ConanFile):
         "xkbcommon/*:with_x11": False,
     }
 
+    def validate(self):
+        if self.options.inspector and not (self.options.renderer and self.options.assets and self.options.shaders):
+            raise ConanInvalidConfiguration("The inspector frontend requires renderer, assets and offline shaders")
+
     def requirements(self):
         self.requires("enkits/1.12")
         self.test_requires("catch2/3.16.0")
+        if self.options.inspector:
+            # Build the packaged SDL backend against our already-locked SDL, not
+            # the optional binding recipe's independent SDL version range.
+            self.requires("imgui/1.92.9b", options={"with_sdl3_binding": False})
         if self.options.assets or self.options.asset_tools:
             self.requires("zlib/1.3.2")
         if self.options.asset_tools:
@@ -54,6 +64,9 @@ class NgenDependencies(ConanFile):
         VirtualRunEnv(self).generate()
         toolchain = CMakeToolchain(self, generator="Ninja")
         toolchain.user_presets_path = False
+        if self.options.inspector:
+            toolchain.variables["NGEN_BUILD_INSPECTOR"] = True
+            toolchain.variables["NGEN_IMGUI_BINDINGS_DIR"] = self.dependencies["imgui"].package_folder.replace("\\", "/") + "/res/bindings"
         if self.options.assets or self.options.asset_tools:
             toolchain.variables["NGEN_BUILD_ASSETS"] = True
         if self.options.asset_tools:

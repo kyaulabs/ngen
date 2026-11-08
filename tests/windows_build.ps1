@@ -132,7 +132,7 @@ try {
         $shaderPackage = Join-Path $renderBuild 'shaders/cooked'
         New-Item -ItemType Directory $shaderPackage | Out-Null
         Set-Content (Join-Path $shaderPackage 'manifest.json') '{"schema":1,"compiler":{"sha256":"fixture compiler identity"}}'
-        foreach ($shader in @('cull', 'pbr-vertex', 'pbr-fragment', 'shadow-vertex', 'shadow-fragment', 'post-vertex', 'post-fragment')) {
+        foreach ($shader in @('cull', 'pbr-vertex', 'pbr-fragment', 'shadow-vertex', 'shadow-fragment', 'post-vertex', 'post-fragment', 'overlay-vertex', 'overlay-fragment')) {
             Set-Content (Join-Path $shaderPackage "$shader.reflection.json") '{"fixture":"reflected layout"}'
         }
         $probe = Join-Path $renderBuild 'render_probe.exe'
@@ -223,7 +223,7 @@ exit 0
                 if (-not (Test-Path $manifestLog) -or (Get-Content -Raw $manifestLog) -cne (Get-Content -Raw (Join-Path $shaderPackage 'manifest.json'))) {
                     throw 'Actual shader compiler identity was not retained'
                 }
-                foreach ($shader in @('cull', 'pbr-vertex', 'pbr-fragment', 'shadow-vertex', 'shadow-fragment', 'post-vertex', 'post-fragment')) {
+                foreach ($shader in @('cull', 'pbr-vertex', 'pbr-fragment', 'shadow-vertex', 'shadow-fragment', 'post-vertex', 'post-fragment', 'overlay-vertex', 'overlay-fragment')) {
                     if (-not (Test-Path (Join-Path $renderLogs "Debug-$shader.reflection.json"))) {
                         throw 'Shader reflection was not retained'
                     }

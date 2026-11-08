@@ -8,5 +8,6 @@ namespace ngen::probe {
 write_exclusive(const std::filesystem::path &path, std::span<const std::byte> bytes);
 [[nodiscard]] std::variant<std::monostate, render::Failure>
 capture(render::Context &context, const render::Image &hdr, VkExtent2D extent,
-        const std::filesystem::path &path, float exposure = 1, bool fxaa = true);
+        const std::filesystem::path &path, float exposure = 1, bool fxaa = true,
+        const render::Overlay *overlay = nullptr);
 } // namespace ngen::probe

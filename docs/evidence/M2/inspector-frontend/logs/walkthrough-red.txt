@@ -1,0 +1,15 @@
+F
+======================================================================
+FAIL: test_scripted_walkthrough_applies_edits_then_keyboard_reload_and_resize (__main__.Inspector.test_scripted_walkthrough_applies_edits_then_keyboard_reload_and_resize)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<ROOT>/tests/inspector_cli.py", line 18, in test_scripted_walkthrough_applies_edits_then_keyboard_reload_and_resize
+    self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 2 != 0 : Workload arguments: unknown workload argument
+
+
+----------------------------------------------------------------------
+Ran 1 test in 0.003s
+
+FAILED (failures=1)

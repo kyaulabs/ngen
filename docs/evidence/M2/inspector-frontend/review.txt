@@ -1,0 +1,49 @@
+Same-session code/C++/security review, not independent or owner acceptance.
+Scope: the overlay, pinned optional frontend, owning workload integration,
+shader/layout/capture consumers, dependency/build paths and their native tests.
+
+Fixed concrete findings:
+- A drawable change after CPU UI layout rejected pending WSI clips. The native
+  reproduction failed with 'overlay draw or clip is outside the target'. Profile
+  validation and actual-target scissor intersection now survive that race.
+  Offscreen post target admission remains strict.
+- The HUD called owner-loop wall time 'CPU'. It now says 'FRAME'; GPU intervals,
+  VMA totals, allocator counters and display proof retain distinct meanings.
+- Frontend request admission previously lacked a visible failure/defer status.
+  Core queue errors and reload request/parse/upload/publication failures are now
+  visible; an unsuccessful replacement does not change the active version.
+
+AST repairs: explicitly initialize the Vulkan sample-count enum; use unsigned
+bitwise flag assembly at ImGui's signed API boundary; pass named bounded text
+pointers; remove an ineffective trivial move; widen each bounded triangle-count
+operand before formatting; prove optional presence with an explicit branch and
+const value. No checks, flags, system-boundary failures or diagnostics disabled.
+
+Traced: two resource/four UI reuse domains; descriptor writes only after matching
+completion; copied borrowed spans; successful-submit-only serial/last-use and
+query publication; atlas and old scene pin retirement; color-write/load/blend
+barriers; sRGB RGB versus linear alpha; resource/profile/range validation;
+constructor partial cleanup; shader- and inspector-disabled branches; owning CPU
+worker publication, owner-thread native upload and shutdown ordering. The UI
+must precede SDL-window destruction. No alternate Vulkan backend/queue exists.
+
+Verification: 12/12 CTests in four Linux graphs; physical material/overlay/UI
+probes and 3/3 UI process cases in each; eight injected native failures under
+ASan/UBSan/leaks; resource/shader regressions; selected legacy workload/capture
+regressions; headless model TSan 6/6; shipping-disabled 11/11; shader-disabled
+10/10; CPU 4/4; asset 9/9; PowerShell boundaries; pinned source format; 111 affected
+Clang invocations with repair reruns. Exact commands/logs/flags are retained.
+The packaged SDL backend is built/sanitized, not owned-policy AST-reviewed.
+
+Retained non-behavioral failures: initial PIE prevented ASan startup; a local
+non-PIE link retains sanitizers. The 180-frame ASan integration harness ended
+while CPU parsing was still active; the canonical 600-frame run completes within
+the unchanged process timeout. Earlier asset-vendor advisories/GCC AST limits
+are not relabeled by these results.
+
+No remaining demonstrated task defect from this review. This does not establish
+arbitrary device-loss/I/O recovery, hard deadlines, all UI interactions, desktop
+scanout, whole-memory/plateau or final performance. Programmatic edit commands
+plus actual SDL keyboard reload are not personal mouse/visual acceptance.
+Changed-tree Windows/NVIDIA, bloom, final quality and independent/owner/formal
+M2 acceptance remain open.

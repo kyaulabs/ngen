@@ -12,6 +12,13 @@ struct GraphicsUse {
     std::uint32_t levels{};
     VkSemaphore timeline{};
     std::uint64_t serial{};
+    detail::ResourceKey overlay_font{};
+};
+struct OverlayAttachment {
+    VkImage image{};
+    VkImageView view{};
+    VkFormat format{};
+    VkExtent2D extent{};
 };
 // Context owns this state; public resource values borrow it weakly on the owner thread.
 class Resources : public std::enable_shared_from_this<Resources> {
@@ -33,9 +40,13 @@ class Resources : public std::enable_shared_from_this<Resources> {
     [[nodiscard]] std::variant<std::monostate, Failure> presentation_ready();
     [[nodiscard]] std::variant<GraphicsUse, Failure> prepare_frame(ImageFrame description);
     void record_frame(const PostDraw &draw) const;
-    void start_frame_timing(VkCommandBuffer commands, std::size_t slot);
+    void start_frame_timing(VkCommandBuffer commands, std::size_t slot, bool overlay);
     void finish_frame_timing(VkCommandBuffer commands, std::size_t slot);
-    [[nodiscard]] Submission submitted_frame(const GraphicsUse &use) noexcept;
+    [[nodiscard]] Submission submitted_frame(const GraphicsUse &use, std::size_t slot) noexcept;
+    void prepare_overlay(VkCommandBuffer commands, std::size_t slot, const Overlay &overlay,
+                         VkExtent2D extent);
+    void record_overlay(VkCommandBuffer commands, std::size_t slot, const Overlay &overlay,
+                        OverlayAttachment target);
     [[nodiscard]] std::variant<bool, Failure> completed(const Submission &submission);
     [[nodiscard]] std::variant<std::optional<GpuTimings>, Failure>
     timings(const Submission &submission);
@@ -50,6 +61,9 @@ class Resources : public std::enable_shared_from_this<Resources> {
     void close() noexcept;
 
   private:
+    [[nodiscard]] std::variant<detail::ResourceKey, Failure>
+    overlay_key(const Overlay &overlay, VkExtent2D extent, detail::ResourceKey target = {}) const;
+    void publish_overlay(std::size_t slot, detail::ResourceKey font, std::uint64_t serial) noexcept;
     struct Impl;
     std::unique_ptr<Impl> impl_;
 };

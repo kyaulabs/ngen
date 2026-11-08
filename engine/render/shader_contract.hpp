@@ -65,6 +65,13 @@ struct alignas(16) CullConstants {
     std::array<std::uint32_t, 3> reserved{};
 };
 
+struct OverlayVertex {
+    std::array<float, 2> position{}, uv{};
+    std::uint32_t color{}; // Packed little-endian RGBA8, sRGB color and linear alpha.
+};
+struct alignas(16) OverlayConstants {
+    Float4 scale_translate{};
+};
 struct Vertex {
     std::array<float, 3> position{};
     std::array<float, 3> normal{};
@@ -84,6 +91,8 @@ static_assert(sizeof(CullConstants) == 112);
 static_assert(offsetof(CullConstants, count) == 96 && offsetof(CullConstants, reserved) == 100);
 static_assert(sizeof(PostConstants) == 16);
 static_assert(sizeof(Vertex) == 56);
+static_assert(sizeof(OverlayVertex) == 20 && offsetof(OverlayVertex, color) == 16);
+static_assert(sizeof(OverlayConstants) == 16);
 static_assert(std::is_standard_layout_v<FrameConstants> &&
               std::is_trivially_copyable_v<FrameConstants>);
 static_assert(std::is_standard_layout_v<LightConstants> &&

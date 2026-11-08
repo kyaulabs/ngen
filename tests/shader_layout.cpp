@@ -48,6 +48,12 @@ int main() {
         {{"planes", offsetof(CullConstants, planes)}, {"count", offsetof(CullConstants, count)}});
     report("PostConstants", sizeof(PostConstants), alignof(PostConstants),
            {{"exposureFxaaTexel", offsetof(PostConstants, exposureFxaaTexel)}});
+    report("OverlayConstants", sizeof(OverlayConstants), alignof(OverlayConstants),
+           {{"scale_translate", offsetof(OverlayConstants, scale_translate)}});
+    report("OverlayVertex", sizeof(OverlayVertex), alignof(OverlayVertex),
+           {{"position", offsetof(OverlayVertex, position)},
+            {"uv", offsetof(OverlayVertex, uv)},
+            {"color", offsetof(OverlayVertex, color)}});
     report("Vertex", sizeof(Vertex), alignof(Vertex),
            {{"position", offsetof(Vertex, position)},
             {"normal", offsetof(Vertex, normal)},

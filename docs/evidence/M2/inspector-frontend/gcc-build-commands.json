@@ -1,0 +1,284 @@
+[
+  {
+    "directory": "<ROOT>/build/inspector-gcc",
+    "command": "/bin/g++ -I<ROOT>/engine -m64 -g -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror -fmodules-ts -fmodule-mapper=CMakeFiles/ngen_core.dir/engine/core/values.cpp.o.modmap -MD -fdeps-format=p1689r5 -x c++ -o CMakeFiles/ngen_core.dir/engine/core/values.cpp.o -c <ROOT>/engine/core/values.cpp",
+    "file": "<ROOT>/engine/core/values.cpp",
+    "output": "<ROOT>/build/inspector-gcc/CMakeFiles/ngen_core.dir/engine/core/values.cpp.o"
+  },
+  {
+    "directory": "<ROOT>/build/inspector-gcc",
+    "command": "/bin/g++ -I<ROOT>/engine -m64 -g -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror -fmodules-ts -fmodule-mapper=CMakeFiles/ngen_core.dir/engine/core/entities.cpp.o.modmap -MD -fdeps-format=p1689r5 -x c++ -o CMakeFiles/ngen_core.dir/engine/core/entities.cpp.o -c <ROOT>/engine/core/entities.cpp",
+    "file": "<ROOT>/engine/core/entities.cpp",
+    "output": "<ROOT>/build/inspector-gcc/CMakeFiles/ngen_core.dir/engine/core/entities.cpp.o"
+  },
+  {
+    "directory": "<ROOT>/build/inspector-gcc",
+    "command": "/bin/g++ -I<ROOT>/engine -isystem <CONAN>/p/b/enkit7561993f7055c/p/include -m64 -g -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror -fmodules-ts -fmodule-mapper=CMakeFiles/ngen_jobs.dir/engine/jobs/jobs.cpp.o.modmap -MD -fdeps-format=p1689r5 -x c++ -o CMakeFiles/ngen_jobs.dir/engine/jobs/jobs.cpp.o -c <ROOT>/engine/jobs/jobs.cpp",
+    "file": "<ROOT>/engine/jobs/jobs.cpp",
+    "output": "<ROOT>/build/inspector-gcc/CMakeFiles/ngen_jobs.dir/engine/jobs/jobs.cpp.o"
+  },
+  {
+    "directory": "<ROOT>/build/inspector-gcc",
+    "command": "/bin/g++ -I<ROOT>/engine -isystem <CONAN>/p/b/enkit7561993f7055c/p/include -m64 -g -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror -fmodules-ts -fmodule-mapper=CMakeFiles/ngen_simulation.dir/engine/simulation/simulation.cpp.o.modmap -MD -fdeps-format=p1689r5 -x c++ -o CMakeFiles/ngen_simulation.dir/engine/simulation/simulation.cpp.o -c <ROOT>/engine/simulation/simulation.cpp",
+    "file": "<ROOT>/engine/simulation/simulation.cpp",
+    "output": "<ROOT>/build/inspector-gcc/CMakeFiles/ngen_simulation.dir/engine/simulation/simulation.cpp.o"
+  },
+  {
+    "directory": "<ROOT>/build/inspector-gcc",
+    "command": "/bin/g++ -DNGEN_ALLOCATION_PROBE=1 -I<ROOT>/engine -isystem <CONAN>/p/b/enkit7561993f7055c/p/include -m64 -g -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror -fmodules-ts -fmodule-mapper=CMakeFiles/sim_harness.dir/apps/sim_harness/main.cpp.o.modmap -MD -fdeps-format=p1689r5 -x c++ -o CMakeFiles/sim_harness.dir/apps/sim_harness/main.cpp.o -c <ROOT>/apps/sim_harness/main.cpp",
+    "file": "<ROOT>/apps/sim_harness/main.cpp",
+    "output": "<ROOT>/build/inspector-gcc/CMakeFiles/sim_harness.dir/apps/sim_harness/main.cpp.o"
+  },
+  {
+    "directory": "<ROOT>/build/inspector-gcc",
+    "command": "/bin/g++ -I<ROOT>/engine -m64 -g -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror -fmodules-ts -fmodule-mapper=CMakeFiles/ngen_render_contract.dir/engine/render/capabilities.cpp.o.modmap -MD -fdeps-format=p1689r5 -x c++ -o CMakeFiles/ngen_render_contract.dir/engine/render/capabilities.cpp.o -c <ROOT>/engine/render/capabilities.cpp",
+    "file": "<ROOT>/engine/render/capabilities.cpp",
+    "output": "<ROOT>/build/inspector-gcc/CMakeFiles/ngen_render_contract.dir/engine/render/capabilities.cpp.o"
+  },
+  {
+    "directory": "<ROOT>/build/inspector-gcc",
+    "command": "/bin/g++ -I<ROOT>/engine -isystem <CONAN>/p/b/zlib750e96fdb7096/p/include -m64 -g -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror -fmodules-ts -fmodule-mapper=CMakeFiles/ngen_assets.dir/engine/assets/package.cpp.o.modmap -MD -fdeps-format=p1689r5 -x c++ -o CMakeFiles/ngen_assets.dir/engine/assets/package.cpp.o -c <ROOT>/engine/assets/package.cpp",
+    "file": "<ROOT>/engine/assets/package.cpp",
+    "output": "<ROOT>/build/inspector-gcc/CMakeFiles/ngen_assets.dir/engine/assets/package.cpp.o"
+  },
+  {
+    "directory": "<ROOT>/build/inspector-gcc",
+    "command": "/bin/g++ -I<ROOT>/engine -m64 -g -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror -fmodules-ts -fmodule-mapper=CMakeFiles/asset_package_probe.dir/apps/asset_probe/main.cpp.o.modmap -MD -fdeps-format=p1689r5 -x c++ -o CMakeFiles/asset_package_probe.dir/apps/asset_probe/main.cpp.o -c <ROOT>/apps/asset_probe/main.cpp",
+    "file": "<ROOT>/apps/asset_probe/main.cpp",
+    "output": "<ROOT>/build/inspector-gcc/CMakeFiles/asset_package_probe.dir/apps/asset_probe/main.cpp.o"
+  },
+  {
+    "directory": "<ROOT>/build/inspector-gcc",
+    "command": "/bin/g++ -I<ROOT>/engine -m64 -g -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror -fmodules-ts -fmodule-mapper=CMakeFiles/ngen_inspector.dir/engine/tools/inspector.cpp.o.modmap -MD -fdeps-format=p1689r5 -x c++ -o CMakeFiles/ngen_inspector.dir/engine/tools/inspector.cpp.o -c <ROOT>/engine/tools/inspector.cpp",
+    "file": "<ROOT>/engine/tools/inspector.cpp",
+    "output": "<ROOT>/build/inspector-gcc/CMakeFiles/ngen_inspector.dir/engine/tools/inspector.cpp.o"
+  },
+  {
+    "directory": "<ROOT>/build/inspector-gcc",
+    "command": "/bin/g++ -I<ROOT>/engine -m64 -g -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror -fmodules-ts -fmodule-mapper=CMakeFiles/ngen_inspector.dir/engine/tools/reload.cpp.o.modmap -MD -fdeps-format=p1689r5 -x c++ -o CMakeFiles/ngen_inspector.dir/engine/tools/reload.cpp.o -c <ROOT>/engine/tools/reload.cpp",
+    "file": "<ROOT>/engine/tools/reload.cpp",
+    "output": "<ROOT>/build/inspector-gcc/CMakeFiles/ngen_inspector.dir/engine/tools/reload.cpp.o"
+  },
+  {
+    "directory": "<ROOT>/build/inspector-gcc",
+    "command": "/bin/g++ -I<ROOT>/engine -m64 -g -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror -fmodules-ts -fmodule-mapper=CMakeFiles/shader_contract_layout.dir/tests/shader_layout.cpp.o.modmap -MD -fdeps-format=p1689r5 -x c++ -o CMakeFiles/shader_contract_layout.dir/tests/shader_layout.cpp.o -c <ROOT>/tests/shader_layout.cpp",
+    "file": "<ROOT>/tests/shader_layout.cpp",
+    "output": "<ROOT>/build/inspector-gcc/CMakeFiles/shader_contract_layout.dir/tests/shader_layout.cpp.o"
+  },
+  {
+    "directory": "<ROOT>/build/inspector-gcc",
+    "command": "/bin/g++ -DVMA_VULKAN_VERSION=1003000 -isystem <CONAN>/p/vulka5f8c9f361cfa0/p/include -isystem <CONAN>/p/vulkabd7575518f65a/p/res/vulkan/registry -isystem <CONAN>/p/vulkabd7575518f65a/p/include -m64 -g -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror -fmodules-ts -fmodule-mapper=CMakeFiles/ngen_vma.dir/engine/render/vma.cpp.o.modmap -MD -fdeps-format=p1689r5 -x c++ -o CMakeFiles/ngen_vma.dir/engine/render/vma.cpp.o -c <ROOT>/engine/render/vma.cpp",
+    "file": "<ROOT>/engine/render/vma.cpp",
+    "output": "<ROOT>/build/inspector-gcc/CMakeFiles/ngen_vma.dir/engine/render/vma.cpp.o"
+  },
+  {
+    "directory": "<ROOT>/build/inspector-gcc",
+    "command": "/bin/g++ -DFFI_STATIC_BUILD -DLIBXML_STATIC -DNGEN_COMPILED_SHADERS=1 -DNGEN_INSPECTOR_OVERLAY=1 -DVMA_VULKAN_VERSION=1003000 -DXML_STATIC -I<ROOT>/build/inspector-gcc/shaders/48da3555b4750ae7566ea5575ddd1fbb14f48cc8f465c6ddc9efe1ce2feaddd2 -I<ROOT>/engine -isystem <CONAN>/p/b/sdl112350e9e86a3/p/include -isystem <CONAN>/p/b/waylad435838a1c9eb/p/include -isystem <CONAN>/p/b/zlib750e96fdb7096/p/include -isystem <CONAN>/p/vulkabd7575518f65a/p/include -isystem <CONAN>/p/vulka5f8c9f361cfa0/p/include -isystem <CONAN>/p/vulkabd7575518f65a/p/res/vulkan/registry -m64 -g -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror -fmodules-ts -fmodule-mapper=CMakeFiles/ngen_render.dir/engine/render/context.cpp.o.modmap -MD -fdeps-format=p1689r5 -x c++ -o CMakeFiles/ngen_render.dir/engine/render/context.cpp.o -c <ROOT>/engine/render/context.cpp",
+    "file": "<ROOT>/engine/render/context.cpp",
+    "output": "<ROOT>/build/inspector-gcc/CMakeFiles/ngen_render.dir/engine/render/context.cpp.o"
+  },
+  {
+    "directory": "<ROOT>/build/inspector-gcc",
+    "command": "/bin/g++ -DFFI_STATIC_BUILD -DLIBXML_STATIC -DNGEN_COMPILED_SHADERS=1 -DNGEN_INSPECTOR_OVERLAY=1 -DVMA_VULKAN_VERSION=1003000 -DXML_STATIC -I<ROOT>/build/inspector-gcc/shaders/48da3555b4750ae7566ea5575ddd1fbb14f48cc8f465c6ddc9efe1ce2feaddd2 -I<ROOT>/engine -isystem <CONAN>/p/b/sdl112350e9e86a3/p/include -isystem <CONAN>/p/b/waylad435838a1c9eb/p/include -isystem <CONAN>/p/b/zlib750e96fdb7096/p/include -isystem <CONAN>/p/vulkabd7575518f65a/p/include -isystem <CONAN>/p/vulka5f8c9f361cfa0/p/include -isystem <CONAN>/p/vulkabd7575518f65a/p/res/vulkan/registry -m64 -g -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror -fmodules-ts -fmodule-mapper=CMakeFiles/ngen_render.dir/engine/render/surface.cpp.o.modmap -MD -fdeps-format=p1689r5 -x c++ -o CMakeFiles/ngen_render.dir/engine/render/surface.cpp.o -c <ROOT>/engine/render/surface.cpp",
+    "file": "<ROOT>/engine/render/surface.cpp",
+    "output": "<ROOT>/build/inspector-gcc/CMakeFiles/ngen_render.dir/engine/render/surface.cpp.o"
+  },
+  {
+    "directory": "<ROOT>/build/inspector-gcc",
+    "command": "/bin/g++ -DFFI_STATIC_BUILD -DLIBXML_STATIC -DNGEN_COMPILED_SHADERS=1 -DNGEN_INSPECTOR_OVERLAY=1 -DVMA_VULKAN_VERSION=1003000 -DXML_STATIC -I<ROOT>/build/inspector-gcc/shaders/48da3555b4750ae7566ea5575ddd1fbb14f48cc8f465c6ddc9efe1ce2feaddd2 -I<ROOT>/engine -isystem <CONAN>/p/b/sdl112350e9e86a3/p/include -isystem <CONAN>/p/b/waylad435838a1c9eb/p/include -isystem <CONAN>/p/b/zlib750e96fdb7096/p/include -isystem <CONAN>/p/vulkabd7575518f65a/p/include -isystem <CONAN>/p/vulka5f8c9f361cfa0/p/include -isystem <CONAN>/p/vulkabd7575518f65a/p/res/vulkan/registry -m64 -g -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror -fmodules-ts -fmodule-mapper=CMakeFiles/ngen_render.dir/engine/render/presentation.cpp.o.modmap -MD -fdeps-format=p1689r5 -x c++ -o CMakeFiles/ngen_render.dir/engine/render/presentation.cpp.o -c <ROOT>/engine/render/presentation.cpp",
+    "file": "<ROOT>/engine/render/presentation.cpp",
+    "output": "<ROOT>/build/inspector-gcc/CMakeFiles/ngen_render.dir/engine/render/presentation.cpp.o"
+  },
+  {
+    "directory": "<ROOT>/build/inspector-gcc",
+    "command": "/bin/g++ -DFFI_STATIC_BUILD -DLIBXML_STATIC -DNGEN_COMPILED_SHADERS=1 -DNGEN_INSPECTOR_OVERLAY=1 -DVMA_VULKAN_VERSION=1003000 -DXML_STATIC -I<ROOT>/build/inspector-gcc/shaders/48da3555b4750ae7566ea5575ddd1fbb14f48cc8f465c6ddc9efe1ce2feaddd2 -I<ROOT>/engine -isystem <CONAN>/p/b/sdl112350e9e86a3/p/include -isystem <CONAN>/p/b/waylad435838a1c9eb/p/include -isystem <CONAN>/p/b/zlib750e96fdb7096/p/include -isystem <CONAN>/p/vulkabd7575518f65a/p/include -isystem <CONAN>/p/vulka5f8c9f361cfa0/p/include -isystem <CONAN>/p/vulkabd7575518f65a/p/res/vulkan/registry -m64 -g -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror -fmodules-ts -fmodule-mapper=CMakeFiles/ngen_render.dir/engine/render/resources.cpp.o.modmap -MD -fdeps-format=p1689r5 -x c++ -o CMakeFiles/ngen_render.dir/engine/render/resources.cpp.o -c <ROOT>/engine/render/resources.cpp",
+    "file": "<ROOT>/engine/render/resources.cpp",
+    "output": "<ROOT>/build/inspector-gcc/CMakeFiles/ngen_render.dir/engine/render/resources.cpp.o"
+  },
+  {
+    "directory": "<ROOT>/build/inspector-gcc",
+    "command": "/bin/g++ -DFFI_STATIC_BUILD -DLIBXML_STATIC -DNGEN_COMPILED_SHADERS=1 -DNGEN_INSPECTOR_OVERLAY=1 -DVMA_VULKAN_VERSION=1003000 -DXML_STATIC -I<ROOT>/build/inspector-gcc/shaders/48da3555b4750ae7566ea5575ddd1fbb14f48cc8f465c6ddc9efe1ce2feaddd2 -I<ROOT>/engine -isystem <CONAN>/p/b/sdl112350e9e86a3/p/include -isystem <CONAN>/p/b/waylad435838a1c9eb/p/include -isystem <CONAN>/p/b/zlib750e96fdb7096/p/include -isystem <CONAN>/p/vulkabd7575518f65a/p/include -isystem <CONAN>/p/vulka5f8c9f361cfa0/p/include -isystem <CONAN>/p/vulkabd7575518f65a/p/res/vulkan/registry -m64 -g -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror -fmodules-ts -fmodule-mapper=CMakeFiles/ngen_render.dir/engine/render/post.cpp.o.modmap -MD -fdeps-format=p1689r5 -x c++ -o CMakeFiles/ngen_render.dir/engine/render/post.cpp.o -c <ROOT>/engine/render/post.cpp",
+    "file": "<ROOT>/engine/render/post.cpp",
+    "output": "<ROOT>/build/inspector-gcc/CMakeFiles/ngen_render.dir/engine/render/post.cpp.o"
+  },
+  {
+    "directory": "<ROOT>/build/inspector-gcc",
+    "command": "/bin/g++ -DFFI_STATIC_BUILD -DLIBXML_STATIC -DNGEN_COMPILED_SHADERS=1 -DNGEN_INSPECTOR_OVERLAY=1 -DVMA_VULKAN_VERSION=1003000 -DXML_STATIC -I<ROOT>/build/inspector-gcc/shaders/48da3555b4750ae7566ea5575ddd1fbb14f48cc8f465c6ddc9efe1ce2feaddd2 -I<ROOT>/engine -isystem <CONAN>/p/b/sdl112350e9e86a3/p/include -isystem <CONAN>/p/b/waylad435838a1c9eb/p/include -isystem <CONAN>/p/b/zlib750e96fdb7096/p/include -isystem <CONAN>/p/vulkabd7575518f65a/p/include -isystem <CONAN>/p/vulka5f8c9f361cfa0/p/include -isystem <CONAN>/p/vulkabd7575518f65a/p/res/vulkan/registry -m64 -g -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror -fmodules-ts -fmodule-mapper=CMakeFiles/ngen_render.dir/engine/render/mesh.cpp.o.modmap -MD -fdeps-format=p1689r5 -x c++ -o CMakeFiles/ngen_render.dir/engine/render/mesh.cpp.o -c <ROOT>/engine/render/mesh.cpp",
+    "file": "<ROOT>/engine/render/mesh.cpp",
+    "output": "<ROOT>/build/inspector-gcc/CMakeFiles/ngen_render.dir/engine/render/mesh.cpp.o"
+  },
+  {
+    "directory": "<ROOT>/build/inspector-gcc",
+    "command": "/bin/g++ -DFFI_STATIC_BUILD -DLIBXML_STATIC -DNGEN_COMPILED_SHADERS=1 -DNGEN_INSPECTOR_OVERLAY=1 -DVMA_VULKAN_VERSION=1003000 -DXML_STATIC -I<ROOT>/build/inspector-gcc/shaders/48da3555b4750ae7566ea5575ddd1fbb14f48cc8f465c6ddc9efe1ce2feaddd2 -I<ROOT>/engine -isystem <CONAN>/p/b/sdl112350e9e86a3/p/include -isystem <CONAN>/p/b/waylad435838a1c9eb/p/include -isystem <CONAN>/p/b/zlib750e96fdb7096/p/include -isystem <CONAN>/p/vulkabd7575518f65a/p/include -isystem <CONAN>/p/vulka5f8c9f361cfa0/p/include -isystem <CONAN>/p/vulkabd7575518f65a/p/res/vulkan/registry -m64 -g -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror -fmodules-ts -fmodule-mapper=CMakeFiles/ngen_render.dir/engine/render/environment.cpp.o.modmap -MD -fdeps-format=p1689r5 -x c++ -o CMakeFiles/ngen_render.dir/engine/render/environment.cpp.o -c <ROOT>/engine/render/environment.cpp",
+    "file": "<ROOT>/engine/render/environment.cpp",
+    "output": "<ROOT>/build/inspector-gcc/CMakeFiles/ngen_render.dir/engine/render/environment.cpp.o"
+  },
+  {
+    "directory": "<ROOT>/build/inspector-gcc",
+    "command": "/bin/g++ -DFFI_STATIC_BUILD -DLIBXML_STATIC -DNGEN_COMPILED_SHADERS=1 -DNGEN_INSPECTOR_OVERLAY=1 -DVMA_VULKAN_VERSION=1003000 -DXML_STATIC -I<ROOT>/build/inspector-gcc/shaders/48da3555b4750ae7566ea5575ddd1fbb14f48cc8f465c6ddc9efe1ce2feaddd2 -I<ROOT>/engine -isystem <CONAN>/p/b/sdl112350e9e86a3/p/include -isystem <CONAN>/p/b/waylad435838a1c9eb/p/include -isystem <CONAN>/p/b/zlib750e96fdb7096/p/include -isystem <CONAN>/p/vulkabd7575518f65a/p/include -isystem <CONAN>/p/vulka5f8c9f361cfa0/p/include -isystem <CONAN>/p/vulkabd7575518f65a/p/res/vulkan/registry -m64 -g -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror -fmodules-ts -fmodule-mapper=CMakeFiles/ngen_render.dir/engine/render/overlay.cpp.o.modmap -MD -fdeps-format=p1689r5 -x c++ -o CMakeFiles/ngen_render.dir/engine/render/overlay.cpp.o -c <ROOT>/engine/render/overlay.cpp",
+    "file": "<ROOT>/engine/render/overlay.cpp",
+    "output": "<ROOT>/build/inspector-gcc/CMakeFiles/ngen_render.dir/engine/render/overlay.cpp.o"
+  },
+  {
+    "directory": "<ROOT>/build/inspector-gcc",
+    "command": "/bin/g++ -DFFI_STATIC_BUILD -DLIBXML_STATIC -DXML_STATIC -I<ROOT>/apps -I<ROOT>/engine -isystem <CONAN>/p/b/sdl112350e9e86a3/p/include -isystem <CONAN>/p/b/waylad435838a1c9eb/p/include -isystem <CONAN>/p/b/zlib750e96fdb7096/p/include -isystem <CONAN>/p/vulkabd7575518f65a/p/include -m64 -g -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror -fmodules-ts -fmodule-mapper=CMakeFiles/ngen_probe_support.dir/apps/probe/presentation.cpp.o.modmap -MD -fdeps-format=p1689r5 -x c++ -o CMakeFiles/ngen_probe_support.dir/apps/probe/presentation.cpp.o -c <ROOT>/apps/probe/presentation.cpp",
+    "file": "<ROOT>/apps/probe/presentation.cpp",
+    "output": "<ROOT>/build/inspector-gcc/CMakeFiles/ngen_probe_support.dir/apps/probe/presentation.cpp.o"
+  },
+  {
+    "directory": "<ROOT>/build/inspector-gcc",
+    "command": "/bin/g++ -DFFI_STATIC_BUILD -DLIBXML_STATIC -DXML_STATIC -I<ROOT>/apps -I<ROOT>/engine -isystem <CONAN>/p/b/sdl112350e9e86a3/p/include -isystem <CONAN>/p/b/waylad435838a1c9eb/p/include -isystem <CONAN>/p/b/zlib750e96fdb7096/p/include -isystem <CONAN>/p/vulkabd7575518f65a/p/include -m64 -g -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror -fmodules-ts -fmodule-mapper=CMakeFiles/ngen_probe_support.dir/apps/probe/capture.cpp.o.modmap -MD -fdeps-format=p1689r5 -x c++ -o CMakeFiles/ngen_probe_support.dir/apps/probe/capture.cpp.o -c <ROOT>/apps/probe/capture.cpp",
+    "file": "<ROOT>/apps/probe/capture.cpp",
+    "output": "<ROOT>/build/inspector-gcc/CMakeFiles/ngen_probe_support.dir/apps/probe/capture.cpp.o"
+  },
+  {
+    "directory": "<ROOT>/build/inspector-gcc",
+    "command": "/bin/g++ -DFFI_STATIC_BUILD -DLIBXML_STATIC -DXML_STATIC -I<ROOT>/apps -I<ROOT>/engine -isystem <CONAN>/p/b/sdl112350e9e86a3/p/include -isystem <CONAN>/p/b/waylad435838a1c9eb/p/include -isystem <CONAN>/p/b/zlib750e96fdb7096/p/include -isystem <CONAN>/p/vulkabd7575518f65a/p/include -m64 -g -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror -fmodules-ts -fmodule-mapper=CMakeFiles/render_probe.dir/apps/render_probe/main.cpp.o.modmap -MD -fdeps-format=p1689r5 -x c++ -o CMakeFiles/render_probe.dir/apps/render_probe/main.cpp.o -c <ROOT>/apps/render_probe/main.cpp",
+    "file": "<ROOT>/apps/render_probe/main.cpp",
+    "output": "<ROOT>/build/inspector-gcc/CMakeFiles/render_probe.dir/apps/render_probe/main.cpp.o"
+  },
+  {
+    "directory": "<ROOT>/build/inspector-gcc",
+    "command": "/bin/g++ -DFFI_STATIC_BUILD -DLIBXML_STATIC -DNGEN_POST_TESTS=1 -DXML_STATIC -I<ROOT>/apps -I<ROOT>/engine -isystem <CONAN>/p/b/sdl112350e9e86a3/p/include -isystem <CONAN>/p/b/waylad435838a1c9eb/p/include -isystem <CONAN>/p/b/zlib750e96fdb7096/p/include -isystem <CONAN>/p/vulkabd7575518f65a/p/include -m64 -g -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror -fmodules-ts -fmodule-mapper=CMakeFiles/resource_probe.dir/apps/resource_probe/main.cpp.o.modmap -MD -fdeps-format=p1689r5 -x c++ -o CMakeFiles/resource_probe.dir/apps/resource_probe/main.cpp.o -c <ROOT>/apps/resource_probe/main.cpp",
+    "file": "<ROOT>/apps/resource_probe/main.cpp",
+    "output": "<ROOT>/build/inspector-gcc/CMakeFiles/resource_probe.dir/apps/resource_probe/main.cpp.o"
+  },
+  {
+    "directory": "<ROOT>/build/inspector-gcc",
+    "command": "/bin/g++ -DFFI_STATIC_BUILD -DLIBXML_STATIC -DXML_STATIC -I<ROOT>/engine -isystem <CONAN>/p/b/sdl112350e9e86a3/p/include -isystem <CONAN>/p/b/waylad435838a1c9eb/p/include -isystem <CONAN>/p/b/zlib750e96fdb7096/p/include -isystem <CONAN>/p/vulkabd7575518f65a/p/include -m64 -g -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror -fmodules-ts -fmodule-mapper=CMakeFiles/ngen_scene.dir/engine/render/scene.cpp.o.modmap -MD -fdeps-format=p1689r5 -x c++ -o CMakeFiles/ngen_scene.dir/engine/render/scene.cpp.o -c <ROOT>/engine/render/scene.cpp",
+    "file": "<ROOT>/engine/render/scene.cpp",
+    "output": "<ROOT>/build/inspector-gcc/CMakeFiles/ngen_scene.dir/engine/render/scene.cpp.o"
+  },
+  {
+    "directory": "<ROOT>/build/inspector-gcc",
+    "command": "/bin/g++ -DFFI_STATIC_BUILD -DLIBXML_STATIC -DXML_STATIC -I<ROOT>/engine -isystem <CONAN>/p/b/sdl112350e9e86a3/p/include -isystem <CONAN>/p/b/waylad435838a1c9eb/p/include -isystem <CONAN>/p/b/zlib750e96fdb7096/p/include -isystem <CONAN>/p/vulkabd7575518f65a/p/include -m64 -g -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror -fmodules-ts -fmodule-mapper=CMakeFiles/ngen_scene.dir/engine/render/scene_draw.cpp.o.modmap -MD -fdeps-format=p1689r5 -x c++ -o CMakeFiles/ngen_scene.dir/engine/render/scene_draw.cpp.o -c <ROOT>/engine/render/scene_draw.cpp",
+    "file": "<ROOT>/engine/render/scene_draw.cpp",
+    "output": "<ROOT>/build/inspector-gcc/CMakeFiles/ngen_scene.dir/engine/render/scene_draw.cpp.o"
+  },
+  {
+    "directory": "<ROOT>/build/inspector-gcc",
+    "command": "/bin/g++ -DFFI_STATIC_BUILD -DLIBXML_STATIC -DXML_STATIC -I<ROOT>/apps -I<ROOT>/engine -isystem <CONAN>/p/b/sdl112350e9e86a3/p/include -isystem <CONAN>/p/b/waylad435838a1c9eb/p/include -isystem <CONAN>/p/b/zlib750e96fdb7096/p/include -isystem <CONAN>/p/vulkabd7575518f65a/p/include -m64 -g -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror -fmodules-ts -fmodule-mapper=CMakeFiles/scene_workload_fixture.dir/apps/scene_workload/fixture.cpp.o.modmap -MD -fdeps-format=p1689r5 -x c++ -o CMakeFiles/scene_workload_fixture.dir/apps/scene_workload/fixture.cpp.o -c <ROOT>/apps/scene_workload/fixture.cpp",
+    "file": "<ROOT>/apps/scene_workload/fixture.cpp",
+    "output": "<ROOT>/build/inspector-gcc/CMakeFiles/scene_workload_fixture.dir/apps/scene_workload/fixture.cpp.o"
+  },
+  {
+    "directory": "<ROOT>/build/inspector-gcc",
+    "command": "/bin/g++ -DFFI_STATIC_BUILD -DLIBXML_STATIC -DXML_STATIC -I<ROOT>/engine -isystem <CONAN>/p/b/sdl112350e9e86a3/p/include -isystem <CONAN>/p/b/waylad435838a1c9eb/p/include -isystem <CONAN>/p/b/zlib750e96fdb7096/p/include -isystem <CONAN>/p/vulkabd7575518f65a/p/include -isystem <CONAN>/p/b/imgui9eec54aa76d62/p/res/bindings -isystem <CONAN>/p/b/imgui9eec54aa76d62/p/include -m64 -g -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror -fmodules-ts -fmodule-mapper=CMakeFiles/ngen_inspector_ui.dir/engine/tools/ui.cpp.o.modmap -MD -fdeps-format=p1689r5 -x c++ -o CMakeFiles/ngen_inspector_ui.dir/engine/tools/ui.cpp.o -c <ROOT>/engine/tools/ui.cpp",
+    "file": "<ROOT>/engine/tools/ui.cpp",
+    "output": "<ROOT>/build/inspector-gcc/CMakeFiles/ngen_inspector_ui.dir/engine/tools/ui.cpp.o"
+  },
+  {
+    "directory": "<ROOT>/build/inspector-gcc",
+    "command": "/bin/g++ -DFFI_STATIC_BUILD -DLIBXML_STATIC -DNGEN_ALLOCATION_PROBE=1 -DNGEN_WORKLOAD_INSPECTOR=1 -DXML_STATIC -I<ROOT>/apps -I<ROOT>/engine -isystem <CONAN>/p/b/sdl112350e9e86a3/p/include -isystem <CONAN>/p/b/waylad435838a1c9eb/p/include -isystem <CONAN>/p/b/zlib750e96fdb7096/p/include -isystem <CONAN>/p/vulkabd7575518f65a/p/include -m64 -g -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror -fmodules-ts -fmodule-mapper=CMakeFiles/scene_workload.dir/apps/scene_workload/main.cpp.o.modmap -MD -fdeps-format=p1689r5 -x c++ -o CMakeFiles/scene_workload.dir/apps/scene_workload/main.cpp.o -c <ROOT>/apps/scene_workload/main.cpp",
+    "file": "<ROOT>/apps/scene_workload/main.cpp",
+    "output": "<ROOT>/build/inspector-gcc/CMakeFiles/scene_workload.dir/apps/scene_workload/main.cpp.o"
+  },
+  {
+    "directory": "<ROOT>/build/inspector-gcc",
+    "command": "/bin/g++ -DFFI_STATIC_BUILD -DLIBXML_STATIC -DNGEN_ALLOCATION_PROBE=1 -DNGEN_WORKLOAD_INSPECTOR=1 -DXML_STATIC -I<ROOT>/apps -I<ROOT>/engine -isystem <CONAN>/p/b/sdl112350e9e86a3/p/include -isystem <CONAN>/p/b/waylad435838a1c9eb/p/include -isystem <CONAN>/p/b/zlib750e96fdb7096/p/include -isystem <CONAN>/p/vulkabd7575518f65a/p/include -m64 -g -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror -fmodules-ts -fmodule-mapper=CMakeFiles/scene_workload.dir/apps/scene_workload/allocations.cpp.o.modmap -MD -fdeps-format=p1689r5 -x c++ -o CMakeFiles/scene_workload.dir/apps/scene_workload/allocations.cpp.o -c <ROOT>/apps/scene_workload/allocations.cpp",
+    "file": "<ROOT>/apps/scene_workload/allocations.cpp",
+    "output": "<ROOT>/build/inspector-gcc/CMakeFiles/scene_workload.dir/apps/scene_workload/allocations.cpp.o"
+  },
+  {
+    "directory": "<ROOT>/build/inspector-gcc",
+    "command": "/bin/g++ -DFFI_STATIC_BUILD -DLIBXML_STATIC -DXML_STATIC -I<ROOT>/tests -I<ROOT>/engine -isystem <CONAN>/p/b/sdl112350e9e86a3/p/include -isystem <CONAN>/p/b/waylad435838a1c9eb/p/include -isystem <CONAN>/p/b/zlib750e96fdb7096/p/include -isystem <CONAN>/p/vulkabd7575518f65a/p/include -m64 -g -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror -fmodules-ts -fmodule-mapper=CMakeFiles/inspector_probe.dir/apps/inspector_probe/main.cpp.o.modmap -MD -fdeps-format=p1689r5 -x c++ -o CMakeFiles/inspector_probe.dir/apps/inspector_probe/main.cpp.o -c <ROOT>/apps/inspector_probe/main.cpp",
+    "file": "<ROOT>/apps/inspector_probe/main.cpp",
+    "output": "<ROOT>/build/inspector-gcc/CMakeFiles/inspector_probe.dir/apps/inspector_probe/main.cpp.o"
+  },
+  {
+    "directory": "<ROOT>/build/inspector-gcc",
+    "command": "/bin/g++ -DFFI_STATIC_BUILD -DLIBXML_STATIC -DNGEN_TEST_FIXTURES=\\\"<ROOT>/tests/fixtures\\\" -DXML_STATIC -I<ROOT>/tests -I<ROOT>/engine -I<ROOT>/apps -isystem <CONAN>/p/b/sdl112350e9e86a3/p/include -isystem <CONAN>/p/b/waylad435838a1c9eb/p/include -isystem <CONAN>/p/b/zlib750e96fdb7096/p/include -isystem <CONAN>/p/vulkabd7575518f65a/p/include -m64 -g -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror -fmodules-ts -fmodule-mapper=CMakeFiles/scene_probe.dir/apps/scene_probe/main.cpp.o.modmap -MD -fdeps-format=p1689r5 -x c++ -o CMakeFiles/scene_probe.dir/apps/scene_probe/main.cpp.o -c <ROOT>/apps/scene_probe/main.cpp",
+    "file": "<ROOT>/apps/scene_probe/main.cpp",
+    "output": "<ROOT>/build/inspector-gcc/CMakeFiles/scene_probe.dir/apps/scene_probe/main.cpp.o"
+  },
+  {
+    "directory": "<ROOT>/build/inspector-gcc",
+    "command": "/bin/g++ -DFFI_STATIC_BUILD -DLIBXML_STATIC -DNGEN_TEST_FIXTURES=\\\"<ROOT>/tests/fixtures\\\" -DXML_STATIC -I<ROOT>/tests -I<ROOT>/engine -I<ROOT>/apps -isystem <CONAN>/p/b/sdl112350e9e86a3/p/include -isystem <CONAN>/p/b/waylad435838a1c9eb/p/include -isystem <CONAN>/p/b/zlib750e96fdb7096/p/include -isystem <CONAN>/p/vulkabd7575518f65a/p/include -m64 -g -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror -fmodules-ts -fmodule-mapper=CMakeFiles/scene_probe.dir/apps/scene_probe/draw.cpp.o.modmap -MD -fdeps-format=p1689r5 -x c++ -o CMakeFiles/scene_probe.dir/apps/scene_probe/draw.cpp.o -c <ROOT>/apps/scene_probe/draw.cpp",
+    "file": "<ROOT>/apps/scene_probe/draw.cpp",
+    "output": "<ROOT>/build/inspector-gcc/CMakeFiles/scene_probe.dir/apps/scene_probe/draw.cpp.o"
+  },
+  {
+    "directory": "<ROOT>/build/inspector-gcc",
+    "command": "/bin/g++ -I<ROOT>/engine -isystem <CONAN>/p/b/enkit7561993f7055c/p/include -isystem <CONAN>/p/b/catch689513cf6391a/p/include -m64 -g -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror -fmodules-ts -fmodule-mapper=CMakeFiles/ngen_tests.dir/tests/core.cpp.o.modmap -MD -fdeps-format=p1689r5 -x c++ -o CMakeFiles/ngen_tests.dir/tests/core.cpp.o -c <ROOT>/tests/core.cpp",
+    "file": "<ROOT>/tests/core.cpp",
+    "output": "<ROOT>/build/inspector-gcc/CMakeFiles/ngen_tests.dir/tests/core.cpp.o"
+  },
+  {
+    "directory": "<ROOT>/build/inspector-gcc",
+    "command": "/bin/g++ -I<ROOT>/engine -isystem <CONAN>/p/b/enkit7561993f7055c/p/include -isystem <CONAN>/p/b/catch689513cf6391a/p/include -m64 -g -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror -fmodules-ts -fmodule-mapper=CMakeFiles/ngen_tests.dir/tests/jobs.cpp.o.modmap -MD -fdeps-format=p1689r5 -x c++ -o CMakeFiles/ngen_tests.dir/tests/jobs.cpp.o -c <ROOT>/tests/jobs.cpp",
+    "file": "<ROOT>/tests/jobs.cpp",
+    "output": "<ROOT>/build/inspector-gcc/CMakeFiles/ngen_tests.dir/tests/jobs.cpp.o"
+  },
+  {
+    "directory": "<ROOT>/build/inspector-gcc",
+    "command": "/bin/g++ -I<ROOT>/engine -isystem <CONAN>/p/b/enkit7561993f7055c/p/include -isystem <CONAN>/p/b/catch689513cf6391a/p/include -m64 -g -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror -fmodules-ts -fmodule-mapper=CMakeFiles/ngen_tests.dir/tests/simulation.cpp.o.modmap -MD -fdeps-format=p1689r5 -x c++ -o CMakeFiles/ngen_tests.dir/tests/simulation.cpp.o -c <ROOT>/tests/simulation.cpp",
+    "file": "<ROOT>/tests/simulation.cpp",
+    "output": "<ROOT>/build/inspector-gcc/CMakeFiles/ngen_tests.dir/tests/simulation.cpp.o"
+  },
+  {
+    "directory": "<ROOT>/build/inspector-gcc",
+    "command": "/bin/g++ -I<ROOT>/engine -isystem <CONAN>/p/b/catch689513cf6391a/p/include -m64 -g -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror -fmodules-ts -fmodule-mapper=CMakeFiles/render_contract_tests.dir/tests/render_capabilities.cpp.o.modmap -MD -fdeps-format=p1689r5 -x c++ -o CMakeFiles/render_contract_tests.dir/tests/render_capabilities.cpp.o -c <ROOT>/tests/render_capabilities.cpp",
+    "file": "<ROOT>/tests/render_capabilities.cpp",
+    "output": "<ROOT>/build/inspector-gcc/CMakeFiles/render_contract_tests.dir/tests/render_capabilities.cpp.o"
+  },
+  {
+    "directory": "<ROOT>/build/inspector-gcc",
+    "command": "/bin/g++ -DFFI_STATIC_BUILD -DLIBXML_STATIC -DXML_STATIC -I<ROOT>/engine -isystem <CONAN>/p/b/sdl112350e9e86a3/p/include -isystem <CONAN>/p/b/waylad435838a1c9eb/p/include -isystem <CONAN>/p/b/zlib750e96fdb7096/p/include -isystem <CONAN>/p/vulkabd7575518f65a/p/include -isystem <CONAN>/p/b/catch689513cf6391a/p/include -m64 -g -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror -fmodules-ts -fmodule-mapper=CMakeFiles/render_environment_tests.dir/tests/render_environment.cpp.o.modmap -MD -fdeps-format=p1689r5 -x c++ -o CMakeFiles/render_environment_tests.dir/tests/render_environment.cpp.o -c <ROOT>/tests/render_environment.cpp",
+    "file": "<ROOT>/tests/render_environment.cpp",
+    "output": "<ROOT>/build/inspector-gcc/CMakeFiles/render_environment_tests.dir/tests/render_environment.cpp.o"
+  },
+  {
+    "directory": "<ROOT>/build/inspector-gcc",
+    "command": "/bin/g++ -DFFI_STATIC_BUILD -DLIBXML_STATIC -DNGEN_ALLOCATION_PROBE=1 -DXML_STATIC -I<ROOT>/apps -I<ROOT>/engine -isystem <CONAN>/p/b/sdl112350e9e86a3/p/include -isystem <CONAN>/p/b/waylad435838a1c9eb/p/include -isystem <CONAN>/p/b/zlib750e96fdb7096/p/include -isystem <CONAN>/p/vulkabd7575518f65a/p/include -isystem <CONAN>/p/b/catch689513cf6391a/p/include -m64 -g -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror -fmodules-ts -fmodule-mapper=CMakeFiles/scene_workload_tests.dir/tests/workload.cpp.o.modmap -MD -fdeps-format=p1689r5 -x c++ -o CMakeFiles/scene_workload_tests.dir/tests/workload.cpp.o -c <ROOT>/tests/workload.cpp",
+    "file": "<ROOT>/tests/workload.cpp",
+    "output": "<ROOT>/build/inspector-gcc/CMakeFiles/scene_workload_tests.dir/tests/workload.cpp.o"
+  },
+  {
+    "directory": "<ROOT>/build/inspector-gcc",
+    "command": "/bin/g++ -DFFI_STATIC_BUILD -DLIBXML_STATIC -DNGEN_ALLOCATION_PROBE=1 -DXML_STATIC -I<ROOT>/apps -I<ROOT>/engine -isystem <CONAN>/p/b/sdl112350e9e86a3/p/include -isystem <CONAN>/p/b/waylad435838a1c9eb/p/include -isystem <CONAN>/p/b/zlib750e96fdb7096/p/include -isystem <CONAN>/p/vulkabd7575518f65a/p/include -isystem <CONAN>/p/b/catch689513cf6391a/p/include -m64 -g -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror -fmodules-ts -fmodule-mapper=CMakeFiles/scene_workload_tests.dir/apps/scene_workload/allocations.cpp.o.modmap -MD -fdeps-format=p1689r5 -x c++ -o CMakeFiles/scene_workload_tests.dir/apps/scene_workload/allocations.cpp.o -c <ROOT>/apps/scene_workload/allocations.cpp",
+    "file": "<ROOT>/apps/scene_workload/allocations.cpp",
+    "output": "<ROOT>/build/inspector-gcc/CMakeFiles/scene_workload_tests.dir/apps/scene_workload/allocations.cpp.o"
+  },
+  {
+    "directory": "<ROOT>/build/inspector-gcc",
+    "command": "/bin/g++ -DNGEN_TEST_FIXTURES=\\\"<ROOT>/tests/fixtures\\\" -I<ROOT>/engine -isystem <CONAN>/p/b/catch689513cf6391a/p/include -isystem <CONAN>/p/b/zlib750e96fdb7096/p/include -m64 -g -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror -fmodules-ts -fmodule-mapper=CMakeFiles/asset_package_tests.dir/tests/assets.cpp.o.modmap -MD -fdeps-format=p1689r5 -x c++ -o CMakeFiles/asset_package_tests.dir/tests/assets.cpp.o -c <ROOT>/tests/assets.cpp",
+    "file": "<ROOT>/tests/assets.cpp",
+    "output": "<ROOT>/build/inspector-gcc/CMakeFiles/asset_package_tests.dir/tests/assets.cpp.o"
+  },
+  {
+    "directory": "<ROOT>/build/inspector-gcc",
+    "command": "/bin/g++ -I<ROOT>/engine -isystem <CONAN>/p/b/catch689513cf6391a/p/include -isystem <CONAN>/p/b/zlib750e96fdb7096/p/include -m64 -g -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror -fmodules-ts -fmodule-mapper=CMakeFiles/inspector_tests.dir/tests/inspector.cpp.o.modmap -MD -fdeps-format=p1689r5 -x c++ -o CMakeFiles/inspector_tests.dir/tests/inspector.cpp.o -c <ROOT>/tests/inspector.cpp",
+    "file": "<ROOT>/tests/inspector.cpp",
+    "output": "<ROOT>/build/inspector-gcc/CMakeFiles/inspector_tests.dir/tests/inspector.cpp.o"
+  },
+  {
+    "directory": "<ROOT>/build/inspector-gcc",
+    "command": "/bin/g++ -I<ROOT>/engine -isystem <CONAN>/p/b/catch689513cf6391a/p/include -isystem <CONAN>/p/b/zlib750e96fdb7096/p/include -m64 -g -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror -fmodules-ts -fmodule-mapper=CMakeFiles/inspector_tests.dir/tests/reload.cpp.o.modmap -MD -fdeps-format=p1689r5 -x c++ -o CMakeFiles/inspector_tests.dir/tests/reload.cpp.o -c <ROOT>/tests/reload.cpp",
+    "file": "<ROOT>/tests/reload.cpp",
+    "output": "<ROOT>/build/inspector-gcc/CMakeFiles/inspector_tests.dir/tests/reload.cpp.o"
+  },
+  {
+    "directory": "<ROOT>/build/inspector-gcc",
+    "command": "/bin/g++ -DFFI_STATIC_BUILD -DLIBXML_STATIC -DNGEN_SHADER_PACKAGE_DIR=\\\"<ROOT>/build/inspector-gcc/shaders/48da3555b4750ae7566ea5575ddd1fbb14f48cc8f465c6ddc9efe1ce2feaddd2\\\" -DVMA_VULKAN_VERSION=1003000 -DXML_STATIC -I<ROOT>/engine -isystem <CONAN>/p/b/sdl112350e9e86a3/p/include -isystem <CONAN>/p/b/waylad435838a1c9eb/p/include -isystem <CONAN>/p/b/zlib750e96fdb7096/p/include -isystem <CONAN>/p/vulkabd7575518f65a/p/include -isystem <CONAN>/p/vulka5f8c9f361cfa0/p/include -isystem <CONAN>/p/vulkabd7575518f65a/p/res/vulkan/registry -m64 -g -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror -fmodules-ts -fmodule-mapper=CMakeFiles/shader_gpu_probe.dir/tests/shader_gpu.cpp.o.modmap -MD -fdeps-format=p1689r5 -x c++ -o CMakeFiles/shader_gpu_probe.dir/tests/shader_gpu.cpp.o -c <ROOT>/tests/shader_gpu.cpp",
+    "file": "<ROOT>/tests/shader_gpu.cpp",
+    "output": "<ROOT>/build/inspector-gcc/CMakeFiles/shader_gpu_probe.dir/tests/shader_gpu.cpp.o"
+  },
+  {
+    "directory": "<ROOT>/build/inspector-gcc",
+    "command": "/bin/g++ -DFFI_STATIC_BUILD -DLIBXML_STATIC -DXML_STATIC -I<ROOT>/engine -isystem <CONAN>/p/b/sdl112350e9e86a3/p/include -isystem <CONAN>/p/b/waylad435838a1c9eb/p/include -isystem <CONAN>/p/b/zlib750e96fdb7096/p/include -isystem <CONAN>/p/vulkabd7575518f65a/p/include -isystem <CONAN>/p/b/catch689513cf6391a/p/include -m64 -g -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror -fmodules-ts -fmodule-mapper=CMakeFiles/render_startup_tests.dir/tests/render_startup.cpp.o.modmap -MD -fdeps-format=p1689r5 -x c++ -o CMakeFiles/render_startup_tests.dir/tests/render_startup.cpp.o -c <ROOT>/tests/render_startup.cpp",
+    "file": "<ROOT>/tests/render_startup.cpp",
+    "output": "<ROOT>/build/inspector-gcc/CMakeFiles/render_startup_tests.dir/tests/render_startup.cpp.o"
+  },
+  {
+    "directory": "<ROOT>/build/inspector-gcc",
+    "command": "/bin/g++ -DFFI_STATIC_BUILD -DLIBXML_STATIC -DXML_STATIC -I<ROOT>/engine -isystem <CONAN>/p/b/sdl112350e9e86a3/p/include -isystem <CONAN>/p/b/waylad435838a1c9eb/p/include -isystem <CONAN>/p/b/zlib750e96fdb7096/p/include -isystem <CONAN>/p/vulkabd7575518f65a/p/include -isystem <CONAN>/p/b/catch689513cf6391a/p/include -m64 -g -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror -fmodules-ts -fmodule-mapper=CMakeFiles/render_startup_tests.dir/tests/render_surface.cpp.o.modmap -MD -fdeps-format=p1689r5 -x c++ -o CMakeFiles/render_startup_tests.dir/tests/render_surface.cpp.o -c <ROOT>/tests/render_surface.cpp",
+    "file": "<ROOT>/tests/render_surface.cpp",
+    "output": "<ROOT>/build/inspector-gcc/CMakeFiles/render_startup_tests.dir/tests/render_surface.cpp.o"
+  },
+  {
+    "directory": "<ROOT>/build/inspector-gcc",
+    "command": "/bin/g++ -DFFI_STATIC_BUILD -DLIBXML_STATIC -DXML_STATIC -isystem <CONAN>/p/b/sdl112350e9e86a3/p/include -isystem <CONAN>/p/b/waylad435838a1c9eb/p/include -isystem <CONAN>/p/b/zlib750e96fdb7096/p/include -m64 -g -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror -fmodules-ts -fmodule-mapper=CMakeFiles/wayland_tablet_tests.dir/tests/wayland_tablets.cpp.o.modmap -MD -fdeps-format=p1689r5 -x c++ -o CMakeFiles/wayland_tablet_tests.dir/tests/wayland_tablets.cpp.o -c <ROOT>/tests/wayland_tablets.cpp",
+    "file": "<ROOT>/tests/wayland_tablets.cpp",
+    "output": "<ROOT>/build/inspector-gcc/CMakeFiles/wayland_tablet_tests.dir/tests/wayland_tablets.cpp.o"
+  }
+]
