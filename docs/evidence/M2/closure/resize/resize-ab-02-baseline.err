@@ -1,0 +1,10 @@
+native_latency name=submit begin_ns=416456792546682 end_ns=416456835723556 duration_ns=43176874 result=0
+swapchain_created at_ns=416457037400352 width=1280 height=720 requested_images=4 result=0
+swapchain_created at_ns=416460935692855 width=1024 height=640 requested_images=4 result=0
+native_latency name=submit begin_ns=416460943666721 end_ns=416461016566757 duration_ns=72900036 result=0
+swapchain_created at_ns=416461957292671 width=1280 height=720 requested_images=4 result=0
+native_latency name=submit begin_ns=416461957665598 end_ns=416461962753252 duration_ns=5087654 result=0
+native_latency name=acquire_poll_span begin_ns=416461974507110 end_ns=416462203587150 duration_ns=229080040 result=0
+native_latency name=submit begin_ns=416463677522159 end_ns=416463742958574 duration_ns=65436415 result=0
+native_latency name=submit begin_ns=416466414562014 end_ns=416466496203152 duration_ns=81641138 result=0
+native_latency name=submit begin_ns=416469197869339 end_ns=416469273082215 duration_ns=75212876 result=0

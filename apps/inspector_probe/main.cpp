@@ -44,6 +44,54 @@ ngen::assets::PackagePin package() {
             "inspector fixture was not admitted");
     return std::get<ngen::assets::PackagePin>(std::move(loaded));
 }
+ngen::assets::PackagePin translucent_package(bool reverse, bool coplanar) {
+    package_fixture::Sections sections;
+    for (std::uint32_t primitive = 0; primitive < 3; ++primitive) {
+        const auto z = primitive == 2 ? .3F : primitive == 0 || coplanar ? -.2F : .2F;
+        const auto left = primitive == 2 ? .5F : 0.0F;
+        const std::array<std::array<float, 2>, 4> corners{{{left, 0}, {1, 0}, {1, 1}, {left, 1}}};
+        for (const auto &corner : corners)
+            for (const auto value :
+                 std::array<float, 14>{corner[0], corner[1], z, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 1})
+                package_fixture::f32(sections[0], value);
+        for (const auto index : std::array<std::uint32_t, 6>{0, 1, 2, 0, 2, 3})
+            package_fixture::u32(sections[1], index);
+        for (const auto value : std::array<std::uint32_t, 4>{primitive * 4, 4, primitive, 1})
+            package_fixture::u32(sections[2], value);
+        for (const auto value : std::array<float, 6>{left, 0, z, 1, 1, z})
+            package_fixture::f32(sections[2], value);
+        package_fixture::u32(sections[2], primitive * 6);
+        package_fixture::u32(sections[2], 6);
+        package_fixture::f32(sections[2], 0);
+        sections[2].resize((std::size_t{primitive} + 1) * 80, std::byte{0});
+        const auto alpha = primitive == 2 ? 1.0F : .5F;
+        const std::array<float, 3> emission{primitive == 0 ? 1.0F : 0.0F,
+                                            primitive == 1 ? 1.0F : 0.0F,
+                                            primitive == 2 ? 1.0F : 0.0F};
+        for (const auto value : std::array<float, 13>{0, 0, 0, alpha, emission[0], emission[1],
+                                                      emission[2], 1, 0, 1, 1, 1, .5F})
+            package_fixture::f32(sections[3], value);
+        package_fixture::u32(sections[3], primitive == 2 ? 0U : 2U);
+        package_fixture::u32(sections[3], 1);
+        for (unsigned map = 0; map < 5; ++map) {
+            package_fixture::u32(sections[3], UINT32_MAX);
+            package_fixture::u32(sections[3], 0);
+        }
+        sections[3].resize((std::size_t{primitive} + 1) * 128, std::byte{0});
+    }
+    // Opaque input is deliberately between the two translucent inputs.
+    for (const auto primitive : reverse ? std::array{1U, 2U, 0U} : std::array{0U, 2U, 1U}) {
+        package_fixture::u32(sections[8], primitive);
+        package_fixture::u32(sections[8], primitive);
+        for (const auto value :
+             std::array<float, 16>{1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 4, 6, 6, 1})
+            package_fixture::f32(sections[8], value);
+    }
+    auto loaded = ngen::assets::load_package(package_fixture::encode(sections));
+    require(std::holds_alternative<ngen::assets::PackagePin>(loaded),
+            "translucent fixture package was not admitted");
+    return std::get<ngen::assets::PackagePin>(std::move(loaded));
+}
 class Gate {
   public:
     explicit Gate(Context &context) : context_(context) {
@@ -207,6 +255,54 @@ int main() try {
     require(std::holds_alternative<Failure>(renderer.draw(*context, version, view, targets)) &&
                 take(renderer.collect(*context)) == 0,
             "nonfinite factor table published a frame");
+    {
+        SceneView layered{};
+        layered.view_projection.columns = {2, 0, 0, 0, 0, -2, 0, 0, 0, 0, -1, 0, -9, 13, 6.5F, 1};
+        layered.light_view_projection = layered.view_projection;
+        layered.camera_position = {4.5F, 6.5F, 10, 1};
+        layered.key_direction_intensity = {0, 0, -1, 0};
+        std::array<std::uint16_t, 64> reference{};
+        for (unsigned scenario = 0; scenario < 4; ++scenario) {
+            const bool reverse = scenario % 2 != 0, coplanar = scenario >= 2;
+            auto pending =
+                take(SceneUpload::begin(*context, translucent_package(reverse, coplanar)));
+            ScenePin scene;
+            const auto began = SDL_GetTicks();
+            while (!scene) {
+                auto progress = take(pending->advance(*context));
+                if (progress)
+                    scene = std::move(*progress);
+                require(SDL_GetTicks() - began < 5000, "translucent fixture upload timed out");
+                SDL_Delay(1);
+            }
+            wait(*context, take(renderer.draw(*context, scene, layered, targets)));
+            require(take(renderer.collect(*context)) == 0, "translucent frame did not retire");
+            wait(*context, take(context->copy_from_image({color, readback})));
+            std::array<std::uint16_t, 64> actual{};
+            (void)take(readback.read(0, std::as_writable_bytes(std::span(actual))));
+            const auto unoccluded = (1U * 4 + 1) * 4, occluded = (1U * 4 + 2) * 4;
+            // Linear HDR: near green(.5) over far red(.5), over black.
+            const auto red = half(actual[unoccluded]), green = half(actual[unoccluded + 1]);
+            if (!coplanar)
+                require(red == .25F && green == .5F && half(actual[unoccluded + 2]) == 0,
+                        "checked scene translucent order/composition differs");
+            else
+                // Equal-depth layers both pass LESS only when transparency does not write depth.
+                // Either tie order is valid: do not couple this check to the sorting tie-breaker.
+                require(red > 0 && green > 0 && red + green == .75F &&
+                            half(actual[unoccluded + 2]) == 0,
+                        "coplanar translucent geometry wrote depth");
+            require(half(actual[occluded]) == 0 && half(actual[occluded + 1]) == 0 &&
+                        half(actual[occluded + 2]) == 1,
+                    "opaque depth did not occlude checked translucent geometry");
+            if (scenario == 1)
+                require(actual == reference, "translucent pixels depend on package instance order");
+            else if (scenario == 0)
+                reference = actual;
+        }
+        std::puts("scene_translucent_order=1 scene_opaque_occlusion=1 "
+                  "scene_translucent_depth_readonly=1");
+    }
     auto ldr = take(
         context->create_image({{4, 4},
                                VK_FORMAT_R8G8B8A8_SRGB,

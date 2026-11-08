@@ -1,0 +1,284 @@
+stdout marker
+stderr marker
+one argument with spaces
+checks
+--check-validation-callback
+startup
+--check-presentation
+resources
+shaders
+scene
+checks
+checks
+--check-validation-callback
+checks
+--check-validation-callback
+startup
+checks
+--check-validation-callback
+startup
+--check-presentation
+checks
+--check-validation-callback
+startup
+--check-presentation
+resources
+checks
+--check-validation-callback
+startup
+--check-presentation
+resources
+shaders
+checks
+--check-validation-callback
+startup
+--check-presentation
+resources
+shaders
+scene
+--check-validation-callback
+startup
+--check-presentation
+resources
+shaders
+scene
+package argument: /tmp/ngen script test dc3858bb-7b1d-425b-8cc2-b38f0173af79/checked ship with spaces.ngas
+capture argument: /tmp/ngen script test dc3858bb-7b1d-425b-8cc2-b38f0173af79/scene package logs 6e66d55e-2920-46eb-b847-becbc0ed632e/Release-scene-package.bmp
+scene-package
+--check-validation-callback
+startup
+--check-presentation
+resources
+shaders
+scene
+--check-validation-callback
+startup
+--check-presentation
+resources
+shaders
+scene
+package argument: /tmp/ngen script test dc3858bb-7b1d-425b-8cc2-b38f0173af79/checked ship with spaces.ngas
+capture argument: /tmp/ngen script test dc3858bb-7b1d-425b-8cc2-b38f0173af79/scene package logs 1fafbbe5-0ee1-4993-a682-450679f2e404/Release-scene-package.bmp
+scene-package
+--check-validation-callback
+startup
+--check-presentation
+resources
+shaders
+scene
+package argument: /tmp/ngen script test dc3858bb-7b1d-425b-8cc2-b38f0173af79/checked ship with spaces.ngas
+capture argument: /tmp/ngen script test dc3858bb-7b1d-425b-8cc2-b38f0173af79/scene package logs a89bcb52-7291-454f-9090-8029886e6e49/Release-scene-package.bmp
+scene-package
+--check-validation-callback
+startup
+--check-presentation
+resources
+shaders
+scene
+package argument: /tmp/ngen script test dc3858bb-7b1d-425b-8cc2-b38f0173af79/checked ship with spaces.ngas
+scene-package
+--check-validation-callback
+startup
+--check-presentation
+resources
+shaders
+scene
+package argument: /tmp/ngen script test dc3858bb-7b1d-425b-8cc2-b38f0173af79/checked ship with spaces.ngas
+capture argument: /tmp/ngen script test dc3858bb-7b1d-425b-8cc2-b38f0173af79/inspector logs/Release-scene-package.bmp
+scene-package
+inspector
+workload argument: /tmp/ngen script test dc3858bb-7b1d-425b-8cc2-b38f0173af79/checked ship with spaces.ngas
+workload argument: --inspector
+workload argument: --frames=1200
+workload argument: --warmup=60
+workload argument: --capture=/tmp/ngen script test dc3858bb-7b1d-425b-8cc2-b38f0173af79/inspector logs/Release-inspection.bmp
+workload argument: --report=/tmp/ngen script test dc3858bb-7b1d-425b-8cc2-b38f0173af79/inspector logs/Release-inspection.csv
+workload argument: --walkthrough
+workload argument: --reload-cycles=2
+workload argument: --validation
+workload-inspection
+
+workload argument: /tmp/ngen script test dc3858bb-7b1d-425b-8cc2-b38f0173af79/checked ship with spaces.ngas
+workload argument: --inspector
+workload argument: --frames=600
+workload argument: --warmup=60
+workload argument: --capture=/tmp/ngen script test dc3858bb-7b1d-425b-8cc2-b38f0173af79/inspector logs/Release-steady.bmp
+workload argument: --report=/tmp/ngen script test dc3858bb-7b1d-425b-8cc2-b38f0173af79/inspector logs/Release-steady.csv
+workload-steady
+
+workload argument: /tmp/ngen script test dc3858bb-7b1d-425b-8cc2-b38f0173af79/checked ship with spaces.ngas
+workload argument: --inspector
+workload argument: --frames=600
+workload argument: --warmup=60
+workload argument: --capture=/tmp/ngen script test dc3858bb-7b1d-425b-8cc2-b38f0173af79/inspector logs/Release-stream.bmp
+workload argument: --report=/tmp/ngen script test dc3858bb-7b1d-425b-8cc2-b38f0173af79/inspector logs/Release-stream.csv
+workload argument: --walkthrough
+workload argument: --reload-cycles=4
+workload argument: --no-resize
+workload-stream
+
+--check-validation-callback
+startup
+--check-presentation
+resources
+shaders
+scene
+package argument: /tmp/ngen script test dc3858bb-7b1d-425b-8cc2-b38f0173af79/checked ship with spaces.ngas
+capture argument: /tmp/ngen script test dc3858bb-7b1d-425b-8cc2-b38f0173af79/inspector failure 53a4860d-f09c-437a-a1a2-01094283d5e7/Release-scene-package.bmp
+scene-package
+inspector
+--check-validation-callback
+startup
+--check-presentation
+resources
+shaders
+scene
+package argument: /tmp/ngen script test dc3858bb-7b1d-425b-8cc2-b38f0173af79/checked ship with spaces.ngas
+capture argument: /tmp/ngen script test dc3858bb-7b1d-425b-8cc2-b38f0173af79/inspector failure 2eb07d50-df71-4a29-8ced-0e58dc39aadd/Release-scene-package.bmp
+scene-package
+inspector
+workload argument: /tmp/ngen script test dc3858bb-7b1d-425b-8cc2-b38f0173af79/checked ship with spaces.ngas
+workload argument: --inspector
+workload argument: --frames=1200
+workload argument: --warmup=60
+workload argument: --capture=/tmp/ngen script test dc3858bb-7b1d-425b-8cc2-b38f0173af79/inspector failure 2eb07d50-df71-4a29-8ced-0e58dc39aadd/Release-inspection.bmp
+workload argument: --report=/tmp/ngen script test dc3858bb-7b1d-425b-8cc2-b38f0173af79/inspector failure 2eb07d50-df71-4a29-8ced-0e58dc39aadd/Release-inspection.csv
+workload argument: --walkthrough
+workload argument: --reload-cycles=2
+workload argument: --validation
+workload-inspection
+
+--check-validation-callback
+startup
+--check-presentation
+resources
+shaders
+scene
+package argument: /tmp/ngen script test dc3858bb-7b1d-425b-8cc2-b38f0173af79/checked ship with spaces.ngas
+capture argument: /tmp/ngen script test dc3858bb-7b1d-425b-8cc2-b38f0173af79/inspector failure c7ca17b5-2965-478d-b895-56646fca50f3/Release-scene-package.bmp
+scene-package
+inspector
+workload argument: /tmp/ngen script test dc3858bb-7b1d-425b-8cc2-b38f0173af79/checked ship with spaces.ngas
+workload argument: --inspector
+workload argument: --frames=1200
+workload argument: --warmup=60
+workload argument: --capture=/tmp/ngen script test dc3858bb-7b1d-425b-8cc2-b38f0173af79/inspector failure c7ca17b5-2965-478d-b895-56646fca50f3/Release-inspection.bmp
+workload argument: --report=/tmp/ngen script test dc3858bb-7b1d-425b-8cc2-b38f0173af79/inspector failure c7ca17b5-2965-478d-b895-56646fca50f3/Release-inspection.csv
+workload argument: --walkthrough
+workload argument: --reload-cycles=2
+workload argument: --validation
+workload-inspection
+
+workload argument: /tmp/ngen script test dc3858bb-7b1d-425b-8cc2-b38f0173af79/checked ship with spaces.ngas
+workload argument: --inspector
+workload argument: --frames=600
+workload argument: --warmup=60
+workload argument: --capture=/tmp/ngen script test dc3858bb-7b1d-425b-8cc2-b38f0173af79/inspector failure c7ca17b5-2965-478d-b895-56646fca50f3/Release-steady.bmp
+workload argument: --report=/tmp/ngen script test dc3858bb-7b1d-425b-8cc2-b38f0173af79/inspector failure c7ca17b5-2965-478d-b895-56646fca50f3/Release-steady.csv
+workload-steady
+
+--check-validation-callback
+startup
+--check-presentation
+resources
+shaders
+scene
+package argument: /tmp/ngen script test dc3858bb-7b1d-425b-8cc2-b38f0173af79/checked ship with spaces.ngas
+capture argument: /tmp/ngen script test dc3858bb-7b1d-425b-8cc2-b38f0173af79/inspector failure 2fc13423-f46b-4af5-87b5-f3fefa3342b8/Release-scene-package.bmp
+scene-package
+inspector
+workload argument: /tmp/ngen script test dc3858bb-7b1d-425b-8cc2-b38f0173af79/checked ship with spaces.ngas
+workload argument: --inspector
+workload argument: --frames=1200
+workload argument: --warmup=60
+workload argument: --capture=/tmp/ngen script test dc3858bb-7b1d-425b-8cc2-b38f0173af79/inspector failure 2fc13423-f46b-4af5-87b5-f3fefa3342b8/Release-inspection.bmp
+workload argument: --report=/tmp/ngen script test dc3858bb-7b1d-425b-8cc2-b38f0173af79/inspector failure 2fc13423-f46b-4af5-87b5-f3fefa3342b8/Release-inspection.csv
+workload argument: --walkthrough
+workload argument: --reload-cycles=2
+workload argument: --validation
+workload-inspection
+
+workload argument: /tmp/ngen script test dc3858bb-7b1d-425b-8cc2-b38f0173af79/checked ship with spaces.ngas
+workload argument: --inspector
+workload argument: --frames=600
+workload argument: --warmup=60
+workload argument: --capture=/tmp/ngen script test dc3858bb-7b1d-425b-8cc2-b38f0173af79/inspector failure 2fc13423-f46b-4af5-87b5-f3fefa3342b8/Release-steady.bmp
+workload argument: --report=/tmp/ngen script test dc3858bb-7b1d-425b-8cc2-b38f0173af79/inspector failure 2fc13423-f46b-4af5-87b5-f3fefa3342b8/Release-steady.csv
+workload-steady
+
+workload argument: /tmp/ngen script test dc3858bb-7b1d-425b-8cc2-b38f0173af79/checked ship with spaces.ngas
+workload argument: --inspector
+workload argument: --frames=600
+workload argument: --warmup=60
+workload argument: --capture=/tmp/ngen script test dc3858bb-7b1d-425b-8cc2-b38f0173af79/inspector failure 2fc13423-f46b-4af5-87b5-f3fefa3342b8/Release-stream.bmp
+workload argument: --report=/tmp/ngen script test dc3858bb-7b1d-425b-8cc2-b38f0173af79/inspector failure 2fc13423-f46b-4af5-87b5-f3fefa3342b8/Release-stream.csv
+workload argument: --walkthrough
+workload argument: --reload-cycles=4
+workload argument: --no-resize
+workload-stream
+
+--check-validation-callback
+startup
+--check-presentation
+resources
+shaders
+scene
+package argument: /tmp/ngen script test dc3858bb-7b1d-425b-8cc2-b38f0173af79/checked ship with spaces.ngas
+capture argument: /tmp/ngen script test dc3858bb-7b1d-425b-8cc2-b38f0173af79/inspector failure 6786476e-b6cd-4201-abb7-902e07ce6035/Release-scene-package.bmp
+scene-package
+inspector
+workload argument: /tmp/ngen script test dc3858bb-7b1d-425b-8cc2-b38f0173af79/checked ship with spaces.ngas
+workload argument: --inspector
+workload argument: --frames=1200
+workload argument: --warmup=60
+workload argument: --capture=/tmp/ngen script test dc3858bb-7b1d-425b-8cc2-b38f0173af79/inspector failure 6786476e-b6cd-4201-abb7-902e07ce6035/Release-inspection.bmp
+workload argument: --report=/tmp/ngen script test dc3858bb-7b1d-425b-8cc2-b38f0173af79/inspector failure 6786476e-b6cd-4201-abb7-902e07ce6035/Release-inspection.csv
+workload argument: --walkthrough
+workload argument: --reload-cycles=2
+workload argument: --validation
+workload-inspection
+
+--check-validation-callback
+startup
+--check-presentation
+resources
+shaders
+scene
+package argument: /tmp/ngen script test dc3858bb-7b1d-425b-8cc2-b38f0173af79/checked ship with spaces.ngas
+capture argument: /tmp/ngen script test dc3858bb-7b1d-425b-8cc2-b38f0173af79/inspector failure e9725b51-383c-4b3e-b314-edf4e07acbd9/Release-scene-package.bmp
+scene-package
+inspector
+workload argument: /tmp/ngen script test dc3858bb-7b1d-425b-8cc2-b38f0173af79/checked ship with spaces.ngas
+workload argument: --inspector
+workload argument: --frames=1200
+workload argument: --warmup=60
+workload argument: --capture=/tmp/ngen script test dc3858bb-7b1d-425b-8cc2-b38f0173af79/inspector failure e9725b51-383c-4b3e-b314-edf4e07acbd9/Release-inspection.bmp
+workload argument: --report=/tmp/ngen script test dc3858bb-7b1d-425b-8cc2-b38f0173af79/inspector failure e9725b51-383c-4b3e-b314-edf4e07acbd9/Release-inspection.csv
+workload argument: --walkthrough
+workload argument: --reload-cycles=2
+workload argument: --validation
+workload-inspection
+
+--check-validation-callback
+startup
+--check-presentation
+resources
+shaders
+scene
+package argument: /tmp/ngen script test dc3858bb-7b1d-425b-8cc2-b38f0173af79/checked ship with spaces.ngas
+capture argument: /tmp/ngen script test dc3858bb-7b1d-425b-8cc2-b38f0173af79/inspector existing output/Release-scene-package.bmp
+scene-package
+inspector
+
+
+
+--check-validation-callback
+startup
+--check-presentation
+resources
+shaders
+SDK environment inherited
+SDK environment inherited
+SDK environment inherited
+SDK environment inherited
+PASS: process/output boundaries, Clang/MSVC profiles, GPU/renderer checks, SDK environment inheritance and input/platform checks

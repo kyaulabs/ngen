@@ -1,0 +1,38 @@
+Same-session review of the closure controls, not the independent baseline review.
+
+Range: new inspector_probe checked-package fixtures, PowerShell measurement mode,
+observer/system-boundary tests, retained verification and acceptance status.
+Production engine/render and shader diffs are empty. No new dependency or ABI.
+
+Checked real package admission/upload/draw/retirement through SceneRenderer;
+independent HDR composition and opaque-occlusion expectations, reversed input
+orders and coplanar LESS/depth-readonly behavior. Both intentional production
+mutations fail the intended assertions, are restored byte-for-byte and are absent
+from the final diff. Four native probes and 12/12 CTests per graph pass; final
+Clang Debug/Release/ASan TUs pass actual compilation-aware analysis after two
+width fixes. Actual GCC module arguments fail clang-tidy and remain unchanged.
+
+Checked owned-child argument arrays, separate async output streams, timeout/kill
+cleanup, existing build/package admission, original-versus-current build records,
+binary/package identity and fresh artifact validation. CIM reads only local
+per-process memory with exact post-query PID filtering, unique instance counting,
+integer/range/capacity checks, distinct dedicated/shared/committed measures and
+fail-closed missing/malformed/entirely-zero or over-budget evidence. Parent clock
+window/sample ticks support actual returned-data correlation, not an assumption.
+All process-boundary tests pass with real children and only CIM mocked on Linux.
+
+No demonstrated task-related defect remains in this review. Native Windows CIM
+availability/semantics are still unverified. Sampling is not a continuous hard
+memory bound; CIM can extend nominal observation cadence and its operation timeout
+is not an OS sandbox/hard interrupt. An original clean-build log does not prove
+binary/source equivalence. Driver/WSI accounting remains a scoped owner evidence
+gate. Existing generated Conan runtime scripts are executed only from the user's
+own build, never extracted returned evidence.
+
+Resize failure is still real and retained. Old-swapchain and minimum-image
+controls do not repair it. A separate observation correlates active focus with
+faster cadence on 60 Hz KDE, but exact external cause is not established. Do not
+promote a speculative renderer patch, discard bad runs, weaken fixed-resolution
+budgets or infer owner acceptance. Follow-up independent review, actual Windows
+memory/new transparency execution and explicit owner/compiler/resize decisions
+remain before formal M2 closure or any M3 implementation.

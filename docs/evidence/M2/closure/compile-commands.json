@@ -1,0 +1,42 @@
+[
+  {
+    "preset": "inspector-debug",
+    "invocation": {
+      "directory": "/home/kyau/projects/kyaulabs/ngen/build/inspector-debug",
+      "command": "/bin/clang++ -DFFI_STATIC_BUILD -DLIBXML_STATIC -DXML_STATIC -I/home/kyau/projects/kyaulabs/ngen/tests -I/home/kyau/projects/kyaulabs/ngen/engine -isystem /home/kyau/.conan2/p/b/sdlee9e38e66a538/p/include -isystem /home/kyau/.conan2/p/b/wayla064c9fb324c75/p/include -isystem /home/kyau/.conan2/p/b/zlibe8292d90d105f/p/include -isystem /home/kyau/.conan2/p/vulkabd7575518f65a/p/include -m64 -stdlib=libstdc++ -g -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror @CMakeFiles/inspector_probe.dir/apps/inspector_probe/main.cpp.o.modmap -o CMakeFiles/inspector_probe.dir/apps/inspector_probe/main.cpp.o -c /home/kyau/projects/kyaulabs/ngen/apps/inspector_probe/main.cpp",
+      "file": "/home/kyau/projects/kyaulabs/ngen/apps/inspector_probe/main.cpp",
+      "output": "/home/kyau/projects/kyaulabs/ngen/build/inspector-debug/CMakeFiles/inspector_probe.dir/apps/inspector_probe/main.cpp.o"
+    },
+    "database_sha256": "03e661a49cede595d268df932308d71d04c259fde6d60e8bcf809b86f919eac2"
+  },
+  {
+    "preset": "inspector-release",
+    "invocation": {
+      "directory": "/home/kyau/projects/kyaulabs/ngen/build/inspector-release",
+      "command": "/bin/clang++ -DFFI_STATIC_BUILD -DLIBXML_STATIC -DXML_STATIC -I/home/kyau/projects/kyaulabs/ngen/tests -I/home/kyau/projects/kyaulabs/ngen/engine -isystem /home/kyau/.conan2/p/b/sdl09793c119812a/p/include -isystem /home/kyau/.conan2/p/b/waylaedcc845c0414e/p/include -isystem /home/kyau/.conan2/p/b/zlib2105ec2ddcc7e/p/include -isystem /home/kyau/.conan2/p/vulkabd7575518f65a/p/include -m64 -stdlib=libstdc++ -O3 -DNDEBUG -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror @CMakeFiles/inspector_probe.dir/apps/inspector_probe/main.cpp.o.modmap -o CMakeFiles/inspector_probe.dir/apps/inspector_probe/main.cpp.o -c /home/kyau/projects/kyaulabs/ngen/apps/inspector_probe/main.cpp",
+      "file": "/home/kyau/projects/kyaulabs/ngen/apps/inspector_probe/main.cpp",
+      "output": "/home/kyau/projects/kyaulabs/ngen/build/inspector-release/CMakeFiles/inspector_probe.dir/apps/inspector_probe/main.cpp.o"
+    },
+    "database_sha256": "3d27cff789e8036fb71f43871a3fd2883d0802e59283fecfa97f33ee989b0621"
+  },
+  {
+    "preset": "inspector-asan",
+    "invocation": {
+      "directory": "/home/kyau/projects/kyaulabs/ngen/build/inspector-asan",
+      "command": "/bin/clang++ -DFFI_STATIC_BUILD -DLIBXML_STATIC -DXML_STATIC -I/home/kyau/projects/kyaulabs/ngen/tests -I/home/kyau/projects/kyaulabs/ngen/engine -isystem /home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/p/include -isystem /home/kyau/.conan2/p/b/wayla18d5b71128707/p/include -isystem /home/kyau/.conan2/p/b/zlib1259e34ede50e/p/include -isystem /home/kyau/.conan2/p/vulkabd7575518f65a/p/include -m64 -stdlib=libstdc++ -fsanitize=address,undefined -fno-sanitize-recover=all -fno-omit-frame-pointer -g -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror -fsanitize=address,undefined -fno-sanitize-recover=all -fno-omit-frame-pointer @CMakeFiles/inspector_probe.dir/apps/inspector_probe/main.cpp.o.modmap -o CMakeFiles/inspector_probe.dir/apps/inspector_probe/main.cpp.o -c /home/kyau/projects/kyaulabs/ngen/apps/inspector_probe/main.cpp",
+      "file": "/home/kyau/projects/kyaulabs/ngen/apps/inspector_probe/main.cpp",
+      "output": "/home/kyau/projects/kyaulabs/ngen/build/inspector-asan/CMakeFiles/inspector_probe.dir/apps/inspector_probe/main.cpp.o"
+    },
+    "database_sha256": "b60ab5413bb43bddacc9024d120b1c736346fe7116cd6521436ace3c934669ff"
+  },
+  {
+    "preset": "inspector-gcc",
+    "invocation": {
+      "directory": "/home/kyau/projects/kyaulabs/ngen/build/inspector-gcc",
+      "command": "/bin/g++ -DFFI_STATIC_BUILD -DLIBXML_STATIC -DXML_STATIC -I/home/kyau/projects/kyaulabs/ngen/tests -I/home/kyau/projects/kyaulabs/ngen/engine -isystem /home/kyau/.conan2/p/b/sdl112350e9e86a3/p/include -isystem /home/kyau/.conan2/p/b/waylad435838a1c9eb/p/include -isystem /home/kyau/.conan2/p/b/zlib750e96fdb7096/p/include -isystem /home/kyau/.conan2/p/vulkabd7575518f65a/p/include -m64 -g -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror -fmodules-ts -fmodule-mapper=CMakeFiles/inspector_probe.dir/apps/inspector_probe/main.cpp.o.modmap -MD -fdeps-format=p1689r5 -x c++ -o CMakeFiles/inspector_probe.dir/apps/inspector_probe/main.cpp.o -c /home/kyau/projects/kyaulabs/ngen/apps/inspector_probe/main.cpp",
+      "file": "/home/kyau/projects/kyaulabs/ngen/apps/inspector_probe/main.cpp",
+      "output": "/home/kyau/projects/kyaulabs/ngen/build/inspector-gcc/CMakeFiles/inspector_probe.dir/apps/inspector_probe/main.cpp.o"
+    },
+    "database_sha256": "576cbb7f210e864319523737d940ca02dbf492c3ee87a63a68ec1780cc2a5f14"
+  }
+]

@@ -81,6 +81,14 @@ try {
         & $pwsh -NoProfile -File $scriptPath -Inspector -ScenePackage 'not present.ngas' *> $log
         if ($LASTEXITCODE -ne 2 -or (Get-Content -Raw $log) -notmatch 'requires Windows') { throw 'Inspector mode did not reach the Windows prerequisite check' }
     }
+    if (-not $IsWindows) {
+        & $pwsh -NoProfile -File $scriptPath -MeasureWorkload 'existing Release directory' -ScenePackage 'existing scene.ngas' *> $log
+        if ($LASTEXITCODE -ne 2 -or (Get-Content -Raw $log) -notmatch 'requires Windows') { throw 'Measurement-only mode did not reach the Windows prerequisite check' }
+    }
+    & $pwsh -NoProfile -File $scriptPath -GpuInfo -MeasureWorkload 'existing Release directory' -ScenePackage 'existing scene.ngas' *> $log
+    if ($LASTEXITCODE -eq 0 -or $LASTEXITCODE -eq 2) { throw 'GPU capability capture and measurement-only modes were mixed' }
+    & $pwsh -NoProfile -File $scriptPath -MeasureWorkload 'existing Release directory' -ScenePackage 'existing scene.ngas' -Compiler MSVC *> $log
+    if ($LASTEXITCODE -eq 0 -or $LASTEXITCODE -eq 2) { throw 'Measurement-only mode accepted a compiler/build selection' }
     & $pwsh -NoProfile -File $scriptPath -GpuInfo -Inspector *> $log
     if ($LASTEXITCODE -eq 0 -or $LASTEXITCODE -eq 2) { throw 'GPU capture and inspector builds were mixed' }
     & $pwsh -NoProfile -File $scriptPath -GpuInfo -ScenePackage 'not present.ngas' *> $log
@@ -333,6 +341,144 @@ exit 0
         $failed = $false
         try { Invoke-NgenWorkload -FilePath $pwsh -Arguments @('-NoProfile', '-Command', 'Start-Sleep -Seconds 3') -LogPath $timeoutLog -MemoryPath "$timeoutLog.json" -TimeoutMilliseconds 1000 } catch { $failed = $_.Exception.Message -match 'deadline' }
         if (-not $failed -or -not (Get-Content -Raw "$timeoutLog.json" | ConvertFrom-Json).timed_out) { throw 'Workload timeout was not retained as failure' }
+        # WDDM/CIM is the system boundary; the observed child is still real.
+        $script:gpuFailure = ''
+        function Get-CimInstance {
+            param([string]$Query, [int]$OperationTimeoutSec)
+            if ($Query -notmatch "Name LIKE 'pid_(\d+)_%'") { throw 'GPU query is not scoped to its owned child' }
+            $target = $Matches[1]
+            if ($script:gpuFailure -eq 'unavailable') { throw 'fixture CIM class unavailable' }
+            if ($script:gpuFailure -in @('over-budget-shared', 'over-budget-committed', 'zero')) {
+                [pscustomobject]@{ Name = "pid_${target}_luid_0x0_0x1_phys_0"
+                    DedicatedUsage = if ($script:gpuFailure -eq 'over-budget-shared') { 536870912L } else { 0L }
+                    SharedUsage = if ($script:gpuFailure -eq 'over-budget-shared') { 536870913L } else { 0L }
+                    TotalCommitted = if ($script:gpuFailure -eq 'over-budget-committed') { 1073741825L } else { 0L }
+                }
+                return
+            }
+            if ($script:gpuFailure -eq 'malformed-instance') {
+                [pscustomobject]@{ Name = "pid_${target}_unsupported_instance"; DedicatedUsage = 1048576L; SharedUsage = 2097152L; TotalCommitted = 4194304L }
+            }
+            @(
+                [pscustomobject]@{ Name = "pid_${target}_luid_0x0_0x1_phys_0"; DedicatedUsage = 1048576L; SharedUsage = 2097152L; TotalCommitted = 4194304L },
+                [pscustomobject]@{ Name = "pid_${target}_luid_0x0_0x2_phys_0"; DedicatedUsage = 4194304L; SharedUsage = 8388608L; TotalCommitted = 16777216L },
+                [pscustomobject]@{ Name = 'pid_2147483647_luid_0x0_0x1_phys_0'; DedicatedUsage = 1073741824L; SharedUsage = 1073741824L; TotalCommitted = 2147483648L }
+            )
+        }
+        try {
+            $gpuLog = Join-Path $directory 'process gpu memory.txt'
+            Invoke-NgenWorkload -FilePath $pwsh -Arguments @('-NoProfile', '-Command', 'Start-Sleep -Milliseconds 1200') -LogPath $gpuLog -MemoryPath "$gpuLog.json" -GpuMemory
+            $observation = Get-Content -Raw "$gpuLog.json" | ConvertFrom-Json
+            if ($observation.gpu_memory.status -cne 'observed' -or
+                $observation.gpu_memory.peak_dedicated_bytes -ne 5242880 -or
+                $observation.gpu_memory.peak_shared_bytes -ne 10485760 -or
+                $observation.gpu_memory.peak_dedicated_plus_shared_bytes -ne 15728640 -or
+                $observation.gpu_memory.peak_total_committed_bytes -ne 20971520 -or
+                $observation.gpu_memory.samples.Count -lt 2) { throw 'Requested per-process GPU memory was not observed, or foreign process counters contaminated it' }
+            if ($observation.gpu_memory.parent_qpc_frequency -le 0 -or
+                $observation.gpu_memory.parent_qpc_started_ticks -le 0 -or
+                $observation.gpu_memory.parent_qpc_ended_ticks -le $observation.gpu_memory.parent_qpc_started_ticks) { throw 'GPU observations lack a monotonic clock window for native-frame correlation' }
+            foreach ($sample in $observation.gpu_memory.samples) {
+                if ($sample.instances -ne 2 -or $sample.elapsed_ms -lt 0 -or
+                    $sample.timestamp_ticks -lt $observation.gpu_memory.parent_qpc_started_ticks -or
+                    $sample.timestamp_ticks -gt $observation.gpu_memory.parent_qpc_ended_ticks) { throw 'GPU memory samples lost adapter cardinality or observation time' }
+            }
+            $script:gpuFailure = 'unavailable'
+            $gpuMissing = Join-Path $directory 'unavailable gpu memory.txt'
+            $failed = $false
+            try {
+                Invoke-NgenWorkload -FilePath $pwsh -Arguments @('-NoProfile', '-Command', 'Start-Sleep -Milliseconds 1200') -LogPath $gpuMissing -MemoryPath "$gpuMissing.json" -GpuMemory
+            } catch { $failed = $_.Exception.Message -match 'GPU memory' }
+            $missing = Get-Content -Raw "$gpuMissing.json" | ConvertFrom-Json
+            if (-not $failed -or $missing.gpu_memory.status -cne 'unavailable' -or
+                $null -ne $missing.gpu_memory.peak_dedicated_plus_shared_bytes -or
+                $missing.gpu_memory.samples.Count -ne 0 -or $missing.exit_code -ne 0) { throw 'Unavailable GPU counters were accepted as measured zero, or actual child result was lost' }
+            foreach ($budgetCase in @('over-budget-shared', 'over-budget-committed')) {
+                $script:gpuFailure = $budgetCase
+                $gpuBudget = Join-Path $directory "$budgetCase.txt"
+                $failed = $false
+                try {
+                    Invoke-NgenWorkload -FilePath $pwsh -Arguments @('-NoProfile', '-Command', 'Start-Sleep -Milliseconds 600') -LogPath $gpuBudget -MemoryPath "$gpuBudget.json" -GpuMemory
+                } catch { $failed = $_.Exception.Message -match 'GPU memory.*1 GiB' }
+                $budget = Get-Content -Raw "$gpuBudget.json" | ConvertFrom-Json
+                if (-not $failed -or $budget.gpu_memory.within_1gib_budget -ne $false -or
+                    $budget.gpu_memory.status -cne 'observed' -or $budget.exit_code -ne 0) { throw 'An observed dedicated/shared or committed GPU memory budget failure was accepted, or its evidence was lost' }
+            }
+            $script:gpuFailure = 'malformed-instance'
+            $gpuMalformed = Join-Path $directory 'malformed process GPU instance.txt'
+            $failed = $false
+            try {
+                Invoke-NgenWorkload -FilePath $pwsh -Arguments @('-NoProfile', '-Command', 'Start-Sleep -Milliseconds 600') -LogPath $gpuMalformed -MemoryPath "$gpuMalformed.json" -GpuMemory
+            } catch { $failed = $_.Exception.Message -match 'GPU memory' }
+            $malformed = Get-Content -Raw "$gpuMalformed.json" | ConvertFrom-Json
+            if (-not $failed -or $malformed.gpu_memory.status -eq 'observed') { throw 'A malformed own-process GPU instance was silently omitted from an accepted memory total' }
+            $script:gpuFailure = 'zero'
+            $gpuZero = Join-Path $directory 'zero GPU counter trace.txt'
+            $failed = $false
+            try {
+                Invoke-NgenWorkload -FilePath $pwsh -Arguments @('-NoProfile', '-Command', 'Start-Sleep -Milliseconds 600') -LogPath $gpuZero -MemoryPath "$gpuZero.json" -GpuMemory
+            } catch { $failed = $_.Exception.Message -match 'GPU memory' }
+            $zero = Get-Content -Raw "$gpuZero.json" | ConvertFrom-Json
+            if (-not $failed -or $zero.gpu_memory.status -eq 'observed' -or $null -ne $zero.gpu_memory.within_1gib_budget) { throw 'An entirely zero provider trace was accepted as GPU-workload memory proof' }
+            $script:gpuFailure = ''
+            $measurementDefinition = $ast.Find({
+                param($node)
+                $node -is [System.Management.Automation.Language.FunctionDefinitionAst] -and
+                $node.Name -eq 'Invoke-NgenMeasurement'
+            }, $true)
+            . ([scriptblock]::Create($measurementDefinition.Extent.Text))
+            Set-Content -LiteralPath (Join-Path $renderBuild 'CMakeCache.txt') 'CMAKE_BUILD_TYPE:STRING=Release'
+            $buildLogs = Join-Path $directory 'logs'
+            New-Item -ItemType Directory $buildLogs | Out-Null
+            Set-Content -LiteralPath (Join-Path $buildLogs 'revision.txt') '1f0a4b31a3db73f802513eab6edebd319f3c47cb'
+            [IO.File]::WriteAllText((Join-Path $buildLogs 'working-tree.txt'), '')
+            $measurementLogs = Join-Path $directory 'measurement only logs'
+            New-Item -ItemType Directory $measurementLogs | Out-Null
+            $env:NGEN_PROBE_FAIL_AT = ''
+            Invoke-NgenMeasurement -BuildDirectory $renderBuild -LogDirectory $measurementLogs -ScenePackage $scenePackage
+            foreach ($extension in @('txt', 'bmp', 'csv', 'working-set.json', 'artifacts.json', 'input.json')) {
+                if (-not (Test-Path (Join-Path $measurementLogs "long-stream.$extension"))) { throw 'Measurement-only mode did not run and retain the existing workload without rebuilding' }
+            }
+            $measurement = Get-Content -Raw (Join-Path $measurementLogs 'long-stream.txt')
+            if ($measurement -notmatch '--frames=3600' -or $measurement -notmatch '--reload-cycles=4' -or
+                $measurement -notmatch '--no-resize' -or $measurement -match '--validation') { throw 'Memory measurement silently changed its declared longer fixed-resolution quality scenario' }
+            if ($env:NGEN_RENDER_ENV -ne 'before') { throw 'Measurement-only runtime environment was not restored' }
+            if ((Get-Content -Raw (Join-Path $measurementLogs 'long-stream.working-set.json') | ConvertFrom-Json).gpu_memory.status -cne 'observed') { throw 'Measurement-only mode did not request process GPU accounting' }
+            foreach ($failureCase in @('workload-stream', 'no-workload-capture', 'unavailable-gpu')) {
+                $failureLogs = Join-Path $directory ("measurement failure $failureCase")
+                New-Item -ItemType Directory $failureLogs | Out-Null
+                $env:NGEN_PROBE_FAIL_AT = $failureCase
+                $script:gpuFailure = if ($failureCase -eq 'unavailable-gpu') { 'unavailable' } else { '' }
+                $failed = $false
+                try { Invoke-NgenMeasurement -BuildDirectory $renderBuild -LogDirectory $failureLogs -ScenePackage $scenePackage } catch { $failed = $true }
+                if (-not $failed -or $env:NGEN_RENDER_ENV -ne 'before' -or
+                    -not (Test-Path (Join-Path $failureLogs 'long-stream.working-set.json'))) { throw 'Measurement failure was accepted, lost its observation or failed environment cleanup' }
+            }
+            $script:gpuFailure = ''
+            $env:NGEN_PROBE_FAIL_AT = ''
+            $ownedLogs = Join-Path $directory 'measurement owner output'
+            New-Item -ItemType Directory $ownedLogs | Out-Null
+            $owned = Join-Path $ownedLogs 'long-stream.bmp'
+            [IO.File]::WriteAllText($owned, 'existing owner capture')
+            $ownedHash = (Get-FileHash -LiteralPath $owned).Hash
+            $failed = $false
+            try { Invoke-NgenMeasurement -BuildDirectory $renderBuild -LogDirectory $ownedLogs -ScenePackage $scenePackage } catch { $failed = $true }
+            if (-not $failed -or (Get-FileHash -LiteralPath $owned).Hash -cne $ownedHash -or
+                (Test-Path (Join-Path $ownedLogs 'long-stream.input.json'))) { throw 'Measurement overwrote an owner artifact or launched before freshness admission' }
+            foreach ($invalidBuild in @('Debug', 'dirty-record')) {
+                $cacheType = if ($invalidBuild -eq 'Debug') { 'CMAKE_BUILD_TYPE:STRING=Debug' } else { 'CMAKE_BUILD_TYPE:STRING=Release' }
+                Set-Content -LiteralPath (Join-Path $renderBuild 'CMakeCache.txt') $cacheType
+                if ($invalidBuild -eq 'dirty-record') { Set-Content -LiteralPath (Join-Path $buildLogs 'working-tree.txt') ' M changed.cpp' }
+                $invalidLogs = Join-Path $directory ("invalid measurement build $invalidBuild")
+                New-Item -ItemType Directory $invalidLogs | Out-Null
+                $failed = $false
+                try { Invoke-NgenMeasurement -BuildDirectory $renderBuild -LogDirectory $invalidLogs -ScenePackage $scenePackage } catch { $failed = $true }
+                if (-not $failed -or (Test-Path (Join-Path $invalidLogs 'long-stream.input.json'))) { throw 'Measurement accepted Debug or a dirty declared build as clean Release' }
+            }
+        } finally {
+            Remove-Item Function:Get-CimInstance
+            Remove-Variable gpuFailure -Scope Script
+        }
         $emptyPackage = Join-Path $directory 'empty.ngas'
         [IO.File]::WriteAllText($emptyPackage, '')
         $oversized = Join-Path $directory 'oversized.ngas'
