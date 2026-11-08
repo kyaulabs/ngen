@@ -1,0 +1,34 @@
+[
+  {
+    "compiler": "msvc",
+    "sha256": "96d3e60629a98acdfe3d11abaeac3086e64067228900fc05a8f52d07cca319db",
+    "bytes": 900234,
+    "selected_files": 85,
+    "excluded_unread": [
+      "Debug-conan.txt",
+      "profile-detect.txt",
+      "Release-conan.txt",
+      "session.txt",
+      "slang-recipe.txt",
+      "tools-install.txt"
+    ],
+    "tested_revision": "1f0a4b31a3db73f802513eab6edebd319f3c47cb",
+    "clean_tree": true
+  },
+  {
+    "compiler": "clang-cl",
+    "sha256": "0f630a0d0e6b1de0c53409b824abc862f21ee0dce4cbe3a9a84cbc2b8504a1da",
+    "bytes": 901822,
+    "selected_files": 86,
+    "excluded_unread": [
+      "Debug-conan.txt",
+      "profile-detect.txt",
+      "Release-conan.txt",
+      "session.txt",
+      "slang-recipe.txt",
+      "tools-install.txt"
+    ],
+    "tested_revision": "1f0a4b31a3db73f802513eab6edebd319f3c47cb",
+    "clean_tree": true
+  }
+]

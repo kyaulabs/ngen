@@ -1,0 +1,44 @@
+Same-session code-review/cpp-review of the queued inspector model, dedicated
+reload I/O worker and production scalar-material bridge. Not independent graphics
+review, personal owner acceptance, or a claim that the native UI is implemented.
+
+Traced checked-package ownership into copied snapshots, the 16-command FIFO,
+finite/range/index admission, next-boundary publication and generation rejection.
+Replacement publication precedes command consumption so queued old material or
+selection IDs cannot silently address a new package. Source map/UV/sampler,
+alpha-mode/cutoff and facing data remain authored. GPU constants are copied through
+the existing two-context mesh submission path before the CPU borrow ends.
+
+Traced the one-worker state machine: owner-only API; immutable path/reader;
+result writes before release publication; acquire before owner read; join before
+moving the result; strictly increasing IDs; busy while a result is unconsumed;
+new stop source per request; std::jthread destruction before shared state and
+borrowed captures. Exception fallback storage is allocated before worker launch.
+Thread-creation failure remains typed capacity failure. Cancellation is cooperative
+and does not promise interruption of arbitrary blocked filesystem operations.
+
+Actual Clang findings were fixed without suppression: trivial std::move,
+stop-token copy, optional-presence proof and integer width/promotion. Using a
+plain empty std::jthread removes redundant optional ownership. Test completion
+helpers return an owning result under a real presence check or throw a deadline
+failure. Four affected configurations re-ran the controlled worker cases after
+that refactor, including ASan and the separate TSan graph.
+
+Public CPU Reds and the actual native emission-pixel Red are retained. The
+initial unused-field scaffold compile failure is not a behavioral Red. The
+first closed-form PBR test had the wrong camera/front-face convention; its
+corrected Y-flip preserves the production double-sided-normal behavior.
+
+Verification: 12/12 scene CTests in four graphs; 15 inspector/worker cases;
+separate TSan 6/6; final affected worker reruns; native material probe in all four
+scene graphs; unchanged full-package process/capture regressions; fresh disabled
+Release 11/11 with target/compile-unit/link-symbol absence; 62 actual Clang
+invocations, including 8 affected reruns; pinned format and scoped secret checks.
+No unresolved demonstrated defect remains in this exercised slice. Default
+file-reader execution will also be exercised by the actual workload reload loop;
+its controlled unit boundary tests are not a filesystem timing/sandbox proof.
+
+Still open: native frontend and event/workload wiring, queued GPU upload/reload
+walkthrough, frontend-disabled graph proof, bloom, full streaming/resize/reload
+plateau and whole-memory accounting, final changed-tree Windows/NVIDIA execution,
+compiler choice and independent/owner/formal milestone acceptance.

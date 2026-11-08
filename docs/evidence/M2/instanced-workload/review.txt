@@ -1,0 +1,68 @@
+Same-session code-review and cpp-review, against develop 76e7c294188fc64e81c96dce6052b1636f4213e6.
+This is assistant review, not independent graphics review or personal owner acceptance.
+
+Reviewed the new public instance/geometry spans through mesh admission, descriptor
+layout, copied uniform storage, indexed instanced shadow/PBR recording and native
+submission publication. Checked same-context/range/usage rejection, 100/draw and
+512/frame bounds, CPU snapshot copying, paired overrides, and timeline-protected
+GPU retirement. Scene extras preserve explicit material/map/normal/facing rules
+and inherit the scene view without mutating the immutable package. Mixed winding
+in a culled instance draw remains a documented caller grouping responsibility.
+
+Reviewed the opt-in 16-query pool across two resource and two WSI domains. Reset
+and result reuse follow the relevant timeline/fence proof. WSI refreshes completed
+results after observing its submission fence, before resetting that query domain.
+Failed native submission publishes no timing serial. Completed query availability,
+valid-bit masking, timestamp period, bounded result age and closed/foreign/invalid
+submission handling were traced. TOP/BOTTOM intervals are diagnostic elapsed
+intervals, may overlap, and cannot be summed into device-busy or display latency.
+
+Concrete repaired findings:
+- The original camera radius used the largest AABB half-axis, clipping an admitted
+  cubic ship during rotation/light projection. A public CPU Red observed clip x
+  1.047565579 outside w=1; half-diagonal radius and admission now enclose it.
+- The new C++ allocation replacement originally bypassed std::new_handler on OOM.
+  A public CPU Red observed the handler not called; scalar/aligned allocation now
+  retries through the installed handler. Calibration checks actual scalar/aligned
+  interception; sanitizer builds do not replace their allocator.
+- Initial allocation expectations incorrectly treated validation-layer allocation
+  as a performance result. Their actual process-wide counts remain visible. The
+  separate warmed validation-off path observes zero C++ new/new[] calls; no C
+  malloc, driver-private heap or ASan-equivalence claim is made.
+- Actual clang-tidy found query-size multiplication width, an integer grid quotient
+  converted to float, easily-swapped projection parameters, object-representation
+  comparisons of floats, a non-standard test exception and an empty test catch.
+  These were repaired without disabling checks or filtering native arguments.
+
+Verification tooling failures are retained, not counted as behavioral Reds:
+- The new Python existing-output check used pathlib.Path despite importing Path.
+  It was fixed and all four process tests then passed in all four configurations.
+- The temporary AST runner was named ast.py, shadowing Python's standard module.
+  Its native diagnostics are retained; the renamed runner completed all requested
+  invocation-specific analyses successfully.
+- /usr/bin/time was absent, so that command never launched the workload. The final
+  optimized run uses Linux wait4 on the actual child PID for peak RSS; this does
+  not turn RSS or VMA statistics into whole-graphics memory accounting.
+
+Actual verification: four native C++20 scene graphs, 11/11 CTests each; shaders,
+resource/instancing/shadow/geometry/lifetime probes; four full-package workload
+process checks and three capture process checks per graph; ASan/UBSan/leaks and
+ordinary validation; 69 Clang invocations across Debug/Release/ASan plus 19 in the
+combined shader-disabled graph; 10/10 disabled CTests; 9/9 asset and 4/4 CPU tests;
+PowerShell process/profile regression; pinned clang-format 18.1.8. Duplicate source
+invocations for the workload allocation helper were preserved per target/config.
+GCC's actual module flags remain untouched; no GCC clang-tidy success is claimed.
+
+Four native ASan boundary controls: forced single instancing and query-pool OOM
+fail at the expected checks without unexpected detector/validation reports; a
+zero-timestamp queue still renders; a 36-bit wrapped query pair at 2 ns/tick yields
+exactly 32 ns in every sampled shadow/PBR/post CSV field. These are injected
+controls, not measured hardware durations.
+
+One optimized 600-frame replay after 60 warmup frames passes the scoped frame
+budgets with zero observed C++ allocations. Sources/settings/package identities,
+all rows and capture hash are retained; private asset/capture bytes are excluded.
+No unresolved demonstrated defect remains in the exercised slice. Inspector/UI,
+bloom, streaming/resize/reload plateau, whole-graphics accounting, final Windows
+MSVC/clang-cl execution of changed code, compiler-choice acceptance, independent
+graphics review, owner visual acceptance and formal M2 acceptance remain open.

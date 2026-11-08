@@ -14,3 +14,4 @@ docs/evidence/M2/shader-interface/licenses/spirv-headers/LICENSES/MIT.txt whites
 # Preserve byte-exact Windows tool manifests/reflections with native CRLF endings.
 docs/evidence/M2/windows-scene-debug/*/*.json -text whitespace=cr-at-eol
 docs/evidence/M2/windows-frigate-verified/*/*.json -text whitespace=cr-at-eol
+docs/evidence/M2/windows-workload-verified/*/*.json -text whitespace=cr-at-eol

@@ -1,0 +1,15 @@
+F
+======================================================================
+FAIL: test_bloom_can_be_disabled_without_disabling_the_workload (__main__.Workload.test_bloom_can_be_disabled_without_disabling_the_workload)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<ROOT>/tests/workload_cli.py", line 71, in test_bloom_can_be_disabled_without_disabling_the_workload
+    self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 2 != 0 : Workload arguments: unknown workload argument
+
+
+----------------------------------------------------------------------
+Ran 1 test in 0.003s
+
+FAILED (failures=1)

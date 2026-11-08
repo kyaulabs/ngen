@@ -1,6 +1,9 @@
 #include "render/mesh_internal.hpp"
 #include "render/post.hpp"
 #include "render/resources_internal.hpp"
+#if defined(NGEN_INSPECTOR_OVERLAY)
+#include "render/overlay.hpp"
+#endif
 #include <algorithm>
 #include <array>
 #include <bit>
@@ -43,6 +46,21 @@ struct Resources::Impl {
         std::uint32_t generation{1};
         bool retired{};
     };
+    enum class TimingKind : std::uint8_t { none, pbr, shadow_pbr, post, post_ui };
+    struct TimingSlot {
+        std::uint64_t serial{};
+        TimingKind kind{TimingKind::none};
+    };
+    struct TimingResult {
+        std::uint64_t serial{};
+        GpuTimings value;
+    };
+    VkQueryPool queries{};
+    double timestamp_period{};
+    std::uint64_t timestamp_mask{};
+    std::array<TimingSlot, 4> timing_slots{};
+    std::array<TimingResult, 64> timing_results{};
+    std::size_t wsi_timing_slot{4};
     struct Frame {
         VkCommandPool pool{};
         VkCommandBuffer commands{};
@@ -50,6 +68,10 @@ struct Resources::Impl {
     };
     std::unique_ptr<PostPipeline> post_pipeline;
     std::unique_ptr<MeshPipeline> mesh_pipeline;
+#if defined(NGEN_INSPECTOR_OVERLAY)
+    std::unique_ptr<OverlayPipeline> overlay_pipeline;
+    std::array<std::array<Buffer, 2>, 4> overlay_buffers;
+#endif
     std::array<Buffer, 2> mesh_uniforms;
     VmaAllocator allocator{};
     VkDevice device{};
@@ -86,6 +108,61 @@ struct Resources::Impl {
         entry = {};
         entry.generation = next;
     }
+    void begin_timing(VkCommandBuffer commands, std::size_t slot, TimingKind kind) {
+        if (!queries)
+            return;
+        vkCmdResetQueryPool(commands, queries, static_cast<std::uint32_t>(slot * 4), 4);
+        timing_slots[slot].kind = kind;
+    }
+    void stamp(VkCommandBuffer commands, std::size_t slot, std::uint32_t query,
+               VkPipelineStageFlags2 stage) const {
+        if (queries)
+            vkCmdWriteTimestamp2(commands, stage, queries,
+                                 static_cast<std::uint32_t>(slot * 4) + query);
+    }
+    void collect_timings(std::uint64_t complete) {
+        if (!queries)
+            return;
+        for (std::size_t slot = 0; slot < timing_slots.size(); ++slot) {
+            auto &timing = timing_slots[slot];
+            if (!timing.serial || timing.serial > complete)
+                continue;
+            const auto first =
+                static_cast<std::uint32_t>(slot * 4) + (timing.kind == TimingKind::pbr ? 2U : 0U);
+            const auto count =
+                timing.kind == TimingKind::shadow_pbr || timing.kind == TimingKind::post_ui ? 4U
+                                                                                            : 2U;
+            std::array<std::uint64_t, 8> values{};
+            const auto result = vkGetQueryPoolResults(
+                device, queries, first, count, std::size_t{count} * 2 * sizeof(std::uint64_t),
+                values.data(), 2 * sizeof(std::uint64_t),
+                VK_QUERY_RESULT_64_BIT | VK_QUERY_RESULT_WITH_AVAILABILITY_BIT);
+            resource_check(result, "collect completed GPU timestamps");
+            const auto duration = [&](std::size_t query) {
+                return static_cast<double>((values[query * 2 + 2] - values[query * 2]) &
+                                           timestamp_mask) *
+                       timestamp_period;
+            };
+            bool available = true;
+            for (std::size_t query = 0; query < count; ++query)
+                available = available && values[query * 2 + 1] != 0;
+            if (available) {
+                GpuTimings measured{};
+                if (timing.kind == TimingKind::shadow_pbr) {
+                    measured.shadow_ns = duration(0);
+                    measured.pbr_ns = duration(2);
+                } else if (timing.kind == TimingKind::pbr) {
+                    measured.pbr_ns = duration(0);
+                } else {
+                    measured.post_ns = duration(0);
+                    if (timing.kind == TimingKind::post_ui)
+                        measured.ui_ns = duration(2);
+                }
+                timing_results[timing.serial % timing_results.size()] = {timing.serial, measured};
+            }
+            timing.serial = 0;
+        }
+    }
     std::uint64_t collect() {
         std::uint64_t complete = 0;
         resource_check(vkGetSemaphoreCounterValue(device, timeline, &complete),
@@ -99,6 +176,7 @@ struct Resources::Impl {
             resource_check(vkWaitSemaphores(device, &wait, 0), "acquire completed resources");
             host_acquired = complete;
         }
+        collect_timings(complete);
         for (auto &entry : entries)
             if (entry.retired && entry.last_use <= complete)
                 destroy(entry);
@@ -116,6 +194,7 @@ struct Resources::Impl {
         if (available == frames.end())
             return Failure{"transfer contexts are busy"};
         auto &frame = *available;
+        timing_slots[static_cast<std::size_t>(&frame - frames.data())].kind = TimingKind::none;
         resource_check(vkResetCommandPool(device, frame.pool, 0), "reset transfer pool");
         VkCommandBufferBeginInfo info{};
         info.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
@@ -202,6 +281,9 @@ struct Resources::Impl {
         resource_check(vkQueueSubmit2(queue, 1, &info, VK_NULL_HANDLE), "submit transfer");
         frame.submitted = next;
         submitted = next;
+        auto &timing = timing_slots[static_cast<std::size_t>(&frame - frames.data())];
+        if (queries && timing.kind != TimingKind::none)
+            timing.serial = next;
         if (dependency.semaphore)
             external_wait_submission = next;
         return next;
@@ -245,6 +327,25 @@ Resources::Resources(const Context &owner) : impl_(std::make_unique<Impl>()) {
             commands.commandBufferCount = 1;
             resource_check(vkAllocateCommandBuffers(impl_->device, &commands, &frame.commands),
                            "allocate transfer commands");
+        }
+        std::uint32_t queue_count = 0;
+        vkGetPhysicalDeviceQueueFamilyProperties(impl_->physical, &queue_count, nullptr);
+        std::array<VkQueueFamilyProperties, 256> queues{};
+        if (owner.timings_enabled_ && queue_count > 0 && queue_count <= queues.size() &&
+            owner.queue_family() < queue_count) {
+            vkGetPhysicalDeviceQueueFamilyProperties(impl_->physical, &queue_count, queues.data());
+            const auto bits = queues[owner.queue_family()].timestampValidBits;
+            if (bits > 0 && bits <= 64 && std::isfinite(properties.limits.timestampPeriod) &&
+                properties.limits.timestampPeriod > 0) {
+                impl_->timestamp_period = properties.limits.timestampPeriod;
+                impl_->timestamp_mask = bits == 64 ? UINT64_MAX : (std::uint64_t{1} << bits) - 1;
+                VkQueryPoolCreateInfo query{};
+                query.sType = VK_STRUCTURE_TYPE_QUERY_POOL_CREATE_INFO;
+                query.queryType = VK_QUERY_TYPE_TIMESTAMP;
+                query.queryCount = 16;
+                resource_check(vkCreateQueryPool(impl_->device, &query, nullptr, &impl_->queries),
+                               "create bounded GPU timestamp pool");
+            }
         }
     } catch (...) {
         close(); // Construction cannot have submitted work.
@@ -618,6 +719,171 @@ std::variant<Submission, Failure> Resources::copy(ImageReadback description) {
     target.last_use = next;
     return Submission{weak_from_this(), next};
 }
+std::variant<detail::ResourceKey, Failure>
+Resources::overlay_key(const Overlay &overlay, VkExtent2D extent,
+                       detail::ResourceKey target) const {
+#if !defined(NGEN_INSPECTOR_OVERLAY)
+    (void)overlay;
+    (void)extent;
+    (void)target;
+    return Failure{"inspector overlay is unavailable in this build"};
+#else
+    if (overlay.font.owner_.lock().get() != this || !image_native(overlay.font.key_) ||
+        overlay.font.key_.slot == target.slot)
+        return Failure{"overlay font must be a live distinct same-context image"};
+    const auto &font = impl_->entries[overlay.font.key_.slot];
+    if (font.layers != 1 || font.mip_levels != 1 || !font.linear_filterable ||
+        (font.format != VK_FORMAT_R8G8B8A8_UNORM && font.format != VK_FORMAT_R8G8B8A8_SRGB) ||
+        (font.image_usage & VK_IMAGE_USAGE_SAMPLED_BIT) == 0 ||
+        font.image_layout != VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL)
+        return Failure{"overlay font must be an initialized sampled RGBA8 atlas"};
+    if (overlay.vertices.empty() || overlay.vertices.size() > overlay_vertex_limit ||
+        overlay.indices.empty() || overlay.indices.size() > overlay_index_limit ||
+        overlay.draws.empty() || overlay.draws.size() > overlay_draw_limit)
+        return Failure{"overlay geometry exceeds its fixed profile"};
+    for (const auto &vertex : overlay.vertices) {
+        for (const auto value : vertex.position)
+            if (!std::isfinite(value) || std::abs(value) > 16384)
+                return Failure{"overlay positions must be finite local pixels"};
+        for (const auto value : vertex.uv)
+            if (!std::isfinite(value) || value < 0 || value > 1)
+                return Failure{"overlay UV must be finite in 0..1"};
+    }
+    for (const auto index : overlay.indices)
+        if (index >= overlay.vertices.size())
+            return Failure{"overlay index is outside copied vertices"};
+    for (const auto &draw : overlay.draws)
+        if (!draw.index_count || draw.index_count % 3 != 0 ||
+            std::uint64_t{draw.first_index} + draw.index_count > overlay.indices.size() ||
+            draw.clip.offset.x < 0 || draw.clip.offset.y < 0 || !draw.clip.extent.width ||
+            !draw.clip.extent.height ||
+            static_cast<std::uint64_t>(draw.clip.offset.x) + draw.clip.extent.width >
+                extent.width ||
+            static_cast<std::uint64_t>(draw.clip.offset.y) + draw.clip.extent.height >
+                extent.height)
+            return Failure{"overlay draw or clip is outside the target"};
+    return overlay.font.key_;
+#endif
+}
+void Resources::prepare_overlay(VkCommandBuffer commands, std::size_t slot, const Overlay &overlay,
+                                VkExtent2D extent) {
+#if !defined(NGEN_INSPECTOR_OVERLAY)
+    (void)commands;
+    (void)slot;
+    (void)overlay;
+    (void)extent;
+    throw std::runtime_error("inspector overlay is unavailable in this build");
+#else
+    const auto validated = overlay_key(overlay, extent);
+    if (const auto *failure = std::get_if<Failure>(&validated))
+        throw std::runtime_error(failure->message);
+    if (slot >= impl_->overlay_buffers.size())
+        throw std::runtime_error("invalid overlay completion domain");
+    (void)impl_->collect();
+    if (!impl_->overlay_pipeline)
+        impl_->overlay_pipeline = std::make_unique<OverlayPipeline>(impl_->device);
+    auto &buffers = impl_->overlay_buffers[slot];
+    const std::array sizes{VkDeviceSize{overlay_vertex_limit} * sizeof(shader::OverlayVertex),
+                           VkDeviceSize{overlay_index_limit} * sizeof(std::uint32_t)};
+    const std::array payloads{std::as_bytes(overlay.vertices), std::as_bytes(overlay.indices)};
+    for (std::size_t i = 0; i < buffers.size(); ++i) {
+        if (!buffers[i].native()) {
+            auto created =
+                create({sizes[i],
+                        static_cast<VkBufferUsageFlags>(i == 0 ? VK_BUFFER_USAGE_VERTEX_BUFFER_BIT
+                                                               : VK_BUFFER_USAGE_INDEX_BUFFER_BIT),
+                        MemoryAccess::upload});
+            if (const auto *failure = std::get_if<Failure>(&created))
+                throw std::runtime_error(failure->message);
+            buffers[i] = std::get<Buffer>(std::move(created));
+        }
+        const auto written = buffers[i].write(0, payloads[i]);
+        if (const auto *failure = std::get_if<Failure>(&written))
+            throw std::runtime_error(failure->message);
+    }
+    impl_->overlay_pipeline->prepare(slot, overlay.font.view());
+    VkMemoryBarrier2 memory{};
+    memory.sType = VK_STRUCTURE_TYPE_MEMORY_BARRIER_2;
+    memory.srcStageMask = VK_PIPELINE_STAGE_2_HOST_BIT;
+    memory.srcAccessMask = VK_ACCESS_2_HOST_WRITE_BIT;
+    memory.dstStageMask =
+        VK_PIPELINE_STAGE_2_VERTEX_ATTRIBUTE_INPUT_BIT | VK_PIPELINE_STAGE_2_INDEX_INPUT_BIT;
+    memory.dstAccessMask = VK_ACCESS_2_VERTEX_ATTRIBUTE_READ_BIT | VK_ACCESS_2_INDEX_READ_BIT;
+    VkImageMemoryBarrier2 font{};
+    font.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER_2;
+    font.srcStageMask = VK_PIPELINE_STAGE_2_ALL_COMMANDS_BIT;
+    font.srcAccessMask = VK_ACCESS_2_MEMORY_READ_BIT | VK_ACCESS_2_MEMORY_WRITE_BIT;
+    font.dstStageMask = VK_PIPELINE_STAGE_2_FRAGMENT_SHADER_BIT;
+    font.dstAccessMask = VK_ACCESS_2_SHADER_SAMPLED_READ_BIT;
+    font.oldLayout = font.newLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+    font.srcQueueFamilyIndex = font.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+    font.image = overlay.font.native();
+    font.subresourceRange = {VK_IMAGE_ASPECT_COLOR_BIT, 0, 1, 0, 1};
+    VkDependencyInfo dependency{};
+    dependency.sType = VK_STRUCTURE_TYPE_DEPENDENCY_INFO;
+    dependency.memoryBarrierCount = 1;
+    dependency.pMemoryBarriers = &memory;
+    dependency.imageMemoryBarrierCount = 1;
+    dependency.pImageMemoryBarriers = &font;
+    vkCmdPipelineBarrier2(commands, &dependency);
+#endif
+}
+void Resources::record_overlay(VkCommandBuffer commands, std::size_t slot, const Overlay &overlay,
+                               OverlayAttachment target) {
+#if !defined(NGEN_INSPECTOR_OVERLAY)
+    (void)commands;
+    (void)slot;
+    (void)overlay;
+    (void)target;
+    throw std::runtime_error("inspector overlay is unavailable in this build");
+#else
+    VkImageMemoryBarrier2 barrier{};
+    barrier.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER_2;
+    barrier.srcStageMask = barrier.dstStageMask = VK_PIPELINE_STAGE_2_COLOR_ATTACHMENT_OUTPUT_BIT;
+    barrier.srcAccessMask = VK_ACCESS_2_COLOR_ATTACHMENT_WRITE_BIT;
+    barrier.dstAccessMask =
+        VK_ACCESS_2_COLOR_ATTACHMENT_READ_BIT | VK_ACCESS_2_COLOR_ATTACHMENT_WRITE_BIT;
+    barrier.oldLayout = barrier.newLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+    barrier.srcQueueFamilyIndex = barrier.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+    barrier.image = target.image;
+    barrier.subresourceRange = {VK_IMAGE_ASPECT_COLOR_BIT, 0, 1, 0, 1};
+    VkDependencyInfo dependency{};
+    dependency.sType = VK_STRUCTURE_TYPE_DEPENDENCY_INFO;
+    dependency.imageMemoryBarrierCount = 1;
+    dependency.pImageMemoryBarriers = &barrier;
+    vkCmdPipelineBarrier2(commands, &dependency);
+    VkRenderingAttachmentInfo color{};
+    color.sType = VK_STRUCTURE_TYPE_RENDERING_ATTACHMENT_INFO;
+    color.imageView = target.view;
+    color.imageLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+    color.loadOp = VK_ATTACHMENT_LOAD_OP_LOAD;
+    color.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
+    VkRenderingInfo rendering{};
+    rendering.sType = VK_STRUCTURE_TYPE_RENDERING_INFO;
+    rendering.renderArea.extent = target.extent;
+    rendering.layerCount = rendering.colorAttachmentCount = 1;
+    rendering.pColorAttachments = &color;
+    impl_->stamp(commands, slot, 2, VK_PIPELINE_STAGE_2_TOP_OF_PIPE_BIT);
+    vkCmdBeginRendering(commands, &rendering);
+    const auto &buffers = impl_->overlay_buffers[slot];
+    impl_->overlay_pipeline->record({commands, slot, target.format, target.extent,
+                                     buffers[0].native(), buffers[1].native(), overlay.draws});
+    vkCmdEndRendering(commands);
+    impl_->stamp(commands, slot, 3, VK_PIPELINE_STAGE_2_BOTTOM_OF_PIPE_BIT);
+#endif
+}
+void Resources::publish_overlay(std::size_t slot, detail::ResourceKey font,
+                                std::uint64_t serial) noexcept {
+#if defined(NGEN_INSPECTOR_OVERLAY)
+    impl_->entries[font.slot].last_use = serial;
+    for (const auto &buffer : impl_->overlay_buffers[slot])
+        impl_->entries[buffer.key_.slot].last_use = serial;
+#else
+    (void)slot;
+    (void)font;
+    (void)serial;
+#endif
+}
 std::variant<Submission, Failure> Resources::post(PostProcess description) {
     if (description.source.owner_.lock().get() != this ||
         description.destination.owner_.lock().get() != this)
@@ -632,6 +898,8 @@ std::variant<Submission, Failure> Resources::post(PostProcess description) {
     if (!std::isfinite(description.exposure) || description.exposure < 0 ||
         description.exposure > 64)
         return Failure{"post exposure must be finite in 0..64"};
+    if (!std::isfinite(description.bloom) || description.bloom < 0 || description.bloom > .25F)
+        return Failure{"post bloom strength must be finite in 0..0.25"};
     if (source.aspect != VK_IMAGE_ASPECT_COLOR_BIT || source.layers != 1 ||
         !source.linear_filterable || (source.image_usage & VK_IMAGE_USAGE_SAMPLED_BIT) == 0 ||
         source.image_layout != VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL)
@@ -640,12 +908,24 @@ std::variant<Submission, Failure> Resources::post(PostProcess description) {
         (target.format != VK_FORMAT_R8G8B8A8_UNORM && target.format != VK_FORMAT_R8G8B8A8_SRGB) ||
         (target.image_usage & VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT) == 0)
         return Failure{"post target must be a single-mip RGBA8 color attachment"};
+    detail::ResourceKey font{};
+    if (description.overlay) {
+        const auto validated = overlay_key(*description.overlay, target.image_extent, target_key);
+        if (const auto *failure = std::get_if<Failure>(&validated))
+            return *failure;
+        font = std::get<detail::ResourceKey>(validated);
+    }
     if (!impl_->post_pipeline)
         impl_->post_pipeline = std::make_unique<PostPipeline>(impl_->device);
     auto recording = impl_->begin(description.wait);
     if (const auto *failure = std::get_if<Failure>(&recording))
         return *failure;
     auto &frame = *std::get<Impl::Frame *>(recording);
+    const auto slot = static_cast<std::size_t>(&frame - impl_->frames.data());
+    impl_->begin_timing(frame.commands, slot,
+                        description.overlay ? Impl::TimingKind::post_ui : Impl::TimingKind::post);
+    if (description.overlay)
+        prepare_overlay(frame.commands, slot, *description.overlay, target.image_extent);
     VkImageMemoryBarrier2 input{};
     input.image = source.image;
     input.oldLayout = source.image_layout;
@@ -684,10 +964,12 @@ std::variant<Submission, Failure> Resources::post(PostProcess description) {
     rendering.layerCount = 1;
     rendering.colorAttachmentCount = 1;
     rendering.pColorAttachments = &color;
+    impl_->stamp(frame.commands, slot, 0, VK_PIPELINE_STAGE_2_TOP_OF_PIPE_BIT);
     vkCmdBeginRendering(frame.commands, &rendering);
     const shader::PostConstants constants{{description.exposure, description.fxaa ? 1.0F : 0.0F,
                                            1.0F / static_cast<float>(source.image_extent.width),
-                                           1.0F / static_cast<float>(source.image_extent.height)}};
+                                           1.0F / static_cast<float>(source.image_extent.height)},
+                                          {description.bloom, 0, 0, 0}};
     impl_->post_pipeline->record({.commands = frame.commands,
                                   .frame = static_cast<std::size_t>(&frame - impl_->frames.data()),
                                   .format = target.format,
@@ -695,6 +977,10 @@ std::variant<Submission, Failure> Resources::post(PostProcess description) {
                                   .extent = target.image_extent,
                                   .constants = constants});
     vkCmdEndRendering(frame.commands);
+    impl_->stamp(frame.commands, slot, 1, VK_PIPELINE_STAGE_2_BOTTOM_OF_PIPE_BIT);
+    if (description.overlay)
+        record_overlay(frame.commands, slot, *description.overlay,
+                       {target.image, target.view, target.format, target.image_extent});
     output.oldLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
     output.newLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
     output.srcStageMask = VK_PIPELINE_STAGE_2_COLOR_ATTACHMENT_OUTPUT_BIT;
@@ -706,6 +992,8 @@ std::variant<Submission, Failure> Resources::post(PostProcess description) {
     source.last_use = next;
     target.last_use = next;
     target.image_layout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+    if (description.overlay)
+        publish_overlay(slot, font, next);
     return Submission{weak_from_this(), next};
 }
 std::variant<Submission, Failure> Resources::mesh(MeshPass description) {
@@ -790,16 +1078,43 @@ std::variant<Submission, Failure> Resources::mesh(MeshPass description) {
                mode == VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE;
     };
     std::array<MeshNativeDraw, MeshPipeline::draw_limit> bindings{};
+    std::size_t instance_count = 0;
     for (std::size_t i = 0; i < description.draws.size(); ++i) {
         const auto &draw = description.draws[i];
         const auto &frame = draw.frame;
         const auto &material = draw.material;
+        const auto count = std::max(std::size_t{1}, draw.instances.size());
+        if (draw.instances.size() > shader::instance_capacity || count > 512 - instance_count)
+            return Failure{"mesh instance count exceeds the fixed 100/draw or 512/frame profile"};
+        instance_count += count;
+        for (const auto &instance : draw.instances)
+            if (!finite(instance.model.columns) || !finite(instance.normalMatrix.columns))
+                return Failure{"mesh instance transforms must be finite"};
+        const auto *draw_vertices = &vertices, *draw_indices = &indices;
+        if ((draw.vertices == nullptr) != (draw.indices == nullptr))
+            return Failure{"mesh geometry override requires a vertex/index pair"};
+        if (draw.vertices) {
+            if (draw.vertices->owner_.lock().get() != this ||
+                draw.indices->owner_.lock().get() != this || !native(draw.vertices->key_) ||
+                !native(draw.indices->key_))
+                return Failure{"mesh geometry override must be live same-context buffers"};
+            draw_vertices = &impl_->entries[draw.vertices->key_.slot];
+            draw_indices = &impl_->entries[draw.indices->key_.slot];
+            if ((draw_vertices->usage & VK_BUFFER_USAGE_VERTEX_BUFFER_BIT) == 0 ||
+                (draw_indices->usage & VK_BUFFER_USAGE_INDEX_BUFFER_BIT) == 0 ||
+                draw_vertices->size % sizeof(shader::Vertex) != 0 ||
+                draw_indices->size % sizeof(std::uint32_t) != 0)
+                return Failure{"mesh geometry override has incompatible usage/record size"};
+            used[draw.vertices->key_.slot] = used[draw.indices->key_.slot] = true;
+        }
+        bindings[i].vertices = draw_vertices->buffer;
+        bindings[i].indices = draw_indices->buffer;
         if (draw.index_count == 0 || draw.index_count % 3 != 0 ||
             static_cast<std::uint64_t>(draw.first_index) + draw.index_count >
-                indices.size / sizeof(std::uint32_t) ||
+                draw_indices->size / sizeof(std::uint32_t) ||
             draw.vertex_offset < 0 ||
             static_cast<std::uint64_t>(draw.vertex_offset) >=
-                vertices.size / sizeof(shader::Vertex))
+                draw_vertices->size / sizeof(shader::Vertex))
             return Failure{"mesh indexed draw range is invalid"};
         if (static_cast<unsigned>(draw.facing) > 2 || material.flags[0] > 2 ||
             material.flags[1] > 31 || material.flags[2] > 3 || material.flags[3] != 0 ||
@@ -859,6 +1174,9 @@ std::variant<Submission, Failure> Resources::mesh(MeshPass description) {
          color.image_extent, description.shadow.view(), description.irradiance.view(),
          description.prefiltered.view(), description.brdf.view(), description.draws,
          std::span(bindings).first(description.draws.size())});
+    impl_->begin_timing(frame.commands, slot,
+                        description.generate_shadow ? Impl::TimingKind::shadow_pbr
+                                                    : Impl::TimingKind::pbr);
     for (std::size_t i = 0; i < used.size(); ++i) {
         const auto &entry = impl_->entries[i];
         if (!used[i] || !entry.image || i == color_key.slot || i == depth_key.slot ||
@@ -913,6 +1231,7 @@ std::variant<Submission, Failure> Resources::mesh(MeshPass description) {
         rendering.renderArea.extent = shadow.image_extent;
         rendering.layerCount = 1;
         rendering.pDepthAttachment = &shadow_info;
+        impl_->stamp(frame.commands, slot, 0, VK_PIPELINE_STAGE_2_TOP_OF_PIPE_BIT);
         vkCmdBeginRendering(frame.commands, &rendering);
         impl_->mesh_pipeline->record({frame.commands, slot, uniform.native(), vertices.buffer,
                                       indices.buffer, shadow.image_extent, shadow.view,
@@ -920,6 +1239,7 @@ std::variant<Submission, Failure> Resources::mesh(MeshPass description) {
                                       description.brdf.view(), description.draws,
                                       std::span(bindings).first(description.draws.size()), true});
         vkCmdEndRendering(frame.commands);
+        impl_->stamp(frame.commands, slot, 1, VK_PIPELINE_STAGE_2_BOTTOM_OF_PIPE_BIT);
         VkImageMemoryBarrier2 readable{};
         readable.image = shadow.image;
         readable.oldLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
@@ -956,6 +1276,7 @@ std::variant<Submission, Failure> Resources::mesh(MeshPass description) {
     rendering.colorAttachmentCount = 1;
     rendering.pColorAttachments = &color_info;
     rendering.pDepthAttachment = &depth_info;
+    impl_->stamp(frame.commands, slot, 2, VK_PIPELINE_STAGE_2_TOP_OF_PIPE_BIT);
     vkCmdBeginRendering(frame.commands, &rendering);
     impl_->mesh_pipeline->record({frame.commands, slot, uniform.native(), vertices.buffer,
                                   indices.buffer, color.image_extent, description.shadow.view(),
@@ -963,6 +1284,7 @@ std::variant<Submission, Failure> Resources::mesh(MeshPass description) {
                                   description.brdf.view(), description.draws,
                                   std::span(bindings).first(description.draws.size())});
     vkCmdEndRendering(frame.commands);
+    impl_->stamp(frame.commands, slot, 3, VK_PIPELINE_STAGE_2_BOTTOM_OF_PIPE_BIT);
     VkImageMemoryBarrier2 output{};
     output.image = color.image;
     output.oldLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
@@ -1000,6 +1322,8 @@ std::variant<GraphicsUse, Failure> Resources::prepare_frame(ImageFrame descripti
     if (!std::isfinite(description.exposure) || description.exposure < 0 ||
         description.exposure > 64)
         return Failure{"frame exposure must be finite in 0..64"};
+    if (!std::isfinite(description.bloom) || description.bloom < 0 || description.bloom > .25F)
+        return Failure{"frame bloom strength must be finite in 0..0.25"};
     if (impl_->submitted == UINT64_MAX)
         return Failure{"resource submission counter exhausted"};
     const auto &entry = impl_->entries[key.slot];
@@ -1007,6 +1331,13 @@ std::variant<GraphicsUse, Failure> Resources::prepare_frame(ImageFrame descripti
         !entry.linear_filterable || (entry.image_usage & VK_IMAGE_USAGE_SAMPLED_BIT) == 0 ||
         entry.image_layout != VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL)
         return Failure{"frame image must be initialized filterable 2D color"};
+    detail::ResourceKey font{};
+    if (description.overlay) {
+        const auto validated = overlay_key(*description.overlay, {8192, 8192});
+        if (const auto *failure = std::get_if<Failure>(&validated))
+            return *failure;
+        font = std::get<detail::ResourceKey>(validated);
+    }
     if (!impl_->post_pipeline)
         impl_->post_pipeline = std::make_unique<PostPipeline>(impl_->device);
     return GraphicsUse{key,
@@ -1015,12 +1346,30 @@ std::variant<GraphicsUse, Failure> Resources::prepare_frame(ImageFrame descripti
                        entry.image_extent,
                        entry.mip_levels,
                        impl_->timeline,
-                       impl_->submitted + 1};
+                       impl_->submitted + 1,
+                       font};
 }
 void Resources::record_frame(const PostDraw &draw) const { impl_->post_pipeline->record(draw); }
-Submission Resources::submitted_frame(const GraphicsUse &use) noexcept {
+void Resources::start_frame_timing(VkCommandBuffer commands, std::size_t slot, bool overlay) {
+    if (slot < 2 || slot >= impl_->timing_slots.size())
+        throw std::runtime_error("invalid WSI GPU timing domain");
+    (void)impl_->collect(); // Fence-ready domains may have completed since prepare_frame.
+    impl_->begin_timing(commands, slot,
+                        overlay ? Impl::TimingKind::post_ui : Impl::TimingKind::post);
+    impl_->stamp(commands, slot, 0, VK_PIPELINE_STAGE_2_TOP_OF_PIPE_BIT);
+    impl_->wsi_timing_slot = slot;
+}
+void Resources::finish_frame_timing(VkCommandBuffer commands, std::size_t slot) {
+    impl_->stamp(commands, slot, 1, VK_PIPELINE_STAGE_2_BOTTOM_OF_PIPE_BIT);
+}
+Submission Resources::submitted_frame(const GraphicsUse &use, std::size_t slot) noexcept {
     impl_->entries[use.key.slot].last_use = use.serial;
+    if (use.overlay_font.slot != UINT32_MAX)
+        publish_overlay(slot, use.overlay_font, use.serial);
     impl_->submitted = use.serial;
+    if (impl_->queries && impl_->wsi_timing_slot < impl_->timing_slots.size())
+        impl_->timing_slots[impl_->wsi_timing_slot].serial = use.serial;
+    impl_->wsi_timing_slot = impl_->timing_slots.size();
     return Submission{weak_from_this(), use.serial};
 }
 std::variant<bool, Failure> Resources::completed(const Submission &submission) {
@@ -1028,6 +1377,18 @@ std::variant<bool, Failure> Resources::completed(const Submission &submission) {
         submission.value_ > impl_->submitted)
         return Failure{"invalid resource submission"};
     return impl_->collect() >= submission.value_;
+}
+bool Resources::timings_supported() const { return impl_->allocator && impl_->queries; }
+std::variant<std::optional<GpuTimings>, Failure> Resources::timings(const Submission &submission) {
+    if (submission.owner_.lock().get() != this || submission.value_ == 0 ||
+        submission.value_ > impl_->submitted)
+        return Failure{"invalid resource timing submission"};
+    (void)impl_->collect();
+    if (impl_->submitted - submission.value_ >= impl_->timing_results.size())
+        return std::optional<GpuTimings>{};
+    const auto &record = impl_->timing_results[submission.value_ % impl_->timing_results.size()];
+    return record.serial == submission.value_ ? std::optional{record.value}
+                                              : std::optional<GpuTimings>{};
 }
 std::variant<std::monostate, Failure> Resources::write(detail::ResourceKey key, VkDeviceSize offset,
                                                        std::span<const std::byte> bytes) {
@@ -1112,6 +1473,16 @@ void Resources::close() noexcept {
         impl_->mesh_pipeline.reset();
     }
     impl_->mesh_uniforms = {};
+#if defined(NGEN_INSPECTOR_OVERLAY)
+    if (impl_->overlay_pipeline) {
+        impl_->overlay_pipeline->close();
+        impl_->overlay_pipeline.reset();
+    }
+    impl_->overlay_buffers = {};
+#endif
+    if (impl_->queries)
+        vkDestroyQueryPool(impl_->device, impl_->queries, nullptr);
+    impl_->queries = VK_NULL_HANDLE;
     for (auto &entry : impl_->entries)
         impl_->destroy(entry);
     if (impl_->timeline)

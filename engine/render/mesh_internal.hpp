@@ -5,6 +5,7 @@
 namespace ngen::render {
 struct MeshNativeDraw {
     std::array<VkImageView, 5> maps{};
+    VkBuffer vertices{}, indices{};
 };
 struct MeshRecording {
     VkCommandBuffer commands{};
@@ -46,6 +47,7 @@ class MeshPipeline {
     std::array<SamplerEntry, 64> samplers_{};
     std::size_t sampler_count_{};
     VkDeviceSize frame_stride_{}, light_offset_{}, material_offset_{}, material_stride_{};
+    VkDeviceSize instance_offset_{}, instance_stride_{};
     std::vector<std::byte> scratch_;
 };
 } // namespace ngen::render

@@ -1,0 +1,77 @@
+{
+  "results": [
+    {
+      "configuration": "inspector-debug",
+      "source": "engine/tools/ui.cpp",
+      "object": "CMakeFiles/ngen_inspector_ui.dir/engine/tools/ui.cpp.o",
+      "status": 0,
+      "compile_database_sha256": "0ae716b251b3014072a926234d51186b4555662af2299bcdb7f45c7ee707174d",
+      "analysis": "build/overlay-check/ast/inspector-debug/28/analysis.txt"
+    },
+    {
+      "configuration": "inspector-debug",
+      "source": "apps/scene_workload/main.cpp",
+      "object": "CMakeFiles/scene_workload.dir/apps/scene_workload/main.cpp.o",
+      "status": 0,
+      "compile_database_sha256": "0ae716b251b3014072a926234d51186b4555662af2299bcdb7f45c7ee707174d",
+      "analysis": "build/overlay-check/ast/inspector-debug/29/analysis.txt"
+    },
+    {
+      "configuration": "inspector-release",
+      "source": "engine/tools/ui.cpp",
+      "object": "CMakeFiles/ngen_inspector_ui.dir/engine/tools/ui.cpp.o",
+      "status": 0,
+      "compile_database_sha256": "fe51ec69793e9affc3805f88f8e199c841567e3a450ce678e1fe045236f12c81",
+      "analysis": "build/overlay-check/ast/inspector-release/28/analysis.txt"
+    },
+    {
+      "configuration": "inspector-release",
+      "source": "apps/scene_workload/main.cpp",
+      "object": "CMakeFiles/scene_workload.dir/apps/scene_workload/main.cpp.o",
+      "status": 0,
+      "compile_database_sha256": "fe51ec69793e9affc3805f88f8e199c841567e3a450ce678e1fe045236f12c81",
+      "analysis": "build/overlay-check/ast/inspector-release/29/analysis.txt"
+    },
+    {
+      "configuration": "inspector-asan",
+      "source": "engine/tools/ui.cpp",
+      "object": "CMakeFiles/ngen_inspector_ui.dir/engine/tools/ui.cpp.o",
+      "status": 0,
+      "compile_database_sha256": "24421dc7f94dc4e9b06117e0d7100be4b3536e11c2ee57a55911f688824bf449",
+      "analysis": "build/overlay-check/ast/inspector-asan/28/analysis.txt"
+    },
+    {
+      "configuration": "inspector-asan",
+      "source": "apps/scene_workload/main.cpp",
+      "object": "CMakeFiles/scene_workload.dir/apps/scene_workload/main.cpp.o",
+      "status": 0,
+      "compile_database_sha256": "24421dc7f94dc4e9b06117e0d7100be4b3536e11c2ee57a55911f688824bf449",
+      "analysis": "build/overlay-check/ast/inspector-asan/29/analysis.txt"
+    },
+    {
+      "configuration": "scene-shipping",
+      "source": "apps/scene_workload/main.cpp",
+      "object": "CMakeFiles/scene_workload.dir/apps/scene_workload/main.cpp.o",
+      "status": 0,
+      "compile_database_sha256": "fdf4f6295df888a2ca349a7c05896f52771f290e0e0e85fcb925a2a94aba588d",
+      "analysis": "build/overlay-check/ast/scene-shipping/24/analysis.txt"
+    }
+  ],
+  "excluded": [
+    {
+      "configuration": "inspector-debug",
+      "source": "<CONAN>/p/b/imguib8679de1eabca/p/res/bindings/imgui_impl_sdl3.cpp",
+      "reason": "third-party source; native build/sanitizers, not owned-policy AST"
+    },
+    {
+      "configuration": "inspector-release",
+      "source": "<CONAN>/p/b/imgui7c58339a2e1d0/p/res/bindings/imgui_impl_sdl3.cpp",
+      "reason": "third-party source; native build/sanitizers, not owned-policy AST"
+    },
+    {
+      "configuration": "inspector-asan",
+      "source": "<CONAN>/p/b/imguid9e423e7b05b9/p/res/bindings/imgui_impl_sdl3.cpp",
+      "reason": "third-party source; native build/sanitizers, not owned-policy AST"
+    }
+  ]
+}

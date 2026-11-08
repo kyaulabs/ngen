@@ -151,7 +151,8 @@ std::variant<std::size_t, Failure> SceneRenderer::collect(Context &context) {
 }
 std::variant<Submission, Failure> SceneRenderer::draw(Context &context, ScenePin version,
                                                       const SceneView &view, SceneTargets targets,
-                                                      TimelineWait wait) {
+                                                      TimelineWait wait,
+                                                      std::span<const MeshDraw> extras) {
     if (!version)
         return Failure{"scene draw has no immutable version"};
     const auto finite = [](const auto &values) {
@@ -173,6 +174,17 @@ std::variant<Submission, Failure> SceneRenderer::draw(Context &context, ScenePin
     if (!package || package->instances.empty() || package->instances.size() > draw_limit ||
         view.lod > 2)
         return Failure{"scene draw exceeds the fixed instance/LOD profile"};
+    if (extras.size() > draw_limit - package->instances.size())
+        return Failure{"scene extras exceed the fixed draw profile"};
+    const auto count = package->instances.size() + extras.size();
+    if (!view.material_factors.empty() && view.material_factors.size() != package->materials.size())
+        return Failure{"scene material factor table must match the immutable package"};
+    const auto unit = [](float value) { return std::isfinite(value) && value >= 0 && value <= 1; };
+    for (const auto &factors : view.material_factors)
+        if (!std::all_of(factors.base_color.begin(), factors.base_color.end(), unit) ||
+            !unit(factors.metallic) || !unit(factors.roughness) ||
+            !std::isfinite(factors.emissive_strength) || factors.emissive_strength < 0)
+            return Failure{"scene material factors must be finite and within authored domains"};
     for (const auto &light : package->lights)
         if (light.type != 1)
             return Failure{"scene forward tier currently requires point-light definitions"};
@@ -204,14 +216,20 @@ std::variant<Submission, Failure> SceneRenderer::draw(Context &context, ScenePin
         draw.facing = material.double_sided ? MeshFacing::both
                                             : (*determinant < 0 ? MeshFacing::clockwise
                                                                 : MeshFacing::counter_clockwise);
-        draw.material.baseColor = material.base_color;
+        const auto *factors = primitive.material == UINT32_MAX || view.material_factors.empty()
+                                  ? nullptr
+                                  : &view.material_factors[primitive.material];
+        draw.material.baseColor = factors ? factors->base_color : material.base_color;
+        const auto emissive_strength =
+            factors ? factors->emissive_strength : material.emissive_strength;
         for (std::size_t channel = 0; channel < 3; ++channel)
             draw.material.emissiveAlphaCutoff[channel] =
-                material.emissive[channel] * material.emissive_strength;
+                material.emissive[channel] * emissive_strength;
         draw.material.emissiveAlphaCutoff[3] = material.alpha_cutoff;
-        draw.material.metallicRoughnessNormalOcclusion = {material.metallic, material.roughness,
-                                                          material.normal_scale,
-                                                          material.occlusion_strength};
+        draw.material.metallicRoughnessNormalOcclusion = {
+            factors ? factors->metallic : material.metallic,
+            factors ? factors->roughness : material.roughness, material.normal_scale,
+            material.occlusion_strength};
         draw.material.flags[0] = material.alpha;
         draw.material.flags[2] =
             (material.maps[2].texture == UINT32_MAX ? 1U : 0U) | (material.double_sided ? 2U : 0U);
@@ -244,7 +262,21 @@ std::variant<Submission, Failure> SceneRenderer::draw(Context &context, ScenePin
         impl_->depths[i] = w == 0 ? std::numeric_limits<double>::max() : z / w;
         impl_->order[i] = i;
     }
-    const auto count = package->instances.size();
+    for (std::size_t i = 0; i < extras.size(); ++i) {
+        const auto &extra = extras[i];
+        if (!extra.vertices || !extra.indices || extra.material.flags[0] > 1)
+            return Failure{"scene extras require explicit opaque/masked geometry"};
+        const auto slot_index = package->instances.size() + i;
+        auto &draw = impl_->draws[slot_index];
+        draw = extra;
+        draw.frame.viewProjection = view.view_projection;
+        draw.frame.lightViewProjection = view.light_view_projection;
+        draw.frame.cameraPosition = view.camera_position;
+        draw.frame.keyDirectionIntensity = view.key_direction_intensity;
+        draw.frame.keyColor = view.key_color;
+        impl_->depths[slot_index] = 0;
+        impl_->order[slot_index] = slot_index;
+    }
     std::sort(impl_->order.begin(), impl_->order.begin() + static_cast<std::ptrdiff_t>(count),
               [&](std::size_t a, std::size_t b) {
                   const bool transparent_a = impl_->draws[a].material.flags[0] == 2,

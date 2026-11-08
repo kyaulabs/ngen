@@ -1,0 +1,98 @@
+[0/2] Re-checking globbed directories...
+[1/2] Re-running CMake...
+-- Using Conan toolchain: <ROOT>/build/inspector-debug/conan_toolchain.cmake
+-- Conan toolchain: Defining architecture flag: -m64
+-- Conan toolchain: Defining libcxx as C++ flags: -stdlib=libstdc++
+-- Conan toolchain: C++ Standard 20 with extensions OFF
+-- Conan: Target declared 'enkiTS::enkiTS'
+-- Conan: Target declared 'ZLIB::ZLIB'
+-- Conan: Component target declared 'SDL3::Headers'
+-- Conan: Component target declared 'SDL3::SDL3'
+-- Conan: Target declared 'sdl::sdl'
+-- Conan: Component target declared 'xkbcommon::libxkbcommon'
+-- Conan: Component target declared 'xkbcommon::libxkbregistry'
+-- Conan: Component target declared 'xkbcommon::xkbcli-interactive-wayland'
+-- Conan: Target declared 'xkbcommon::xkbcommon'
+-- Conan: Target declared 'xkeyboard-config::xkeyboard-config'
+-- Conan: Component target declared 'wayland::wayland-scanner'
+-- Conan: Component target declared 'wayland::wayland-server'
+-- Conan: Component target declared 'wayland::wayland-client'
+-- Conan: Component target declared 'wayland::wayland-egl-backend'
+-- Conan: Component target declared 'wayland::wayland-cursor'
+-- Conan: Component target declared 'wayland::wayland-egl'
+-- Conan: Target declared 'wayland::wayland'
+-- Conan: Target declared 'libffi::libffi'
+-- Conan: Target declared 'LibXml2::LibXml2'
+-- Conan: Target declared 'Iconv::Iconv'
+-- Conan: Target declared 'expat::expat'
+-- Conan: Target declared 'egl::egl'
+-- Conan: Target declared 'GPUOpen::VulkanMemoryAllocator'
+-- Conan: Component target declared 'Vulkan::Registry'
+-- Conan: Target declared 'vulkan-headers::vulkan-headers'
+-- Conan: Target declared 'imgui::imgui'
+-- Conan: Component target declared 'Catch2::Catch2'
+-- Conan: Component target declared 'Catch2::Catch2WithMain'
+-- Configuring done (0.3s)
+-- Generating done (0.0s)
+-- Build files have been written to: <ROOT>/build/inspector-debug
+[0/4] Re-checking globbed directories...
+[1/159] Scanning <ROOT>/engine/render/capabilities.cpp for CXX dependencies
+[2/159] Scanning <ROOT>/engine/render/vma.cpp for CXX dependencies
+[3/159] Scanning <ROOT>/engine/core/values.cpp for CXX dependencies
+[4/159] Scanning <ROOT>/engine/core/entities.cpp for CXX dependencies
+[5/159] Generating CXX dyndep file CMakeFiles/ngen_render_contract.dir/CXX.dd
+[6/157] Scanning <ROOT>/engine/assets/package.cpp for CXX dependencies
+[7/157] Generating CXX dyndep file CMakeFiles/ngen_vma.dir/CXX.dd
+[8/155] Generating CXX dyndep file CMakeFiles/ngen_core.dir/CXX.dd
+[9/152] Scanning <ROOT>/engine/jobs/jobs.cpp for CXX dependencies
+[10/152] Generating CXX dyndep file CMakeFiles/ngen_assets.dir/CXX.dd
+[11/150] Scanning <ROOT>/engine/tools/inspector.cpp for CXX dependencies
+[12/150] Scanning <ROOT>/engine/tools/reload.cpp for CXX dependencies
+[13/150] Generating CXX dyndep file CMakeFiles/ngen_jobs.dir/CXX.dd
+[14/148] Scanning <ROOT>/engine/simulation/simulation.cpp for CXX dependencies
+[15/148] Generating CXX dyndep file CMakeFiles/ngen_inspector.dir/CXX.dd
+[16/145] Generating CXX dyndep file CMakeFiles/ngen_imgui_sdl.dir/CXX.dd
+[17/143] Generating CXX dyndep file CMakeFiles/ngen_simulation.dir/CXX.dd
+[18/141] Scanning <ROOT>/apps/sim_harness/main.cpp for CXX dependencies
+[19/141] Scanning <ROOT>/apps/asset_probe/main.cpp for CXX dependencies
+[20/141] Scanning <ROOT>/tests/core.cpp for CXX dependencies
+[21/141] Scanning <ROOT>/tests/jobs.cpp for CXX dependencies
+[22/141] Scanning <ROOT>/tests/simulation.cpp for CXX dependencies
+[23/141] Scanning <ROOT>/tests/render_capabilities.cpp for CXX dependencies
+[24/141] Scanning <ROOT>/tests/assets.cpp for CXX dependencies
+[25/141] Scanning <ROOT>/tests/inspector.cpp for CXX dependencies
+[26/141] Scanning <ROOT>/tests/reload.cpp for CXX dependencies
+[27/141] Scanning <ROOT>/tests/wayland_tablets.cpp for CXX dependencies
+[28/141] Generating CXX dyndep file CMakeFiles/sim_harness.dir/CXX.dd
+[29/139] Generating CXX dyndep file CMakeFiles/asset_package_probe.dir/CXX.dd
+[30/137] Generating CXX dyndep file CMakeFiles/ngen_tests.dir/CXX.dd
+[31/133] Generating CXX dyndep file CMakeFiles/render_contract_tests.dir/CXX.dd
+[32/131] Generating CXX dyndep file CMakeFiles/asset_package_tests.dir/CXX.dd
+[33/129] Generating CXX dyndep file CMakeFiles/inspector_tests.dir/CXX.dd
+[34/126] Generating CXX dyndep file CMakeFiles/wayland_tablet_tests.dir/CXX.dd
+[35/124] Generating shaders/a74054ff2801fef74e5b545bb7f32e95bee625065650cca5bd59651ff52bbc07/manifest.json
+[36/124] Scanning <ROOT>/engine/render/surface.cpp for CXX dependencies
+[37/124] Scanning <ROOT>/engine/render/context.cpp for CXX dependencies
+[38/124] Scanning <ROOT>/engine/render/presentation.cpp for CXX dependencies
+[39/124] Scanning <ROOT>/engine/render/post.cpp for CXX dependencies
+[40/124] Scanning <ROOT>/engine/render/resources.cpp for CXX dependencies
+[41/124] Scanning <ROOT>/engine/render/mesh.cpp for CXX dependencies
+[42/124] Scanning <ROOT>/engine/render/environment.cpp for CXX dependencies
+[43/124] Scanning <ROOT>/engine/render/overlay.cpp for CXX dependencies
+[44/124] Generating CXX dyndep file CMakeFiles/ngen_render.dir/CXX.dd
+[45/124] Scanning <ROOT>/engine/render/scene.cpp for CXX dependencies
+[46/124] Scanning <ROOT>/engine/render/scene_draw.cpp for CXX dependencies
+[47/124] Building CXX object CMakeFiles/ngen_render.dir/engine/render/surface.cpp.o
+[48/124] Building CXX object CMakeFiles/ngen_render.dir/engine/render/presentation.cpp.o
+FAILED: [code=1] CMakeFiles/ngen_render.dir/engine/render/presentation.cpp.o
+/bin/clang++ -DFFI_STATIC_BUILD -DLIBXML_STATIC -DNGEN_COMPILED_SHADERS=1 -DNGEN_INSPECTOR_OVERLAY=1 -DVMA_VULKAN_VERSION=1003000 -DXML_STATIC -I<ROOT>/build/inspector-debug/shaders/a74054ff2801fef74e5b545bb7f32e95bee625065650cca5bd59651ff52bbc07 -I<ROOT>/engine -isystem <CONAN>/p/b/sdlee9e38e66a538/p/include -isystem <CONAN>/p/b/wayla064c9fb324c75/p/include -isystem <CONAN>/p/b/zlibe8292d90d105f/p/include -isystem <CONAN>/p/vulkabd7575518f65a/p/include -isystem <CONAN>/p/vulka5f8c9f361cfa0/p/include -isystem <CONAN>/p/vulkabd7575518f65a/p/res/vulkan/registry -m64 -stdlib=libstdc++ -g -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror -MD -MT CMakeFiles/ngen_render.dir/engine/render/presentation.cpp.o -MF CMakeFiles/ngen_render.dir/engine/render/presentation.cpp.o.d @CMakeFiles/ngen_render.dir/engine/render/presentation.cpp.o.modmap -o CMakeFiles/ngen_render.dir/engine/render/presentation.cpp.o -c <ROOT>/engine/render/presentation.cpp
+In file included from <ROOT>/engine/render/presentation.cpp:2:
+<ROOT>/engine/render/post.hpp:18:15: error: static assertion failed due to requirement 'sizeof(ngen::render::PostDraw) == 64'
+   18 | static_assert(sizeof(PostDraw) == 64 && offsetof(PostDraw, source) == 24 &&
+      |               ^~~~~~~~~~~~~~~~~~~~~~
+<ROOT>/engine/render/post.hpp:18:32: note: expression evaluates to '80 == 64'
+   18 | static_assert(sizeof(PostDraw) == 64 && offsetof(PostDraw, source) == 24 &&
+      |               ~~~~~~~~~~~~~~~~~^~~~~
+1 error generated.
+[49/124] Building CXX object CMakeFiles/ngen_render.dir/engine/render/context.cpp.o
+ninja: build stopped: subcommand failed.

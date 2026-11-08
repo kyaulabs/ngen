@@ -553,6 +553,276 @@ bool check_mesh(ngen::render::Context &context, const ngen::render::Buffer &read
         std::fputs("Vulkan resource: tracked mesh indexed/depth pixels differ\n", stderr);
         return false;
     }
+    std::array<shader::InstanceTransform, 2> instances{};
+    for (std::size_t i = 0; i < instances.size(); ++i) {
+        instances[i].model = instances[i].normalMatrix = identity;
+        instances[i].model.columns[0] = instances[i].model.columns[5] = .3F;
+        instances[i].model.columns[12] = i == 0 ? -.5F : .5F;
+        instances[i].normalMatrix.columns[0] = instances[i].normalMatrix.columns[5] = 1 / .3F;
+    }
+    auto instanced_draw = draws[0];
+    instanced_draw.instances = instances;
+    auto instanced_pass = pass;
+    instanced_pass.draws = std::span{&instanced_draw, 1};
+    const auto instanced = when_ready([&] { return context.draw_mesh(instanced_pass); });
+    if (failed(instanced, "tracked GPU instanced mesh"))
+        return false;
+    const auto instance_copy =
+        when_ready([&] { return context.copy_from_image({color, readback}); });
+    if (failed(instance_copy, "instanced mesh readback") ||
+        !wait_submission(context, std::get<Submission>(instance_copy)) ||
+        failed(readback.read(0, std::as_writable_bytes(std::span(actual))), "instanced pixels"))
+        return false;
+    if (pixel(4, 7) != std::array<std::uint16_t, 4>{0, 0x3c00, 0, 0x3c00} ||
+        pixel(12, 7) != std::array<std::uint16_t, 4>{0, 0x3c00, 0, 0x3c00} ||
+        pixel(8, 5) != std::array<std::uint16_t, 4>{0, 0, 0, 0x3c00}) {
+        std::fputs("Vulkan resource: per-instance model positions/count differ\n", stderr);
+        return false;
+    }
+    auto grid_color = image({{100, 100},
+                             VK_FORMAT_R16G16B16A16_SFLOAT,
+                             static_cast<VkImageUsageFlags>(VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT) |
+                                 VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_TRANSFER_SRC_BIT});
+    auto grid_depth =
+        image({{100, 100}, VK_FORMAT_D32_SFLOAT, VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT});
+    auto grid_shadow =
+        image({{100, 100},
+               VK_FORMAT_D32_SFLOAT,
+               static_cast<VkImageUsageFlags>(VK_IMAGE_USAGE_SAMPLED_BIT) |
+                   VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT | VK_IMAGE_USAGE_TRANSFER_SRC_BIT});
+    auto grid_readback = buffer(
+        {VkDeviceSize{100} * 100 * 8, VK_BUFFER_USAGE_TRANSFER_DST_BIT, MemoryAccess::readback});
+    std::array<shader::InstanceTransform, shader::instance_capacity> grid{};
+    for (std::size_t i = 0; i < grid.size(); ++i) {
+        grid[i].model = grid[i].normalMatrix = identity;
+        grid[i].model.columns[0] = .08F;
+        grid[i].model.columns[5] = i < 50 ? .08F : -.08F;
+        grid[i].model.columns[10] = i < 50 ? 1.0F : -1.0F;
+        const auto row = i / 10; // Integer grid row, not a fractional coordinate.
+        grid[i].model.columns[12] = -.9F + .2F * static_cast<float>(i % 10);
+        grid[i].model.columns[13] = -.9F + .2F * static_cast<float>(row);
+        grid[i].model.columns[14] = i < 50 ? 0.0F : .6F;
+        grid[i].normalMatrix.columns[0] = 1 / .08F;
+        grid[i].normalMatrix.columns[5] = i < 50 ? 1 / .08F : -1 / .08F;
+        grid[i].normalMatrix.columns[10] = i < 50 ? 1.0F : -1.0F;
+    }
+    instanced_draw.instances = grid;
+    const MeshPass grid_pass{vertex_buffer,
+                             index_buffer,
+                             grid_color,
+                             grid_depth,
+                             grid_shadow,
+                             environment,
+                             environment,
+                             white,
+                             {},
+                             std::span{&instanced_draw, 1},
+                             {},
+                             true};
+    std::array<std::uint16_t, std::size_t{100} * 100 * 4> grid_pixels{};
+    const auto read_grid = [&](const Image &source) {
+        const auto copied_grid =
+            when_ready([&] { return context.copy_from_image({source, grid_readback}); });
+        return !failed(copied_grid, "100 instance color readback") &&
+               wait_submission(context, std::get<Submission>(copied_grid)) &&
+               !failed(grid_readback.read(0, std::as_writable_bytes(std::span(grid_pixels))),
+                       "100 instance pixels");
+    };
+    const auto grid_pixels_ready = [&] {
+        const auto drawn = when_ready([&] { return context.draw_mesh(grid_pass); });
+        return !failed(drawn, "100 GPU instances") && read_grid(grid_color);
+    };
+    if (!grid_pixels_ready())
+        return false;
+    for (std::size_t i = 0; i < grid.size(); ++i) {
+        const auto at = ((i / 10 * 10 + 5) * 100 + i % 10 * 10 + 5) * 4;
+        if (grid_pixels[at] != 0 || grid_pixels[at + 1] != 0x3c00 || grid_pixels[at + 2] != 0) {
+            std::fputs("Vulkan resource: 100 shared-geometry instance positions/count differ\n",
+                       stderr);
+            return false;
+        }
+    }
+    const auto shadow_grid_copy =
+        when_ready([&] { return context.copy_from_image({grid_shadow, grid_readback}); });
+    std::array<float, std::size_t{100} * 100> grid_shadow_pixels{};
+    if (failed(shadow_grid_copy, "100 instance shadow readback") ||
+        !wait_submission(context, std::get<Submission>(shadow_grid_copy)) ||
+        failed(grid_readback.read(0, std::as_writable_bytes(std::span(grid_shadow_pixels))),
+               "100 instance shadow pixels"))
+        return false;
+    for (std::size_t i = 0; i < grid.size(); ++i) {
+        const auto at = (i / 10 * 10 + 5) * 100 + i % 10 * 10 + 5;
+        if (std::abs(grid_shadow_pixels[at] - .3F) > .0001F) {
+            std::fputs("Vulkan resource: instanced shadow positions/depth differ\n", stderr);
+            return false;
+        }
+    }
+    instanced_draw.material.emissiveAlphaCutoff = {0, 0, 0, .5F};
+    instanced_draw.frame.keyDirectionIntensity = {0, 0, -1, 1};
+    instanced_draw.frame.keyColor = {1, 1, 1, 0};
+    if (!grid_pixels_ready())
+        return false;
+    for (std::size_t i = 0; i < grid.size(); ++i) {
+        const auto at = ((i / 10 * 10 + 5) * 100 + i % 10 * 10 + 5) * 4;
+        if ((grid_pixels[at] != 0) != (i < 50)) {
+            std::fputs("Vulkan resource: per-instance inverse-transpose normals differ\n", stderr);
+            return false;
+        }
+    }
+    std::array<shader::InstanceTransform, shader::instance_capacity + 1> oversized_instances{};
+    instanced_draw.instances = oversized_instances;
+    auto rejected_instance = context.draw_mesh(grid_pass);
+    const auto *instance_failure = std::get_if<Failure>(&rejected_instance);
+    if (!instance_failure || instance_failure->message.find("instance count") == std::string::npos)
+        return false;
+    instanced_draw.instances = grid;
+    const auto saved_instance = grid[0];
+    grid[0].normalMatrix.columns[0] = std::numeric_limits<float>::quiet_NaN();
+    rejected_instance = context.draw_mesh(grid_pass);
+    instance_failure = std::get_if<Failure>(&rejected_instance);
+    if (!instance_failure || instance_failure->message != "mesh instance transforms must be finite")
+        return false;
+    grid[0] = saved_instance;
+    std::array<MeshDraw, 6> too_many_instances{};
+    too_many_instances.fill(instanced_draw);
+    auto frame_overflow = grid_pass;
+    frame_overflow.draws = too_many_instances;
+    rejected_instance = context.draw_mesh(frame_overflow);
+    instance_failure = std::get_if<Failure>(&rejected_instance);
+    if (!instance_failure || instance_failure->message.find("instance count") == std::string::npos)
+        return false;
+    {
+        Gate instance_gate(context);
+        auto held_grid = grid_pass;
+        held_grid.wait = {instance_gate.handle, 1};
+        instanced_draw.material.emissiveAlphaCutoff = {0, 1, 0, .5F};
+        instanced_draw.frame.keyDirectionIntensity[3] = 0;
+        const auto first_grid = context.draw_mesh(held_grid);
+        if (failed(first_grid, "gated instance snapshot"))
+            return false;
+        instance_gate.submitted = true;
+        instanced_draw.instances = {};
+        instanced_draw.material.emissiveAlphaCutoff = {1, 0, 0, .5F};
+        auto second_grid = pass;
+        second_grid.draws = std::span{&instanced_draw, 1};
+        second_grid.generate_shadow = true;
+        const auto second_snapshot = context.draw_mesh(second_grid);
+        if (failed(second_snapshot, "second instance snapshot"))
+            return false;
+        const auto busy_instances = context.draw_mesh(second_grid);
+        const auto *busy_instance = std::get_if<Failure>(&busy_instances);
+        if (!busy_instance || busy_instance->message != "transfer contexts are busy")
+            return false;
+        grid.fill({}); // Caller storage changes while both submissions remain gated.
+        if (!instance_gate.signal() ||
+            !wait_submission(context, std::get<Submission>(second_snapshot)))
+            return false;
+        instance_gate.retired = true;
+        if (!read_grid(grid_color) || !instance_gate.close())
+            return false;
+        for (std::size_t i = 0; i < grid.size(); ++i) {
+            const auto at = ((i / 10 * 10 + 5) * 100 + i % 10 * 10 + 5) * 4;
+            if (grid_pixels[at] != 0 || grid_pixels[at + 1] != 0x3c00) {
+                std::fputs("Vulkan resource: instance snapshot changed after submission\n", stderr);
+                return false;
+            }
+        }
+        const auto second_copy =
+            when_ready([&] { return context.copy_from_image({color, readback}); });
+        if (failed(second_copy, "second instance snapshot readback") ||
+            !wait_submission(context, std::get<Submission>(second_copy)) ||
+            failed(readback.read(0, std::as_writable_bytes(std::span(actual))),
+                   "second instance pixels") ||
+            pixel(12, 5) != std::array<std::uint16_t, 4>{0x3c00, 0, 0, 0x3c00})
+            return false;
+    }
+    grid_color = {};
+    grid_depth = {};
+    grid_shadow = {};
+    grid_readback = {};
+    std::puts("gpu_instanced_mesh=1 instance_count=100 instance_shared_geometry=1 "
+              "instance_normals=1 instance_shadow=1 instance_snapshot=1 instance_admission=1");
+    auto alternate_vertices = buffer(
+        {sizeof(shader::Vertex) * 3, VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, MemoryAccess::upload});
+    auto alternate_indices =
+        buffer({sizeof(std::uint32_t) * 3, VK_BUFFER_USAGE_INDEX_BUFFER_BIT, MemoryAccess::upload});
+    std::array<shader::Vertex, 3> alternate_data{};
+    for (std::size_t i = 0; i < alternate_data.size(); ++i)
+        alternate_data[i] = vertices[i];
+    alternate_data[0].position = {-.25F, -.8F, .1F};
+    alternate_data[1].position = {.25F, -.8F, .1F};
+    alternate_data[2].position = {0, .8F, .1F};
+    const std::array<std::uint32_t, 3> alternate_index_data{0, 1, 2};
+    if (failed(alternate_vertices.write(0, std::as_bytes(std::span(alternate_data))),
+               "alternate vertices") ||
+        failed(alternate_indices.write(0, std::as_bytes(std::span(alternate_index_data))),
+               "alternate indices"))
+        return false;
+    auto alternate_draw = draws[0];
+    alternate_draw.vertices = &alternate_vertices;
+    alternate_draw.indices = &alternate_indices;
+    alternate_draw.first_index = 0;
+    alternate_draw.vertex_offset = 0;
+    alternate_draw.material.emissiveAlphaCutoff = {0, 0, 1, .5F};
+    const std::array mixed_draws{draws[1], alternate_draw, draws[0]};
+    auto alternate_pass = pass;
+    alternate_pass.draws = mixed_draws;
+    const auto alternate = when_ready([&] { return context.draw_mesh(alternate_pass); });
+    if (failed(alternate, "mixed geometry draw"))
+        return false;
+    const auto alternate_copy =
+        when_ready([&] { return context.copy_from_image({color, readback}); });
+    if (failed(alternate_copy, "mixed geometry readback") ||
+        !wait_submission(context, std::get<Submission>(alternate_copy)) ||
+        failed(readback.read(0, std::as_writable_bytes(std::span(actual))),
+               "mixed geometry pixels") ||
+        pixel(3, 5) != std::array<std::uint16_t, 4>{0x3c00, 0, 0, 0x3c00} ||
+        pixel(8, 5) != std::array<std::uint16_t, 4>{0, 0, 0x3c00, 0x3c00} ||
+        pixel(12, 5) != std::array<std::uint16_t, 4>{0, 0x3c00, 0, 0x3c00}) {
+        std::fputs("Vulkan resource: per-draw geometry override was not drawn\n", stderr);
+        return false;
+    }
+    auto missing_pair = alternate_draw;
+    missing_pair.indices = nullptr;
+    auto invalid_pair = pass;
+    invalid_pair.draws = std::span{&missing_pair, 1};
+    if (!std::holds_alternative<Failure>(context.draw_mesh(invalid_pair)))
+        return false;
+    const auto geometry_baseline = context.resource_statistics();
+    if (failed(geometry_baseline, "mixed geometry baseline"))
+        return false;
+    {
+        Gate geometry_gate(context);
+        auto held_geometry = alternate_pass;
+        held_geometry.wait = {geometry_gate.handle, 1};
+        held_geometry.generate_shadow = true;
+        const auto held_override = context.draw_mesh(held_geometry);
+        if (failed(held_override, "gated geometry override"))
+            return false;
+        geometry_gate.submitted = true;
+        alternate_vertices = {};
+        alternate_indices = {};
+        const auto held_statistics = context.resource_statistics();
+        if (failed(held_statistics, "held geometry statistics"))
+            return false;
+        const auto &held = std::get<ResourceStatistics>(held_statistics);
+        const auto &before = std::get<ResourceStatistics>(geometry_baseline);
+        if (held.retiring != 2 || held.live + 2 != before.live ||
+            held.allocation_bytes != before.allocation_bytes) {
+            std::fputs("Vulkan resource: geometry overrides retired before completion\n", stderr);
+            return false;
+        }
+        if (!geometry_gate.signal() ||
+            !wait_submission(context, std::get<Submission>(held_override)))
+            return false;
+        geometry_gate.retired = true;
+        const auto completed_geometry = context.resource_statistics();
+        if (failed(completed_geometry, "completed geometry statistics") ||
+            std::get<ResourceStatistics>(completed_geometry).retiring != 0 ||
+            !geometry_gate.close())
+            return false;
+    }
+    std::puts("mesh_geometry_override=1 geometry_switch_restored=1 override_retirement=1");
     auto shadow_pass = pass;
     shadow_pass.generate_shadow = true;
     for (auto &draw : draws) {
@@ -776,6 +1046,10 @@ bool check_mesh(ngen::render::Context &context, const ngen::render::Buffer &read
     const auto complete = context.submission_complete(last);
     if (failed(complete, "pending mesh completion") || std::get<bool>(complete))
         return false;
+    const auto pending_timing = context.submission_timings(last);
+    if (failed(pending_timing, "pending GPU timing") ||
+        std::get<std::optional<GpuTimings>>(pending_timing).has_value())
+        return false;
     vertex_buffer = {};
     index_buffer = {};
     white = {};
@@ -794,6 +1068,19 @@ bool check_mesh(ngen::render::Context &context, const ngen::render::Buffer &read
     if (!gate.signal() || !wait_submission(context, last))
         return false;
     gate.retired = true;
+    const auto measured = context.submission_timings(last);
+    if (failed(measured, "completed GPU timing"))
+        return false;
+    if (context.gpu_timings_available()) {
+        const auto &timing = std::get<std::optional<GpuTimings>>(measured);
+        if (!timing || timing->shadow_ns <= 0 || timing->pbr_ns <= 0 || timing->post_ns != 0) {
+            std::fputs("Vulkan resource: completed shadow/PBR GPU timing differs\n", stderr);
+            return false;
+        }
+        std::puts("gpu_timestamp_pending=1 gpu_shadow_pbr_timing=1 gpu_timeline_completion=1");
+    }
+    if (!std::holds_alternative<Failure>(context.submission_timings(Submission{})))
+        return false;
     const auto retired_result = context.resource_statistics();
     if (failed(retired_result, "mesh reclaimed ownership"))
         return false;
@@ -918,6 +1205,112 @@ bool check_post(ngen::render::Context &context, const ngen::render::Buffer &read
               "graphics_retirement=1");
     return true;
 }
+bool check_bloom(ngen::render::Context &context, const ngen::render::Buffer &readback) {
+    using namespace ngen::render;
+    constexpr std::size_t side = 16;
+    auto source_created =
+        context.create_image({{side, side},
+                              VK_FORMAT_R16G16B16A16_SFLOAT,
+                              static_cast<VkImageUsageFlags>(VK_IMAGE_USAGE_TRANSFER_DST_BIT) |
+                                  VK_IMAGE_USAGE_SAMPLED_BIT});
+    auto target_created =
+        context.create_image({{side, side},
+                              VK_FORMAT_R8G8B8A8_UNORM,
+                              static_cast<VkImageUsageFlags>(VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT) |
+                                  VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_TRANSFER_SRC_BIT});
+    if (failed(source_created, "bloom source") || failed(target_created, "bloom target"))
+        return false;
+    auto source = std::get<Image>(std::move(source_created));
+    auto target = std::get<Image>(std::move(target_created));
+    std::array<std::uint16_t, side * side * 4> pixels{};
+    for (std::size_t pixel = 0; pixel < side * side; ++pixel)
+        pixels[pixel * 4 + 3] = 0x3c00;
+    pixels[(8 * side + 8) * 4] = 0x4c00;     // One linear HDR red texel at radiance 16.
+    pixels[(8 * side + 8) * 4 + 2] = 0x3c00; // Blue is exactly at threshold: no blue halo.
+    auto staging_created = context.create_buffer(
+        {sizeof(pixels), VK_BUFFER_USAGE_TRANSFER_SRC_BIT, MemoryAccess::upload});
+    if (failed(staging_created, "bloom upload allocation"))
+        return false;
+    auto staging = std::get<Buffer>(std::move(staging_created));
+    if (failed(staging.write(0, std::as_bytes(std::span(pixels))), "bloom staging") ||
+        failed(context.copy_to_image({staging, source}), "bloom source upload"))
+        return false;
+    std::array<std::array<std::byte, side * side * 4>, 3> results{};
+    for (std::size_t mode = 0; mode < 3; ++mode) {
+        if (failed(
+                when_ready([&] {
+                    return context.post_process(
+                        {source, target, mode == 2 ? .5F : 1, false, {}, nullptr, mode ? .1F : 0});
+                }),
+                "bloom draw"))
+            return false;
+        const auto copied = when_ready([&] { return context.copy_from_image({target, readback}); });
+        if (failed(copied, "bloom readback") ||
+            !wait_submission(context, std::get<Submission>(copied)) ||
+            failed(readback.read(0, results[mode]), "bloom pixels"))
+            return false;
+    }
+    constexpr auto neighbor = (8 * side + 9) * 4;
+    if (results[0][neighbor] != std::byte{0} || results[1][neighbor] == std::byte{0}) {
+        std::fputs(
+            "Vulkan resource: enabled bloom did not spread HDR radiance into dark neighbors\n",
+            stderr);
+        return false;
+    }
+    // Independent closed form: the adjacent output has one nonzero bilinear
+    // Gaussian tap. Its tent reconstruction is 8/13, and normalized tap masses
+    // are 117/370 and 42/185. Thresholding precedes exposure and tone mapping.
+    const auto radiance = (16.0F * (8.0F / 13) - 1) * (117.0F / 370) * (42.0F / 185) * .1F;
+    const auto mapped =
+        (radiance * (2.51F * radiance + .03F)) / (radiance * (2.43F * radiance + .59F) + .14F);
+    const auto expected = static_cast<int>(std::lround(mapped * 255));
+    for (const auto at : {neighbor, (8 * side + 7) * 4, (7 * side + 8) * 4, (9 * side + 8) * 4})
+        if (std::abs(std::to_integer<int>(results[1][at]) - expected) > 1 ||
+            results[1][at + 1] != std::byte{0} || results[1][at + 2] != std::byte{0}) {
+            std::fputs("Vulkan resource: Gaussian bloom radiance/threshold/symmetry differs\n",
+                       stderr);
+            return false;
+        }
+    if (results[1][(8 * side + 13) * 4] != std::byte{0})
+        return false;
+    const auto half = radiance * .5F;
+    const auto half_mapped = (half * (2.51F * half + .03F)) / (half * (2.43F * half + .59F) + .14F);
+    if (std::abs(std::to_integer<int>(results[2][neighbor]) -
+                 static_cast<int>(std::lround(half_mapped * 255))) > 1)
+        return false;
+    auto srgb_created =
+        context.create_image({{side, side},
+                              VK_FORMAT_R8G8B8A8_SRGB,
+                              static_cast<VkImageUsageFlags>(VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT) |
+                                  VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_TRANSFER_SRC_BIT});
+    if (failed(srgb_created, "bloom sRGB target"))
+        return false;
+    auto srgb = std::get<Image>(std::move(srgb_created));
+    if (failed(when_ready([&] {
+                   return context.post_process({source, srgb, .5F, false, {}, nullptr, .1F});
+               }),
+               "bloom sRGB draw"))
+        return false;
+    const auto srgb_copy = when_ready([&] { return context.copy_from_image({srgb, readback}); });
+    if (failed(srgb_copy, "bloom sRGB readback") ||
+        !wait_submission(context, std::get<Submission>(srgb_copy)) ||
+        failed(readback.read(0, results[2]), "bloom sRGB pixels"))
+        return false;
+    const auto encoded = half_mapped <= .0031308F
+                             ? 12.92F * half_mapped
+                             : 1.055F * std::pow(half_mapped, 1.0F / 2.4F) - .055F;
+    if (std::abs(std::to_integer<int>(results[2][neighbor]) -
+                 static_cast<int>(std::lround(encoded * 255))) > 1)
+        return false;
+    for (const auto value : {-.1F, .251F, std::numeric_limits<float>::infinity(),
+                             std::numeric_limits<float>::quiet_NaN()})
+        if (!std::holds_alternative<Failure>(
+                context.post_process({source, target, 1, false, {}, nullptr, value})))
+            return false;
+    std::puts("bloom_hdr_spread=1 bloom_disabled_identity=1 bloom_gaussian=1 bloom_threshold=1 "
+              "bloom_bounded_support=1 bloom_admission=1 bloom_linear_exposure=1 bloom_srgb=1");
+    return true;
+}
 bool check_fxaa(ngen::render::Context &context, const ngen::render::Buffer &readback) {
     auto source_created =
         context.create_image({{8, 8},
@@ -1034,11 +1427,18 @@ bool check_image_presentation(ngen::render::Context &context) {
         if (!external.close())
             return false;
     }
+    for (const auto value : {-.1F, .251F, std::numeric_limits<float>::infinity(),
+                             std::numeric_limits<float>::quiet_NaN()})
+        if (!std::holds_alternative<ngen::render::Failure>(
+                context.render_frame({source, 1, false, nullptr, value}))) {
+            std::fputs("Vulkan resource: WSI bloom admission accepted invalid strength\n", stderr);
+            return false;
+        }
     const auto start = SDL_GetTicks();
     ngen::render::Submission graphics;
     for (;;) {
         SDL_PumpEvents();
-        const auto frame = context.render_frame({source, 1, false});
+        const auto frame = context.render_frame({source, 1, false, nullptr, .1F});
         if (failed(frame, "tracked image presentation"))
             return false;
         const auto &result = std::get<ngen::render::FrameResult>(frame);
@@ -1065,13 +1465,13 @@ bool check_image_presentation(ngen::render::Context &context) {
         std::get<ngen::render::ResourceStatistics>(statistics).retiring != 0)
         return false;
     std::puts("sampled_image_presentation=1 wsi_resource_timeline=1 wsi_source_retirement=1 "
-              "unresolved_dependency_rejected=1");
+              "unresolved_dependency_rejected=1 wsi_bloom_admission=1 wsi_bloom_queued=1");
     return true;
 }
 #endif
 } // namespace
 int main() try {
-    auto creation = ngen::render::Context::create({true, false, true});
+    auto creation = ngen::render::Context::create({true, false, true, true});
     if (const auto *failure = std::get_if<ngen::render::Failure>(&creation)) {
         std::fprintf(stderr, "Vulkan resource startup: %s\n", failure->message.c_str());
         return 1;
@@ -1185,8 +1585,8 @@ int main() try {
         return 1;
     }
 #if defined(NGEN_POST_TESTS)
-    if (!check_post(*context, readback) || !check_fxaa(*context, readback) ||
-        !check_image_presentation(*context))
+    if (!check_post(*context, readback) || !check_bloom(*context, readback) ||
+        !check_fxaa(*context, readback) || !check_image_presentation(*context))
         return 1;
 #endif
     if (!check_mip_chain(*context, readback) || !check_hdr(*context, readback) ||

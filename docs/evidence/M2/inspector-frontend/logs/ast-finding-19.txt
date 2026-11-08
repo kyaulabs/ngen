@@ -1,0 +1,10 @@
+34 warnings generated.
+<ROOT>/engine/render/overlay.cpp:116:53: error: enum value of type 'VkSampleCountFlagBits' initialized with invalid value of 0, enum doesn't have a zero-value enumerator [bugprone-invalid-enum-default-initialization,-warnings-as-errors]
+  116 |         VkPipelineMultisampleStateCreateInfo samples{};
+      |                                                     ^
+<CONAN>/p/vulkabd7575518f65a/p/include/vulkan/vulkan_core.h:2375:14: note: enum is defined here
+ 2375 | typedef enum VkSampleCountFlagBits {
+      |              ^
+Suppressed 33 warnings (33 in non-user code).
+Use -header-filter=.* or leave it as default to display errors from all non-system headers. Use -system-headers to display errors from system headers as well.
+1 warning treated as error

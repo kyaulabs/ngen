@@ -1,0 +1,618 @@
+[
+  {
+    "configuration": "scene-debug",
+    "directory": "$REPO/build/scene-debug",
+    "command": "/bin/clang++ -I$REPO/engine -m64 -stdlib=libstdc++ -g -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror @CMakeFiles/shader_contract_layout.dir/tests/shader_layout.cpp.o.modmap -o CMakeFiles/shader_contract_layout.dir/tests/shader_layout.cpp.o -c $REPO/tests/shader_layout.cpp",
+    "file": "$REPO/tests/shader_layout.cpp",
+    "output": "$REPO/build/scene-debug/CMakeFiles/shader_contract_layout.dir/tests/shader_layout.cpp.o"
+  },
+  {
+    "configuration": "scene-debug",
+    "directory": "$REPO/build/scene-debug",
+    "command": "/bin/clang++ -DFFI_STATIC_BUILD -DLIBXML_STATIC -DNGEN_COMPILED_SHADERS=1 -DVMA_VULKAN_VERSION=1003000 -DXML_STATIC -I$REPO/build/scene-debug/shaders/3b8cd44a089f5bcf3f392fc4087267fe467dd39c968c4585823e2a40ae40eab6 -I$REPO/engine -isystem $CONAN_HOME/p/b/sdlee9e38e66a538/p/include -isystem $CONAN_HOME/p/b/wayla064c9fb324c75/p/include -isystem $CONAN_HOME/p/b/zlibe8292d90d105f/p/include -isystem $CONAN_HOME/p/vulkabd7575518f65a/p/include -isystem $CONAN_HOME/p/vulka5f8c9f361cfa0/p/include -isystem $CONAN_HOME/p/vulkabd7575518f65a/p/res/vulkan/registry -m64 -stdlib=libstdc++ -g -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror @CMakeFiles/ngen_render.dir/engine/render/context.cpp.o.modmap -o CMakeFiles/ngen_render.dir/engine/render/context.cpp.o -c $REPO/engine/render/context.cpp",
+    "file": "$REPO/engine/render/context.cpp",
+    "output": "$REPO/build/scene-debug/CMakeFiles/ngen_render.dir/engine/render/context.cpp.o"
+  },
+  {
+    "configuration": "scene-debug",
+    "directory": "$REPO/build/scene-debug",
+    "command": "/bin/clang++ -DFFI_STATIC_BUILD -DLIBXML_STATIC -DNGEN_COMPILED_SHADERS=1 -DVMA_VULKAN_VERSION=1003000 -DXML_STATIC -I$REPO/build/scene-debug/shaders/3b8cd44a089f5bcf3f392fc4087267fe467dd39c968c4585823e2a40ae40eab6 -I$REPO/engine -isystem $CONAN_HOME/p/b/sdlee9e38e66a538/p/include -isystem $CONAN_HOME/p/b/wayla064c9fb324c75/p/include -isystem $CONAN_HOME/p/b/zlibe8292d90d105f/p/include -isystem $CONAN_HOME/p/vulkabd7575518f65a/p/include -isystem $CONAN_HOME/p/vulka5f8c9f361cfa0/p/include -isystem $CONAN_HOME/p/vulkabd7575518f65a/p/res/vulkan/registry -m64 -stdlib=libstdc++ -g -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror @CMakeFiles/ngen_render.dir/engine/render/presentation.cpp.o.modmap -o CMakeFiles/ngen_render.dir/engine/render/presentation.cpp.o -c $REPO/engine/render/presentation.cpp",
+    "file": "$REPO/engine/render/presentation.cpp",
+    "output": "$REPO/build/scene-debug/CMakeFiles/ngen_render.dir/engine/render/presentation.cpp.o"
+  },
+  {
+    "configuration": "scene-debug",
+    "directory": "$REPO/build/scene-debug",
+    "command": "/bin/clang++ -DFFI_STATIC_BUILD -DLIBXML_STATIC -DNGEN_COMPILED_SHADERS=1 -DVMA_VULKAN_VERSION=1003000 -DXML_STATIC -I$REPO/build/scene-debug/shaders/3b8cd44a089f5bcf3f392fc4087267fe467dd39c968c4585823e2a40ae40eab6 -I$REPO/engine -isystem $CONAN_HOME/p/b/sdlee9e38e66a538/p/include -isystem $CONAN_HOME/p/b/wayla064c9fb324c75/p/include -isystem $CONAN_HOME/p/b/zlibe8292d90d105f/p/include -isystem $CONAN_HOME/p/vulkabd7575518f65a/p/include -isystem $CONAN_HOME/p/vulka5f8c9f361cfa0/p/include -isystem $CONAN_HOME/p/vulkabd7575518f65a/p/res/vulkan/registry -m64 -stdlib=libstdc++ -g -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror @CMakeFiles/ngen_render.dir/engine/render/resources.cpp.o.modmap -o CMakeFiles/ngen_render.dir/engine/render/resources.cpp.o -c $REPO/engine/render/resources.cpp",
+    "file": "$REPO/engine/render/resources.cpp",
+    "output": "$REPO/build/scene-debug/CMakeFiles/ngen_render.dir/engine/render/resources.cpp.o"
+  },
+  {
+    "configuration": "scene-debug",
+    "directory": "$REPO/build/scene-debug",
+    "command": "/bin/clang++ -DFFI_STATIC_BUILD -DLIBXML_STATIC -DNGEN_COMPILED_SHADERS=1 -DVMA_VULKAN_VERSION=1003000 -DXML_STATIC -I$REPO/build/scene-debug/shaders/3b8cd44a089f5bcf3f392fc4087267fe467dd39c968c4585823e2a40ae40eab6 -I$REPO/engine -isystem $CONAN_HOME/p/b/sdlee9e38e66a538/p/include -isystem $CONAN_HOME/p/b/wayla064c9fb324c75/p/include -isystem $CONAN_HOME/p/b/zlibe8292d90d105f/p/include -isystem $CONAN_HOME/p/vulkabd7575518f65a/p/include -isystem $CONAN_HOME/p/vulka5f8c9f361cfa0/p/include -isystem $CONAN_HOME/p/vulkabd7575518f65a/p/res/vulkan/registry -m64 -stdlib=libstdc++ -g -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror @CMakeFiles/ngen_render.dir/engine/render/post.cpp.o.modmap -o CMakeFiles/ngen_render.dir/engine/render/post.cpp.o -c $REPO/engine/render/post.cpp",
+    "file": "$REPO/engine/render/post.cpp",
+    "output": "$REPO/build/scene-debug/CMakeFiles/ngen_render.dir/engine/render/post.cpp.o"
+  },
+  {
+    "configuration": "scene-debug",
+    "directory": "$REPO/build/scene-debug",
+    "command": "/bin/clang++ -DFFI_STATIC_BUILD -DLIBXML_STATIC -DNGEN_COMPILED_SHADERS=1 -DVMA_VULKAN_VERSION=1003000 -DXML_STATIC -I$REPO/build/scene-debug/shaders/3b8cd44a089f5bcf3f392fc4087267fe467dd39c968c4585823e2a40ae40eab6 -I$REPO/engine -isystem $CONAN_HOME/p/b/sdlee9e38e66a538/p/include -isystem $CONAN_HOME/p/b/wayla064c9fb324c75/p/include -isystem $CONAN_HOME/p/b/zlibe8292d90d105f/p/include -isystem $CONAN_HOME/p/vulkabd7575518f65a/p/include -isystem $CONAN_HOME/p/vulka5f8c9f361cfa0/p/include -isystem $CONAN_HOME/p/vulkabd7575518f65a/p/res/vulkan/registry -m64 -stdlib=libstdc++ -g -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror @CMakeFiles/ngen_render.dir/engine/render/mesh.cpp.o.modmap -o CMakeFiles/ngen_render.dir/engine/render/mesh.cpp.o -c $REPO/engine/render/mesh.cpp",
+    "file": "$REPO/engine/render/mesh.cpp",
+    "output": "$REPO/build/scene-debug/CMakeFiles/ngen_render.dir/engine/render/mesh.cpp.o"
+  },
+  {
+    "configuration": "scene-debug",
+    "directory": "$REPO/build/scene-debug",
+    "command": "/bin/clang++ -DFFI_STATIC_BUILD -DLIBXML_STATIC -DNGEN_COMPILED_SHADERS=1 -DVMA_VULKAN_VERSION=1003000 -DXML_STATIC -I$REPO/build/scene-debug/shaders/3b8cd44a089f5bcf3f392fc4087267fe467dd39c968c4585823e2a40ae40eab6 -I$REPO/engine -isystem $CONAN_HOME/p/b/sdlee9e38e66a538/p/include -isystem $CONAN_HOME/p/b/wayla064c9fb324c75/p/include -isystem $CONAN_HOME/p/b/zlibe8292d90d105f/p/include -isystem $CONAN_HOME/p/vulkabd7575518f65a/p/include -isystem $CONAN_HOME/p/vulka5f8c9f361cfa0/p/include -isystem $CONAN_HOME/p/vulkabd7575518f65a/p/res/vulkan/registry -m64 -stdlib=libstdc++ -g -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror @CMakeFiles/ngen_render.dir/engine/render/environment.cpp.o.modmap -o CMakeFiles/ngen_render.dir/engine/render/environment.cpp.o -c $REPO/engine/render/environment.cpp",
+    "file": "$REPO/engine/render/environment.cpp",
+    "output": "$REPO/build/scene-debug/CMakeFiles/ngen_render.dir/engine/render/environment.cpp.o"
+  },
+  {
+    "configuration": "scene-debug",
+    "directory": "$REPO/build/scene-debug",
+    "command": "/bin/clang++ -DFFI_STATIC_BUILD -DLIBXML_STATIC -DXML_STATIC -I$REPO/apps -I$REPO/engine -isystem $CONAN_HOME/p/b/sdlee9e38e66a538/p/include -isystem $CONAN_HOME/p/b/wayla064c9fb324c75/p/include -isystem $CONAN_HOME/p/b/zlibe8292d90d105f/p/include -isystem $CONAN_HOME/p/vulkabd7575518f65a/p/include -m64 -stdlib=libstdc++ -g -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror @CMakeFiles/ngen_probe_support.dir/apps/probe/presentation.cpp.o.modmap -o CMakeFiles/ngen_probe_support.dir/apps/probe/presentation.cpp.o -c $REPO/apps/probe/presentation.cpp",
+    "file": "$REPO/apps/probe/presentation.cpp",
+    "output": "$REPO/build/scene-debug/CMakeFiles/ngen_probe_support.dir/apps/probe/presentation.cpp.o"
+  },
+  {
+    "configuration": "scene-debug",
+    "directory": "$REPO/build/scene-debug",
+    "command": "/bin/clang++ -DFFI_STATIC_BUILD -DLIBXML_STATIC -DXML_STATIC -I$REPO/apps -I$REPO/engine -isystem $CONAN_HOME/p/b/sdlee9e38e66a538/p/include -isystem $CONAN_HOME/p/b/wayla064c9fb324c75/p/include -isystem $CONAN_HOME/p/b/zlibe8292d90d105f/p/include -isystem $CONAN_HOME/p/vulkabd7575518f65a/p/include -m64 -stdlib=libstdc++ -g -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror @CMakeFiles/ngen_probe_support.dir/apps/probe/capture.cpp.o.modmap -o CMakeFiles/ngen_probe_support.dir/apps/probe/capture.cpp.o -c $REPO/apps/probe/capture.cpp",
+    "file": "$REPO/apps/probe/capture.cpp",
+    "output": "$REPO/build/scene-debug/CMakeFiles/ngen_probe_support.dir/apps/probe/capture.cpp.o"
+  },
+  {
+    "configuration": "scene-debug",
+    "directory": "$REPO/build/scene-debug",
+    "command": "/bin/clang++ -DFFI_STATIC_BUILD -DLIBXML_STATIC -DXML_STATIC -I$REPO/apps -I$REPO/engine -isystem $CONAN_HOME/p/b/sdlee9e38e66a538/p/include -isystem $CONAN_HOME/p/b/wayla064c9fb324c75/p/include -isystem $CONAN_HOME/p/b/zlibe8292d90d105f/p/include -isystem $CONAN_HOME/p/vulkabd7575518f65a/p/include -m64 -stdlib=libstdc++ -g -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror @CMakeFiles/render_probe.dir/apps/render_probe/main.cpp.o.modmap -o CMakeFiles/render_probe.dir/apps/render_probe/main.cpp.o -c $REPO/apps/render_probe/main.cpp",
+    "file": "$REPO/apps/render_probe/main.cpp",
+    "output": "$REPO/build/scene-debug/CMakeFiles/render_probe.dir/apps/render_probe/main.cpp.o"
+  },
+  {
+    "configuration": "scene-debug",
+    "directory": "$REPO/build/scene-debug",
+    "command": "/bin/clang++ -DFFI_STATIC_BUILD -DLIBXML_STATIC -DNGEN_POST_TESTS=1 -DXML_STATIC -I$REPO/apps -I$REPO/engine -isystem $CONAN_HOME/p/b/sdlee9e38e66a538/p/include -isystem $CONAN_HOME/p/b/wayla064c9fb324c75/p/include -isystem $CONAN_HOME/p/b/zlibe8292d90d105f/p/include -isystem $CONAN_HOME/p/vulkabd7575518f65a/p/include -m64 -stdlib=libstdc++ -g -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror @CMakeFiles/resource_probe.dir/apps/resource_probe/main.cpp.o.modmap -o CMakeFiles/resource_probe.dir/apps/resource_probe/main.cpp.o -c $REPO/apps/resource_probe/main.cpp",
+    "file": "$REPO/apps/resource_probe/main.cpp",
+    "output": "$REPO/build/scene-debug/CMakeFiles/resource_probe.dir/apps/resource_probe/main.cpp.o"
+  },
+  {
+    "configuration": "scene-debug",
+    "directory": "$REPO/build/scene-debug",
+    "command": "/bin/clang++ -DFFI_STATIC_BUILD -DLIBXML_STATIC -DXML_STATIC -I$REPO/engine -isystem $CONAN_HOME/p/b/sdlee9e38e66a538/p/include -isystem $CONAN_HOME/p/b/wayla064c9fb324c75/p/include -isystem $CONAN_HOME/p/b/zlibe8292d90d105f/p/include -isystem $CONAN_HOME/p/vulkabd7575518f65a/p/include -m64 -stdlib=libstdc++ -g -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror @CMakeFiles/ngen_scene.dir/engine/render/scene.cpp.o.modmap -o CMakeFiles/ngen_scene.dir/engine/render/scene.cpp.o -c $REPO/engine/render/scene.cpp",
+    "file": "$REPO/engine/render/scene.cpp",
+    "output": "$REPO/build/scene-debug/CMakeFiles/ngen_scene.dir/engine/render/scene.cpp.o"
+  },
+  {
+    "configuration": "scene-debug",
+    "directory": "$REPO/build/scene-debug",
+    "command": "/bin/clang++ -DFFI_STATIC_BUILD -DLIBXML_STATIC -DXML_STATIC -I$REPO/engine -isystem $CONAN_HOME/p/b/sdlee9e38e66a538/p/include -isystem $CONAN_HOME/p/b/wayla064c9fb324c75/p/include -isystem $CONAN_HOME/p/b/zlibe8292d90d105f/p/include -isystem $CONAN_HOME/p/vulkabd7575518f65a/p/include -m64 -stdlib=libstdc++ -g -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror @CMakeFiles/ngen_scene.dir/engine/render/scene_draw.cpp.o.modmap -o CMakeFiles/ngen_scene.dir/engine/render/scene_draw.cpp.o -c $REPO/engine/render/scene_draw.cpp",
+    "file": "$REPO/engine/render/scene_draw.cpp",
+    "output": "$REPO/build/scene-debug/CMakeFiles/ngen_scene.dir/engine/render/scene_draw.cpp.o"
+  },
+  {
+    "configuration": "scene-debug",
+    "directory": "$REPO/build/scene-debug",
+    "command": "/bin/clang++ -DFFI_STATIC_BUILD -DLIBXML_STATIC -DXML_STATIC -I$REPO/apps -I$REPO/engine -isystem $CONAN_HOME/p/b/sdlee9e38e66a538/p/include -isystem $CONAN_HOME/p/b/wayla064c9fb324c75/p/include -isystem $CONAN_HOME/p/b/zlibe8292d90d105f/p/include -isystem $CONAN_HOME/p/vulkabd7575518f65a/p/include -m64 -stdlib=libstdc++ -g -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror @CMakeFiles/scene_workload_fixture.dir/apps/scene_workload/fixture.cpp.o.modmap -o CMakeFiles/scene_workload_fixture.dir/apps/scene_workload/fixture.cpp.o -c $REPO/apps/scene_workload/fixture.cpp",
+    "file": "$REPO/apps/scene_workload/fixture.cpp",
+    "output": "$REPO/build/scene-debug/CMakeFiles/scene_workload_fixture.dir/apps/scene_workload/fixture.cpp.o"
+  },
+  {
+    "configuration": "scene-debug",
+    "directory": "$REPO/build/scene-debug",
+    "command": "/bin/clang++ -DFFI_STATIC_BUILD -DLIBXML_STATIC -DNGEN_ALLOCATION_PROBE=1 -DXML_STATIC -I$REPO/apps -I$REPO/engine -isystem $CONAN_HOME/p/b/sdlee9e38e66a538/p/include -isystem $CONAN_HOME/p/b/wayla064c9fb324c75/p/include -isystem $CONAN_HOME/p/b/zlibe8292d90d105f/p/include -isystem $CONAN_HOME/p/vulkabd7575518f65a/p/include -m64 -stdlib=libstdc++ -g -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror @CMakeFiles/scene_workload.dir/apps/scene_workload/main.cpp.o.modmap -o CMakeFiles/scene_workload.dir/apps/scene_workload/main.cpp.o -c $REPO/apps/scene_workload/main.cpp",
+    "file": "$REPO/apps/scene_workload/main.cpp",
+    "output": "$REPO/build/scene-debug/CMakeFiles/scene_workload.dir/apps/scene_workload/main.cpp.o"
+  },
+  {
+    "configuration": "scene-debug",
+    "directory": "$REPO/build/scene-debug",
+    "command": "/bin/clang++ -DFFI_STATIC_BUILD -DLIBXML_STATIC -DNGEN_ALLOCATION_PROBE=1 -DXML_STATIC -I$REPO/apps -I$REPO/engine -isystem $CONAN_HOME/p/b/sdlee9e38e66a538/p/include -isystem $CONAN_HOME/p/b/wayla064c9fb324c75/p/include -isystem $CONAN_HOME/p/b/zlibe8292d90d105f/p/include -isystem $CONAN_HOME/p/vulkabd7575518f65a/p/include -m64 -stdlib=libstdc++ -g -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror @CMakeFiles/scene_workload.dir/apps/scene_workload/allocations.cpp.o.modmap -o CMakeFiles/scene_workload.dir/apps/scene_workload/allocations.cpp.o -c $REPO/apps/scene_workload/allocations.cpp",
+    "file": "$REPO/apps/scene_workload/allocations.cpp",
+    "output": "$REPO/build/scene-debug/CMakeFiles/scene_workload.dir/apps/scene_workload/allocations.cpp.o"
+  },
+  {
+    "configuration": "scene-debug",
+    "directory": "$REPO/build/scene-debug",
+    "command": "/bin/clang++ -DFFI_STATIC_BUILD -DLIBXML_STATIC -DNGEN_TEST_FIXTURES=\\\"$REPO/tests/fixtures\\\" -DXML_STATIC -I$REPO/tests -I$REPO/engine -I$REPO/apps -isystem $CONAN_HOME/p/b/sdlee9e38e66a538/p/include -isystem $CONAN_HOME/p/b/wayla064c9fb324c75/p/include -isystem $CONAN_HOME/p/b/zlibe8292d90d105f/p/include -isystem $CONAN_HOME/p/vulkabd7575518f65a/p/include -m64 -stdlib=libstdc++ -g -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror @CMakeFiles/scene_probe.dir/apps/scene_probe/main.cpp.o.modmap -o CMakeFiles/scene_probe.dir/apps/scene_probe/main.cpp.o -c $REPO/apps/scene_probe/main.cpp",
+    "file": "$REPO/apps/scene_probe/main.cpp",
+    "output": "$REPO/build/scene-debug/CMakeFiles/scene_probe.dir/apps/scene_probe/main.cpp.o"
+  },
+  {
+    "configuration": "scene-debug",
+    "directory": "$REPO/build/scene-debug",
+    "command": "/bin/clang++ -DFFI_STATIC_BUILD -DLIBXML_STATIC -DNGEN_TEST_FIXTURES=\\\"$REPO/tests/fixtures\\\" -DXML_STATIC -I$REPO/tests -I$REPO/engine -I$REPO/apps -isystem $CONAN_HOME/p/b/sdlee9e38e66a538/p/include -isystem $CONAN_HOME/p/b/wayla064c9fb324c75/p/include -isystem $CONAN_HOME/p/b/zlibe8292d90d105f/p/include -isystem $CONAN_HOME/p/vulkabd7575518f65a/p/include -m64 -stdlib=libstdc++ -g -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror @CMakeFiles/scene_probe.dir/apps/scene_probe/draw.cpp.o.modmap -o CMakeFiles/scene_probe.dir/apps/scene_probe/draw.cpp.o -c $REPO/apps/scene_probe/draw.cpp",
+    "file": "$REPO/apps/scene_probe/draw.cpp",
+    "output": "$REPO/build/scene-debug/CMakeFiles/scene_probe.dir/apps/scene_probe/draw.cpp.o"
+  },
+  {
+    "configuration": "scene-debug",
+    "directory": "$REPO/build/scene-debug",
+    "command": "/bin/clang++ -DFFI_STATIC_BUILD -DLIBXML_STATIC -DXML_STATIC -I$REPO/engine -isystem $CONAN_HOME/p/b/sdlee9e38e66a538/p/include -isystem $CONAN_HOME/p/b/wayla064c9fb324c75/p/include -isystem $CONAN_HOME/p/b/zlibe8292d90d105f/p/include -isystem $CONAN_HOME/p/vulkabd7575518f65a/p/include -isystem $CONAN_HOME/p/b/catch646a1245bf61b/p/include -m64 -stdlib=libstdc++ -g -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror @CMakeFiles/render_environment_tests.dir/tests/render_environment.cpp.o.modmap -o CMakeFiles/render_environment_tests.dir/tests/render_environment.cpp.o -c $REPO/tests/render_environment.cpp",
+    "file": "$REPO/tests/render_environment.cpp",
+    "output": "$REPO/build/scene-debug/CMakeFiles/render_environment_tests.dir/tests/render_environment.cpp.o"
+  },
+  {
+    "configuration": "scene-debug",
+    "directory": "$REPO/build/scene-debug",
+    "command": "/bin/clang++ -DFFI_STATIC_BUILD -DLIBXML_STATIC -DNGEN_ALLOCATION_PROBE=1 -DXML_STATIC -I$REPO/apps -I$REPO/engine -isystem $CONAN_HOME/p/b/sdlee9e38e66a538/p/include -isystem $CONAN_HOME/p/b/wayla064c9fb324c75/p/include -isystem $CONAN_HOME/p/b/zlibe8292d90d105f/p/include -isystem $CONAN_HOME/p/vulkabd7575518f65a/p/include -isystem $CONAN_HOME/p/b/catch646a1245bf61b/p/include -m64 -stdlib=libstdc++ -g -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror @CMakeFiles/scene_workload_tests.dir/tests/workload.cpp.o.modmap -o CMakeFiles/scene_workload_tests.dir/tests/workload.cpp.o -c $REPO/tests/workload.cpp",
+    "file": "$REPO/tests/workload.cpp",
+    "output": "$REPO/build/scene-debug/CMakeFiles/scene_workload_tests.dir/tests/workload.cpp.o"
+  },
+  {
+    "configuration": "scene-debug",
+    "directory": "$REPO/build/scene-debug",
+    "command": "/bin/clang++ -DFFI_STATIC_BUILD -DLIBXML_STATIC -DNGEN_ALLOCATION_PROBE=1 -DXML_STATIC -I$REPO/apps -I$REPO/engine -isystem $CONAN_HOME/p/b/sdlee9e38e66a538/p/include -isystem $CONAN_HOME/p/b/wayla064c9fb324c75/p/include -isystem $CONAN_HOME/p/b/zlibe8292d90d105f/p/include -isystem $CONAN_HOME/p/vulkabd7575518f65a/p/include -isystem $CONAN_HOME/p/b/catch646a1245bf61b/p/include -m64 -stdlib=libstdc++ -g -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror @CMakeFiles/scene_workload_tests.dir/apps/scene_workload/allocations.cpp.o.modmap -o CMakeFiles/scene_workload_tests.dir/apps/scene_workload/allocations.cpp.o -c $REPO/apps/scene_workload/allocations.cpp",
+    "file": "$REPO/apps/scene_workload/allocations.cpp",
+    "output": "$REPO/build/scene-debug/CMakeFiles/scene_workload_tests.dir/apps/scene_workload/allocations.cpp.o"
+  },
+  {
+    "configuration": "scene-debug",
+    "directory": "$REPO/build/scene-debug",
+    "command": "/bin/clang++ -DFFI_STATIC_BUILD -DLIBXML_STATIC -DNGEN_SHADER_PACKAGE_DIR=\\\"$REPO/build/scene-debug/shaders/3b8cd44a089f5bcf3f392fc4087267fe467dd39c968c4585823e2a40ae40eab6\\\" -DVMA_VULKAN_VERSION=1003000 -DXML_STATIC -I$REPO/engine -isystem $CONAN_HOME/p/b/sdlee9e38e66a538/p/include -isystem $CONAN_HOME/p/b/wayla064c9fb324c75/p/include -isystem $CONAN_HOME/p/b/zlibe8292d90d105f/p/include -isystem $CONAN_HOME/p/vulkabd7575518f65a/p/include -isystem $CONAN_HOME/p/vulka5f8c9f361cfa0/p/include -isystem $CONAN_HOME/p/vulkabd7575518f65a/p/res/vulkan/registry -m64 -stdlib=libstdc++ -g -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror @CMakeFiles/shader_gpu_probe.dir/tests/shader_gpu.cpp.o.modmap -o CMakeFiles/shader_gpu_probe.dir/tests/shader_gpu.cpp.o -c $REPO/tests/shader_gpu.cpp",
+    "file": "$REPO/tests/shader_gpu.cpp",
+    "output": "$REPO/build/scene-debug/CMakeFiles/shader_gpu_probe.dir/tests/shader_gpu.cpp.o"
+  },
+  {
+    "configuration": "scene-debug",
+    "directory": "$REPO/build/scene-debug",
+    "command": "/bin/clang++ -DFFI_STATIC_BUILD -DLIBXML_STATIC -DXML_STATIC -I$REPO/engine -isystem $CONAN_HOME/p/b/sdlee9e38e66a538/p/include -isystem $CONAN_HOME/p/b/wayla064c9fb324c75/p/include -isystem $CONAN_HOME/p/b/zlibe8292d90d105f/p/include -isystem $CONAN_HOME/p/vulkabd7575518f65a/p/include -isystem $CONAN_HOME/p/b/catch646a1245bf61b/p/include -m64 -stdlib=libstdc++ -g -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror @CMakeFiles/render_startup_tests.dir/tests/render_startup.cpp.o.modmap -o CMakeFiles/render_startup_tests.dir/tests/render_startup.cpp.o -c $REPO/tests/render_startup.cpp",
+    "file": "$REPO/tests/render_startup.cpp",
+    "output": "$REPO/build/scene-debug/CMakeFiles/render_startup_tests.dir/tests/render_startup.cpp.o"
+  },
+  {
+    "configuration": "scene-release",
+    "directory": "$REPO/build/scene-release",
+    "command": "/bin/clang++ -I$REPO/engine -m64 -stdlib=libstdc++ -O3 -DNDEBUG -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror @CMakeFiles/shader_contract_layout.dir/tests/shader_layout.cpp.o.modmap -o CMakeFiles/shader_contract_layout.dir/tests/shader_layout.cpp.o -c $REPO/tests/shader_layout.cpp",
+    "file": "$REPO/tests/shader_layout.cpp",
+    "output": "$REPO/build/scene-release/CMakeFiles/shader_contract_layout.dir/tests/shader_layout.cpp.o"
+  },
+  {
+    "configuration": "scene-release",
+    "directory": "$REPO/build/scene-release",
+    "command": "/bin/clang++ -DFFI_STATIC_BUILD -DLIBXML_STATIC -DNGEN_COMPILED_SHADERS=1 -DVMA_VULKAN_VERSION=1003000 -DXML_STATIC -I$REPO/build/scene-release/shaders/3b8cd44a089f5bcf3f392fc4087267fe467dd39c968c4585823e2a40ae40eab6 -I$REPO/engine -isystem $CONAN_HOME/p/b/sdl09793c119812a/p/include -isystem $CONAN_HOME/p/b/waylaedcc845c0414e/p/include -isystem $CONAN_HOME/p/b/zlib2105ec2ddcc7e/p/include -isystem $CONAN_HOME/p/vulkabd7575518f65a/p/include -isystem $CONAN_HOME/p/vulka5f8c9f361cfa0/p/include -isystem $CONAN_HOME/p/vulkabd7575518f65a/p/res/vulkan/registry -m64 -stdlib=libstdc++ -O3 -DNDEBUG -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror @CMakeFiles/ngen_render.dir/engine/render/context.cpp.o.modmap -o CMakeFiles/ngen_render.dir/engine/render/context.cpp.o -c $REPO/engine/render/context.cpp",
+    "file": "$REPO/engine/render/context.cpp",
+    "output": "$REPO/build/scene-release/CMakeFiles/ngen_render.dir/engine/render/context.cpp.o"
+  },
+  {
+    "configuration": "scene-release",
+    "directory": "$REPO/build/scene-release",
+    "command": "/bin/clang++ -DFFI_STATIC_BUILD -DLIBXML_STATIC -DNGEN_COMPILED_SHADERS=1 -DVMA_VULKAN_VERSION=1003000 -DXML_STATIC -I$REPO/build/scene-release/shaders/3b8cd44a089f5bcf3f392fc4087267fe467dd39c968c4585823e2a40ae40eab6 -I$REPO/engine -isystem $CONAN_HOME/p/b/sdl09793c119812a/p/include -isystem $CONAN_HOME/p/b/waylaedcc845c0414e/p/include -isystem $CONAN_HOME/p/b/zlib2105ec2ddcc7e/p/include -isystem $CONAN_HOME/p/vulkabd7575518f65a/p/include -isystem $CONAN_HOME/p/vulka5f8c9f361cfa0/p/include -isystem $CONAN_HOME/p/vulkabd7575518f65a/p/res/vulkan/registry -m64 -stdlib=libstdc++ -O3 -DNDEBUG -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror @CMakeFiles/ngen_render.dir/engine/render/presentation.cpp.o.modmap -o CMakeFiles/ngen_render.dir/engine/render/presentation.cpp.o -c $REPO/engine/render/presentation.cpp",
+    "file": "$REPO/engine/render/presentation.cpp",
+    "output": "$REPO/build/scene-release/CMakeFiles/ngen_render.dir/engine/render/presentation.cpp.o"
+  },
+  {
+    "configuration": "scene-release",
+    "directory": "$REPO/build/scene-release",
+    "command": "/bin/clang++ -DFFI_STATIC_BUILD -DLIBXML_STATIC -DNGEN_COMPILED_SHADERS=1 -DVMA_VULKAN_VERSION=1003000 -DXML_STATIC -I$REPO/build/scene-release/shaders/3b8cd44a089f5bcf3f392fc4087267fe467dd39c968c4585823e2a40ae40eab6 -I$REPO/engine -isystem $CONAN_HOME/p/b/sdl09793c119812a/p/include -isystem $CONAN_HOME/p/b/waylaedcc845c0414e/p/include -isystem $CONAN_HOME/p/b/zlib2105ec2ddcc7e/p/include -isystem $CONAN_HOME/p/vulkabd7575518f65a/p/include -isystem $CONAN_HOME/p/vulka5f8c9f361cfa0/p/include -isystem $CONAN_HOME/p/vulkabd7575518f65a/p/res/vulkan/registry -m64 -stdlib=libstdc++ -O3 -DNDEBUG -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror @CMakeFiles/ngen_render.dir/engine/render/resources.cpp.o.modmap -o CMakeFiles/ngen_render.dir/engine/render/resources.cpp.o -c $REPO/engine/render/resources.cpp",
+    "file": "$REPO/engine/render/resources.cpp",
+    "output": "$REPO/build/scene-release/CMakeFiles/ngen_render.dir/engine/render/resources.cpp.o"
+  },
+  {
+    "configuration": "scene-release",
+    "directory": "$REPO/build/scene-release",
+    "command": "/bin/clang++ -DFFI_STATIC_BUILD -DLIBXML_STATIC -DNGEN_COMPILED_SHADERS=1 -DVMA_VULKAN_VERSION=1003000 -DXML_STATIC -I$REPO/build/scene-release/shaders/3b8cd44a089f5bcf3f392fc4087267fe467dd39c968c4585823e2a40ae40eab6 -I$REPO/engine -isystem $CONAN_HOME/p/b/sdl09793c119812a/p/include -isystem $CONAN_HOME/p/b/waylaedcc845c0414e/p/include -isystem $CONAN_HOME/p/b/zlib2105ec2ddcc7e/p/include -isystem $CONAN_HOME/p/vulkabd7575518f65a/p/include -isystem $CONAN_HOME/p/vulka5f8c9f361cfa0/p/include -isystem $CONAN_HOME/p/vulkabd7575518f65a/p/res/vulkan/registry -m64 -stdlib=libstdc++ -O3 -DNDEBUG -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror @CMakeFiles/ngen_render.dir/engine/render/post.cpp.o.modmap -o CMakeFiles/ngen_render.dir/engine/render/post.cpp.o -c $REPO/engine/render/post.cpp",
+    "file": "$REPO/engine/render/post.cpp",
+    "output": "$REPO/build/scene-release/CMakeFiles/ngen_render.dir/engine/render/post.cpp.o"
+  },
+  {
+    "configuration": "scene-release",
+    "directory": "$REPO/build/scene-release",
+    "command": "/bin/clang++ -DFFI_STATIC_BUILD -DLIBXML_STATIC -DNGEN_COMPILED_SHADERS=1 -DVMA_VULKAN_VERSION=1003000 -DXML_STATIC -I$REPO/build/scene-release/shaders/3b8cd44a089f5bcf3f392fc4087267fe467dd39c968c4585823e2a40ae40eab6 -I$REPO/engine -isystem $CONAN_HOME/p/b/sdl09793c119812a/p/include -isystem $CONAN_HOME/p/b/waylaedcc845c0414e/p/include -isystem $CONAN_HOME/p/b/zlib2105ec2ddcc7e/p/include -isystem $CONAN_HOME/p/vulkabd7575518f65a/p/include -isystem $CONAN_HOME/p/vulka5f8c9f361cfa0/p/include -isystem $CONAN_HOME/p/vulkabd7575518f65a/p/res/vulkan/registry -m64 -stdlib=libstdc++ -O3 -DNDEBUG -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror @CMakeFiles/ngen_render.dir/engine/render/mesh.cpp.o.modmap -o CMakeFiles/ngen_render.dir/engine/render/mesh.cpp.o -c $REPO/engine/render/mesh.cpp",
+    "file": "$REPO/engine/render/mesh.cpp",
+    "output": "$REPO/build/scene-release/CMakeFiles/ngen_render.dir/engine/render/mesh.cpp.o"
+  },
+  {
+    "configuration": "scene-release",
+    "directory": "$REPO/build/scene-release",
+    "command": "/bin/clang++ -DFFI_STATIC_BUILD -DLIBXML_STATIC -DNGEN_COMPILED_SHADERS=1 -DVMA_VULKAN_VERSION=1003000 -DXML_STATIC -I$REPO/build/scene-release/shaders/3b8cd44a089f5bcf3f392fc4087267fe467dd39c968c4585823e2a40ae40eab6 -I$REPO/engine -isystem $CONAN_HOME/p/b/sdl09793c119812a/p/include -isystem $CONAN_HOME/p/b/waylaedcc845c0414e/p/include -isystem $CONAN_HOME/p/b/zlib2105ec2ddcc7e/p/include -isystem $CONAN_HOME/p/vulkabd7575518f65a/p/include -isystem $CONAN_HOME/p/vulka5f8c9f361cfa0/p/include -isystem $CONAN_HOME/p/vulkabd7575518f65a/p/res/vulkan/registry -m64 -stdlib=libstdc++ -O3 -DNDEBUG -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror @CMakeFiles/ngen_render.dir/engine/render/environment.cpp.o.modmap -o CMakeFiles/ngen_render.dir/engine/render/environment.cpp.o -c $REPO/engine/render/environment.cpp",
+    "file": "$REPO/engine/render/environment.cpp",
+    "output": "$REPO/build/scene-release/CMakeFiles/ngen_render.dir/engine/render/environment.cpp.o"
+  },
+  {
+    "configuration": "scene-release",
+    "directory": "$REPO/build/scene-release",
+    "command": "/bin/clang++ -DFFI_STATIC_BUILD -DLIBXML_STATIC -DXML_STATIC -I$REPO/apps -I$REPO/engine -isystem $CONAN_HOME/p/b/sdl09793c119812a/p/include -isystem $CONAN_HOME/p/b/waylaedcc845c0414e/p/include -isystem $CONAN_HOME/p/b/zlib2105ec2ddcc7e/p/include -isystem $CONAN_HOME/p/vulkabd7575518f65a/p/include -m64 -stdlib=libstdc++ -O3 -DNDEBUG -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror @CMakeFiles/ngen_probe_support.dir/apps/probe/presentation.cpp.o.modmap -o CMakeFiles/ngen_probe_support.dir/apps/probe/presentation.cpp.o -c $REPO/apps/probe/presentation.cpp",
+    "file": "$REPO/apps/probe/presentation.cpp",
+    "output": "$REPO/build/scene-release/CMakeFiles/ngen_probe_support.dir/apps/probe/presentation.cpp.o"
+  },
+  {
+    "configuration": "scene-release",
+    "directory": "$REPO/build/scene-release",
+    "command": "/bin/clang++ -DFFI_STATIC_BUILD -DLIBXML_STATIC -DXML_STATIC -I$REPO/apps -I$REPO/engine -isystem $CONAN_HOME/p/b/sdl09793c119812a/p/include -isystem $CONAN_HOME/p/b/waylaedcc845c0414e/p/include -isystem $CONAN_HOME/p/b/zlib2105ec2ddcc7e/p/include -isystem $CONAN_HOME/p/vulkabd7575518f65a/p/include -m64 -stdlib=libstdc++ -O3 -DNDEBUG -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror @CMakeFiles/ngen_probe_support.dir/apps/probe/capture.cpp.o.modmap -o CMakeFiles/ngen_probe_support.dir/apps/probe/capture.cpp.o -c $REPO/apps/probe/capture.cpp",
+    "file": "$REPO/apps/probe/capture.cpp",
+    "output": "$REPO/build/scene-release/CMakeFiles/ngen_probe_support.dir/apps/probe/capture.cpp.o"
+  },
+  {
+    "configuration": "scene-release",
+    "directory": "$REPO/build/scene-release",
+    "command": "/bin/clang++ -DFFI_STATIC_BUILD -DLIBXML_STATIC -DXML_STATIC -I$REPO/apps -I$REPO/engine -isystem $CONAN_HOME/p/b/sdl09793c119812a/p/include -isystem $CONAN_HOME/p/b/waylaedcc845c0414e/p/include -isystem $CONAN_HOME/p/b/zlib2105ec2ddcc7e/p/include -isystem $CONAN_HOME/p/vulkabd7575518f65a/p/include -m64 -stdlib=libstdc++ -O3 -DNDEBUG -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror @CMakeFiles/render_probe.dir/apps/render_probe/main.cpp.o.modmap -o CMakeFiles/render_probe.dir/apps/render_probe/main.cpp.o -c $REPO/apps/render_probe/main.cpp",
+    "file": "$REPO/apps/render_probe/main.cpp",
+    "output": "$REPO/build/scene-release/CMakeFiles/render_probe.dir/apps/render_probe/main.cpp.o"
+  },
+  {
+    "configuration": "scene-release",
+    "directory": "$REPO/build/scene-release",
+    "command": "/bin/clang++ -DFFI_STATIC_BUILD -DLIBXML_STATIC -DNGEN_POST_TESTS=1 -DXML_STATIC -I$REPO/apps -I$REPO/engine -isystem $CONAN_HOME/p/b/sdl09793c119812a/p/include -isystem $CONAN_HOME/p/b/waylaedcc845c0414e/p/include -isystem $CONAN_HOME/p/b/zlib2105ec2ddcc7e/p/include -isystem $CONAN_HOME/p/vulkabd7575518f65a/p/include -m64 -stdlib=libstdc++ -O3 -DNDEBUG -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror @CMakeFiles/resource_probe.dir/apps/resource_probe/main.cpp.o.modmap -o CMakeFiles/resource_probe.dir/apps/resource_probe/main.cpp.o -c $REPO/apps/resource_probe/main.cpp",
+    "file": "$REPO/apps/resource_probe/main.cpp",
+    "output": "$REPO/build/scene-release/CMakeFiles/resource_probe.dir/apps/resource_probe/main.cpp.o"
+  },
+  {
+    "configuration": "scene-release",
+    "directory": "$REPO/build/scene-release",
+    "command": "/bin/clang++ -DFFI_STATIC_BUILD -DLIBXML_STATIC -DXML_STATIC -I$REPO/engine -isystem $CONAN_HOME/p/b/sdl09793c119812a/p/include -isystem $CONAN_HOME/p/b/waylaedcc845c0414e/p/include -isystem $CONAN_HOME/p/b/zlib2105ec2ddcc7e/p/include -isystem $CONAN_HOME/p/vulkabd7575518f65a/p/include -m64 -stdlib=libstdc++ -O3 -DNDEBUG -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror @CMakeFiles/ngen_scene.dir/engine/render/scene.cpp.o.modmap -o CMakeFiles/ngen_scene.dir/engine/render/scene.cpp.o -c $REPO/engine/render/scene.cpp",
+    "file": "$REPO/engine/render/scene.cpp",
+    "output": "$REPO/build/scene-release/CMakeFiles/ngen_scene.dir/engine/render/scene.cpp.o"
+  },
+  {
+    "configuration": "scene-release",
+    "directory": "$REPO/build/scene-release",
+    "command": "/bin/clang++ -DFFI_STATIC_BUILD -DLIBXML_STATIC -DXML_STATIC -I$REPO/engine -isystem $CONAN_HOME/p/b/sdl09793c119812a/p/include -isystem $CONAN_HOME/p/b/waylaedcc845c0414e/p/include -isystem $CONAN_HOME/p/b/zlib2105ec2ddcc7e/p/include -isystem $CONAN_HOME/p/vulkabd7575518f65a/p/include -m64 -stdlib=libstdc++ -O3 -DNDEBUG -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror @CMakeFiles/ngen_scene.dir/engine/render/scene_draw.cpp.o.modmap -o CMakeFiles/ngen_scene.dir/engine/render/scene_draw.cpp.o -c $REPO/engine/render/scene_draw.cpp",
+    "file": "$REPO/engine/render/scene_draw.cpp",
+    "output": "$REPO/build/scene-release/CMakeFiles/ngen_scene.dir/engine/render/scene_draw.cpp.o"
+  },
+  {
+    "configuration": "scene-release",
+    "directory": "$REPO/build/scene-release",
+    "command": "/bin/clang++ -DFFI_STATIC_BUILD -DLIBXML_STATIC -DXML_STATIC -I$REPO/apps -I$REPO/engine -isystem $CONAN_HOME/p/b/sdl09793c119812a/p/include -isystem $CONAN_HOME/p/b/waylaedcc845c0414e/p/include -isystem $CONAN_HOME/p/b/zlib2105ec2ddcc7e/p/include -isystem $CONAN_HOME/p/vulkabd7575518f65a/p/include -m64 -stdlib=libstdc++ -O3 -DNDEBUG -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror @CMakeFiles/scene_workload_fixture.dir/apps/scene_workload/fixture.cpp.o.modmap -o CMakeFiles/scene_workload_fixture.dir/apps/scene_workload/fixture.cpp.o -c $REPO/apps/scene_workload/fixture.cpp",
+    "file": "$REPO/apps/scene_workload/fixture.cpp",
+    "output": "$REPO/build/scene-release/CMakeFiles/scene_workload_fixture.dir/apps/scene_workload/fixture.cpp.o"
+  },
+  {
+    "configuration": "scene-release",
+    "directory": "$REPO/build/scene-release",
+    "command": "/bin/clang++ -DFFI_STATIC_BUILD -DLIBXML_STATIC -DNGEN_ALLOCATION_PROBE=1 -DXML_STATIC -I$REPO/apps -I$REPO/engine -isystem $CONAN_HOME/p/b/sdl09793c119812a/p/include -isystem $CONAN_HOME/p/b/waylaedcc845c0414e/p/include -isystem $CONAN_HOME/p/b/zlib2105ec2ddcc7e/p/include -isystem $CONAN_HOME/p/vulkabd7575518f65a/p/include -m64 -stdlib=libstdc++ -O3 -DNDEBUG -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror @CMakeFiles/scene_workload.dir/apps/scene_workload/main.cpp.o.modmap -o CMakeFiles/scene_workload.dir/apps/scene_workload/main.cpp.o -c $REPO/apps/scene_workload/main.cpp",
+    "file": "$REPO/apps/scene_workload/main.cpp",
+    "output": "$REPO/build/scene-release/CMakeFiles/scene_workload.dir/apps/scene_workload/main.cpp.o"
+  },
+  {
+    "configuration": "scene-release",
+    "directory": "$REPO/build/scene-release",
+    "command": "/bin/clang++ -DFFI_STATIC_BUILD -DLIBXML_STATIC -DNGEN_ALLOCATION_PROBE=1 -DXML_STATIC -I$REPO/apps -I$REPO/engine -isystem $CONAN_HOME/p/b/sdl09793c119812a/p/include -isystem $CONAN_HOME/p/b/waylaedcc845c0414e/p/include -isystem $CONAN_HOME/p/b/zlib2105ec2ddcc7e/p/include -isystem $CONAN_HOME/p/vulkabd7575518f65a/p/include -m64 -stdlib=libstdc++ -O3 -DNDEBUG -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror @CMakeFiles/scene_workload.dir/apps/scene_workload/allocations.cpp.o.modmap -o CMakeFiles/scene_workload.dir/apps/scene_workload/allocations.cpp.o -c $REPO/apps/scene_workload/allocations.cpp",
+    "file": "$REPO/apps/scene_workload/allocations.cpp",
+    "output": "$REPO/build/scene-release/CMakeFiles/scene_workload.dir/apps/scene_workload/allocations.cpp.o"
+  },
+  {
+    "configuration": "scene-release",
+    "directory": "$REPO/build/scene-release",
+    "command": "/bin/clang++ -DFFI_STATIC_BUILD -DLIBXML_STATIC -DNGEN_TEST_FIXTURES=\\\"$REPO/tests/fixtures\\\" -DXML_STATIC -I$REPO/tests -I$REPO/engine -I$REPO/apps -isystem $CONAN_HOME/p/b/sdl09793c119812a/p/include -isystem $CONAN_HOME/p/b/waylaedcc845c0414e/p/include -isystem $CONAN_HOME/p/b/zlib2105ec2ddcc7e/p/include -isystem $CONAN_HOME/p/vulkabd7575518f65a/p/include -m64 -stdlib=libstdc++ -O3 -DNDEBUG -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror @CMakeFiles/scene_probe.dir/apps/scene_probe/main.cpp.o.modmap -o CMakeFiles/scene_probe.dir/apps/scene_probe/main.cpp.o -c $REPO/apps/scene_probe/main.cpp",
+    "file": "$REPO/apps/scene_probe/main.cpp",
+    "output": "$REPO/build/scene-release/CMakeFiles/scene_probe.dir/apps/scene_probe/main.cpp.o"
+  },
+  {
+    "configuration": "scene-release",
+    "directory": "$REPO/build/scene-release",
+    "command": "/bin/clang++ -DFFI_STATIC_BUILD -DLIBXML_STATIC -DNGEN_TEST_FIXTURES=\\\"$REPO/tests/fixtures\\\" -DXML_STATIC -I$REPO/tests -I$REPO/engine -I$REPO/apps -isystem $CONAN_HOME/p/b/sdl09793c119812a/p/include -isystem $CONAN_HOME/p/b/waylaedcc845c0414e/p/include -isystem $CONAN_HOME/p/b/zlib2105ec2ddcc7e/p/include -isystem $CONAN_HOME/p/vulkabd7575518f65a/p/include -m64 -stdlib=libstdc++ -O3 -DNDEBUG -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror @CMakeFiles/scene_probe.dir/apps/scene_probe/draw.cpp.o.modmap -o CMakeFiles/scene_probe.dir/apps/scene_probe/draw.cpp.o -c $REPO/apps/scene_probe/draw.cpp",
+    "file": "$REPO/apps/scene_probe/draw.cpp",
+    "output": "$REPO/build/scene-release/CMakeFiles/scene_probe.dir/apps/scene_probe/draw.cpp.o"
+  },
+  {
+    "configuration": "scene-release",
+    "directory": "$REPO/build/scene-release",
+    "command": "/bin/clang++ -DFFI_STATIC_BUILD -DLIBXML_STATIC -DXML_STATIC -I$REPO/engine -isystem $CONAN_HOME/p/b/sdl09793c119812a/p/include -isystem $CONAN_HOME/p/b/waylaedcc845c0414e/p/include -isystem $CONAN_HOME/p/b/zlib2105ec2ddcc7e/p/include -isystem $CONAN_HOME/p/vulkabd7575518f65a/p/include -isystem $CONAN_HOME/p/b/catcha767e5502f6e3/p/include -m64 -stdlib=libstdc++ -O3 -DNDEBUG -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror @CMakeFiles/render_environment_tests.dir/tests/render_environment.cpp.o.modmap -o CMakeFiles/render_environment_tests.dir/tests/render_environment.cpp.o -c $REPO/tests/render_environment.cpp",
+    "file": "$REPO/tests/render_environment.cpp",
+    "output": "$REPO/build/scene-release/CMakeFiles/render_environment_tests.dir/tests/render_environment.cpp.o"
+  },
+  {
+    "configuration": "scene-release",
+    "directory": "$REPO/build/scene-release",
+    "command": "/bin/clang++ -DFFI_STATIC_BUILD -DLIBXML_STATIC -DNGEN_ALLOCATION_PROBE=1 -DXML_STATIC -I$REPO/apps -I$REPO/engine -isystem $CONAN_HOME/p/b/sdl09793c119812a/p/include -isystem $CONAN_HOME/p/b/waylaedcc845c0414e/p/include -isystem $CONAN_HOME/p/b/zlib2105ec2ddcc7e/p/include -isystem $CONAN_HOME/p/vulkabd7575518f65a/p/include -isystem $CONAN_HOME/p/b/catcha767e5502f6e3/p/include -m64 -stdlib=libstdc++ -O3 -DNDEBUG -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror @CMakeFiles/scene_workload_tests.dir/tests/workload.cpp.o.modmap -o CMakeFiles/scene_workload_tests.dir/tests/workload.cpp.o -c $REPO/tests/workload.cpp",
+    "file": "$REPO/tests/workload.cpp",
+    "output": "$REPO/build/scene-release/CMakeFiles/scene_workload_tests.dir/tests/workload.cpp.o"
+  },
+  {
+    "configuration": "scene-release",
+    "directory": "$REPO/build/scene-release",
+    "command": "/bin/clang++ -DFFI_STATIC_BUILD -DLIBXML_STATIC -DNGEN_ALLOCATION_PROBE=1 -DXML_STATIC -I$REPO/apps -I$REPO/engine -isystem $CONAN_HOME/p/b/sdl09793c119812a/p/include -isystem $CONAN_HOME/p/b/waylaedcc845c0414e/p/include -isystem $CONAN_HOME/p/b/zlib2105ec2ddcc7e/p/include -isystem $CONAN_HOME/p/vulkabd7575518f65a/p/include -isystem $CONAN_HOME/p/b/catcha767e5502f6e3/p/include -m64 -stdlib=libstdc++ -O3 -DNDEBUG -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror @CMakeFiles/scene_workload_tests.dir/apps/scene_workload/allocations.cpp.o.modmap -o CMakeFiles/scene_workload_tests.dir/apps/scene_workload/allocations.cpp.o -c $REPO/apps/scene_workload/allocations.cpp",
+    "file": "$REPO/apps/scene_workload/allocations.cpp",
+    "output": "$REPO/build/scene-release/CMakeFiles/scene_workload_tests.dir/apps/scene_workload/allocations.cpp.o"
+  },
+  {
+    "configuration": "scene-release",
+    "directory": "$REPO/build/scene-release",
+    "command": "/bin/clang++ -DFFI_STATIC_BUILD -DLIBXML_STATIC -DNGEN_SHADER_PACKAGE_DIR=\\\"$REPO/build/scene-release/shaders/3b8cd44a089f5bcf3f392fc4087267fe467dd39c968c4585823e2a40ae40eab6\\\" -DVMA_VULKAN_VERSION=1003000 -DXML_STATIC -I$REPO/engine -isystem $CONAN_HOME/p/b/sdl09793c119812a/p/include -isystem $CONAN_HOME/p/b/waylaedcc845c0414e/p/include -isystem $CONAN_HOME/p/b/zlib2105ec2ddcc7e/p/include -isystem $CONAN_HOME/p/vulkabd7575518f65a/p/include -isystem $CONAN_HOME/p/vulka5f8c9f361cfa0/p/include -isystem $CONAN_HOME/p/vulkabd7575518f65a/p/res/vulkan/registry -m64 -stdlib=libstdc++ -O3 -DNDEBUG -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror @CMakeFiles/shader_gpu_probe.dir/tests/shader_gpu.cpp.o.modmap -o CMakeFiles/shader_gpu_probe.dir/tests/shader_gpu.cpp.o -c $REPO/tests/shader_gpu.cpp",
+    "file": "$REPO/tests/shader_gpu.cpp",
+    "output": "$REPO/build/scene-release/CMakeFiles/shader_gpu_probe.dir/tests/shader_gpu.cpp.o"
+  },
+  {
+    "configuration": "scene-release",
+    "directory": "$REPO/build/scene-release",
+    "command": "/bin/clang++ -DFFI_STATIC_BUILD -DLIBXML_STATIC -DXML_STATIC -I$REPO/engine -isystem $CONAN_HOME/p/b/sdl09793c119812a/p/include -isystem $CONAN_HOME/p/b/waylaedcc845c0414e/p/include -isystem $CONAN_HOME/p/b/zlib2105ec2ddcc7e/p/include -isystem $CONAN_HOME/p/vulkabd7575518f65a/p/include -isystem $CONAN_HOME/p/b/catcha767e5502f6e3/p/include -m64 -stdlib=libstdc++ -O3 -DNDEBUG -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror @CMakeFiles/render_startup_tests.dir/tests/render_startup.cpp.o.modmap -o CMakeFiles/render_startup_tests.dir/tests/render_startup.cpp.o -c $REPO/tests/render_startup.cpp",
+    "file": "$REPO/tests/render_startup.cpp",
+    "output": "$REPO/build/scene-release/CMakeFiles/render_startup_tests.dir/tests/render_startup.cpp.o"
+  },
+  {
+    "configuration": "scene-asan",
+    "directory": "$REPO/build/scene-asan",
+    "command": "/bin/clang++ -I$REPO/engine -m64 -stdlib=libstdc++ -fsanitize=address,undefined -fno-sanitize-recover=all -fno-omit-frame-pointer -g -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror -fsanitize=address,undefined -fno-sanitize-recover=all -fno-omit-frame-pointer @CMakeFiles/shader_contract_layout.dir/tests/shader_layout.cpp.o.modmap -o CMakeFiles/shader_contract_layout.dir/tests/shader_layout.cpp.o -c $REPO/tests/shader_layout.cpp",
+    "file": "$REPO/tests/shader_layout.cpp",
+    "output": "$REPO/build/scene-asan/CMakeFiles/shader_contract_layout.dir/tests/shader_layout.cpp.o"
+  },
+  {
+    "configuration": "scene-asan",
+    "directory": "$REPO/build/scene-asan",
+    "command": "/bin/clang++ -DFFI_STATIC_BUILD -DLIBXML_STATIC -DNGEN_COMPILED_SHADERS=1 -DVMA_VULKAN_VERSION=1003000 -DXML_STATIC -I$REPO/build/scene-asan/shaders/3b8cd44a089f5bcf3f392fc4087267fe467dd39c968c4585823e2a40ae40eab6 -I$REPO/engine -isystem $CONAN_HOME/p/b/sdld55aa4ffbc9f1/p/include -isystem $CONAN_HOME/p/b/wayla18d5b71128707/p/include -isystem $CONAN_HOME/p/b/zlib1259e34ede50e/p/include -isystem $CONAN_HOME/p/vulkabd7575518f65a/p/include -isystem $CONAN_HOME/p/vulka5f8c9f361cfa0/p/include -isystem $CONAN_HOME/p/vulkabd7575518f65a/p/res/vulkan/registry -m64 -stdlib=libstdc++ -fsanitize=address,undefined -fno-sanitize-recover=all -fno-omit-frame-pointer -g -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror -fsanitize=address,undefined -fno-sanitize-recover=all -fno-omit-frame-pointer @CMakeFiles/ngen_render.dir/engine/render/context.cpp.o.modmap -o CMakeFiles/ngen_render.dir/engine/render/context.cpp.o -c $REPO/engine/render/context.cpp",
+    "file": "$REPO/engine/render/context.cpp",
+    "output": "$REPO/build/scene-asan/CMakeFiles/ngen_render.dir/engine/render/context.cpp.o"
+  },
+  {
+    "configuration": "scene-asan",
+    "directory": "$REPO/build/scene-asan",
+    "command": "/bin/clang++ -DFFI_STATIC_BUILD -DLIBXML_STATIC -DNGEN_COMPILED_SHADERS=1 -DVMA_VULKAN_VERSION=1003000 -DXML_STATIC -I$REPO/build/scene-asan/shaders/3b8cd44a089f5bcf3f392fc4087267fe467dd39c968c4585823e2a40ae40eab6 -I$REPO/engine -isystem $CONAN_HOME/p/b/sdld55aa4ffbc9f1/p/include -isystem $CONAN_HOME/p/b/wayla18d5b71128707/p/include -isystem $CONAN_HOME/p/b/zlib1259e34ede50e/p/include -isystem $CONAN_HOME/p/vulkabd7575518f65a/p/include -isystem $CONAN_HOME/p/vulka5f8c9f361cfa0/p/include -isystem $CONAN_HOME/p/vulkabd7575518f65a/p/res/vulkan/registry -m64 -stdlib=libstdc++ -fsanitize=address,undefined -fno-sanitize-recover=all -fno-omit-frame-pointer -g -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror -fsanitize=address,undefined -fno-sanitize-recover=all -fno-omit-frame-pointer @CMakeFiles/ngen_render.dir/engine/render/presentation.cpp.o.modmap -o CMakeFiles/ngen_render.dir/engine/render/presentation.cpp.o -c $REPO/engine/render/presentation.cpp",
+    "file": "$REPO/engine/render/presentation.cpp",
+    "output": "$REPO/build/scene-asan/CMakeFiles/ngen_render.dir/engine/render/presentation.cpp.o"
+  },
+  {
+    "configuration": "scene-asan",
+    "directory": "$REPO/build/scene-asan",
+    "command": "/bin/clang++ -DFFI_STATIC_BUILD -DLIBXML_STATIC -DNGEN_COMPILED_SHADERS=1 -DVMA_VULKAN_VERSION=1003000 -DXML_STATIC -I$REPO/build/scene-asan/shaders/3b8cd44a089f5bcf3f392fc4087267fe467dd39c968c4585823e2a40ae40eab6 -I$REPO/engine -isystem $CONAN_HOME/p/b/sdld55aa4ffbc9f1/p/include -isystem $CONAN_HOME/p/b/wayla18d5b71128707/p/include -isystem $CONAN_HOME/p/b/zlib1259e34ede50e/p/include -isystem $CONAN_HOME/p/vulkabd7575518f65a/p/include -isystem $CONAN_HOME/p/vulka5f8c9f361cfa0/p/include -isystem $CONAN_HOME/p/vulkabd7575518f65a/p/res/vulkan/registry -m64 -stdlib=libstdc++ -fsanitize=address,undefined -fno-sanitize-recover=all -fno-omit-frame-pointer -g -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror -fsanitize=address,undefined -fno-sanitize-recover=all -fno-omit-frame-pointer @CMakeFiles/ngen_render.dir/engine/render/resources.cpp.o.modmap -o CMakeFiles/ngen_render.dir/engine/render/resources.cpp.o -c $REPO/engine/render/resources.cpp",
+    "file": "$REPO/engine/render/resources.cpp",
+    "output": "$REPO/build/scene-asan/CMakeFiles/ngen_render.dir/engine/render/resources.cpp.o"
+  },
+  {
+    "configuration": "scene-asan",
+    "directory": "$REPO/build/scene-asan",
+    "command": "/bin/clang++ -DFFI_STATIC_BUILD -DLIBXML_STATIC -DNGEN_COMPILED_SHADERS=1 -DVMA_VULKAN_VERSION=1003000 -DXML_STATIC -I$REPO/build/scene-asan/shaders/3b8cd44a089f5bcf3f392fc4087267fe467dd39c968c4585823e2a40ae40eab6 -I$REPO/engine -isystem $CONAN_HOME/p/b/sdld55aa4ffbc9f1/p/include -isystem $CONAN_HOME/p/b/wayla18d5b71128707/p/include -isystem $CONAN_HOME/p/b/zlib1259e34ede50e/p/include -isystem $CONAN_HOME/p/vulkabd7575518f65a/p/include -isystem $CONAN_HOME/p/vulka5f8c9f361cfa0/p/include -isystem $CONAN_HOME/p/vulkabd7575518f65a/p/res/vulkan/registry -m64 -stdlib=libstdc++ -fsanitize=address,undefined -fno-sanitize-recover=all -fno-omit-frame-pointer -g -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror -fsanitize=address,undefined -fno-sanitize-recover=all -fno-omit-frame-pointer @CMakeFiles/ngen_render.dir/engine/render/post.cpp.o.modmap -o CMakeFiles/ngen_render.dir/engine/render/post.cpp.o -c $REPO/engine/render/post.cpp",
+    "file": "$REPO/engine/render/post.cpp",
+    "output": "$REPO/build/scene-asan/CMakeFiles/ngen_render.dir/engine/render/post.cpp.o"
+  },
+  {
+    "configuration": "scene-asan",
+    "directory": "$REPO/build/scene-asan",
+    "command": "/bin/clang++ -DFFI_STATIC_BUILD -DLIBXML_STATIC -DNGEN_COMPILED_SHADERS=1 -DVMA_VULKAN_VERSION=1003000 -DXML_STATIC -I$REPO/build/scene-asan/shaders/3b8cd44a089f5bcf3f392fc4087267fe467dd39c968c4585823e2a40ae40eab6 -I$REPO/engine -isystem $CONAN_HOME/p/b/sdld55aa4ffbc9f1/p/include -isystem $CONAN_HOME/p/b/wayla18d5b71128707/p/include -isystem $CONAN_HOME/p/b/zlib1259e34ede50e/p/include -isystem $CONAN_HOME/p/vulkabd7575518f65a/p/include -isystem $CONAN_HOME/p/vulka5f8c9f361cfa0/p/include -isystem $CONAN_HOME/p/vulkabd7575518f65a/p/res/vulkan/registry -m64 -stdlib=libstdc++ -fsanitize=address,undefined -fno-sanitize-recover=all -fno-omit-frame-pointer -g -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror -fsanitize=address,undefined -fno-sanitize-recover=all -fno-omit-frame-pointer @CMakeFiles/ngen_render.dir/engine/render/mesh.cpp.o.modmap -o CMakeFiles/ngen_render.dir/engine/render/mesh.cpp.o -c $REPO/engine/render/mesh.cpp",
+    "file": "$REPO/engine/render/mesh.cpp",
+    "output": "$REPO/build/scene-asan/CMakeFiles/ngen_render.dir/engine/render/mesh.cpp.o"
+  },
+  {
+    "configuration": "scene-asan",
+    "directory": "$REPO/build/scene-asan",
+    "command": "/bin/clang++ -DFFI_STATIC_BUILD -DLIBXML_STATIC -DNGEN_COMPILED_SHADERS=1 -DVMA_VULKAN_VERSION=1003000 -DXML_STATIC -I$REPO/build/scene-asan/shaders/3b8cd44a089f5bcf3f392fc4087267fe467dd39c968c4585823e2a40ae40eab6 -I$REPO/engine -isystem $CONAN_HOME/p/b/sdld55aa4ffbc9f1/p/include -isystem $CONAN_HOME/p/b/wayla18d5b71128707/p/include -isystem $CONAN_HOME/p/b/zlib1259e34ede50e/p/include -isystem $CONAN_HOME/p/vulkabd7575518f65a/p/include -isystem $CONAN_HOME/p/vulka5f8c9f361cfa0/p/include -isystem $CONAN_HOME/p/vulkabd7575518f65a/p/res/vulkan/registry -m64 -stdlib=libstdc++ -fsanitize=address,undefined -fno-sanitize-recover=all -fno-omit-frame-pointer -g -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror -fsanitize=address,undefined -fno-sanitize-recover=all -fno-omit-frame-pointer @CMakeFiles/ngen_render.dir/engine/render/environment.cpp.o.modmap -o CMakeFiles/ngen_render.dir/engine/render/environment.cpp.o -c $REPO/engine/render/environment.cpp",
+    "file": "$REPO/engine/render/environment.cpp",
+    "output": "$REPO/build/scene-asan/CMakeFiles/ngen_render.dir/engine/render/environment.cpp.o"
+  },
+  {
+    "configuration": "scene-asan",
+    "directory": "$REPO/build/scene-asan",
+    "command": "/bin/clang++ -DFFI_STATIC_BUILD -DLIBXML_STATIC -DXML_STATIC -I$REPO/apps -I$REPO/engine -isystem $CONAN_HOME/p/b/sdld55aa4ffbc9f1/p/include -isystem $CONAN_HOME/p/b/wayla18d5b71128707/p/include -isystem $CONAN_HOME/p/b/zlib1259e34ede50e/p/include -isystem $CONAN_HOME/p/vulkabd7575518f65a/p/include -m64 -stdlib=libstdc++ -fsanitize=address,undefined -fno-sanitize-recover=all -fno-omit-frame-pointer -g -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror -fsanitize=address,undefined -fno-sanitize-recover=all -fno-omit-frame-pointer @CMakeFiles/ngen_probe_support.dir/apps/probe/presentation.cpp.o.modmap -o CMakeFiles/ngen_probe_support.dir/apps/probe/presentation.cpp.o -c $REPO/apps/probe/presentation.cpp",
+    "file": "$REPO/apps/probe/presentation.cpp",
+    "output": "$REPO/build/scene-asan/CMakeFiles/ngen_probe_support.dir/apps/probe/presentation.cpp.o"
+  },
+  {
+    "configuration": "scene-asan",
+    "directory": "$REPO/build/scene-asan",
+    "command": "/bin/clang++ -DFFI_STATIC_BUILD -DLIBXML_STATIC -DXML_STATIC -I$REPO/apps -I$REPO/engine -isystem $CONAN_HOME/p/b/sdld55aa4ffbc9f1/p/include -isystem $CONAN_HOME/p/b/wayla18d5b71128707/p/include -isystem $CONAN_HOME/p/b/zlib1259e34ede50e/p/include -isystem $CONAN_HOME/p/vulkabd7575518f65a/p/include -m64 -stdlib=libstdc++ -fsanitize=address,undefined -fno-sanitize-recover=all -fno-omit-frame-pointer -g -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror -fsanitize=address,undefined -fno-sanitize-recover=all -fno-omit-frame-pointer @CMakeFiles/ngen_probe_support.dir/apps/probe/capture.cpp.o.modmap -o CMakeFiles/ngen_probe_support.dir/apps/probe/capture.cpp.o -c $REPO/apps/probe/capture.cpp",
+    "file": "$REPO/apps/probe/capture.cpp",
+    "output": "$REPO/build/scene-asan/CMakeFiles/ngen_probe_support.dir/apps/probe/capture.cpp.o"
+  },
+  {
+    "configuration": "scene-asan",
+    "directory": "$REPO/build/scene-asan",
+    "command": "/bin/clang++ -DFFI_STATIC_BUILD -DLIBXML_STATIC -DXML_STATIC -I$REPO/apps -I$REPO/engine -isystem $CONAN_HOME/p/b/sdld55aa4ffbc9f1/p/include -isystem $CONAN_HOME/p/b/wayla18d5b71128707/p/include -isystem $CONAN_HOME/p/b/zlib1259e34ede50e/p/include -isystem $CONAN_HOME/p/vulkabd7575518f65a/p/include -m64 -stdlib=libstdc++ -fsanitize=address,undefined -fno-sanitize-recover=all -fno-omit-frame-pointer -g -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror -fsanitize=address,undefined -fno-sanitize-recover=all -fno-omit-frame-pointer @CMakeFiles/render_probe.dir/apps/render_probe/main.cpp.o.modmap -o CMakeFiles/render_probe.dir/apps/render_probe/main.cpp.o -c $REPO/apps/render_probe/main.cpp",
+    "file": "$REPO/apps/render_probe/main.cpp",
+    "output": "$REPO/build/scene-asan/CMakeFiles/render_probe.dir/apps/render_probe/main.cpp.o"
+  },
+  {
+    "configuration": "scene-asan",
+    "directory": "$REPO/build/scene-asan",
+    "command": "/bin/clang++ -DFFI_STATIC_BUILD -DLIBXML_STATIC -DNGEN_POST_TESTS=1 -DXML_STATIC -I$REPO/apps -I$REPO/engine -isystem $CONAN_HOME/p/b/sdld55aa4ffbc9f1/p/include -isystem $CONAN_HOME/p/b/wayla18d5b71128707/p/include -isystem $CONAN_HOME/p/b/zlib1259e34ede50e/p/include -isystem $CONAN_HOME/p/vulkabd7575518f65a/p/include -m64 -stdlib=libstdc++ -fsanitize=address,undefined -fno-sanitize-recover=all -fno-omit-frame-pointer -g -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror -fsanitize=address,undefined -fno-sanitize-recover=all -fno-omit-frame-pointer @CMakeFiles/resource_probe.dir/apps/resource_probe/main.cpp.o.modmap -o CMakeFiles/resource_probe.dir/apps/resource_probe/main.cpp.o -c $REPO/apps/resource_probe/main.cpp",
+    "file": "$REPO/apps/resource_probe/main.cpp",
+    "output": "$REPO/build/scene-asan/CMakeFiles/resource_probe.dir/apps/resource_probe/main.cpp.o"
+  },
+  {
+    "configuration": "scene-asan",
+    "directory": "$REPO/build/scene-asan",
+    "command": "/bin/clang++ -DFFI_STATIC_BUILD -DLIBXML_STATIC -DXML_STATIC -I$REPO/engine -isystem $CONAN_HOME/p/b/sdld55aa4ffbc9f1/p/include -isystem $CONAN_HOME/p/b/wayla18d5b71128707/p/include -isystem $CONAN_HOME/p/b/zlib1259e34ede50e/p/include -isystem $CONAN_HOME/p/vulkabd7575518f65a/p/include -m64 -stdlib=libstdc++ -fsanitize=address,undefined -fno-sanitize-recover=all -fno-omit-frame-pointer -g -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror -fsanitize=address,undefined -fno-sanitize-recover=all -fno-omit-frame-pointer @CMakeFiles/ngen_scene.dir/engine/render/scene.cpp.o.modmap -o CMakeFiles/ngen_scene.dir/engine/render/scene.cpp.o -c $REPO/engine/render/scene.cpp",
+    "file": "$REPO/engine/render/scene.cpp",
+    "output": "$REPO/build/scene-asan/CMakeFiles/ngen_scene.dir/engine/render/scene.cpp.o"
+  },
+  {
+    "configuration": "scene-asan",
+    "directory": "$REPO/build/scene-asan",
+    "command": "/bin/clang++ -DFFI_STATIC_BUILD -DLIBXML_STATIC -DXML_STATIC -I$REPO/engine -isystem $CONAN_HOME/p/b/sdld55aa4ffbc9f1/p/include -isystem $CONAN_HOME/p/b/wayla18d5b71128707/p/include -isystem $CONAN_HOME/p/b/zlib1259e34ede50e/p/include -isystem $CONAN_HOME/p/vulkabd7575518f65a/p/include -m64 -stdlib=libstdc++ -fsanitize=address,undefined -fno-sanitize-recover=all -fno-omit-frame-pointer -g -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror -fsanitize=address,undefined -fno-sanitize-recover=all -fno-omit-frame-pointer @CMakeFiles/ngen_scene.dir/engine/render/scene_draw.cpp.o.modmap -o CMakeFiles/ngen_scene.dir/engine/render/scene_draw.cpp.o -c $REPO/engine/render/scene_draw.cpp",
+    "file": "$REPO/engine/render/scene_draw.cpp",
+    "output": "$REPO/build/scene-asan/CMakeFiles/ngen_scene.dir/engine/render/scene_draw.cpp.o"
+  },
+  {
+    "configuration": "scene-asan",
+    "directory": "$REPO/build/scene-asan",
+    "command": "/bin/clang++ -DFFI_STATIC_BUILD -DLIBXML_STATIC -DXML_STATIC -I$REPO/apps -I$REPO/engine -isystem $CONAN_HOME/p/b/sdld55aa4ffbc9f1/p/include -isystem $CONAN_HOME/p/b/wayla18d5b71128707/p/include -isystem $CONAN_HOME/p/b/zlib1259e34ede50e/p/include -isystem $CONAN_HOME/p/vulkabd7575518f65a/p/include -m64 -stdlib=libstdc++ -fsanitize=address,undefined -fno-sanitize-recover=all -fno-omit-frame-pointer -g -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror -fsanitize=address,undefined -fno-sanitize-recover=all -fno-omit-frame-pointer @CMakeFiles/scene_workload_fixture.dir/apps/scene_workload/fixture.cpp.o.modmap -o CMakeFiles/scene_workload_fixture.dir/apps/scene_workload/fixture.cpp.o -c $REPO/apps/scene_workload/fixture.cpp",
+    "file": "$REPO/apps/scene_workload/fixture.cpp",
+    "output": "$REPO/build/scene-asan/CMakeFiles/scene_workload_fixture.dir/apps/scene_workload/fixture.cpp.o"
+  },
+  {
+    "configuration": "scene-asan",
+    "directory": "$REPO/build/scene-asan",
+    "command": "/bin/clang++ -DFFI_STATIC_BUILD -DLIBXML_STATIC -DNGEN_ALLOCATION_PROBE=0 -DXML_STATIC -I$REPO/apps -I$REPO/engine -isystem $CONAN_HOME/p/b/sdld55aa4ffbc9f1/p/include -isystem $CONAN_HOME/p/b/wayla18d5b71128707/p/include -isystem $CONAN_HOME/p/b/zlib1259e34ede50e/p/include -isystem $CONAN_HOME/p/vulkabd7575518f65a/p/include -m64 -stdlib=libstdc++ -fsanitize=address,undefined -fno-sanitize-recover=all -fno-omit-frame-pointer -g -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror -fsanitize=address,undefined -fno-sanitize-recover=all -fno-omit-frame-pointer @CMakeFiles/scene_workload.dir/apps/scene_workload/main.cpp.o.modmap -o CMakeFiles/scene_workload.dir/apps/scene_workload/main.cpp.o -c $REPO/apps/scene_workload/main.cpp",
+    "file": "$REPO/apps/scene_workload/main.cpp",
+    "output": "$REPO/build/scene-asan/CMakeFiles/scene_workload.dir/apps/scene_workload/main.cpp.o"
+  },
+  {
+    "configuration": "scene-asan",
+    "directory": "$REPO/build/scene-asan",
+    "command": "/bin/clang++ -DFFI_STATIC_BUILD -DLIBXML_STATIC -DNGEN_ALLOCATION_PROBE=0 -DXML_STATIC -I$REPO/apps -I$REPO/engine -isystem $CONAN_HOME/p/b/sdld55aa4ffbc9f1/p/include -isystem $CONAN_HOME/p/b/wayla18d5b71128707/p/include -isystem $CONAN_HOME/p/b/zlib1259e34ede50e/p/include -isystem $CONAN_HOME/p/vulkabd7575518f65a/p/include -m64 -stdlib=libstdc++ -fsanitize=address,undefined -fno-sanitize-recover=all -fno-omit-frame-pointer -g -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror -fsanitize=address,undefined -fno-sanitize-recover=all -fno-omit-frame-pointer @CMakeFiles/scene_workload.dir/apps/scene_workload/allocations.cpp.o.modmap -o CMakeFiles/scene_workload.dir/apps/scene_workload/allocations.cpp.o -c $REPO/apps/scene_workload/allocations.cpp",
+    "file": "$REPO/apps/scene_workload/allocations.cpp",
+    "output": "$REPO/build/scene-asan/CMakeFiles/scene_workload.dir/apps/scene_workload/allocations.cpp.o"
+  },
+  {
+    "configuration": "scene-asan",
+    "directory": "$REPO/build/scene-asan",
+    "command": "/bin/clang++ -DFFI_STATIC_BUILD -DLIBXML_STATIC -DNGEN_TEST_FIXTURES=\\\"$REPO/tests/fixtures\\\" -DXML_STATIC -I$REPO/tests -I$REPO/engine -I$REPO/apps -isystem $CONAN_HOME/p/b/sdld55aa4ffbc9f1/p/include -isystem $CONAN_HOME/p/b/wayla18d5b71128707/p/include -isystem $CONAN_HOME/p/b/zlib1259e34ede50e/p/include -isystem $CONAN_HOME/p/vulkabd7575518f65a/p/include -m64 -stdlib=libstdc++ -fsanitize=address,undefined -fno-sanitize-recover=all -fno-omit-frame-pointer -g -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror -fsanitize=address,undefined -fno-sanitize-recover=all -fno-omit-frame-pointer @CMakeFiles/scene_probe.dir/apps/scene_probe/main.cpp.o.modmap -o CMakeFiles/scene_probe.dir/apps/scene_probe/main.cpp.o -c $REPO/apps/scene_probe/main.cpp",
+    "file": "$REPO/apps/scene_probe/main.cpp",
+    "output": "$REPO/build/scene-asan/CMakeFiles/scene_probe.dir/apps/scene_probe/main.cpp.o"
+  },
+  {
+    "configuration": "scene-asan",
+    "directory": "$REPO/build/scene-asan",
+    "command": "/bin/clang++ -DFFI_STATIC_BUILD -DLIBXML_STATIC -DNGEN_TEST_FIXTURES=\\\"$REPO/tests/fixtures\\\" -DXML_STATIC -I$REPO/tests -I$REPO/engine -I$REPO/apps -isystem $CONAN_HOME/p/b/sdld55aa4ffbc9f1/p/include -isystem $CONAN_HOME/p/b/wayla18d5b71128707/p/include -isystem $CONAN_HOME/p/b/zlib1259e34ede50e/p/include -isystem $CONAN_HOME/p/vulkabd7575518f65a/p/include -m64 -stdlib=libstdc++ -fsanitize=address,undefined -fno-sanitize-recover=all -fno-omit-frame-pointer -g -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror -fsanitize=address,undefined -fno-sanitize-recover=all -fno-omit-frame-pointer @CMakeFiles/scene_probe.dir/apps/scene_probe/draw.cpp.o.modmap -o CMakeFiles/scene_probe.dir/apps/scene_probe/draw.cpp.o -c $REPO/apps/scene_probe/draw.cpp",
+    "file": "$REPO/apps/scene_probe/draw.cpp",
+    "output": "$REPO/build/scene-asan/CMakeFiles/scene_probe.dir/apps/scene_probe/draw.cpp.o"
+  },
+  {
+    "configuration": "scene-asan",
+    "directory": "$REPO/build/scene-asan",
+    "command": "/bin/clang++ -DFFI_STATIC_BUILD -DLIBXML_STATIC -DXML_STATIC -I$REPO/engine -isystem $CONAN_HOME/p/b/sdld55aa4ffbc9f1/p/include -isystem $CONAN_HOME/p/b/wayla18d5b71128707/p/include -isystem $CONAN_HOME/p/b/zlib1259e34ede50e/p/include -isystem $CONAN_HOME/p/vulkabd7575518f65a/p/include -isystem $CONAN_HOME/p/b/catch6ca307d792caf/p/include -m64 -stdlib=libstdc++ -fsanitize=address,undefined -fno-sanitize-recover=all -fno-omit-frame-pointer -g -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror -fsanitize=address,undefined -fno-sanitize-recover=all -fno-omit-frame-pointer @CMakeFiles/render_environment_tests.dir/tests/render_environment.cpp.o.modmap -o CMakeFiles/render_environment_tests.dir/tests/render_environment.cpp.o -c $REPO/tests/render_environment.cpp",
+    "file": "$REPO/tests/render_environment.cpp",
+    "output": "$REPO/build/scene-asan/CMakeFiles/render_environment_tests.dir/tests/render_environment.cpp.o"
+  },
+  {
+    "configuration": "scene-asan",
+    "directory": "$REPO/build/scene-asan",
+    "command": "/bin/clang++ -DFFI_STATIC_BUILD -DLIBXML_STATIC -DNGEN_ALLOCATION_PROBE=0 -DXML_STATIC -I$REPO/apps -I$REPO/engine -isystem $CONAN_HOME/p/b/sdld55aa4ffbc9f1/p/include -isystem $CONAN_HOME/p/b/wayla18d5b71128707/p/include -isystem $CONAN_HOME/p/b/zlib1259e34ede50e/p/include -isystem $CONAN_HOME/p/vulkabd7575518f65a/p/include -isystem $CONAN_HOME/p/b/catch6ca307d792caf/p/include -m64 -stdlib=libstdc++ -fsanitize=address,undefined -fno-sanitize-recover=all -fno-omit-frame-pointer -g -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror -fsanitize=address,undefined -fno-sanitize-recover=all -fno-omit-frame-pointer @CMakeFiles/scene_workload_tests.dir/tests/workload.cpp.o.modmap -o CMakeFiles/scene_workload_tests.dir/tests/workload.cpp.o -c $REPO/tests/workload.cpp",
+    "file": "$REPO/tests/workload.cpp",
+    "output": "$REPO/build/scene-asan/CMakeFiles/scene_workload_tests.dir/tests/workload.cpp.o"
+  },
+  {
+    "configuration": "scene-asan",
+    "directory": "$REPO/build/scene-asan",
+    "command": "/bin/clang++ -DFFI_STATIC_BUILD -DLIBXML_STATIC -DNGEN_ALLOCATION_PROBE=0 -DXML_STATIC -I$REPO/apps -I$REPO/engine -isystem $CONAN_HOME/p/b/sdld55aa4ffbc9f1/p/include -isystem $CONAN_HOME/p/b/wayla18d5b71128707/p/include -isystem $CONAN_HOME/p/b/zlib1259e34ede50e/p/include -isystem $CONAN_HOME/p/vulkabd7575518f65a/p/include -isystem $CONAN_HOME/p/b/catch6ca307d792caf/p/include -m64 -stdlib=libstdc++ -fsanitize=address,undefined -fno-sanitize-recover=all -fno-omit-frame-pointer -g -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror -fsanitize=address,undefined -fno-sanitize-recover=all -fno-omit-frame-pointer @CMakeFiles/scene_workload_tests.dir/apps/scene_workload/allocations.cpp.o.modmap -o CMakeFiles/scene_workload_tests.dir/apps/scene_workload/allocations.cpp.o -c $REPO/apps/scene_workload/allocations.cpp",
+    "file": "$REPO/apps/scene_workload/allocations.cpp",
+    "output": "$REPO/build/scene-asan/CMakeFiles/scene_workload_tests.dir/apps/scene_workload/allocations.cpp.o"
+  },
+  {
+    "configuration": "scene-asan",
+    "directory": "$REPO/build/scene-asan",
+    "command": "/bin/clang++ -DFFI_STATIC_BUILD -DLIBXML_STATIC -DNGEN_SHADER_PACKAGE_DIR=\\\"$REPO/build/scene-asan/shaders/3b8cd44a089f5bcf3f392fc4087267fe467dd39c968c4585823e2a40ae40eab6\\\" -DVMA_VULKAN_VERSION=1003000 -DXML_STATIC -I$REPO/engine -isystem $CONAN_HOME/p/b/sdld55aa4ffbc9f1/p/include -isystem $CONAN_HOME/p/b/wayla18d5b71128707/p/include -isystem $CONAN_HOME/p/b/zlib1259e34ede50e/p/include -isystem $CONAN_HOME/p/vulkabd7575518f65a/p/include -isystem $CONAN_HOME/p/vulka5f8c9f361cfa0/p/include -isystem $CONAN_HOME/p/vulkabd7575518f65a/p/res/vulkan/registry -m64 -stdlib=libstdc++ -fsanitize=address,undefined -fno-sanitize-recover=all -fno-omit-frame-pointer -g -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror -fsanitize=address,undefined -fno-sanitize-recover=all -fno-omit-frame-pointer @CMakeFiles/shader_gpu_probe.dir/tests/shader_gpu.cpp.o.modmap -o CMakeFiles/shader_gpu_probe.dir/tests/shader_gpu.cpp.o -c $REPO/tests/shader_gpu.cpp",
+    "file": "$REPO/tests/shader_gpu.cpp",
+    "output": "$REPO/build/scene-asan/CMakeFiles/shader_gpu_probe.dir/tests/shader_gpu.cpp.o"
+  },
+  {
+    "configuration": "scene-asan",
+    "directory": "$REPO/build/scene-asan",
+    "command": "/bin/clang++ -DFFI_STATIC_BUILD -DLIBXML_STATIC -DXML_STATIC -I$REPO/engine -isystem $CONAN_HOME/p/b/sdld55aa4ffbc9f1/p/include -isystem $CONAN_HOME/p/b/wayla18d5b71128707/p/include -isystem $CONAN_HOME/p/b/zlib1259e34ede50e/p/include -isystem $CONAN_HOME/p/vulkabd7575518f65a/p/include -isystem $CONAN_HOME/p/b/catch6ca307d792caf/p/include -m64 -stdlib=libstdc++ -fsanitize=address,undefined -fno-sanitize-recover=all -fno-omit-frame-pointer -g -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror -fsanitize=address,undefined -fno-sanitize-recover=all -fno-omit-frame-pointer @CMakeFiles/render_startup_tests.dir/tests/render_startup.cpp.o.modmap -o CMakeFiles/render_startup_tests.dir/tests/render_startup.cpp.o -c $REPO/tests/render_startup.cpp",
+    "file": "$REPO/tests/render_startup.cpp",
+    "output": "$REPO/build/scene-asan/CMakeFiles/render_startup_tests.dir/tests/render_startup.cpp.o"
+  },
+  {
+    "configuration": "scene-no-shaders",
+    "directory": "$REPO/build/scene-no-shaders",
+    "command": "/bin/clang++ -DFFI_STATIC_BUILD -DLIBXML_STATIC -DVMA_VULKAN_VERSION=1003000 -DXML_STATIC -I$REPO/engine -isystem $CONAN_HOME/p/b/sdlee9e38e66a538/p/include -isystem $CONAN_HOME/p/b/wayla064c9fb324c75/p/include -isystem $CONAN_HOME/p/b/zlibe8292d90d105f/p/include -isystem $CONAN_HOME/p/vulkabd7575518f65a/p/include -isystem $CONAN_HOME/p/vulka5f8c9f361cfa0/p/include -isystem $CONAN_HOME/p/vulkabd7575518f65a/p/res/vulkan/registry -m64 -stdlib=libstdc++ -g -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror @CMakeFiles/ngen_render.dir/engine/render/context.cpp.o.modmap -o CMakeFiles/ngen_render.dir/engine/render/context.cpp.o -c $REPO/engine/render/context.cpp",
+    "file": "$REPO/engine/render/context.cpp",
+    "output": "$REPO/build/scene-no-shaders/CMakeFiles/ngen_render.dir/engine/render/context.cpp.o"
+  },
+  {
+    "configuration": "scene-no-shaders",
+    "directory": "$REPO/build/scene-no-shaders",
+    "command": "/bin/clang++ -DFFI_STATIC_BUILD -DLIBXML_STATIC -DVMA_VULKAN_VERSION=1003000 -DXML_STATIC -I$REPO/engine -isystem $CONAN_HOME/p/b/sdlee9e38e66a538/p/include -isystem $CONAN_HOME/p/b/wayla064c9fb324c75/p/include -isystem $CONAN_HOME/p/b/zlibe8292d90d105f/p/include -isystem $CONAN_HOME/p/vulkabd7575518f65a/p/include -isystem $CONAN_HOME/p/vulka5f8c9f361cfa0/p/include -isystem $CONAN_HOME/p/vulkabd7575518f65a/p/res/vulkan/registry -m64 -stdlib=libstdc++ -g -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror @CMakeFiles/ngen_render.dir/engine/render/presentation.cpp.o.modmap -o CMakeFiles/ngen_render.dir/engine/render/presentation.cpp.o -c $REPO/engine/render/presentation.cpp",
+    "file": "$REPO/engine/render/presentation.cpp",
+    "output": "$REPO/build/scene-no-shaders/CMakeFiles/ngen_render.dir/engine/render/presentation.cpp.o"
+  },
+  {
+    "configuration": "scene-no-shaders",
+    "directory": "$REPO/build/scene-no-shaders",
+    "command": "/bin/clang++ -DFFI_STATIC_BUILD -DLIBXML_STATIC -DVMA_VULKAN_VERSION=1003000 -DXML_STATIC -I$REPO/engine -isystem $CONAN_HOME/p/b/sdlee9e38e66a538/p/include -isystem $CONAN_HOME/p/b/wayla064c9fb324c75/p/include -isystem $CONAN_HOME/p/b/zlibe8292d90d105f/p/include -isystem $CONAN_HOME/p/vulkabd7575518f65a/p/include -isystem $CONAN_HOME/p/vulka5f8c9f361cfa0/p/include -isystem $CONAN_HOME/p/vulkabd7575518f65a/p/res/vulkan/registry -m64 -stdlib=libstdc++ -g -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror @CMakeFiles/ngen_render.dir/engine/render/resources.cpp.o.modmap -o CMakeFiles/ngen_render.dir/engine/render/resources.cpp.o -c $REPO/engine/render/resources.cpp",
+    "file": "$REPO/engine/render/resources.cpp",
+    "output": "$REPO/build/scene-no-shaders/CMakeFiles/ngen_render.dir/engine/render/resources.cpp.o"
+  },
+  {
+    "configuration": "scene-no-shaders",
+    "directory": "$REPO/build/scene-no-shaders",
+    "command": "/bin/clang++ -DFFI_STATIC_BUILD -DLIBXML_STATIC -DVMA_VULKAN_VERSION=1003000 -DXML_STATIC -I$REPO/engine -isystem $CONAN_HOME/p/b/sdlee9e38e66a538/p/include -isystem $CONAN_HOME/p/b/wayla064c9fb324c75/p/include -isystem $CONAN_HOME/p/b/zlibe8292d90d105f/p/include -isystem $CONAN_HOME/p/vulkabd7575518f65a/p/include -isystem $CONAN_HOME/p/vulka5f8c9f361cfa0/p/include -isystem $CONAN_HOME/p/vulkabd7575518f65a/p/res/vulkan/registry -m64 -stdlib=libstdc++ -g -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror @CMakeFiles/ngen_render.dir/engine/render/post.cpp.o.modmap -o CMakeFiles/ngen_render.dir/engine/render/post.cpp.o -c $REPO/engine/render/post.cpp",
+    "file": "$REPO/engine/render/post.cpp",
+    "output": "$REPO/build/scene-no-shaders/CMakeFiles/ngen_render.dir/engine/render/post.cpp.o"
+  },
+  {
+    "configuration": "scene-no-shaders",
+    "directory": "$REPO/build/scene-no-shaders",
+    "command": "/bin/clang++ -DFFI_STATIC_BUILD -DLIBXML_STATIC -DVMA_VULKAN_VERSION=1003000 -DXML_STATIC -I$REPO/engine -isystem $CONAN_HOME/p/b/sdlee9e38e66a538/p/include -isystem $CONAN_HOME/p/b/wayla064c9fb324c75/p/include -isystem $CONAN_HOME/p/b/zlibe8292d90d105f/p/include -isystem $CONAN_HOME/p/vulkabd7575518f65a/p/include -isystem $CONAN_HOME/p/vulka5f8c9f361cfa0/p/include -isystem $CONAN_HOME/p/vulkabd7575518f65a/p/res/vulkan/registry -m64 -stdlib=libstdc++ -g -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror @CMakeFiles/ngen_render.dir/engine/render/mesh.cpp.o.modmap -o CMakeFiles/ngen_render.dir/engine/render/mesh.cpp.o -c $REPO/engine/render/mesh.cpp",
+    "file": "$REPO/engine/render/mesh.cpp",
+    "output": "$REPO/build/scene-no-shaders/CMakeFiles/ngen_render.dir/engine/render/mesh.cpp.o"
+  },
+  {
+    "configuration": "scene-no-shaders",
+    "directory": "$REPO/build/scene-no-shaders",
+    "command": "/bin/clang++ -DFFI_STATIC_BUILD -DLIBXML_STATIC -DVMA_VULKAN_VERSION=1003000 -DXML_STATIC -I$REPO/engine -isystem $CONAN_HOME/p/b/sdlee9e38e66a538/p/include -isystem $CONAN_HOME/p/b/wayla064c9fb324c75/p/include -isystem $CONAN_HOME/p/b/zlibe8292d90d105f/p/include -isystem $CONAN_HOME/p/vulkabd7575518f65a/p/include -isystem $CONAN_HOME/p/vulka5f8c9f361cfa0/p/include -isystem $CONAN_HOME/p/vulkabd7575518f65a/p/res/vulkan/registry -m64 -stdlib=libstdc++ -g -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror @CMakeFiles/ngen_render.dir/engine/render/environment.cpp.o.modmap -o CMakeFiles/ngen_render.dir/engine/render/environment.cpp.o -c $REPO/engine/render/environment.cpp",
+    "file": "$REPO/engine/render/environment.cpp",
+    "output": "$REPO/build/scene-no-shaders/CMakeFiles/ngen_render.dir/engine/render/environment.cpp.o"
+  },
+  {
+    "configuration": "scene-no-shaders",
+    "directory": "$REPO/build/scene-no-shaders",
+    "command": "/bin/clang++ -DFFI_STATIC_BUILD -DLIBXML_STATIC -DXML_STATIC -I$REPO/apps -I$REPO/engine -isystem $CONAN_HOME/p/b/sdlee9e38e66a538/p/include -isystem $CONAN_HOME/p/b/wayla064c9fb324c75/p/include -isystem $CONAN_HOME/p/b/zlibe8292d90d105f/p/include -isystem $CONAN_HOME/p/vulkabd7575518f65a/p/include -m64 -stdlib=libstdc++ -g -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror @CMakeFiles/ngen_probe_support.dir/apps/probe/presentation.cpp.o.modmap -o CMakeFiles/ngen_probe_support.dir/apps/probe/presentation.cpp.o -c $REPO/apps/probe/presentation.cpp",
+    "file": "$REPO/apps/probe/presentation.cpp",
+    "output": "$REPO/build/scene-no-shaders/CMakeFiles/ngen_probe_support.dir/apps/probe/presentation.cpp.o"
+  },
+  {
+    "configuration": "scene-no-shaders",
+    "directory": "$REPO/build/scene-no-shaders",
+    "command": "/bin/clang++ -DFFI_STATIC_BUILD -DLIBXML_STATIC -DXML_STATIC -I$REPO/apps -I$REPO/engine -isystem $CONAN_HOME/p/b/sdlee9e38e66a538/p/include -isystem $CONAN_HOME/p/b/wayla064c9fb324c75/p/include -isystem $CONAN_HOME/p/b/zlibe8292d90d105f/p/include -isystem $CONAN_HOME/p/vulkabd7575518f65a/p/include -m64 -stdlib=libstdc++ -g -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror @CMakeFiles/ngen_probe_support.dir/apps/probe/capture.cpp.o.modmap -o CMakeFiles/ngen_probe_support.dir/apps/probe/capture.cpp.o -c $REPO/apps/probe/capture.cpp",
+    "file": "$REPO/apps/probe/capture.cpp",
+    "output": "$REPO/build/scene-no-shaders/CMakeFiles/ngen_probe_support.dir/apps/probe/capture.cpp.o"
+  },
+  {
+    "configuration": "scene-no-shaders",
+    "directory": "$REPO/build/scene-no-shaders",
+    "command": "/bin/clang++ -DFFI_STATIC_BUILD -DLIBXML_STATIC -DXML_STATIC -I$REPO/apps -I$REPO/engine -isystem $CONAN_HOME/p/b/sdlee9e38e66a538/p/include -isystem $CONAN_HOME/p/b/wayla064c9fb324c75/p/include -isystem $CONAN_HOME/p/b/zlibe8292d90d105f/p/include -isystem $CONAN_HOME/p/vulkabd7575518f65a/p/include -m64 -stdlib=libstdc++ -g -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror @CMakeFiles/render_probe.dir/apps/render_probe/main.cpp.o.modmap -o CMakeFiles/render_probe.dir/apps/render_probe/main.cpp.o -c $REPO/apps/render_probe/main.cpp",
+    "file": "$REPO/apps/render_probe/main.cpp",
+    "output": "$REPO/build/scene-no-shaders/CMakeFiles/render_probe.dir/apps/render_probe/main.cpp.o"
+  },
+  {
+    "configuration": "scene-no-shaders",
+    "directory": "$REPO/build/scene-no-shaders",
+    "command": "/bin/clang++ -DFFI_STATIC_BUILD -DLIBXML_STATIC -DXML_STATIC -I$REPO/apps -I$REPO/engine -isystem $CONAN_HOME/p/b/sdlee9e38e66a538/p/include -isystem $CONAN_HOME/p/b/wayla064c9fb324c75/p/include -isystem $CONAN_HOME/p/b/zlibe8292d90d105f/p/include -isystem $CONAN_HOME/p/vulkabd7575518f65a/p/include -m64 -stdlib=libstdc++ -g -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror @CMakeFiles/resource_probe.dir/apps/resource_probe/main.cpp.o.modmap -o CMakeFiles/resource_probe.dir/apps/resource_probe/main.cpp.o -c $REPO/apps/resource_probe/main.cpp",
+    "file": "$REPO/apps/resource_probe/main.cpp",
+    "output": "$REPO/build/scene-no-shaders/CMakeFiles/resource_probe.dir/apps/resource_probe/main.cpp.o"
+  },
+  {
+    "configuration": "scene-no-shaders",
+    "directory": "$REPO/build/scene-no-shaders",
+    "command": "/bin/clang++ -DFFI_STATIC_BUILD -DLIBXML_STATIC -DXML_STATIC -I$REPO/engine -isystem $CONAN_HOME/p/b/sdlee9e38e66a538/p/include -isystem $CONAN_HOME/p/b/wayla064c9fb324c75/p/include -isystem $CONAN_HOME/p/b/zlibe8292d90d105f/p/include -isystem $CONAN_HOME/p/vulkabd7575518f65a/p/include -m64 -stdlib=libstdc++ -g -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror @CMakeFiles/ngen_scene.dir/engine/render/scene.cpp.o.modmap -o CMakeFiles/ngen_scene.dir/engine/render/scene.cpp.o -c $REPO/engine/render/scene.cpp",
+    "file": "$REPO/engine/render/scene.cpp",
+    "output": "$REPO/build/scene-no-shaders/CMakeFiles/ngen_scene.dir/engine/render/scene.cpp.o"
+  },
+  {
+    "configuration": "scene-no-shaders",
+    "directory": "$REPO/build/scene-no-shaders",
+    "command": "/bin/clang++ -DFFI_STATIC_BUILD -DLIBXML_STATIC -DXML_STATIC -I$REPO/engine -isystem $CONAN_HOME/p/b/sdlee9e38e66a538/p/include -isystem $CONAN_HOME/p/b/wayla064c9fb324c75/p/include -isystem $CONAN_HOME/p/b/zlibe8292d90d105f/p/include -isystem $CONAN_HOME/p/vulkabd7575518f65a/p/include -m64 -stdlib=libstdc++ -g -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror @CMakeFiles/ngen_scene.dir/engine/render/scene_draw.cpp.o.modmap -o CMakeFiles/ngen_scene.dir/engine/render/scene_draw.cpp.o -c $REPO/engine/render/scene_draw.cpp",
+    "file": "$REPO/engine/render/scene_draw.cpp",
+    "output": "$REPO/build/scene-no-shaders/CMakeFiles/ngen_scene.dir/engine/render/scene_draw.cpp.o"
+  },
+  {
+    "configuration": "scene-no-shaders",
+    "directory": "$REPO/build/scene-no-shaders",
+    "command": "/bin/clang++ -DFFI_STATIC_BUILD -DLIBXML_STATIC -DXML_STATIC -I$REPO/apps -I$REPO/engine -isystem $CONAN_HOME/p/b/sdlee9e38e66a538/p/include -isystem $CONAN_HOME/p/b/wayla064c9fb324c75/p/include -isystem $CONAN_HOME/p/b/zlibe8292d90d105f/p/include -isystem $CONAN_HOME/p/vulkabd7575518f65a/p/include -m64 -stdlib=libstdc++ -g -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror @CMakeFiles/scene_workload_fixture.dir/apps/scene_workload/fixture.cpp.o.modmap -o CMakeFiles/scene_workload_fixture.dir/apps/scene_workload/fixture.cpp.o -c $REPO/apps/scene_workload/fixture.cpp",
+    "file": "$REPO/apps/scene_workload/fixture.cpp",
+    "output": "$REPO/build/scene-no-shaders/CMakeFiles/scene_workload_fixture.dir/apps/scene_workload/fixture.cpp.o"
+  },
+  {
+    "configuration": "scene-no-shaders",
+    "directory": "$REPO/build/scene-no-shaders",
+    "command": "/bin/clang++ -DFFI_STATIC_BUILD -DLIBXML_STATIC -DNGEN_TEST_FIXTURES=\\\"$REPO/tests/fixtures\\\" -DXML_STATIC -I$REPO/tests -I$REPO/engine -I$REPO/apps -isystem $CONAN_HOME/p/b/sdlee9e38e66a538/p/include -isystem $CONAN_HOME/p/b/wayla064c9fb324c75/p/include -isystem $CONAN_HOME/p/b/zlibe8292d90d105f/p/include -isystem $CONAN_HOME/p/vulkabd7575518f65a/p/include -m64 -stdlib=libstdc++ -g -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror @CMakeFiles/scene_probe.dir/apps/scene_probe/main.cpp.o.modmap -o CMakeFiles/scene_probe.dir/apps/scene_probe/main.cpp.o -c $REPO/apps/scene_probe/main.cpp",
+    "file": "$REPO/apps/scene_probe/main.cpp",
+    "output": "$REPO/build/scene-no-shaders/CMakeFiles/scene_probe.dir/apps/scene_probe/main.cpp.o"
+  },
+  {
+    "configuration": "scene-no-shaders",
+    "directory": "$REPO/build/scene-no-shaders",
+    "command": "/bin/clang++ -DFFI_STATIC_BUILD -DLIBXML_STATIC -DNGEN_TEST_FIXTURES=\\\"$REPO/tests/fixtures\\\" -DXML_STATIC -I$REPO/tests -I$REPO/engine -I$REPO/apps -isystem $CONAN_HOME/p/b/sdlee9e38e66a538/p/include -isystem $CONAN_HOME/p/b/wayla064c9fb324c75/p/include -isystem $CONAN_HOME/p/b/zlibe8292d90d105f/p/include -isystem $CONAN_HOME/p/vulkabd7575518f65a/p/include -m64 -stdlib=libstdc++ -g -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror @CMakeFiles/scene_probe.dir/apps/scene_probe/draw.cpp.o.modmap -o CMakeFiles/scene_probe.dir/apps/scene_probe/draw.cpp.o -c $REPO/apps/scene_probe/draw.cpp",
+    "file": "$REPO/apps/scene_probe/draw.cpp",
+    "output": "$REPO/build/scene-no-shaders/CMakeFiles/scene_probe.dir/apps/scene_probe/draw.cpp.o"
+  },
+  {
+    "configuration": "scene-no-shaders",
+    "directory": "$REPO/build/scene-no-shaders",
+    "command": "/bin/clang++ -DFFI_STATIC_BUILD -DLIBXML_STATIC -DXML_STATIC -I$REPO/engine -isystem $CONAN_HOME/p/b/sdlee9e38e66a538/p/include -isystem $CONAN_HOME/p/b/wayla064c9fb324c75/p/include -isystem $CONAN_HOME/p/b/zlibe8292d90d105f/p/include -isystem $CONAN_HOME/p/vulkabd7575518f65a/p/include -isystem $CONAN_HOME/p/b/catch646a1245bf61b/p/include -m64 -stdlib=libstdc++ -g -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror @CMakeFiles/render_environment_tests.dir/tests/render_environment.cpp.o.modmap -o CMakeFiles/render_environment_tests.dir/tests/render_environment.cpp.o -c $REPO/tests/render_environment.cpp",
+    "file": "$REPO/tests/render_environment.cpp",
+    "output": "$REPO/build/scene-no-shaders/CMakeFiles/render_environment_tests.dir/tests/render_environment.cpp.o"
+  },
+  {
+    "configuration": "scene-no-shaders",
+    "directory": "$REPO/build/scene-no-shaders",
+    "command": "/bin/clang++ -DFFI_STATIC_BUILD -DLIBXML_STATIC -DNGEN_ALLOCATION_PROBE=1 -DXML_STATIC -I$REPO/apps -I$REPO/engine -isystem $CONAN_HOME/p/b/sdlee9e38e66a538/p/include -isystem $CONAN_HOME/p/b/wayla064c9fb324c75/p/include -isystem $CONAN_HOME/p/b/zlibe8292d90d105f/p/include -isystem $CONAN_HOME/p/vulkabd7575518f65a/p/include -isystem $CONAN_HOME/p/b/catch646a1245bf61b/p/include -m64 -stdlib=libstdc++ -g -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror @CMakeFiles/scene_workload_tests.dir/tests/workload.cpp.o.modmap -o CMakeFiles/scene_workload_tests.dir/tests/workload.cpp.o -c $REPO/tests/workload.cpp",
+    "file": "$REPO/tests/workload.cpp",
+    "output": "$REPO/build/scene-no-shaders/CMakeFiles/scene_workload_tests.dir/tests/workload.cpp.o"
+  },
+  {
+    "configuration": "scene-no-shaders",
+    "directory": "$REPO/build/scene-no-shaders",
+    "command": "/bin/clang++ -DFFI_STATIC_BUILD -DLIBXML_STATIC -DNGEN_ALLOCATION_PROBE=1 -DXML_STATIC -I$REPO/apps -I$REPO/engine -isystem $CONAN_HOME/p/b/sdlee9e38e66a538/p/include -isystem $CONAN_HOME/p/b/wayla064c9fb324c75/p/include -isystem $CONAN_HOME/p/b/zlibe8292d90d105f/p/include -isystem $CONAN_HOME/p/vulkabd7575518f65a/p/include -isystem $CONAN_HOME/p/b/catch646a1245bf61b/p/include -m64 -stdlib=libstdc++ -g -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror @CMakeFiles/scene_workload_tests.dir/apps/scene_workload/allocations.cpp.o.modmap -o CMakeFiles/scene_workload_tests.dir/apps/scene_workload/allocations.cpp.o -c $REPO/apps/scene_workload/allocations.cpp",
+    "file": "$REPO/apps/scene_workload/allocations.cpp",
+    "output": "$REPO/build/scene-no-shaders/CMakeFiles/scene_workload_tests.dir/apps/scene_workload/allocations.cpp.o"
+  },
+  {
+    "configuration": "scene-no-shaders",
+    "directory": "$REPO/build/scene-no-shaders",
+    "command": "/bin/clang++ -DFFI_STATIC_BUILD -DLIBXML_STATIC -DXML_STATIC -I$REPO/engine -isystem $CONAN_HOME/p/b/sdlee9e38e66a538/p/include -isystem $CONAN_HOME/p/b/wayla064c9fb324c75/p/include -isystem $CONAN_HOME/p/b/zlibe8292d90d105f/p/include -isystem $CONAN_HOME/p/vulkabd7575518f65a/p/include -isystem $CONAN_HOME/p/b/catch646a1245bf61b/p/include -m64 -stdlib=libstdc++ -g -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror @CMakeFiles/render_startup_tests.dir/tests/render_startup.cpp.o.modmap -o CMakeFiles/render_startup_tests.dir/tests/render_startup.cpp.o -c $REPO/tests/render_startup.cpp",
+    "file": "$REPO/tests/render_startup.cpp",
+    "output": "$REPO/build/scene-no-shaders/CMakeFiles/render_startup_tests.dir/tests/render_startup.cpp.o"
+  }
+]

@@ -1,0 +1,18 @@
+device=Intel(R) Iris(R) Xe Graphics (TGL GT2) api=1.4 driver=109060102 queue=0 display=wayland
+device=Intel(R) Iris(R) Xe Graphics (TGL GT2) api=1.4 driver=109060102 queue=0 display=wayland
+tracked_post_draw=1 hdr_tone_map_pixels=4 asymmetric_orientation=1 exposure_srgb=1 graphics_retirement=1
+fxaa_diagonal=1 fxaa_softened_pixels=8 fxaa_flat_regions=1
+sampled_image_presentation=1 wsi_resource_timeline=1 wsi_source_retirement=1 unresolved_dependency_rejected=1
+mip_chain_roundtrip=1 mip_levels=3 mip_bytes=168
+hdr_attachment=1 hdr_roundtrip_bytes=48
+depth_attachment=1 depth_roundtrip_bytes=24
+cube_roundtrip=1 cube_faces=6 cube_mip_levels=3 cube_bytes=504
+queued_frames=96 swapchain_generations=3 verified_resizes=2 minimize_verified=0 sampled_source=1
+presented_image_replacements=382 vma_allocation_bytes=12460 vma_reserved_bytes=3145728
+gpu_instanced_mesh=1 instance_count=100 instance_shared_geometry=1 instance_normals=1 instance_shadow=1 instance_snapshot=1 instance_admission=1
+mesh_geometry_override=1 geometry_switch_restored=1 override_retirement=1
+generated_shadow=1 shadow_indexed_transform=1 shadow_mask_uv1_sampler=1 shadow_blend_excluded=1 shadow_receiver_visibility=1 shadow_facing=1 shadow_mirrored=1
+generated_ibl_draw=1 generated_ibl_channels=6 generated_ibl_roughness_tail=1
+gpu_timestamp_pending=1 gpu_shadow_pbr_timing=1 gpu_timeline_completion=1
+tracked_indexed_pbr=1 mesh_depth=1 mesh_materials=2 mesh_retirement=1 mesh_two_slots=1
+buffer_lifetime=1 gpu_roundtrip=1 pending_retirement=1 resource_slots=64 replacement_cycles=128 image_lifetime=1 image_roundtrip=1 image_retirement=1 cube_retirement=1 close_invalidated=1

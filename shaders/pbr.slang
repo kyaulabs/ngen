@@ -8,6 +8,15 @@ struct FrameConstants
     float4 keyDirectionIntensity;
     float4 keyColor;
 };
+struct InstanceTransform
+{
+    float4x4 model;
+    float4x4 normalMatrix;
+};
+struct InstanceConstants
+{
+    InstanceTransform transforms[100];
+};
 struct LocalLight
 {
     float4 positionRange;
@@ -29,6 +38,7 @@ struct MaterialConstants
 [[vk::binding(1, 0)]] ConstantBuffer<LightConstants> localLights;
 [[vk::binding(2, 0)]] Texture2D<float> shadowMap;
 [[vk::binding(3, 0)]] SamplerComparisonState shadowSampler;
+[[vk::binding(4, 0)]] ConstantBuffer<InstanceConstants> instances;
 [[vk::binding(0, 1)]] ConstantBuffer<MaterialConstants> material;
 [[vk::binding(1, 1)]] Texture2D<float4> baseColorMap;
 [[vk::binding(2, 1)]] Texture2D<float4> normalMap;
@@ -60,15 +70,17 @@ struct Varying
     float2 uv1 : TEXCOORD5;
 };
 [shader("vertex")]
-Varying vertexMain(Vertex input)
+Varying vertexMain(Vertex input, uint instanceId : SV_VulkanInstanceID)
 {
     Varying output;
-    float4 world = mul(frame.model, float4(input.position, 1));
+    InstanceTransform instance = instances.transforms[instanceId];
+    float4x4 model = mul(frame.model, instance.model);
+    float4 world = mul(model, float4(input.position, 1));
     output.position = mul(frame.viewProjection, world);
     output.worldPosition = world.xyz;
-    output.normal = mul((float3x3)frame.normalMatrix, input.normal);
-    float handedness = determinant((float3x3)frame.model) < 0 ? -1.0 : 1.0;
-    output.tangent = float4(mul((float3x3)frame.model, input.tangent.xyz), input.tangent.w * handedness);
+    output.normal = mul((float3x3)frame.normalMatrix, mul((float3x3)instance.normalMatrix, input.normal));
+    float handedness = determinant((float3x3)model) < 0 ? -1.0 : 1.0;
+    output.tangent = float4(mul((float3x3)model, input.tangent.xyz), input.tangent.w * handedness);
     output.uv = input.uv;
     output.uv1 = input.uv1;
     output.shadowPosition = mul(frame.lightViewProjection, world);
@@ -82,10 +94,11 @@ struct ShadowVarying
     float2 uv1 : TEXCOORD1;
 };
 [shader("vertex")]
-ShadowVarying shadowVertex(Vertex input)
+ShadowVarying shadowVertex(Vertex input, uint instanceId : SV_VulkanInstanceID)
 {
     ShadowVarying output;
-    output.position = mul(frame.lightViewProjection, mul(frame.model, float4(input.position, 1)));
+    float4 world = mul(frame.model, mul(instances.transforms[instanceId].model, float4(input.position, 1)));
+    output.position = mul(frame.lightViewProjection, world);
     output.uv = input.uv;
     output.uv1 = input.uv1;
     return output;

@@ -37,6 +37,11 @@ struct Primitive {
 struct TextureReference {
     std::uint32_t texture{UINT32_MAX}, uv_set{};
 };
+// Owning scalar override payload; textures/alpha mode/facing remain authored.
+struct MaterialFactors {
+    std::array<float, 4> base_color{1, 1, 1, 1};
+    float metallic{1}, roughness{1}, emissive_strength{1};
+};
 struct Material {
     std::string name;
     std::array<float, 4> base_color{1, 1, 1, 1};

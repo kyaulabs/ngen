@@ -77,6 +77,12 @@ try {
         & $pwsh -NoProfile -File $scriptPath -ScenePackage 'not present.ngas' *> $log
         if ($LASTEXITCODE -ne 2 -or (Get-Content -Raw $log) -notmatch 'requires Windows') { throw 'Package scene mode did not reach the Windows prerequisite check' }
     }
+    if (-not $IsWindows) {
+        & $pwsh -NoProfile -File $scriptPath -Inspector -ScenePackage 'not present.ngas' *> $log
+        if ($LASTEXITCODE -ne 2 -or (Get-Content -Raw $log) -notmatch 'requires Windows') { throw 'Inspector mode did not reach the Windows prerequisite check' }
+    }
+    & $pwsh -NoProfile -File $scriptPath -GpuInfo -Inspector *> $log
+    if ($LASTEXITCODE -eq 0 -or $LASTEXITCODE -eq 2) { throw 'GPU capture and inspector builds were mixed' }
     & $pwsh -NoProfile -File $scriptPath -GpuInfo -ScenePackage 'not present.ngas' *> $log
     if ($LASTEXITCODE -eq 0 -or $LASTEXITCODE -eq 2) { throw 'GPU capture and package scene builds were mixed' }
     & $pwsh -NoProfile -File $scriptPath -GpuInfo -Scene *> $log
@@ -118,6 +124,13 @@ try {
         }, $true)
         if (-not $rendererDefinition) { throw 'Renderer process boundary not found' }
         . ([scriptblock]::Create($rendererDefinition.Extent.Text))
+        $workloadDefinition = $ast.Find({
+            param($node)
+            $node -is [System.Management.Automation.Language.FunctionDefinitionAst] -and
+            $node.Name -eq 'Invoke-NgenWorkload'
+        }, $true)
+        if (-not $workloadDefinition) { throw 'Workload process/memory boundary not found' }
+        . ([scriptblock]::Create($workloadDefinition.Extent.Text))
         $identityDefinition = $ast.Find({
             param($node)
             $node -is [System.Management.Automation.Language.FunctionDefinitionAst] -and
@@ -132,7 +145,7 @@ try {
         $shaderPackage = Join-Path $renderBuild 'shaders/cooked'
         New-Item -ItemType Directory $shaderPackage | Out-Null
         Set-Content (Join-Path $shaderPackage 'manifest.json') '{"schema":1,"compiler":{"sha256":"fixture compiler identity"}}'
-        foreach ($shader in @('cull', 'pbr-vertex', 'pbr-fragment', 'shadow-vertex', 'shadow-fragment', 'post-vertex', 'post-fragment')) {
+        foreach ($shader in @('cull', 'pbr-vertex', 'pbr-fragment', 'shadow-vertex', 'shadow-fragment', 'post-vertex', 'post-fragment', 'overlay-vertex', 'overlay-fragment')) {
             Set-Content (Join-Path $shaderPackage "$shader.reflection.json") '{"fixture":"reflected layout"}'
         }
         $probe = Join-Path $renderBuild 'render_probe.exe'
@@ -143,6 +156,22 @@ mode=${1:-startup}
 case "$0" in
   */resource_probe.exe) mode=resources ;;
   */shader_gpu_probe.exe) mode=shaders ;;
+  */inspector_probe.exe) mode=inspector ;;
+  */scene_workload.exe)
+    [ -f "$1" ] || exit 9
+    mode=workload-steady
+    for argument in "$@"; do
+      printf 'workload argument: %s\n' "$argument"
+      case "$argument" in --validation) mode=workload-inspection ;; --no-resize) mode=workload-stream ;; esac
+    done
+    for argument in "$@"; do
+      case "$argument" in
+        --capture=*) [ "$NGEN_PROBE_FAIL_AT" = no-workload-capture ] || printf 'fixture UI capture' > "${argument#--capture=}" ;;
+        --report=*) [ "$NGEN_PROBE_FAIL_AT" = no-workload-report ] || printf 'frame,frame_ns\n0,16666667\n' > "${argument#--report=}" ;;
+      esac
+    done
+    sleep 0.2
+    ;;
   */scene_probe.exe)
     mode=scene
     if [ "$#" -gt 0 ]; then
@@ -167,7 +196,11 @@ exit 0
         Copy-Item -LiteralPath $probe -Destination $shaderProbe
         $sceneProbe = Join-Path $renderBuild 'scene_probe.exe'
         Copy-Item -LiteralPath $probe -Destination $sceneProbe
-        & chmod +x $probe $resourceProbe $shaderProbe $sceneProbe
+        $inspectorProbe = Join-Path $renderBuild 'inspector_probe.exe'
+        $workloadProbe = Join-Path $renderBuild 'scene_workload.exe'
+        Copy-Item -LiteralPath $probe -Destination $inspectorProbe
+        Copy-Item -LiteralPath $probe -Destination $workloadProbe
+        & chmod +x $probe $resourceProbe $shaderProbe $sceneProbe $inspectorProbe $workloadProbe
         if ($LASTEXITCODE -ne 0) { throw 'Could not prepare renderer subprocess fixture' }
         foreach ($failAt in @('', 'checks', '--check-validation-callback', 'startup', '--check-presentation', 'resources', 'shaders', 'scene')) {
             $renderLogs = Join-Path $directory ('render logs ' + [guid]::NewGuid())
@@ -223,7 +256,7 @@ exit 0
                 if (-not (Test-Path $manifestLog) -or (Get-Content -Raw $manifestLog) -cne (Get-Content -Raw (Join-Path $shaderPackage 'manifest.json'))) {
                     throw 'Actual shader compiler identity was not retained'
                 }
-                foreach ($shader in @('cull', 'pbr-vertex', 'pbr-fragment', 'shadow-vertex', 'shadow-fragment', 'post-vertex', 'post-fragment')) {
+                foreach ($shader in @('cull', 'pbr-vertex', 'pbr-fragment', 'shadow-vertex', 'shadow-fragment', 'post-vertex', 'post-fragment', 'overlay-vertex', 'overlay-fragment')) {
                     if (-not (Test-Path (Join-Path $renderLogs "Debug-$shader.reflection.json"))) {
                         throw 'Shader reflection was not retained'
                     }
@@ -258,6 +291,48 @@ exit 0
             if ($failAt -ne '' -and (Test-Path (Join-Path $packageLogs 'Release-shader-manifest.json'))) { throw 'Verification continued after a package failure' }
         }
         Remove-Item Env:NGEN_PACKAGE_MUTATE
+        $inspectorLogs = Join-Path $directory 'inspector logs'
+        New-Item -ItemType Directory $inspectorLogs | Out-Null
+        $env:NGEN_PROBE_FAIL_AT = ''
+        Invoke-NgenRenderer -BuildDirectory $renderBuild -LogDirectory $inspectorLogs -Configuration Release -Checks { } -Inspector -ScenePackage $scenePackage
+        if (-not (Test-Path (Join-Path $inspectorLogs 'Release-inspector.txt'))) { throw 'Inspector mode did not execute the actual inspector process' }
+        foreach ($mode in @('inspection', 'steady', 'stream')) {
+            foreach ($extension in @('txt', 'bmp', 'csv', 'working-set.json', 'artifacts.json')) {
+                if (-not (Test-Path (Join-Path $inspectorLogs "Release-$mode.$extension"))) { throw 'Combined workload did not retain capture/report/process-memory evidence' }
+            }
+        }
+        foreach ($mode in @('inspection', 'steady', 'stream')) {
+            $text = Get-Content -Raw (Join-Path $inspectorLogs "Release-$mode.txt")
+            if (-not $text.Contains($scenePackage) -or $text -notmatch '--inspector') { throw 'Inspector workload lost its single package argument or frontend flag' }
+            if ($mode -eq 'inspection' -and ($text -notmatch '--validation' -or $text -notmatch '--frames=1200')) { throw 'Validation walkthrough was not selected' }
+            if ($mode -ne 'inspection' -and $text -match '--validation') { throw 'Performance workload unexpectedly enabled validation' }
+            if ($mode -eq 'stream' -and ($text -notmatch '--no-resize' -or $text -notmatch '--reload-cycles=4')) { throw 'Fixed-resolution streaming scenario was not selected' }
+            $memory = Get-Content -Raw (Join-Path $inspectorLogs "Release-$mode.working-set.json") | ConvertFrom-Json
+            if ($memory.exit_code -ne 0 -or $memory.timed_out -or $memory.observed_peak_working_set_bytes -le 0) { throw 'Actual child working-set observations were not retained' }
+        }
+        foreach ($failAt in @('inspector', 'workload-inspection', 'workload-steady', 'workload-stream', 'no-workload-capture', 'no-workload-report')) {
+            $failedLogs = Join-Path $directory ('inspector failure ' + [guid]::NewGuid())
+            New-Item -ItemType Directory $failedLogs | Out-Null
+            $env:NGEN_PROBE_FAIL_AT = $failAt
+            $failed = $false
+            try { Invoke-NgenRenderer -BuildDirectory $renderBuild -LogDirectory $failedLogs -Configuration Release -Checks { } -Inspector -ScenePackage $scenePackage } catch { $failed = $true }
+            if (-not $failed) { throw 'Inspector subprocess failure or missing output was falsely accepted' }
+            if ($env:NGEN_RENDER_ENV -ne 'before') { throw 'Inspector failure did not restore the Conan runtime environment' }
+            if (Test-Path (Join-Path $failedLogs 'Release-shader-manifest.json')) { throw 'Verification continued after inspector workload failure' }
+        }
+        $ownerLogs = Join-Path $directory 'inspector existing output'
+        New-Item -ItemType Directory $ownerLogs | Out-Null
+        $ownerCapture = Join-Path $ownerLogs 'Release-inspection.bmp'
+        Set-Content -LiteralPath $ownerCapture -Value 'owner capture must survive'
+        $beforeOwner = Get-FileHash -LiteralPath $ownerCapture
+        $env:NGEN_PROBE_FAIL_AT = ''
+        $failed = $false
+        try { Invoke-NgenRenderer -BuildDirectory $renderBuild -LogDirectory $ownerLogs -Configuration Release -Checks { } -Inspector -ScenePackage $scenePackage } catch { $failed = $true }
+        if (-not $failed -or (Get-FileHash -LiteralPath $ownerCapture).Hash -cne $beforeOwner.Hash) { throw 'Inspector evidence overwrote an existing owner capture' }
+        $timeoutLog = Join-Path $directory 'workload timeout.txt'
+        $failed = $false
+        try { Invoke-NgenWorkload -FilePath $pwsh -Arguments @('-NoProfile', '-Command', 'Start-Sleep -Seconds 3') -LogPath $timeoutLog -MemoryPath "$timeoutLog.json" -TimeoutMilliseconds 1000 } catch { $failed = $_.Exception.Message -match 'deadline' }
+        if (-not $failed -or -not (Get-Content -Raw "$timeoutLog.json" | ConvertFrom-Json).timed_out) { throw 'Workload timeout was not retained as failure' }
         $emptyPackage = Join-Path $directory 'empty.ngas'
         [IO.File]::WriteAllText($emptyPackage, '')
         $oversized = Join-Path $directory 'oversized.ngas'

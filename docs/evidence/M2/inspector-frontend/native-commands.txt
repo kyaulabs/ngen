@@ -1,0 +1,68 @@
+Working directory: <ROOT>
+Base: 87fe98c7ed065ab39a287b5da095e11f06520aee plus sources.sha256.
+Local x86-64 Linux, C++20, libstdc++; Ninja jobs=2. See state.json and exact
+invocation-specific compile-commands.json (normalized paths, otherwise unfiltered).
+
+PATH=/tmp/prism-conan-venv/bin:$PATH sh tools/prepare.sh inspector-debug
+PATH=/tmp/prism-conan-venv/bin:$PATH sh tools/prepare.sh inspector-release
+PATH=/tmp/prism-conan-venv/bin:$PATH sh tools/prepare.sh inspector-asan
+PATH=/tmp/prism-conan-venv/bin:$PATH sh tools/prepare.sh inspector-gcc
+cmake --preset inspector-debug
+cmake --preset inspector-release
+cmake --preset inspector-asan '-DCMAKE_EXE_LINKER_FLAGS=-m64 -fsanitize=address,undefined -no-pie'
+cmake --preset inspector-gcc
+cmake --build --preset inspector-{debug,release,asan,gcc}
+ctest --preset inspector-{debug,release,asan,gcc} --show-only
+ctest --preset inspector-{debug,release,asan,gcc}
+The brace forms above denote four separate actual invocations, not a new preset.
+
+Physical commands run with:
+VK_LAYER_PATH=<ROOT>/build/validation-layer/usr/share/vulkan/explicit_layer.d
+LD_LIBRARY_PATH=<ROOT>/build/validation-layer/usr/lib
+ASAN_OPTIONS=detect_leaks=1:halt_on_error=1
+UBSAN_OPTIONS=halt_on_error=1:print_stacktrace=1
+
+timeout 100s build/inspector-{debug,release,asan,gcc}/inspector_probe
+NGEN_WORKLOAD_EXE=<ROOT>/build/inspector-{debug,release,asan,gcc}/scene_workload
+NGEN_WORKLOAD_PACKAGE=<ROOT>/build/cooked-candidate/frigate-canonical-first/scene.ngas
+python tests/inspector_cli.py
+# Legacy workload suite in inspector-release, inspector-asan, inspector-gcc and
+# the shipping-disabled graph; ASan capture/exclusive-writer regression separately:
+python tests/workload_cli.py
+NGEN_SCENE_PROBE=<ROOT>/build/inspector-asan/scene_probe
+NGEN_SCENE_PACKAGE=<ROOT>/build/cooked-candidate/frigate-canonical-first/scene.ngas
+python tests/scene_capture.py
+# Physical baseline resource/shader regressions in Release and ASan:
+timeout 100s build/inspector-{release,asan}/resource_probe
+timeout 100s build/inspector-{release,asan}/shader_gpu_probe
+
+# Validation-on integration/capture trace, not a performance acceptance run:
+build/inspector-release/scene_workload build/cooked-candidate/frigate-canonical-first/scene.ngas --inspector --walkthrough --frames=600 --warmup=60 --validation --capture=build/ship-inspector-verified.bmp --report=build/ship-inspector-verified.csv
+
+clang++ -std=c++20 -shared -fPIC -Wall -Wextra -Werror -I<CONAN>/p/vulkabd7575518f65a/p/include build/overlay-check/failure.cpp -ldl -o build/overlay-check/failure.so
+# Each mode separately, LD_PRELOAD applied after timeout via env:
+NGEN_OVERLAY_FAILURE={layout,pool,sets,sampler,shader2,pipeline2,buffer,submit}
+timeout 100s env LD_PRELOAD=<ROOT>/build/overlay-check/failure.so [validation/sanitizer environment above] build/inspector-asan/inspector_probe
+# Required: exit 1, injected marker, no unexpected validation/sanitizer/retention diagnostic.
+
+cmake -S . -B build/scene-shipping -DNGEN_BUILD_INSPECTOR=OFF
+cmake --build build/scene-shipping -j2
+ctest --test-dir build/scene-shipping --output-on-failure
+nm -C build/scene-shipping/scene_workload
+# No ngen::tools::, ImGui::, ImGui_Impl, OverlayPipeline, compiled::overlay matches.
+build/scene-shipping/scene_workload unused.ngas --inspector
+# Required: exit 2 before package/native work, unavailable frontend diagnostic.
+cmake -S . -B build/scene-no-shaders -DNGEN_BUILD_INSPECTOR=OFF
+cmake --build build/scene-no-shaders -j2
+ctest --test-dir build/scene-no-shaders --output-on-failure
+cmake --build build/inspector-tsan -j2
+TSAN_OPTIONS=halt_on_error=1 ctest --test-dir build/inspector-tsan --output-on-failure
+ctest --preset debug
+ctest --preset asset-debug
+PATH=/tmp/prism-conan-venv/bin:$PATH build/powershell/pwsh -NoProfile -File tests/windows_build.ps1
+
+clang-tidy -p <one-entry-native-compile-database> <owned-TU>
+# 111 actual affected source/target/configuration invocations; no flag filtering.
+# Dependency selection uses Ninja deps; repair reruns preserve distinct macros.
+build/format-tools/bin/clang-format --dry-run --Werror [owned project C++ files]
+# Version 18.1.8; unmodified third-party backend excluded from owned style policy.

@@ -15,6 +15,8 @@ struct ImageFrame {
     const Image &source;
     float exposure{1};
     bool fxaa{true};
+    const Overlay *overlay{};
+    float bloom{};
 };
 struct FrameResult {
     FrameOutcome outcome{FrameOutcome::skipped};
@@ -34,6 +36,7 @@ class Context {
         bool validation{true};
         bool visible{true};
         bool presentation{false};
+        bool gpu_timings{false}; // Optional bounded diagnostics; unsupported queues still render.
     };
     [[nodiscard]] static std::variant<std::unique_ptr<Context>, Failure> create(Options options);
     ~Context();
@@ -55,6 +58,10 @@ class Context {
     // Bounded indexed HDR/depth batch; all native resources join the same timeline.
     [[nodiscard]] std::variant<Submission, Failure> draw_mesh(MeshPass description);
     [[nodiscard]] std::variant<bool, Failure> submission_complete(const Submission &submission);
+    // Empty while pending, unsupported/unmeasured, or outside the last 64 retained serials.
+    [[nodiscard]] std::variant<std::optional<GpuTimings>, Failure>
+    submission_timings(const Submission &submission);
+    [[nodiscard]] bool gpu_timings_available() const;
     [[nodiscard]] std::variant<ResourceStatistics, Failure> resource_statistics();
     // Sticky shutdown failure; validation errors are reported separately.
     [[nodiscard]] VkResult close_result() const { return close_result_; }
@@ -72,6 +79,7 @@ class Context {
 
   private:
     friend class Presentation;
+    friend class Resources;
     Context();
     [[nodiscard]] std::variant<FrameResult, Failure> draw_frame(const ImageFrame *source);
     void initialize(Options options);
@@ -82,6 +90,7 @@ class Context {
                                                   void *);
     bool video_{};
     bool presentation_enabled_{};
+    bool timings_enabled_{};
     bool presentation_failed_{};
     SDL_Window *window_{};
     VkInstance instance_{};

@@ -1,0 +1,15 @@
+F
+======================================================================
+FAIL: test_repeated_reload_reaches_a_settled_tracked_memory_plateau (__main__.Inspector.test_repeated_reload_reaches_a_settled_tracked_memory_plateau)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<ROOT>/tests/inspector_cli.py", line 21, in test_repeated_reload_reaches_a_settled_tracked_memory_plateau
+    self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 2 != 0 : Workload arguments: unknown workload argument
+
+
+----------------------------------------------------------------------
+Ran 1 test in 0.005s
+
+FAILED (failures=1)

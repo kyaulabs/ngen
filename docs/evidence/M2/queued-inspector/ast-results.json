@@ -1,0 +1,498 @@
+[
+  {
+    "configuration": "scene-debug",
+    "source": "engine/assets/package.cpp",
+    "object": "CMakeFiles/ngen_assets.dir/engine/assets/package.cpp.o",
+    "status": 0,
+    "compile_database_sha256": "990396a3e8ed2faf10265bbd0657a00162b173ea5c333c3d620f5b9f6dce66e3",
+    "analysis": "build/inspector-check/ast-second/scene-debug/6/analysis.txt"
+  },
+  {
+    "configuration": "scene-debug",
+    "source": "apps/asset_probe/main.cpp",
+    "object": "CMakeFiles/asset_package_probe.dir/apps/asset_probe/main.cpp.o",
+    "status": 0,
+    "compile_database_sha256": "990396a3e8ed2faf10265bbd0657a00162b173ea5c333c3d620f5b9f6dce66e3",
+    "analysis": "build/inspector-check/ast-second/scene-debug/7/analysis.txt"
+  },
+  {
+    "configuration": "scene-debug",
+    "source": "engine/tools/inspector.cpp",
+    "object": "CMakeFiles/ngen_inspector.dir/engine/tools/inspector.cpp.o",
+    "status": 0,
+    "compile_database_sha256": "990396a3e8ed2faf10265bbd0657a00162b173ea5c333c3d620f5b9f6dce66e3",
+    "analysis": "build/inspector-check/ast-second/scene-debug/8/analysis.txt"
+  },
+  {
+    "configuration": "scene-debug",
+    "source": "engine/tools/reload.cpp",
+    "object": "CMakeFiles/ngen_inspector.dir/engine/tools/reload.cpp.o",
+    "status": 0,
+    "compile_database_sha256": "990396a3e8ed2faf10265bbd0657a00162b173ea5c333c3d620f5b9f6dce66e3",
+    "analysis": "build/inspector-check/ast/scene-debug/9/analysis.txt"
+  },
+  {
+    "configuration": "scene-debug",
+    "source": "engine/render/scene.cpp",
+    "object": "CMakeFiles/ngen_scene.dir/engine/render/scene.cpp.o",
+    "status": 0,
+    "compile_database_sha256": "990396a3e8ed2faf10265bbd0657a00162b173ea5c333c3d620f5b9f6dce66e3",
+    "analysis": "build/inspector-check/ast-second/scene-debug/23/analysis.txt"
+  },
+  {
+    "configuration": "scene-debug",
+    "source": "engine/render/scene_draw.cpp",
+    "object": "CMakeFiles/ngen_scene.dir/engine/render/scene_draw.cpp.o",
+    "status": 0,
+    "compile_database_sha256": "990396a3e8ed2faf10265bbd0657a00162b173ea5c333c3d620f5b9f6dce66e3",
+    "analysis": "build/inspector-check/ast-second/scene-debug/24/analysis.txt"
+  },
+  {
+    "configuration": "scene-debug",
+    "source": "apps/scene_workload/fixture.cpp",
+    "object": "CMakeFiles/scene_workload_fixture.dir/apps/scene_workload/fixture.cpp.o",
+    "status": 0,
+    "compile_database_sha256": "990396a3e8ed2faf10265bbd0657a00162b173ea5c333c3d620f5b9f6dce66e3",
+    "analysis": "build/inspector-check/ast-second/scene-debug/25/analysis.txt"
+  },
+  {
+    "configuration": "scene-debug",
+    "source": "apps/scene_workload/main.cpp",
+    "object": "CMakeFiles/scene_workload.dir/apps/scene_workload/main.cpp.o",
+    "status": 0,
+    "compile_database_sha256": "990396a3e8ed2faf10265bbd0657a00162b173ea5c333c3d620f5b9f6dce66e3",
+    "analysis": "build/inspector-check/ast-second/scene-debug/26/analysis.txt"
+  },
+  {
+    "configuration": "scene-debug",
+    "source": "apps/inspector_probe/main.cpp",
+    "object": "CMakeFiles/inspector_probe.dir/apps/inspector_probe/main.cpp.o",
+    "status": 0,
+    "compile_database_sha256": "990396a3e8ed2faf10265bbd0657a00162b173ea5c333c3d620f5b9f6dce66e3",
+    "analysis": "build/inspector-check/ast-second/scene-debug/28/analysis.txt"
+  },
+  {
+    "configuration": "scene-debug",
+    "source": "apps/scene_probe/main.cpp",
+    "object": "CMakeFiles/scene_probe.dir/apps/scene_probe/main.cpp.o",
+    "status": 0,
+    "compile_database_sha256": "990396a3e8ed2faf10265bbd0657a00162b173ea5c333c3d620f5b9f6dce66e3",
+    "analysis": "build/inspector-check/ast-second/scene-debug/29/analysis.txt"
+  },
+  {
+    "configuration": "scene-debug",
+    "source": "apps/scene_probe/draw.cpp",
+    "object": "CMakeFiles/scene_probe.dir/apps/scene_probe/draw.cpp.o",
+    "status": 0,
+    "compile_database_sha256": "990396a3e8ed2faf10265bbd0657a00162b173ea5c333c3d620f5b9f6dce66e3",
+    "analysis": "build/inspector-check/ast-second/scene-debug/30/analysis.txt"
+  },
+  {
+    "configuration": "scene-debug",
+    "source": "tests/workload.cpp",
+    "object": "CMakeFiles/scene_workload_tests.dir/tests/workload.cpp.o",
+    "status": 0,
+    "compile_database_sha256": "990396a3e8ed2faf10265bbd0657a00162b173ea5c333c3d620f5b9f6dce66e3",
+    "analysis": "build/inspector-check/ast-second/scene-debug/36/analysis.txt"
+  },
+  {
+    "configuration": "scene-debug",
+    "source": "tests/assets.cpp",
+    "object": "CMakeFiles/asset_package_tests.dir/tests/assets.cpp.o",
+    "status": 0,
+    "compile_database_sha256": "990396a3e8ed2faf10265bbd0657a00162b173ea5c333c3d620f5b9f6dce66e3",
+    "analysis": "build/inspector-check/ast-second/scene-debug/38/analysis.txt"
+  },
+  {
+    "configuration": "scene-debug",
+    "source": "tests/inspector.cpp",
+    "object": "CMakeFiles/inspector_tests.dir/tests/inspector.cpp.o",
+    "status": 0,
+    "compile_database_sha256": "990396a3e8ed2faf10265bbd0657a00162b173ea5c333c3d620f5b9f6dce66e3",
+    "analysis": "build/inspector-check/ast-second/scene-debug/39/analysis.txt"
+  },
+  {
+    "configuration": "scene-debug",
+    "source": "tests/reload.cpp",
+    "object": "CMakeFiles/inspector_tests.dir/tests/reload.cpp.o",
+    "status": 0,
+    "compile_database_sha256": "990396a3e8ed2faf10265bbd0657a00162b173ea5c333c3d620f5b9f6dce66e3",
+    "analysis": "build/inspector-check/ast/scene-debug/40/analysis.txt"
+  },
+  {
+    "configuration": "scene-release",
+    "source": "engine/assets/package.cpp",
+    "object": "CMakeFiles/ngen_assets.dir/engine/assets/package.cpp.o",
+    "status": 0,
+    "compile_database_sha256": "55957ed6fb6b2a132cde2469f8ffced932d21ef723bac4ae324323f2071ce0d5",
+    "analysis": "build/inspector-check/ast-second/scene-release/6/analysis.txt"
+  },
+  {
+    "configuration": "scene-release",
+    "source": "apps/asset_probe/main.cpp",
+    "object": "CMakeFiles/asset_package_probe.dir/apps/asset_probe/main.cpp.o",
+    "status": 0,
+    "compile_database_sha256": "55957ed6fb6b2a132cde2469f8ffced932d21ef723bac4ae324323f2071ce0d5",
+    "analysis": "build/inspector-check/ast-second/scene-release/7/analysis.txt"
+  },
+  {
+    "configuration": "scene-release",
+    "source": "engine/tools/inspector.cpp",
+    "object": "CMakeFiles/ngen_inspector.dir/engine/tools/inspector.cpp.o",
+    "status": 0,
+    "compile_database_sha256": "55957ed6fb6b2a132cde2469f8ffced932d21ef723bac4ae324323f2071ce0d5",
+    "analysis": "build/inspector-check/ast-second/scene-release/8/analysis.txt"
+  },
+  {
+    "configuration": "scene-release",
+    "source": "engine/tools/reload.cpp",
+    "object": "CMakeFiles/ngen_inspector.dir/engine/tools/reload.cpp.o",
+    "status": 0,
+    "compile_database_sha256": "55957ed6fb6b2a132cde2469f8ffced932d21ef723bac4ae324323f2071ce0d5",
+    "analysis": "build/inspector-check/ast/scene-release/9/analysis.txt"
+  },
+  {
+    "configuration": "scene-release",
+    "source": "engine/render/scene.cpp",
+    "object": "CMakeFiles/ngen_scene.dir/engine/render/scene.cpp.o",
+    "status": 0,
+    "compile_database_sha256": "55957ed6fb6b2a132cde2469f8ffced932d21ef723bac4ae324323f2071ce0d5",
+    "analysis": "build/inspector-check/ast-second/scene-release/23/analysis.txt"
+  },
+  {
+    "configuration": "scene-release",
+    "source": "engine/render/scene_draw.cpp",
+    "object": "CMakeFiles/ngen_scene.dir/engine/render/scene_draw.cpp.o",
+    "status": 0,
+    "compile_database_sha256": "55957ed6fb6b2a132cde2469f8ffced932d21ef723bac4ae324323f2071ce0d5",
+    "analysis": "build/inspector-check/ast-second/scene-release/24/analysis.txt"
+  },
+  {
+    "configuration": "scene-release",
+    "source": "apps/scene_workload/fixture.cpp",
+    "object": "CMakeFiles/scene_workload_fixture.dir/apps/scene_workload/fixture.cpp.o",
+    "status": 0,
+    "compile_database_sha256": "55957ed6fb6b2a132cde2469f8ffced932d21ef723bac4ae324323f2071ce0d5",
+    "analysis": "build/inspector-check/ast-second/scene-release/25/analysis.txt"
+  },
+  {
+    "configuration": "scene-release",
+    "source": "apps/scene_workload/main.cpp",
+    "object": "CMakeFiles/scene_workload.dir/apps/scene_workload/main.cpp.o",
+    "status": 0,
+    "compile_database_sha256": "55957ed6fb6b2a132cde2469f8ffced932d21ef723bac4ae324323f2071ce0d5",
+    "analysis": "build/inspector-check/ast-second/scene-release/26/analysis.txt"
+  },
+  {
+    "configuration": "scene-release",
+    "source": "apps/inspector_probe/main.cpp",
+    "object": "CMakeFiles/inspector_probe.dir/apps/inspector_probe/main.cpp.o",
+    "status": 0,
+    "compile_database_sha256": "55957ed6fb6b2a132cde2469f8ffced932d21ef723bac4ae324323f2071ce0d5",
+    "analysis": "build/inspector-check/ast-second/scene-release/28/analysis.txt"
+  },
+  {
+    "configuration": "scene-release",
+    "source": "apps/scene_probe/main.cpp",
+    "object": "CMakeFiles/scene_probe.dir/apps/scene_probe/main.cpp.o",
+    "status": 0,
+    "compile_database_sha256": "55957ed6fb6b2a132cde2469f8ffced932d21ef723bac4ae324323f2071ce0d5",
+    "analysis": "build/inspector-check/ast-second/scene-release/29/analysis.txt"
+  },
+  {
+    "configuration": "scene-release",
+    "source": "apps/scene_probe/draw.cpp",
+    "object": "CMakeFiles/scene_probe.dir/apps/scene_probe/draw.cpp.o",
+    "status": 0,
+    "compile_database_sha256": "55957ed6fb6b2a132cde2469f8ffced932d21ef723bac4ae324323f2071ce0d5",
+    "analysis": "build/inspector-check/ast-second/scene-release/30/analysis.txt"
+  },
+  {
+    "configuration": "scene-release",
+    "source": "tests/workload.cpp",
+    "object": "CMakeFiles/scene_workload_tests.dir/tests/workload.cpp.o",
+    "status": 0,
+    "compile_database_sha256": "55957ed6fb6b2a132cde2469f8ffced932d21ef723bac4ae324323f2071ce0d5",
+    "analysis": "build/inspector-check/ast-second/scene-release/36/analysis.txt"
+  },
+  {
+    "configuration": "scene-release",
+    "source": "tests/assets.cpp",
+    "object": "CMakeFiles/asset_package_tests.dir/tests/assets.cpp.o",
+    "status": 0,
+    "compile_database_sha256": "55957ed6fb6b2a132cde2469f8ffced932d21ef723bac4ae324323f2071ce0d5",
+    "analysis": "build/inspector-check/ast-second/scene-release/38/analysis.txt"
+  },
+  {
+    "configuration": "scene-release",
+    "source": "tests/inspector.cpp",
+    "object": "CMakeFiles/inspector_tests.dir/tests/inspector.cpp.o",
+    "status": 0,
+    "compile_database_sha256": "55957ed6fb6b2a132cde2469f8ffced932d21ef723bac4ae324323f2071ce0d5",
+    "analysis": "build/inspector-check/ast-second/scene-release/39/analysis.txt"
+  },
+  {
+    "configuration": "scene-release",
+    "source": "tests/reload.cpp",
+    "object": "CMakeFiles/inspector_tests.dir/tests/reload.cpp.o",
+    "status": 0,
+    "compile_database_sha256": "55957ed6fb6b2a132cde2469f8ffced932d21ef723bac4ae324323f2071ce0d5",
+    "analysis": "build/inspector-check/ast/scene-release/40/analysis.txt"
+  },
+  {
+    "configuration": "scene-asan",
+    "source": "engine/assets/package.cpp",
+    "object": "CMakeFiles/ngen_assets.dir/engine/assets/package.cpp.o",
+    "status": 0,
+    "compile_database_sha256": "f015ce0eac761cba12916ffd45a63bf699d5dbba827e66d42bd04bf3dce3a4b9",
+    "analysis": "build/inspector-check/ast-second/scene-asan/6/analysis.txt"
+  },
+  {
+    "configuration": "scene-asan",
+    "source": "apps/asset_probe/main.cpp",
+    "object": "CMakeFiles/asset_package_probe.dir/apps/asset_probe/main.cpp.o",
+    "status": 0,
+    "compile_database_sha256": "f015ce0eac761cba12916ffd45a63bf699d5dbba827e66d42bd04bf3dce3a4b9",
+    "analysis": "build/inspector-check/ast-second/scene-asan/7/analysis.txt"
+  },
+  {
+    "configuration": "scene-asan",
+    "source": "engine/tools/inspector.cpp",
+    "object": "CMakeFiles/ngen_inspector.dir/engine/tools/inspector.cpp.o",
+    "status": 0,
+    "compile_database_sha256": "f015ce0eac761cba12916ffd45a63bf699d5dbba827e66d42bd04bf3dce3a4b9",
+    "analysis": "build/inspector-check/ast-second/scene-asan/8/analysis.txt"
+  },
+  {
+    "configuration": "scene-asan",
+    "source": "engine/tools/reload.cpp",
+    "object": "CMakeFiles/ngen_inspector.dir/engine/tools/reload.cpp.o",
+    "status": 0,
+    "compile_database_sha256": "f015ce0eac761cba12916ffd45a63bf699d5dbba827e66d42bd04bf3dce3a4b9",
+    "analysis": "build/inspector-check/ast/scene-asan/9/analysis.txt"
+  },
+  {
+    "configuration": "scene-asan",
+    "source": "engine/render/scene.cpp",
+    "object": "CMakeFiles/ngen_scene.dir/engine/render/scene.cpp.o",
+    "status": 0,
+    "compile_database_sha256": "f015ce0eac761cba12916ffd45a63bf699d5dbba827e66d42bd04bf3dce3a4b9",
+    "analysis": "build/inspector-check/ast-second/scene-asan/23/analysis.txt"
+  },
+  {
+    "configuration": "scene-asan",
+    "source": "engine/render/scene_draw.cpp",
+    "object": "CMakeFiles/ngen_scene.dir/engine/render/scene_draw.cpp.o",
+    "status": 0,
+    "compile_database_sha256": "f015ce0eac761cba12916ffd45a63bf699d5dbba827e66d42bd04bf3dce3a4b9",
+    "analysis": "build/inspector-check/ast-second/scene-asan/24/analysis.txt"
+  },
+  {
+    "configuration": "scene-asan",
+    "source": "apps/scene_workload/fixture.cpp",
+    "object": "CMakeFiles/scene_workload_fixture.dir/apps/scene_workload/fixture.cpp.o",
+    "status": 0,
+    "compile_database_sha256": "f015ce0eac761cba12916ffd45a63bf699d5dbba827e66d42bd04bf3dce3a4b9",
+    "analysis": "build/inspector-check/ast-second/scene-asan/25/analysis.txt"
+  },
+  {
+    "configuration": "scene-asan",
+    "source": "apps/scene_workload/main.cpp",
+    "object": "CMakeFiles/scene_workload.dir/apps/scene_workload/main.cpp.o",
+    "status": 0,
+    "compile_database_sha256": "f015ce0eac761cba12916ffd45a63bf699d5dbba827e66d42bd04bf3dce3a4b9",
+    "analysis": "build/inspector-check/ast-second/scene-asan/26/analysis.txt"
+  },
+  {
+    "configuration": "scene-asan",
+    "source": "apps/inspector_probe/main.cpp",
+    "object": "CMakeFiles/inspector_probe.dir/apps/inspector_probe/main.cpp.o",
+    "status": 0,
+    "compile_database_sha256": "f015ce0eac761cba12916ffd45a63bf699d5dbba827e66d42bd04bf3dce3a4b9",
+    "analysis": "build/inspector-check/ast-second/scene-asan/28/analysis.txt"
+  },
+  {
+    "configuration": "scene-asan",
+    "source": "apps/scene_probe/main.cpp",
+    "object": "CMakeFiles/scene_probe.dir/apps/scene_probe/main.cpp.o",
+    "status": 0,
+    "compile_database_sha256": "f015ce0eac761cba12916ffd45a63bf699d5dbba827e66d42bd04bf3dce3a4b9",
+    "analysis": "build/inspector-check/ast-second/scene-asan/29/analysis.txt"
+  },
+  {
+    "configuration": "scene-asan",
+    "source": "apps/scene_probe/draw.cpp",
+    "object": "CMakeFiles/scene_probe.dir/apps/scene_probe/draw.cpp.o",
+    "status": 0,
+    "compile_database_sha256": "f015ce0eac761cba12916ffd45a63bf699d5dbba827e66d42bd04bf3dce3a4b9",
+    "analysis": "build/inspector-check/ast-second/scene-asan/30/analysis.txt"
+  },
+  {
+    "configuration": "scene-asan",
+    "source": "tests/workload.cpp",
+    "object": "CMakeFiles/scene_workload_tests.dir/tests/workload.cpp.o",
+    "status": 0,
+    "compile_database_sha256": "f015ce0eac761cba12916ffd45a63bf699d5dbba827e66d42bd04bf3dce3a4b9",
+    "analysis": "build/inspector-check/ast-second/scene-asan/36/analysis.txt"
+  },
+  {
+    "configuration": "scene-asan",
+    "source": "tests/assets.cpp",
+    "object": "CMakeFiles/asset_package_tests.dir/tests/assets.cpp.o",
+    "status": 0,
+    "compile_database_sha256": "f015ce0eac761cba12916ffd45a63bf699d5dbba827e66d42bd04bf3dce3a4b9",
+    "analysis": "build/inspector-check/ast-second/scene-asan/38/analysis.txt"
+  },
+  {
+    "configuration": "scene-asan",
+    "source": "tests/inspector.cpp",
+    "object": "CMakeFiles/inspector_tests.dir/tests/inspector.cpp.o",
+    "status": 0,
+    "compile_database_sha256": "f015ce0eac761cba12916ffd45a63bf699d5dbba827e66d42bd04bf3dce3a4b9",
+    "analysis": "build/inspector-check/ast-second/scene-asan/39/analysis.txt"
+  },
+  {
+    "configuration": "scene-asan",
+    "source": "tests/reload.cpp",
+    "object": "CMakeFiles/inspector_tests.dir/tests/reload.cpp.o",
+    "status": 0,
+    "compile_database_sha256": "f015ce0eac761cba12916ffd45a63bf699d5dbba827e66d42bd04bf3dce3a4b9",
+    "analysis": "build/inspector-check/ast/scene-asan/40/analysis.txt"
+  },
+  {
+    "configuration": "inspector-tsan",
+    "source": "engine/assets/package.cpp",
+    "object": "CMakeFiles/ngen_assets.dir/engine/assets/package.cpp.o",
+    "status": 0,
+    "compile_database_sha256": "ad94c013c8b01aa1531aa7b126cbc451d45c5cacad2bd2dfaa9b15cc2589dfa5",
+    "analysis": "build/inspector-check/ast-second/inspector-tsan/6/analysis.txt"
+  },
+  {
+    "configuration": "inspector-tsan",
+    "source": "apps/asset_probe/main.cpp",
+    "object": "CMakeFiles/asset_package_probe.dir/apps/asset_probe/main.cpp.o",
+    "status": 0,
+    "compile_database_sha256": "ad94c013c8b01aa1531aa7b126cbc451d45c5cacad2bd2dfaa9b15cc2589dfa5",
+    "analysis": "build/inspector-check/ast-second/inspector-tsan/7/analysis.txt"
+  },
+  {
+    "configuration": "inspector-tsan",
+    "source": "engine/tools/inspector.cpp",
+    "object": "CMakeFiles/ngen_inspector.dir/engine/tools/inspector.cpp.o",
+    "status": 0,
+    "compile_database_sha256": "ad94c013c8b01aa1531aa7b126cbc451d45c5cacad2bd2dfaa9b15cc2589dfa5",
+    "analysis": "build/inspector-check/ast-second/inspector-tsan/8/analysis.txt"
+  },
+  {
+    "configuration": "inspector-tsan",
+    "source": "engine/tools/reload.cpp",
+    "object": "CMakeFiles/ngen_inspector.dir/engine/tools/reload.cpp.o",
+    "status": 0,
+    "compile_database_sha256": "ad94c013c8b01aa1531aa7b126cbc451d45c5cacad2bd2dfaa9b15cc2589dfa5",
+    "analysis": "build/inspector-check/ast/inspector-tsan/9/analysis.txt"
+  },
+  {
+    "configuration": "inspector-tsan",
+    "source": "tests/assets.cpp",
+    "object": "CMakeFiles/asset_package_tests.dir/tests/assets.cpp.o",
+    "status": 0,
+    "compile_database_sha256": "ad94c013c8b01aa1531aa7b126cbc451d45c5cacad2bd2dfaa9b15cc2589dfa5",
+    "analysis": "build/inspector-check/ast-second/inspector-tsan/14/analysis.txt"
+  },
+  {
+    "configuration": "inspector-tsan",
+    "source": "tests/inspector.cpp",
+    "object": "CMakeFiles/inspector_tests.dir/tests/inspector.cpp.o",
+    "status": 0,
+    "compile_database_sha256": "ad94c013c8b01aa1531aa7b126cbc451d45c5cacad2bd2dfaa9b15cc2589dfa5",
+    "analysis": "build/inspector-check/ast-second/inspector-tsan/15/analysis.txt"
+  },
+  {
+    "configuration": "inspector-tsan",
+    "source": "tests/reload.cpp",
+    "object": "CMakeFiles/inspector_tests.dir/tests/reload.cpp.o",
+    "status": 0,
+    "compile_database_sha256": "ad94c013c8b01aa1531aa7b126cbc451d45c5cacad2bd2dfaa9b15cc2589dfa5",
+    "analysis": "build/inspector-check/ast/inspector-tsan/16/analysis.txt"
+  },
+  {
+    "configuration": "scene-shipping",
+    "source": "engine/assets/package.cpp",
+    "object": "CMakeFiles/ngen_assets.dir/engine/assets/package.cpp.o",
+    "status": 0,
+    "compile_database_sha256": "25593bc305f66d94182c3acc598d6003f0beade7a8048d625c6ee6bef0f0d92b",
+    "analysis": "build/inspector-check/ast-second/scene-shipping/6/analysis.txt"
+  },
+  {
+    "configuration": "scene-shipping",
+    "source": "apps/asset_probe/main.cpp",
+    "object": "CMakeFiles/asset_package_probe.dir/apps/asset_probe/main.cpp.o",
+    "status": 0,
+    "compile_database_sha256": "25593bc305f66d94182c3acc598d6003f0beade7a8048d625c6ee6bef0f0d92b",
+    "analysis": "build/inspector-check/ast-second/scene-shipping/7/analysis.txt"
+  },
+  {
+    "configuration": "scene-shipping",
+    "source": "engine/render/scene.cpp",
+    "object": "CMakeFiles/ngen_scene.dir/engine/render/scene.cpp.o",
+    "status": 0,
+    "compile_database_sha256": "25593bc305f66d94182c3acc598d6003f0beade7a8048d625c6ee6bef0f0d92b",
+    "analysis": "build/inspector-check/ast-second/scene-shipping/21/analysis.txt"
+  },
+  {
+    "configuration": "scene-shipping",
+    "source": "engine/render/scene_draw.cpp",
+    "object": "CMakeFiles/ngen_scene.dir/engine/render/scene_draw.cpp.o",
+    "status": 0,
+    "compile_database_sha256": "25593bc305f66d94182c3acc598d6003f0beade7a8048d625c6ee6bef0f0d92b",
+    "analysis": "build/inspector-check/ast-second/scene-shipping/22/analysis.txt"
+  },
+  {
+    "configuration": "scene-shipping",
+    "source": "apps/scene_workload/fixture.cpp",
+    "object": "CMakeFiles/scene_workload_fixture.dir/apps/scene_workload/fixture.cpp.o",
+    "status": 0,
+    "compile_database_sha256": "25593bc305f66d94182c3acc598d6003f0beade7a8048d625c6ee6bef0f0d92b",
+    "analysis": "build/inspector-check/ast-second/scene-shipping/23/analysis.txt"
+  },
+  {
+    "configuration": "scene-shipping",
+    "source": "apps/scene_workload/main.cpp",
+    "object": "CMakeFiles/scene_workload.dir/apps/scene_workload/main.cpp.o",
+    "status": 0,
+    "compile_database_sha256": "25593bc305f66d94182c3acc598d6003f0beade7a8048d625c6ee6bef0f0d92b",
+    "analysis": "build/inspector-check/ast-second/scene-shipping/24/analysis.txt"
+  },
+  {
+    "configuration": "scene-shipping",
+    "source": "apps/scene_probe/main.cpp",
+    "object": "CMakeFiles/scene_probe.dir/apps/scene_probe/main.cpp.o",
+    "status": 0,
+    "compile_database_sha256": "25593bc305f66d94182c3acc598d6003f0beade7a8048d625c6ee6bef0f0d92b",
+    "analysis": "build/inspector-check/ast-second/scene-shipping/26/analysis.txt"
+  },
+  {
+    "configuration": "scene-shipping",
+    "source": "apps/scene_probe/draw.cpp",
+    "object": "CMakeFiles/scene_probe.dir/apps/scene_probe/draw.cpp.o",
+    "status": 0,
+    "compile_database_sha256": "25593bc305f66d94182c3acc598d6003f0beade7a8048d625c6ee6bef0f0d92b",
+    "analysis": "build/inspector-check/ast-second/scene-shipping/27/analysis.txt"
+  },
+  {
+    "configuration": "scene-shipping",
+    "source": "tests/workload.cpp",
+    "object": "CMakeFiles/scene_workload_tests.dir/tests/workload.cpp.o",
+    "status": 0,
+    "compile_database_sha256": "25593bc305f66d94182c3acc598d6003f0beade7a8048d625c6ee6bef0f0d92b",
+    "analysis": "build/inspector-check/ast-second/scene-shipping/33/analysis.txt"
+  },
+  {
+    "configuration": "scene-shipping",
+    "source": "tests/assets.cpp",
+    "object": "CMakeFiles/asset_package_tests.dir/tests/assets.cpp.o",
+    "status": 0,
+    "compile_database_sha256": "25593bc305f66d94182c3acc598d6003f0beade7a8048d625c6ee6bef0f0d92b",
+    "analysis": "build/inspector-check/ast-second/scene-shipping/35/analysis.txt"
+  }
+]

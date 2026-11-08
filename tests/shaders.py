@@ -38,14 +38,16 @@ class ShaderCompilation(unittest.TestCase):
 
     def test_compile_and_validate_finite_shader_set(self):
         self.assertEqual({x.name for x in self.output.glob("*.spv")},
-                         {"cull.spv", "pbr-vertex.spv", "pbr-fragment.spv", "shadow-vertex.spv", "shadow-fragment.spv", "post-vertex.spv", "post-fragment.spv"})
+                         {"cull.spv", "pbr-vertex.spv", "pbr-fragment.spv", "shadow-vertex.spv", "shadow-fragment.spv", "post-vertex.spv", "post-fragment.spv", "overlay-vertex.spv", "overlay-fragment.spv"})
         for name, stage, entry in (("cull", "compute", "cullMain"),
                                    ("pbr-vertex", "vertex", "vertexMain"),
                                    ("pbr-fragment", "fragment", "fragmentMain"),
                                    ("shadow-vertex", "vertex", "shadowVertex"),
                                    ("shadow-fragment", "fragment", "shadowFragment"),
                                    ("post-vertex", "vertex", "postVertex"),
-                                   ("post-fragment", "fragment", "postFragment")):
+                                   ("post-fragment", "fragment", "postFragment"),
+                                   ("overlay-vertex", "vertex", "overlayVertex"),
+                                   ("overlay-fragment", "fragment", "overlayFragment")):
             with self.subTest(stage=stage):
                 module = (self.output / (name + ".spv")).read_bytes()
                 self.assertEqual(struct.unpack_from("<II", module), (0x07230203, 0x00010500))
@@ -66,7 +68,7 @@ class ShaderCompilation(unittest.TestCase):
             pbr = json.loads((self.output / (name + ".reflection.json")).read_text())
             bindings = {p["name"]: (p["binding"].get("space", 0), p["binding"]["index"]) for p in pbr["parameters"]}
             self.assertEqual(bindings, {
-                "frame": (0, 0), "localLights": (0, 1), "shadowMap": (0, 2), "shadowSampler": (0, 3),
+                "frame": (0, 0), "localLights": (0, 1), "shadowMap": (0, 2), "shadowSampler": (0, 3), "instances": (0, 4),
                 "material": (1, 0), "baseColorMap": (1, 1), "normalMap": (1, 2),
                 "metallicRoughnessMap": (1, 3), "occlusionMap": (1, 4), "emissiveMap": (1, 5),
                 "materialSamplers": (1, 6), "irradianceMap": (1, 7), "prefilteredMap": (1, 8), "brdfMap": (1, 9),
@@ -76,6 +78,14 @@ class ShaderCompilation(unittest.TestCase):
             samplers = next(p for p in pbr["parameters"] if p["name"] == "materialSamplers")
             self.assertEqual(samplers["type"]["kind"], "array")
             self.assertEqual(samplers["type"]["elementCount"], 5)
+
+        for name in ("overlay-vertex", "overlay-fragment"):
+            reflected = json.loads((self.output / (name + ".reflection.json")).read_text())
+            bindings = {p["name"]: (p["binding"]["kind"], p["binding"].get("space", 0), p["binding"]["index"])
+                        for p in reflected["parameters"]}
+            self.assertEqual(bindings, {"overlay": ("pushConstantBuffer", 0, 0),
+                                       "fontAtlas": ("descriptorTableSlot", 0, 0),
+                                       "fontSampler": ("descriptorTableSlot", 0, 1)})
 
     def test_uniform_layouts_match_compiled_cpu_types(self):
         native = subprocess.run([os.environ["NGEN_SHADER_LAYOUT"]], capture_output=True,
@@ -103,18 +113,25 @@ class ShaderCompilation(unittest.TestCase):
                     self.assertEqual(element["uniformStride"], layouts[element["elementType"]["name"]]["size"])
             checked.add(name)
 
-        for name in ("cull", "pbr-vertex", "pbr-fragment", "shadow-vertex", "shadow-fragment", "post-vertex", "post-fragment"):
+        for name in ("cull", "pbr-vertex", "pbr-fragment", "shadow-vertex", "shadow-fragment", "post-vertex", "post-fragment", "overlay-vertex", "overlay-fragment"):
             reflected = json.loads((self.output / (name + ".reflection.json")).read_text())
             for parameter in reflected["parameters"]:
                 if parameter["type"]["kind"] == "constantBuffer":
                     check_struct(parameter["type"]["elementType"])
-        self.assertEqual(checked, {"FrameConstants", "LightConstants", "LocalLight", "MaterialConstants", "CullConstants", "PostConstants"})
+        self.assertEqual(checked, {"FrameConstants", "InstanceConstants", "InstanceTransform", "LightConstants", "LocalLight", "MaterialConstants", "CullConstants", "PostConstants", "OverlayConstants"})
         vertex = json.loads((self.output / "pbr-vertex.reflection.json").read_text())
         fields = vertex["entryPoints"][0]["parameters"][0]["type"]["fields"]
         self.assertEqual([(x["name"], x["binding"]["index"], x["type"]["elementCount"]) for x in fields],
                          [("position", 0, 3), ("normal", 1, 3), ("uv", 2, 2), ("uv1", 4, 2), ("tangent", 3, 4)])
         self.assertEqual(layouts["Vertex"]["size"], 56)
         self.assertEqual(layouts["Vertex"]["fields"], {"position": 0, "normal": 12, "uv": 24, "uv1": 32, "tangent": 40})
+        reflected = json.loads((self.output / "overlay-vertex.reflection.json").read_text())
+        fields = reflected["entryPoints"][0]["parameters"][0]["type"]["fields"]
+        self.assertEqual([(x["name"], x["binding"]["index"]) for x in fields],
+                         [("position", 0), ("uv", 1), ("color", 2)])
+        self.assertEqual(fields[2]["type"]["scalarType"], "uint32")
+        self.assertEqual(layouts["OverlayVertex"]["size"], 20)
+        self.assertEqual(layouts["OverlayVertex"]["fields"], {"position": 0, "uv": 8, "color": 16})
 
     def test_tool_and_artifact_identity(self):
         metadata = json.loads((self.output / "manifest.json").read_text())
@@ -127,7 +144,10 @@ class ShaderCompilation(unittest.TestCase):
         self.assertTrue(metadata["libraries"])
         for library in metadata["libraries"]:
             self.assertEqual(library["sha256"], hashlib.sha256((SLANG / library["file"]).read_bytes()).hexdigest())
+        sources = {"cull": "cull", "pbr": "pbr", "shadow": "pbr", "post": "post", "overlay": "overlay"}
         for shader in metadata["shaders"]:
+            source = ROOT / "shaders" / (sources[shader["name"].split("-")[0]] + ".slang")
+            self.assertEqual(shader["source_sha256"], hashlib.sha256(source.read_bytes()).hexdigest())
             self.assertEqual(shader["sha256"], hashlib.sha256((self.output / (shader["name"] + ".spv")).read_bytes()).hexdigest())
             self.assertEqual(shader["reflection_sha256"], hashlib.sha256((self.output / (shader["name"] + ".reflection.json")).read_bytes()).hexdigest())
 

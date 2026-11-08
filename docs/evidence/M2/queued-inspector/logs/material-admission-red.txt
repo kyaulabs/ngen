@@ -1,0 +1,65 @@
+Filters: "inspector rejects unsafe*"
+Randomness seeded to: 1130970381
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+inspector_tests is a Catch2 v3.16.0 host application.
+Run with -? for options
+
+-------------------------------------------------------------------------------
+inspector rejects unsafe material factors without publishing or queueing them
+-------------------------------------------------------------------------------
+$REPO/tests/inspector.cpp:38
+...............................................................................
+
+$REPO/tests/inspector.cpp:48: FAILED:
+  REQUIRE( inspector.enqueue(ngen::tools::EditMaterial{before.generation, 0, invalid}) == ngen::Result<std::monostate>{ngen::Error::invalid} )
+with expansion:
+  {?} == {?}
+
+-------------------------------------------------------------------------------
+inspector rejects unsafe material factors without publishing or queueing them
+-------------------------------------------------------------------------------
+$REPO/tests/inspector.cpp:38
+...............................................................................
+
+$REPO/tests/inspector.cpp:48: FAILED:
+  REQUIRE( inspector.enqueue(ngen::tools::EditMaterial{before.generation, 0, invalid}) == ngen::Result<std::monostate>{ngen::Error::invalid} )
+with expansion:
+  {?} == {?}
+
+-------------------------------------------------------------------------------
+inspector rejects unsafe material factors without publishing or queueing them
+-------------------------------------------------------------------------------
+$REPO/tests/inspector.cpp:38
+...............................................................................
+
+$REPO/tests/inspector.cpp:48: FAILED:
+  REQUIRE( inspector.enqueue(ngen::tools::EditMaterial{before.generation, 0, invalid}) == ngen::Result<std::monostate>{ngen::Error::invalid} )
+with expansion:
+  {?} == {?}
+
+-------------------------------------------------------------------------------
+inspector rejects unsafe material factors without publishing or queueing them
+-------------------------------------------------------------------------------
+$REPO/tests/inspector.cpp:38
+...............................................................................
+
+$REPO/tests/inspector.cpp:48: FAILED:
+  REQUIRE( inspector.enqueue(ngen::tools::EditMaterial{before.generation, 0, invalid}) == ngen::Result<std::monostate>{ngen::Error::invalid} )
+with expansion:
+  {?} == {?}
+
+-------------------------------------------------------------------------------
+inspector rejects unsafe material factors without publishing or queueing them
+-------------------------------------------------------------------------------
+$REPO/tests/inspector.cpp:38
+...............................................................................
+
+$REPO/tests/inspector.cpp:48: FAILED:
+  REQUIRE( inspector.enqueue(ngen::tools::EditMaterial{before.generation, 0, invalid}) == ngen::Result<std::monostate>{ngen::Error::invalid} )
+with expansion:
+  {?} == {?}
+
+===============================================================================
+test cases: 1 | 1 failed
+assertions: 5 | 5 failed

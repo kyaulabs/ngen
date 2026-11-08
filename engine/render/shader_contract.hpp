@@ -25,6 +25,15 @@ struct alignas(16) FrameConstants {
     Float4 keyColor{};
 };
 
+struct alignas(16) InstanceTransform {
+    Matrix model;
+    Matrix normalMatrix;
+};
+inline constexpr std::size_t instance_capacity = 100;
+struct alignas(16) InstanceConstants {
+    std::array<InstanceTransform, instance_capacity> transforms{};
+};
+
 struct alignas(16) LocalLight {
     Float4 positionRange{};
     Float4 colorIntensity{};
@@ -48,6 +57,7 @@ struct alignas(16) MaterialConstants {
 
 struct alignas(16) PostConstants {
     Float4 exposureFxaaTexel{1, 1, 1, 1};
+    Float4 bloom{}; // x: restrained linear HDR strength; remaining components reserved.
 };
 
 struct alignas(16) CullConstants {
@@ -56,6 +66,13 @@ struct alignas(16) CullConstants {
     std::array<std::uint32_t, 3> reserved{};
 };
 
+struct OverlayVertex {
+    std::array<float, 2> position{}, uv{};
+    std::uint32_t color{}; // Packed little-endian RGBA8, sRGB color and linear alpha.
+};
+struct alignas(16) OverlayConstants {
+    Float4 scale_translate{};
+};
 struct Vertex {
     std::array<float, 3> position{};
     std::array<float, 3> normal{};
@@ -67,13 +84,16 @@ struct Vertex {
 static_assert(sizeof(float) == 4);
 static_assert(sizeof(Matrix) == 64);
 static_assert(sizeof(FrameConstants) == 304);
+static_assert(sizeof(InstanceTransform) == 128 && sizeof(InstanceConstants) == 12800);
 static_assert(sizeof(LocalLight) == 32);
 static_assert(sizeof(LightConstants) == 528);
 static_assert(sizeof(MaterialConstants) == 64);
 static_assert(sizeof(CullConstants) == 112);
 static_assert(offsetof(CullConstants, count) == 96 && offsetof(CullConstants, reserved) == 100);
-static_assert(sizeof(PostConstants) == 16);
+static_assert(sizeof(PostConstants) == 32);
 static_assert(sizeof(Vertex) == 56);
+static_assert(sizeof(OverlayVertex) == 20 && offsetof(OverlayVertex, color) == 16);
+static_assert(sizeof(OverlayConstants) == 16);
 static_assert(std::is_standard_layout_v<FrameConstants> &&
               std::is_trivially_copyable_v<FrameConstants>);
 static_assert(std::is_standard_layout_v<LightConstants> &&

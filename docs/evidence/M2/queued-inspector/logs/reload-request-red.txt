@@ -1,0 +1,21 @@
+Filters: "reload is a next-frame*"
+Randomness seeded to: 2769010070
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+inspector_tests is a Catch2 v3.16.0 host application.
+Run with -? for options
+
+-------------------------------------------------------------------------------
+reload is a next-frame request and does not replace the displayed package
+-------------------------------------------------------------------------------
+$REPO/tests/inspector.cpp:38
+...............................................................................
+
+$REPO/tests/inspector.cpp:44: FAILED:
+  REQUIRE( inspector.advance().applied == 1 )
+with expansion:
+  0 == 1
+
+===============================================================================
+test cases: 1 | 1 failed
+assertions: 3 | 2 passed | 1 failed

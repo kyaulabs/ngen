@@ -10,6 +10,9 @@ struct SceneView {
     shader::Float4 key_direction_intensity{0, -1, 0, 1};
     shader::Float4 key_color{1, 1, 1, 0};
     std::uint32_t lod{2};
+    // Empty uses authored factors; otherwise a complete material-indexed table.
+    // Borrowed only through draw(); immutable package/map/facing data is unchanged.
+    std::span<const assets::MaterialFactors> material_factors{};
 };
 struct SceneTargets {
     const Image &color;
@@ -28,10 +31,11 @@ class SceneRenderer {
     ~SceneRenderer();
     SceneRenderer(const SceneRenderer &) = delete;
     SceneRenderer &operator=(const SceneRenderer &) = delete;
-    [[nodiscard]] std::variant<Submission, Failure> draw(Context &context, ScenePin version,
-                                                         const SceneView &view,
-                                                         SceneTargets targets,
-                                                         TimelineWait wait = {});
+    // Extra opaque/masked meshes share this view/lighting/schedule; their geometry
+    // and instance spans borrow only for this call and join Context retirement.
+    [[nodiscard]] std::variant<Submission, Failure>
+    draw(Context &context, ScenePin version, const SceneView &view, SceneTargets targets,
+         TimelineWait wait = {}, std::span<const MeshDraw> extras = {});
     [[nodiscard]] std::variant<std::size_t, Failure> collect(Context &context);
 
   private:

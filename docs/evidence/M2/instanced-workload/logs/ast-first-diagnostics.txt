@@ -1,0 +1,207 @@
+--- scene-asan/13/analysis.txt ---
+44 warnings generated.
+$REPO/engine/render/resources.cpp:128:48: error: performing an implicit widening conversion to type '__size_t' (aka 'unsigned long') of a multiplication performed in type 'unsigned int' [bugprone-implicit-widening-of-multiplication-result,-warnings-as-errors]
+  128 |                 device, queries, first, count, count * 2 * sizeof(std::uint64_t), values.data(),
+      |                                                ^
+$REPO/engine/render/resources.cpp:128:48: note: make conversion explicit to silence this warning
+    8 |                 device, queries, first, count, count * 2 * sizeof(std::uint64_t), values.data(),
+      |                                                ^~~~~~~~~
+      |                                                static_cast<__size_t>( )
+$REPO/engine/render/resources.cpp:128:48: note: perform multiplication in a wider type
+  128 |                 device, queries, first, count, count * 2 * sizeof(std::uint64_t), values.data(),
+      |                                                ^~~~~
+      |                                                static_cast<__size_t>( )
+Suppressed 43 warnings (43 in non-user code).
+Use -header-filter=.* or leave it as default to display errors from all non-system headers. Use -system-headers to display errors from system headers as well.
+1 warning treated as error
+--- scene-asan/20/analysis.txt ---
+46 warnings generated.
+$REPO/apps/resource_probe/main.cpp:602:69: error: result of integer division used in a floating point context; possible loss of precision [bugprone-integer-division,-warnings-as-errors]
+  602 |         grid[i].model.columns[13] = -.9F + .2F * static_cast<float>(i / 10);
+      |                                                                     ^
+Suppressed 45 warnings (45 in non-user code).
+Use -header-filter=.* or leave it as default to display errors from all non-system headers. Use -system-headers to display errors from system headers as well.
+1 warning treated as error
+--- scene-asan/23/analysis.txt ---
+49 warnings generated.
+$REPO/apps/scene_workload/fixture.cpp:155:33: error: 3 adjacent parameters of 'operator()' of similar type ('const Vec &') are easily swapped by mistake [bugprone-easily-swappable-parameters,-warnings-as-errors]
+  155 |     const auto projection = [&](const Vec &r, const Vec &u, const Vec &b, float half_width,
+      |                                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+$REPO/apps/scene_workload/fixture.cpp:155:44: note: the first parameter in the range is 'r'
+  155 |     const auto projection = [&](const Vec &r, const Vec &u, const Vec &b, float half_width,
+      |                                            ^
+$REPO/apps/scene_workload/fixture.cpp:155:72: note: the last parameter in the range is 'b'
+  155 |     const auto projection = [&](const Vec &r, const Vec &u, const Vec &b, float half_width,
+      |                                                                        ^
+$REPO/apps/scene_workload/fixture.cpp:155:75: error: 2 adjacent parameters of 'operator()' of similar type ('float') are easily swapped by mistake [bugprone-easily-swappable-parameters,-warnings-as-errors]
+  155 |     const auto projection = [&](const Vec &r, const Vec &u, const Vec &b, float half_width,
+      |                                                                           ^~~~~~~~~~~~~~~~~
+  156 |                                 float height) {
+      |                                 ~~~~~~~~~~~~
+$REPO/apps/scene_workload/fixture.cpp:155:81: note: the first parameter in the range is 'half_width'
+  155 |     const auto projection = [&](const Vec &r, const Vec &u, const Vec &b, float half_width,
+      |                                                                                 ^~~~~~~~~~
+$REPO/apps/scene_workload/fixture.cpp:156:39: note: the last parameter in the range is 'height'
+  156 |                                 float height) {
+      |                                       ^~~~~~
+Suppressed 47 warnings (47 in non-user code).
+Use -header-filter=.* or leave it as default to display errors from all non-system headers. Use -system-headers to display errors from system headers as well.
+2 warnings treated as errors
+--- scene-asan/33/analysis.txt ---
+62 warnings generated.
+$REPO/tests/workload.cpp:82:13: error: comparing object representation of type 'value_type' (aka 'ngen::render::shader::Vertex') which does not have a unique object representation; consider comparing the members of the object manually [bugprone-suspicious-memory-comparison,-warnings-as-errors]
+   82 |     REQUIRE(std::memcmp(same.vertices.data(), fixture.vertices.data(), sizeof(fixture.vertices)) ==
+      |             ^
+$REPO/tests/workload.cpp:84:13: error: comparing object representation of type 'value_type' (aka 'ngen::render::shader::InstanceTransform') which does not have a unique object representation; consider comparing the members of the object manually [bugprone-suspicious-memory-comparison,-warnings-as-errors]
+   84 |     REQUIRE(std::memcmp(same.instances.data(), fixture.instances.data(),
+      |             ^
+$REPO/tests/workload.cpp:88:13: error: comparing object representation of type 'value_type' (aka 'ngen::render::shader::InstanceTransform') which does not have a unique object representation; consider comparing the members of the object manually [bugprone-suspicious-memory-comparison,-warnings-as-errors]
+   88 |     REQUIRE(std::memcmp(std::get<ngen::workload::Fixture>(changed).instances.data(),
+      |             ^
+Suppressed 79 warnings (56 in non-user code, 23 NOLINT).
+Use -header-filter=.* or leave it as default to display errors from all non-system headers. Use -system-headers to display errors from system headers as well.
+3 warnings treated as errors
+--- scene-debug/13/analysis.txt ---
+44 warnings generated.
+$REPO/engine/render/resources.cpp:128:48: error: performing an implicit widening conversion to type '__size_t' (aka 'unsigned long') of a multiplication performed in type 'unsigned int' [bugprone-implicit-widening-of-multiplication-result,-warnings-as-errors]
+  128 |                 device, queries, first, count, count * 2 * sizeof(std::uint64_t), values.data(),
+      |                                                ^
+$REPO/engine/render/resources.cpp:128:48: note: make conversion explicit to silence this warning
+    8 |                 device, queries, first, count, count * 2 * sizeof(std::uint64_t), values.data(),
+      |                                                ^~~~~~~~~
+      |                                                static_cast<__size_t>( )
+$REPO/engine/render/resources.cpp:128:48: note: perform multiplication in a wider type
+  128 |                 device, queries, first, count, count * 2 * sizeof(std::uint64_t), values.data(),
+      |                                                ^~~~~
+      |                                                static_cast<__size_t>( )
+Suppressed 43 warnings (43 in non-user code).
+Use -header-filter=.* or leave it as default to display errors from all non-system headers. Use -system-headers to display errors from system headers as well.
+1 warning treated as error
+--- scene-debug/20/analysis.txt ---
+46 warnings generated.
+$REPO/apps/resource_probe/main.cpp:602:69: error: result of integer division used in a floating point context; possible loss of precision [bugprone-integer-division,-warnings-as-errors]
+  602 |         grid[i].model.columns[13] = -.9F + .2F * static_cast<float>(i / 10);
+      |                                                                     ^
+Suppressed 45 warnings (45 in non-user code).
+Use -header-filter=.* or leave it as default to display errors from all non-system headers. Use -system-headers to display errors from system headers as well.
+1 warning treated as error
+--- scene-debug/23/analysis.txt ---
+49 warnings generated.
+$REPO/apps/scene_workload/fixture.cpp:155:33: error: 3 adjacent parameters of 'operator()' of similar type ('const Vec &') are easily swapped by mistake [bugprone-easily-swappable-parameters,-warnings-as-errors]
+  155 |     const auto projection = [&](const Vec &r, const Vec &u, const Vec &b, float half_width,
+      |                                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+$REPO/apps/scene_workload/fixture.cpp:155:44: note: the first parameter in the range is 'r'
+  155 |     const auto projection = [&](const Vec &r, const Vec &u, const Vec &b, float half_width,
+      |                                            ^
+$REPO/apps/scene_workload/fixture.cpp:155:72: note: the last parameter in the range is 'b'
+  155 |     const auto projection = [&](const Vec &r, const Vec &u, const Vec &b, float half_width,
+      |                                                                        ^
+$REPO/apps/scene_workload/fixture.cpp:155:75: error: 2 adjacent parameters of 'operator()' of similar type ('float') are easily swapped by mistake [bugprone-easily-swappable-parameters,-warnings-as-errors]
+  155 |     const auto projection = [&](const Vec &r, const Vec &u, const Vec &b, float half_width,
+      |                                                                           ^~~~~~~~~~~~~~~~~
+  156 |                                 float height) {
+      |                                 ~~~~~~~~~~~~
+$REPO/apps/scene_workload/fixture.cpp:155:81: note: the first parameter in the range is 'half_width'
+  155 |     const auto projection = [&](const Vec &r, const Vec &u, const Vec &b, float half_width,
+      |                                                                                 ^~~~~~~~~~
+$REPO/apps/scene_workload/fixture.cpp:156:39: note: the last parameter in the range is 'height'
+  156 |                                 float height) {
+      |                                       ^~~~~~
+Suppressed 47 warnings (47 in non-user code).
+Use -header-filter=.* or leave it as default to display errors from all non-system headers. Use -system-headers to display errors from system headers as well.
+2 warnings treated as errors
+--- scene-debug/33/analysis.txt ---
+64 warnings generated.
+$REPO/tests/workload.cpp:22:60: error: throwing an exception whose type 'HandlerCalled' is not derived from 'std::exception' [bugprone-std-exception-baseclass,-warnings-as-errors]
+   22 |     const auto previous = std::set_new_handler(+[] { throw HandlerCalled{}; });
+      |                                                      ~~~~~~^~~~~~~~~~~~~~~
+$REPO/tests/workload.cpp:21:5: note: type defined here
+   21 |     struct HandlerCalled {};
+      |     ^
+$REPO/tests/workload.cpp:34:7: error: empty catch statements hide issues; to handle exceptions appropriately, consider re-throwing, handling, or avoiding catch altogether [bugprone-empty-catch,-warnings-as-errors]
+   34 |     } catch (const std::bad_alloc &) {
+      |       ^
+$REPO/tests/workload.cpp:82:13: error: comparing object representation of type 'value_type' (aka 'ngen::render::shader::Vertex') which does not have a unique object representation; consider comparing the members of the object manually [bugprone-suspicious-memory-comparison,-warnings-as-errors]
+   82 |     REQUIRE(std::memcmp(same.vertices.data(), fixture.vertices.data(), sizeof(fixture.vertices)) ==
+      |             ^
+$REPO/tests/workload.cpp:84:13: error: comparing object representation of type 'value_type' (aka 'ngen::render::shader::InstanceTransform') which does not have a unique object representation; consider comparing the members of the object manually [bugprone-suspicious-memory-comparison,-warnings-as-errors]
+   84 |     REQUIRE(std::memcmp(same.instances.data(), fixture.instances.data(),
+      |             ^
+$REPO/tests/workload.cpp:88:13: error: comparing object representation of type 'value_type' (aka 'ngen::render::shader::InstanceTransform') which does not have a unique object representation; consider comparing the members of the object manually [bugprone-suspicious-memory-comparison,-warnings-as-errors]
+   88 |     REQUIRE(std::memcmp(std::get<ngen::workload::Fixture>(changed).instances.data(),
+      |             ^
+Suppressed 79 warnings (56 in non-user code, 23 NOLINT).
+Use -header-filter=.* or leave it as default to display errors from all non-system headers. Use -system-headers to display errors from system headers as well.
+5 warnings treated as errors
+--- scene-release/13/analysis.txt ---
+43 warnings generated.
+$REPO/engine/render/resources.cpp:128:48: error: performing an implicit widening conversion to type '__size_t' (aka 'unsigned long') of a multiplication performed in type 'unsigned int' [bugprone-implicit-widening-of-multiplication-result,-warnings-as-errors]
+  128 |                 device, queries, first, count, count * 2 * sizeof(std::uint64_t), values.data(),
+      |                                                ^
+$REPO/engine/render/resources.cpp:128:48: note: make conversion explicit to silence this warning
+    8 |                 device, queries, first, count, count * 2 * sizeof(std::uint64_t), values.data(),
+      |                                                ^~~~~~~~~
+      |                                                static_cast<__size_t>( )
+$REPO/engine/render/resources.cpp:128:48: note: perform multiplication in a wider type
+  128 |                 device, queries, first, count, count * 2 * sizeof(std::uint64_t), values.data(),
+      |                                                ^~~~~
+      |                                                static_cast<__size_t>( )
+Suppressed 42 warnings (42 in non-user code).
+Use -header-filter=.* or leave it as default to display errors from all non-system headers. Use -system-headers to display errors from system headers as well.
+1 warning treated as error
+--- scene-release/20/analysis.txt ---
+45 warnings generated.
+$REPO/apps/resource_probe/main.cpp:602:69: error: result of integer division used in a floating point context; possible loss of precision [bugprone-integer-division,-warnings-as-errors]
+  602 |         grid[i].model.columns[13] = -.9F + .2F * static_cast<float>(i / 10);
+      |                                                                     ^
+Suppressed 44 warnings (44 in non-user code).
+Use -header-filter=.* or leave it as default to display errors from all non-system headers. Use -system-headers to display errors from system headers as well.
+1 warning treated as error
+--- scene-release/23/analysis.txt ---
+48 warnings generated.
+$REPO/apps/scene_workload/fixture.cpp:155:33: error: 3 adjacent parameters of 'operator()' of similar type ('const Vec &') are easily swapped by mistake [bugprone-easily-swappable-parameters,-warnings-as-errors]
+  155 |     const auto projection = [&](const Vec &r, const Vec &u, const Vec &b, float half_width,
+      |                                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+$REPO/apps/scene_workload/fixture.cpp:155:44: note: the first parameter in the range is 'r'
+  155 |     const auto projection = [&](const Vec &r, const Vec &u, const Vec &b, float half_width,
+      |                                            ^
+$REPO/apps/scene_workload/fixture.cpp:155:72: note: the last parameter in the range is 'b'
+  155 |     const auto projection = [&](const Vec &r, const Vec &u, const Vec &b, float half_width,
+      |                                                                        ^
+$REPO/apps/scene_workload/fixture.cpp:155:75: error: 2 adjacent parameters of 'operator()' of similar type ('float') are easily swapped by mistake [bugprone-easily-swappable-parameters,-warnings-as-errors]
+  155 |     const auto projection = [&](const Vec &r, const Vec &u, const Vec &b, float half_width,
+      |                                                                           ^~~~~~~~~~~~~~~~~
+  156 |                                 float height) {
+      |                                 ~~~~~~~~~~~~
+$REPO/apps/scene_workload/fixture.cpp:155:81: note: the first parameter in the range is 'half_width'
+  155 |     const auto projection = [&](const Vec &r, const Vec &u, const Vec &b, float half_width,
+      |                                                                                 ^~~~~~~~~~
+$REPO/apps/scene_workload/fixture.cpp:156:39: note: the last parameter in the range is 'height'
+  156 |                                 float height) {
+      |                                       ^~~~~~
+Suppressed 46 warnings (46 in non-user code).
+Use -header-filter=.* or leave it as default to display errors from all non-system headers. Use -system-headers to display errors from system headers as well.
+2 warnings treated as errors
+--- scene-release/33/analysis.txt ---
+63 warnings generated.
+$REPO/tests/workload.cpp:22:60: error: throwing an exception whose type 'HandlerCalled' is not derived from 'std::exception' [bugprone-std-exception-baseclass,-warnings-as-errors]
+   22 |     const auto previous = std::set_new_handler(+[] { throw HandlerCalled{}; });
+      |                                                      ~~~~~~^~~~~~~~~~~~~~~
+$REPO/tests/workload.cpp:21:5: note: type defined here
+   21 |     struct HandlerCalled {};
+      |     ^
+$REPO/tests/workload.cpp:34:7: error: empty catch statements hide issues; to handle exceptions appropriately, consider re-throwing, handling, or avoiding catch altogether [bugprone-empty-catch,-warnings-as-errors]
+   34 |     } catch (const std::bad_alloc &) {
+      |       ^
+$REPO/tests/workload.cpp:82:13: error: comparing object representation of type 'value_type' (aka 'ngen::render::shader::Vertex') which does not have a unique object representation; consider comparing the members of the object manually [bugprone-suspicious-memory-comparison,-warnings-as-errors]
+   82 |     REQUIRE(std::memcmp(same.vertices.data(), fixture.vertices.data(), sizeof(fixture.vertices)) ==
+      |             ^
+$REPO/tests/workload.cpp:84:13: error: comparing object representation of type 'value_type' (aka 'ngen::render::shader::InstanceTransform') which does not have a unique object representation; consider comparing the members of the object manually [bugprone-suspicious-memory-comparison,-warnings-as-errors]
+   84 |     REQUIRE(std::memcmp(same.instances.data(), fixture.instances.data(),
+      |             ^
+$REPO/tests/workload.cpp:88:13: error: comparing object representation of type 'value_type' (aka 'ngen::render::shader::InstanceTransform') which does not have a unique object representation; consider comparing the members of the object manually [bugprone-suspicious-memory-comparison,-warnings-as-errors]
+   88 |     REQUIRE(std::memcmp(std::get<ngen::workload::Fixture>(changed).instances.data(),
+      |             ^
+Suppressed 78 warnings (55 in non-user code, 23 NOLINT).
+Use -header-filter=.* or leave it as default to display errors from all non-system headers. Use -system-headers to display errors from system headers as well.
+5 warnings treated as errors

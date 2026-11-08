@@ -18,7 +18,11 @@
     {"name":"scene-debug","inherits":"renderer-debug","cacheVariables":{"NGEN_BUILD_ASSETS":"ON"}},
     {"name":"scene-release","inherits":"renderer-release","cacheVariables":{"NGEN_BUILD_ASSETS":"ON"}},
     {"name":"scene-asan","inherits":"renderer-asan","cacheVariables":{"NGEN_BUILD_ASSETS":"ON"}},
-    {"name":"scene-gcc","inherits":"gcc","cacheVariables":{"NGEN_BUILD_RENDERER":"ON","NGEN_BUILD_ASSETS":"ON"}}
+    {"name":"scene-gcc","inherits":"gcc","cacheVariables":{"NGEN_BUILD_RENDERER":"ON","NGEN_BUILD_ASSETS":"ON"}},
+    {"name":"inspector-debug","inherits":"scene-debug","cacheVariables":{"NGEN_BUILD_INSPECTOR":"ON"}},
+    {"name":"inspector-release","inherits":"scene-release","cacheVariables":{"NGEN_BUILD_INSPECTOR":"ON"}},
+    {"name":"inspector-asan","inherits":"scene-asan","cacheVariables":{"NGEN_BUILD_INSPECTOR":"ON"}},
+    {"name":"inspector-gcc","inherits":"scene-gcc","cacheVariables":{"NGEN_BUILD_INSPECTOR":"ON"}}
   ],
   "buildPresets": [
     {"name":"debug","configurePreset":"debug","jobs":2},
@@ -37,7 +41,11 @@
     {"name":"scene-debug","configurePreset":"scene-debug","jobs":2},
     {"name":"scene-release","configurePreset":"scene-release","jobs":2},
     {"name":"scene-asan","configurePreset":"scene-asan","jobs":2},
-    {"name":"scene-gcc","configurePreset":"scene-gcc","jobs":2}
+    {"name":"scene-gcc","configurePreset":"scene-gcc","jobs":2},
+    {"name":"inspector-debug","configurePreset":"inspector-debug","jobs":2},
+    {"name":"inspector-release","configurePreset":"inspector-release","jobs":2},
+    {"name":"inspector-asan","configurePreset":"inspector-asan","jobs":2},
+    {"name":"inspector-gcc","configurePreset":"inspector-gcc","jobs":2}
   ],
   "testPresets": [
     {"name":"debug","configurePreset":"debug","output":{"outputOnFailure":true},"execution":{"noTestsAction":"error"}},
@@ -56,6 +64,10 @@
     {"name":"scene-debug","configurePreset":"scene-debug","output":{"outputOnFailure":true},"execution":{"noTestsAction":"error"}},
     {"name":"scene-release","configurePreset":"scene-release","output":{"outputOnFailure":true},"execution":{"noTestsAction":"error"}},
     {"name":"scene-asan","configurePreset":"scene-asan","output":{"outputOnFailure":true},"execution":{"noTestsAction":"error"},"environment":{"ASAN_OPTIONS":"detect_leaks=1:halt_on_error=1","UBSAN_OPTIONS":"halt_on_error=1:print_stacktrace=1"}},
-    {"name":"scene-gcc","configurePreset":"scene-gcc","output":{"outputOnFailure":true},"execution":{"noTestsAction":"error"}}
+    {"name":"scene-gcc","configurePreset":"scene-gcc","output":{"outputOnFailure":true},"execution":{"noTestsAction":"error"}},
+    {"name":"inspector-debug","inherits":"scene-debug","configurePreset":"inspector-debug"},
+    {"name":"inspector-release","inherits":"scene-release","configurePreset":"inspector-release"},
+    {"name":"inspector-asan","inherits":"scene-asan","configurePreset":"inspector-asan"},
+    {"name":"inspector-gcc","inherits":"scene-gcc","configurePreset":"inspector-gcc"}
   ]
 }

@@ -1,0 +1,8 @@
+layout expected_failure=1 validation_sanitizers_clean=1
+pool expected_failure=1 validation_sanitizers_clean=1
+sets expected_failure=1 validation_sanitizers_clean=1
+sampler expected_failure=1 validation_sanitizers_clean=1
+shader2 expected_failure=1 validation_sanitizers_clean=1
+pipeline2 expected_failure=1 validation_sanitizers_clean=1
+buffer expected_failure=1 validation_sanitizers_clean=1
+submit expected_failure=1 validation_sanitizers_clean=1

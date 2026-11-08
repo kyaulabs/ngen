@@ -26,6 +26,11 @@ int main() {
             {"cameraPosition", offsetof(FrameConstants, cameraPosition)},
             {"keyDirectionIntensity", offsetof(FrameConstants, keyDirectionIntensity)},
             {"keyColor", offsetof(FrameConstants, keyColor)}});
+    report("InstanceConstants", sizeof(InstanceConstants), alignof(InstanceConstants),
+           {{"transforms", offsetof(InstanceConstants, transforms)}});
+    report("InstanceTransform", sizeof(InstanceTransform), alignof(InstanceTransform),
+           {{"model", offsetof(InstanceTransform, model)},
+            {"normalMatrix", offsetof(InstanceTransform, normalMatrix)}});
     report(
         "LightConstants", sizeof(LightConstants), alignof(LightConstants),
         {{"lights", offsetof(LightConstants, lights)}, {"count", offsetof(LightConstants, count)}});
@@ -42,7 +47,14 @@ int main() {
         "CullConstants", sizeof(CullConstants), alignof(CullConstants),
         {{"planes", offsetof(CullConstants, planes)}, {"count", offsetof(CullConstants, count)}});
     report("PostConstants", sizeof(PostConstants), alignof(PostConstants),
-           {{"exposureFxaaTexel", offsetof(PostConstants, exposureFxaaTexel)}});
+           {{"exposureFxaaTexel", offsetof(PostConstants, exposureFxaaTexel)},
+            {"bloom", offsetof(PostConstants, bloom)}});
+    report("OverlayConstants", sizeof(OverlayConstants), alignof(OverlayConstants),
+           {{"scale_translate", offsetof(OverlayConstants, scale_translate)}});
+    report("OverlayVertex", sizeof(OverlayVertex), alignof(OverlayVertex),
+           {{"position", offsetof(OverlayVertex, position)},
+            {"uv", offsetof(OverlayVertex, uv)},
+            {"color", offsetof(OverlayVertex, color)}});
     report("Vertex", sizeof(Vertex), alignof(Vertex),
            {{"position", offsetof(Vertex, position)},
             {"normal", offsetof(Vertex, normal)},

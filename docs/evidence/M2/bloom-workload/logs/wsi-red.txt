@@ -1,0 +1,6 @@
+Vulkan resource: WSI bloom admission accepted invalid strength
+device=Intel(R) Iris(R) Xe Graphics (TGL GT2) api=1.4 driver=109060102 queue=0 display=wayland
+device=Intel(R) Iris(R) Xe Graphics (TGL GT2) api=1.4 driver=109060102 queue=0 display=wayland
+tracked_post_draw=1 hdr_tone_map_pixels=4 asymmetric_orientation=1 exposure_srgb=1 graphics_retirement=1
+bloom_hdr_spread=1 bloom_disabled_identity=1 bloom_gaussian=1 bloom_threshold=1 bloom_bounded_support=1 bloom_admission=1
+fxaa_diagonal=1 fxaa_softened_pixels=8 fxaa_flat_regions=1
