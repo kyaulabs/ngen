@@ -1,0 +1,26 @@
+{
+  "Debug-inspection.bmp": {
+    "bytes": 3686538,
+    "sha256": "146308608d26dd5ef5c696dbe3d85d4ccedc1ae0887a6ce90f446a4d7014b103"
+  },
+  "Debug-scene-package.bmp": {
+    "bytes": 3686538,
+    "sha256": "621978da723790ad88190eae45ebf08fb2b20875e67ec3d48a57248108f3b924"
+  },
+  "Release-inspection.bmp": {
+    "bytes": 3686538,
+    "sha256": "63e3c8d448e799e21d30aba9de10307b9b017414ac4223c8de66afdc82996345"
+  },
+  "Release-scene-package.bmp": {
+    "bytes": 3686538,
+    "sha256": "621978da723790ad88190eae45ebf08fb2b20875e67ec3d48a57248108f3b924"
+  },
+  "Release-steady.bmp": {
+    "bytes": 3686538,
+    "sha256": "91afb9781015bc8349210427f7ee40c4abda56a653b620b0cc1a4b6a26516239"
+  },
+  "Release-stream.bmp": {
+    "bytes": 3686538,
+    "sha256": "498b45e8c5a76045fb19854cf43363b55a00f4d259eb9e0c5b6a9300b56cb19a"
+  }
+}

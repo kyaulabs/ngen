@@ -1,0 +1,300 @@
+{
+  "1": {
+    "Debug-inspection": {
+      "frame_ns": {
+        "p50": 12517000,
+        "p95": 20725900,
+        "p99": 25101100,
+        "max": 52001800
+      },
+      "working_set_observed_bytes": 861380608,
+      "plateaus": {
+        "2": {
+          "vma_allocation_bytes": [
+            "199302016"
+          ],
+          "vma_reserved_bytes": [
+            "202240192"
+          ],
+          "resource_live": [
+            "22"
+          ]
+        },
+        "3": {
+          "vma_allocation_bytes": [
+            "199302016"
+          ],
+          "vma_reserved_bytes": [
+            "202240192"
+          ],
+          "resource_live": [
+            "22"
+          ]
+        }
+      },
+      "vma_peak_allocation_bytes": 448107760
+    },
+    "Release-inspection": {
+      "frame_ns": {
+        "p50": 16653700,
+        "p95": 28591000,
+        "p99": 33121300,
+        "max": 77259600
+      },
+      "working_set_observed_bytes": 808280064,
+      "plateaus": {
+        "2": {
+          "vma_allocation_bytes": [
+            "199302016"
+          ],
+          "vma_reserved_bytes": [
+            "202240192"
+          ],
+          "resource_live": [
+            "22"
+          ]
+        },
+        "3": {
+          "vma_allocation_bytes": [
+            "199302016"
+          ],
+          "vma_reserved_bytes": [
+            "202240192"
+          ],
+          "resource_live": [
+            "22"
+          ]
+        }
+      },
+      "vma_peak_allocation_bytes": 448107760
+    },
+    "Release-steady": {
+      "frame_ns": {
+        "p50": 7085200,
+        "p95": 7913800,
+        "p99": 8243500,
+        "max": 8594700
+      },
+      "working_set_observed_bytes": 434405376,
+      "plateaus": {
+        "1": {
+          "vma_allocation_bytes": [
+            "199302016"
+          ],
+          "vma_reserved_bytes": [
+            "202240192"
+          ],
+          "resource_live": [
+            "22"
+          ]
+        }
+      },
+      "vma_peak_allocation_bytes": 199302016
+    },
+    "Release-stream": {
+      "frame_ns": {
+        "p50": 7059700,
+        "p95": 7972800,
+        "p99": 12859300,
+        "max": 24371700
+      },
+      "working_set_observed_bytes": 924434432,
+      "plateaus": {
+        "2": {
+          "vma_allocation_bytes": [
+            "199302016"
+          ],
+          "vma_reserved_bytes": [
+            "202240192"
+          ],
+          "resource_live": [
+            "22"
+          ]
+        },
+        "3": {
+          "vma_allocation_bytes": [
+            "199302016"
+          ],
+          "vma_reserved_bytes": [
+            "202240192"
+          ],
+          "resource_live": [
+            "22"
+          ]
+        },
+        "4": {
+          "vma_allocation_bytes": [
+            "199302016"
+          ],
+          "vma_reserved_bytes": [
+            "202240192"
+          ],
+          "resource_live": [
+            "22"
+          ]
+        },
+        "5": {
+          "vma_allocation_bytes": [
+            "199302016"
+          ],
+          "vma_reserved_bytes": [
+            "202240192"
+          ],
+          "resource_live": [
+            "22"
+          ]
+        }
+      },
+      "vma_peak_allocation_bytes": 448107760
+    }
+  },
+  "2": {
+    "Debug-inspection": {
+      "frame_ns": {
+        "p50": 10391300,
+        "p95": 13068200,
+        "p99": 19737300,
+        "max": 42324700
+      },
+      "working_set_observed_bytes": 810901504,
+      "plateaus": {
+        "2": {
+          "vma_allocation_bytes": [
+            "199302016"
+          ],
+          "vma_reserved_bytes": [
+            "202240192"
+          ],
+          "resource_live": [
+            "22"
+          ]
+        },
+        "3": {
+          "vma_allocation_bytes": [
+            "199302016"
+          ],
+          "vma_reserved_bytes": [
+            "202240192"
+          ],
+          "resource_live": [
+            "22"
+          ]
+        }
+      },
+      "vma_peak_allocation_bytes": 448107760
+    },
+    "Release-inspection": {
+      "frame_ns": {
+        "p50": 9152700,
+        "p95": 10456800,
+        "p99": 14289500,
+        "max": 42490400
+      },
+      "working_set_observed_bytes": 808505344,
+      "plateaus": {
+        "2": {
+          "vma_allocation_bytes": [
+            "199302016"
+          ],
+          "vma_reserved_bytes": [
+            "202240192"
+          ],
+          "resource_live": [
+            "22"
+          ]
+        },
+        "3": {
+          "vma_allocation_bytes": [
+            "199302016"
+          ],
+          "vma_reserved_bytes": [
+            "202240192"
+          ],
+          "resource_live": [
+            "22"
+          ]
+        }
+      },
+      "vma_peak_allocation_bytes": 448107760
+    },
+    "Release-steady": {
+      "frame_ns": {
+        "p50": 6663600,
+        "p95": 8164700,
+        "p99": 8323500,
+        "max": 8495500
+      },
+      "working_set_observed_bytes": 401666048,
+      "plateaus": {
+        "1": {
+          "vma_allocation_bytes": [
+            "199302016"
+          ],
+          "vma_reserved_bytes": [
+            "202240192"
+          ],
+          "resource_live": [
+            "22"
+          ]
+        }
+      },
+      "vma_peak_allocation_bytes": 199302016
+    },
+    "Release-stream": {
+      "frame_ns": {
+        "p50": 6676400,
+        "p95": 8198500,
+        "p99": 8417800,
+        "max": 12840300
+      },
+      "working_set_observed_bytes": 926515200,
+      "plateaus": {
+        "2": {
+          "vma_allocation_bytes": [
+            "199302016"
+          ],
+          "vma_reserved_bytes": [
+            "202240192"
+          ],
+          "resource_live": [
+            "22"
+          ]
+        },
+        "3": {
+          "vma_allocation_bytes": [
+            "199302016"
+          ],
+          "vma_reserved_bytes": [
+            "202240192"
+          ],
+          "resource_live": [
+            "22"
+          ]
+        },
+        "4": {
+          "vma_allocation_bytes": [
+            "199302016"
+          ],
+          "vma_reserved_bytes": [
+            "202240192"
+          ],
+          "resource_live": [
+            "22"
+          ]
+        },
+        "5": {
+          "vma_allocation_bytes": [
+            "199302016"
+          ],
+          "vma_reserved_bytes": [
+            "202240192"
+          ],
+          "resource_live": [
+            "22"
+          ]
+        }
+      },
+      "vma_peak_allocation_bytes": 448107760
+    }
+  }
+}

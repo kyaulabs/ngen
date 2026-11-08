@@ -1,9 +1,11 @@
 # Windows inspector/bloom workload handoff
 
-**Owner execution pending.** This handoff covers the new inspector, shared
+**Owner execution verified at `1f0a4b3`.** See the [returned results](../windows-workload-verified/README.md).
+These commands are retained for reproduction, not a new four-build request.
+This handoff covers the new inspector, shared
 16-pixel UI gutters, restrained bloom and repeated full-package reloads on the
 RTX 5070. It does not request another run at `ef984ef`; that earlier execution
-slice is complete. Use the new pinned handoff revision supplied with this file.
+slice is complete. Use the recorded revision below to reproduce this slice.
 
 Run both compilers in Debug and Release using the same canonical `scene.ngas`
 as before: 175,854,711 bytes, SHA-256
@@ -13,8 +15,8 @@ The original GLB/package stay private; this workflow does not recook them.
 For MSYS2 fish, substitute the real package path:
 
 ```fish
-git fetch origin feat/kyau-47ec73-scene-workload
-git switch --detach <pinned-handoff-revision>
+git fetch origin
+git switch --detach 1f0a4b31a3db73f802513eab6edebd319f3c47cb
 set scene /path/to/scene.ngas
 pwsh.exe -NoProfile -File (cygpath -w tools/build-windows.ps1) -Inspector -ScenePackage (cygpath -w $scene) -Compiler MSVC -Configuration All
 pwsh.exe -NoProfile -File (cygpath -w tools/build-windows.ps1) -Inspector -ScenePackage (cygpath -w $scene) -Compiler ClangCl -Configuration All

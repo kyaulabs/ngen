@@ -1,0 +1,13 @@
+Test project <ROOT>/build/windows/20261107-194453-478/Debug
+  Test  #1: shader_offline
+  Test  #2: ngen_tests
+  Test  #3: render_contract_tests
+  Test  #4: render_environment_tests
+  Test  #5: scene_workload_tests
+  Test  #6: asset_package_tests
+  Test  #7: inspector_tests
+  Test  #8: render_startup_tests
+  Test  #9: replay_serial
+  Test #10: replay_workers
+
+Total Tests: 10
