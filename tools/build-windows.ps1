@@ -12,6 +12,8 @@ param(
     [Parameter(ParameterSetName = 'CPU')]
     [switch]$Scene,
     [Parameter(ParameterSetName = 'CPU')]
+    [switch]$Inspector,
+    [Parameter(ParameterSetName = 'CPU')]
     [string]$ScenePackage = '',
     [Parameter(Mandatory, ParameterSetName = 'GPU')]
     [switch]$GpuInfo
@@ -57,6 +59,74 @@ function Get-NgenSceneIdentity {
     }
 }
 
+function Invoke-NgenWorkload {
+    param(
+        [Parameter(Mandatory)][string]$FilePath,
+        [Parameter(Mandatory)][string[]]$Arguments,
+        [Parameter(Mandatory)][string]$LogPath,
+        [Parameter(Mandatory)][string]$MemoryPath,
+        [ValidateRange(1000, 600000)][int]$TimeoutMilliseconds = 180000
+    )
+    $errorPath = "$LogPath.stderr.txt"
+    foreach ($path in @($LogPath, $errorPath, $MemoryPath)) {
+        if (Test-Path -LiteralPath $path) { throw 'Workload evidence path is not fresh.' }
+    }
+    $process = [Diagnostics.Process]::new()
+    $process.StartInfo.FileName = $FilePath
+    $process.StartInfo.UseShellExecute = $false
+    $process.StartInfo.RedirectStandardOutput = $true
+    $process.StartInfo.RedirectStandardError = $true
+    foreach ($argument in $Arguments) { $process.StartInfo.ArgumentList.Add($argument) }
+    $clock = [Diagnostics.Stopwatch]::StartNew()
+    $peak = 0L
+    $resident = 0L
+    $timedOut = $false
+    $started = $false
+    try {
+        $started = $process.Start()
+        if (-not $started) { throw 'Could not start workload process.' }
+        $output = $process.StandardOutput.ReadToEndAsync()
+        $errors = $process.StandardError.ReadToEndAsync()
+        while (-not $process.HasExited) {
+            try {
+                $process.Refresh()
+                $peak = [Math]::Max($peak, $process.PeakWorkingSet64)
+                $resident = [Math]::Max($resident, $process.WorkingSet64)
+            } catch [InvalidOperationException] { }
+            if ($process.WaitForExit(25)) { break }
+            if ($clock.ElapsedMilliseconds -gt $TimeoutMilliseconds) {
+                $timedOut = $true
+                try { $process.Kill($true) } catch [InvalidOperationException] { }
+                break
+            }
+        }
+        $process.WaitForExit()
+        $stdout = $output.GetAwaiter().GetResult()
+        $stderr = $errors.GetAwaiter().GetResult()
+        [IO.File]::WriteAllText($LogPath, $stdout)
+        [IO.File]::WriteAllText($errorPath, $stderr)
+        $observed = [Math]::Max($peak, $resident)
+        [ordered]@{
+            schema = 1; process_id = $process.Id; exit_code = $process.ExitCode; timed_out = $timedOut
+            elapsed_ms = $clock.ElapsedMilliseconds; sample_period_ms = 25
+            observed_peak_working_set_bytes = $observed
+            observed_peak_counter_bytes = $peak; sampled_resident_bytes = $resident
+            scope = 'Observed OS process working set/high-water counter, including startup; not GPU memory or an exact continuous peak.'
+        } | ConvertTo-Json | Set-Content -LiteralPath $MemoryPath
+        $stdout | Out-Host
+        if ($timedOut) { throw 'Workload process exceeded the observation deadline.' }
+        if ($process.ExitCode -ne 0) { throw "Workload failed with exit code $($process.ExitCode). See $LogPath" }
+        if ($stderr.Length) { throw "Unexpected workload stderr. See $errorPath" }
+        if ($observed -le 0 -or $observed -gt 6442450944) { throw 'Observed workload working set unavailable or above 6 GiB.' }
+    } finally {
+        if ($started -and -not $process.HasExited) {
+            try { $process.Kill($true) } catch [InvalidOperationException] { }
+            $process.WaitForExit()
+        }
+        $process.Dispose()
+    }
+}
+
 function Invoke-NgenRenderer {
     param(
         [Parameter(Mandatory)][string]$BuildDirectory,
@@ -64,8 +134,10 @@ function Invoke-NgenRenderer {
         [Parameter(Mandatory)][string]$Configuration,
         [Parameter(Mandatory)][scriptblock]$Checks,
         [switch]$Scene,
+        [switch]$Inspector,
         [string]$ScenePackage = ''
     )
+    if ($Inspector -and -not $ScenePackage) { throw 'Inspector verification requires ScenePackage.' }
     if ($ScenePackage) { $Scene = $true }
     # SDL is a locked Conan dependency, not the SDK's optional SDL bundle.
     # CTest's startup executable needs the same DLL path as the GPU probes.
@@ -93,6 +165,29 @@ function Invoke-NgenRenderer {
                 if ((Get-NgenSceneIdentity -Path $ScenePackage | ConvertTo-Json) -cne $identity) {
                     throw 'ScenePackage changed during native verification.'
                 }
+            }
+        }
+        if ($Inspector) {
+            Invoke-NgenNative -FilePath (Join-Path $BuildDirectory 'inspector_probe.exe') -LogPath (Join-Path $LogDirectory "$Configuration-inspector.txt")
+            $modes = @('inspection')
+            if ($Configuration -eq 'Release') { $modes += @('steady', 'stream') }
+            foreach ($mode in $modes) {
+                $capture = Join-Path $LogDirectory "$Configuration-$mode.bmp"
+                $report = Join-Path $LogDirectory "$Configuration-$mode.csv"
+                if ((Test-Path -LiteralPath $capture) -or (Test-Path -LiteralPath $report) -or
+                    (Test-Path -LiteralPath (Join-Path $LogDirectory "$Configuration-$mode.artifacts.json"))) { throw 'Inspector workload outputs are not fresh.' }
+                $frames = if ($mode -eq 'inspection') { 1200 } else { 600 }
+                $arguments = @($ScenePackage, '--inspector', "--frames=$frames", '--warmup=60', "--capture=$capture", "--report=$report")
+                if ($mode -eq 'inspection') { $arguments += @('--walkthrough', '--reload-cycles=2', '--validation') }
+                if ($mode -eq 'stream') { $arguments += @('--walkthrough', '--reload-cycles=4', '--no-resize') }
+                Invoke-NgenWorkload -FilePath (Join-Path $BuildDirectory 'scene_workload.exe') -Arguments $arguments -LogPath (Join-Path $LogDirectory "$Configuration-$mode.txt") -MemoryPath (Join-Path $LogDirectory "$Configuration-$mode.working-set.json")
+                $artifacts = foreach ($path in @($capture, $report)) {
+                    $item = Get-Item -LiteralPath $path -Force -ErrorAction Stop
+                    if ($item -isnot [IO.FileInfo] -or ($item.Attributes -band [IO.FileAttributes]::ReparsePoint) -or $item.Length -lt 1 -or $item.Length -gt 8388608) { throw 'Inspector workload capture/report is missing, linked, empty or oversized.' }
+                    [ordered]@{ name = $item.Name; bytes = $item.Length; sha256 = (Get-FileHash -LiteralPath $path -Algorithm SHA256).Hash.ToLowerInvariant() }
+                }
+                $artifacts | ConvertTo-Json | Set-Content -LiteralPath (Join-Path $LogDirectory "$Configuration-$mode.artifacts.json")
+                if ((Get-NgenSceneIdentity -Path $ScenePackage | ConvertTo-Json) -cne $identity) { throw 'ScenePackage changed during inspector workload.' }
             }
         }
         $manifests = @(Get-ChildItem -LiteralPath (Join-Path $BuildDirectory 'shaders') -Filter 'manifest.json' -Recurse -File)
@@ -167,7 +262,8 @@ function Invoke-NgenGpuInfo {
     Write-Host 'GPU capability capture completed. This is not a rendering or presentation test.'
 }
 
-# Scene verification is the combined renderer + checked runtime-assets graph.
+# Inspector selects the optional GUI graph over the combined checked scene.
+if ($Inspector) { $Scene = $true }
 if ($ScenePackage) { $Scene = $true }
 if ($Scene) { $Renderer = $true }
 
@@ -208,6 +304,7 @@ try {
         exit 0
     }
 
+    if ($Inspector -and -not $ScenePackage) { throw 'Inspector verification requires -ScenePackage.' }
     if ($ScenePackage) {
         Get-NgenSceneIdentity -Path $ScenePackage | Out-Null
         $ScenePackage = (Resolve-Path -LiteralPath $ScenePackage).ProviderPath
@@ -299,7 +396,9 @@ try {
     if ($Renderer) {
         Invoke-NgenNative -FilePath $conan -Arguments @('export', 'recipes/slangc', '--version=2026.21', '--user=ngen', '--channel=tools') -LogPath (Join-Path $logs 'slang-recipe.txt')
     }
-    $lockfile = if ($Scene) { 'conan-scene.lock' } elseif ($Renderer) { 'conan-render.lock' } else { 'conan.lock' }
+    $lockfile = if ($Inspector) { 'conan-inspector.lock' } elseif ($Scene) { 'conan-scene.lock' } elseif ($Renderer) { 'conan-render.lock' } else { 'conan.lock' }
+    $inspectorOption = if ($Inspector) { 'True' } else { 'False' }
+    $inspectorBuild = if ($Inspector) { 'ON' } else { 'OFF' }
     $assetsOption = if ($Scene) { 'True' } else { 'False' }
     $assetsBuild = if ($Scene) { 'ON' } else { 'OFF' }
     $rendererOption = if ($Renderer) { 'True' } else { 'False' }
@@ -314,14 +413,14 @@ try {
             '-c:h', 'tools.cmake.cmaketoolchain:generator=Ninja',
             '-c:b', 'tools.cmake.cmaketoolchain:generator=Ninja',
             '-c:h', 'tools.build:jobs=2', '-c:b', 'tools.build:jobs=2',
-            '-o:h', "&:renderer=$rendererOption", '-o:h', "&:shaders=$rendererOption", '-o:h', "&:assets=$assetsOption",
+            '-o:h', "&:renderer=$rendererOption", '-o:h', "&:shaders=$rendererOption", '-o:h', "&:assets=$assetsOption", '-o:h', "&:inspector=$inspectorOption",
             '--lockfile', $lockfile, '--build=missing', '-of', $build
         ) -LogPath (Join-Path $logs "$config-conan.txt")
         $toolchain = Join-Path $build 'conan_toolchain.cmake'
         Invoke-NgenNative -FilePath $cmake -Arguments @(
             '-S', $root, '-B', $build, '-G', 'Ninja',
             "-DCMAKE_TOOLCHAIN_FILE=$toolchain", "-DCMAKE_BUILD_TYPE=$config",
-            "-DNGEN_BUILD_RENDERER=$rendererBuild", "-DNGEN_BUILD_ASSETS=$assetsBuild"
+            "-DNGEN_BUILD_RENDERER=$rendererBuild", "-DNGEN_BUILD_ASSETS=$assetsBuild", "-DNGEN_BUILD_INSPECTOR=$inspectorBuild"
         ) -LogPath (Join-Path $logs "$config-configure.txt")
         Invoke-NgenNative -FilePath $cmake -Arguments @('--build', $build, '-j', '2') -LogPath (Join-Path $logs "$config-build.txt")
         $checks = {
@@ -332,12 +431,14 @@ try {
             Invoke-NgenNative -FilePath $harness -Arguments @('--workers=2') -LogPath (Join-Path $logs "$config-workers.txt")
         }
         if ($Renderer) {
-            Invoke-NgenRenderer -BuildDirectory $build -LogDirectory $logs -Configuration $config -Checks $checks -Scene:$Scene -ScenePackage $ScenePackage
+            Invoke-NgenRenderer -BuildDirectory $build -LogDirectory $logs -Configuration $config -Checks $checks -Scene:$Scene -Inspector:$Inspector -ScenePackage $ScenePackage
         } else {
             & $checks
         }
     }
-    if ($ScenePackage) {
+    if ($Inspector) {
+        Write-Host "Windows $Compiler inspector/bloom/reload validation completed. Release additionally records fixed-resolution steady/streaming CSVs and observed process working set. Inspect actual budgets, captures and GPU-memory scope; this is not personal visual or formal M2 acceptance."
+    } elseif ($ScenePackage) {
         Write-Host "Windows $Compiler CPU, renderer/shader, built-in fixture and supplied checked-package upload/PBR/frame-pin checks passed. See the package hash and separate scene-package logs. This is not final visual, performance or M2 acceptance."
     } elseif ($Scene) {
         Write-Host "Windows $Compiler CPU, renderer/shader, checked-scene fixture upload/PBR/frame-pin checks passed. This does not validate Windows frigate rendering, final performance or full M2 acceptance."
