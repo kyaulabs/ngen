@@ -8,6 +8,7 @@ using MaterialFactors = assets::MaterialFactors;
 struct ViewSettings {
     float exposure{1};
     bool fxaa{true};
+    float bloom{.04F};
 };
 struct InspectorSnapshot {
     assets::PackagePin package;

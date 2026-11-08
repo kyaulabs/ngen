@@ -1,0 +1,17 @@
+{
+  "m2-gutters-steady": {
+    "bytes": 3686538,
+    "sha256": "3ad0bbbadef1e6ed0435da84fe22759a0e1b1833a870db1cf3b371bf455cafa7",
+    "scope": "Private offscreen capture; pixels not retained"
+  },
+  "m2-gutters-stream": {
+    "bytes": 3686538,
+    "sha256": "80e91633088fcb1960c204de8da8a2d53fdf3c70ade4566e4e239b17a3c9eaf5",
+    "scope": "Private offscreen capture; pixels not retained"
+  },
+  "m2-verified1-stream": {
+    "bytes": 3686538,
+    "sha256": "ae914e3424812051312eecd7cb283223cf977432afc9a69eedcb91585a0f0405",
+    "scope": "Private offscreen capture; pixels not retained"
+  }
+}

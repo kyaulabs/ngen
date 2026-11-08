@@ -1,0 +1,8 @@
+native_latency name=submit begin_ns=397935997227724 end_ns=397936035036216 duration_ns=37808492 result=0
+swapchain_created at_ns=397936172994006 width=1280 height=720 requested_images=4 result=0
+diagnostic_reload_omitted=1 at_ns=397937252905379
+diagnostic_reload_omitted=1 at_ns=397937252915386
+swapchain_created at_ns=397937507670127 width=1024 height=640 requested_images=4 result=0
+swapchain_created at_ns=397937847746525 width=1280 height=720 requested_images=4 result=0
+native_latency name=acquire_poll_span begin_ns=397937868508161 end_ns=397937969028736 duration_ns=100520575 result=0
+Scene workload: inspector walkthrough did not complete edits, keyboard reload and native resize publication

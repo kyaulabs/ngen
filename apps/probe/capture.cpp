@@ -41,11 +41,10 @@ write_exclusive(const std::filesystem::path &path, std::span<const std::byte> by
 } catch (const std::exception &error) {
     return render::Failure{error.what()};
 }
-std::variant<std::monostate, render::Failure> capture(render::Context &context,
-                                                      const render::Image &hdr, VkExtent2D extent,
-                                                      const std::filesystem::path &path,
-                                                      float exposure, bool fxaa,
-                                                      const render::Overlay *overlay) try {
+std::variant<std::monostate, render::Failure>
+capture(render::Context &context, const render::Image &hdr, VkExtent2D extent,
+        const std::filesystem::path &path, float exposure, bool fxaa,
+        const render::Overlay *overlay, float bloom) try {
     const auto bytes = VkDeviceSize{extent.width} * extent.height * 4;
     require(extent.width > 0 && extent.height > 0 && extent.width <= 8192 &&
                 extent.height <= 8192 && bytes <= 4U * 1024U * 1024U - 1024,
@@ -56,7 +55,7 @@ std::variant<std::monostate, render::Failure> capture(render::Context &context,
                                   VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_TRANSFER_SRC_BIT}));
     auto readback = take(
         context.create_buffer({bytes, VK_BUFFER_USAGE_TRANSFER_DST_BIT, MemoryAccess::readback}));
-    wait(context, take(context.post_process({hdr, ldr, exposure, fxaa, {}, overlay})));
+    wait(context, take(context.post_process({hdr, ldr, exposure, fxaa, {}, overlay, bloom})));
     wait(context, take(context.copy_from_image({ldr, readback})));
     std::vector<std::byte> pixels(static_cast<std::size_t>(bytes));
     (void)take(readback.read(0, pixels));

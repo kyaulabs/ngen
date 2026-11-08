@@ -42,7 +42,8 @@ Result<std::monostate> Inspector::enqueue(InspectorCommand command) {
     }
     if (const auto *view = std::get_if<SetView>(&command))
         if (!std::isfinite(view->settings.exposure) || view->settings.exposure < 0 ||
-            view->settings.exposure > 64)
+            view->settings.exposure > 64 || !std::isfinite(view->settings.bloom) ||
+            view->settings.bloom < 0 || view->settings.bloom > .25F)
             return Error::invalid;
     if (size_ == commands_.size())
         return Error::capacity;

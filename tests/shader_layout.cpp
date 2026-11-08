@@ -47,7 +47,8 @@ int main() {
         "CullConstants", sizeof(CullConstants), alignof(CullConstants),
         {{"planes", offsetof(CullConstants, planes)}, {"count", offsetof(CullConstants, count)}});
     report("PostConstants", sizeof(PostConstants), alignof(PostConstants),
-           {{"exposureFxaaTexel", offsetof(PostConstants, exposureFxaaTexel)}});
+           {{"exposureFxaaTexel", offsetof(PostConstants, exposureFxaaTexel)},
+            {"bloom", offsetof(PostConstants, bloom)}});
     report("OverlayConstants", sizeof(OverlayConstants), alignof(OverlayConstants),
            {{"scale_translate", offsetof(OverlayConstants, scale_translate)}});
     report("OverlayVertex", sizeof(OverlayVertex), alignof(OverlayVertex),

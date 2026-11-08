@@ -214,8 +214,9 @@ int main() try {
                                    VK_IMAGE_USAGE_TRANSFER_SRC_BIT | VK_IMAGE_USAGE_SAMPLED_BIT}));
     auto ldr_readback = take(
         context->create_buffer({64, VK_BUFFER_USAGE_TRANSFER_DST_BIT, MemoryAccess::readback}));
-    const auto composite = [&](const Overlay *overlay) {
-        const auto submitted = take(context->post_process({color, ldr, 1, false, {}, overlay}));
+    const auto composite = [&](const Overlay *overlay, float bloom = 0) {
+        const auto submitted =
+            take(context->post_process({color, ldr, 1, false, {}, overlay, bloom}));
         wait(*context, submitted);
         if (overlay && context->gpu_timings_available()) {
             const auto timing = take(context->submission_timings(submitted));
@@ -242,6 +243,13 @@ int main() try {
     for (std::size_t channel = 0; channel < 4; ++channel)
         require(painted[right + channel] == unmodified[right + channel],
                 "overlay clip did not preserve scene pixels");
+    const auto bloomed = composite(nullptr, .1F);
+    const auto bloomed_ui = composite(&overlay, .1F);
+    require(bloomed_ui[left] == 255 && bloomed_ui[left + 1] == 0 && bloomed_ui[left + 2] == 0,
+            "scene bloom modified the later opaque UI color");
+    for (std::size_t channel = 0; channel < 4; ++channel)
+        require(bloomed_ui[right + channel] == bloomed[right + channel],
+                "bloom/UI clip modified background outside UI coverage");
     for (auto &vertex : quad)
         vertex.color = 0xff808080U;
     const auto gray = composite(&overlay);
@@ -414,7 +422,8 @@ int main() try {
     std::printf(
         "inspector_material_gpu=1 next_frame_edit=1 old_snapshot_gpu=1 immutable_material=1 "
         "inspector_pbr_factors=3 factor_admission=1 overlay_pixels=1 overlay_clip=1 overlay_srgb=1 "
-        "overlay_alpha=1 overlay_font_alpha=1 overlay_admission=1 overlay_capacity=3 "
+        "overlay_alpha=1 overlay_font_alpha=1 overlay_bloom_order=1 overlay_admission=1 "
+        "overlay_capacity=3 "
         "overlay_foreign=1 overlay_gpu_timing=%u "
         "overlay_snapshot=2 overlay_atlas_retirement=1 overlay_wsi_queued=4 "
         "inspector_frontend_frames=3 inspector_frontend_resize_race=1\n",

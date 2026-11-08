@@ -57,6 +57,7 @@ struct alignas(16) MaterialConstants {
 
 struct alignas(16) PostConstants {
     Float4 exposureFxaaTexel{1, 1, 1, 1};
+    Float4 bloom{}; // x: restrained linear HDR strength; remaining components reserved.
 };
 
 struct alignas(16) CullConstants {
@@ -89,7 +90,7 @@ static_assert(sizeof(LightConstants) == 528);
 static_assert(sizeof(MaterialConstants) == 64);
 static_assert(sizeof(CullConstants) == 112);
 static_assert(offsetof(CullConstants, count) == 96 && offsetof(CullConstants, reserved) == 100);
-static_assert(sizeof(PostConstants) == 16);
+static_assert(sizeof(PostConstants) == 32);
 static_assert(sizeof(Vertex) == 56);
 static_assert(sizeof(OverlayVertex) == 20 && offsetof(OverlayVertex, color) == 16);
 static_assert(sizeof(OverlayConstants) == 16);

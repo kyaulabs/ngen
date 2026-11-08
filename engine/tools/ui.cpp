@@ -290,10 +290,11 @@ void InspectorUi::frame(Inspector &inspector, const InspectorSnapshot &snapshot,
                 auto settings = snapshot.view;
                 bool changed = ImGui::SliderFloat("Exposure", &settings.exposure, 0, 4, "%.2f");
                 changed = ImGui::Checkbox("FXAA", &settings.fxaa) || changed;
+                changed = ImGui::SliderFloat("Bloom", &settings.bloom, 0, .1F, "%.3f") || changed;
                 if (changed)
                     impl_->queue(inspector, SetView{snapshot.generation, settings});
                 ImGui::TextDisabled("1024x1024 directional shadow\nOpaque / mask / sorted "
-                                    "blend\nHDR / tone map / FXAA / overlay");
+                                    "blend\nHDR / fused bloom + tone / FXAA / UI");
                 ImGui::EndTabItem();
             }
             if (ImGui::BeginTabItem("Asset")) {
@@ -328,7 +329,7 @@ void InspectorUi::frame(Inspector &inspector, const InspectorSnapshot &snapshot,
     ImGui::SetNextWindowPos({gutter, height - 70});
     ImGui::SetNextWindowSize({width - 2 * gutter, 54});
     if (ImGui::Begin("DIAGNOSTICS", nullptr, panel_flags)) {
-        ImGui::Text("FRAME %.2f ms | GPU shadow %.2f / PBR %.2f / post %.2f / UI %.2f ms",
+        ImGui::Text("FRAME %.2f ms | GPU shadow %.2f / PBR %.2f / post+bloom %.2f / UI %.2f ms",
                     metrics.frame_ms, metrics.gpu.shadow_ns / 1e6, metrics.gpu.pbr_ns / 1e6,
                     metrics.gpu.post_ns / 1e6, metrics.gpu.ui_ns / 1e6);
         ImGui::Text("VMA %.1f MiB (not whole GPU) | queue %zu/16 | generation %llu",

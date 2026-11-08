@@ -15,7 +15,7 @@ struct PostDraw {
     std::array<std::uint32_t, 2> constant_padding{};
     shader::PostConstants constants;
 };
-static_assert(sizeof(PostDraw) == 64 && offsetof(PostDraw, source) == 24 &&
+static_assert(sizeof(PostDraw) == 80 && offsetof(PostDraw, source) == 24 &&
               offsetof(PostDraw, constants) == 48);
 // Resource-state owned. close() is called only after Context proves completion/loss.
 class PostPipeline {

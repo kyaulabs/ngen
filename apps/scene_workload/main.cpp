@@ -54,14 +54,15 @@ std::uint32_t number(std::string_view value, std::uint32_t maximum) {
     const auto parsed = std::from_chars(value.data(), value.data() + value.size(), result);
     require(parsed.ec == std::errc{} && parsed.ptr == value.data() + value.size() &&
                 result <= maximum,
-            "invalid workload frame count");
+            "invalid workload numeric control");
     return result;
 }
 struct Options {
-    std::uint32_t frames{600}, warmup{60};
+    std::uint32_t frames{600}, warmup{60}, reload_cycles{1};
     bool validation{};
     bool gpu_timings{true};
-    bool inspector{}, walkthrough{};
+    bool bloom{true};
+    bool inspector{}, walkthrough{}, resize{true};
     std::filesystem::path capture, report;
 };
 Options options(int argc, char **argv) {
@@ -72,12 +73,18 @@ Options options(int argc, char **argv) {
             result.frames = number(argument.substr(9), 3600);
         else if (argument.starts_with("--warmup="))
             result.warmup = number(argument.substr(9), 600);
+        else if (argument.starts_with("--reload-cycles="))
+            result.reload_cycles = number(argument.substr(16), 4);
         else if (argument == "--validation")
             result.validation = true;
         else if (argument == "--no-gpu-timings")
             result.gpu_timings = false;
+        else if (argument == "--no-bloom")
+            result.bloom = false;
         else if (argument == "--walkthrough")
             result.walkthrough = true;
+        else if (argument == "--no-resize")
+            result.resize = false;
         else if (argument == "--inspector") {
 #if defined(NGEN_WORKLOAD_INSPECTOR)
             result.inspector = true;
@@ -94,6 +101,9 @@ Options options(int argc, char **argv) {
     require(result.frames > 0, "workload requires at least one measured frame");
     require(!result.walkthrough || (result.inspector && result.frames >= 60),
             "walkthrough requires the inspector and at least 60 measured frames");
+    require(result.reload_cycles > 0 && (result.reload_cycles == 1 || result.walkthrough),
+            "multiple reload cycles require the walkthrough");
+    require(result.resize || result.walkthrough, "--no-resize requires the walkthrough");
     for (const auto &path : {result.capture, result.report})
         require(path.empty() || !std::filesystem::exists(std::filesystem::symlink_status(path)),
                 "workload output must be a new path");
@@ -136,6 +146,10 @@ struct Sample {
     Submission mesh, post;
     GpuTimings gpu;
     bool gpu_ready{};
+    ResourceStatistics memory;
+    std::uint64_t generation{1}, host_ns{};
+    bool reloading{};
+    VkExtent2D presented_extent{};
 };
 std::uint64_t count_ship_triangles(const ngen::assets::Scene &package, std::size_t asteroids) {
     std::uint64_t total = 0;
@@ -164,7 +178,9 @@ std::uint32_t fixture_crc(const ngen::workload::Fixture &fixture) {
 int main(int argc, char **argv) try {
     if (argc < 2) {
         std::fputs("Usage: scene_workload scene.ngas [--frames=N] [--warmup=N] [--validation] "
-                   "[--no-gpu-timings] [--inspector] [--capture=new.bmp] [--report=new.csv]\n",
+                   "[--no-gpu-timings] [--no-bloom] [--inspector [--walkthrough "
+                   "[--reload-cycles=N] [--no-resize]]] "
+                   "[--capture=new.bmp] [--report=new.csv]\n",
                    stderr);
         return 2;
     }
@@ -231,6 +247,7 @@ int main(int argc, char **argv) try {
     SceneRenderer renderer;
     float exposure = 1;
     bool fxaa = true;
+    float bloom = settings.bloom ? .04F : 0;
 #if defined(NGEN_WORKLOAD_INSPECTOR)
     std::unique_ptr<ngen::tools::Inspector> inspector;
     std::unique_ptr<ngen::tools::InspectorUi> ui;
@@ -240,7 +257,8 @@ int main(int argc, char **argv) try {
     std::uint64_t requested_reload{}, completed_reloads{}, replacement_triangles{},
         scripted_reload{};
     bool measuring{}, walkthrough_edits{};
-    unsigned walkthrough_resizes = 0, walkthrough_resize_mask = 0;
+    std::uint32_t settle_after{};
+    unsigned walkthrough_resizes = 0, walkthrough_resize_mask = 0, scripted_keys = 0;
     ngen::tools::InspectorMetrics metrics{};
     std::string reload_status("Immutable snapshot / queued edits apply next frame");
     if (settings.inspector) {
@@ -252,6 +270,9 @@ int main(int argc, char **argv) try {
         require(std::holds_alternative<std::monostate>(
                     inspector->enqueue(ngen::tools::Select{inspector->snapshot().generation, 0})),
                 "initial inspector selection failed");
+        require(std::holds_alternative<std::monostate>(inspector->enqueue(ngen::tools::SetView{
+                    inspector->snapshot().generation, {exposure, fxaa, bloom}})),
+                "initial post settings rejected");
         (void)inspector->advance();
         ui = take(ngen::tools::InspectorUi::create(*context));
         reloader = std::make_unique<ngen::tools::PackageReloader>(std::filesystem::path(argv[1]));
@@ -270,7 +291,7 @@ int main(int argc, char **argv) try {
         }
     };
 #if defined(NGEN_WORKLOAD_INSPECTOR)
-    const auto update_replacement = [&] {
+    const auto update_replacement = [&](std::uint32_t frame_index) {
         if (!ui)
             return;
         // Native ownership stays on this thread. The worker only produces an
@@ -290,6 +311,9 @@ int main(int argc, char **argv) try {
                     asteroids.instances = fixture.instances;
                     ship_triangles = replacement_triangles;
                     ++completed_reloads;
+                    settle_after =
+                        frame_index +
+                        30; // Observe completed-version retirement before the next scripted reload.
                     reload_status =
                         "Completed CPU/GPU version published; old frame pins remain valid";
                 } else {
@@ -354,8 +378,9 @@ int main(int argc, char **argv) try {
             SDL_Delay(1);
         }
 #if defined(NGEN_WORKLOAD_INSPECTOR)
-        update_replacement();
-        if (ui && settings.walkthrough && measuring && (index == 20 || index == 40)) {
+        update_replacement(index);
+        if (ui && settings.walkthrough && settings.resize && measuring &&
+            (index == 20 || index == 40)) {
             const auto width = index == 20 ? 1024 : 1280;
             const auto height = index == 20 ? 640 : 720;
             require(SDL_SetWindowSize(context->window(), width, height),
@@ -367,15 +392,20 @@ int main(int argc, char **argv) try {
         auto selected = take(ngen::workload::view(fixture, index, extent));
         std::uint64_t ui_prepare_ns = 0;
         const Overlay *overlay = nullptr;
+        std::uint64_t generation = 1;
+        bool reloading = false;
 #if defined(NGEN_WORKLOAD_INSPECTOR)
         ngen::tools::InspectorSnapshot snapshot;
         const auto ui_started = Clock::now();
         if (ui) {
             snapshot = inspector->snapshot();
+            generation = snapshot.generation;
+            reloading = metrics.reloading;
             selected.material_factors =
                 std::span(snapshot.materials).first(snapshot.material_count);
             exposure = snapshot.view.exposure;
             fxaa = snapshot.view.fxaa;
+            bloom = snapshot.view.bloom;
             metrics.frame = index;
             if (index % 30 == 0)
                 metrics.memory = take(context->resource_statistics());
@@ -395,8 +425,8 @@ int main(int argc, char **argv) try {
                               ngen::tools::Select{snapshot.generation, instance}},
                           ngen::tools::InspectorCommand{
                               ngen::tools::EditMaterial{snapshot.generation, material, factors}},
-                          ngen::tools::InspectorCommand{
-                              ngen::tools::SetView{snapshot.generation, {.75F, false}}}})
+                          ngen::tools::InspectorCommand{ngen::tools::SetView{
+                              snapshot.generation, {.75F, false, snapshot.view.bloom}}}})
                         require(std::holds_alternative<std::monostate>(inspector->enqueue(command)),
                                 "walkthrough command rejected");
                 }
@@ -412,8 +442,20 @@ int main(int argc, char **argv) try {
                             "walkthrough factors/view did not apply next frame");
                     walkthrough_edits = true;
                 }
-                if (index == 5) {
-                    scripted_reload = snapshot.reload_request;
+                if (index == 2)
+                    require(std::holds_alternative<std::monostate>(
+                                inspector->enqueue(ngen::tools::SetView{
+                                    snapshot.generation, {1, true, snapshot.view.bloom}})),
+                            "walkthrough quality restoration rejected");
+                if (index == 3)
+                    require(snapshot.view.exposure == 1 && snapshot.view.fxaa,
+                            "walkthrough quality settings were not restored");
+                if ((index == 5 && scripted_keys == 0) ||
+                    (index > 5 && scripted_keys < settings.reload_cycles &&
+                     completed_reloads == scripted_keys && !metrics.reloading &&
+                     index >= settle_after)) {
+                    if (scripted_keys == 0)
+                        scripted_reload = snapshot.reload_request;
                     SDL_Event key{};
                     key.type = SDL_EVENT_KEY_DOWN;
                     key.key.windowID = SDL_GetWindowID(context->window());
@@ -424,6 +466,7 @@ int main(int argc, char **argv) try {
                     key.type = SDL_EVENT_KEY_UP;
                     key.key.down = false;
                     require(SDL_PushEvent(&key), "walkthrough key-up event rejected");
+                    ++scripted_keys;
                 }
             }
         }
@@ -461,7 +504,7 @@ int main(int argc, char **argv) try {
         const auto presenting = Clock::now();
         for (;;) {
             const auto result =
-                take(context->render_frame(ImageFrame{color, exposure, fxaa, overlay}));
+                take(context->render_frame(ImageFrame{color, exposure, fxaa, overlay, bloom}));
             if (result.outcome == FrameOutcome::queued) {
                 last = result.resources;
 #if defined(NGEN_WORKLOAD_INSPECTOR)
@@ -481,14 +524,21 @@ int main(int argc, char **argv) try {
             pump();
             SDL_Delay(1);
         }
+        const auto present_ns = elapsed(presenting);
+        const auto memory = take(context->resource_statistics());
         return Sample{elapsed(started),
                       prepare_ns,
-                      elapsed(presenting),
+                      present_ns,
                       ui_prepare_ns,
                       mesh,
                       last,
                       {},
-                      false};
+                      false,
+                      memory,
+                      generation,
+                      elapsed(Clock::time_point{}),
+                      reloading,
+                      context->presentation_state().extent};
     };
     for (std::uint32_t i = 0; i < settings.warmup; ++i) {
         const auto warmed = frame(i);
@@ -566,20 +616,29 @@ int main(int argc, char **argv) try {
             overlay = &*geometry;
 #endif
         (void)take(ngen::probe::capture(*context, color, extent, settings.capture, exposure, fxaa,
-                                        overlay));
+                                        overlay, bloom));
     }
     if (!settings.report.empty()) {
         std::string report("frame,frame_ns,prepare_ns,present_ns,gpu_shadow_ns,gpu_pbr_ns,gpu_post_"
-                           "ns,ui_prepare_ns,gpu_ui_ns\n");
-        report.reserve(samples.size() * 80);
+                           "ns,ui_prepare_ns,gpu_ui_ns,vma_allocation_bytes,vma_reserved_bytes,"
+                           "resource_live,resource_retiring,generation,reload_active,host_ns,"
+                           "surface_width,surface_height\n");
+        report.reserve(samples.size() * 160);
         for (std::size_t i = 0; i < samples.size(); ++i) {
             const auto &sample = samples[i];
-            report += std::to_string(i) + ',' + std::to_string(sample.frame_ns) + ',' +
-                      std::to_string(sample.prepare_ns) + ',' + std::to_string(sample.present_ns) +
-                      ',' + std::to_string(sample.gpu.shadow_ns) + ',' +
-                      std::to_string(sample.gpu.pbr_ns) + ',' + std::to_string(sample.gpu.post_ns) +
-                      ',' + std::to_string(sample.ui_prepare_ns) + ',' +
-                      std::to_string(sample.gpu.ui_ns) + '\n';
+            report +=
+                std::to_string(i) + ',' + std::to_string(sample.frame_ns) + ',' +
+                std::to_string(sample.prepare_ns) + ',' + std::to_string(sample.present_ns) + ',' +
+                std::to_string(sample.gpu.shadow_ns) + ',' + std::to_string(sample.gpu.pbr_ns) +
+                ',' + std::to_string(sample.gpu.post_ns) + ',' +
+                std::to_string(sample.ui_prepare_ns) + ',' + std::to_string(sample.gpu.ui_ns) +
+                ',' + std::to_string(sample.memory.allocation_bytes) + ',' +
+                std::to_string(sample.memory.reserved_bytes) + ',' +
+                std::to_string(sample.memory.live) + ',' + std::to_string(sample.memory.retiring) +
+                ',' + std::to_string(sample.generation) + ',' +
+                std::to_string(sample.reloading ? 1 : 0) + ',' + std::to_string(sample.host_ns) +
+                ',' + std::to_string(sample.presented_extent.width) + ',' +
+                std::to_string(sample.presented_extent.height) + '\n';
         }
         (void)take(ngen::probe::write_exclusive(settings.report, std::as_bytes(std::span(report))));
     }
@@ -602,6 +661,9 @@ int main(int argc, char **argv) try {
         "validation=%u\n",
         settings.frames, settings.warmup, settings.frames, lit, settings.capture.empty() ? 0U : 1U,
         settings.validation ? 1U : 0U);
+    std::printf("post_exposure=%.2f fxaa=%u bloom_strength=%.4f bloom_kernel=9x9 bloom_samples=25 "
+                "gpu_post_includes_bloom=1\n",
+                static_cast<double>(exposure), fxaa ? 1U : 0U, static_cast<double>(bloom));
     std::printf("frame_ns p50=%llu p95=%llu p99=%llu max=%llu "
                 "gpu_timestamps=%s allocation_probe=%u warm_cpp_allocations=%llu "
                 "vma_allocation_bytes=%llu vma_reserved_bytes=%llu\n",
@@ -653,12 +715,16 @@ int main(int argc, char **argv) try {
                                    : "idle",
                 static_cast<unsigned long long>(completed_reloads));
             require(walkthrough_edits && requested_reload > scripted_reload &&
-                        completed_reloads == 1 && walkthrough_resizes == 2 &&
-                        walkthrough_resize_mask == 3 &&
-                        context->presentation_state().generation >= generation_start + 2,
+                        completed_reloads == settings.reload_cycles &&
+                        scripted_keys == settings.reload_cycles &&
+                        walkthrough_resizes == (settings.resize ? 2U : 0U) &&
+                        walkthrough_resize_mask == (settings.resize ? 3U : 0U) &&
+                        context->presentation_state().generation >=
+                            generation_start + (settings.resize ? 2U : 0U),
                     "inspector walkthrough did not complete edits, keyboard reload and native "
                     "resize publication");
-            std::printf("walkthrough_edits=1 walkthrough_keyboard_reload=1 inspector_resizes=2 ");
+            std::printf("walkthrough_edits=1 walkthrough_keyboard_reload=1 inspector_resizes=%u ",
+                        walkthrough_resizes);
         }
         std::printf("inspector_reloads=%llu ", static_cast<unsigned long long>(completed_reloads));
         const auto geometry = take(ui->overlay(extent));

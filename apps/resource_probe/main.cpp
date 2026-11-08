@@ -1205,6 +1205,112 @@ bool check_post(ngen::render::Context &context, const ngen::render::Buffer &read
               "graphics_retirement=1");
     return true;
 }
+bool check_bloom(ngen::render::Context &context, const ngen::render::Buffer &readback) {
+    using namespace ngen::render;
+    constexpr std::size_t side = 16;
+    auto source_created =
+        context.create_image({{side, side},
+                              VK_FORMAT_R16G16B16A16_SFLOAT,
+                              static_cast<VkImageUsageFlags>(VK_IMAGE_USAGE_TRANSFER_DST_BIT) |
+                                  VK_IMAGE_USAGE_SAMPLED_BIT});
+    auto target_created =
+        context.create_image({{side, side},
+                              VK_FORMAT_R8G8B8A8_UNORM,
+                              static_cast<VkImageUsageFlags>(VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT) |
+                                  VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_TRANSFER_SRC_BIT});
+    if (failed(source_created, "bloom source") || failed(target_created, "bloom target"))
+        return false;
+    auto source = std::get<Image>(std::move(source_created));
+    auto target = std::get<Image>(std::move(target_created));
+    std::array<std::uint16_t, side * side * 4> pixels{};
+    for (std::size_t pixel = 0; pixel < side * side; ++pixel)
+        pixels[pixel * 4 + 3] = 0x3c00;
+    pixels[(8 * side + 8) * 4] = 0x4c00;     // One linear HDR red texel at radiance 16.
+    pixels[(8 * side + 8) * 4 + 2] = 0x3c00; // Blue is exactly at threshold: no blue halo.
+    auto staging_created = context.create_buffer(
+        {sizeof(pixels), VK_BUFFER_USAGE_TRANSFER_SRC_BIT, MemoryAccess::upload});
+    if (failed(staging_created, "bloom upload allocation"))
+        return false;
+    auto staging = std::get<Buffer>(std::move(staging_created));
+    if (failed(staging.write(0, std::as_bytes(std::span(pixels))), "bloom staging") ||
+        failed(context.copy_to_image({staging, source}), "bloom source upload"))
+        return false;
+    std::array<std::array<std::byte, side * side * 4>, 3> results{};
+    for (std::size_t mode = 0; mode < 3; ++mode) {
+        if (failed(
+                when_ready([&] {
+                    return context.post_process(
+                        {source, target, mode == 2 ? .5F : 1, false, {}, nullptr, mode ? .1F : 0});
+                }),
+                "bloom draw"))
+            return false;
+        const auto copied = when_ready([&] { return context.copy_from_image({target, readback}); });
+        if (failed(copied, "bloom readback") ||
+            !wait_submission(context, std::get<Submission>(copied)) ||
+            failed(readback.read(0, results[mode]), "bloom pixels"))
+            return false;
+    }
+    constexpr auto neighbor = (8 * side + 9) * 4;
+    if (results[0][neighbor] != std::byte{0} || results[1][neighbor] == std::byte{0}) {
+        std::fputs(
+            "Vulkan resource: enabled bloom did not spread HDR radiance into dark neighbors\n",
+            stderr);
+        return false;
+    }
+    // Independent closed form: the adjacent output has one nonzero bilinear
+    // Gaussian tap. Its tent reconstruction is 8/13, and normalized tap masses
+    // are 117/370 and 42/185. Thresholding precedes exposure and tone mapping.
+    const auto radiance = (16.0F * (8.0F / 13) - 1) * (117.0F / 370) * (42.0F / 185) * .1F;
+    const auto mapped =
+        (radiance * (2.51F * radiance + .03F)) / (radiance * (2.43F * radiance + .59F) + .14F);
+    const auto expected = static_cast<int>(std::lround(mapped * 255));
+    for (const auto at : {neighbor, (8 * side + 7) * 4, (7 * side + 8) * 4, (9 * side + 8) * 4})
+        if (std::abs(std::to_integer<int>(results[1][at]) - expected) > 1 ||
+            results[1][at + 1] != std::byte{0} || results[1][at + 2] != std::byte{0}) {
+            std::fputs("Vulkan resource: Gaussian bloom radiance/threshold/symmetry differs\n",
+                       stderr);
+            return false;
+        }
+    if (results[1][(8 * side + 13) * 4] != std::byte{0})
+        return false;
+    const auto half = radiance * .5F;
+    const auto half_mapped = (half * (2.51F * half + .03F)) / (half * (2.43F * half + .59F) + .14F);
+    if (std::abs(std::to_integer<int>(results[2][neighbor]) -
+                 static_cast<int>(std::lround(half_mapped * 255))) > 1)
+        return false;
+    auto srgb_created =
+        context.create_image({{side, side},
+                              VK_FORMAT_R8G8B8A8_SRGB,
+                              static_cast<VkImageUsageFlags>(VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT) |
+                                  VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_TRANSFER_SRC_BIT});
+    if (failed(srgb_created, "bloom sRGB target"))
+        return false;
+    auto srgb = std::get<Image>(std::move(srgb_created));
+    if (failed(when_ready([&] {
+                   return context.post_process({source, srgb, .5F, false, {}, nullptr, .1F});
+               }),
+               "bloom sRGB draw"))
+        return false;
+    const auto srgb_copy = when_ready([&] { return context.copy_from_image({srgb, readback}); });
+    if (failed(srgb_copy, "bloom sRGB readback") ||
+        !wait_submission(context, std::get<Submission>(srgb_copy)) ||
+        failed(readback.read(0, results[2]), "bloom sRGB pixels"))
+        return false;
+    const auto encoded = half_mapped <= .0031308F
+                             ? 12.92F * half_mapped
+                             : 1.055F * std::pow(half_mapped, 1.0F / 2.4F) - .055F;
+    if (std::abs(std::to_integer<int>(results[2][neighbor]) -
+                 static_cast<int>(std::lround(encoded * 255))) > 1)
+        return false;
+    for (const auto value : {-.1F, .251F, std::numeric_limits<float>::infinity(),
+                             std::numeric_limits<float>::quiet_NaN()})
+        if (!std::holds_alternative<Failure>(
+                context.post_process({source, target, 1, false, {}, nullptr, value})))
+            return false;
+    std::puts("bloom_hdr_spread=1 bloom_disabled_identity=1 bloom_gaussian=1 bloom_threshold=1 "
+              "bloom_bounded_support=1 bloom_admission=1 bloom_linear_exposure=1 bloom_srgb=1");
+    return true;
+}
 bool check_fxaa(ngen::render::Context &context, const ngen::render::Buffer &readback) {
     auto source_created =
         context.create_image({{8, 8},
@@ -1321,11 +1427,18 @@ bool check_image_presentation(ngen::render::Context &context) {
         if (!external.close())
             return false;
     }
+    for (const auto value : {-.1F, .251F, std::numeric_limits<float>::infinity(),
+                             std::numeric_limits<float>::quiet_NaN()})
+        if (!std::holds_alternative<ngen::render::Failure>(
+                context.render_frame({source, 1, false, nullptr, value}))) {
+            std::fputs("Vulkan resource: WSI bloom admission accepted invalid strength\n", stderr);
+            return false;
+        }
     const auto start = SDL_GetTicks();
     ngen::render::Submission graphics;
     for (;;) {
         SDL_PumpEvents();
-        const auto frame = context.render_frame({source, 1, false});
+        const auto frame = context.render_frame({source, 1, false, nullptr, .1F});
         if (failed(frame, "tracked image presentation"))
             return false;
         const auto &result = std::get<ngen::render::FrameResult>(frame);
@@ -1352,7 +1465,7 @@ bool check_image_presentation(ngen::render::Context &context) {
         std::get<ngen::render::ResourceStatistics>(statistics).retiring != 0)
         return false;
     std::puts("sampled_image_presentation=1 wsi_resource_timeline=1 wsi_source_retirement=1 "
-              "unresolved_dependency_rejected=1");
+              "unresolved_dependency_rejected=1 wsi_bloom_admission=1 wsi_bloom_queued=1");
     return true;
 }
 #endif
@@ -1472,8 +1585,8 @@ int main() try {
         return 1;
     }
 #if defined(NGEN_POST_TESTS)
-    if (!check_post(*context, readback) || !check_fxaa(*context, readback) ||
-        !check_image_presentation(*context))
+    if (!check_post(*context, readback) || !check_bloom(*context, readback) ||
+        !check_fxaa(*context, readback) || !check_image_presentation(*context))
         return 1;
 #endif
     if (!check_mip_chain(*context, readback) || !check_hdr(*context, readback) ||

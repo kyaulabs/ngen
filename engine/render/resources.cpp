@@ -898,6 +898,8 @@ std::variant<Submission, Failure> Resources::post(PostProcess description) {
     if (!std::isfinite(description.exposure) || description.exposure < 0 ||
         description.exposure > 64)
         return Failure{"post exposure must be finite in 0..64"};
+    if (!std::isfinite(description.bloom) || description.bloom < 0 || description.bloom > .25F)
+        return Failure{"post bloom strength must be finite in 0..0.25"};
     if (source.aspect != VK_IMAGE_ASPECT_COLOR_BIT || source.layers != 1 ||
         !source.linear_filterable || (source.image_usage & VK_IMAGE_USAGE_SAMPLED_BIT) == 0 ||
         source.image_layout != VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL)
@@ -966,7 +968,8 @@ std::variant<Submission, Failure> Resources::post(PostProcess description) {
     vkCmdBeginRendering(frame.commands, &rendering);
     const shader::PostConstants constants{{description.exposure, description.fxaa ? 1.0F : 0.0F,
                                            1.0F / static_cast<float>(source.image_extent.width),
-                                           1.0F / static_cast<float>(source.image_extent.height)}};
+                                           1.0F / static_cast<float>(source.image_extent.height)},
+                                          {description.bloom, 0, 0, 0}};
     impl_->post_pipeline->record({.commands = frame.commands,
                                   .frame = static_cast<std::size_t>(&frame - impl_->frames.data()),
                                   .format = target.format,
@@ -1319,6 +1322,8 @@ std::variant<GraphicsUse, Failure> Resources::prepare_frame(ImageFrame descripti
     if (!std::isfinite(description.exposure) || description.exposure < 0 ||
         description.exposure > 64)
         return Failure{"frame exposure must be finite in 0..64"};
+    if (!std::isfinite(description.bloom) || description.bloom < 0 || description.bloom > .25F)
+        return Failure{"frame bloom strength must be finite in 0..0.25"};
     if (impl_->submitted == UINT64_MAX)
         return Failure{"resource submission counter exhausted"};
     const auto &entry = impl_->entries[key.slot];

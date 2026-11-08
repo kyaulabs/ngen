@@ -151,5 +151,6 @@ struct PostProcess {
     bool fxaa{true};
     TimelineWait wait{};
     const Overlay *overlay{};
+    float bloom{}; // Finite HDR strength in 0..0.25; zero preserves the original post path.
 };
 } // namespace ngen::render

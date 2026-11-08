@@ -9,5 +9,5 @@ write_exclusive(const std::filesystem::path &path, std::span<const std::byte> by
 [[nodiscard]] std::variant<std::monostate, render::Failure>
 capture(render::Context &context, const render::Image &hdr, VkExtent2D extent,
         const std::filesystem::path &path, float exposure = 1, bool fxaa = true,
-        const render::Overlay *overlay = nullptr);
+        const render::Overlay *overlay = nullptr, float bloom = 0);
 } // namespace ngen::probe

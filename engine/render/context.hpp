@@ -16,6 +16,7 @@ struct ImageFrame {
     float exposure{1};
     bool fxaa{true};
     const Overlay *overlay{};
+    float bloom{};
 };
 struct FrameResult {
     FrameOutcome outcome{FrameOutcome::skipped};

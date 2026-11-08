@@ -115,6 +115,24 @@ TEST_CASE("inspector refuses render settings outside production exposure admissi
     REQUIRE(inspector.snapshot().view.exposure == before.view.exposure);
 }
 
+TEST_CASE("inspector queues bounded bloom strength without mutating an old snapshot") {
+    auto inspector =
+        std::get<ngen::tools::Inspector>(ngen::tools::Inspector::create(material_package()));
+    const auto old = inspector.snapshot();
+    REQUIRE(std::holds_alternative<std::monostate>(
+        inspector.enqueue(ngen::tools::SetView{old.generation, {1, true, .1F}})));
+    REQUIRE(inspector.snapshot().view.bloom == old.view.bloom);
+    REQUIRE(inspector.advance().applied == 1);
+    REQUIRE(inspector.snapshot().view.bloom == .1F);
+    REQUIRE(old.view.bloom == .04F);
+    for (const auto invalid : {-.1F, .251F, std::numeric_limits<float>::infinity(),
+                               std::numeric_limits<float>::quiet_NaN()})
+        REQUIRE(inspector.enqueue(ngen::tools::SetView{old.generation, {1, true, invalid}}) ==
+                ngen::Result<std::monostate>{ngen::Error::invalid});
+    REQUIRE(inspector.pending_commands() == 0);
+    REQUIRE(inspector.snapshot().view.bloom == .1F);
+}
+
 TEST_CASE("inspector applies bounded FIFO render commands only at the frame boundary") {
     auto inspector =
         std::get<ngen::tools::Inspector>(ngen::tools::Inspector::create(material_package()));

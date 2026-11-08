@@ -237,7 +237,8 @@ void Presentation::record(Frame &frame, const Image &image, const ImageFrame *so
     if (use) {
         const shader::PostConstants constants{{source->exposure, source->fxaa ? 1.0F : 0.0F,
                                                1.0F / static_cast<float>(use->extent.width),
-                                               1.0F / static_cast<float>(use->extent.height)}};
+                                               1.0F / static_cast<float>(use->extent.height)},
+                                              {source->bloom, 0, 0, 0}};
         owner_.resources_->record_frame({.commands = frame.commands,
                                          .frame = frame_index_ + 2,
                                          .format = format_,

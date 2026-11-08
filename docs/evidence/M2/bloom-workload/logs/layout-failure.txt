@@ -1,0 +1,30 @@
+Test project <ROOT>/build/inspector-debug
+    Start 1: shader_offline
+1/1 Test #1: shader_offline ...................***Failed   44.59 sec
+.............F
+======================================================================
+FAIL: test_uniform_layouts_match_compiled_cpu_types (__main__.ShaderCompilation.test_uniform_layouts_match_compiled_cpu_types)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<ROOT>/tests/shaders.py", line 120, in test_uniform_layouts_match_compiled_cpu_types
+    check_struct(parameter["type"]["elementType"])
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<ROOT>/tests/shaders.py", line 107, in check_struct
+    self.assertEqual({x["name"] for x in shader_type["fields"]}, set(layout["fields"]), name + " fields")
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Items in the first set but not the second:
+'bloom' : PostConstants fields
+
+----------------------------------------------------------------------
+Ran 14 tests in 44.364s
+
+FAILED (failures=1)
+
+
+0% tests passed, 1 tests failed out of 1
+
+Total Test time (real) =  44.59 sec
+
+The following tests FAILED:
+	  1 - shader_offline (Failed)
+Errors while running CTest
