@@ -211,8 +211,9 @@ void InspectorUi::frame(Inspector &inspector, const InspectorSnapshot &snapshot,
     ImGui::NewFrame();
     const auto display = ImGui::GetIO().DisplaySize;
     const auto width = std::max(640.0F, display.x), height = std::max(360.0F, display.y);
-    ImGui::SetNextWindowPos({44, 8});
-    ImGui::SetNextWindowSize({width - 60, 40});
+    constexpr float gutter = 16;
+    ImGui::SetNextWindowPos({gutter, 8});
+    ImGui::SetNextWindowSize({width - 2 * gutter, 40});
     if (ImGui::Begin("NGEN header", nullptr, panel_flags)) {
         ImGui::TextUnformatted("NGEN  /  SCENE INSPECTOR");
         ImGui::SameLine(360);
@@ -221,7 +222,7 @@ void InspectorUi::frame(Inspector &inspector, const InspectorSnapshot &snapshot,
                     static_cast<unsigned long long>(metrics.frame));
     }
     ImGui::End();
-    ImGui::SetNextWindowPos({62, 80});
+    ImGui::SetNextWindowPos({gutter, 80});
     ImGui::SetNextWindowSize({250, 260});
     if (ImGui::Begin("SCENE", nullptr, panel_flags)) {
         ImGui::TextUnformatted("SCENE / SHIP");
@@ -248,7 +249,7 @@ void InspectorUi::frame(Inspector &inspector, const InspectorSnapshot &snapshot,
         (void)ImGui::Checkbox("Selection bounds", &impl_->show_bounds);
     }
     ImGui::End();
-    ImGui::SetNextWindowPos({width - 324, 80});
+    ImGui::SetNextWindowPos({width - 308 - gutter, 80});
     ImGui::SetNextWindowSize({308, height - 160});
     if (ImGui::Begin("INSPECTOR", nullptr, panel_flags)) {
         ImGui::TextUnformatted("INSPECTOR / NEXT-FRAME EDITS");
@@ -324,8 +325,8 @@ void InspectorUi::frame(Inspector &inspector, const InspectorSnapshot &snapshot,
         }
     }
     ImGui::End();
-    ImGui::SetNextWindowPos({62, height - 70});
-    ImGui::SetNextWindowSize({width - 78, 54});
+    ImGui::SetNextWindowPos({gutter, height - 70});
+    ImGui::SetNextWindowSize({width - 2 * gutter, 54});
     if (ImGui::Begin("DIAGNOSTICS", nullptr, panel_flags)) {
         ImGui::Text("FRAME %.2f ms | GPU shadow %.2f / PBR %.2f / post %.2f / UI %.2f ms",
                     metrics.frame_ms, metrics.gpu.shadow_ns / 1e6, metrics.gpu.pbr_ns / 1e6,
