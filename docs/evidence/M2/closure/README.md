@@ -22,7 +22,10 @@ The [returned MSVC Release run](windows-b2/README.md) passes the new NVIDIA
 transparency controls. Its first memory wrapper fails honestly and stays retained.
 The [corrected native observation](windows-b2/memory-verified/README.md) now verifies
 48 positive samples, no measured-window gaps and both sampled GPU budgets using
-the same binary/package. The original CIM failure's cause is still unknown.
+the same binary/package. [Independent data follow-up](independent-25cf89f.md)
+confirms the sampled-accounting gap is closed; its one P3 settings-wording finding
+is corrected without changing code or dropping frames. The original CIM failure's
+cause is still unknown.
 
 The root source/verification records below describe the initial `b2fa7da` slice;
 ship-bounds records carry their own changed-source hashes and configurations.
@@ -56,8 +59,10 @@ than stripped, and no GCC AST-clean claim is made.
 
 The longer unchanged-production Iris run has 60 warmup/3,600 measured frames,
 four completed reloads and 66.198 seconds including startup. P50/P95/P99/max are
-**16.745/26.736/33.715/47.270 ms**, with every extent 1280x720 and exposure 1,
-FXAA on, bloom .04. All scoped budgets pass. Tracked allocation/reservation settle
+**16.745/26.736/33.715/47.270 ms**, with every extent 1280x720 and bloom .04.
+Exposure 1/FXAA on are the default/restored settings; the scripted edit uses
+exposure .75/FXAA off for frames 1–2 and restores at frame 3, omitting no frames.
+All scoped budgets pass. Tracked allocation/reservation settle
 to 211,566,728/214,396,216 bytes, 22 live/zero retiring records. Sampled process DRM
 peaks at 531,017,728 bytes; cold-inclusive Linux peak RSS is 540,928 KiB. The
 independent reviewer verified all 41 source hashes and recomputed the distributions;

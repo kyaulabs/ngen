@@ -91,3 +91,14 @@ and actual provider are now verified, without a speculative API/permission fix.
 No capture pixels or session bytes were inspected or redistributed in this slice.
 Native UI bounds compilation/execution and final personal visual/input/PR gates
 remain separate. No M3 implementation is started.
+
+Independent read-only evidence review confirms clean 25cf89f/tree
+557e0c41745256f7be32e4a8dd6c985165f4631e and independently closes the missing native
+sampled-accounting evidence gap. It verifies all rows/distributions, hashes, 50
+attempts, 48 positive samples (46 within measurement), endpoint/max gaps and
+separate byte maxima. No P1/P2 is demonstrated. Its P3 settings-wording defect is
+corrected: the unchanged scripted edit uses exposure .75/FXAA off at measured
+frames 1-2 and restores exposure 1/FXAA on at frame 3. No frame is dropped, no
+memory verdict changes and no production patch or repeat run is needed. The
+source trigger at apps/scene_workload/main.cpp:428 was verified in this session.
+Report remains bounded agent advice, not personal visual/input acceptance.

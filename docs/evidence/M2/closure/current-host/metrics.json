@@ -6,7 +6,7 @@
   "maximum_ms": 103.570557,
   "all_original_timing_budgets_pass": true,
   "every_measured_frame_included": true,
-  "quality": "exposure 1 / FXAA on / bloom .04 / 1024 shadow / 246080 triangles / 100 asteroid instances",
+  "quality": "default/restored exposure 1 / FXAA on / bloom .04 / 1024 shadow / 246080 triangles / 100 asteroid instances; scripted frames 1-2 use exposure .75 / FXAA off, restored at frame 3; no frames omitted",
   "observed_extents": [
     [
       1024,

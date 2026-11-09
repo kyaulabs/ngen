@@ -29,6 +29,8 @@ A fresh, predeclared **3600-frame clean mixed run** then passes the original bud
 - Two actual resizes, four completed reloads and final generation 5.
 - 1280x720 restored after the scripted 1024x640 resize; exposure 1, FXAA on,
   bloom .04, 1024 shadow, 246,080 triangles and 100 asteroid instances unchanged.
+  The scripted control edit briefly uses exposure .75/FXAA off at frames 1–2 and
+  restores exposure 1/FXAA on at frame 3; every frame remains in the statistics.
 - Ordinary stderr empty, finite HDR, 60 warmup frames. Validation is off and
   there is no external interposer/observer; built-in GPU timestamps and allocation
   diagnostics remain enabled. Reload-time C++/ImGui allocations remain visible.

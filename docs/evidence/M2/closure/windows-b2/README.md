@@ -25,8 +25,9 @@ the earlier complete four-configuration matrix, not replace it or rerun it.
 | Corrected native observation | 3600 | 7.105 / 8.246 / 8.509 / 15.517 | 925,749,248 bytes |
 
 Distributions were recomputed from every row using nearest rank. All fixed runs
-remain 1280x720/exposure 1/FXAA on/bloom .04; all four-reload runs finish generation
-5 with four reloads and settled zero retiring records. Private BMP headers and
+remain 1280x720 with bloom .04; walkthroughs briefly test exposure .75/FXAA off
+at frames 1–2, restoring exposure 1/FXAA on at frame 3. No frame is omitted. All
+four-reload runs finish generation 5 with four reloads and settled zero retiring records. Private BMP headers and
 available artifact hashes were checked. The mixed run reports two resizes and
 two reloads with ordinary validation. All ordinary workload stderr is empty.
 

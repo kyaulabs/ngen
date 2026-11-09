@@ -12,14 +12,16 @@ recorded artifact hash is verified without retaining its private bytes.
 
 The actual RTX 5070 child exits zero after **3600 measured frames/60 warmup and
 four completed reloads**. The wrapper now also succeeds in 27.580 seconds. All
-recorded frames remain 1280x720, exposure 1/FXAA on/bloom .04, 1024 shadow,
-246,080 triangles and 100 genuine asteroid instances; final generation is 5.
+recorded frames remain 1280x720 with bloom .04, 1024 shadow, 246,080 triangles
+and 100 genuine asteroid instances; final generation is 5. The unchanged scripted
+edit uses exposure .75/FXAA off at measured frames 1–2, restoring exposure 1/FXAA on
+at frame 3. Every frame remains in the distributions and coverage checks.
 The canonical package and binary match the failed earlier memory run exactly.
 
 | Observation | Verified result |
 | --- | ---: |
 | Retained query attempts | 50 |
-| Positive own-process samples | 48, one adapter instance each |
+| Positive own-process samples | 48, one adapter instance each; 46 inside measurement |
 | Empty startup attempts | 2, both outside the native measured interval |
 | Missing measured-window observations | 0 |
 | Largest measured observation gap | 605.3581 ms, below the 1000 ms bound |
@@ -53,6 +55,12 @@ message was discarded by schema 2, so its cause remains **unknown**, not silentl
 called fixed or attributed to a timeout. The original failed archive is retained.
 No driver/registry/SDK/execution-policy or persistent environment change was made
 by the agent to obtain this result.
+
+Independent read-only follow-up at `25cf89f` recomputes the rows, attempt/sample
+coverage, all maxima and retained/original hashes and concludes that this closes
+the missing native sampled-accounting gap. Its one P3 settings-invariance wording
+finding is corrected above; no production change or repeated native run is needed.
+That report is agent advice, not personal owner approval.
 
 Scope: script execution is `5a2f841`, the reused compiled application is `b2fa7da`.
 This does not execute the later compiled ship-bounds correction on NVIDIA. That
