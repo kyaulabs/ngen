@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>NGEN website palette</title>
+<link rel="stylesheet" href="ngen-theme.css">
+<style>
+*{box-sizing:border-box}body{margin:0;background:var(--ngen-bg);color:var(--ngen-text);font:1rem/1.55 var(--ngen-font-sans)}
+main{max-width:68rem;margin:auto;padding:clamp(1rem,4vw,3rem)}
+header,.example{display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap}
+header{margin-bottom:2rem}#wordmark{width:min(14rem,60vw);height:auto}
+h1{font-size:clamp(2rem,5vw,3.5rem);line-height:1.1;margin:0 0 1rem}
+h2{margin-top:2.5rem}.muted{color:var(--ngen-muted)}
+.example,.chip{background:var(--ngen-surface);border:1px solid var(--ngen-border);border-radius:.7rem;padding:1rem}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(10rem,1fr));gap:.8rem}
+.chip{display:grid;gap:.45rem}.chip i{height:3rem;border:1px solid var(--ngen-border);border-radius:.35rem}
+code,.chip span{font-family:var(--ngen-font-mono);font-size:.82rem}
+label{display:inline-flex;gap:.5rem;align-items:center}
+select,.action{font:inherit;border-radius:.4rem;padding:.4rem .75rem}
+select{background:var(--ngen-surface);color:var(--ngen-text);border:1px solid var(--ngen-control-border)}
+.action{display:inline-block;background:var(--ngen-accent);color:var(--ngen-on-accent);text-decoration:none;font-weight:700}
+.action:hover{background:var(--ngen-accent-hover)}
+:focus-visible{outline:2px solid var(--ngen-focus);outline-offset:4px}
+.status{display:flex;flex-wrap:wrap;gap:1rem;margin:0}.status span{font-weight:650}
+</style>
+<main>
+<header>
+<img id="wordmark" src="../logos/svg/ngen-wordmark-light.svg" alt="NGEN">
+<label>Theme <select id="theme"><option value="system">System</option><option value="light">Light</option><option value="dark">Dark</option></select></label>
+</header>
+<h1>Website palette</h1>
+<p class="muted">NGEN is a C++20 game engine for space simulators, with a focus on space MMOs.</p>
+<div class="example">
+<a class="action" href="#tokens">View theme tokens</a>
+<p class="status"><span style="color:var(--ngen-success)">Success</span><span style="color:var(--ngen-warning)">Warning</span><span style="color:var(--ngen-danger)">Error</span></p>
+</div>
+<h2 id="tokens">Theme tokens</h2>
+<div class="grid"><div class="chip"><i style="background:var(--ngen-bg)"></i><code>bg</code><span data-token="bg"></span></div><div class="chip"><i style="background:var(--ngen-surface)"></i><code>surface</code><span data-token="surface"></span></div><div class="chip"><i style="background:var(--ngen-surface-alt)"></i><code>surface-alt</code><span data-token="surface-alt"></span></div><div class="chip"><i style="background:var(--ngen-text)"></i><code>text</code><span data-token="text"></span></div><div class="chip"><i style="background:var(--ngen-muted)"></i><code>muted</code><span data-token="muted"></span></div><div class="chip"><i style="background:var(--ngen-border)"></i><code>border</code><span data-token="border"></span></div><div class="chip"><i style="background:var(--ngen-control-border)"></i><code>control-border</code><span data-token="control-border"></span></div><div class="chip"><i style="background:var(--ngen-accent)"></i><code>accent</code><span data-token="accent"></span></div><div class="chip"><i style="background:var(--ngen-accent-hover)"></i><code>accent-hover</code><span data-token="accent-hover"></span></div><div class="chip"><i style="background:var(--ngen-on-accent)"></i><code>on-accent</code><span data-token="on-accent"></span></div><div class="chip"><i style="background:var(--ngen-secondary)"></i><code>secondary</code><span data-token="secondary"></span></div><div class="chip"><i style="background:var(--ngen-on-secondary)"></i><code>on-secondary</code><span data-token="on-secondary"></span></div><div class="chip"><i style="background:var(--ngen-focus)"></i><code>focus</code><span data-token="focus"></span></div><div class="chip"><i style="background:var(--ngen-success)"></i><code>success</code><span data-token="success"></span></div><div class="chip"><i style="background:var(--ngen-warning)"></i><code>warning</code><span data-token="warning"></span></div><div class="chip"><i style="background:var(--ngen-danger)"></i><code>danger</code><span data-token="danger"></span></div></div>
+</main>
+<script>
+const root = document.documentElement;
+const select = document.querySelector('#theme');
+const system = matchMedia('(prefers-color-scheme: dark)');
+function syncTheme() {
+  if (select.value === 'system') root.removeAttribute('data-theme');
+  else root.dataset.theme = select.value;
+  const mode = root.dataset.theme || (system.matches ? 'dark' : 'light');
+  document.querySelector('#wordmark').src = '../logos/svg/ngen-wordmark-' + mode + '.svg';
+  const style = getComputedStyle(root);
+  document.querySelectorAll('[data-token]').forEach(el => {
+    el.textContent = style.getPropertyValue('--ngen-' + el.dataset.token).trim();
+  });
+}
+select.addEventListener('change', syncTheme);
+system.addEventListener('change', syncTheme);
+syncTheme();
+</script>
+</html>
