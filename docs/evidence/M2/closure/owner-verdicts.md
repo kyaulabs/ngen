@@ -31,6 +31,17 @@ No further palette/bounds/exhaust reapproval is requested. This is not an inferr
 overall inspector/input verdict or approval of future M3 flight controls. Original
 source/canonical assets and the unrelated brand pack remain untouched/private.
 
+After the exhaust approval, the owner explicitly answered **“Accept
+inspector/input”** for the remaining M2 inspector behavior: selection/list,
+material/render controls and reload. This is a personal owner verdict, separate
+from agent/GitHub account reviews. No further M2 visual/input, palette, bounds or
+exhaust approval is requested. It does not accept future M3 flight controls or
+replace the one outstanding compiled Windows UI/accepted-asset execution.
+
+For recurring CI dependency-download 504s the owner selected **“Wait
+(Recommended)”**: keep exact pins and checks, wait for upstream recovery and do
+not add a CI download/cache fallback as an incidental infrastructure change.
+
 Native Windows schema-3 GPU observation now passes separately at script `5a2f841`
 with the unchanged `b2fa7da` binary. Sampled-budget verification is not a new
 personal visual/input verdict. Neither these answers nor agent/GitHub account

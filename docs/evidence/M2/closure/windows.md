@@ -4,9 +4,10 @@ Native transparency and corrected sampled WDDM accounting now pass. The reused
 memory-test executable was compiled at `b2fa7da`, before the full-ship UI bounds
 correction. **Only one updated MSVC Release build/native validation remains.**
 Do not repeat the completed four-build matrix or run `-MeasureWorkload` again.
-Slang, the specific box correction and the final longer/wider blue-white exhaust
-appearance already have owner acceptance; remaining inspector/input acceptance
-is separate. The new private asset needs no Windows recook or offline toolkit.
+Slang, the specific box correction, final longer/wider blue-white exhaust and
+remaining inspector/input behavior already have explicit owner acceptance. This
+request is native execution evidence, not another personal approval. The new
+private asset needs no Windows recook or offline toolkit.
 
 Use the existing checkout updated to `origin/feat/kyau-ade38c-m2-acceptance`.
 Do not reset owner changes. The exhaust follow-up changes asset data/receipts, not
@@ -38,28 +39,12 @@ workload should report 238,272 ship/plume + 8,000 asteroid = 246,272 triangles,
 195 draw records, 14 materials, 5 images and all 612 retained light definitions.
 The complete ship box should include the added plume bounds.
 
-Personal visual/input review is distinct from automated execution. If not yet
-checked, after automation closes open `pwsh.exe -NoProfile` with the new printed
-Release directory and accepted separate package:
-
-```powershell
-$release = (Resolve-Path 'build/windows/THE-NEW-PRINTED-RUN/Release').Path
-$scene = (Resolve-Path 'build/m2-exhaust-windows-input/scene.ngas').Path
-try {
-    . (Join-Path $release 'conanrun.ps1')
-    & (Join-Path $release 'scene_workload.exe') $scene --inspector --frames=3600 --warmup=0
-} finally {
-    . (Join-Path $release 'deactivate_conanrun.ps1')
-}
-```
-
-The exhaust appearance is already accepted; do not ask for it again. Check the
-remaining inspector/input behavior and panel gutters/list clipping. Select parts, change material and render settings, and press R to reload.
-Changes should appear at the next boundary without altering old/in-flight versions;
-completed replacement resets asset selection/factors and preserves view settings.
-The complete ship box must not shrink when part selection changes or clears.
-Record remaining concrete defects or accept the visual/input slice. This does not
-turn agent/GitHub account review into personal human approval.
+The owner has now explicitly answered **“Accept inspector/input.”** No extra
+manual walkthrough, visual reapproval, compiler matrix or GPU-memory command is
+required. If this exact updated MSVC Release/package run already exists, send its
+archive rather than rerunning it. Newly observed concrete failures still need
+investigation; automated execution is not a substitute for or reopening of the
+recorded personal verdict.
 
 Keep original model, package, captures, archives and session bytes private. No
 persistent profile/environment, privilege, registry, driver, SDK, execution-policy

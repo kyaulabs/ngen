@@ -1,8 +1,9 @@
 # Accepted blue-white exhaust presentation
 
 The owner accepted this exact wider, longer version: **“that looks perfect.”**
-This closes the exhaust-appearance decision, not the remaining inspector/input,
-Windows execution or PR gates. M2 stays open; M3 has not started. The original
+The owner subsequently also answered **“Accept inspector/input.”** These personal
+verdicts close the M2 appearance/control decisions, not the outstanding Windows
+execution, CI or PR gates. M2 stays open; M3 has not started. The original
 GLB/canonical package and unrelated untracked `brand/` remain untouched/private.
 
 The separate accepted package is `scene.ngas`, 175,904,891 bytes, SHA256
@@ -123,8 +124,8 @@ The private owner handoff is `build/ngen-m2-exhaust-input.zip`, SHA256
 `1cd8b19aa17634129510be66aca4e4d7b2becee21d76bb9ea30aa60e0ee968a5`,
 47,526,154 bytes: only `scene.ngas`, its manifest and a short data-only README.
 Follow [the one targeted Windows check](../windows.md). The compiled bounds/native
-asset execution and remaining overall inspector/input verdict stay separate from
-the already accepted exhaust appearance. The [independent read-only follow-up](../independent-afb94f7.md)
+asset execution stays separate from the already accepted exhaust appearance and
+explicit inspector/input verdict. No additional personal reapproval is requested. The [independent read-only follow-up](../independent-afb94f7.md)
 finds no actionable defect or new advisory and recomputes the public evidence;
 it does not execute scripts, independently read private artifacts or supply
 personal owner approval. `ci-afb94f7.json` retains distinct Slang/libffi HTTP-504

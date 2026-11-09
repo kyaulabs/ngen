@@ -52,11 +52,17 @@ four-config compiler/sanitizer/platform evidence is not claimed rerun for data.
 No new dependency, SDK/system/profile change or brand-pack access.
 
 No additional demonstrated P1/P2 defect in this scope after verification.
-Native Windows compiled bounds/final asset execution, overall inspector/input
-acceptance and normal PR integration remain. Separate read-only follow-up at
+The owner subsequently explicitly accepted inspector/input. Remaining: one native
+Windows compiled-bounds/accepted-asset execution, passing CI and normal PR
+integration. No further personal reapproval is requested. Separate read-only follow-up at
 afb94f7 finds no actionable defect/new advisory and independently recomputes public
 evidence; it does not execute scripts or verify private bytes. CI first fails on
 Slang HTTP504, unchanged retry on libffi HTTP504 before project compilation; no
 engine/toolchain fix, waived check or passing CI result is invented.
+Latest ec0809c CI retains libffi/Slang/fmt HTTP504 failures separately: ASan retry
+passes the renderer step but fails while downloading fmt for asset tools. The
+owner selected waiting for upstream, not a download/cache fallback. No CI, recipe
+or lock changes are made. Later agent-route ranged GET206 observations do not
+prove hosted CI passed. The accepted asset/runtime/shader bytes stay unchanged.
 The owner accepted this exact exhaust appearance; do not request that again.
 M2 is open. M3 implementation has not started.

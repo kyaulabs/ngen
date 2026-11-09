@@ -33,8 +33,10 @@ The original GLB/canonical package remain unchanged. The exact accepted private
 variant reproduces byte-for-byte, preserves original records and adds 192 visible
 triangles through existing transparent rendering. New clean 600-frame steady/mixed
 runs pass original timing budgets; steady warm C++/ImGui allocations are zero.
-This is not overall inspector/input acceptance or a new WDDM measurement. One
-updated MSVC Release check now uses that separate package; no compiler matrix or
+The owner subsequently explicitly answered **“Accept inspector/input”** for the
+remaining M2 controls. That personal verdict is separate from agent review and
+native execution, and does not approve future M3 behavior. One updated MSVC
+Release check now uses the accepted separate package; no compiler matrix or
 memory observation repeat is requested. The [independent exhaust follow-up](independent-afb94f7.md)
 confirms clean `afb94f7`, recomputes all 1,200 rows and finds no actionable defect
 or new advisory in the offline receipt/evidence scope. It did not execute retained
@@ -133,8 +135,9 @@ can delay the nominal working-set cadence; actual GPU sample/query times remain
 visible. The instrumented memory run is not substituted for clean timing results.
 
 Next: verify the compiled ship-bounds correction and accepted exhaust package in
-one targeted Windows Release run, obtain remaining inspector/input acceptance and
-complete normal scoped PR integration. No further memory observation or duplicate four-build matrix is
+one targeted Windows Release run, recover passing CI under unchanged pins/checks
+and complete normal scoped PR integration. Inspector/input now has explicit owner
+acceptance; do not request that verdict again. No further memory observation or duplicate four-build matrix is
 requested. Independent follow-up for the current corrections is
 complete, with its two evidence advisories corrected.
 Only then close applicable M2 gates and start M3. Slang and the specific box fix
