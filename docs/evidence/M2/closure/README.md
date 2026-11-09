@@ -27,8 +27,18 @@ confirms the sampled-accounting gap is closed; its one P3 settings-wording findi
 is corrected without changing code or dropping frames. The original CIM failure's
 cause is still unknown.
 
+The owner now separately accepts the [blue-white exhaust presentation](exhaust/README.md),
+including localized light spill and the explicitly requested longer/wider plume.
+The original GLB/canonical package remain unchanged. The exact accepted private
+variant reproduces byte-for-byte, preserves original records and adds 192 visible
+triangles through existing transparent rendering. New clean 600-frame steady/mixed
+runs pass original timing budgets; steady warm C++/ImGui allocations are zero.
+This is not overall inspector/input acceptance or a new WDDM measurement. One
+updated MSVC Release check now uses that separate package; no compiler matrix or
+memory observation repeat is requested.
+
 The root source/verification records below describe the initial `b2fa7da` slice;
-ship-bounds records carry their own changed-source hashes and configurations.
+ship-bounds and exhaust records carry their own changed-source/artifact identities.
 
 The independent review confirmed clean `20f12220166335c7d94f0ed6086171f6dbd00c1f`
 and tree `779c072fb4bb25862601f5dd505f0d3f3713f6f5`. It found no demonstrated
@@ -119,9 +129,9 @@ continuous peak. CIM calls
 can delay the nominal working-set cadence; actual GPU sample/query times remain
 visible. The instrumented memory run is not substituted for clean timing results.
 
-Next: verify the compiled ship-bounds correction in one targeted Windows Release
-run, obtain remaining visual/input acceptance and complete normal scoped PR
-integration. No further memory observation or duplicate four-build matrix is
+Next: verify the compiled ship-bounds correction and accepted exhaust package in
+one targeted Windows Release run, obtain remaining inspector/input acceptance and
+complete normal scoped PR integration. No further memory observation or duplicate four-build matrix is
 requested. Independent follow-up for the current corrections is
 complete, with its two evidence advisories corrected.
 Only then close applicable M2 gates and start M3. Slang and the specific box fix

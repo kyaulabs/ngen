@@ -1,0 +1,58 @@
+Same-session scoped review: accepted exhaust asset, replay and evidence.
+This is assistant review, not independent review or personal owner acceptance.
+
+No production C++/shader/dependency changes. Trace consumers through native package
+admission, tracked SceneUpload/SceneRenderer, alpha/depth-readonly drawing, complete
+mips, normal transforms, existing post/capture and full-package UI bounds. Original
+vertex/index/LOD/image/sampler/instance/name prefixes remain byte-exact. Only the
+two agreed material factor ranges and 60 drive-light RGB/power/range records change;
+all unrelated definitions/transforms remain. Six core powers stay unchanged.
+Independent selection mirror retains six cores within 16 selected point instances;
+no actual GPU-light readback claim.
+
+Native package probe admits the exact final artifact. Shared/catalog LOD2 is
+238112 triangles; rendered ship/plume is 238272 across 194 instances. With 100
+80-triangle asteroids, actual visible total is 246272, not the lower catalog sum.
+Texture working set is 89522172 bytes, preserving original maps plus one full-mip
+procedural sprite. No source model/image is replaced or reference image copied.
+The plume is static alpha/emissive geometry, not a physical volume or M3 thrust
+system. Added bounds deliberately change the fixture identity/camera/light fit.
+
+Rendered-pixel behavioral Red: no-plume native fixed side camera has zero bright,
+blue or white pixels beyond the unchanged nozzle exit. Accepted variant is Green.
+Native 1920x1080 side/quarter/rear inspection uses existing production owners,
+ordinary validation and empty teardown stderr; no post-capture upscaling.
+Temporary capture encoding is limited to exactly this size/16 MiB; production
+capture admission is unchanged. Original HD admission failure and first authoring
+catalog-count assertion failure are retained as setup failures, not engine Reds.
+Final normal-profile capture inspected; actual pixels retain equal 16px gutters.
+
+Replay uses trusted hash-pinned local source/base/KTX tools and bounded inputs,
+existing cook assembler/texture helper, argument-array subprocesses and staged
+native admission before publication. It does not execute historical authoring
+receipts or need the private reference. Exact final package SHA is required.
+Public CLI controls pass for existing file/directory/link preservation, wrong
+source rejection and successful exact replay using actual tools, also under
+Python -O. Validation is explicit, not disabled with asserts. It is not an OS
+sandbox, an atomic adversarial-filesystem guarantee or a hard driver/I/O interrupt.
+
+All 1200 numeric frame rows independently recomputed, including actual extents,
+nearest-rank distributions, monotonic clocks, four generation publications and
+last-300-row VMA settlement. No frame exemption, external observer or interposer.
+Both original timing budgets pass. Steady warm C++/ImGui calls are zero; mixed
+activity is 2660/2 and is not a zero-steady-allocation claim. Mixed frames 1-2
+explicitly use exposure .75/FXAA off and restore at 3; all remain counted. Existing
+512 MiB Context cap and all milestone limits stay unchanged. VMA is not WDDM,
+process RSS/working set, a continuous/global peak or indefinite leak proof.
+
+Checks: actual native asset/render admission; real replay/source/output controls;
+all-row private and retained-only verifier agreement; Python source syntax;
+clang-format 18.1.8 dry-run of the inspection TU; git diff whitespace. Existing
+four-config compiler/sanitizer/platform evidence is not claimed rerun for data.
+No new dependency, SDK/system/profile change or brand-pack access.
+
+No additional demonstrated P1/P2 defect in this scope after verification.
+Native Windows compiled bounds/final asset execution, overall inspector/input
+acceptance, independent asset/evidence follow-up and normal PR integration remain.
+The owner accepted this exact exhaust appearance; do not request that again.
+M2 is open. M3 implementation has not started.

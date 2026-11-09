@@ -20,6 +20,17 @@ The owner explicitly answered the closure questions after `b2fa7da`:
   Earlier failures remain retained; neither an engine repair nor the exact cause
   of improvement is claimed. See [current-host verification](current-host/README.md).
 
+The owner subsequently accepted the blue-white palette but rejected overexposed
+engine housings. After a visible localized-light preview they called the result a
+“MAJOR improvment” and explicitly requested a plume, superseding the earlier
+color/glow-only scope. They then requested a longer tail and wider core/plume.
+Their final **“that looks perfect”** accepts the exact
+[larger-radius, longer exhaust presentation](exhaust/README.md), package SHA256
+`067407fb5fa2527771212cc7280a345b02ad3dd2a823ae8ba81b3553689ec52b`.
+No further palette/bounds/exhaust reapproval is requested. This is not an inferred
+overall inspector/input verdict or approval of future M3 flight controls. Original
+source/canonical assets and the unrelated brand pack remain untouched/private.
+
 Native Windows schema-3 GPU observation now passes separately at script `5a2f841`
 with the unchanged `b2fa7da` binary. Sampled-budget verification is not a new
 personal visual/input verdict. Neither these answers nor agent/GitHub account

@@ -1,0 +1,6 @@
+{
+  "directory": "<repo>/build/inspector-release",
+  "command": "/bin/clang++ -DFFI_STATIC_BUILD -DLIBXML_STATIC -DNGEN_TEST_FIXTURES=\\\"<repo>/tests/fixtures\\\" -DXML_STATIC -I<repo>/tests -I<repo>/engine -I<repo>/apps -isystem /home/kyau/.conan2/p/b/sdl09793c119812a/p/include -isystem /home/kyau/.conan2/p/b/waylaedcc845c0414e/p/include -isystem /home/kyau/.conan2/p/b/zlib2105ec2ddcc7e/p/include -isystem /home/kyau/.conan2/p/vulkabd7575518f65a/p/include -m64 -stdlib=libstdc++ -O3 -DNDEBUG -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror @CMakeFiles/scene_probe.dir/apps/scene_probe/main.cpp.o.modmap -o CMakeFiles/scene_probe.dir/apps/scene_probe/main.cpp.o -c <repo>/apps/scene_probe/main.cpp",
+  "file": "<repo>/apps/scene_probe/main.cpp",
+  "output": "<repo>/build/inspector-release/CMakeFiles/scene_probe.dir/apps/scene_probe/main.cpp.o"
+}

@@ -1,0 +1,1 @@
+{"aft_of_nozzle_roi": [1110, 200, 1260, 900], "bright_pixels": 53256, "blue_pixels": 44899, "white_core_pixels": 7315}

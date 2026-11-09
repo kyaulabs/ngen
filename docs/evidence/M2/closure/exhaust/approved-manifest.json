@@ -1,0 +1,137 @@
+{
+  "default_lod": 2,
+  "exhaust_plume": {
+    "additional_visible_triangles": 192,
+    "base_localized_package_sha256": "06882cd0854681874c0950806a0c1c5bd1c5d81c161be649c6f5f6a70c16f295",
+    "derivation_sha256": "38a564321fcb76056607e2a9564ffcf32807c185fa2e876fb02f16082c01aa4f",
+    "instances": 6,
+    "ktx_sha256": "415cc81715d1b5e4661b5077ecfde9ba207c7fbd997f0b78a44c57dfe6ceca97",
+    "mesh": "eight low-alpha radial slices plus radial soft base disc per drive",
+    "name": "wider-soft-blue-white-v4",
+    "new_point_lights": 0,
+    "plume_radius_fraction_of_nominal_bell": 0.8,
+    "schema": 1,
+    "scope": "Owner explicitly requested a short directional plume; original procedural texture, no reference-image pixels or new renderer/backend.",
+    "shared_triangles": 32,
+    "shared_vertices": 49,
+    "source_geometry_prefix_unchanged": true,
+    "tail_length_multiplier": 2,
+    "texture_bytes": 43692,
+    "texture_extent": [
+      128,
+      64
+    ],
+    "white_base_world_offset_preserved": true
+  },
+  "invalid_source_tangents": 349,
+  "ktx_reported_version": "ktx version: exitcode-128-NOTFOUND",
+  "lod_target_ratios": [
+    1,
+    0.4,
+    0.1
+  ],
+  "maximum_texture_dimension": 2048,
+  "normal_attribute_weight": 0.5,
+  "package_sha256": "067407fb5fa2527771212cc7280a345b02ad3dd2a823ae8ba81b3553689ec52b",
+  "presentation_variant": {
+    "base_package_sha256": "e0ee6a023900c78b2c313f493f2a0e78c9639c39b6d830a1eaf3a3f6c0a29b6d",
+    "core_light_color": [
+      0.035,
+      0.055,
+      1.0
+    ],
+    "core_light_count": 6,
+    "derivation_sha256": "3d9b340d283dddcab7bfc08bb711da8822a9e7467041d1a7b72433fd8caf2751",
+    "drive_light_color": [
+      0.018,
+      0.008,
+      1.0
+    ],
+    "drive_light_count": 54,
+    "light_groups": {
+      "core": {
+        "intensity_scale": 1.0,
+        "range": 2.5
+      },
+      "inner_coil": {
+        "intensity_scale": 0.01,
+        "range": 4.0
+      },
+      "luminous_collar": {
+        "intensity_scale": 0.01,
+        "range": 0.75
+      }
+    },
+    "materials": {
+      "F01_Core": {
+        "base_color": [
+          0.32,
+          0.4,
+          0.5,
+          1.0
+        ],
+        "emissive": [
+          0.8,
+          0.92,
+          1.0
+        ]
+      },
+      "F01_DriveRed": {
+        "base_color": [
+          0.01,
+          0.04,
+          0.22,
+          1.0
+        ],
+        "emissive": [
+          0.02,
+          0.22,
+          1.0
+        ]
+      }
+    },
+    "name": "frigate-localized-blue-white-drive-v4",
+    "original_source_sha256": "e68cd409c479036556446ed1753b287c0e7a40260109b3cd442abe7f533941fe",
+    "recipe_sha256": "b9e6268d737580136c7d63fd304a65b068c62e1aebfb2186567fae19b3349a6f",
+    "reference_image_sha256": "1ef70b6a88434b3fafdd9405328b7019fe59d54481e6f0d6c4b183218309ad51",
+    "scope": "Contain source light influence inside/adjacent to engine bells rather than washing out housings. Preserve core-light intensity/priority with a 2.5m range; soften coil/collar light power and range. All definitions stay positive; geometry/textures, exposure/bloom, bridge/navigation definitions and original asset are unchanged. No plume."
+  },
+  "preset": "laptop",
+  "rebuilt_corners": 1722408,
+  "relative_combined_error_bound": 0.01,
+  "rights": "owner-provided development input; redistribution not approved",
+  "runtime": {
+    "checksum": 152999810,
+    "images": 5,
+    "indices": 3309156,
+    "instances": 194,
+    "light_instances": 612,
+    "lights": 612,
+    "lod_triangles": [
+      574168,
+      290836,
+      238112
+    ],
+    "materials": 14,
+    "package_valid": 1,
+    "primitives": 189,
+    "texture_bytes": 89522172,
+    "textures": 16,
+    "vertices": 1304372
+  },
+  "schema": 1,
+  "source_manifest_sha256": "068b0587e2bc55c7732d9d506d45d8ccbe3e1f8ce5030733af3c5a7507e30e99",
+  "source_meshes": 41,
+  "source_nodes": 654,
+  "source_sha256": "e68cd409c479036556446ed1753b287c0e7a40260109b3cd442abe7f533941fe",
+  "source_vertices": 1442025,
+  "tool_sha256": {
+    "assembler": "6fe337dc2bc563ee3ea40f8f82d9db0736697773be40e96627a9c156f8d6df4b",
+    "assetc": "2bfdac4078a97665fdd1f9a09cbf4f5fba2a334df4088bf82a9be6a67e9208e8",
+    "ktx": "415cc81715d1b5e4661b5077ecfde9ba207c7fbd997f0b78a44c57dfe6ceca97",
+    "runtime_probe": "da9943b29431ade30ad2b51fa4e0e4df96f29300277197720846398465daaf9f"
+  },
+  "used_uv_seams": "protected",
+  "vertex_fetch_order": "coarsest-first",
+  "visible_ship_lod2_triangles": 238272
+}

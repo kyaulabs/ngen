@@ -3,16 +3,28 @@
 Native transparency and corrected sampled WDDM accounting now pass. The reused
 memory-test executable was compiled at `b2fa7da`, before the full-ship UI bounds
 correction. **Only one updated MSVC Release build/native validation remains.**
-Do not repeat the completed four-build matrix, recook/download the package or
-run `-MeasureWorkload` again. Slang and the specific box correction already have
-owner acceptance; remaining overall visual/input acceptance is separate.
+Do not repeat the completed four-build matrix or run `-MeasureWorkload` again.
+Slang, the specific box correction and the final longer/wider blue-white exhaust
+appearance already have owner acceptance; remaining inspector/input acceptance
+is separate. The new private asset needs no Windows recook or offline toolkit.
 
-Use the existing `5a2f8415aa226d9f757dfa18af403ab039d51806` source checkout and the
-same existing `scene.ngas`. Later evidence-only commits do not change this source.
-In the same MSYS2 fish terminal with `$scene` still set:
+Use the existing checkout updated to `origin/feat/kyau-ade38c-m2-acceptance`.
+Do not reset owner changes. The exhaust follow-up changes asset data/receipts, not
+the runtime/shaders or compiled source after `5a2f841`. Transfer the private
+`build/ngen-m2-exhaust-input.zip` (47,526,154 bytes), SHA256
+`1cd8b19aa17634129510be66aca4e4d7b2becee21d76bb9ea30aa60e0ee968a5`.
+It contains only `scene.ngas`, its manifest and a data-only README; no reference,
+brand bytes, executable or script. Extract to a **new separate directory**, such
+as `build/m2-exhaust-windows-input`; keep the original `$scene`/canonical package.
+The extracted package must hash to
+`067407fb5fa2527771212cc7280a345b02ad3dd2a823ae8ba81b3553689ec52b`.
+
+In the same MSYS2 fish terminal, once extracted:
 
 ```fish
-pwsh.exe -NoProfile -File (cygpath -w tools/build-windows.ps1) -Inspector -ScenePackage (cygpath -w $scene) -Compiler MSVC -Configuration Release
+set preview_scene (realpath build/m2-exhaust-windows-input/scene.ngas)
+sha256sum $preview_scene
+pwsh.exe -NoProfile -File (cygpath -w tools/build-windows.ps1) -Inspector -ScenePackage (cygpath -w $preview_scene) -Compiler MSVC -Configuration Release
 ```
 
 The standard workflow builds the optional inspector graph, runs native fixtures
@@ -21,15 +33,18 @@ new markers in `Release-inspector.txt` are
 `inspector_ship_bounds=1 inspector_rear_engine_bounds=1`, alongside
 `scene_translucent_order=1 scene_opaque_occlusion=1 scene_translucent_depth_readonly=1`.
 Retain the actual outcome, including any compile/validation failure. Send the
-printed archive; there is no second memory command for this request.
+printed archive; there is no second memory command for this request. The new
+workload should report 238,272 ship/plume + 8,000 asteroid = 246,272 triangles,
+195 draw records, 14 materials, 5 images and all 612 retained light definitions.
+The complete ship box should include the added plume bounds.
 
 Personal visual/input review is distinct from automated execution. If not yet
 checked, after automation closes open `pwsh.exe -NoProfile` with the new printed
-Release directory and existing package:
+Release directory and accepted separate package:
 
 ```powershell
 $release = (Resolve-Path 'build/windows/THE-NEW-PRINTED-RUN/Release').Path
-$scene = 'C:\real\path\scene.ngas'
+$scene = (Resolve-Path 'build/m2-exhaust-windows-input/scene.ngas').Path
 try {
     . (Join-Path $release 'conanrun.ps1')
     & (Join-Path $release 'scene_workload.exe') $scene --inspector --frames=3600 --warmup=0
@@ -38,8 +53,8 @@ try {
 }
 ```
 
-Check the default ship/material/lighting presentation and panel gutters/list
-clipping. Select parts, change material and render settings, and press R to reload.
+The exhaust appearance is already accepted; do not ask for it again. Check the
+remaining inspector/input behavior and panel gutters/list clipping. Select parts, change material and render settings, and press R to reload.
 Changes should appear at the next boundary without altering old/in-flight versions;
 completed replacement resets asset selection/factors and preserves view settings.
 The complete ship box must not shrink when part selection changes or clears.

@@ -1,0 +1,148 @@
+{
+  "steady": {
+    "measured_frames": 600,
+    "warmup_frames": 60,
+    "frame_ns": {
+      "p50": 16536045,
+      "p95": 17842376,
+      "p99": 18551985,
+      "max": 18734107
+    },
+    "extents": {
+      "1280x720": 600
+    },
+    "extent_transitions": [
+      {
+        "frame": 0,
+        "extent": "1280x720"
+      }
+    ],
+    "generation_transitions": [
+      {
+        "frame": 0,
+        "generation": 1
+      }
+    ],
+    "tracked": {
+      "vma_allocation_bytes": {
+        "peak": 211635648,
+        "final": 211635648,
+        "tail_min": 211635648,
+        "tail_max": 211635648
+      },
+      "vma_reserved_bytes": {
+        "peak": 214399344,
+        "final": 214399344,
+        "tail_min": 214399344,
+        "tail_max": 214399344
+      },
+      "resource_live": {
+        "peak": 23,
+        "final": 23,
+        "tail_min": 23,
+        "tail_max": 23
+      },
+      "resource_retiring": {
+        "peak": 0,
+        "final": 0,
+        "tail_min": 0,
+        "tail_max": 0
+      }
+    },
+    "steady_allocation_check": "zero warm C++ and ImGui allocation calls",
+    "settings_scope": "default exposure 1/FXAA on throughout",
+    "artifact_sha256": {
+      ".bmp": "5ba5b8aa188e861374d315fd87a3c886bf2b20f44e6ed3832955e53323c4e9cc",
+      ".csv": "49d087122ed6a9a24a8f23b16f17a738a8e54365f97363a0781bdc0821c1379b",
+      ".txt": "621da5b099607888b4e5b1d57b38275f587dd227564fc3583c5e234c5bc381e5",
+      ".err": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "capture_hash_recomputed": true
+  },
+  "mixed": {
+    "measured_frames": 600,
+    "warmup_frames": 60,
+    "frame_ns": {
+      "p50": 16539137,
+      "p95": 17938154,
+      "p99": 26152455,
+      "max": 102601229
+    },
+    "extents": {
+      "1280x720": 580,
+      "1024x640": 20
+    },
+    "extent_transitions": [
+      {
+        "frame": 0,
+        "extent": "1280x720"
+      },
+      {
+        "frame": 20,
+        "extent": "1024x640"
+      },
+      {
+        "frame": 40,
+        "extent": "1280x720"
+      }
+    ],
+    "generation_transitions": [
+      {
+        "frame": 0,
+        "generation": 1
+      },
+      {
+        "frame": 33,
+        "generation": 2
+      },
+      {
+        "frame": 90,
+        "generation": 3
+      },
+      {
+        "frame": 147,
+        "generation": 4
+      },
+      {
+        "frame": 203,
+        "generation": 5
+      }
+    ],
+    "tracked": {
+      "vma_allocation_bytes": {
+        "peak": 472084240,
+        "final": 211635648,
+        "tail_min": 211635648,
+        "tail_max": 211635648
+      },
+      "vma_reserved_bytes": {
+        "peak": 474782144,
+        "final": 214399344,
+        "tail_min": 214399344,
+        "tail_max": 214399344
+      },
+      "resource_live": {
+        "peak": 31,
+        "final": 23,
+        "tail_min": 23,
+        "tail_max": 23
+      },
+      "resource_retiring": {
+        "peak": 0,
+        "final": 0,
+        "tail_min": 0,
+        "tail_max": 0
+      }
+    },
+    "steady_allocation_check": "not applicable: scripted resize/reload/edit activity",
+    "settings_scope": "walkthrough frames 1-2 exposure .75/FXAA off; restored at 3; all frames retained",
+    "artifact_sha256": {
+      ".bmp": "9051db8d7574621cdac30c017f97a1a628afda463c0b4d229fca7c49311c5d7d",
+      ".csv": "2f1855dda48ff3fbce285bcaaeeb8789b22999492f9c2f3f568d65e857a52106",
+      ".txt": "64fa8be482a86b67b4f376ed149aa5ca53dd3b3cddcdaaa01bfd067e94dcda9e",
+      ".err": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "capture_hash_recomputed": true
+  },
+  "scope": "Native Iris Xe warm-cache timing and VMA records; no new whole-process memory observation."
+}

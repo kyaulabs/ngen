@@ -1,0 +1,57 @@
+{
+  "plume-wide-native-side": {
+    "private_path": "build/m2-engine-color/plume-wide-native-side.bmp",
+    "sha256": "7e4f63110de707def99f2f79d7410b355bb3d9fb43e9af907c952388e1cafb8a",
+    "bytes": 8294538,
+    "native_extent": [
+      1920,
+      1080
+    ],
+    "resampled_after_capture": false,
+    "scope": "fixed native close-up, no asteroids/UI or performance claim"
+  },
+  "plume-wide-native-quarter": {
+    "private_path": "build/m2-engine-color/plume-wide-native-quarter.bmp",
+    "sha256": "9c47fc5bab449c291e8eece41bf9f9de1dc157215cb9fefef68d8ee5cb45868b",
+    "bytes": 8294538,
+    "native_extent": [
+      1920,
+      1080
+    ],
+    "resampled_after_capture": false,
+    "scope": "fixed native close-up, no asteroids/UI or performance claim"
+  },
+  "plume-wide-native-rear": {
+    "private_path": "build/m2-engine-color/plume-wide-native-rear.bmp",
+    "sha256": "751aa7b4d130bf585df236e9a54376045c90c4bfe45c7dbc90a7cbff233f4134",
+    "bytes": 8294538,
+    "native_extent": [
+      1920,
+      1080
+    ],
+    "resampled_after_capture": false,
+    "scope": "fixed native close-up, no asteroids/UI or performance claim"
+  },
+  "plume-wide-mixed-clean1": {
+    "private_path": "build/m2-engine-color/plume-wide-mixed-clean1.bmp",
+    "sha256": "9051db8d7574621cdac30c017f97a1a628afda463c0b4d229fca7c49311c5d7d",
+    "bytes": 3686538,
+    "native_extent": [
+      1280,
+      720
+    ],
+    "resampled_after_capture": false,
+    "scope": "normal workload profile"
+  },
+  "plume-wide-steady-clean1": {
+    "private_path": "build/m2-engine-color/plume-wide-steady-clean1.bmp",
+    "sha256": "5ba5b8aa188e861374d315fd87a3c886bf2b20f44e6ed3832955e53323c4e9cc",
+    "bytes": 3686538,
+    "native_extent": [
+      1280,
+      720
+    ],
+    "resampled_after_capture": false,
+    "scope": "normal workload profile"
+  }
+}
