@@ -35,7 +35,10 @@ triangles through existing transparent rendering. New clean 600-frame steady/mix
 runs pass original timing budgets; steady warm C++/ImGui allocations are zero.
 This is not overall inspector/input acceptance or a new WDDM measurement. One
 updated MSVC Release check now uses that separate package; no compiler matrix or
-memory observation repeat is requested.
+memory observation repeat is requested. The [independent exhaust follow-up](independent-afb94f7.md)
+confirms clean `afb94f7`, recomputes all 1,200 rows and finds no actionable defect
+or new advisory in the offline receipt/evidence scope. It did not execute retained
+scripts or inspect private artifact bytes and supplies no personal human approval.
 
 The root source/verification records below describe the initial `b2fa7da` slice;
 ship-bounds and exhaust records carry their own changed-source/artifact identities.

@@ -1,0 +1,34 @@
+{
+  "head": "afb94f7da8ea0def13677b2bde00f52674b70a46",
+  "workflow": 42578696880,
+  "url": "https://github.com/kyaulabs/ngen/actions/runs/42578696880",
+  "attempts": [
+    {
+      "attempt": 1,
+      "release": "success",
+      "tsan": "success",
+      "debug": "failure",
+      "asan": "failure",
+      "blocking_step": "renderer/checked-scene preparation",
+      "cause": "Pinned Slang 2026.21 public release download failed with HTTP 504 before project compilation."
+    },
+    {
+      "attempt": 2,
+      "release": "success",
+      "tsan": "success",
+      "debug": "failure",
+      "asan": "failure",
+      "blocking_step": "renderer/checked-scene preparation",
+      "cause": "Pinned libffi 3.4.8 public release download failed with HTTP 504 before project compilation."
+    }
+  ],
+  "diagnostic_scope": "Full-job log request was safety-blocked; no full setup/account/session log was inspected. Allowed failed-step-only diagnostics were fetched with gh and reduced to the concrete download errors. No bypass or pin/check weakening.",
+  "availability_recheck": {
+    "observed_utc": "2026-11-09T07:36:26.851844+00:00",
+    "method": "bounded public HEAD with redirects, response contents/headers discarded",
+    "slang_http": 200,
+    "libffi_http": 200,
+    "scope": "Agent route only; not proof of hosted runner availability."
+  },
+  "next": "Retain independent review and unchanged-pin failure history; exact new-head CI must be checked separately. No new native benchmark or compiler matrix is implied."
+}

@@ -124,5 +124,10 @@ The private owner handoff is `build/ngen-m2-exhaust-input.zip`, SHA256
 47,526,154 bytes: only `scene.ngas`, its manifest and a short data-only README.
 Follow [the one targeted Windows check](../windows.md). The compiled bounds/native
 asset execution and remaining overall inspector/input verdict stay separate from
-the already accepted exhaust appearance. Same-session review is not independent
-or personal owner approval.
+the already accepted exhaust appearance. The [independent read-only follow-up](../independent-afb94f7.md)
+finds no actionable defect or new advisory and recomputes the public evidence;
+it does not execute scripts, independently read private artifacts or supply
+personal owner approval. `ci-afb94f7.json` retains distinct Slang/libffi HTTP-504
+setup failures; neither attempt reached project renderer compilation. Only
+failed-step diagnostics were inspected, without changing any pin/check. A later
+agent-route HTTP-200 probe is not itself a passing hosted CI result.

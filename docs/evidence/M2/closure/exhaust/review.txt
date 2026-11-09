@@ -53,6 +53,10 @@ No new dependency, SDK/system/profile change or brand-pack access.
 
 No additional demonstrated P1/P2 defect in this scope after verification.
 Native Windows compiled bounds/final asset execution, overall inspector/input
-acceptance, independent asset/evidence follow-up and normal PR integration remain.
+acceptance and normal PR integration remain. Separate read-only follow-up at
+afb94f7 finds no actionable defect/new advisory and independently recomputes public
+evidence; it does not execute scripts or verify private bytes. CI first fails on
+Slang HTTP504, unchanged retry on libffi HTTP504 before project compilation; no
+engine/toolchain fix, waived check or passing CI result is invented.
 The owner accepted this exact exhaust appearance; do not request that again.
 M2 is open. M3 implementation has not started.
