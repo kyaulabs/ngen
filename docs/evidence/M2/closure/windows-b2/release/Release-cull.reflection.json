@@ -1,0 +1,355 @@
+{
+    "version": "1.1",
+    "parameters": [
+        {
+            "name": "cull",
+            "binding": {"kind": "descriptorTableSlot", "space": 2, "index": 0},
+            "type": {
+                "kind": "constantBuffer",
+                "elementType": {
+                    "kind": "struct",
+                    "name": "CullConstants",
+                    "fields": [
+                        {
+                            "name": "planes",
+                            "type": {
+                                "kind": "array",
+                                "elementCount": 6,
+                                "elementType": {
+                                    "kind": "vector",
+                                    "elementCount": 4,
+                                    "elementType": {
+                                        "kind": "scalar",
+                                        "scalarType": "float32"
+                                    },
+                                    "sizes": [
+                                        {"kind": "uniform", "value": 16, "alignment": 16}
+                                    ]
+                                },
+                                "uniformStride": 16,
+                                "sizes": [
+                                    {"kind": "uniform", "value": 96, "alignment": 16}
+                                ]
+                            },
+                            "binding": {"kind": "uniform", "offset": 0, "size": 96, "elementStride": 16}
+                        },
+                        {
+                            "name": "count",
+                            "type": {
+                                "kind": "scalar",
+                                "scalarType": "uint32",
+                                "sizes": [
+                                    {"kind": "uniform", "value": 4, "alignment": 4}
+                                ]
+                            },
+                            "binding": {"kind": "uniform", "offset": 96, "size": 4, "elementStride": 0}
+                        }
+                    ],
+                    "sizes": [
+                        {"kind": "uniform", "value": 112, "alignment": 16}
+                    ]
+                },
+                "containerVarLayout": {
+                    "binding": {"kind": "descriptorTableSlot", "index": 0}
+                },
+                "elementVarLayout": {
+                    "type": {
+                        "kind": "struct",
+                        "name": "CullConstants",
+                        "fields": [
+                            {
+                                "name": "planes",
+                                "type": {
+                                    "kind": "array",
+                                    "elementCount": 6,
+                                    "elementType": {
+                                        "kind": "vector",
+                                        "elementCount": 4,
+                                        "elementType": {
+                                            "kind": "scalar",
+                                            "scalarType": "float32"
+                                        },
+                                        "sizes": [
+                                            {"kind": "uniform", "value": 16, "alignment": 16}
+                                        ]
+                                    },
+                                    "uniformStride": 16,
+                                    "sizes": [
+                                        {"kind": "uniform", "value": 96, "alignment": 16}
+                                    ]
+                                },
+                                "binding": {"kind": "uniform", "offset": 0, "size": 96, "elementStride": 16}
+                            },
+                            {
+                                "name": "count",
+                                "type": {
+                                    "kind": "scalar",
+                                    "scalarType": "uint32",
+                                    "sizes": [
+                                        {"kind": "uniform", "value": 4, "alignment": 4}
+                                    ]
+                                },
+                                "binding": {"kind": "uniform", "offset": 96, "size": 4, "elementStride": 0}
+                            }
+                        ],
+                        "sizes": [
+                            {"kind": "uniform", "value": 112, "alignment": 16}
+                        ]
+                    },
+                    "binding": {"kind": "uniform", "offset": 0, "size": 112, "elementStride": 0}
+                },
+                "sizes": [
+                    {"kind": "descriptorTableSlot", "value": 1}
+                ]
+            }
+        },
+        {
+            "name": "spheres",
+            "binding": {"kind": "descriptorTableSlot", "space": 2, "index": 1},
+            "type": {
+                "kind": "resource",
+                "baseShape": "structuredBuffer",
+                "resultType": {
+                    "kind": "vector",
+                    "elementCount": 4,
+                    "elementType": {
+                        "kind": "scalar",
+                        "scalarType": "float32"
+                    },
+                    "sizes": [
+                        {"kind": "uniform", "value": 16, "alignment": 16}
+                    ]
+                },
+                "sizes": [
+                    {"kind": "descriptorTableSlot", "value": 1}
+                ]
+            }
+        },
+        {
+            "name": "visible",
+            "binding": {"kind": "descriptorTableSlot", "space": 2, "index": 2},
+            "type": {
+                "kind": "resource",
+                "baseShape": "structuredBuffer",
+                "access": "readWrite",
+                "resultType": {
+                    "kind": "scalar",
+                    "scalarType": "uint32",
+                    "sizes": [
+                        {"kind": "uniform", "value": 4, "alignment": 4}
+                    ]
+                },
+                "sizes": [
+                    {"kind": "descriptorTableSlot", "value": 1}
+                ]
+            }
+        }
+    ],
+    "globalScope": {
+        "kind": "none",
+        "parameters": [
+            {
+                "name": "cull",
+                "binding": {"kind": "descriptorTableSlot", "space": 2, "index": 0},
+                "type": {
+                    "kind": "constantBuffer",
+                    "elementType": {
+                        "kind": "struct",
+                        "name": "CullConstants",
+                        "fields": [
+                            {
+                                "name": "planes",
+                                "type": {
+                                    "kind": "array",
+                                    "elementCount": 6,
+                                    "elementType": {
+                                        "kind": "vector",
+                                        "elementCount": 4,
+                                        "elementType": {
+                                            "kind": "scalar",
+                                            "scalarType": "float32"
+                                        },
+                                        "sizes": [
+                                            {"kind": "uniform", "value": 16, "alignment": 16}
+                                        ]
+                                    },
+                                    "uniformStride": 16,
+                                    "sizes": [
+                                        {"kind": "uniform", "value": 96, "alignment": 16}
+                                    ]
+                                },
+                                "binding": {"kind": "uniform", "offset": 0, "size": 96, "elementStride": 16}
+                            },
+                            {
+                                "name": "count",
+                                "type": {
+                                    "kind": "scalar",
+                                    "scalarType": "uint32",
+                                    "sizes": [
+                                        {"kind": "uniform", "value": 4, "alignment": 4}
+                                    ]
+                                },
+                                "binding": {"kind": "uniform", "offset": 96, "size": 4, "elementStride": 0}
+                            }
+                        ],
+                        "sizes": [
+                            {"kind": "uniform", "value": 112, "alignment": 16}
+                        ]
+                    },
+                    "containerVarLayout": {
+                        "binding": {"kind": "descriptorTableSlot", "index": 0}
+                    },
+                    "elementVarLayout": {
+                        "type": {
+                            "kind": "struct",
+                            "name": "CullConstants",
+                            "fields": [
+                                {
+                                    "name": "planes",
+                                    "type": {
+                                        "kind": "array",
+                                        "elementCount": 6,
+                                        "elementType": {
+                                            "kind": "vector",
+                                            "elementCount": 4,
+                                            "elementType": {
+                                                "kind": "scalar",
+                                                "scalarType": "float32"
+                                            },
+                                            "sizes": [
+                                                {"kind": "uniform", "value": 16, "alignment": 16}
+                                            ]
+                                        },
+                                        "uniformStride": 16,
+                                        "sizes": [
+                                            {"kind": "uniform", "value": 96, "alignment": 16}
+                                        ]
+                                    },
+                                    "binding": {"kind": "uniform", "offset": 0, "size": 96, "elementStride": 16}
+                                },
+                                {
+                                    "name": "count",
+                                    "type": {
+                                        "kind": "scalar",
+                                        "scalarType": "uint32",
+                                        "sizes": [
+                                            {"kind": "uniform", "value": 4, "alignment": 4}
+                                        ]
+                                    },
+                                    "binding": {"kind": "uniform", "offset": 96, "size": 4, "elementStride": 0}
+                                }
+                            ],
+                            "sizes": [
+                                {"kind": "uniform", "value": 112, "alignment": 16}
+                            ]
+                        },
+                        "binding": {"kind": "uniform", "offset": 0, "size": 112, "elementStride": 0}
+                    },
+                    "sizes": [
+                        {"kind": "descriptorTableSlot", "value": 1}
+                    ]
+                }
+            },
+            {
+                "name": "spheres",
+                "binding": {"kind": "descriptorTableSlot", "space": 2, "index": 1},
+                "type": {
+                    "kind": "resource",
+                    "baseShape": "structuredBuffer",
+                    "resultType": {
+                        "kind": "vector",
+                        "elementCount": 4,
+                        "elementType": {
+                            "kind": "scalar",
+                            "scalarType": "float32"
+                        },
+                        "sizes": [
+                            {"kind": "uniform", "value": 16, "alignment": 16}
+                        ]
+                    },
+                    "sizes": [
+                        {"kind": "descriptorTableSlot", "value": 1}
+                    ]
+                }
+            },
+            {
+                "name": "visible",
+                "binding": {"kind": "descriptorTableSlot", "space": 2, "index": 2},
+                "type": {
+                    "kind": "resource",
+                    "baseShape": "structuredBuffer",
+                    "access": "readWrite",
+                    "resultType": {
+                        "kind": "scalar",
+                        "scalarType": "uint32",
+                        "sizes": [
+                            {"kind": "uniform", "value": 4, "alignment": 4}
+                        ]
+                    },
+                    "sizes": [
+                        {"kind": "descriptorTableSlot", "value": 1}
+                    ]
+                }
+            }
+        ]
+    },
+    "entryPoints": [
+        {
+            "name": "cullMain",
+            "stage": "compute",
+            "scope": {
+                "kind": "none",
+                "parameters": [
+                    {
+                        "name": "thread",
+                        "semanticName": "SV_DISPATCHTHREADID",
+                        "type": {
+                            "kind": "vector",
+                            "elementCount": 3,
+                            "elementType": {
+                                "kind": "scalar",
+                                "scalarType": "uint32"
+                            },
+                            "sizes": [
+
+                            ]
+                        }
+                    }
+                ]
+            },
+            "parameters": [
+                {
+                    "name": "thread",
+                    "semanticName": "SV_DISPATCHTHREADID",
+                    "type": {
+                        "kind": "vector",
+                        "elementCount": 3,
+                        "elementType": {
+                            "kind": "scalar",
+                            "scalarType": "uint32"
+                        },
+                        "sizes": [
+
+                        ]
+                    }
+                }
+            ],
+            "threadGroupSize": [64, 1, 1],
+            "bindings": [
+                {
+                    "name": "cull",
+                    "binding": {"kind": "descriptorTableSlot", "space": 2, "index": 0, "used": 1}
+                },
+                {
+                    "name": "spheres",
+                    "binding": {"kind": "descriptorTableSlot", "space": 2, "index": 1, "used": 1}
+                },
+                {
+                    "name": "visible",
+                    "binding": {"kind": "descriptorTableSlot", "space": 2, "index": 2, "used": 1}
+                }
+            ]
+        }
+    ],
+    "bindlessSpaceIndex": 0
+}

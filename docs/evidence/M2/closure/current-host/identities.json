@@ -1,0 +1,13 @@
+{
+  "native_source_revision": "526223868073653835a7c6ef0e19bee0716b2d23",
+  "uncommitted_observer_changes_not_linked_into_native_binary": true,
+  "binary_sha256": "de7462233a107195883ba6a613c4eff18abe56c1dbcec444e7fa22e632a8854c",
+  "package_sha256": "e0ee6a023900c78b2c313f493f2a0e78c9639c39b6d830a1eaf3a3f6c0a29b6d",
+  "capture_sha256": "7a86e5db9fe794f5c5a18efc249e0ba492055a5d858a998f58ed6a678fc09ea4",
+  "capture_private_not_retained": true,
+  "source_sha256": {
+    "engine/tools/ui.cpp": "e190c13c30385139816d709677dc4d8937d3589d25184527ec2f672ae9505a4c",
+    "apps/scene_workload/main.cpp": "f08f918ad76b8ebeb838c19135a8135df907c691c4b6ffe200a346c58ac50bee",
+    "engine/render/presentation.cpp": "a4bc7c5a15927ee87d5795c6f4a1497016f6aaf743df74cee4a59bd9878cab05"
+  }
+}

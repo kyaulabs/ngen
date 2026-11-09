@@ -1,4 +1,4 @@
-Same-session review of the closure controls, not the independent baseline review.
+Initial same-session review of the b2fa7da closure controls, not the independent baseline review.
 
 Range: new inspector_probe checked-package fixtures, PowerShell measurement mode,
 observer/system-boundary tests, retained verification and acceptance status.
@@ -36,3 +36,33 @@ promote a speculative renderer patch, discard bad runs, weaken fixed-resolution
 budgets or infer owner acceptance. Follow-up independent review, actual Windows
 memory/new transparency execution and explicit owner/compiler/resize decisions
 remain before formal M2 closure or any M3 implementation.
+
+Subsequent independent review at b2fa7da found an observer defect missed above:
+valid-then-missing/foreign-only queries could disappear while status stayed passing.
+Public-process Red/Green now covers that failure, native measured-window wiring
+and deadline overruns when a child exits during CIM. Every attempt is retained;
+missing active-window data and observation gaps over one second fail coverage.
+CSV admission bounds rows/header expansion, correlates native clocks and retains
+invalid-report failure. Bounded native exception diagnostics prevent another
+opaque CimException-only return. The full corrected boundary suite passes, not
+native WDDM execution. No provider availability or continuous-peak claim is made.
+
+Returned b2fa7da MSVC Release passes 10/10 and all new actual NVIDIA transparency
+controls. Its 3600-frame workload passes but GPU observation fails with CimException
+and no samples; budget is correctly null. Original JSON/CSV and normalized text,
+separate hashes and safe exclusion records are retained without images/sessions.
+
+The UI alone now projects the checked package world union, avoiding a selected
+armor-component box and double transforms. Public native selection/cleared-selection
+controls, actual pixels, four 12/12 graphs, six Clang analyses and Release/ASan
+physical process suites pass. The owner accepts this specific rear-engine box fix
+and Slang, not unrelated gates. No bloom/emission or renderer/shader ABI changes.
+
+The owner reports laptop thermal/power changes before the latest paired runs.
+A genuinely visible/unfocused control no longer reproduces the old stall, so focus
+alone is not an established cause. Fresh clean 3600-frame mixed execution passes
+all original timing bounds, maximum 103.571 ms, without dropping resize/reload
+frames. Earlier failed runs remain historical evidence, not waived or rewritten.
+Post-run settings are recorded read-only; no exact thermal cause or engine repair
+is inferred. Native GPU memory and independent follow-up remain open; M3 is not
+implemented.

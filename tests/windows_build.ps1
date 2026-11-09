@@ -175,10 +175,16 @@ case "$0" in
     for argument in "$@"; do
       case "$argument" in
         --capture=*) [ "$NGEN_PROBE_FAIL_AT" = no-workload-capture ] || printf 'fixture UI capture' > "${argument#--capture=}" ;;
-        --report=*) [ "$NGEN_PROBE_FAIL_AT" = no-workload-report ] || printf 'frame,frame_ns\n0,16666667\n' > "${argument#--report=}" ;;
+        --report=*)
+          report_path=${argument#--report=}
+          [ "$NGEN_PROBE_FAIL_AT" = no-workload-report ] || printf 'frame,frame_ns,host_ns\n0,0,%s\n' "$(python3 -c 'import time; print(time.monotonic_ns())')" > "$report_path"
+          ;;
       esac
     done
     sleep 0.2
+    if [ -n "${report_path:-}" ] && [ "$NGEN_PROBE_FAIL_AT" != no-workload-report ]; then
+      printf '1,0,%s\n' "$(python3 -c 'import time; print(time.monotonic_ns())')" >> "$report_path"
+    fi
     ;;
   */scene_probe.exe)
     mode=scene
@@ -343,11 +349,36 @@ exit 0
         if (-not $failed -or -not (Get-Content -Raw "$timeoutLog.json" | ConvertFrom-Json).timed_out) { throw 'Workload timeout was not retained as failure' }
         # WDDM/CIM is the system boundary; the observed child is still real.
         $script:gpuFailure = ''
+        $script:gpuReadCalls = 0
+        $script:gpuFramePhasePath = ''
+        $script:gpuMeasuredReads = 0
         function Get-CimInstance {
             param([string]$Query, [int]$OperationTimeoutSec)
             if ($Query -notmatch "Name LIKE 'pid_(\d+)_%'") { throw 'GPU query is not scoped to its owned child' }
             $target = $Matches[1]
             if ($script:gpuFailure -eq 'unavailable') { throw 'fixture CIM class unavailable' }
+            if ($script:gpuFailure -eq 'late-query') {
+                if (++$script:gpuReadCalls -eq 1) { Start-Sleep -Milliseconds 1300 }
+            }
+            if ($script:gpuFailure -eq 'slow-query') {
+                if (++$script:gpuReadCalls -eq 2) { Start-Sleep -Milliseconds 1300 }
+            }
+            if ($script:gpuFailure -in @('scoped-window', 'scoped-gap')) {
+                ++$script:gpuReadCalls
+                $phase = if (Test-Path $script:gpuFramePhasePath) { (Get-Content -Raw $script:gpuFramePhasePath).Trim() } else { 'startup' }
+                if ($phase -ne 'measuring' -and $script:gpuReadCalls -gt 1) { return }
+                if ($phase -eq 'measuring' -and $script:gpuFailure -eq 'scoped-gap' -and
+                    ++$script:gpuMeasuredReads -eq 2) { return }
+            }
+            if ($script:gpuFailure -in @('disappear', 'foreign-after-valid')) {
+                ++$script:gpuReadCalls
+                if ($script:gpuReadCalls -gt 1) {
+                    if ($script:gpuFailure -eq 'foreign-after-valid') {
+                        [pscustomobject]@{ Name = 'pid_2147483647_luid_0x0_0x1_phys_0'; DedicatedUsage = 1048576L; SharedUsage = 0L; TotalCommitted = 1048576L }
+                    }
+                    return
+                }
+            }
             if ($script:gpuFailure -in @('over-budget-shared', 'over-budget-committed', 'zero')) {
                 [pscustomobject]@{ Name = "pid_${target}_luid_0x0_0x1_phys_0"
                     DedicatedUsage = if ($script:gpuFailure -eq 'over-budget-shared') { 536870912L } else { 0L }
@@ -391,8 +422,10 @@ exit 0
             } catch { $failed = $_.Exception.Message -match 'GPU memory' }
             $missing = Get-Content -Raw "$gpuMissing.json" | ConvertFrom-Json
             if (-not $failed -or $missing.gpu_memory.status -cne 'unavailable' -or
+                $missing.gpu_memory.error_message -cne 'fixture CIM class unavailable' -or
+                $null -eq $missing.gpu_memory.error_hresult -or
                 $null -ne $missing.gpu_memory.peak_dedicated_plus_shared_bytes -or
-                $missing.gpu_memory.samples.Count -ne 0 -or $missing.exit_code -ne 0) { throw 'Unavailable GPU counters were accepted as measured zero, or actual child result was lost' }
+                $missing.gpu_memory.samples.Count -ne 0 -or $missing.exit_code -ne 0) { throw 'Unavailable GPU counters were accepted as measured zero, or diagnostics/actual child result were lost' }
             foreach ($budgetCase in @('over-budget-shared', 'over-budget-committed')) {
                 $script:gpuFailure = $budgetCase
                 $gpuBudget = Join-Path $directory "$budgetCase.txt"
@@ -420,7 +453,86 @@ exit 0
             } catch { $failed = $_.Exception.Message -match 'GPU memory' }
             $zero = Get-Content -Raw "$gpuZero.json" | ConvertFrom-Json
             if (-not $failed -or $zero.gpu_memory.status -eq 'observed' -or $null -ne $zero.gpu_memory.within_1gib_budget) { throw 'An entirely zero provider trace was accepted as GPU-workload memory proof' }
+            foreach ($gapCase in @('disappear', 'foreign-after-valid')) {
+                $script:gpuFailure = $gapCase
+                $script:gpuReadCalls = 0
+                $gpuGap = Join-Path $directory "$gapCase.txt"
+                $failed = $false
+                try {
+                    Invoke-NgenWorkload -FilePath $pwsh -Arguments @('-NoProfile', '-Command', 'Start-Sleep -Milliseconds 1800') -LogPath $gpuGap -MemoryPath "$gpuGap.json" -GpuMemory
+                } catch { $failed = $_.Exception.Message -match 'GPU memory' }
+                $gap = Get-Content -Raw "$gpuGap.json" | ConvertFrom-Json
+                if (-not $failed -or $gap.gpu_memory.status -cne 'incomplete' -or
+                    $null -ne $gap.gpu_memory.within_1gib_budget -or $gap.gpu_memory.queries.Count -lt 2 -or
+                    @($gap.gpu_memory.queries | Where-Object status -eq 'no_own_instances').Count -eq 0) { throw 'A valid-then-empty or foreign-only GPU trace was accepted, or missing query attempts were lost' }
+            }
+            $frameChild = Join-Path $directory 'measured frame window.ps1'
+            Set-Content -LiteralPath $frameChild -Value @'
+param($report, $phase)
+function TickNs { [long]([decimal][Diagnostics.Stopwatch]::GetTimestamp() * 1000000000 / [Diagnostics.Stopwatch]::Frequency) }
+Set-Content -LiteralPath $phase 'startup'
+Start-Sleep -Milliseconds 1100
+Set-Content -LiteralPath $phase 'measuring'
+$begin = TickNs
+Start-Sleep -Milliseconds 1700
+$end = TickNs
+Set-Content -LiteralPath $phase 'shutdown'
+"frame,frame_ns,host_ns`n0,0,$begin`n1,0,$end" | Set-Content -LiteralPath $report
+Start-Sleep -Milliseconds 900
+'@
+            $script:gpuFailure = 'scoped-window'
+            $script:gpuReadCalls = 0
+            $script:gpuFramePhasePath = Join-Path $directory 'GPU child phase.txt'
+            $scopedReport = Join-Path $directory 'native frame window.csv'
+            $scopedLog = Join-Path $directory 'GPU measured window.txt'
+            Invoke-NgenWorkload -FilePath $pwsh -Arguments @('-NoProfile', '-File', $frameChild, $scopedReport, $script:gpuFramePhasePath) -LogPath $scopedLog -MemoryPath "$scopedLog.json" -GpuMemory -FrameReport $scopedReport
+            $scoped = Get-Content -Raw "$scopedLog.json" | ConvertFrom-Json
+            if ($scoped.gpu_memory.status -cne 'observed' -or -not $scoped.gpu_memory.coverage.complete -or
+                $scoped.gpu_memory.coverage.scope -cne 'native_measured_frames' -or
+                @($scoped.gpu_memory.queries | Where-Object status -eq 'no_own_instances').Count -eq 0) { throw 'Explicit native-frame coverage did not preserve startup/exit gaps separately from the measured window' }
+            $script:gpuFailure = 'scoped-gap'
+            $script:gpuReadCalls = 0
+            $script:gpuMeasuredReads = 0
+            $script:gpuFramePhasePath = Join-Path $directory 'gapped measured phase.txt'
+            $gappedReport = Join-Path $directory 'gapped native frame window.csv'
+            $gappedLog = Join-Path $directory 'GPU measured active gap.txt'
+            $failed = $false
+            try {
+                Invoke-NgenWorkload -FilePath $pwsh -Arguments @('-NoProfile', '-File', $frameChild, $gappedReport, $script:gpuFramePhasePath) -LogPath $gappedLog -MemoryPath "$gappedLog.json" -GpuMemory -FrameReport $gappedReport
+            } catch { $failed = $_.Exception.Message -match 'GPU memory' }
+            $gapped = Get-Content -Raw "$gappedLog.json" | ConvertFrom-Json
+            if (-not $failed -or $gapped.gpu_memory.coverage.complete -or
+                $gapped.gpu_memory.coverage.missing_queries_in_window -lt 1 -or
+                $null -ne $gapped.gpu_memory.within_1gib_budget) { throw 'A missing active measured-window query was exempted as startup or exit' }
+            $script:gpuFailure = 'slow-query'
+            $script:gpuReadCalls = 0
+            $slowLog = Join-Path $directory 'GPU slow successful query.txt'
+            $failed = $false
+            try {
+                Invoke-NgenWorkload -FilePath $pwsh -Arguments @('-NoProfile', '-Command', 'Start-Sleep -Milliseconds 2600') -LogPath $slowLog -MemoryPath "$slowLog.json" -GpuMemory
+            } catch { $failed = $_.Exception.Message -match 'GPU memory' }
+            $slow = Get-Content -Raw "$slowLog.json" | ConvertFrom-Json
+            if (-not $failed -or $slow.gpu_memory.coverage.maximum_observed_gap_ms -le 1000 -or
+                @($slow.gpu_memory.queries | Where-Object status -ne 'observed').Count -ne 0) { throw 'Slow successful queries hid an excessive GPU observation gap' }
+            $script:gpuFailure = 'late-query'
+            $script:gpuReadCalls = 0
+            $lateLog = Join-Path $directory 'GPU observation deadline.txt'
+            $failed = $false
+            try {
+                Invoke-NgenWorkload -FilePath $pwsh -Arguments @('-NoProfile', '-Command', 'Start-Sleep -Milliseconds 200') -LogPath $lateLog -MemoryPath "$lateLog.json" -GpuMemory -TimeoutMilliseconds 1000
+            } catch { $failed = $_.Exception.Message -match 'deadline' }
+            $late = Get-Content -Raw "$lateLog.json" | ConvertFrom-Json
+            if (-not $failed -or -not $late.timed_out -or $late.exit_code -ne 0) { throw 'An observation overrun was hidden when the child exited during a CIM query' }
             $script:gpuFailure = ''
+            $badClock = Join-Path $directory 'uncorrelated native clock.csv'
+            Set-Content -LiteralPath $badClock -Value @('frame,frame_ns,host_ns', '0,0,1', '1,0,2')
+            $badClockLog = Join-Path $directory 'GPU bad frame clock.txt'
+            $failed = $false
+            try {
+                Invoke-NgenWorkload -FilePath $pwsh -Arguments @('-NoProfile', '-Command', 'Start-Sleep -Milliseconds 600') -LogPath $badClockLog -MemoryPath "$badClockLog.json" -GpuMemory -FrameReport $badClock
+            } catch { $failed = $_.Exception.Message -match 'GPU memory' }
+            $bad = Get-Content -Raw "$badClockLog.json" | ConvertFrom-Json
+            if (-not $failed -or $bad.gpu_memory.coverage.complete -or -not $bad.gpu_memory.coverage.error) { throw 'Uncorrelated native frame clocks were accepted as GPU coverage' }
             $measurementDefinition = $ast.Find({
                 param($node)
                 $node -is [System.Management.Automation.Language.FunctionDefinitionAst] -and
@@ -443,7 +555,10 @@ exit 0
             if ($measurement -notmatch '--frames=3600' -or $measurement -notmatch '--reload-cycles=4' -or
                 $measurement -notmatch '--no-resize' -or $measurement -match '--validation') { throw 'Memory measurement silently changed its declared longer fixed-resolution quality scenario' }
             if ($env:NGEN_RENDER_ENV -ne 'before') { throw 'Measurement-only runtime environment was not restored' }
-            if ((Get-Content -Raw (Join-Path $measurementLogs 'long-stream.working-set.json') | ConvertFrom-Json).gpu_memory.status -cne 'observed') { throw 'Measurement-only mode did not request process GPU accounting' }
+            $measured = Get-Content -Raw (Join-Path $measurementLogs 'long-stream.working-set.json') | ConvertFrom-Json
+            if ($measured.gpu_memory.status -cne 'observed' -or -not $measured.gpu_memory.coverage.complete -or
+                $measured.gpu_memory.coverage.scope -cne 'native_measured_frames' -or
+                $measured.gpu_memory.coverage.frame_rows -ne 2) { throw 'Measurement-only mode did not validate process GPU coverage against actual child frame clocks' }
             foreach ($failureCase in @('workload-stream', 'no-workload-capture', 'unavailable-gpu')) {
                 $failureLogs = Join-Path $directory ("measurement failure $failureCase")
                 New-Item -ItemType Directory $failureLogs | Out-Null
@@ -477,7 +592,7 @@ exit 0
             }
         } finally {
             Remove-Item Function:Get-CimInstance
-            Remove-Variable gpuFailure -Scope Script
+            Remove-Variable gpuFailure, gpuReadCalls, gpuFramePhasePath, gpuMeasuredReads -Scope Script
         }
         $emptyPackage = Join-Path $directory 'empty.ngas'
         [IO.File]::WriteAllText($emptyPackage, '')

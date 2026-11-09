@@ -1,0 +1,51 @@
+{
+  "Release-inspection": {
+    "frames": 1200,
+    "frame_ns": {
+      "p50": 8682500,
+      "p95": 9857000,
+      "p99": 13656000,
+      "max": 53942700
+    },
+    "observed_process_working_set_bytes": 808304640,
+    "final_generation": "3",
+    "gpu_accounting": "not requested"
+  },
+  "Release-steady": {
+    "frames": 600,
+    "frame_ns": {
+      "p50": 6692100,
+      "p95": 8225700,
+      "p99": 8351300,
+      "max": 8481900
+    },
+    "observed_process_working_set_bytes": 401403904,
+    "final_generation": "1",
+    "gpu_accounting": "not requested"
+  },
+  "Release-stream": {
+    "frames": 600,
+    "frame_ns": {
+      "p50": 6732400,
+      "p95": 8212400,
+      "p99": 8597200,
+      "max": 13024000
+    },
+    "observed_process_working_set_bytes": 926445568,
+    "final_generation": "5",
+    "gpu_accounting": "not requested"
+  },
+  "long-stream": {
+    "frames": 3600,
+    "frame_ns": {
+      "p50": 6693000,
+      "p95": 8228000,
+      "p99": 8389000,
+      "max": 13352900
+    },
+    "observed_process_working_set_bytes": 925470720,
+    "final_generation": "5",
+    "gpu_accounting": "failed: CimException, zero samples; no GPU memory verdict",
+    "native_parent_qpc_window": "all 3600 native timestamps correlate within recorded parent QPC window"
+  }
+}

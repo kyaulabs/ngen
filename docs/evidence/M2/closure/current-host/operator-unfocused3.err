@@ -1,0 +1,33 @@
+native_latency name=submit begin_ns=484531300251902 end_ns=484531328444736 duration_ns=28192834 result=0
+delay_observation requested_ms=1 actual_ns=1081721 slack_ns=50000
+delay_observation requested_ms=1 actual_ns=1107500 slack_ns=50000
+delay_observation requested_ms=1 actual_ns=1101944 slack_ns=50000
+delay_observation requested_ms=1 actual_ns=1095214 slack_ns=50000
+delay_observation requested_ms=1 actual_ns=1076903 slack_ns=50000
+delay_observation requested_ms=1 actual_ns=1087376 slack_ns=50000
+delay_observation requested_ms=1 actual_ns=1087348 slack_ns=50000
+delay_observation requested_ms=1 actual_ns=1076002 slack_ns=50000
+delay_observation requested_ms=1 actual_ns=1055288 slack_ns=50000
+delay_observation requested_ms=1 actual_ns=1076573 slack_ns=50000
+delay_observation requested_ms=1 actual_ns=1079135 slack_ns=50000
+delay_observation requested_ms=1 actual_ns=1079285 slack_ns=50000
+window_state at_ns=484531446601035 flags=268435488 hidden=0 minimized=0 occluded=0 focus=0 refresh_hz=60.000
+window_thread_timer_slack_ns=50000
+swapchain_created at_ns=484531458569184 width=1280 height=720 requested_images=4 result=0
+window_state at_ns=484531528876519 flags=268437024 hidden=0 minimized=0 occluded=0 focus=1 refresh_hz=60.000
+window_thread_timer_slack_ns=50000
+window_state at_ns=484532825380014 flags=268436000 hidden=0 minimized=0 occluded=0 focus=1 refresh_hz=60.000
+window_thread_timer_slack_ns=50000
+window_state at_ns=484535359840582 flags=268437024 hidden=0 minimized=0 occluded=0 focus=1 refresh_hz=60.000
+window_thread_timer_slack_ns=50000
+window_state at_ns=484535639669577 flags=268436000 hidden=0 minimized=0 occluded=0 focus=1 refresh_hz=60.000
+window_thread_timer_slack_ns=50000
+window_state at_ns=484535846724638 flags=268435488 hidden=0 minimized=0 occluded=0 focus=0 refresh_hz=60.000
+window_thread_timer_slack_ns=50000
+swapchain_created at_ns=484541804584017 width=1024 height=640 requested_images=4 result=0
+native_latency name=submit begin_ns=484541923807894 end_ns=484541951512518 duration_ns=27704624 result=0
+swapchain_created at_ns=484542154052552 width=1280 height=720 requested_images=4 result=0
+native_latency name=acquire_poll_span begin_ns=484542164634218 end_ns=484542283342437 duration_ns=118708219 result=0
+native_latency name=submit begin_ns=484542952595772 end_ns=484542975714129 duration_ns=23118357 result=0
+native_latency name=submit begin_ns=484543937105742 end_ns=484543961074948 duration_ns=23969206 result=0
+native_latency name=submit begin_ns=484544890972782 end_ns=484544913760708 duration_ns=22787926 result=0

@@ -34,7 +34,8 @@ three-frame inspector capture. Actual pixels were inspected: the wire box now
 reaches the rear engine geometry, the tabs are present, and shared 16-pixel side
 gutters remain. Captures, model and package bytes remain private; only identities
 and numeric/text results are retained. This is local execution and agent inspection,
-not personal owner acceptance or a fresh Windows result for this UI change.
+not a fresh Windows result for this UI change. The owner subsequently accepted
+the specific corrected rear-engine box; that does not accept unrelated M2 gates.
 
 The owner accepted offline Slang for M2 but explicitly kept resize investigation
 blocking. The bounding-box correction does not waive or claim to repair the

@@ -1,0 +1,50 @@
+{
+  "operator-focused2": {
+    "frames": 600,
+    "p50_ms": 16.72537,
+    "p95_ms": 18.349549,
+    "max_ms": 105.220762,
+    "focus_at_measurement_start": 1,
+    "focus_events_during_measurement": [
+      [
+        484509897783626,
+        1
+      ],
+      [
+        484510772147579,
+        1
+      ],
+      [
+        484519003372101,
+        1
+      ]
+    ],
+    "all_state_events": [
+      "window_state at_ns=484498983995817 flags=268435488 hidden=0 minimized=0 occluded=0 focus=0 refresh_hz=60.000",
+      "window_state at_ns=484499107058295 flags=268436000 hidden=0 minimized=0 occluded=0 focus=1 refresh_hz=60.000",
+      "window_state at_ns=484503792107647 flags=268437024 hidden=0 minimized=0 occluded=0 focus=1 refresh_hz=60.000",
+      "window_state at_ns=484503907357426 flags=268436000 hidden=0 minimized=0 occluded=0 focus=1 refresh_hz=60.000",
+      "window_state at_ns=484507857674386 flags=268437024 hidden=0 minimized=0 occluded=0 focus=1 refresh_hz=60.000",
+      "window_state at_ns=484508728528867 flags=268436000 hidden=0 minimized=0 occluded=0 focus=1 refresh_hz=60.000",
+      "window_state at_ns=484509897783626 flags=268437024 hidden=0 minimized=0 occluded=0 focus=1 refresh_hz=60.000",
+      "window_state at_ns=484510772147579 flags=268436000 hidden=0 minimized=0 occluded=0 focus=1 refresh_hz=60.000",
+      "window_state at_ns=484519003372101 flags=268437024 hidden=0 minimized=0 occluded=0 focus=1 refresh_hz=60.000"
+    ]
+  },
+  "operator-unfocused3": {
+    "frames": 600,
+    "p50_ms": 16.534421,
+    "p95_ms": 18.234042,
+    "max_ms": 123.806971,
+    "focus_at_measurement_start": 0,
+    "focus_events_during_measurement": [],
+    "all_state_events": [
+      "window_state at_ns=484531446601035 flags=268435488 hidden=0 minimized=0 occluded=0 focus=0 refresh_hz=60.000",
+      "window_state at_ns=484531528876519 flags=268437024 hidden=0 minimized=0 occluded=0 focus=1 refresh_hz=60.000",
+      "window_state at_ns=484532825380014 flags=268436000 hidden=0 minimized=0 occluded=0 focus=1 refresh_hz=60.000",
+      "window_state at_ns=484535359840582 flags=268437024 hidden=0 minimized=0 occluded=0 focus=1 refresh_hz=60.000",
+      "window_state at_ns=484535639669577 flags=268436000 hidden=0 minimized=0 occluded=0 focus=1 refresh_hz=60.000",
+      "window_state at_ns=484535846724638 flags=268435488 hidden=0 minimized=0 occluded=0 focus=0 refresh_hz=60.000"
+    ]
+  }
+}

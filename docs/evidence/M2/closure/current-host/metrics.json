@@ -1,0 +1,54 @@
+{
+  "frames": 3600,
+  "p50_ms": 16.623601,
+  "p95_ms": 18.517679,
+  "p99_ms": 19.230378,
+  "maximum_ms": 103.570557,
+  "all_original_timing_budgets_pass": true,
+  "every_measured_frame_included": true,
+  "quality": "exposure 1 / FXAA on / bloom .04 / 1024 shadow / 246080 triangles / 100 asteroid instances",
+  "observed_extents": [
+    [
+      1024,
+      640
+    ],
+    [
+      1280,
+      720
+    ]
+  ],
+  "final_generation": 5,
+  "settled_tail_retiring": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "scope": "Current owner-tuned host. No external interposer/observer or validation; built-in GPU timestamps/allocation diagnostics remain enabled."
+}

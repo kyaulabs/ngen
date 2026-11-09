@@ -6,14 +6,17 @@ separate read-only agent review, closes its checked-scene transparency coverage
 gap, extends the measured reload run and prepares missing Windows GPU accounting.
 No production renderer/shader source or dependency changes in the initial slice.
 
-Owner follow-up: Slang 2026.21 is accepted for M2, resize investigation remains
-blocking, and the reported visual defect was the box omitting rear engines.
-The [ship-bounds correction](ship-bounds/README.md) now covers the complete asset
-without changing bloom; personal acceptance remains open. The separate review
-at `b2fa7da` confirms the transparency controls but finds an observer coverage gap;
-correction is in progress. The returned MSVC Release run passes the new native
+Owner follow-up: Slang 2026.21 and the specific rear-engine
+[ship-bounds correction](ship-bounds/README.md) are accepted. After owner-reported
+thermal/CPU-power changes, [current-host verification](current-host/README.md)
+passes a fresh clean 3,600-frame mixed run under the original timing bounds;
+old failures remain retained, without an engine-repair or exact-cause claim.
+The separate review at `b2fa7da` confirms transparency coverage but finds an
+observer gap. [Corrected coverage/deadline controls](observer-corrections/README.md)
+pass public-process boundary tests; fresh independent follow-up remains pending.
+The [returned MSVC Release run](windows-b2/README.md) passes the new NVIDIA
 transparency controls, while its longer memory run fails honestly with unavailable
-CIM counters. Hold the memory handoff until a corrected pin is supplied.
+CIM counters. Hold the memory handoff until a corrected native request is ready.
 
 The root source/verification records below describe the initial `b2fa7da` slice;
 ship-bounds records carry their own changed-source hashes and configurations.
@@ -74,7 +77,10 @@ Both parent/native thread timer slack are 50,000 ns and observed 1 ms sleeps are
 about 1.06 ms. This narrows the issue toward focus/compositor-sensitive pacing;
 it does not prove the exact external cause, repair the original failure, or
 silently waive a budget. Instrumented observations are not clean performance
-passes. Owner disposition or further focused investigation is still required.
+passes. Subsequent owner-assisted controls under the reported new thermal/power
+policy confirm that focus alone does not reproduce the failure. The later clean
+3,600-frame mixed run passes unchanged budgets, maximum 103.571 ms; this is a new
+host-condition result, not a waiver or retrospective repair of the old dataset.
 
 `tools/build-windows.ps1 -MeasureWorkload <existing-Release-directory>
 -ScenePackage <same-package>` now runs 3,600 measured frames/four reloads without
@@ -98,15 +104,19 @@ process accounting is not global GPU usage or a hard continuous peak. CIM calls
 can delay the nominal working-set cadence; actual GPU sample/query times remain
 visible. The instrumented memory run is not substituted for clean timing results.
 
-Next: follow the [targeted Windows handoff](windows.md), retain actual failures,
-finish independent follow-up for the added controls and obtain personal visual,
-compiler-choice and resize-scope decisions. Only then close the applicable M2
-gates and start M3. The completed four-build production matrix needs no duplicate
-run; the new transparency control needs one targeted updated Release validation.
+Next: diagnose the unavailable native counter provider, finish independent
+follow-up for the corrected controls and obtain remaining memory/quality verdicts.
+Only then close applicable M2 gates and start M3. Slang and the specific box fix
+already have owner verdicts; do not request them again. The completed four-build
+production matrix needs no duplicate run, and the new transparency control now
+passes MSVC Release at `b2fa7da`. Latest UI bounds and schema-3 observation still
+need their scoped native verification; the old memory command remains on hold.
 
 Original and retained hashes are separate. Text/CSV line endings, ANSI diagnostics
 and displayed repository paths are normalized; original metadata artifact hashes
-refer to the private original bytes. `files.sha256` covers the retained forms.
+refer to the private original bytes. The nested `windows-b2` records instead
+preserve native JSON/CSV exactly under narrowly scoped attributes. `files.sha256`
+covers the retained forms.
 Actual compile arguments preserve all configuration-specific flags, including GCC
 module flags. Private model/package/capture/archive and agent session bytes are
 not committed.

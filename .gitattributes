@@ -15,3 +15,6 @@ docs/evidence/M2/shader-interface/licenses/spirv-headers/LICENSES/MIT.txt whites
 docs/evidence/M2/windows-scene-debug/*/*.json -text whitespace=cr-at-eol
 docs/evidence/M2/windows-frigate-verified/*/*.json -text whitespace=cr-at-eol
 docs/evidence/M2/windows-workload-verified/*/*.json -text whitespace=cr-at-eol
+
+docs/evidence/M2/closure/windows-b2/*/*.json -text whitespace=cr-at-eol
+docs/evidence/M2/closure/windows-b2/*/*.csv -text whitespace=cr-at-eol

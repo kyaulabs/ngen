@@ -1,5 +1,14 @@
 # Targeted Windows M2 closure checks
 
+**Hold the workload commands until a corrected pin is supplied.** The returned
+`b2fa7da` MSVC Release validation passes, including the new transparency fixture;
+its memory wrapper fails honestly with unavailable CIM counters and no GPU samples.
+Do not repeat that build or long run merely to obtain the same opaque error.
+A metadata-only class/property and native counter-set check is pending. Corrected
+coverage/deadline/diagnostic code passes Linux system-boundary tests, not native
+WDDM execution. The later UI ship-bounds fix is owner-accepted on Linux; its native
+Windows verification is separate from the already completed transparency check.
+
 Use the supplied pinned closure revision and the **same existing `scene.ngas`**.
 No recook or package download is needed. The completed MSVC/clang-cl Debug/Release
 production matrix remains valid: production renderer/shader source is unchanged.
@@ -39,7 +48,10 @@ are retained before/after observation.
 Leave both automated workloads alone. The memory run uses 60 warmup and 3,600
 measured frames, four completed reloads, fixed 1280x720, exposure 1, FXAA on and
 bloom .04. It queries local WDDM/CIM per-process counters at a nominal 500 ms
-cadence; actual query/sample times and parent clock window are retained. This is
+cadence; every query attempt and actual query/sample times are retained. Schema 3
+correlates the native measured-frame interval with the parent clock, records
+startup/exit separately and rejects missing active-window data or observation
+gaps over one second. Incomplete coverage cannot receive a passing budget. This is
 instrumented memory evidence, not a replacement clean performance measurement.
 Working-set polling has a nominal 25 ms wait plus CIM overhead. Observations are
 sampled/provider-refreshed, not exact continuous peaks or global device usage.

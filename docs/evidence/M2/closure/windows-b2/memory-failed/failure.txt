@@ -1,0 +1,5 @@
+Exception: <ROOT>\tools\build-windows.ps1:191
+Line |
+ 191 |  … bserved') { throw 'Process GPU memory observations unavailable or inc …
+     |                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     | Process GPU memory observations unavailable or incomplete; inspect retained metadata.
