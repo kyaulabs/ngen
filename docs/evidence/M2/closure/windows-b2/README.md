@@ -46,5 +46,7 @@ or indefinite-duration stability. Its instrumented timing is not a replacement
 for clean performance evidence. C++/ImGui reload allocations remain visible.
 
 These archives precede the complete-ship UI bounds correction. They neither
-execute that UI change nor provide personal owner acceptance. Linux resize
-failures remain open; M2 is not closed and M3 has not started.
+execute that UI change nor provide personal owner acceptance. Earlier Linux resize failures remain retained; the subsequent current owner-tuned
+host passes the original mixed-run timing bounds without a box-fix/engine-repair
+claim. Native GPU memory and remaining acceptance still keep M2 open. M3 has not
+started.

@@ -64,5 +64,15 @@ alone is not an established cause. Fresh clean 3600-frame mixed execution passes
 all original timing bounds, maximum 103.571 ms, without dropping resize/reload
 frames. Earlier failed runs remain historical evidence, not waived or rewritten.
 Post-run settings are recorded read-only; no exact thermal cause or engine repair
-is inferred. Native GPU memory and independent follow-up remain open; M3 is not
-implemented.
+is inferred. Native GPU memory remains open; M3 is not implemented.
+
+Fresh independent read-only review confirms clean b92ee53576e9443788c3035ee1fd293a75612f5f
+and tree 5bd0a12dc6c74bdcfe25904f73e2a26c9cf70961. It confirms the previous observer P2
+is substantively addressed and finds no additional demonstrated P1/P2 in scope.
+It verifies 145 selected hashes, all seven distributions and 23 exact native
+JSON/CSV hash pairs without running tests/builds. Its two P3 evidence advisories
+are corrected: duplicate-counter rejection has source-review support but no
+specific public-process regression, and nested resize summaries now distinguish
+old retained failures from passing current-host results. No production change
+or repeated native matrix is needed for these prose corrections. Review remains
+bounded agent advice, not human acceptance or Windows GPU accounting proof.

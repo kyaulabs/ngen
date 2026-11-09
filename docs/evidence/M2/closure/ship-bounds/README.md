@@ -37,6 +37,7 @@ and numeric/text results are retained. This is local execution and agent inspect
 not a fresh Windows result for this UI change. The owner subsequently accepted
 the specific corrected rear-engine box; that does not accept unrelated M2 gates.
 
-The owner accepted offline Slang for M2 but explicitly kept resize investigation
-blocking. The bounding-box correction does not waive or claim to repair the
-separate resize latency failure. M3 implementation has not started.
+The owner accepted offline Slang for M2 and initially kept resize investigation
+blocking. After separate owner-reported thermal/power changes, the current host
+passes a fresh mixed run under the original budgets. The box correction does not
+waive or claim to repair the older resize failure. M3 has not started.

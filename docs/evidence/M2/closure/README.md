@@ -13,7 +13,11 @@ passes a fresh clean 3,600-frame mixed run under the original timing bounds;
 old failures remain retained, without an engine-repair or exact-cause claim.
 The separate review at `b2fa7da` confirms transparency coverage but finds an
 observer gap. [Corrected coverage/deadline controls](observer-corrections/README.md)
-pass public-process boundary tests; fresh independent follow-up remains pending.
+pass public-process boundary tests. A [fresh independent follow-up](independent-b92ee53.md)
+confirms clean `b92ee53` and finds the prior P2 substantively addressed, with no
+additional demonstrated P1/P2 defect in scope. Its duplicate-test overstatement
+and stale nested resize wording advisories are corrected; this is agent advice,
+not owner approval or native WDDM execution.
 The [returned MSVC Release run](windows-b2/README.md) passes the new NVIDIA
 transparency controls, while its longer memory run fails honestly with unavailable
 CIM counters. Hold the memory handoff until a corrected native request is ready.
@@ -104,8 +108,9 @@ process accounting is not global GPU usage or a hard continuous peak. CIM calls
 can delay the nominal working-set cadence; actual GPU sample/query times remain
 visible. The instrumented memory run is not substituted for clean timing results.
 
-Next: diagnose the unavailable native counter provider, finish independent
-follow-up for the corrected controls and obtain remaining memory/quality verdicts.
+Next: diagnose the unavailable native counter provider and obtain remaining
+memory/quality verdicts. Independent follow-up for the current corrections is
+complete, with its two evidence advisories corrected.
 Only then close applicable M2 gates and start M3. Slang and the specific box fix
 already have owner verdicts; do not request them again. The completed four-build
 production matrix needs no duplicate run, and the new transparency control now

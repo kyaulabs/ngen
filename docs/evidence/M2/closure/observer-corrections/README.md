@@ -27,8 +27,9 @@ Public-process Red/Green controls reproduce valid-then-empty/foreign-only loss,
 active-window gaps, native-window wiring and a late-query deadline overrun. Real
 children publish frame clocks and phase markers; only CIM is mocked. Additional
 controls cover slow successful queries, invalid clocks, retained diagnostics,
-foreign/malformed/duplicate/zero counters, both budgets and existing process/path
-failure controls. The final complete PowerShell suite passes on Linux. A separate
+foreign/malformed/zero counters, both budgets and existing process/path failure
+controls. The duplicate-instance rejection guard has source-review support, not
+a dedicated public-process regression. The final complete PowerShell suite passes on Linux. A separate
 extreme-clock hypothesis did not reproduce a metadata-loss defect and is not
 claimed as a Red or repaired bug.
 
