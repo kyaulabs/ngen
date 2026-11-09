@@ -2,10 +2,13 @@
 #include "render/scene_draw.hpp"
 #include "tools/inspector.hpp"
 #include "tools/ui.hpp"
+#include <algorithm>
+#include <bit>
 #include <cmath>
 #include <cstdio>
 #include <limits>
 #include <numbers>
+#include <optional>
 #include <stdexcept>
 
 namespace {
@@ -26,7 +29,7 @@ void wait(Context &context, const Submission &submission) {
         SDL_Delay(1);
     }
 }
-ngen::assets::PackagePin package() {
+ngen::assets::PackagePin package(bool rear_engine = false) {
     auto sections = package_fixture::triangle();
     auto &material = sections[3];
     for (const float value : std::array<float, 13>{0, 0, 0, 1, .25F, .5F, .75F, 2, 1, 1, 1, 1, .5F})
@@ -39,6 +42,11 @@ ngen::assets::PackagePin package() {
     }
     material.resize(128, std::byte{0});
     package_fixture::set32(sections[2], 8, 0);
+    if (rear_engine) {
+        auto engine = sections[8];
+        package_fixture::set32(engine, 8 + 12 * 4, std::bit_cast<std::uint32_t>(8.0F));
+        sections[8].insert(sections[8].end(), engine.begin(), engine.end());
+    }
     auto loaded = ngen::assets::load_package(package_fixture::encode(sections));
     require(std::holds_alternative<ngen::assets::PackagePin>(loaded),
             "inspector fixture was not admitted");
@@ -513,6 +521,43 @@ int main() try {
             require(SDL_GetTicks() < deadline, "inspector frontend WSI timed out");
             SDL_Delay(1);
         }
+    }
+    {
+        auto created_box = ngen::tools::Inspector::create(package(true));
+        require(std::holds_alternative<ngen::tools::Inspector>(created_box),
+                "ship bounds fixture model failed");
+        auto boxed = std::get<ngen::tools::Inspector>(std::move(created_box));
+        auto bounds_view = view;
+        bounds_view.view_projection.columns[0] = .125F;
+        bounds_view.view_projection.columns[5] = -.25F;
+        bounds_view.view_projection.columns[12] = -.75F;
+        bounds_view.view_projection.columns[13] = 1.5F;
+        for (const auto selected :
+             {std::optional<std::uint32_t>{0}, std::optional<std::uint32_t>{1},
+              std::optional<std::uint32_t>{}}) {
+            const auto current = boxed.snapshot();
+            require(std::holds_alternative<std::monostate>(
+                        boxed.enqueue(ngen::tools::Select{current.generation, selected})),
+                    "ship bounds fixture selection failed");
+            (void)boxed.advance();
+            ui->frame(boxed, boxed.snapshot(), bounds_view, {});
+            const auto geometry = take(ui->overlay({1280, 720}));
+            if (!geometry)
+                throw std::runtime_error("ship bounds fixture produced no overlay");
+            float minimum = std::numeric_limits<float>::max(), maximum = -minimum;
+            for (const auto &vertex : geometry->vertices)
+                if ((vertex.color & 0x00ffffffU) == 0x00cfc482U && (vertex.color >> 24U) != 0) {
+                    minimum = std::min(minimum, vertex.position[0]);
+                    maximum = std::max(maximum, vertex.position[0]);
+                }
+            // Hull x=[3,5], separate engine x=[7,9]; full-ship projection x=[400,880].
+            // Allow a scaled antialiased stroke (up to four pixels at 2x), not
+            // the 320-pixel truncation from selecting only the hull component.
+            require(std::abs(minimum - 400) < 5 && std::abs(maximum - 880) < 5,
+                    "ship bounds omit the separately instanced rear engine or depend on part "
+                    "selection");
+        }
+        std::puts("inspector_ship_bounds=1 inspector_rear_engine_bounds=1");
     }
     ui.reset(); // SDL platform state ends before Context destroys its window.
     std::printf(

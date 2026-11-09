@@ -1,0 +1,12 @@
+{
+  "rear-engine-bounds-actual.bmp": {
+    "bytes": 3686538,
+    "sha256": "0412c3b529646f08c724fa24900157cf53908ea536311766f80f31bb8af53907",
+    "pixels_private_not_retained": true
+  },
+  "rear-engine-bounds-stable.bmp": {
+    "bytes": 3686538,
+    "sha256": "b93327cfcfcdda7611715c01e6ad6d59a9b23749efb4932b181eda92f9f05eba",
+    "pixels_private_not_retained": true
+  }
+}

@@ -4,7 +4,19 @@
 `20f1222`; integration is not milestone acceptance. This follow-up obtains a
 separate read-only agent review, closes its checked-scene transparency coverage
 gap, extends the measured reload run and prepares missing Windows GPU accounting.
-No production renderer/shader source or dependency changes in this slice.
+No production renderer/shader source or dependency changes in the initial slice.
+
+Owner follow-up: Slang 2026.21 is accepted for M2, resize investigation remains
+blocking, and the reported visual defect was the box omitting rear engines.
+The [ship-bounds correction](ship-bounds/README.md) now covers the complete asset
+without changing bloom; personal acceptance remains open. The separate review
+at `b2fa7da` confirms the transparency controls but finds an observer coverage gap;
+correction is in progress. The returned MSVC Release run passes the new native
+transparency controls, while its longer memory run fails honestly with unavailable
+CIM counters. Hold the memory handoff until a corrected pin is supplied.
+
+The root source/verification records below describe the initial `b2fa7da` slice;
+ship-bounds records carry their own changed-source hashes and configurations.
 
 The independent review confirmed clean `20f12220166335c7d94f0ed6086171f6dbd00c1f`
 and tree `779c072fb4bb25862601f5dd505f0d3f3713f6f5`. It found no demonstrated

@@ -1,0 +1,25 @@
+[0/2] Re-checking globbed directories...
+[1/25] Scanning <ROOT>/apps/probe/presentation.cpp for CXX dependencies
+[2/25] Scanning <ROOT>/apps/probe/capture.cpp for CXX dependencies
+[3/25] Scanning <ROOT>/apps/scene_workload/fixture.cpp for CXX dependencies
+[4/25] Scanning <ROOT>/engine/tools/ui.cpp for CXX dependencies
+[5/25] Generating CXX dyndep file CMakeFiles/ngen_probe_support.dir/CXX.dd
+[6/25] Generating CXX dyndep file CMakeFiles/scene_workload_fixture.dir/CXX.dd
+[7/25] Generating CXX dyndep file CMakeFiles/ngen_inspector_ui.dir/CXX.dd
+[8/25] Scanning <ROOT>/apps/scene_workload/allocations.cpp for CXX dependencies
+[9/25] Scanning <ROOT>/apps/scene_workload/main.cpp for CXX dependencies
+[10/25] Scanning <ROOT>/apps/inspector_probe/main.cpp for CXX dependencies
+[11/25] Building CXX object CMakeFiles/ngen_probe_support.dir/apps/probe/presentation.cpp.o
+[12/25] Building CXX object CMakeFiles/ngen_probe_support.dir/apps/probe/capture.cpp.o
+[13/25] Building CXX object CMakeFiles/scene_workload_fixture.dir/apps/scene_workload/fixture.cpp.o
+[14/25] Generating CXX dyndep file CMakeFiles/scene_workload.dir/CXX.dd
+[15/25] Generating CXX dyndep file CMakeFiles/inspector_probe.dir/CXX.dd
+[16/25] Linking CXX static library libngen_probe_support.a
+[17/25] Linking CXX static library libscene_workload_fixture.a
+[18/25] Building CXX object CMakeFiles/ngen_inspector_ui.dir/engine/tools/ui.cpp.o
+[19/25] Linking CXX static library libngen_inspector_ui.a
+[20/25] Building CXX object CMakeFiles/scene_workload.dir/apps/scene_workload/allocations.cpp.o
+[21/25] Building CXX object CMakeFiles/inspector_probe.dir/apps/inspector_probe/main.cpp.o
+[22/25] Building CXX object CMakeFiles/scene_workload.dir/apps/scene_workload/main.cpp.o
+[23/25] Linking CXX executable inspector_probe
+[24/25] Linking CXX executable scene_workload

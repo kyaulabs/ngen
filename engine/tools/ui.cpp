@@ -153,21 +153,18 @@ struct InspectorUi::Impl {
         }
     }
     void bounds(const InspectorSnapshot &snapshot, const render::SceneView &view) const {
-        if (!show_bounds || !snapshot.selection)
+        if (!show_bounds)
             return;
-        const auto &instance = snapshot.package->instances[*snapshot.selection];
-        const auto &box = snapshot.package->primitives[instance.primitive].bounds;
+        // A material/part selection is not the assembled hull. Package bounds
+        // already include every authored instance's transform, including engines.
+        const auto &box = snapshot.package->bounds;
         const auto display = ImGui::GetIO().DisplaySize;
         std::array<ImVec2, 8> points{};
         std::array<bool, 8> visible{};
         for (unsigned corner = 0; corner < 8; ++corner) {
             std::array<double, 4> world{0, 0, 0, 1}, clip{};
-            for (std::size_t row = 0; row < 3; ++row) {
-                world[row] = instance.transform[12 + row];
-                for (std::size_t axis = 0; axis < 3; ++axis)
-                    world[row] += static_cast<double>(instance.transform[axis * 4 + row]) *
-                                  ((corner & (1U << axis)) ? box.maximum[axis] : box.minimum[axis]);
-            }
+            for (std::size_t axis = 0; axis < 3; ++axis)
+                world[axis] = (corner & (1U << axis)) ? box.maximum[axis] : box.minimum[axis];
             for (std::size_t row = 0; row < 4; ++row)
                 for (std::size_t column = 0; column < 4; ++column)
                     clip[row] +=
@@ -246,7 +243,7 @@ void InspectorUi::frame(Inspector &inspector, const InspectorSnapshot &snapshot,
         }
         ImGui::EndChild();
         ImGui::TextDisabled("ASTEROIDS / 100 SHARED INSTANCES");
-        (void)ImGui::Checkbox("Selection bounds", &impl_->show_bounds);
+        (void)ImGui::Checkbox("Ship bounds", &impl_->show_bounds);
     }
     ImGui::End();
     ImGui::SetNextWindowPos({width - 308 - gutter, 80});
