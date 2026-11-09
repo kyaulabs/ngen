@@ -33,9 +33,11 @@ a dedicated public-process regression. The final complete PowerShell suite passe
 extreme-clock hypothesis did not reproduce a metadata-loss defect and is not
 claimed as a Red or repaired bug.
 
-These are system-boundary tests, not Windows execution of this corrected observer.
-The returned `b2fa7da` Windows workload succeeds but its CIM observation is
-unavailable with zero samples. A metadata-only native provider check is pending;
-whole-NVIDIA memory acceptance remains open. Positive observed byte maxima are
+These system-boundary tests are not themselves Windows execution. The first
+`b2fa7da` memory wrapper fails with zero samples; its original CIM cause remains
+unknown. The subsequent [native schema-3 return](../windows-b2/memory-verified/README.md)
+passes at script `5a2f841` with the identical binary: 50 attempts, 48 positive
+samples, no missing measured-window queries and maximum gap 605.3581 ms. Both
+sampled GPU budgets and process working set pass. Positive byte maxima remain
 sampled/provider-refreshed evidence, not exact continuous peaks or global usage.
-The old memory handoff remains on hold until a corrected native request is ready.
+No further memory run is requested.

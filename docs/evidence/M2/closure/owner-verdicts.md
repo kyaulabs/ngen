@@ -20,6 +20,8 @@ The owner explicitly answered the closure questions after `b2fa7da`:
   Earlier failures remain retained; neither an engine repair nor the exact cause
   of improvement is claimed. See [current-host verification](current-host/README.md).
 
-Native Windows GPU evidence and closure-control corrections remain separate.
-Neither these answers nor agent/GitHub account reviews accept M2 as a whole.
+Native Windows schema-3 GPU observation now passes separately at script `5a2f841`
+with the unchanged `b2fa7da` binary. Sampled-budget verification is not a new
+personal visual/input verdict. Neither these answers nor agent/GitHub account
+reviews accept M2 as a whole.
 M3 implementation has not started.

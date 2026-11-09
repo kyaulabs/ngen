@@ -76,3 +76,18 @@ specific public-process regression, and nested resize summaries now distinguish
 old retained failures from passing current-host results. No production change
 or repeated native matrix is needed for these prose corrections. Review remains
 bounded agent advice, not human acceptance or Windows GPU accounting proof.
+
+Subsequent native schema-3 return at script 5a2f841 passes using the exact reused
+b2fa7da binary/cache and canonical package. Recomputed all 3600 rows, native/parent
+QPC correlation, 50 attempt/48 positive sample ordering, every active-window gap,
+all four byte maxima, same-sample sums and declared artifact hashes. Two empty
+queries precede measured frames; no active-window observation is missing. Maximum
+gap is 605.3581 ms. Dedicated+shared peaks at 304472064 bytes, committed separately
+at 304537600; observed working set is 925749248. Both sampled GPU caps and process
+cap pass. VMA peaks at 448107760/451045936 and settles at 199302016/202240192 with
+22 live/zero retiring records through the last 300 frames. The original failed
+wrapper remains retained, with unknown CimException cause. The diagnostic query
+and actual provider are now verified, without a speculative API/permission fix.
+No capture pixels or session bytes were inspected or redistributed in this slice.
+Native UI bounds compilation/execution and final personal visual/input/PR gates
+remain separate. No M3 implementation is started.

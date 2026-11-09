@@ -286,5 +286,53 @@
         "bytes": 0
       }
     ]
+  },
+  "memory-verified": {
+    "archive_sha256": "32f7620302ae380ecbf7f77c21cf7f8b87e8d4990c0448ac6b3f23312b4df548",
+    "archive_bytes": 222044,
+    "entries": 10,
+    "uncompressed_bytes": 4228370,
+    "files": [
+      {
+        "name": "long-stream.artifacts.json",
+        "bytes": 300
+      },
+      {
+        "name": "long-stream.bmp",
+        "bytes": 3686538
+      },
+      {
+        "name": "long-stream.csv",
+        "bytes": 506008
+      },
+      {
+        "name": "long-stream.input.json",
+        "bytes": 919
+      },
+      {
+        "name": "long-stream.txt",
+        "bytes": 1333
+      },
+      {
+        "name": "long-stream.txt.stderr.txt",
+        "bytes": 0
+      },
+      {
+        "name": "long-stream.working-set.json",
+        "bytes": 30525
+      },
+      {
+        "name": "revision.txt",
+        "bytes": 42
+      },
+      {
+        "name": "session.txt",
+        "bytes": 2705
+      },
+      {
+        "name": "working-tree.txt",
+        "bytes": 0
+      }
+    ]
   }
 }

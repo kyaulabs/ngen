@@ -3,7 +3,7 @@
 **M2 remains open. M3 has not started.** PR #8 integrated the implementation at
 `20f1222`; integration is not milestone acceptance. This follow-up obtains a
 separate read-only agent review, closes its checked-scene transparency coverage
-gap, extends the measured reload run and prepares missing Windows GPU accounting.
+gap, extends the measured reload run and verifies native Windows GPU accounting.
 No production renderer/shader source or dependency changes in the initial slice.
 
 Owner follow-up: Slang 2026.21 and the specific rear-engine
@@ -19,8 +19,10 @@ additional demonstrated P1/P2 defect in scope. Its duplicate-test overstatement
 and stale nested resize wording advisories are corrected; this is agent advice,
 not owner approval or native WDDM execution.
 The [returned MSVC Release run](windows-b2/README.md) passes the new NVIDIA
-transparency controls, while its longer memory run fails honestly with unavailable
-CIM counters. Hold the memory handoff until a corrected native request is ready.
+transparency controls. Its first memory wrapper fails honestly and stays retained.
+The [corrected native observation](windows-b2/memory-verified/README.md) now verifies
+48 positive samples, no measured-window gaps and both sampled GPU budgets using
+the same binary/package. The original CIM failure's cause is still unknown.
 
 The root source/verification records below describe the initial `b2fa7da` slice;
 ship-bounds records carry their own changed-source hashes and configurations.
@@ -98,24 +100,31 @@ malformed, duplicate, missing or entirely-zero GPU-workload data cannot become a
 passing zero-memory result. Parent Stopwatch/QPC window/frequency and sample ticks
 permit returned-clock validation rather than assuming native correlation.
 
-This is **Linux PowerShell boundary verification**, not Windows WDDM execution.
-Tests use real child processes and mock only the unavailable CIM boundary. They
+The process tests are **Linux PowerShell boundary verification**, not Windows
+execution. They use real child processes and mock only the CIM boundary. They
 exercise foreign PID isolation, unavailable/malformed/zero data, both GPU budget
 failures, monotonic observation windows, spaced paths, native/absent-output failure,
 existing owner-file preservation, Debug/dirty-build rejection and environment
-cleanup. Native Windows GPU data is still required; provider-refreshed/sampled
-process accounting is not global GPU usage or a hard continuous peak. CIM calls
+cleanup. Native schema-3 execution is now separately verified: 50 query attempts,
+48 positive samples, two empty startup attempts outside the measured interval and
+a 605.3581 ms maximum gap. Peak same-sample dedicated+shared is 304,472,064 bytes;
+committed is separately 304,537,600 bytes; process working set peaks at 925,749,248
+bytes. Provider-refreshed/sampled accounting is not global usage or a hard
+continuous peak. CIM calls
 can delay the nominal working-set cadence; actual GPU sample/query times remain
 visible. The instrumented memory run is not substituted for clean timing results.
 
-Next: diagnose the unavailable native counter provider and obtain remaining
-memory/quality verdicts. Independent follow-up for the current corrections is
+Next: verify the compiled ship-bounds correction in one targeted Windows Release
+run, obtain remaining visual/input acceptance and complete normal scoped PR
+integration. No further memory observation or duplicate four-build matrix is
+requested. Independent follow-up for the current corrections is
 complete, with its two evidence advisories corrected.
 Only then close applicable M2 gates and start M3. Slang and the specific box fix
 already have owner verdicts; do not request them again. The completed four-build
 production matrix needs no duplicate run, and the new transparency control now
-passes MSVC Release at `b2fa7da`. Latest UI bounds and schema-3 observation still
-need their scoped native verification; the old memory command remains on hold.
+passes MSVC Release at `b2fa7da`. Schema-3 native observation now passes at
+`5a2f841` using that exact binary. The latest compiled UI bounds still needs its
+separate targeted native verification.
 
 Original and retained hashes are separate. Text/CSV line endings, ANSI diagnostics
 and displayed repository paths are normalized; original metadata artifact hashes

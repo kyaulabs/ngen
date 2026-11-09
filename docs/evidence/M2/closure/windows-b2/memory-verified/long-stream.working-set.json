@@ -1,0 +1,976 @@
+{
+  "schema": 3,
+  "process_id": 151020,
+  "exit_code": 0,
+  "timed_out": false,
+  "elapsed_ms": 27580,
+  "sample_period_ms": 25,
+  "observed_peak_working_set_bytes": 925749248,
+  "observed_peak_counter_bytes": 925749248,
+  "sampled_resident_bytes": 915582976,
+  "scope": "Observed OS process working set/high-water counter, including startup; not GPU memory or an exact continuous peak.",
+  "gpu_memory": {
+    "status": "observed",
+    "error_type": "",
+    "within_1gib_budget": true,
+    "error_message": "",
+    "error_hresult": null,
+    "provider": "Win32_PerfFormattedData_GPUPerformanceCounters_GPUProcessMemory",
+    "target_sample_period_ms": 500,
+    "operation_timeout_seconds": 2,
+    "parent_qpc_started_ticks": 2482341461212,
+    "parent_qpc_ended_ticks": 2482613588269,
+    "parent_qpc_frequency": 10000000,
+    "peak_dedicated_bytes": 250916864.0,
+    "peak_shared_bytes": 69296128.0,
+    "peak_dedicated_plus_shared_bytes": 304472064.0,
+    "peak_total_committed_bytes": 304537600.0,
+    "samples": [
+      {
+        "timestamp_ticks": 2482356130796,
+        "elapsed_ms": 1467,
+        "query_elapsed_ms": 28,
+        "instances": 1,
+        "dedicated_bytes": 206843904,
+        "shared_bytes": 22958080,
+        "dedicated_plus_shared_bytes": 229801984,
+        "total_committed_bytes": 229867520
+      },
+      {
+        "timestamp_ticks": 2482361700015,
+        "elapsed_ms": 2024,
+        "query_elapsed_ms": 17,
+        "instances": 1,
+        "dedicated_bytes": 250892288,
+        "shared_bytes": 51437568,
+        "dedicated_plus_shared_bytes": 302329856,
+        "total_committed_bytes": 302395392
+      },
+      {
+        "timestamp_ticks": 2482367299074,
+        "elapsed_ms": 2584,
+        "query_elapsed_ms": 16,
+        "instances": 1,
+        "dedicated_bytes": 250912768,
+        "shared_bytes": 51437568,
+        "dedicated_plus_shared_bytes": 302350336,
+        "total_committed_bytes": 302415872
+      },
+      {
+        "timestamp_ticks": 2482372900858,
+        "elapsed_ms": 3144,
+        "query_elapsed_ms": 16,
+        "instances": 1,
+        "dedicated_bytes": 250904576,
+        "shared_bytes": 53534720,
+        "dedicated_plus_shared_bytes": 304439296,
+        "total_committed_bytes": 304504832
+      },
+      {
+        "timestamp_ticks": 2482378395531,
+        "elapsed_ms": 3694,
+        "query_elapsed_ms": 16,
+        "instances": 1,
+        "dedicated_bytes": 250916864,
+        "shared_bytes": 53534720,
+        "dedicated_plus_shared_bytes": 304451584,
+        "total_committed_bytes": 304517120
+      },
+      {
+        "timestamp_ticks": 2482384249448,
+        "elapsed_ms": 4279,
+        "query_elapsed_ms": 24,
+        "instances": 1,
+        "dedicated_bytes": 250904576,
+        "shared_bytes": 53534720,
+        "dedicated_plus_shared_bytes": 304439296,
+        "total_committed_bytes": 304504832
+      },
+      {
+        "timestamp_ticks": 2482389792925,
+        "elapsed_ms": 4833,
+        "query_elapsed_ms": 17,
+        "instances": 1,
+        "dedicated_bytes": 250904576,
+        "shared_bytes": 53534720,
+        "dedicated_plus_shared_bytes": 304439296,
+        "total_committed_bytes": 304504832
+      },
+      {
+        "timestamp_ticks": 2482395039976,
+        "elapsed_ms": 5358,
+        "query_elapsed_ms": 17,
+        "instances": 1,
+        "dedicated_bytes": 250904576,
+        "shared_bytes": 53534720,
+        "dedicated_plus_shared_bytes": 304439296,
+        "total_committed_bytes": 304504832
+      },
+      {
+        "timestamp_ticks": 2482400662864,
+        "elapsed_ms": 5920,
+        "query_elapsed_ms": 50,
+        "instances": 1,
+        "dedicated_bytes": 250904576,
+        "shared_bytes": 53534720,
+        "dedicated_plus_shared_bytes": 304439296,
+        "total_committed_bytes": 304504832
+      },
+      {
+        "timestamp_ticks": 2482405966281,
+        "elapsed_ms": 6451,
+        "query_elapsed_ms": 18,
+        "instances": 1,
+        "dedicated_bytes": 250904576,
+        "shared_bytes": 53534720,
+        "dedicated_plus_shared_bytes": 304439296,
+        "total_committed_bytes": 304504832
+      },
+      {
+        "timestamp_ticks": 2482411464049,
+        "elapsed_ms": 7001,
+        "query_elapsed_ms": 17,
+        "instances": 1,
+        "dedicated_bytes": 250904576,
+        "shared_bytes": 53534720,
+        "dedicated_plus_shared_bytes": 304439296,
+        "total_committed_bytes": 304504832
+      },
+      {
+        "timestamp_ticks": 2482416723102,
+        "elapsed_ms": 7527,
+        "query_elapsed_ms": 18,
+        "instances": 1,
+        "dedicated_bytes": 250904576,
+        "shared_bytes": 53534720,
+        "dedicated_plus_shared_bytes": 304439296,
+        "total_committed_bytes": 304504832
+      },
+      {
+        "timestamp_ticks": 2482422526811,
+        "elapsed_ms": 8107,
+        "query_elapsed_ms": 17,
+        "instances": 1,
+        "dedicated_bytes": 250904576,
+        "shared_bytes": 53534720,
+        "dedicated_plus_shared_bytes": 304439296,
+        "total_committed_bytes": 304504832
+      },
+      {
+        "timestamp_ticks": 2482428348469,
+        "elapsed_ms": 8689,
+        "query_elapsed_ms": 17,
+        "instances": 1,
+        "dedicated_bytes": 250904576,
+        "shared_bytes": 53534720,
+        "dedicated_plus_shared_bytes": 304439296,
+        "total_committed_bytes": 304504832
+      },
+      {
+        "timestamp_ticks": 2482433615945,
+        "elapsed_ms": 9216,
+        "query_elapsed_ms": 17,
+        "instances": 1,
+        "dedicated_bytes": 250904576,
+        "shared_bytes": 53534720,
+        "dedicated_plus_shared_bytes": 304439296,
+        "total_committed_bytes": 304504832
+      },
+      {
+        "timestamp_ticks": 2482438969260,
+        "elapsed_ms": 9751,
+        "query_elapsed_ms": 16,
+        "instances": 1,
+        "dedicated_bytes": 250904576,
+        "shared_bytes": 53534720,
+        "dedicated_plus_shared_bytes": 304439296,
+        "total_committed_bytes": 304504832
+      },
+      {
+        "timestamp_ticks": 2482444296551,
+        "elapsed_ms": 10284,
+        "query_elapsed_ms": 17,
+        "instances": 1,
+        "dedicated_bytes": 250904576,
+        "shared_bytes": 53534720,
+        "dedicated_plus_shared_bytes": 304439296,
+        "total_committed_bytes": 304504832
+      },
+      {
+        "timestamp_ticks": 2482449486876,
+        "elapsed_ms": 10803,
+        "query_elapsed_ms": 17,
+        "instances": 1,
+        "dedicated_bytes": 250904576,
+        "shared_bytes": 53534720,
+        "dedicated_plus_shared_bytes": 304439296,
+        "total_committed_bytes": 304504832
+      },
+      {
+        "timestamp_ticks": 2482455540457,
+        "elapsed_ms": 11408,
+        "query_elapsed_ms": 47,
+        "instances": 1,
+        "dedicated_bytes": 250904576,
+        "shared_bytes": 53534720,
+        "dedicated_plus_shared_bytes": 304439296,
+        "total_committed_bytes": 304504832
+      },
+      {
+        "timestamp_ticks": 2482460755751,
+        "elapsed_ms": 11930,
+        "query_elapsed_ms": 18,
+        "instances": 1,
+        "dedicated_bytes": 250904576,
+        "shared_bytes": 53534720,
+        "dedicated_plus_shared_bytes": 304439296,
+        "total_committed_bytes": 304504832
+      },
+      {
+        "timestamp_ticks": 2482466508080,
+        "elapsed_ms": 12505,
+        "query_elapsed_ms": 17,
+        "instances": 1,
+        "dedicated_bytes": 250904576,
+        "shared_bytes": 53534720,
+        "dedicated_plus_shared_bytes": 304439296,
+        "total_committed_bytes": 304504832
+      },
+      {
+        "timestamp_ticks": 2482471700781,
+        "elapsed_ms": 13024,
+        "query_elapsed_ms": 16,
+        "instances": 1,
+        "dedicated_bytes": 250904576,
+        "shared_bytes": 53534720,
+        "dedicated_plus_shared_bytes": 304439296,
+        "total_committed_bytes": 304504832
+      },
+      {
+        "timestamp_ticks": 2482476914935,
+        "elapsed_ms": 13546,
+        "query_elapsed_ms": 17,
+        "instances": 1,
+        "dedicated_bytes": 250904576,
+        "shared_bytes": 53534720,
+        "dedicated_plus_shared_bytes": 304439296,
+        "total_committed_bytes": 304504832
+      },
+      {
+        "timestamp_ticks": 2482482112777,
+        "elapsed_ms": 14065,
+        "query_elapsed_ms": 16,
+        "instances": 1,
+        "dedicated_bytes": 250904576,
+        "shared_bytes": 53534720,
+        "dedicated_plus_shared_bytes": 304439296,
+        "total_committed_bytes": 304504832
+      },
+      {
+        "timestamp_ticks": 2482487898181,
+        "elapsed_ms": 14644,
+        "query_elapsed_ms": 16,
+        "instances": 1,
+        "dedicated_bytes": 250904576,
+        "shared_bytes": 53534720,
+        "dedicated_plus_shared_bytes": 304439296,
+        "total_committed_bytes": 304504832
+      },
+      {
+        "timestamp_ticks": 2482493127730,
+        "elapsed_ms": 15167,
+        "query_elapsed_ms": 16,
+        "instances": 1,
+        "dedicated_bytes": 250904576,
+        "shared_bytes": 53534720,
+        "dedicated_plus_shared_bytes": 304439296,
+        "total_committed_bytes": 304504832
+      },
+      {
+        "timestamp_ticks": 2482498486293,
+        "elapsed_ms": 15703,
+        "query_elapsed_ms": 17,
+        "instances": 1,
+        "dedicated_bytes": 250904576,
+        "shared_bytes": 53534720,
+        "dedicated_plus_shared_bytes": 304439296,
+        "total_committed_bytes": 304504832
+      },
+      {
+        "timestamp_ticks": 2482503713451,
+        "elapsed_ms": 16226,
+        "query_elapsed_ms": 19,
+        "instances": 1,
+        "dedicated_bytes": 250904576,
+        "shared_bytes": 53534720,
+        "dedicated_plus_shared_bytes": 304439296,
+        "total_committed_bytes": 304504832
+      },
+      {
+        "timestamp_ticks": 2482509225795,
+        "elapsed_ms": 16777,
+        "query_elapsed_ms": 48,
+        "instances": 1,
+        "dedicated_bytes": 250904576,
+        "shared_bytes": 53534720,
+        "dedicated_plus_shared_bytes": 304439296,
+        "total_committed_bytes": 304504832
+      },
+      {
+        "timestamp_ticks": 2482515007238,
+        "elapsed_ms": 17355,
+        "query_elapsed_ms": 16,
+        "instances": 1,
+        "dedicated_bytes": 250904576,
+        "shared_bytes": 53534720,
+        "dedicated_plus_shared_bytes": 304439296,
+        "total_committed_bytes": 304504832
+      },
+      {
+        "timestamp_ticks": 2482520356048,
+        "elapsed_ms": 17890,
+        "query_elapsed_ms": 18,
+        "instances": 1,
+        "dedicated_bytes": 250904576,
+        "shared_bytes": 53534720,
+        "dedicated_plus_shared_bytes": 304439296,
+        "total_committed_bytes": 304504832
+      },
+      {
+        "timestamp_ticks": 2482526114992,
+        "elapsed_ms": 18466,
+        "query_elapsed_ms": 17,
+        "instances": 1,
+        "dedicated_bytes": 250904576,
+        "shared_bytes": 53534720,
+        "dedicated_plus_shared_bytes": 304439296,
+        "total_committed_bytes": 304504832
+      },
+      {
+        "timestamp_ticks": 2482531296632,
+        "elapsed_ms": 18984,
+        "query_elapsed_ms": 16,
+        "instances": 1,
+        "dedicated_bytes": 250904576,
+        "shared_bytes": 53534720,
+        "dedicated_plus_shared_bytes": 304439296,
+        "total_committed_bytes": 304504832
+      },
+      {
+        "timestamp_ticks": 2482536590588,
+        "elapsed_ms": 19513,
+        "query_elapsed_ms": 16,
+        "instances": 1,
+        "dedicated_bytes": 250904576,
+        "shared_bytes": 53534720,
+        "dedicated_plus_shared_bytes": 304439296,
+        "total_committed_bytes": 304504832
+      },
+      {
+        "timestamp_ticks": 2482541898666,
+        "elapsed_ms": 20044,
+        "query_elapsed_ms": 16,
+        "instances": 1,
+        "dedicated_bytes": 250904576,
+        "shared_bytes": 53534720,
+        "dedicated_plus_shared_bytes": 304439296,
+        "total_committed_bytes": 304504832
+      },
+      {
+        "timestamp_ticks": 2482547171354,
+        "elapsed_ms": 20571,
+        "query_elapsed_ms": 17,
+        "instances": 1,
+        "dedicated_bytes": 250904576,
+        "shared_bytes": 53534720,
+        "dedicated_plus_shared_bytes": 304439296,
+        "total_committed_bytes": 304504832
+      },
+      {
+        "timestamp_ticks": 2482552514146,
+        "elapsed_ms": 21106,
+        "query_elapsed_ms": 18,
+        "instances": 1,
+        "dedicated_bytes": 250904576,
+        "shared_bytes": 53534720,
+        "dedicated_plus_shared_bytes": 304439296,
+        "total_committed_bytes": 304504832
+      },
+      {
+        "timestamp_ticks": 2482557700393,
+        "elapsed_ms": 21624,
+        "query_elapsed_ms": 17,
+        "instances": 1,
+        "dedicated_bytes": 250904576,
+        "shared_bytes": 53534720,
+        "dedicated_plus_shared_bytes": 304439296,
+        "total_committed_bytes": 304504832
+      },
+      {
+        "timestamp_ticks": 2482563228809,
+        "elapsed_ms": 22177,
+        "query_elapsed_ms": 47,
+        "instances": 1,
+        "dedicated_bytes": 250904576,
+        "shared_bytes": 53534720,
+        "dedicated_plus_shared_bytes": 304439296,
+        "total_committed_bytes": 304504832
+      },
+      {
+        "timestamp_ticks": 2482568552941,
+        "elapsed_ms": 22709,
+        "query_elapsed_ms": 15,
+        "instances": 1,
+        "dedicated_bytes": 250904576,
+        "shared_bytes": 53534720,
+        "dedicated_plus_shared_bytes": 304439296,
+        "total_committed_bytes": 304504832
+      },
+      {
+        "timestamp_ticks": 2482573999752,
+        "elapsed_ms": 23254,
+        "query_elapsed_ms": 16,
+        "instances": 1,
+        "dedicated_bytes": 250904576,
+        "shared_bytes": 53534720,
+        "dedicated_plus_shared_bytes": 304439296,
+        "total_committed_bytes": 304504832
+      },
+      {
+        "timestamp_ticks": 2482579716140,
+        "elapsed_ms": 23826,
+        "query_elapsed_ms": 18,
+        "instances": 1,
+        "dedicated_bytes": 250904576,
+        "shared_bytes": 53534720,
+        "dedicated_plus_shared_bytes": 304439296,
+        "total_committed_bytes": 304504832
+      },
+      {
+        "timestamp_ticks": 2482585044374,
+        "elapsed_ms": 24359,
+        "query_elapsed_ms": 17,
+        "instances": 1,
+        "dedicated_bytes": 250904576,
+        "shared_bytes": 53534720,
+        "dedicated_plus_shared_bytes": 304439296,
+        "total_committed_bytes": 304504832
+      },
+      {
+        "timestamp_ticks": 2482590672413,
+        "elapsed_ms": 24921,
+        "query_elapsed_ms": 15,
+        "instances": 1,
+        "dedicated_bytes": 250904576,
+        "shared_bytes": 53534720,
+        "dedicated_plus_shared_bytes": 304439296,
+        "total_committed_bytes": 304504832
+      },
+      {
+        "timestamp_ticks": 2482595887756,
+        "elapsed_ms": 25443,
+        "query_elapsed_ms": 16,
+        "instances": 1,
+        "dedicated_bytes": 250904576,
+        "shared_bytes": 53534720,
+        "dedicated_plus_shared_bytes": 304439296,
+        "total_committed_bytes": 304504832
+      },
+      {
+        "timestamp_ticks": 2482601133912,
+        "elapsed_ms": 25968,
+        "query_elapsed_ms": 16,
+        "instances": 1,
+        "dedicated_bytes": 250904576,
+        "shared_bytes": 53534720,
+        "dedicated_plus_shared_bytes": 304439296,
+        "total_committed_bytes": 304504832
+      },
+      {
+        "timestamp_ticks": 2482606309493,
+        "elapsed_ms": 26485,
+        "query_elapsed_ms": 16,
+        "instances": 1,
+        "dedicated_bytes": 250904576,
+        "shared_bytes": 53534720,
+        "dedicated_plus_shared_bytes": 304439296,
+        "total_committed_bytes": 304504832
+      },
+      {
+        "timestamp_ticks": 2482611682798,
+        "elapsed_ms": 27022,
+        "query_elapsed_ms": 16,
+        "instances": 1,
+        "dedicated_bytes": 235175936,
+        "shared_bytes": 69296128,
+        "dedicated_plus_shared_bytes": 304472064,
+        "total_committed_bytes": 304537600
+      }
+    ],
+    "queries": [
+      {
+        "status": "no_own_instances",
+        "instances": 0,
+        "started_timestamp_ticks": 2482342181487,
+        "timestamp_ticks": 2482344906615,
+        "elapsed_ms": 345,
+        "query_elapsed_ms": 274,
+        "process_exited": false
+      },
+      {
+        "status": "no_own_instances",
+        "instances": 0,
+        "started_timestamp_ticks": 2482350533122,
+        "timestamp_ticks": 2482350670138,
+        "elapsed_ms": 921,
+        "query_elapsed_ms": 14,
+        "process_exited": false
+      },
+      {
+        "status": "observed",
+        "instances": 1,
+        "started_timestamp_ticks": 2482355847571,
+        "timestamp_ticks": 2482356142537,
+        "elapsed_ms": 1468,
+        "query_elapsed_ms": 29,
+        "process_exited": false
+      },
+      {
+        "status": "observed",
+        "instances": 1,
+        "started_timestamp_ticks": 2482361532580,
+        "timestamp_ticks": 2482361700482,
+        "elapsed_ms": 2024,
+        "query_elapsed_ms": 17,
+        "process_exited": false
+      },
+      {
+        "status": "observed",
+        "instances": 1,
+        "started_timestamp_ticks": 2482367137303,
+        "timestamp_ticks": 2482367299389,
+        "elapsed_ms": 2584,
+        "query_elapsed_ms": 16,
+        "process_exited": false
+      },
+      {
+        "status": "observed",
+        "instances": 1,
+        "started_timestamp_ticks": 2482372742534,
+        "timestamp_ticks": 2482372901225,
+        "elapsed_ms": 3144,
+        "query_elapsed_ms": 16,
+        "process_exited": false
+      },
+      {
+        "status": "observed",
+        "instances": 1,
+        "started_timestamp_ticks": 2482378237367,
+        "timestamp_ticks": 2482378395850,
+        "elapsed_ms": 3694,
+        "query_elapsed_ms": 16,
+        "process_exited": false
+      },
+      {
+        "status": "observed",
+        "instances": 1,
+        "started_timestamp_ticks": 2482384011964,
+        "timestamp_ticks": 2482384249805,
+        "elapsed_ms": 4279,
+        "query_elapsed_ms": 24,
+        "process_exited": false
+      },
+      {
+        "status": "observed",
+        "instances": 1,
+        "started_timestamp_ticks": 2482389613499,
+        "timestamp_ticks": 2482389793184,
+        "elapsed_ms": 4834,
+        "query_elapsed_ms": 18,
+        "process_exited": false
+      },
+      {
+        "status": "observed",
+        "instances": 1,
+        "started_timestamp_ticks": 2482394867104,
+        "timestamp_ticks": 2482395040361,
+        "elapsed_ms": 5358,
+        "query_elapsed_ms": 17,
+        "process_exited": false
+      },
+      {
+        "status": "observed",
+        "instances": 1,
+        "started_timestamp_ticks": 2482400160560,
+        "timestamp_ticks": 2482400663126,
+        "elapsed_ms": 5921,
+        "query_elapsed_ms": 51,
+        "process_exited": false
+      },
+      {
+        "status": "observed",
+        "instances": 1,
+        "started_timestamp_ticks": 2482405792551,
+        "timestamp_ticks": 2482405966550,
+        "elapsed_ms": 6451,
+        "query_elapsed_ms": 18,
+        "process_exited": false
+      },
+      {
+        "status": "observed",
+        "instances": 1,
+        "started_timestamp_ticks": 2482411301492,
+        "timestamp_ticks": 2482411464347,
+        "elapsed_ms": 7001,
+        "query_elapsed_ms": 17,
+        "process_exited": false
+      },
+      {
+        "status": "observed",
+        "instances": 1,
+        "started_timestamp_ticks": 2482416550891,
+        "timestamp_ticks": 2482416723394,
+        "elapsed_ms": 7527,
+        "query_elapsed_ms": 18,
+        "process_exited": false
+      },
+      {
+        "status": "observed",
+        "instances": 1,
+        "started_timestamp_ticks": 2482422356871,
+        "timestamp_ticks": 2482422527116,
+        "elapsed_ms": 8107,
+        "query_elapsed_ms": 17,
+        "process_exited": false
+      },
+      {
+        "status": "observed",
+        "instances": 1,
+        "started_timestamp_ticks": 2482428176973,
+        "timestamp_ticks": 2482428348776,
+        "elapsed_ms": 8689,
+        "query_elapsed_ms": 17,
+        "process_exited": false
+      },
+      {
+        "status": "observed",
+        "instances": 1,
+        "started_timestamp_ticks": 2482433445561,
+        "timestamp_ticks": 2482433616200,
+        "elapsed_ms": 9216,
+        "query_elapsed_ms": 17,
+        "process_exited": false
+      },
+      {
+        "status": "observed",
+        "instances": 1,
+        "started_timestamp_ticks": 2482438804653,
+        "timestamp_ticks": 2482438969529,
+        "elapsed_ms": 9751,
+        "query_elapsed_ms": 16,
+        "process_exited": false
+      },
+      {
+        "status": "observed",
+        "instances": 1,
+        "started_timestamp_ticks": 2482444125310,
+        "timestamp_ticks": 2482444296853,
+        "elapsed_ms": 10284,
+        "query_elapsed_ms": 17,
+        "process_exited": false
+      },
+      {
+        "status": "observed",
+        "instances": 1,
+        "started_timestamp_ticks": 2482449322139,
+        "timestamp_ticks": 2482449487150,
+        "elapsed_ms": 10803,
+        "query_elapsed_ms": 17,
+        "process_exited": false
+      },
+      {
+        "status": "observed",
+        "instances": 1,
+        "started_timestamp_ticks": 2482455069616,
+        "timestamp_ticks": 2482455540756,
+        "elapsed_ms": 11408,
+        "query_elapsed_ms": 47,
+        "process_exited": false
+      },
+      {
+        "status": "observed",
+        "instances": 1,
+        "started_timestamp_ticks": 2482460582734,
+        "timestamp_ticks": 2482460755988,
+        "elapsed_ms": 11930,
+        "query_elapsed_ms": 18,
+        "process_exited": false
+      },
+      {
+        "status": "observed",
+        "instances": 1,
+        "started_timestamp_ticks": 2482466342194,
+        "timestamp_ticks": 2482466508404,
+        "elapsed_ms": 12505,
+        "query_elapsed_ms": 17,
+        "process_exited": false
+      },
+      {
+        "status": "observed",
+        "instances": 1,
+        "started_timestamp_ticks": 2482471540075,
+        "timestamp_ticks": 2482471701014,
+        "elapsed_ms": 13024,
+        "query_elapsed_ms": 16,
+        "process_exited": false
+      },
+      {
+        "status": "observed",
+        "instances": 1,
+        "started_timestamp_ticks": 2482476749810,
+        "timestamp_ticks": 2482476915185,
+        "elapsed_ms": 13546,
+        "query_elapsed_ms": 17,
+        "process_exited": false
+      },
+      {
+        "status": "observed",
+        "instances": 1,
+        "started_timestamp_ticks": 2482481950721,
+        "timestamp_ticks": 2482482113077,
+        "elapsed_ms": 14066,
+        "query_elapsed_ms": 17,
+        "process_exited": false
+      },
+      {
+        "status": "observed",
+        "instances": 1,
+        "started_timestamp_ticks": 2482487736238,
+        "timestamp_ticks": 2482487898434,
+        "elapsed_ms": 14644,
+        "query_elapsed_ms": 16,
+        "process_exited": false
+      },
+      {
+        "status": "observed",
+        "instances": 1,
+        "started_timestamp_ticks": 2482492965926,
+        "timestamp_ticks": 2482493127979,
+        "elapsed_ms": 15167,
+        "query_elapsed_ms": 16,
+        "process_exited": false
+      },
+      {
+        "status": "observed",
+        "instances": 1,
+        "started_timestamp_ticks": 2482498313239,
+        "timestamp_ticks": 2482498486586,
+        "elapsed_ms": 15703,
+        "query_elapsed_ms": 17,
+        "process_exited": false
+      },
+      {
+        "status": "observed",
+        "instances": 1,
+        "started_timestamp_ticks": 2482503531815,
+        "timestamp_ticks": 2482503713777,
+        "elapsed_ms": 16226,
+        "query_elapsed_ms": 19,
+        "process_exited": false
+      },
+      {
+        "status": "observed",
+        "instances": 1,
+        "started_timestamp_ticks": 2482508749719,
+        "timestamp_ticks": 2482509226110,
+        "elapsed_ms": 16777,
+        "query_elapsed_ms": 48,
+        "process_exited": false
+      },
+      {
+        "status": "observed",
+        "instances": 1,
+        "started_timestamp_ticks": 2482514846932,
+        "timestamp_ticks": 2482515007526,
+        "elapsed_ms": 17355,
+        "query_elapsed_ms": 16,
+        "process_exited": false
+      },
+      {
+        "status": "observed",
+        "instances": 1,
+        "started_timestamp_ticks": 2482520181483,
+        "timestamp_ticks": 2482520356360,
+        "elapsed_ms": 17890,
+        "query_elapsed_ms": 18,
+        "process_exited": false
+      },
+      {
+        "status": "observed",
+        "instances": 1,
+        "started_timestamp_ticks": 2482525948959,
+        "timestamp_ticks": 2482526115237,
+        "elapsed_ms": 18466,
+        "query_elapsed_ms": 17,
+        "process_exited": false
+      },
+      {
+        "status": "observed",
+        "instances": 1,
+        "started_timestamp_ticks": 2482531138421,
+        "timestamp_ticks": 2482531296905,
+        "elapsed_ms": 18984,
+        "query_elapsed_ms": 16,
+        "process_exited": false
+      },
+      {
+        "status": "observed",
+        "instances": 1,
+        "started_timestamp_ticks": 2482536428275,
+        "timestamp_ticks": 2482536590832,
+        "elapsed_ms": 19513,
+        "query_elapsed_ms": 16,
+        "process_exited": false
+      },
+      {
+        "status": "observed",
+        "instances": 1,
+        "started_timestamp_ticks": 2482541736461,
+        "timestamp_ticks": 2482541899717,
+        "elapsed_ms": 20044,
+        "query_elapsed_ms": 16,
+        "process_exited": false
+      },
+      {
+        "status": "observed",
+        "instances": 1,
+        "started_timestamp_ticks": 2482547002207,
+        "timestamp_ticks": 2482547171596,
+        "elapsed_ms": 20571,
+        "query_elapsed_ms": 17,
+        "process_exited": false
+      },
+      {
+        "status": "observed",
+        "instances": 1,
+        "started_timestamp_ticks": 2482552339464,
+        "timestamp_ticks": 2482552514376,
+        "elapsed_ms": 21106,
+        "query_elapsed_ms": 18,
+        "process_exited": false
+      },
+      {
+        "status": "observed",
+        "instances": 1,
+        "started_timestamp_ticks": 2482557523237,
+        "timestamp_ticks": 2482557700644,
+        "elapsed_ms": 21624,
+        "query_elapsed_ms": 17,
+        "process_exited": false
+      },
+      {
+        "status": "observed",
+        "instances": 1,
+        "started_timestamp_ticks": 2482562760678,
+        "timestamp_ticks": 2482563229091,
+        "elapsed_ms": 22177,
+        "query_elapsed_ms": 47,
+        "process_exited": false
+      },
+      {
+        "status": "observed",
+        "instances": 1,
+        "started_timestamp_ticks": 2482568394635,
+        "timestamp_ticks": 2482568553241,
+        "elapsed_ms": 22710,
+        "query_elapsed_ms": 16,
+        "process_exited": false
+      },
+      {
+        "status": "observed",
+        "instances": 1,
+        "started_timestamp_ticks": 2482573834827,
+        "timestamp_ticks": 2482574000010,
+        "elapsed_ms": 23254,
+        "query_elapsed_ms": 16,
+        "process_exited": false
+      },
+      {
+        "status": "observed",
+        "instances": 1,
+        "started_timestamp_ticks": 2482579542738,
+        "timestamp_ticks": 2482579716419,
+        "elapsed_ms": 23826,
+        "query_elapsed_ms": 18,
+        "process_exited": false
+      },
+      {
+        "status": "observed",
+        "instances": 1,
+        "started_timestamp_ticks": 2482584882691,
+        "timestamp_ticks": 2482585044637,
+        "elapsed_ms": 24359,
+        "query_elapsed_ms": 17,
+        "process_exited": false
+      },
+      {
+        "status": "observed",
+        "instances": 1,
+        "started_timestamp_ticks": 2482590514693,
+        "timestamp_ticks": 2482590672732,
+        "elapsed_ms": 24921,
+        "query_elapsed_ms": 15,
+        "process_exited": false
+      },
+      {
+        "status": "observed",
+        "instances": 1,
+        "started_timestamp_ticks": 2482595725210,
+        "timestamp_ticks": 2482595888027,
+        "elapsed_ms": 25443,
+        "query_elapsed_ms": 16,
+        "process_exited": false
+      },
+      {
+        "status": "observed",
+        "instances": 1,
+        "started_timestamp_ticks": 2482600978671,
+        "timestamp_ticks": 2482601134156,
+        "elapsed_ms": 25968,
+        "query_elapsed_ms": 16,
+        "process_exited": false
+      },
+      {
+        "status": "observed",
+        "instances": 1,
+        "started_timestamp_ticks": 2482606145194,
+        "timestamp_ticks": 2482606309739,
+        "elapsed_ms": 26485,
+        "query_elapsed_ms": 16,
+        "process_exited": false
+      },
+      {
+        "status": "observed",
+        "instances": 1,
+        "started_timestamp_ticks": 2482611515900,
+        "timestamp_ticks": 2482611683070,
+        "elapsed_ms": 27023,
+        "query_elapsed_ms": 17,
+        "process_exited": false
+      }
+    ],
+    "coverage": {
+      "complete": true,
+      "scope": "native_measured_frames",
+      "error": "",
+      "start_timestamp_ticks": 2482361123440,
+      "end_timestamp_ticks": 2482611262691,
+      "frame_rows": 3600,
+      "missing_queries_in_window": 0,
+      "maximum_allowed_gap_ms": 1000,
+      "maximum_observed_gap_ms": 605.3581,
+      "scope_note": "Every query attempt is retained. Native-frame scope excludes declared startup/exit windows, not bad measured frames. One-second maximum observation gap is not a continuous hard peak guarantee."
+    },
+    "scope": "Local WDDM per-process adapter counters, summed once per unique instance; dedicated+shared and total committed are separate measures. Sampled/provider-refreshed observations, not an exact continuous peak, global device usage or an uninstrumented timing run. CIM operation timeout is not a hard OS deadline."
+  }
+}

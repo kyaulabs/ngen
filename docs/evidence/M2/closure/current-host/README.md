@@ -50,4 +50,6 @@ asserted instantaneous frequency is not a hardware frequency measurement.
 The owner separately accepted the corrected rear-engine bounds after these runs.
 That accepts the specific visual correction, not unrelated M2 gates. The actual
 private BMP is inspected but not redistributed; capture identity is retained.
-Windows GPU memory remains unresolved, and M3 implementation has not started.
+The separate corrected Windows observation now passes native sampled WDDM and
+working-set budgets using the unchanged earlier binary; it is not this Linux
+run's memory proof. Remaining acceptance stays scoped. M3 has not started.

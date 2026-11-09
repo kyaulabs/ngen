@@ -1,74 +1,34 @@
 # Targeted Windows M2 closure checks
 
-**Hold the workload commands until a corrected pin is supplied.** The returned
-`b2fa7da` MSVC Release validation passes, including the new transparency fixture;
-its memory wrapper fails honestly with unavailable CIM counters and no GPU samples.
-Do not repeat that build or long run merely to obtain the same opaque error.
-A metadata-only class/property and native counter-set check is pending. Corrected
-coverage/deadline/diagnostic code passes Linux system-boundary tests, not native
-WDDM execution. The later UI ship-bounds fix is owner-accepted on Linux; its native
-Windows verification is separate from the already completed transparency check.
+Native transparency and corrected sampled WDDM accounting now pass. The reused
+memory-test executable was compiled at `b2fa7da`, before the full-ship UI bounds
+correction. **Only one updated MSVC Release build/native validation remains.**
+Do not repeat the completed four-build matrix, recook/download the package or
+run `-MeasureWorkload` again. Slang and the specific box correction already have
+owner acceptance; remaining overall visual/input acceptance is separate.
 
-Use the supplied pinned closure revision and the **same existing `scene.ngas`**.
-No recook or package download is needed. The completed MSVC/clang-cl Debug/Release
-production matrix remains valid: production renderer/shader source is unchanged.
-This request adds one updated Release transparency control and the missing
-per-process graphics-memory observation, **not another four-build matrix**.
-
-In MSYS2 fish:
+Use the existing `5a2f8415aa226d9f757dfa18af403ab039d51806` source checkout and the
+same existing `scene.ngas`. Later evidence-only commits do not change this source.
+In the same MSYS2 fish terminal with `$scene` still set:
 
 ```fish
-git fetch origin
-git switch --detach <supplied-full-closure-revision>
-set scene /real/path/to/the/existing/scene.ngas
 pwsh.exe -NoProfile -File (cygpath -w tools/build-windows.ps1) -Inspector -ScenePackage (cygpath -w $scene) -Compiler MSVC -Configuration Release
 ```
 
-That one Release run compiles the new checked-scene translucent fixture and runs
-the existing native controls. Look for
-`scene_translucent_order=1 scene_opaque_occlusion=1 scene_translucent_depth_readonly=1`
-in `Release-inspector.txt`; preserve the actual outcome, including failures.
+The standard workflow builds the optional inspector graph, runs native fixtures
+and ordinary validation, and retains automated walkthrough/captures. Expected
+new markers in `Release-inspector.txt` are
+`inspector_ship_bounds=1 inspector_rear_engine_bounds=1`, alongside
+`scene_translucent_order=1 scene_opaque_occlusion=1 scene_translucent_depth_readonly=1`.
+Retain the actual outcome, including any compile/validation failure. Send the
+printed archive; there is no second memory command for this request.
 
-Use its printed run directory for the next command:
-
-```fish
-set release build/windows/THE-PRINTED-RUN/Release
-pwsh.exe -NoProfile -File (cygpath -w tools/build-windows.ps1) -MeasureWorkload (cygpath -w $release) -ScenePackage (cygpath -w $scene)
-```
-
-The second command **reuses that binary without building or installing anything**.
-For an earlier memory-only check it can also reuse the already verified
-`build/windows/20261107-193638-927/Release` MSVC build, if that directory still
-exists. It requires the existing CMake Release cache, original adjacent
-`logs/revision.txt`, empty original `logs/working-tree.txt` and generated Conan
-runtime scripts. Those records declare the build provenance; their presence alone
-is not cryptographic proof of binary/source equivalence. Binary/package hashes
-are retained before/after observation.
-
-Leave both automated workloads alone. The memory run uses 60 warmup and 3,600
-measured frames, four completed reloads, fixed 1280x720, exposure 1, FXAA on and
-bloom .04. It queries local WDDM/CIM per-process counters at a nominal 500 ms
-cadence; every query attempt and actual query/sample times are retained. Schema 3
-correlates the native measured-frame interval with the parent clock, records
-startup/exit separately and rejects missing active-window data or observation
-gaps over one second. Incomplete coverage cannot receive a passing budget. This is
-instrumented memory evidence, not a replacement clean performance measurement.
-Working-set polling has a nominal 25 ms wait plus CIM overhead. Observations are
-sampled/provider-refreshed, not exact continuous peaks or global device usage.
-
-Send **both printed `evidence.zip` files**, including failures. The second is under
-`build/windows-measure/` and includes `long-stream.{txt,csv,bmp,working-set.json,
-input.json,artifacts.json}` plus separate stderr and script revision/failure data.
-Unsupported/missing/malformed/entirely-zero counters fail honestly; do not install
-providers, change privileges, registry, driver, SDK, execution policy or signing
-to force a pass. No API key or persistent profile change is needed. We will select
-and scan native results before inspecting them; setup/session logs stay private.
-
-Personal visual/input review is separate. After automated runs have closed, open
-`pwsh.exe -NoProfile` and use the real paths in this optional manual session:
+Personal visual/input review is distinct from automated execution. If not yet
+checked, after automation closes open `pwsh.exe -NoProfile` with the new printed
+Release directory and existing package:
 
 ```powershell
-$release = (Resolve-Path 'build/windows/THE-PRINTED-RUN/Release').Path
+$release = (Resolve-Path 'build/windows/THE-NEW-PRINTED-RUN/Release').Path
 $scene = 'C:\real\path\scene.ngas'
 try {
     . (Join-Path $release 'conanrun.ps1')
@@ -78,11 +38,16 @@ try {
 }
 ```
 
-Check the default ship/material/lighting presentation, list clipping and shared
-side gutters; select instances, edit factors/view settings and press R to reload.
-The manual run ends after its bounded frame count; it can be relaunched for
-inspection. Closing it early can report cancellation and is not a failed automated
-benchmark. Report actual defects or an explicit personal acceptance verdict; an
-automated green exit is not personal visual approval. The independent reviewer
-found the hull very dark and engine cores saturated, leaving that quality judgment
-to the owner rather than inventing a renderer defect.
+Check the default ship/material/lighting presentation and panel gutters/list
+clipping. Select parts, change material and render settings, and press R to reload.
+Changes should appear at the next boundary without altering old/in-flight versions;
+completed replacement resets asset selection/factors and preserves view settings.
+The complete ship box must not shrink when part selection changes or clears.
+Record remaining concrete defects or accept the visual/input slice. This does not
+turn agent/GitHub account review into personal human approval.
+
+Keep original model, package, captures, archives and session bytes private. No
+persistent profile/environment, privilege, registry, driver, SDK, execution-policy
+or signing change is requested. Returned evidence is selected and scanned before
+inspection; it is never executed. Earlier failed GPU/resize evidence stays retained,
+not rewritten as passing, and sampled memory is not an exact continuous/global peak.

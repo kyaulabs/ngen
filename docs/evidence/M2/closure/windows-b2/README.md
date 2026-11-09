@@ -1,7 +1,8 @@
 # Returned Windows closure runs
 
-Both private owner archives declare clean revision
-`b2fa7da44d569cba2aec8221eac04b6df840b20a`. Their selected native records were
+The first two private owner archives declare clean revision
+`b2fa7da44d569cba2aec8221eac04b6df840b20a`. A third records the corrected observer
+at `5a2f841` reusing the identical `b2fa7da` binary. Selected native records were
 admitted with bounded flat regular entries and redacted secret scanning before
 inspection. Session, installation, detection, Conan and recipe setup logs were
 excluded unread. No returned script, executable or recorded command was executed.
@@ -20,10 +21,11 @@ the earlier complete four-configuration matrix, not replace it or rerun it.
 | Validated mixed walkthrough | 1200 | 8.683 / 9.857 / 13.656 / 53.943 | 808,304,640 bytes |
 | Steady | 600 | 6.692 / 8.226 / 8.351 / 8.482 | 401,403,904 bytes |
 | Four reloads, fixed extent | 600 | 6.732 / 8.212 / 8.597 / 13.024 | 926,445,568 bytes |
-| Longer instrumented run | 3600 | 6.693 / 8.228 / 8.389 / 13.353 | 925,470,720 bytes |
+| Longer instrumented run, first failed observer | 3600 | 6.693 / 8.228 / 8.389 / 13.353 | 925,470,720 bytes |
+| Corrected native observation | 3600 | 7.105 / 8.246 / 8.509 / 15.517 | 925,749,248 bytes |
 
 Distributions were recomputed from every row using nearest rank. All fixed runs
-remain 1280x720/exposure 1/FXAA on/bloom .04; both streaming runs finish generation
+remain 1280x720/exposure 1/FXAA on/bloom .04; all four-reload runs finish generation
 5 with four reloads and settled zero retiring records. Private BMP headers and
 available artifact hashes were checked. The mixed run reports two resizes and
 two reloads with ordinary validation. All ordinary workload stderr is empty.
@@ -32,7 +34,8 @@ two reloads with ordinary validation. All ordinary workload stderr is empty.
 The child completed all 3600 measured frames and exited zero. The wrapper correctly
 fails because CIM returns `CimException`, no GPU samples and a null GPU-budget
 verdict. It does not report zero GPU use. Original schema 2 preserves only the
-exception type, not its native cause; a metadata-only provider check is pending.
+exception type, not its native cause. Later metadata and exact-query checks pass;
+that original cause remains unknown.
 All 3600 native frame timestamps correlate within the actual parent QPC window.
 This validates that clock relation for this MSVC execution, not missing GPU values
 or native execution of the corrected schema-3 observer.
@@ -45,8 +48,11 @@ establish whole-NVIDIA memory, an exact continuous peak, cold-storage throughput
 or indefinite-duration stability. Its instrumented timing is not a replacement
 for clean performance evidence. C++/ImGui reload allocations remain visible.
 
-These archives precede the complete-ship UI bounds correction. They neither
-execute that UI change nor provide personal owner acceptance. Earlier Linux resize failures remain retained; the subsequent current owner-tuned
+The reused compiled binary precedes the complete-ship UI bounds correction.
+These observations neither execute that compiled UI change nor provide personal
+owner acceptance. The [corrected schema-3 memory observation](memory-verified/README.md)
+now has 48 positive samples, no active-window gaps and both sampled budgets under
+1 GiB, with process working set under 6 GiB; no more memory run is requested. Earlier Linux resize failures remain retained; the subsequent current owner-tuned
 host passes the original mixed-run timing bounds without a box-fix/engine-repair
-claim. Native GPU memory and remaining acceptance still keep M2 open. M3 has not
-started.
+claim. Latest compiled UI execution, remaining personal acceptance and scoped PR
+integration still keep M2 open. M3 has not started.
