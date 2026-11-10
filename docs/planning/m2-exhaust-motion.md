@@ -100,8 +100,11 @@ analysis passes 111 actual compile invocations, including affected header consum
 GCC's native graph passes, but clang-tidy cannot consume its actual module flags.
 Native flow also clamps the normalized guide before lattice integer conversion;
 its boundary-equivalence Red/Green and the deliberate phase-jump mutation remain
-retained. Clean final-package timing, scoped Windows motion checks, evidence
-retention, review and normal PR integration are still open.
+retained. Final-package clean steady and four-reload/two-resize 600/60 runs now
+pass unchanged budgets, with all 1,200 rows checked and zero steady warm C++/ImGui
+calls. All six asset-authoring stages replay to exact current-host identities.
+The source and scoped evidence are signed at `659d570`. Scoped Windows motion
+execution, exact-head CI/independent review and normal PR integration remain open.
 
 Retain the completed Windows evidence: source5a2f841 passes10/10 tests/new bounds
 controls, and its reused Release binary executes accepted package067407fb… with

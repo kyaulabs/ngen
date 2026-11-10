@@ -29,14 +29,16 @@ Their final **“that looks perfect”** accepts the exact
 `067407fb5fa2527771212cc7280a345b02ad3dd2a823ae8ba81b3553689ec52b`.
 No further palette/bounds/exhaust reapproval is requested. This is not an inferred
 overall inspector/input verdict or approval of future M3 flight controls. Original
-source/canonical assets and the unrelated brand pack remain untouched/private.
+source/canonical assets remain untouched/private. The owner later explicitly
+authorized the brand pack, committed unchanged at `d036c91`.
 
 After the exhaust approval, the owner explicitly answered **“Accept
 inspector/input”** for the remaining M2 inspector behavior: selection/list,
 material/render controls and reload. This is a personal owner verdict, separate
 from agent/GitHub account reviews. No further M2 visual/input, palette, bounds or
 exhaust approval is requested. It does not accept future M3 flight controls or
-replace the one outstanding compiled Windows UI/accepted-asset execution.
+replace physical platform verification. The historical compiled Windows UI/bounds
+and exact static-package returns are now [verified](windows-final/README.md).
 
 For recurring CI dependency-download 504s the owner selected **“Wait
 (Recommended)”**: keep exact pins and checks, wait for upstream recovery and do
@@ -46,4 +48,24 @@ Native Windows schema-3 GPU observation now passes separately at script `5a2f841
 with the unchanged `b2fa7da` binary. Sampled-budget verification is not a new
 personal visual/input verdict. Neither these answers nor agent/GitHub account
 reviews accept M2 as a whole.
+The owner later expanded M2 with moving exhaust and reference-guided materials.
+After the visible iterations they explicitly accepted:
+
+- **“Accept exhaust”**: the seeded irregular white-core/blue-fringe motion and
+  narrower, longer pointed droplet rooted at the recessed emitters, package
+  `9b645de103ea92677c3cfe97cb8bd88ede8e7109f34c0f926888ba65c7522e63`.
+- **“Hull is good”**: charcoal-gray coating and the existing panel/wear/normal/ORM
+  finish shown in `27de456e…`; not the then-unaccepted cockpit glazing.
+- **“Recess windows”**: authorization to cut only six local bridge openings with
+  shallow dark backing, preserving the accepted finish/exhaust and window layout;
+  no full cockpit model or new glass renderer.
+- **“Accept bridge windows”** after the 5,154-frame bridge-only inspection:
+  package `a02d5438ad32d9c8fb917ce847d5a822688ca5b51d69125f6da71cf2ba2116ed`,
+  using actual 0.9 m recesses rather than transparency over solid hull.
+
+All current visual gates are accepted. Freeze them; do not request those verdicts
+again. [Current source/art verification](motion/README.md) includes local native
+controls, clean final-package budgets and exact current-host authoring replay.
+New scoped Windows motion execution, exact-head CI/review and normal integration
+are still required. M2 is not closed by these visual answers.
 M3 implementation has not started.

@@ -6,6 +6,16 @@ separate read-only agent review, closes its checked-scene transparency coverage
 gap, extends the measured reload run and verifies native Windows GPU accounting.
 No production renderer/shader source or dependency changes in the initial slice.
 
+The later [explicit-flow/final-art slice](motion/README.md) is signed at `659d570`.
+The owner accepts the turbulent recessed exhaust, charcoal hull and six recessed
+bridge windows; freeze their appearance. All 1,200 final-package clean frame rows,
+local native/sanitizer checks and exact six-stage current-host replay pass.
+[Separate source review](independent-659d570.md) demonstrates no P1/P2 defect; its
+stale-progress wording advisory is corrected. Historical compiled UI/bounds and
+static-package execution are [complete](windows-final/README.md). Remaining:
+[targeted new Windows flow execution](motion/windows.md), exact-head CI and normal
+PR integration. Neither visual approval nor old static results close this scope.
+
 Owner follow-up: Slang 2026.21 and the specific rear-engine
 [ship-bounds correction](ship-bounds/README.md) are accepted. After owner-reported
 thermal/CPU-power changes, [current-host verification](current-host/README.md)
@@ -35,9 +45,9 @@ triangles through existing transparent rendering. New clean 600-frame steady/mix
 runs pass original timing budgets; steady warm C++/ImGui allocations are zero.
 The owner subsequently explicitly answered **“Accept inspector/input”** for the
 remaining M2 controls. That personal verdict is separate from agent review and
-native execution, and does not approve future M3 behavior. One updated MSVC
-Release check now uses the accepted separate package; no compiler matrix or
-memory observation repeat is requested. The [independent exhaust follow-up](independent-afb94f7.md)
+native execution, and does not approve future M3 behavior. The subsequent updated
+MSVC UI/static-package check is now [returned and verified](windows-final/README.md);
+no old compiler matrix or memory observation repeat is requested. The [independent exhaust follow-up](independent-afb94f7.md)
 confirms clean `afb94f7`, recomputes all 1,200 rows and finds no actionable defect
 or new advisory in the offline receipt/evidence scope. It did not execute retained
 scripts or inspect private artifact bytes and supplies no personal human approval.
@@ -134,18 +144,12 @@ continuous peak. CIM calls
 can delay the nominal working-set cadence; actual GPU sample/query times remain
 visible. The instrumented memory run is not substituted for clean timing results.
 
-Next: verify the compiled ship-bounds correction and accepted exhaust package in
-one targeted Windows Release run, recover passing CI under unchanged pins/checks
-and complete normal scoped PR integration. Inspector/input now has explicit owner
-acceptance; do not request that verdict again. No further memory observation or duplicate four-build matrix is
-requested. Independent follow-up for the current corrections is
-complete, with its two evidence advisories corrected.
-Only then close applicable M2 gates and start M3. Slang and the specific box fix
-already have owner verdicts; do not request them again. The completed four-build
-production matrix needs no duplicate run, and the new transparency control now
-passes MSVC Release at `b2fa7da`. Schema-3 native observation now passes at
-`5a2f841` using that exact binary. The latest compiled UI bounds still needs its
-separate targeted native verification.
+Next: complete one targeted fresh Windows Release run for the new explicit-flow
+renderer/final package, recover exact-head CI under unchanged pins/checks and
+finish normal reviewed PR integration. The old UI/bounds/static-package and
+sampled-memory returns are already verified. No duplicate old matrix or WDDM
+observation is requested. Current visual gates are explicitly accepted; do not
+reopen them. Only then close M2 and start M3.
 
 Original and retained hashes are separate. Text/CSV line endings, ANSI diagnostics
 and displayed repository paths are normalized; original metadata artifact hashes

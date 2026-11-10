@@ -3,9 +3,11 @@
 The owner accepts the turbulent recessed droplet exhaust, charcoal-gray hull
 finish and six recessed bridge windows. The final private package is
 `a02d5438ad32d9c8fb917ce847d5a822688ca5b51d69125f6da71cf2ba2116ed`.
-These are visual verdicts, not M2 completion. Scoped Windows execution of the new
-renderer, exact-head CI, review and normal PR integration remain open. M3 has not
-started.
+These are visual verdicts, not M2 completion. A [separate read-only review](../independent-659d570.md)
+finds no demonstrated P1/P2 defect and recomputes all public measurement rows;
+its stale-progress wording advisory is corrected. Scoped Windows execution of
+the new renderer, exact-head CI and normal PR integration remain open. M3 has
+not started.
 
 `identities.json` binds the tested source files, actual compile databases,
 Release executables and final package. Its parent revision identifies the

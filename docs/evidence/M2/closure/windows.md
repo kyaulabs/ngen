@@ -1,13 +1,11 @@
 # Targeted Windows M2 closure checks
 
-Native transparency and corrected sampled WDDM accounting now pass. The reused
-memory-test executable was compiled at `b2fa7da`, before the full-ship UI bounds
-correction. **Only one updated MSVC Release build/native validation remains.**
-Do not repeat the completed four-build matrix or run `-MeasureWorkload` again.
-Slang, the specific box correction, final longer/wider blue-white exhaust and
-remaining inspector/input behavior already have explicit owner acceptance. This
-request is native execution evidence, not another personal approval. The new
-private asset needs no Windows recook or offline toolkit.
+**Historical handoff, now complete: do not rerun these old commands.** Updated
+compiled UI/bounds and the exact static-package runtime are [returned and verified](windows-final/README.md).
+The current follow-up is [new explicit flow/final-package verification](motion/windows.md):
+one fresh MSVC Release run for renderer `659d570` and private package `a02d5438…`.
+No old matrix, WDDM collection or personal approval is requested again. The
+procedure below remains only as provenance for the completed static slice.
 
 Use the existing checkout updated to `origin/feat/kyau-ade38c-m2-acceptance`.
 Do not reset owner changes. The exhaust follow-up changes asset data/receipts, not

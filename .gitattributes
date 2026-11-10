@@ -21,3 +21,5 @@ docs/evidence/M2/windows-workload-verified/*/*.json -text whitespace=cr-at-eol
 
 docs/evidence/M2/closure/windows-b2/*/*.json -text whitespace=cr-at-eol
 docs/evidence/M2/closure/windows-b2/*/*.csv -text whitespace=cr-at-eol
+docs/evidence/M2/closure/windows-final/*/*.json -text whitespace=cr-at-eol
+docs/evidence/M2/closure/windows-final/*/*.csv -text whitespace=cr-at-eol
