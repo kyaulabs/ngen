@@ -4,10 +4,13 @@
 Release execution of the new renderer/final package, not another approval,
 compiler matrix, capability capture or WDDM collection. The historical compiled
 UI/bounds and static-package results are [complete](../windows-final/README.md).
-Their old binary predates explicit flow and cannot verify this change. The latest
-[final-package return](windows-source-mismatch.md) also reports clean `5a2f841`:
-the asset is correct, but flow markers and the phase column are absent. Keep that
-asset and update source before the next build.
+Their old binary predates explicit flow and cannot verify this change. An earlier
+[final-package return](windows-source-mismatch.md) reports clean old `5a2f841`.
+The subsequent [correct-source return](windows-wrap-failure/README.md) builds
+`062b4b9` and passes10/10 CTests but fails native phase-wrap continuity on RTX.
+Run the [focused existing-build diagnostic](windows-diagnostic.md) next, not another
+full workflow. Keep the correct asset and accepted appearance; a fix is not yet
+selected.
 
 The private input is `build/m2-final-visual-input.zip`, 48,245,561 bytes, SHA256
 `bbc551a3a2a2dd412891805e09a00e75724d52b736ba7e584f4d4fb2fa8e6edb`.

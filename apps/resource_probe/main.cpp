@@ -712,6 +712,12 @@ bool check_mesh(ngen::render::Context &context, const ngen::render::Buffer &read
         if (!sample_flow(0xffff0001U))
             return false;
         const auto next_tick = flow_pixels;
+        if (!sample_flow(0xffff0002U))
+            return false;
+        const auto second_tick = flow_pixels;
+        if (!sample_flow(0xfffffffeU))
+            return false;
+        const auto previous_tick = flow_pixels;
         if (!sample_flow(0xffffffffU))
             return false;
         const auto decode = [](std::uint16_t bits) {
@@ -733,6 +739,22 @@ bool check_mesh(ngen::render::Context &context, const ngen::render::Buffer &read
             if (!std::isfinite(zero) || !std::isfinite(next) || !std::isfinite(wrapped) ||
                 wrap_delta > regular_delta * 2 + 1.0F / 1024) {
                 std::fputs("Vulkan resource: emissive flow phase wrap is discontinuous\n", stderr);
+                // Keep the detector unchanged; collect one bounded failing sample
+                // and both neighboring slopes for device-specific diagnosis.
+                std::fprintf(
+                    stderr,
+                    "wrap_sample x=%zu y=%zu channel=%zu "
+                    "half_minus2=%04x half_minus1=%04x half_zero=%04x "
+                    "half_plus1=%04x half_plus2=%04x "
+                    "linear_minus2=%.9g linear_minus1=%.9g linear_zero=%.9g "
+                    "linear_plus1=%.9g linear_plus2=%.9g "
+                    "wrap_delta=%.9g regular_delta=%.9g limit=%.9g\n",
+                    (i / 4) % width, (i / 4) / width, i % 4,
+                    static_cast<unsigned>(previous_tick[i]), static_cast<unsigned>(flow_pixels[i]),
+                    static_cast<unsigned>(phase_zero[i]), static_cast<unsigned>(next_tick[i]),
+                    static_cast<unsigned>(second_tick[i]), decode(previous_tick[i]), wrapped, zero,
+                    next, decode(second_tick[i]), wrap_delta, regular_delta,
+                    regular_delta * 2 + 1.0F / 1024);
                 return false;
             }
         }

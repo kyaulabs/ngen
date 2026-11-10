@@ -1,0 +1,7 @@
+Exception: <repo>\tools\build-windows.ps1:38
+Line |
+  38 |          throw "$FilePath failed with exit code $code. See $LogPath"
+     |          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     | <repo>\build\windows\20261110-094948-812\Release\resource_probe.exe failed
+     | with exit code 1. See
+     | <repo>\build\windows\20261110-094948-812\logs\Release-resources.txt

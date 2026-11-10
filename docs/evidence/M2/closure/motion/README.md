@@ -7,10 +7,13 @@ These are visual verdicts, not M2 completion. A [separate read-only review](../i
 finds no demonstrated P1/P2 defect and recomputes all public measurement rows;
 its stale-progress wording advisory is corrected. Scoped Windows execution of
 the new renderer, exact-head CI and normal PR integration remain open. M3 has
-not started. The [latest final-package Windows return](windows-source-mismatch.md)
-passes asset/native checks but still reports clean old `5a2f841`, with no flow
-markers or phase column; it does not close the new-renderer execution gate.
-The [handoff](windows.md) now checks source ancestry before building.
+not started. An [earlier final-package Windows return](windows-source-mismatch.md)
+passes asset/native checks with old `5a2f841`, not the flow renderer. The subsequent
+[clean `062b4b9` return](windows-wrap-failure/README.md) builds and passes10/10
+CTests but fails the native RTX phase-wrap continuity probe before workloads run.
+The shader and detector are unchanged; [bounded diagnostics](windows-diagnostic.md)
+are ready to identify the failing values. This is not a claimed repair or waived
+gate. Use the focused probe before repeating a full Windows workflow.
 
 `identities.json` binds the tested source files, actual compile databases,
 Release executables and final package. Its parent revision identifies the
