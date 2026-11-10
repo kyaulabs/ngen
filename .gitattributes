@@ -1,3 +1,6 @@
+# Keep the supplied PDF guide binary; whitespace changes would corrupt its offsets.
+brand/guide/ngen-brand-guide.pdf binary
+
 # Blank unified-diff context lines (including final hunk lines) are patch syntax.
 recipes/sdl/patches/*.patch whitespace=-blank-at-eol,-blank-at-eof
 
@@ -15,3 +18,12 @@ docs/evidence/M2/shader-interface/licenses/spirv-headers/LICENSES/MIT.txt whites
 docs/evidence/M2/windows-scene-debug/*/*.json -text whitespace=cr-at-eol
 docs/evidence/M2/windows-frigate-verified/*/*.json -text whitespace=cr-at-eol
 docs/evidence/M2/windows-workload-verified/*/*.json -text whitespace=cr-at-eol
+
+docs/evidence/M2/closure/windows-b2/*/*.json -text whitespace=cr-at-eol
+docs/evidence/M2/closure/windows-b2/*/*.csv -text whitespace=cr-at-eol
+docs/evidence/M2/closure/windows-final/*/*.json -text whitespace=cr-at-eol
+docs/evidence/M2/closure/windows-final/*/*.csv -text whitespace=cr-at-eol
+
+# Preserve the verified current-flow Windows JSON/CSV identities.
+docs/evidence/M2/closure/motion/windows-verified/*.json -text whitespace=cr-at-eol
+docs/evidence/M2/closure/motion/windows-verified/*.csv -text whitespace=cr-at-eol

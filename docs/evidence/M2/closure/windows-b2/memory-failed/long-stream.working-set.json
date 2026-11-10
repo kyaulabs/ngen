@@ -1,0 +1,29 @@
+{
+  "schema": 2,
+  "process_id": 25792,
+  "exit_code": 0,
+  "timed_out": false,
+  "elapsed_ms": 26757,
+  "sample_period_ms": 25,
+  "observed_peak_working_set_bytes": 925470720,
+  "observed_peak_counter_bytes": 925470720,
+  "sampled_resident_bytes": 909230080,
+  "scope": "Observed OS process working set/high-water counter, including startup; not GPU memory or an exact continuous peak.",
+  "gpu_memory": {
+    "status": "unavailable",
+    "error_type": "CimException",
+    "within_1gib_budget": null,
+    "provider": "Win32_PerfFormattedData_GPUPerformanceCounters_GPUProcessMemory",
+    "target_sample_period_ms": 500,
+    "operation_timeout_seconds": 2,
+    "parent_qpc_started_ticks": 2172004229375,
+    "parent_qpc_ended_ticks": 2172271804270,
+    "parent_qpc_frequency": 10000000,
+    "peak_dedicated_bytes": null,
+    "peak_shared_bytes": null,
+    "peak_dedicated_plus_shared_bytes": null,
+    "peak_total_committed_bytes": null,
+    "samples": [],
+    "scope": "Local WDDM per-process adapter counters, summed once per unique instance; dedicated+shared and total committed are separate measures. Sampled/provider-refreshed observations, not an exact continuous peak, global device usage or an uninstrumented timing run. CIM operation timeout is not a hard OS deadline."
+  }
+}

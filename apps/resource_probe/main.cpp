@@ -553,6 +553,312 @@ bool check_mesh(ngen::render::Context &context, const ngen::render::Buffer &read
         std::fputs("Vulkan resource: tracked mesh indexed/depth pixels differ\n", stderr);
         return false;
     }
+    // Existing material ABI: normalized flow phase(low16), amount(high16).
+    auto flow_draw = draws[0];
+    flow_draw.material.flags[0] = 2;
+    flow_draw.material.flags[3] = 0xffff4000U; // phase .25, full amount.
+    auto flow_pass = pass;
+    flow_pass.draws = std::span{&flow_draw, 1};
+    const auto admitted_flow = when_ready([&] { return context.draw_mesh(flow_pass); });
+    if (failed(admitted_flow, "valid blend emissive flow admission") ||
+        !wait_submission(context, std::get<Submission>(admitted_flow)))
+        return false;
+    for (const auto alpha : {0U, 1U}) {
+        flow_draw.material.flags[0] = alpha;
+        if (!std::holds_alternative<Failure>(context.draw_mesh(flow_pass)))
+            return false;
+    }
+    flow_draw.material.flags[0] = 2;
+    flow_draw.material.flags[3] = 1; // A phase without an amount is not a flow control.
+    if (!std::holds_alternative<Failure>(context.draw_mesh(flow_pass)))
+        return false;
+    flow_draw.material.flags[3] = 0;
+    flow_draw.material.flags[2] |= 17U << 16U;
+    if (!std::holds_alternative<Failure>(context.draw_mesh(flow_pass)))
+        return false; // A seed without enabled blend flow is not a material flag.
+    {
+        constexpr std::size_t width = 192, height = 16;
+        auto flow_color =
+            image({{width, height},
+                   VK_FORMAT_R16G16B16A16_SFLOAT,
+                   static_cast<VkImageUsageFlags>(VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT) |
+                       VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_TRANSFER_SRC_BIT});
+        auto flow_depth = image(
+            {{width, height}, VK_FORMAT_D32_SFLOAT, VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT});
+        auto flow_readback =
+            buffer({width * height * 8, VK_BUFFER_USAGE_TRANSFER_DST_BIT, MemoryAccess::readback});
+        std::array<shader::Vertex, 4> quad{};
+        const std::array<std::array<float, 2>, 4> corners{{{-1, -1}, {1, -1}, {1, 1}, {-1, 1}}};
+        const std::array<std::array<float, 2>, 4> uv{{{0, 0}, {1, 0}, {1, 1}, {0, 1}}};
+        for (std::size_t i = 0; i < quad.size(); ++i) {
+            quad[i].position = {corners[i][0], corners[i][1], .5F};
+            quad[i].normal = {0, 0, 1};
+            quad[i].uv = quad[i].uv1 = uv[i];
+            quad[i].tangent = {1, 0, 0, 1};
+        }
+        const std::array<std::uint32_t, 6> quad_indices{0, 1, 2, 0, 2, 3};
+        auto flow_vertices =
+            buffer({sizeof(quad), VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, MemoryAccess::upload});
+        auto flow_indices =
+            buffer({sizeof(quad_indices), VK_BUFFER_USAGE_INDEX_BUFFER_BIT, MemoryAccess::upload});
+        if (failed(flow_vertices.write(0, std::as_bytes(std::span(quad))), "flow vertices") ||
+            failed(flow_indices.write(0, std::as_bytes(std::span(quad_indices))), "flow indices"))
+            return false;
+        auto moving = draws[0];
+        moving.first_index = 0;
+        moving.index_count = 6;
+        moving.vertex_offset = 0;
+        moving.material.baseColor = {0, 0, 0, 1};
+        moving.material.emissiveAlphaCutoff = {1, 1, 1, .5F};
+        moving.material.metallicRoughnessNormalOcclusion = {1, 1, 1, 1};
+        moving.material.flags[0] = 2;
+        const MeshPass moving_pass{
+            flow_vertices, flow_indices, flow_color, flow_depth, shadow,
+            environment,   environment,  white,      {},         std::span{&moving, 1}};
+        std::array<std::uint16_t, width * height * 4> flow_pixels{};
+        const auto sample_flow = [&](std::uint32_t control) {
+            moving.material.flags[3] = control;
+            const auto drawn = when_ready([&] { return context.draw_mesh(moving_pass); });
+            if (failed(drawn, "flow sample draw"))
+                return false;
+            const auto copied_flow =
+                when_ready([&] { return context.copy_from_image({flow_color, flow_readback}); });
+            return !failed(copied_flow, "flow sample copy") &&
+                   wait_submission(context, std::get<Submission>(copied_flow)) &&
+                   !failed(flow_readback.read(0, std::as_writable_bytes(std::span(flow_pixels))),
+                           "flow sample pixels");
+        };
+        if (!sample_flow(0xffff0000U))
+            return false;
+        const auto phase_zero = flow_pixels;
+        if (!sample_flow(0xffff4000U))
+            return false;
+        std::size_t changed_tail = 0;
+        for (std::size_t y = 4; y < 12; ++y)
+            for (std::size_t x = 64; x < 160; ++x) {
+                const auto at = (y * width + x) * 4;
+                changed_tail += flow_pixels[at] != phase_zero[at] ? 1U : 0U;
+            }
+        if (changed_tail < 300) {
+            std::fputs("Vulkan resource: emissive tail remains stationary across flow phases\n",
+                       stderr);
+            return false;
+        }
+        for (std::size_t y = 0; y < height; ++y)
+            for (std::size_t x = 0; x < 16; ++x) {
+                const auto at = (y * width + x) * 4;
+                if (flow_pixels[at] != phase_zero[at]) {
+                    std::fputs("Vulkan resource: emissive flow moved the anchored hot base\n",
+                               stderr);
+                    return false;
+                }
+            }
+        // Even a constant/lowest-mip white texture must fade before the finite
+        // mesh boundary; otherwise distant/oblique plume cards end like a knife.
+        for (std::size_t y = 4; y < 12; ++y)
+            for (std::size_t x = width - 4; x < width; ++x)
+                if (flow_pixels[(y * width + x) * 4] > 0x1400U) { // HDR red > 1/1024.
+                    std::fputs("Vulkan resource: emissive tail stays bright at its mesh boundary\n",
+                               stderr);
+                    return false;
+                }
+        // Ragged flow needs intermittent low-density skin, not a solid tube.
+        std::size_t skin_openings = 0;
+        for (const auto phase : {0U, 0x2000U, 0x4000U, 0x6000U}) {
+            if (!sample_flow(0xffff0000U | phase))
+                return false;
+            for (std::size_t y = 0; y < height; ++y)
+                if (y < 4 || y >= height - 4)
+                    for (std::size_t x = 64; x < 112; ++x)
+                        skin_openings += flow_pixels[(y * width + x) * 4] < 0x3400U ? 1U : 0U;
+        }
+        if (skin_openings < 32) {
+            std::fputs("Vulkan resource: turbulent jet skin remains a solid tube\n", stderr);
+            return false;
+        }
+        // The owner rejected periodic bands and the almost-uniform box-filtered
+        // result. An irregular jet must not repeat the old 32-pixel wave period.
+        std::size_t irregular_pairs = 0;
+        for (std::size_t y = 4; y < 12; ++y)
+            for (std::size_t x = 64; x < 96; ++x) {
+                const auto a = phase_zero[(y * width + x) * 4];
+                const auto b = phase_zero[(y * width + x + 32) * 4];
+                irregular_pairs +=
+                    std::abs(static_cast<int>(a) - static_cast<int>(b)) > 8 ? 1U : 0U;
+            }
+        if (irregular_pairs < 100) {
+            std::fputs("Vulkan resource: emissive jet still repeats mechanical wave bands\n",
+                       stderr);
+            return false;
+        }
+        // Six phase ticks move irregular density +3 pixels in the authored aft
+        // direction: 512 lattice units/cycle, 3 units across 192 pixels.
+        if (!sample_flow(0xffff0006U))
+            return false;
+        for (std::size_t y = 4; y < 12; ++y)
+            for (std::size_t x = 64; x < 112; ++x) {
+                const auto before = phase_zero[(y * width + x) * 4];
+                const auto after = flow_pixels[(y * width + x + 3) * 4];
+                if (std::abs(static_cast<int>(before) - static_cast<int>(after)) > 4) {
+                    std::fputs("Vulkan resource: emissive density did not advect aft\n", stderr);
+                    return false;
+                }
+            }
+        if (!sample_flow(0xffff0000U) || flow_pixels != phase_zero) {
+            std::fputs("Vulkan resource: repeated flow phase retained different frame state\n",
+                       stderr);
+            return false;
+        }
+        if (!sample_flow(0xffff0001U))
+            return false;
+        const auto next_tick = flow_pixels;
+        if (!sample_flow(0xffff0002U))
+            return false;
+        const auto second_tick = flow_pixels;
+        if (!sample_flow(0xfffffffeU))
+            return false;
+        const auto previous_tick = flow_pixels;
+        if (!sample_flow(0xffffffffU))
+            return false;
+        const auto decode = [](std::uint16_t bits) {
+            const auto exponent = (static_cast<std::uint32_t>(bits) >> 10U) & 31U;
+            if ((bits & 0x8000U) != 0 || exponent == 31)
+                return std::numeric_limits<float>::infinity();
+            return exponent == 0 ? std::ldexp(static_cast<float>(bits & 1023U), -24)
+                                 : std::ldexp(static_cast<float>(1024U + (bits & 1023U)),
+                                              static_cast<int>(exponent) - 25);
+        };
+        const auto continuous = [](const std::array<float, 5> &samples) {
+            if (!std::all_of(samples.begin(), samples.end(),
+                             [](float value) { return std::isfinite(value); }))
+                return false;
+            // Estimate ordinary motion on both sides, outside the boundary.
+            // A single half-quantized forward step may be flat. Do not use
+            // either boundary step as its own allowance: that hides spikes.
+            const auto normal =
+                std::max(std::abs(samples[1] - samples[0]), std::abs(samples[4] - samples[3]));
+            const auto boundary =
+                std::max(std::abs(samples[2] - samples[1]), std::abs(samples[3] - samples[2]));
+            return boundary <= normal * 2 + 1.0F / 1024;
+        };
+        // Actual RTX R16F samples at ticks -2/-1/0/+1/+2: the forward
+        // difference rounds to zero even though both outer steps show motion.
+        const std::array<std::uint16_t, 5> captured{0x38cb, 0x38c9, 0x38c6, 0x38c6, 0x38c4};
+        std::array<float, 5> captured_linear{};
+        std::transform(captured.begin(), captured.end(), captured_linear.begin(), decode);
+        if (!continuous(captured_linear)) {
+            std::fputs("Vulkan resource: smooth R16F flow plateau was rejected\n", stderr);
+            return false;
+        }
+        auto reversed = captured_linear;
+        std::reverse(reversed.begin(), reversed.end());
+        if (!continuous(reversed) || !continuous({0, 0, 0, 0, 0}) ||
+            !continuous({decode(0x3bfe), decode(0x3bff), 1, 1, decode(0x3c01)})) {
+            std::fputs("Vulkan resource: symmetric R16F continuity calibration differs\n", stderr);
+            return false;
+        }
+        for (const auto &seam : std::array{std::array<float, 5>{1, 1, .5F, .5F, .5F},
+                                           std::array<float, 5>{.5F, .5F, .5F, 1, 1},
+                                           std::array<float, 5>{.5F, .5F, 1, .5F, .5F}})
+            if (continuous(seam)) {
+                std::fputs("Vulkan resource: continuity calibration accepted a seam or spike\n",
+                           stderr);
+                return false;
+            }
+        for (std::size_t i = 0; i < captured_linear.size(); ++i)
+            for (const auto invalid : {std::numeric_limits<float>::infinity(),
+                                       std::numeric_limits<float>::quiet_NaN()}) {
+                auto samples = captured_linear;
+                samples[i] = invalid;
+                if (continuous(samples)) {
+                    std::fputs("Vulkan resource: continuity calibration accepted nonfinite HDR\n",
+                               stderr);
+                    return false;
+                }
+            }
+        std::puts("emissive_flow_continuity_calibration=1");
+        for (std::size_t i = 0; i < flow_pixels.size(); ++i) {
+            const std::array<float, 5> samples{decode(previous_tick[i]), decode(flow_pixels[i]),
+                                               decode(phase_zero[i]), decode(next_tick[i]),
+                                               decode(second_tick[i])};
+            const auto zero = samples[2], next = samples[3], wrapped = samples[1];
+            // Linear HDR spacing doubles at 1.0; estimate both outer slopes
+            // rather than treating a quantization plateau as stationary motion.
+            const auto wrap_delta = std::abs(wrapped - zero);
+            const auto forward_delta = std::abs(next - zero);
+            const auto normal_delta =
+                std::max(std::abs(samples[1] - samples[0]), std::abs(samples[4] - samples[3]));
+            if (!continuous(samples)) {
+                std::fputs("Vulkan resource: emissive flow phase wrap is discontinuous\n", stderr);
+                // Keep one bounded failing sample with both neighboring slopes.
+                std::fprintf(
+                    stderr,
+                    "wrap_sample x=%zu y=%zu channel=%zu "
+                    "half_minus2=%04x half_minus1=%04x half_zero=%04x "
+                    "half_plus1=%04x half_plus2=%04x "
+                    "linear_minus2=%.9g linear_minus1=%.9g linear_zero=%.9g "
+                    "linear_plus1=%.9g linear_plus2=%.9g "
+                    "wrap_delta=%.9g forward_delta=%.9g normal_delta=%.9g limit=%.9g\n",
+                    (i / 4) % width, (i / 4) / width, i % 4,
+                    static_cast<unsigned>(previous_tick[i]), static_cast<unsigned>(flow_pixels[i]),
+                    static_cast<unsigned>(phase_zero[i]), static_cast<unsigned>(next_tick[i]),
+                    static_cast<unsigned>(second_tick[i]), decode(previous_tick[i]), wrapped, zero,
+                    next, decode(second_tick[i]), wrap_delta, forward_delta, normal_delta,
+                    normal_delta * 2 + 1.0F / 1024);
+                return false;
+            }
+        }
+        const auto saved_flow_flags = moving.material.flags[2];
+        moving.material.flags[2] |= 17U << 16U;
+        if (!sample_flow(0xffff0000U))
+            return false;
+        if (flow_pixels == phase_zero) {
+            std::fputs("Vulkan resource: separate jet seeds retained identical turbulence\n",
+                       stderr);
+            return false;
+        }
+        for (std::size_t y = 0; y < height; ++y)
+            for (std::size_t x = 0; x < 16; ++x)
+                if (flow_pixels[(y * width + x) * 4] != phase_zero[(y * width + x) * 4]) {
+                    std::fputs("Vulkan resource: jet seed moved the hot base\n", stderr);
+                    return false;
+                }
+        moving.material.flags[2] = saved_flow_flags;
+        if (!sample_flow(0))
+            return false;
+        const auto disabled = flow_pixels;
+        if (!sample_flow(0xffff4000U) || !sample_flow(0) || flow_pixels != disabled) {
+            std::fputs("Vulkan resource: disabled flow retained an animated material\n", stderr);
+            return false;
+        }
+        for (auto &vertex : quad)
+            vertex.uv = vertex.uv1 = {.5F, 1};
+        if (failed(flow_vertices.write(0, std::as_bytes(std::span(quad))), "clamped flow UVs") ||
+            !sample_flow(0xffff4000U))
+            return false;
+        const auto clamped_guide = flow_pixels;
+        for (auto &vertex : quad)
+            vertex.uv = vertex.uv1 = {.5F, 1e38F};
+        if (failed(flow_vertices.write(0, std::as_bytes(std::span(quad))),
+                   "large finite flow UVs") ||
+            !sample_flow(0xffff4000U))
+            return false;
+        for (const auto bits : flow_pixels)
+            if ((bits & 0x7c00U) == 0x7c00U) {
+                std::fputs("Vulkan resource: finite flow guide overflowed the shader lattice\n",
+                           stderr);
+                return false;
+            }
+        if (flow_pixels != clamped_guide) {
+            std::fputs("Vulkan resource: normalized flow guide escaped the bounded lattice\n",
+                       stderr);
+            return false;
+        }
+        std::puts("emissive_flow_admission=1 emissive_flow_tail_motion=1 emissive_flow_aft=1 "
+                  "emissive_flow_core_anchored=1 emissive_flow_wrap=1 emissive_flow_disabled=1 "
+                  "emissive_flow_soft_tip=1 emissive_flow_irregular_streaks=1 "
+                  "emissive_flow_seed=1 emissive_flow_ragged_skin=1 emissive_flow_bounded_uv=1");
+    }
     std::array<shader::InstanceTransform, 2> instances{};
     for (std::size_t i = 0; i < instances.size(); ++i) {
         instances[i].model = instances[i].normalMatrix = identity;

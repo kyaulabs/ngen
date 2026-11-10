@@ -1,0 +1,92 @@
+{
+  "archive_sha256": "9ae8922f1f8b13544ac27e14f893e7cb5e1777a3fe048d3cdfbe363d2126ee2d",
+  "archive_bytes": 18483,
+  "entries": 25,
+  "uncompressed_bytes": 58537,
+  "retained_native_records": 20,
+  "excluded_setup_session_payloads_unread": 5,
+  "originals": {
+    "build-profile.txt": {
+      "original_sha256": "356c05aea86b6062ecc0be681ed5e638a3af5bcbd82366c9ce29642db12f8ae8",
+      "retained_sha256": "356c05aea86b6062ecc0be681ed5e638a3af5bcbd82366c9ce29642db12f8ae8"
+    },
+    "cmake-version.txt": {
+      "original_sha256": "90d36654ad4780345f1d3a3d542a7fee869fb70755350c845a5abb692b121bc7",
+      "retained_sha256": "4d92ce18ddf9889d463ac875608423312823ad89e7fd5178b02a21ea26a2bd3d"
+    },
+    "conan-version.txt": {
+      "original_sha256": "5f32b073e26212e1eadcea12fb2b0070d8669890df0ff3a467c14051d29a0f56",
+      "retained_sha256": "b6fc698892d456d228ed0b776370e7f229584bea3bb59d9dea7954c80a746e89"
+    },
+    "failure.txt": {
+      "original_sha256": "e86d7ac35e7bb86a27b08b5c4a59fda3c89da305d972ef9143b95b4f23b3d6ad",
+      "retained_sha256": "09ac2c3695f357f04ca796ab28ce448ac2de032628dff4f144fa9f5ebbac96c5"
+    },
+    "host-profile.txt": {
+      "original_sha256": "356c05aea86b6062ecc0be681ed5e638a3af5bcbd82366c9ce29642db12f8ae8",
+      "retained_sha256": "356c05aea86b6062ecc0be681ed5e638a3af5bcbd82366c9ce29642db12f8ae8"
+    },
+    "ninja-version.txt": {
+      "original_sha256": "cc30d39e321dcb24ca5c4c5d5b7730e25ab769876a825616360194c634824754",
+      "retained_sha256": "e2d14d3b09221b66ba4be4e6fcdf0b867181f75109973bd744ba1833d231a543"
+    },
+    "profile.txt": {
+      "original_sha256": "8d60a8abec37a77bc37ec7341b4bc60fc81893b7229a48531447263e3f1c1f3b",
+      "retained_sha256": "924754ab508d53ad1abff18a057e6331813440ff6b0461f7f6e4d6bb2d268a52"
+    },
+    "Release-build.txt": {
+      "original_sha256": "db54ea8d2991ea9762646805ed9d4b65e2da9e4712ad2c27a93d97b9366ce1d7",
+      "retained_sha256": "1365ac86cfe389575f20baa158374cfc4f8ae9d18ee89f66a354417f572f64a9"
+    },
+    "Release-configure.txt": {
+      "original_sha256": "bded2b42f3fb24532ad265f5f5a868480aa4b86dcbc3044a02f817d993f5c427",
+      "retained_sha256": "9e37877de669ceaaf0b2373f66bc02e1ddc280966f49a7aa2189b6e985880959"
+    },
+    "Release-presentation.txt": {
+      "original_sha256": "010aae97766c34209e3786f2d9b6f14d2eed048186d8803d803c2cb931267e43",
+      "retained_sha256": "7c245123f32f4f54d6c598338cef02f90d7fc455ca084a241f0cec7282ddeee2"
+    },
+    "Release-render-startup.txt": {
+      "original_sha256": "8ad47fadb8e5e7e5874d55f7930295bacabd26677c29007620a659b7bd9dc8e3",
+      "retained_sha256": "17799e7716a6aae8cc3a8b53deac071a33647e90914d54964d6530d6bce921e9"
+    },
+    "Release-resources.txt": {
+      "original_sha256": "a81c098e006ee68955a0bf5a544457926ceec85fa02dce5bc396735003e229c1",
+      "retained_sha256": "b29258fd76444613db8be94c2e39e838ee5de1704c2481c4c31b89485a1f0d77"
+    },
+    "Release-serial.txt": {
+      "original_sha256": "388d7c789368e790abc5e2d940a902c253f228ef5f264264d65d516d95ebb9d8",
+      "retained_sha256": "58b2ef5d5a21b2918b5a274ac7180f05428c80420aa263cf98c6082cda0b9ae3"
+    },
+    "Release-test-list.txt": {
+      "original_sha256": "63e182bc0221114982b4a026a8dbf948a900ac532d24a65ec65df56d85b075d4",
+      "retained_sha256": "1c86090f49c0d812d8108b6c13b88d12cbe1c08020ce25b329b75ccded71ccc7"
+    },
+    "Release-tests.txt": {
+      "original_sha256": "fd103fa540b5ef9b72e5dddba900879fc52f44eff40fa3801a6b1f839abf9ef4",
+      "retained_sha256": "0822ddb100e915f8fc8fc749792f89fe434249058020f5d9091eddc5da0c00fc"
+    },
+    "Release-validation-callback.txt": {
+      "original_sha256": "c6eecfd33ef01a81b7ed77866afe7aabb1c4d5e7e8030641af1a71e26c9eaab8",
+      "retained_sha256": "464cd75ea13e21cd40676318a0ba031a62b4e6fdb9909ad26ca8c56278fe7e47"
+    },
+    "Release-workers.txt": {
+      "original_sha256": "2613d7e6098035ca766fa51113f4bd047c94c762ed19a55b89d3755dcd60d878",
+      "retained_sha256": "778e0efb0850ec2f2243f8bee6f1d089149ca70e47905fc764b81e9242de04d1"
+    },
+    "revision.txt": {
+      "original_sha256": "eddfaa00b65f5b8c784295a4adbeb172f79018a6cbf4acd2c63e3a2dea6cf274",
+      "retained_sha256": "e19a88974c0d75bda978d42d91d7ff2ecd0491d5d552526f36281446393fd786"
+    },
+    "vulkan-sdk.txt": {
+      "original_sha256": "5a69b4d3308bb71bdcc75d9691b07e507ccf2753a7a32427db91f401a3bb314b",
+      "retained_sha256": "3983be00596cb3b3c7358a3ea66c7b97103d313096b8cae5499415c2f9839c9c"
+    },
+    "working-tree.txt": {
+      "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "retained_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  },
+  "source_shader_unchanged_sha256": "7233fb61f2f1977eb4389ade3fd03ea9c0593808aa77792f7a7818bbd6c4c6d8",
+  "scope": "Selected returned native text only, EOL/path/terminal-empty-line normalization. No returned scripts/binaries executed or private asset/capture bytes retained. Diagnostic mutation is a deliberate local readback jump, removed before final builds."
+}

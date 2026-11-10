@@ -1,0 +1,13 @@
+{
+  "verdict": "Accept bridge windows",
+  "scope": "Six recessed translucent bridge/cockpit windows and shallow interior backing; prior hull/exhaust acceptances remain valid",
+  "package": "build/cooked-candidate/frigate-bridge-recess-v1/scene.ngas",
+  "package_sha256": "a02d5438ad32d9c8fb917ce847d5a822688ca5b51d69125f6da71cf2ba2116ed",
+  "preview_log": "build/m2-engine-color/live-bridge-recess-v1-preview1.txt",
+  "preview_queued_frames": 5154,
+  "preview_stderr_bytes": 0,
+  "preview_scope": "Camera-only visual inspection, not performance evidence",
+  "freeze": "No further visual retuning; complete relevant verification and normal integration",
+  "visible_workload_triangles": 247542,
+  "m2_complete": false
+}

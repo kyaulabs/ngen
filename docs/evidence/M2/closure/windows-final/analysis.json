@@ -1,0 +1,488 @@
+{
+  "archive_sha256": "e3db751f44d747320b37385581e9086d5b128bca92acbdd3880d8dc2972a4061",
+  "declared_compiled_revision": "5a2f8415aa226d9f757dfa18af403ab039d51806",
+  "reported_working_tree_clean": true,
+  "affected_production_source_unchanged_since_revision": true,
+  "native_ctests_passed": 10,
+  "build_log_last_visible_progress": "153/154; required links and subsequent native execution pass",
+  "native_bounds_markers_passed": true,
+  "native_transparency_markers_passed": true,
+  "package": {
+    "schema": 1,
+    "name": "scene.ngas",
+    "bytes": 175854711,
+    "sha256": "e0ee6a023900c78b2c313f493f2a0e78c9639c39b6d830a1eaf3a3f6c0a29b6d"
+  },
+  "accepted_exhaust_package_executed": false,
+  "result_scope": "Closes latest compiled Windows UI/bounds execution, not accepted exhaust package execution. Original/canonical package result retained without reclassifying as new presentation.",
+  "compiler": "MSVC19.44.35229.0, x64, C++20/extensionsOFF, matching dynamic CRT",
+  "inspection_and_workload": {
+    "inspection": {
+      "measured_frames": 1200,
+      "warmup_frames": 60,
+      "validation": true,
+      "distributions_ns": {
+        "frame_ns": {
+          "p50": 14367600.0,
+          "p95": 21668100.0,
+          "p99": 22159400.0,
+          "max": 25528100.0
+        },
+        "prepare_ns": {
+          "p50": 8527900.0,
+          "p95": 9677300.0,
+          "p99": 11086100.0,
+          "max": 14602600.0
+        },
+        "present_ns": {
+          "p50": 5430000.0,
+          "p95": 12932800.0,
+          "p99": 13215600.0,
+          "max": 15075800.0
+        },
+        "gpu_shadow_ns": {
+          "p50": 58272.0,
+          "p95": 61376.0,
+          "p99": 861728.0,
+          "max": 1092416.0
+        },
+        "gpu_pbr_ns": {
+          "p50": 77184.0,
+          "p95": 84512.0,
+          "p99": 671200.0,
+          "max": 1190208.0
+        },
+        "gpu_post_ns": {
+          "p50": 57216.0,
+          "p95": 57792.0,
+          "p99": 58496.0,
+          "max": 201184.0
+        },
+        "ui_prepare_ns": {
+          "p50": 126100.0,
+          "p95": 153000.0,
+          "p99": 204600.0,
+          "max": 667800.0
+        },
+        "gpu_ui_ns": {
+          "p50": 13568.0,
+          "p95": 15168.0,
+          "p99": 172160.0,
+          "max": 186816.0
+        }
+      },
+      "extent_transitions": [
+        {
+          "frame": 0,
+          "extent": [
+            1280,
+            720
+          ]
+        },
+        {
+          "frame": 20,
+          "extent": [
+            1024,
+            640
+          ]
+        },
+        {
+          "frame": 40,
+          "extent": [
+            1280,
+            720
+          ]
+        }
+      ],
+      "extent_counts": {
+        "(1280, 720)": 1180,
+        "(1024, 640)": 20
+      },
+      "generation_transitions": [
+        {
+          "frame": 0,
+          "generation": 1
+        },
+        {
+          "frame": 35,
+          "generation": 2
+        },
+        {
+          "frame": 92,
+          "generation": 3
+        }
+      ],
+      "tracked": {
+        "vma_allocation_bytes": {
+          "peak": 448107760,
+          "final": 199302016,
+          "last300_min": 199302016,
+          "last300_max": 199302016
+        },
+        "vma_reserved_bytes": {
+          "peak": 451045936,
+          "final": 202240192,
+          "last300_min": 202240192,
+          "last300_max": 202240192
+        },
+        "resource_live": {
+          "peak": 29,
+          "final": 22,
+          "last300_min": 22,
+          "last300_max": 22
+        },
+        "resource_retiring": {
+          "peak": 0,
+          "final": 0,
+          "last300_min": 0,
+          "last300_max": 0
+        }
+      },
+      "process_working_set": {
+        "schema": 1,
+        "process_id": 130664,
+        "exit_code": 0,
+        "timed_out": false,
+        "elapsed_ms": 22225,
+        "sample_period_ms": 25,
+        "observed_peak_working_set_bytes": 809238528,
+        "observed_peak_counter_bytes": 809238528,
+        "sampled_resident_bytes": 809222144,
+        "scope": "Observed OS process working set/high-water counter, including startup; not GPU memory or an exact continuous peak."
+      },
+      "settings_scope": "default/restored exposure1 FXAAon bloom.04; walkthrough frames1-2 .75/off, restored3; every frame counted",
+      "optimized_performance_evidence": false
+    },
+    "steady": {
+      "measured_frames": 600,
+      "warmup_frames": 60,
+      "validation": false,
+      "distributions_ns": {
+        "frame_ns": {
+          "p50": 14617700.0,
+          "p95": 21692000.0,
+          "p99": 22171000.0,
+          "max": 22288400.0
+        },
+        "prepare_ns": {
+          "p50": 599900.0,
+          "p95": 721800.0,
+          "p99": 832300.0,
+          "max": 924500.0
+        },
+        "present_ns": {
+          "p50": 13837600.0,
+          "p95": 20926000.0,
+          "p99": 21381000.0,
+          "max": 21549700.0
+        },
+        "gpu_shadow_ns": {
+          "p50": 58432.0,
+          "p95": 60416.0,
+          "p99": 907040.0,
+          "max": 953184.0
+        },
+        "gpu_pbr_ns": {
+          "p50": 77888.0,
+          "p95": 85568.0,
+          "p99": 987104.0,
+          "max": 994656.0
+        },
+        "gpu_post_ns": {
+          "p50": 57120.0,
+          "p95": 57600.0,
+          "p99": 64352.0,
+          "max": 197248.0
+        },
+        "ui_prepare_ns": {
+          "p50": 146200.0,
+          "p95": 186500.0,
+          "p99": 221800.0,
+          "max": 330300.0
+        },
+        "gpu_ui_ns": {
+          "p50": 14784.0,
+          "p95": 148192.0,
+          "p99": 177440.0,
+          "max": 546208.0
+        }
+      },
+      "extent_transitions": [
+        {
+          "frame": 0,
+          "extent": [
+            1280,
+            720
+          ]
+        }
+      ],
+      "extent_counts": {
+        "(1280, 720)": 600
+      },
+      "generation_transitions": [
+        {
+          "frame": 0,
+          "generation": 1
+        }
+      ],
+      "tracked": {
+        "vma_allocation_bytes": {
+          "peak": 199302016,
+          "final": 199302016,
+          "last300_min": 199302016,
+          "last300_max": 199302016
+        },
+        "vma_reserved_bytes": {
+          "peak": 202240192,
+          "final": 202240192,
+          "last300_min": 202240192,
+          "last300_max": 202240192
+        },
+        "resource_live": {
+          "peak": 22,
+          "final": 22,
+          "last300_min": 22,
+          "last300_max": 22
+        },
+        "resource_retiring": {
+          "peak": 0,
+          "final": 0,
+          "last300_min": 0,
+          "last300_max": 0
+        }
+      },
+      "process_working_set": {
+        "schema": 1,
+        "process_id": 175444,
+        "exit_code": 0,
+        "timed_out": false,
+        "elapsed_ms": 12056,
+        "sample_period_ms": 25,
+        "observed_peak_working_set_bytes": 385490944,
+        "observed_peak_counter_bytes": 385490944,
+        "sampled_resident_bytes": 366723072,
+        "scope": "Observed OS process working set/high-water counter, including startup; not GPU memory or an exact continuous peak."
+      },
+      "settings_scope": "default exposure1 FXAAon bloom.04 throughout",
+      "optimized_performance_evidence": true
+    },
+    "stream": {
+      "measured_frames": 600,
+      "warmup_frames": 60,
+      "validation": false,
+      "distributions_ns": {
+        "frame_ns": {
+          "p50": 14616300.0,
+          "p95": 21488300.0,
+          "p99": 22134400.0,
+          "max": 22224000.0
+        },
+        "prepare_ns": {
+          "p50": 614800.0,
+          "p95": 806000.0,
+          "p99": 1032700.0,
+          "max": 5915800.0
+        },
+        "present_ns": {
+          "p50": 13839200.0,
+          "p95": 20710800.0,
+          "p99": 21380900.0,
+          "max": 21494400.0
+        },
+        "gpu_shadow_ns": {
+          "p50": 58400.0,
+          "p95": 60864.0,
+          "p99": 64352.0,
+          "max": 912768.0
+        },
+        "gpu_pbr_ns": {
+          "p50": 77856.0,
+          "p95": 84896.0,
+          "p99": 896000.0,
+          "max": 987616.0
+        },
+        "gpu_post_ns": {
+          "p50": 57120.0,
+          "p95": 57632.0,
+          "p99": 64352.0,
+          "max": 229920.0
+        },
+        "ui_prepare_ns": {
+          "p50": 131000.0,
+          "p95": 174600.0,
+          "p99": 230700.0,
+          "max": 1013900.0
+        },
+        "gpu_ui_ns": {
+          "p50": 13600.0,
+          "p95": 15776.0,
+          "p99": 173632.0,
+          "max": 180576.0
+        }
+      },
+      "extent_transitions": [
+        {
+          "frame": 0,
+          "extent": [
+            1280,
+            720
+          ]
+        }
+      ],
+      "extent_counts": {
+        "(1280, 720)": 600
+      },
+      "generation_transitions": [
+        {
+          "frame": 0,
+          "generation": 1
+        },
+        {
+          "frame": 32,
+          "generation": 2
+        },
+        {
+          "frame": 89,
+          "generation": 3
+        },
+        {
+          "frame": 146,
+          "generation": 4
+        },
+        {
+          "frame": 204,
+          "generation": 5
+        }
+      ],
+      "tracked": {
+        "vma_allocation_bytes": {
+          "peak": 448107760,
+          "final": 199302016,
+          "last300_min": 199302016,
+          "last300_max": 199302016
+        },
+        "vma_reserved_bytes": {
+          "peak": 451045936,
+          "final": 202240192,
+          "last300_min": 202240192,
+          "last300_max": 202240192
+        },
+        "resource_live": {
+          "peak": 29,
+          "final": 22,
+          "last300_min": 22,
+          "last300_max": 22
+        },
+        "resource_retiring": {
+          "peak": 0,
+          "final": 0,
+          "last300_min": 0,
+          "last300_max": 0
+        }
+      },
+      "process_working_set": {
+        "schema": 1,
+        "process_id": 196384,
+        "exit_code": 0,
+        "timed_out": false,
+        "elapsed_ms": 12078,
+        "sample_period_ms": 25,
+        "observed_peak_working_set_bytes": 935153664,
+        "observed_peak_counter_bytes": 935153664,
+        "sampled_resident_bytes": 908472320,
+        "scope": "Observed OS process working set/high-water counter, including startup; not GPU memory or an exact continuous peak."
+      },
+      "settings_scope": "default/restored exposure1 FXAAon bloom.04; walkthrough frames1-2 .75/off, restored3; every frame counted",
+      "optimized_performance_evidence": true
+    }
+  },
+  "private_capture_identities": {
+    "inspection": {
+      "sha256": "3ab7f581c0a4324811999e64baf4379b52ed5e09aa5025b4aa598dd043878190",
+      "bytes": 3686538,
+      "native_extent": [
+        1280,
+        720
+      ],
+      "left_gutter": 16,
+      "right_gutter": 16
+    },
+    "steady": {
+      "sha256": "876def0e4deffb9505b7dd0fe597978135aafae0932c23ca304ed1dbb867d2ba",
+      "bytes": 3686538,
+      "native_extent": [
+        1280,
+        720
+      ],
+      "left_gutter": 16,
+      "right_gutter": 16
+    },
+    "stream": {
+      "sha256": "8e54a0fc549b007ba20b8bd708cd410838d0f9dc448d1ac8f906cd2bd7370564",
+      "bytes": 3686538,
+      "native_extent": [
+        1280,
+        720
+      ],
+      "left_gutter": 16,
+      "right_gutter": 16
+    }
+  },
+  "reflection_records": [
+    {
+      "name": "Release-overlay-fragment.reflection.json",
+      "sha256": "38d05c4a46c96430f1d2c2fd957060728d6a7c997c296af7332afb938ffa5bf9",
+      "previous_record": "docs/evidence/M2/closure/windows-b2/release/Release-overlay-fragment.reflection.json",
+      "byte_identical": true
+    },
+    {
+      "name": "Release-pbr-vertex.reflection.json",
+      "sha256": "e9d735ae26f60a0020484a131c038b041a3561739323aa1ecd515220b5a8031f",
+      "previous_record": "docs/evidence/M2/closure/windows-b2/release/Release-pbr-vertex.reflection.json",
+      "byte_identical": true
+    },
+    {
+      "name": "Release-post-vertex.reflection.json",
+      "sha256": "f7560a61857f7a0ec8cddcd1127d3cf08d651fb5c884d3c9e03058e17ec2183f",
+      "previous_record": "docs/evidence/M2/closure/windows-b2/release/Release-post-vertex.reflection.json",
+      "byte_identical": true
+    },
+    {
+      "name": "Release-shadow-fragment.reflection.json",
+      "sha256": "653644cdd1742af8e71abbfebebde013a804b6d505cc1424b4cf619b3b433117",
+      "previous_record": "docs/evidence/M2/closure/windows-b2/release/Release-shadow-fragment.reflection.json",
+      "byte_identical": true
+    },
+    {
+      "name": "Release-cull.reflection.json",
+      "sha256": "8c25f5bf2dae27145bc480db5affd5e72517016c3c3a602fe66aaaa600e032d6",
+      "previous_record": "docs/evidence/M2/closure/windows-b2/release/Release-cull.reflection.json",
+      "byte_identical": true
+    },
+    {
+      "name": "Release-post-fragment.reflection.json",
+      "sha256": "fec80329a0b9fa2ede95fdfc4f3e877cb6c9360fb860aa3bf62b7a6ebbe4b449",
+      "previous_record": "docs/evidence/M2/closure/windows-b2/release/Release-post-fragment.reflection.json",
+      "byte_identical": true
+    },
+    {
+      "name": "Release-shadow-vertex.reflection.json",
+      "sha256": "5d1d04075883bd55cb6e64275ff5a65a9e49e9814dc944f7acdb23c6628a1156",
+      "previous_record": "docs/evidence/M2/closure/windows-b2/release/Release-shadow-vertex.reflection.json",
+      "byte_identical": true
+    },
+    {
+      "name": "Release-overlay-vertex.reflection.json",
+      "sha256": "bb7035b5941fa723975a82ad4ef30d29c1c889e48562aabc8a3cad05281e21e7",
+      "previous_record": "docs/evidence/M2/closure/windows-b2/release/Release-overlay-vertex.reflection.json",
+      "byte_identical": true
+    },
+    {
+      "name": "Release-pbr-fragment.reflection.json",
+      "sha256": "ceeb6547bc8da4047e61092ce4b70a64dbb447164b9dc148d26265037315ff0a",
+      "previous_record": "docs/evidence/M2/closure/windows-b2/release/Release-pbr-fragment.reflection.json",
+      "byte_identical": true
+    }
+  ],
+  "next": "Runtime-only accepted-package check using this existing Release build; no rebuild/compiler-matrix/WDDM/personal approval repeat."
+}

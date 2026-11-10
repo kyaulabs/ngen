@@ -1,0 +1,12 @@
+{
+  "input_sha256": "ed2af968abb5c064c90e56ca6421f41f648cbfe9d68c8c4b2c0e668440a0d09b",
+  "bytes": 1143,
+  "reported_revision": "b6ea825e0b9037a43ea53f26130ee2da9d6aa0c7",
+  "probe_exit": 1,
+  "wrap_failure_present": true,
+  "numeric_sample_present": false,
+  "binary_identity_in_log": false,
+  "scope": "Failure is confirmed but expected bounded sample is absent. Cannot attribute omission to stale executable, stream capture or formatting from this file alone. No shader/metric repair inferred.",
+  "next": "Existing-binary marker/hash plus independent direct stdout/stderr capture; no rebuild or full workload",
+  "local_capture_control": "Real native child exit1 preserved both stderr lines through direct capture; local merged capture also retained the line, so no Windows Tee root-cause claim."
+}

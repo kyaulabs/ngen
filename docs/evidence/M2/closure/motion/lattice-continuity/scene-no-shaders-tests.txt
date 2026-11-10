@@ -1,0 +1,25 @@
+Test project /home/kyau/projects/kyaulabs/ngen/build/scene-no-shaders
+      Start  1: ngen_tests
+ 1/10 Test  #1: ngen_tests .......................   Passed    0.01 sec
+      Start  2: render_contract_tests
+ 2/10 Test  #2: render_contract_tests ............   Passed    0.01 sec
+      Start  3: render_environment_tests
+ 3/10 Test  #3: render_environment_tests .........   Passed    1.07 sec
+      Start  4: scene_workload_tests
+ 4/10 Test  #4: scene_workload_tests .............   Passed    0.02 sec
+      Start  5: asset_package_tests
+ 5/10 Test  #5: asset_package_tests ..............   Passed    0.11 sec
+      Start  6: render_startup_tests
+ 6/10 Test  #6: render_startup_tests .............   Passed    0.02 sec
+      Start  7: wayland_tablet_shutdown
+ 7/10 Test  #7: wayland_tablet_shutdown ..........   Passed    0.03 sec
+      Start  8: wayland_tablet_removal
+ 8/10 Test  #8: wayland_tablet_removal ...........   Passed    0.03 sec
+      Start  9: replay_serial
+ 9/10 Test  #9: replay_serial ....................   Passed    0.01 sec
+      Start 10: replay_workers
+10/10 Test #10: replay_workers ...................   Passed    0.02 sec
+
+100% tests passed out of 10
+
+Total Test time (real) =   1.34 sec

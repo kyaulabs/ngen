@@ -1,0 +1,5 @@
+ship_bounds_observed minimum=398 maximum=884 selected=0 world_min=3 world_max=9
+Inspector probe: ship bounds omit the separately instanced rear engine or depend on part selection
+device=Intel(R) Iris(R) Xe Graphics (TGL GT2) api=1.4 driver=109060102 queue=0 display=wayland
+scene_translucent_order=1 scene_opaque_occlusion=1 scene_translucent_depth_readonly=1
+device=Intel(R) Iris(R) Xe Graphics (TGL GT2) api=1.4 driver=109060102 queue=0 display=wayland

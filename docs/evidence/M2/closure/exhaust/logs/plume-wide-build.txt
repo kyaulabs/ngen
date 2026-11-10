@@ -1,0 +1,23 @@
+{
+  "package": "<repo>/build/cooked-candidate/frigate-blue-white-plume-wide/scene.ngas",
+  "sha256": "067407fb5fa2527771212cc7280a345b02ad3dd2a823ae8ba81b3553689ec52b",
+  "runtime": {
+    "package_valid": 1,
+    "vertices": 1304372,
+    "indices": 3309156,
+    "primitives": 189,
+    "instances": 194,
+    "materials": 14,
+    "images": 5,
+    "textures": 16,
+    "lights": 612,
+    "light_instances": 612,
+    "texture_bytes": 89522172,
+    "lod_triangles": [
+      574168,
+      290836,
+      238112
+    ],
+    "checksum": 152999810
+  }
+}

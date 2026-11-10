@@ -1,0 +1,2 @@
+wrap diagnostic index=2600 half=3c00/3c05/3bed linear=1/1.00488/0.990723
+Vulkan resource: emissive flow phase wrap is discontinuous

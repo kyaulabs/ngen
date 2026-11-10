@@ -1,0 +1,64 @@
+/* NGEN 1.0. Set data-theme on html to override system preference. */
+:root {
+  color-scheme: light;
+  --ngen-bg: #EAF8FB;
+  --ngen-surface: #FFFFFF;
+  --ngen-surface-alt: #DDEFF5;
+  --ngen-text: #173B4B;
+  --ngen-muted: #466473;
+  --ngen-border: #B8D2DC;
+  --ngen-control-border: #5C7D8B;
+  --ngen-accent: #006D89;
+  --ngen-accent-hover: #005B74;
+  --ngen-on-accent: #FFFFFF;
+  --ngen-secondary: #5B45B4;
+  --ngen-on-secondary: #FFFFFF;
+  --ngen-focus: #006D89;
+  --ngen-success: #006649;
+  --ngen-warning: #80500A;
+  --ngen-danger: #A52F42;
+  --ngen-font-sans: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --ngen-font-mono: ui-monospace, 'SFMono-Regular', Consolas, 'Liberation Mono', monospace;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) {
+  color-scheme: dark;
+  --ngen-bg: #0E222C;
+  --ngen-surface: #14313D;
+  --ngen-surface-alt: #1B4050;
+  --ngen-text: #DDF3F8;
+  --ngen-muted: #A9C5D0;
+  --ngen-border: #315362;
+  --ngen-control-border: #7899A6;
+  --ngen-accent: #63DDF8;
+  --ngen-accent-hover: #89E8FA;
+  --ngen-on-accent: #08212B;
+  --ngen-secondary: #B6A5FF;
+  --ngen-on-secondary: #21163A;
+  --ngen-focus: #89E8FA;
+  --ngen-success: #7FDFBB;
+  --ngen-warning: #FFD38A;
+  --ngen-danger: #FFA9AC;
+  }
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --ngen-bg: #0E222C;
+  --ngen-surface: #14313D;
+  --ngen-surface-alt: #1B4050;
+  --ngen-text: #DDF3F8;
+  --ngen-muted: #A9C5D0;
+  --ngen-border: #315362;
+  --ngen-control-border: #7899A6;
+  --ngen-accent: #63DDF8;
+  --ngen-accent-hover: #89E8FA;
+  --ngen-on-accent: #08212B;
+  --ngen-secondary: #B6A5FF;
+  --ngen-on-secondary: #21163A;
+  --ngen-focus: #89E8FA;
+  --ngen-success: #7FDFBB;
+  --ngen-warning: #FFD38A;
+  --ngen-danger: #FFA9AC;
+}

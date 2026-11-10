@@ -1,0 +1,42 @@
+{
+  "inspector-debug": {
+    "full_ctest_selected": 12,
+    "full_ctest_log": "guarded-inspector-debug-tests.txt",
+    "affected_cpp_rerun_log": "review-inspector-debug-tests.txt"
+  },
+  "inspector-release": {
+    "full_ctest_selected": 12,
+    "full_ctest_log": "guarded-inspector-release-tests.txt",
+    "affected_cpp_rerun_log": "review-inspector-release-tests.txt"
+  },
+  "inspector-asan": {
+    "full_ctest_selected": 12,
+    "full_ctest_log": "guarded-inspector-asan-tests.txt",
+    "affected_cpp_rerun_log": "review-inspector-asan-tests.txt"
+  },
+  "inspector-gcc": {
+    "full_ctest_selected": 12,
+    "full_ctest_log": "guarded-inspector-gcc-tests.txt",
+    "affected_cpp_rerun_log": "review-inspector-gcc-tests.txt"
+  },
+  "scene-shipping": {
+    "full_ctest_selected": 11,
+    "full_ctest_log": "guarded-scene-shipping-tests.txt",
+    "affected_cpp_rerun_log": "review-scene-shipping-tests.txt"
+  },
+  "scene-no-shaders": {
+    "full_ctest_selected": 10,
+    "full_ctest_log": "guarded-scene-no-shaders-tests.txt",
+    "affected_cpp_rerun_log": "review-scene-no-shaders-tests.txt"
+  },
+  "inspector-tsan": {
+    "full_ctest_selected": 6,
+    "full_ctest_log": "guarded-inspector-tsan-tests.txt",
+    "affected_cpp_rerun_log": "review-inspector-tsan-tests.txt"
+  },
+  "ast": {
+    "successful_invocations": 111,
+    "affected_reruns": 9,
+    "gcc_ast": "Unavailable with actual unsupported GCC module flags; no flags stripped"
+  }
+}

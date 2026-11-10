@@ -3,6 +3,10 @@
 #include "render/scene.hpp"
 
 namespace ngen::render {
+struct EmissiveFlow {
+    float phase{};  // Normalized visual cycle [0,1), not simulation time.
+    float amount{}; // [0,1]; zero preserves authored static rendering.
+};
 struct SceneView {
     shader::Matrix view_projection;
     shader::Matrix light_view_projection;
@@ -13,6 +17,10 @@ struct SceneView {
     // Empty uses authored factors; otherwise a complete material-indexed table.
     // Borrowed only through draw(); immutable package/map/facing data is unchanged.
     std::span<const assets::MaterialFactors> material_factors{};
+    // Empty disables motion; otherwise a complete material-indexed table.
+    // Clamped normalized UV0.u guides aft flow. Blend materials only;
+    // values are copied before draw returns.
+    std::span<const EmissiveFlow> material_flows{};
 };
 struct SceneTargets {
     const Image &color;

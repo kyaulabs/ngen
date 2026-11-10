@@ -14,7 +14,10 @@ param(
     [Parameter(ParameterSetName = 'CPU')]
     [switch]$Inspector,
     [Parameter(ParameterSetName = 'CPU')]
+    [Parameter(Mandatory, ParameterSetName = 'Measurement')]
     [string]$ScenePackage = '',
+    [Parameter(Mandatory, ParameterSetName = 'Measurement')]
+    [string]$MeasureWorkload,
     [Parameter(Mandatory, ParameterSetName = 'GPU')]
     [switch]$GpuInfo
 )
@@ -65,6 +68,8 @@ function Invoke-NgenWorkload {
         [Parameter(Mandatory)][string[]]$Arguments,
         [Parameter(Mandatory)][string]$LogPath,
         [Parameter(Mandatory)][string]$MemoryPath,
+        [switch]$GpuMemory,
+        [string]$FrameReport = '',
         [ValidateRange(1000, 600000)][int]$TimeoutMilliseconds = 180000
     )
     $errorPath = "$LogPath.stderr.txt"
@@ -78,10 +83,18 @@ function Invoke-NgenWorkload {
     $process.StartInfo.RedirectStandardError = $true
     foreach ($argument in $Arguments) { $process.StartInfo.ArgumentList.Add($argument) }
     $clock = [Diagnostics.Stopwatch]::StartNew()
+    $clockStarted = [Diagnostics.Stopwatch]::GetTimestamp()
     $peak = 0L
     $resident = 0L
     $timedOut = $false
     $started = $false
+    $gpuSamples = [Collections.Generic.List[object]]::new()
+    $gpuQueries = [Collections.Generic.List[object]]::new()
+    $gpuStatus = 'not_observed'
+    $gpuError = ''
+    $gpuErrorMessage = ''
+    $gpuErrorHresult = $null
+    $nextGpuSample = 0L
     try {
         $started = $process.Start()
         if (-not $started) { throw 'Could not start workload process.' }
@@ -93,6 +106,54 @@ function Invoke-NgenWorkload {
                 $peak = [Math]::Max($peak, $process.PeakWorkingSet64)
                 $resident = [Math]::Max($resident, $process.WorkingSet64)
             } catch [InvalidOperationException] { }
+            if ($GpuMemory -and $gpuStatus -ne 'unavailable' -and $clock.ElapsedMilliseconds -ge $nextGpuSample) {
+                $queryStarted = $clock.ElapsedMilliseconds
+                $attempt = [ordered]@{ status = 'no_own_instances'; instances = 0
+                    started_timestamp_ticks = [Diagnostics.Stopwatch]::GetTimestamp() }
+                try {
+                    $rows = @(Get-CimInstance -Query ("SELECT Name,DedicatedUsage,SharedUsage,TotalCommitted FROM Win32_PerfFormattedData_GPUPerformanceCounters_GPUProcessMemory WHERE Name LIKE 'pid_$($process.Id)_%'") -OperationTimeoutSec 2 -ErrorAction Stop)
+                    if ($rows.Count -gt 64 -or $gpuQueries.Count -ge 1201) { throw 'GPU observation capacity exceeded.' }
+                    $seen = [Collections.Generic.HashSet[string]]::new([StringComparer]::OrdinalIgnoreCase)
+                    $dedicated = 0L; $shared = 0L; $committed = 0L
+                    foreach ($row in $rows) {
+                        if ($row.Name -notmatch "^pid_$($process.Id)_") { continue }
+                        if ($row.Name -notmatch "^pid_$($process.Id)_luid_0x[0-9a-f]+_0x[0-9a-f]+_phys_[0-9]+$") { throw 'Unsupported own-process GPU instance.' }
+                        if (-not $seen.Add($row.Name)) { throw 'Duplicate process GPU instance.' }
+                        foreach ($value in @($row.DedicatedUsage, $row.SharedUsage, $row.TotalCommitted)) {
+                            if (($value -isnot [long] -and $value -isnot [ulong] -and $value -isnot [int] -and $value -isnot [uint32]) -or
+                                $value -lt 0 -or $value -gt ([long]::MaxValue / 128)) { throw 'Invalid process GPU counter.' }
+                        }
+                        $dedicated += [long]$row.DedicatedUsage
+                        $shared += [long]$row.SharedUsage
+                        $committed += [long]$row.TotalCommitted
+                    }
+                    if ($seen.Count) {
+                        $attempt.status = if ($dedicated -gt 0 -or $shared -gt 0 -or $committed -gt 0) { 'observed' } else { 'zero' }
+                        $attempt.instances = $seen.Count
+                        $gpuSamples.Add([ordered]@{
+                            timestamp_ticks = [Diagnostics.Stopwatch]::GetTimestamp()
+                            elapsed_ms = $clock.ElapsedMilliseconds; query_elapsed_ms = $clock.ElapsedMilliseconds - $queryStarted
+                            instances = $seen.Count; dedicated_bytes = $dedicated; shared_bytes = $shared
+                            dedicated_plus_shared_bytes = $dedicated + $shared; total_committed_bytes = $committed
+                        })
+                        $gpuStatus = 'observed'
+                    }
+                } catch {
+                    $attempt.status = 'error'
+                    $gpuStatus = 'unavailable'
+                    $gpuError = $_.Exception.GetType().Name
+                    $detail = [string]$_.Exception.Message
+                    $gpuErrorMessage = $detail.Substring(0, [Math]::Min($detail.Length, 512))
+                    $gpuErrorHresult = $_.Exception.HResult
+                } finally {
+                    $attempt.timestamp_ticks = [Diagnostics.Stopwatch]::GetTimestamp()
+                    $attempt.elapsed_ms = $clock.ElapsedMilliseconds
+                    $attempt.query_elapsed_ms = $clock.ElapsedMilliseconds - $queryStarted
+                    $attempt.process_exited = $process.HasExited
+                    $gpuQueries.Add($attempt)
+                }
+                $nextGpuSample = $clock.ElapsedMilliseconds + 500
+            }
             if ($process.WaitForExit(25)) { break }
             if ($clock.ElapsedMilliseconds -gt $TimeoutMilliseconds) {
                 $timedOut = $true
@@ -101,29 +162,185 @@ function Invoke-NgenWorkload {
             }
         }
         $process.WaitForExit()
+        # A CIM call may finish after the observation deadline even when the
+        # child exits during that call. Preserve its real exit code, but fail timing.
+        if ($clock.ElapsedMilliseconds -gt $TimeoutMilliseconds) { $timedOut = $true }
         $stdout = $output.GetAwaiter().GetResult()
         $stderr = $errors.GetAwaiter().GetResult()
         [IO.File]::WriteAllText($LogPath, $stdout)
         [IO.File]::WriteAllText($errorPath, $stderr)
         $observed = [Math]::Max($peak, $resident)
-        [ordered]@{
+        if ($GpuMemory -and $gpuStatus -eq 'observed' -and
+            ($gpuSamples.dedicated_plus_shared_bytes | Measure-Object -Maximum).Maximum -eq 0 -and
+            ($gpuSamples.total_committed_bytes | Measure-Object -Maximum).Maximum -eq 0) {
+            $gpuStatus = 'not_observed'
+            $gpuError = 'EntirelyZeroGpuWorkloadTrace'
+        }
+        $clockEnded = [Diagnostics.Stopwatch]::GetTimestamp()
+        $coverage = $null
+        if ($GpuMemory) {
+            $windowStart = $clockStarted; $windowEnd = $clockEnded
+            $windowScope = 'process_observation'; $windowError = ''; $frameRows = 0
+            if ($FrameReport) {
+                $windowScope = 'native_measured_frames'
+                try {
+                    $report = Get-Item -LiteralPath $FrameReport -Force -ErrorAction Stop
+                    if ($report -isnot [IO.FileInfo] -or ($report.Attributes -band [IO.FileAttributes]::ReparsePoint) -or
+                        $report.Extension -ine '.csv' -or $report.Length -lt 1 -or $report.Length -gt 8388608) { throw 'Invalid native frame report.' }
+                    $header = Get-Content -LiteralPath $FrameReport -TotalCount 1
+                    if ($header.Length -gt 2048 -or $header.Split(',').Count -gt 32) { throw 'Native frame header exceeds admission.' }
+                    # Stop enumeration at the admitted row bound, not after materializing an arbitrary CSV.
+                    $frames = @(Import-Csv -LiteralPath $FrameReport | Select-Object -First 3601)
+                    if ($frames.Count -lt 1 -or $frames.Count -gt 3600) { throw 'Invalid native frame count.' }
+                    $previous = [decimal]-1
+                    foreach ($frame in $frames) {
+                        if ($frame.host_ns -notmatch '^\d+$' -or $frame.frame_ns -notmatch '^\d+$' -or
+                            [decimal]$frame.host_ns -le $previous) { throw 'Invalid native frame clock.' }
+                        $previous = [decimal]$frame.host_ns
+                    }
+                    $windowStart = [long](([decimal]$frames[0].host_ns - [decimal]$frames[0].frame_ns) * [Diagnostics.Stopwatch]::Frequency / 1000000000)
+                    $windowEnd = [long]([decimal]$frames[-1].host_ns * [Diagnostics.Stopwatch]::Frequency / 1000000000)
+                    if ($windowStart -lt $clockStarted -or $windowEnd -gt $clockEnded -or $windowEnd -lt $windowStart) { throw 'Native and parent clock windows do not correlate.' }
+                    $frameRows = $frames.Count
+                } catch { $windowError = 'InvalidOrUncorrelatedNativeFrameReport' }
+            }
+            $validSamples = @($gpuSamples | Where-Object { $_.dedicated_plus_shared_bytes -gt 0 -or $_.total_committed_bytes -gt 0 })
+            $missing = @($gpuQueries | Where-Object {
+                $_.timestamp_ticks -ge $windowStart -and $_.timestamp_ticks -le $windowEnd -and
+                    $_.status -ne 'observed' -and -not $_.process_exited
+            })
+            $maximumGap = 0L; $previous = $windowStart
+            foreach ($sample in $validSamples) {
+                if ($sample.timestamp_ticks -ge $windowStart -and $sample.timestamp_ticks -le $windowEnd) {
+                    $maximumGap = [Math]::Max($maximumGap, $sample.timestamp_ticks - $previous)
+                    $previous = $sample.timestamp_ticks
+                }
+            }
+            $maximumGap = [Math]::Max($maximumGap, $windowEnd - $previous)
+            $nearWindow = @($validSamples | Where-Object {
+                $_.timestamp_ticks -ge $windowStart - [Diagnostics.Stopwatch]::Frequency -and
+                    $_.timestamp_ticks -le $windowEnd + [Diagnostics.Stopwatch]::Frequency
+            })
+            $complete = -not $windowError -and $nearWindow.Count -gt 0 -and $missing.Count -eq 0 -and
+                $maximumGap -le [Diagnostics.Stopwatch]::Frequency
+            $coverage = [ordered]@{ complete = $complete; scope = $windowScope; error = $windowError
+                start_timestamp_ticks = $windowStart; end_timestamp_ticks = $windowEnd; frame_rows = $frameRows
+                missing_queries_in_window = $missing.Count; maximum_allowed_gap_ms = 1000
+                maximum_observed_gap_ms = [decimal]$maximumGap * 1000 / [Diagnostics.Stopwatch]::Frequency
+                scope_note = 'Every query attempt is retained. Native-frame scope excludes declared startup/exit windows, not bad measured frames. One-second maximum observation gap is not a continuous hard peak guarantee.' }
+            if ($gpuStatus -eq 'observed' -and -not $complete) {
+                $gpuStatus = 'incomplete'
+                $gpuError = 'IncompleteGpuWindowCoverage'
+            }
+        }
+        $gpuBudgetOk = if ($gpuStatus -eq 'observed') {
+            ($gpuSamples.dedicated_plus_shared_bytes | Measure-Object -Maximum).Maximum -le 1073741824 -and
+                ($gpuSamples.total_committed_bytes | Measure-Object -Maximum).Maximum -le 1073741824
+        } else { $null }
+        $memory = [ordered]@{
             schema = 1; process_id = $process.Id; exit_code = $process.ExitCode; timed_out = $timedOut
             elapsed_ms = $clock.ElapsedMilliseconds; sample_period_ms = 25
             observed_peak_working_set_bytes = $observed
             observed_peak_counter_bytes = $peak; sampled_resident_bytes = $resident
             scope = 'Observed OS process working set/high-water counter, including startup; not GPU memory or an exact continuous peak.'
-        } | ConvertTo-Json | Set-Content -LiteralPath $MemoryPath
+        }
+        if ($GpuMemory) {
+            $memory.schema = 3
+            $memory.gpu_memory = [ordered]@{
+                status = $gpuStatus; error_type = $gpuError; within_1gib_budget = $gpuBudgetOk
+                error_message = $gpuErrorMessage; error_hresult = $gpuErrorHresult
+                provider = 'Win32_PerfFormattedData_GPUPerformanceCounters_GPUProcessMemory'
+                target_sample_period_ms = 500; operation_timeout_seconds = 2
+                parent_qpc_started_ticks = $clockStarted; parent_qpc_ended_ticks = $clockEnded
+                parent_qpc_frequency = [Diagnostics.Stopwatch]::Frequency
+                peak_dedicated_bytes = if ($gpuSamples.Count) { ($gpuSamples.dedicated_bytes | Measure-Object -Maximum).Maximum } else { $null }
+                peak_shared_bytes = if ($gpuSamples.Count) { ($gpuSamples.shared_bytes | Measure-Object -Maximum).Maximum } else { $null }
+                peak_dedicated_plus_shared_bytes = if ($gpuSamples.Count) { ($gpuSamples.dedicated_plus_shared_bytes | Measure-Object -Maximum).Maximum } else { $null }
+                peak_total_committed_bytes = if ($gpuSamples.Count) { ($gpuSamples.total_committed_bytes | Measure-Object -Maximum).Maximum } else { $null }
+                samples = $gpuSamples.ToArray(); queries = $gpuQueries.ToArray(); coverage = $coverage
+                scope = 'Local WDDM per-process adapter counters, summed once per unique instance; dedicated+shared and total committed are separate measures. Sampled/provider-refreshed observations, not an exact continuous peak, global device usage or an uninstrumented timing run. CIM operation timeout is not a hard OS deadline.'
+            }
+        }
+        $memory | ConvertTo-Json -Depth 6 | Set-Content -LiteralPath $MemoryPath
         $stdout | Out-Host
-        if ($timedOut) { throw 'Workload process exceeded the observation deadline.' }
+        if ($timedOut) { throw 'Workload observation exceeded its deadline.' }
         if ($process.ExitCode -ne 0) { throw "Workload failed with exit code $($process.ExitCode). See $LogPath" }
         if ($stderr.Length) { throw "Unexpected workload stderr. See $errorPath" }
         if ($observed -le 0 -or $observed -gt 6442450944) { throw 'Observed workload working set unavailable or above 6 GiB.' }
+        if ($GpuMemory -and $gpuStatus -ne 'observed') { throw 'Process GPU memory observations unavailable or incomplete; inspect retained metadata.' }
+        if ($GpuMemory -and -not $gpuBudgetOk) { throw 'Observed process GPU memory exceeds the 1 GiB budget; inspect retained metadata.' }
     } finally {
         if ($started -and -not $process.HasExited) {
             try { $process.Kill($true) } catch [InvalidOperationException] { }
             $process.WaitForExit()
         }
         $process.Dispose()
+    }
+}
+
+function Invoke-NgenMeasurement {
+    param(
+        [Parameter(Mandatory)][string]$BuildDirectory,
+        [Parameter(Mandatory)][string]$LogDirectory,
+        [Parameter(Mandatory)][string]$ScenePackage
+    )
+    $directory = Get-Item -LiteralPath $BuildDirectory -Force -ErrorAction Stop
+    if ($directory -isnot [IO.DirectoryInfo] -or ($directory.Attributes -band [IO.FileAttributes]::ReparsePoint)) {
+        throw 'Measurement requires a regular existing Release build directory, not a link.'
+    }
+    $BuildDirectory = $directory.FullName
+    $cache = Join-Path $BuildDirectory 'CMakeCache.txt'
+    $binary = Join-Path $BuildDirectory 'scene_workload.exe'
+    $activate = Join-Path $BuildDirectory 'conanrun.ps1'
+    $deactivate = Join-Path $BuildDirectory 'deactivate_conanrun.ps1'
+    $buildLogs = Join-Path $directory.Parent.FullName 'logs'
+    $revisionFile = Join-Path $buildLogs 'revision.txt'
+    $treeFile = Join-Path $buildLogs 'working-tree.txt'
+    foreach ($path in @($cache, $binary, $activate, $deactivate, $revisionFile, $treeFile)) {
+        $item = Get-Item -LiteralPath $path -Force -ErrorAction Stop
+        if ($item -isnot [IO.FileInfo] -or ($item.Attributes -band [IO.FileAttributes]::ReparsePoint) -or $item.Length -gt 67108864) {
+            throw 'Measurement build input is missing, linked, nonregular or oversized.'
+        }
+    }
+    $type = [regex]::Matches((Get-Content -Raw -LiteralPath $cache), '(?m)^CMAKE_BUILD_TYPE:STRING=([^\r\n]*)\r?$')
+    $revision = (Get-Content -Raw -LiteralPath $revisionFile).Trim()
+    if ($type.Count -ne 1 -or $type[0].Groups[1].Value -cne 'Release' -or
+        $revision -notmatch '^[0-9a-f]{40}$' -or (Get-Item -LiteralPath $treeFile).Length -ne 0) {
+        throw 'Measurement requires a declared clean Release build with its original revision record.'
+    }
+    $prefix = Join-Path $LogDirectory 'long-stream'
+    foreach ($extension in @('txt', 'txt.stderr.txt', 'bmp', 'csv', 'working-set.json', 'artifacts.json', 'input.json')) {
+        if (Test-Path -LiteralPath "$prefix.$extension") { throw 'Measurement evidence path is not fresh.' }
+    }
+    $identity = Get-NgenSceneIdentity -Path $ScenePackage | ConvertTo-Json
+    $binaryHash = (Get-FileHash -LiteralPath $binary -Algorithm SHA256).Hash.ToLowerInvariant()
+    [ordered]@{
+        schema = 1; declared_build_revision = $revision; build_tree_record_empty = $true
+        binary_sha256 = $binaryHash; cmake_cache_sha256 = (Get-FileHash -LiteralPath $cache -Algorithm SHA256).Hash.ToLowerInvariant()
+        package = $identity | ConvertFrom-Json
+        frames = 3600; warmup = 60; reload_cycles = 4; fixed_extent = '1280x720'
+        inspector = $true; exposure = 1; fxaa = $true; bloom = 0.04; validation = $false
+        scope = 'Existing Release binary with its original declared build record, no rebuild. Input hashing warms cache. External CIM observation is instrumented memory evidence, not a clean performance run or proof of binary/source equivalence.'
+    } | ConvertTo-Json -Depth 4 | Set-Content -LiteralPath "$prefix.input.json"
+    try {
+        . $activate
+        $arguments = @($ScenePackage, '--inspector', '--walkthrough', '--no-resize', '--reload-cycles=4',
+            '--frames=3600', '--warmup=60', "--capture=$prefix.bmp", "--report=$prefix.csv")
+        Invoke-NgenWorkload -FilePath $binary -Arguments $arguments -LogPath "$prefix.txt" -MemoryPath "$prefix.working-set.json" -GpuMemory -FrameReport "$prefix.csv"
+        if ((Get-NgenSceneIdentity -Path $ScenePackage | ConvertTo-Json) -cne $identity -or
+            (Get-FileHash -LiteralPath $binary -Algorithm SHA256).Hash.ToLowerInvariant() -cne $binaryHash) {
+            throw 'Measurement package or binary changed during observation.'
+        }
+        $artifacts = foreach ($path in @("$prefix.bmp", "$prefix.csv")) {
+            $item = Get-Item -LiteralPath $path -Force -ErrorAction Stop
+            if ($item -isnot [IO.FileInfo] -or ($item.Attributes -band [IO.FileAttributes]::ReparsePoint) -or $item.Length -lt 1 -or $item.Length -gt 8388608) {
+                throw 'Measurement capture/report is missing, linked, empty or oversized.'
+            }
+            [ordered]@{ name = $item.Name; bytes = $item.Length; sha256 = (Get-FileHash -LiteralPath $path -Algorithm SHA256).Hash.ToLowerInvariant() }
+        }
+        $artifacts | ConvertTo-Json | Set-Content -LiteralPath "$prefix.artifacts.json"
+    } finally {
+        . $deactivate
     }
 }
 
@@ -274,7 +491,9 @@ if (-not $IsWindows) {
 
 $ErrorActionPreference = 'Stop'
 $root = Split-Path -Parent $PSScriptRoot
-$run = Join-Path $root ('build/windows/' + (Get-Date -Format 'yyyyMMdd-HHmmss-fff'))
+$run = if ($MeasureWorkload) {
+    Join-Path $root ('build/windows-measure/' + (Get-Date -Format 'yyyyMMdd-HHmmss-fff') + '-' + [guid]::NewGuid().ToString('N'))
+} else { Join-Path $root ('build/windows/' + (Get-Date -Format 'yyyyMMdd-HHmmss-fff')) }
 $logs = Join-Path $run 'logs'
 $tools = Join-Path $root 'build/windows-tools'
 New-Item -ItemType Directory -Path $logs -Force | Out-Null
@@ -308,6 +527,11 @@ try {
     if ($ScenePackage) {
         Get-NgenSceneIdentity -Path $ScenePackage | Out-Null
         $ScenePackage = (Resolve-Path -LiteralPath $ScenePackage).ProviderPath
+    }
+    if ($MeasureWorkload) {
+        Invoke-NgenMeasurement -BuildDirectory $MeasureWorkload -LogDirectory $logs -ScenePackage $ScenePackage
+        Write-Host 'Existing Release workload memory observation completed without rebuilding. Review the sampled WDDM scope and actual records; this is not personal or formal M2 acceptance.'
+        exit 0
     }
     if (-not (Get-Command cl -ErrorAction SilentlyContinue) -or $env:VSCMD_ARG_TGT_ARCH -ne 'x64') {
         $vswhere = Join-Path ${env:ProgramFiles(x86)} 'Microsoft Visual Studio/Installer/vswhere.exe'

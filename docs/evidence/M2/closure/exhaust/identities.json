@@ -1,0 +1,28 @@
+{
+  "tracked_source_revision": "b45d38823f4e0a69e35dc4b64b1b8314392780d6",
+  "runtime_source_changes_for_art": false,
+  "source_sha256": {
+    "tools/assetc/cook.py": "6fe337dc2bc563ee3ea40f8f82d9db0736697773be40e96627a9c156f8d6df4b",
+    "engine/assets/package.cpp": "523efaa8b57ecfd019581cdeb9fc062ba4eb085184ae15020415a59b0f89562e",
+    "engine/assets/package.hpp": "6f874cca62836132eb8c8c892474f80f165a4599739b5858b716c52b5c670833",
+    "engine/render/scene_draw.cpp": "afaa7cd38768e1925c7f0b0f4bf0e59fc2fc8285d5779b9d5f830a0c83989204",
+    "engine/render/scene.cpp": "3797fd600188773d492baac314761bed9205c6c8beb5d07ab6c117103c58a8ca",
+    "engine/render/mesh.cpp": "d85a9086295b12238d7f4b31595f23a8a065fd2a1e7146d236a2f375995060a2",
+    "engine/render/post.cpp": "294564a99c734c7c4aeca0e0cb9d9b389094da375c74cd34428b9cfd596f174f",
+    "engine/tools/ui.cpp": "e190c13c30385139816d709677dc4d8937d3589d25184527ec2f672ae9505a4c",
+    "apps/scene_workload/main.cpp": "f08f918ad76b8ebeb838c19135a8135df907c691c4b6ffe200a346c58ac50bee",
+    "apps/scene_workload/fixture.cpp": "d627973ce8406a5950c49454a72466217b1810cf1f3d439c742b1361cc2ca864",
+    "shaders/pbr.slang": "1ab6897fe40f6342a7d24ae507409654f6bee03a48cd840fc30014aaebf5f96e",
+    "shaders/post.slang": "63591463fd184091305723c87473f26f4d60a30d73eaf92056ea468657159fa4"
+  },
+  "binary_sha256": {
+    "build/inspector-release/scene_workload": "de7462233a107195883ba6a613c4eff18abe56c1dbcec444e7fa22e632a8854c",
+    "build/inspector-release/asset_package_probe": "da9943b29431ade30ad2b51fa4e0e4df96f29300277197720846398465daaf9f",
+    "build/m2-engine-color/detail": "e77259c2781e9d16b8fa140b7328778002029583ab039667d6c8a6738f48757f"
+  },
+  "reproducer_sha256": "f987a2c787b05888aeed86463bcf3f07dc5c422debb89ed7b29fa7aade1438a1",
+  "original_source_sha256": "e68cd409c479036556446ed1753b287c0e7a40260109b3cd442abe7f533941fe",
+  "original_package_sha256": "e0ee6a023900c78b2c313f493f2a0e78c9639c39b6d830a1eaf3a3f6c0a29b6d",
+  "approved_package_sha256": "067407fb5fa2527771212cc7280a345b02ad3dd2a823ae8ba81b3553689ec52b",
+  "package_bytes": 175904891
+}

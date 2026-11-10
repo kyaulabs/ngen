@@ -1,0 +1,7 @@
+46 warnings generated.
+/home/kyau/projects/kyaulabs/ngen/apps/resource_probe/main.cpp:718:35: error: use of a signed integer operand with a binary bitwise operator [bugprone-signed-bitwise,-warnings-as-errors]
+  718 |             const auto exponent = (bits >> 10U) & 31U;
+      |                                   ^~~~~~~~~~~~~ ~
+Suppressed 45 warnings (45 in non-user code).
+Use -header-filter=.* or leave it as default to display errors from all non-system headers. Use -system-headers to display errors from system headers as well.
+1 warning treated as error

@@ -1,0 +1,5 @@
+Traceback (most recent call last):
+  File "<repo>/build/m2-engine-color/make-plume.py", line 103, in <module>
+    runtime=json.loads(result.stdout);assert runtime['package_valid']==1 and runtime['instances']==194 and runtime['materials']==14 and runtime['images']==5 and runtime['lod_triangles'][2]+8000==246200
+                                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError

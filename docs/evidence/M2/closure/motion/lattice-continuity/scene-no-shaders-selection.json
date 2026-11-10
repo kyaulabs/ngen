@@ -1,0 +1,269 @@
+{
+  "backtraceGraph": {
+    "commands": [
+      "add_test"
+    ],
+    "files": [
+      "/home/kyau/projects/kyaulabs/ngen/CMakeLists.txt"
+    ],
+    "nodes": [
+      {
+        "file": 0
+      },
+      {
+        "command": 0,
+        "file": 0,
+        "line": 211,
+        "parent": 0
+      },
+      {
+        "file": 0
+      },
+      {
+        "command": 0,
+        "file": 0,
+        "line": 214,
+        "parent": 2
+      },
+      {
+        "file": 0
+      },
+      {
+        "command": 0,
+        "file": 0,
+        "line": 218,
+        "parent": 4
+      },
+      {
+        "file": 0
+      },
+      {
+        "command": 0,
+        "file": 0,
+        "line": 228,
+        "parent": 6
+      },
+      {
+        "file": 0
+      },
+      {
+        "command": 0,
+        "file": 0,
+        "line": 234,
+        "parent": 8
+      },
+      {
+        "file": 0
+      },
+      {
+        "command": 0,
+        "file": 0,
+        "line": 277,
+        "parent": 10
+      },
+      {
+        "file": 0
+      },
+      {
+        "command": 0,
+        "file": 0,
+        "line": 283,
+        "parent": 12
+      },
+      {
+        "file": 0
+      },
+      {
+        "command": 0,
+        "file": 0,
+        "line": 284,
+        "parent": 14
+      },
+      {
+        "file": 0
+      },
+      {
+        "command": 0,
+        "file": 0,
+        "line": 288,
+        "parent": 16
+      },
+      {
+        "file": 0
+      },
+      {
+        "command": 0,
+        "file": 0,
+        "line": 289,
+        "parent": 18
+      }
+    ]
+  },
+  "kind": "ctestInfo",
+  "tests": [
+    {
+      "backtrace": 1,
+      "command": [
+        "/home/kyau/projects/kyaulabs/ngen/build/scene-no-shaders/ngen_tests"
+      ],
+      "name": "ngen_tests",
+      "properties": [
+        {
+          "name": "TIMEOUT",
+          "value": 60.0
+        },
+        {
+          "name": "WORKING_DIRECTORY",
+          "value": "/home/kyau/projects/kyaulabs/ngen/build/scene-no-shaders"
+        }
+      ]
+    },
+    {
+      "backtrace": 3,
+      "command": [
+        "/home/kyau/projects/kyaulabs/ngen/build/scene-no-shaders/render_contract_tests"
+      ],
+      "name": "render_contract_tests",
+      "properties": [
+        {
+          "name": "WORKING_DIRECTORY",
+          "value": "/home/kyau/projects/kyaulabs/ngen/build/scene-no-shaders"
+        }
+      ]
+    },
+    {
+      "backtrace": 5,
+      "command": [
+        "/home/kyau/projects/kyaulabs/ngen/build/scene-no-shaders/render_environment_tests"
+      ],
+      "name": "render_environment_tests",
+      "properties": [
+        {
+          "name": "WORKING_DIRECTORY",
+          "value": "/home/kyau/projects/kyaulabs/ngen/build/scene-no-shaders"
+        }
+      ]
+    },
+    {
+      "backtrace": 7,
+      "command": [
+        "/home/kyau/projects/kyaulabs/ngen/build/scene-no-shaders/scene_workload_tests"
+      ],
+      "name": "scene_workload_tests",
+      "properties": [
+        {
+          "name": "WORKING_DIRECTORY",
+          "value": "/home/kyau/projects/kyaulabs/ngen/build/scene-no-shaders"
+        }
+      ]
+    },
+    {
+      "backtrace": 9,
+      "command": [
+        "/home/kyau/projects/kyaulabs/ngen/build/scene-no-shaders/asset_package_tests"
+      ],
+      "name": "asset_package_tests",
+      "properties": [
+        {
+          "name": "TIMEOUT",
+          "value": 90.0
+        },
+        {
+          "name": "WORKING_DIRECTORY",
+          "value": "/home/kyau/projects/kyaulabs/ngen/build/scene-no-shaders"
+        }
+      ]
+    },
+    {
+      "backtrace": 11,
+      "command": [
+        "/home/kyau/projects/kyaulabs/ngen/build/scene-no-shaders/render_startup_tests"
+      ],
+      "name": "render_startup_tests",
+      "properties": [
+        {
+          "name": "TIMEOUT",
+          "value": 30.0
+        },
+        {
+          "name": "WORKING_DIRECTORY",
+          "value": "/home/kyau/projects/kyaulabs/ngen/build/scene-no-shaders"
+        }
+      ]
+    },
+    {
+      "backtrace": 13,
+      "command": [
+        "/home/kyau/projects/kyaulabs/ngen/build/scene-no-shaders/wayland_tablet_tests"
+      ],
+      "name": "wayland_tablet_shutdown",
+      "properties": [
+        {
+          "name": "TIMEOUT",
+          "value": 20.0
+        },
+        {
+          "name": "WORKING_DIRECTORY",
+          "value": "/home/kyau/projects/kyaulabs/ngen/build/scene-no-shaders"
+        }
+      ]
+    },
+    {
+      "backtrace": 15,
+      "command": [
+        "/home/kyau/projects/kyaulabs/ngen/build/scene-no-shaders/wayland_tablet_tests",
+        "--remove"
+      ],
+      "name": "wayland_tablet_removal",
+      "properties": [
+        {
+          "name": "TIMEOUT",
+          "value": 20.0
+        },
+        {
+          "name": "WORKING_DIRECTORY",
+          "value": "/home/kyau/projects/kyaulabs/ngen/build/scene-no-shaders"
+        }
+      ]
+    },
+    {
+      "backtrace": 17,
+      "command": [
+        "/home/kyau/projects/kyaulabs/ngen/build/scene-no-shaders/sim_harness"
+      ],
+      "name": "replay_serial",
+      "properties": [
+        {
+          "name": "TIMEOUT",
+          "value": 60.0
+        },
+        {
+          "name": "WORKING_DIRECTORY",
+          "value": "/home/kyau/projects/kyaulabs/ngen/build/scene-no-shaders"
+        }
+      ]
+    },
+    {
+      "backtrace": 19,
+      "command": [
+        "/home/kyau/projects/kyaulabs/ngen/build/scene-no-shaders/sim_harness",
+        "--workers=2"
+      ],
+      "name": "replay_workers",
+      "properties": [
+        {
+          "name": "TIMEOUT",
+          "value": 60.0
+        },
+        {
+          "name": "WORKING_DIRECTORY",
+          "value": "/home/kyau/projects/kyaulabs/ngen/build/scene-no-shaders"
+        }
+      ]
+    }
+  ],
+  "version": {
+    "major": 1,
+    "minor": 0
+  }
+}

@@ -1,0 +1,894 @@
+{
+  "results": [
+    {
+      "configuration": "inspector-debug",
+      "source": "tests/shader_layout.cpp",
+      "object": "CMakeFiles/shader_contract_layout.dir/tests/shader_layout.cpp.o",
+      "compile_database_sha256": "8c787772250530569177cbd63b1316e722dfe268a3f93f446217c7eff1ab608d",
+      "analysis": "build/m2-engine-color/flow-ast/inspector-debug/10/analysis.txt",
+      "status": 0
+    },
+    {
+      "configuration": "inspector-debug",
+      "source": "engine/render/context.cpp",
+      "object": "CMakeFiles/ngen_render.dir/engine/render/context.cpp.o",
+      "compile_database_sha256": "8c787772250530569177cbd63b1316e722dfe268a3f93f446217c7eff1ab608d",
+      "analysis": "build/m2-engine-color/flow-ast/inspector-debug/12/analysis.txt",
+      "status": 0
+    },
+    {
+      "configuration": "inspector-debug",
+      "source": "engine/render/presentation.cpp",
+      "object": "CMakeFiles/ngen_render.dir/engine/render/presentation.cpp.o",
+      "compile_database_sha256": "8c787772250530569177cbd63b1316e722dfe268a3f93f446217c7eff1ab608d",
+      "analysis": "build/m2-engine-color/flow-ast/inspector-debug/14/analysis.txt",
+      "status": 0
+    },
+    {
+      "configuration": "inspector-debug",
+      "source": "engine/render/resources.cpp",
+      "object": "CMakeFiles/ngen_render.dir/engine/render/resources.cpp.o",
+      "compile_database_sha256": "8c787772250530569177cbd63b1316e722dfe268a3f93f446217c7eff1ab608d",
+      "analysis": "build/m2-engine-color/flow-ast/inspector-debug/15/analysis.txt",
+      "status": 0
+    },
+    {
+      "configuration": "inspector-debug",
+      "source": "engine/render/post.cpp",
+      "object": "CMakeFiles/ngen_render.dir/engine/render/post.cpp.o",
+      "compile_database_sha256": "8c787772250530569177cbd63b1316e722dfe268a3f93f446217c7eff1ab608d",
+      "analysis": "build/m2-engine-color/flow-ast/inspector-debug/16/analysis.txt",
+      "status": 0
+    },
+    {
+      "configuration": "inspector-debug",
+      "source": "engine/render/mesh.cpp",
+      "object": "CMakeFiles/ngen_render.dir/engine/render/mesh.cpp.o",
+      "compile_database_sha256": "8c787772250530569177cbd63b1316e722dfe268a3f93f446217c7eff1ab608d",
+      "analysis": "build/m2-engine-color/flow-ast/inspector-debug/17/analysis.txt",
+      "status": 0
+    },
+    {
+      "configuration": "inspector-debug",
+      "source": "engine/render/environment.cpp",
+      "object": "CMakeFiles/ngen_render.dir/engine/render/environment.cpp.o",
+      "compile_database_sha256": "8c787772250530569177cbd63b1316e722dfe268a3f93f446217c7eff1ab608d",
+      "analysis": "build/m2-engine-color/flow-ast/inspector-debug/18/analysis.txt",
+      "status": 0
+    },
+    {
+      "configuration": "inspector-debug",
+      "source": "engine/render/overlay.cpp",
+      "object": "CMakeFiles/ngen_render.dir/engine/render/overlay.cpp.o",
+      "compile_database_sha256": "8c787772250530569177cbd63b1316e722dfe268a3f93f446217c7eff1ab608d",
+      "analysis": "build/m2-engine-color/flow-ast/inspector-debug/19/analysis.txt",
+      "status": 0
+    },
+    {
+      "configuration": "inspector-debug",
+      "source": "apps/probe/presentation.cpp",
+      "object": "CMakeFiles/ngen_probe_support.dir/apps/probe/presentation.cpp.o",
+      "compile_database_sha256": "8c787772250530569177cbd63b1316e722dfe268a3f93f446217c7eff1ab608d",
+      "analysis": "build/m2-engine-color/flow-ast/inspector-debug/20/analysis.txt",
+      "status": 0
+    },
+    {
+      "configuration": "inspector-debug",
+      "source": "apps/probe/capture.cpp",
+      "object": "CMakeFiles/ngen_probe_support.dir/apps/probe/capture.cpp.o",
+      "compile_database_sha256": "8c787772250530569177cbd63b1316e722dfe268a3f93f446217c7eff1ab608d",
+      "analysis": "build/m2-engine-color/flow-ast/inspector-debug/21/analysis.txt",
+      "status": 0
+    },
+    {
+      "configuration": "inspector-debug",
+      "source": "apps/render_probe/main.cpp",
+      "object": "CMakeFiles/render_probe.dir/apps/render_probe/main.cpp.o",
+      "compile_database_sha256": "8c787772250530569177cbd63b1316e722dfe268a3f93f446217c7eff1ab608d",
+      "analysis": "build/m2-engine-color/flow-ast/inspector-debug/22/analysis.txt",
+      "status": 0
+    },
+    {
+      "configuration": "inspector-debug",
+      "source": "apps/resource_probe/main.cpp",
+      "object": "CMakeFiles/resource_probe.dir/apps/resource_probe/main.cpp.o",
+      "compile_database_sha256": "8c787772250530569177cbd63b1316e722dfe268a3f93f446217c7eff1ab608d",
+      "analysis": "build/m2-engine-color/flow-ast/inspector-debug/23/analysis.txt",
+      "status": 1
+    },
+    {
+      "configuration": "inspector-debug",
+      "source": "engine/render/scene.cpp",
+      "object": "CMakeFiles/ngen_scene.dir/engine/render/scene.cpp.o",
+      "compile_database_sha256": "8c787772250530569177cbd63b1316e722dfe268a3f93f446217c7eff1ab608d",
+      "analysis": "build/m2-engine-color/flow-ast/inspector-debug/24/analysis.txt",
+      "status": 0
+    },
+    {
+      "configuration": "inspector-debug",
+      "source": "engine/render/scene_draw.cpp",
+      "object": "CMakeFiles/ngen_scene.dir/engine/render/scene_draw.cpp.o",
+      "compile_database_sha256": "8c787772250530569177cbd63b1316e722dfe268a3f93f446217c7eff1ab608d",
+      "analysis": "build/m2-engine-color/flow-ast/inspector-debug/25/analysis.txt",
+      "status": 1
+    },
+    {
+      "configuration": "inspector-debug",
+      "source": "apps/scene_workload/fixture.cpp",
+      "object": "CMakeFiles/scene_workload_fixture.dir/apps/scene_workload/fixture.cpp.o",
+      "compile_database_sha256": "8c787772250530569177cbd63b1316e722dfe268a3f93f446217c7eff1ab608d",
+      "analysis": "build/m2-engine-color/flow-ast/inspector-debug/26/analysis.txt",
+      "status": 0
+    },
+    {
+      "configuration": "inspector-debug",
+      "source": "engine/tools/ui.cpp",
+      "object": "CMakeFiles/ngen_inspector_ui.dir/engine/tools/ui.cpp.o",
+      "compile_database_sha256": "8c787772250530569177cbd63b1316e722dfe268a3f93f446217c7eff1ab608d",
+      "analysis": "build/m2-engine-color/flow-ast/inspector-debug/28/analysis.txt",
+      "status": 0
+    },
+    {
+      "configuration": "inspector-debug",
+      "source": "apps/scene_workload/main.cpp",
+      "object": "CMakeFiles/scene_workload.dir/apps/scene_workload/main.cpp.o",
+      "compile_database_sha256": "8c787772250530569177cbd63b1316e722dfe268a3f93f446217c7eff1ab608d",
+      "analysis": "build/m2-engine-color/flow-ast/inspector-debug/29/analysis.txt",
+      "status": 0
+    },
+    {
+      "configuration": "inspector-debug",
+      "source": "apps/inspector_probe/main.cpp",
+      "object": "CMakeFiles/inspector_probe.dir/apps/inspector_probe/main.cpp.o",
+      "compile_database_sha256": "8c787772250530569177cbd63b1316e722dfe268a3f93f446217c7eff1ab608d",
+      "analysis": "build/m2-engine-color/flow-ast/inspector-debug/31/analysis.txt",
+      "status": 0
+    },
+    {
+      "configuration": "inspector-debug",
+      "source": "apps/scene_probe/main.cpp",
+      "object": "CMakeFiles/scene_probe.dir/apps/scene_probe/main.cpp.o",
+      "compile_database_sha256": "8c787772250530569177cbd63b1316e722dfe268a3f93f446217c7eff1ab608d",
+      "analysis": "build/m2-engine-color/flow-ast/inspector-debug/32/analysis.txt",
+      "status": 0
+    },
+    {
+      "configuration": "inspector-debug",
+      "source": "apps/scene_probe/draw.cpp",
+      "object": "CMakeFiles/scene_probe.dir/apps/scene_probe/draw.cpp.o",
+      "compile_database_sha256": "8c787772250530569177cbd63b1316e722dfe268a3f93f446217c7eff1ab608d",
+      "analysis": "build/m2-engine-color/flow-ast/inspector-debug/33/analysis.txt",
+      "status": 0
+    },
+    {
+      "configuration": "inspector-debug",
+      "source": "tests/render_environment.cpp",
+      "object": "CMakeFiles/render_environment_tests.dir/tests/render_environment.cpp.o",
+      "compile_database_sha256": "8c787772250530569177cbd63b1316e722dfe268a3f93f446217c7eff1ab608d",
+      "analysis": "build/m2-engine-color/flow-ast/inspector-debug/38/analysis.txt",
+      "status": 0
+    },
+    {
+      "configuration": "inspector-debug",
+      "source": "tests/workload.cpp",
+      "object": "CMakeFiles/scene_workload_tests.dir/tests/workload.cpp.o",
+      "compile_database_sha256": "8c787772250530569177cbd63b1316e722dfe268a3f93f446217c7eff1ab608d",
+      "analysis": "build/m2-engine-color/flow-ast/inspector-debug/39/analysis.txt",
+      "status": 0
+    },
+    {
+      "configuration": "inspector-debug",
+      "source": "tests/shader_gpu.cpp",
+      "object": "CMakeFiles/shader_gpu_probe.dir/tests/shader_gpu.cpp.o",
+      "compile_database_sha256": "8c787772250530569177cbd63b1316e722dfe268a3f93f446217c7eff1ab608d",
+      "analysis": "build/m2-engine-color/flow-ast/inspector-debug/44/analysis.txt",
+      "status": 0
+    },
+    {
+      "configuration": "inspector-debug",
+      "source": "tests/render_startup.cpp",
+      "object": "CMakeFiles/render_startup_tests.dir/tests/render_startup.cpp.o",
+      "compile_database_sha256": "8c787772250530569177cbd63b1316e722dfe268a3f93f446217c7eff1ab608d",
+      "analysis": "build/m2-engine-color/flow-ast/inspector-debug/45/analysis.txt",
+      "status": 0
+    },
+    {
+      "configuration": "inspector-release",
+      "source": "tests/shader_layout.cpp",
+      "object": "CMakeFiles/shader_contract_layout.dir/tests/shader_layout.cpp.o",
+      "compile_database_sha256": "6675335f990f5d0a1b952278af70126ef1f2531945112ce1a290b6b2f7904e3d",
+      "analysis": "build/m2-engine-color/flow-ast/inspector-release/10/analysis.txt",
+      "status": 0
+    },
+    {
+      "configuration": "inspector-release",
+      "source": "engine/render/context.cpp",
+      "object": "CMakeFiles/ngen_render.dir/engine/render/context.cpp.o",
+      "compile_database_sha256": "6675335f990f5d0a1b952278af70126ef1f2531945112ce1a290b6b2f7904e3d",
+      "analysis": "build/m2-engine-color/flow-ast/inspector-release/12/analysis.txt",
+      "status": 0
+    },
+    {
+      "configuration": "inspector-release",
+      "source": "engine/render/presentation.cpp",
+      "object": "CMakeFiles/ngen_render.dir/engine/render/presentation.cpp.o",
+      "compile_database_sha256": "6675335f990f5d0a1b952278af70126ef1f2531945112ce1a290b6b2f7904e3d",
+      "analysis": "build/m2-engine-color/flow-ast/inspector-release/14/analysis.txt",
+      "status": 0
+    },
+    {
+      "configuration": "inspector-release",
+      "source": "engine/render/resources.cpp",
+      "object": "CMakeFiles/ngen_render.dir/engine/render/resources.cpp.o",
+      "compile_database_sha256": "6675335f990f5d0a1b952278af70126ef1f2531945112ce1a290b6b2f7904e3d",
+      "analysis": "build/m2-engine-color/flow-ast/inspector-release/15/analysis.txt",
+      "status": 0
+    },
+    {
+      "configuration": "inspector-release",
+      "source": "engine/render/post.cpp",
+      "object": "CMakeFiles/ngen_render.dir/engine/render/post.cpp.o",
+      "compile_database_sha256": "6675335f990f5d0a1b952278af70126ef1f2531945112ce1a290b6b2f7904e3d",
+      "analysis": "build/m2-engine-color/flow-ast/inspector-release/16/analysis.txt",
+      "status": 0
+    },
+    {
+      "configuration": "inspector-release",
+      "source": "engine/render/mesh.cpp",
+      "object": "CMakeFiles/ngen_render.dir/engine/render/mesh.cpp.o",
+      "compile_database_sha256": "6675335f990f5d0a1b952278af70126ef1f2531945112ce1a290b6b2f7904e3d",
+      "analysis": "build/m2-engine-color/flow-ast/inspector-release/17/analysis.txt",
+      "status": 0
+    },
+    {
+      "configuration": "inspector-release",
+      "source": "engine/render/environment.cpp",
+      "object": "CMakeFiles/ngen_render.dir/engine/render/environment.cpp.o",
+      "compile_database_sha256": "6675335f990f5d0a1b952278af70126ef1f2531945112ce1a290b6b2f7904e3d",
+      "analysis": "build/m2-engine-color/flow-ast/inspector-release/18/analysis.txt",
+      "status": 0
+    },
+    {
+      "configuration": "inspector-release",
+      "source": "engine/render/overlay.cpp",
+      "object": "CMakeFiles/ngen_render.dir/engine/render/overlay.cpp.o",
+      "compile_database_sha256": "6675335f990f5d0a1b952278af70126ef1f2531945112ce1a290b6b2f7904e3d",
+      "analysis": "build/m2-engine-color/flow-ast/inspector-release/19/analysis.txt",
+      "status": 0
+    },
+    {
+      "configuration": "inspector-release",
+      "source": "apps/probe/presentation.cpp",
+      "object": "CMakeFiles/ngen_probe_support.dir/apps/probe/presentation.cpp.o",
+      "compile_database_sha256": "6675335f990f5d0a1b952278af70126ef1f2531945112ce1a290b6b2f7904e3d",
+      "analysis": "build/m2-engine-color/flow-ast/inspector-release/20/analysis.txt",
+      "status": 0
+    },
+    {
+      "configuration": "inspector-release",
+      "source": "apps/probe/capture.cpp",
+      "object": "CMakeFiles/ngen_probe_support.dir/apps/probe/capture.cpp.o",
+      "compile_database_sha256": "6675335f990f5d0a1b952278af70126ef1f2531945112ce1a290b6b2f7904e3d",
+      "analysis": "build/m2-engine-color/flow-ast/inspector-release/21/analysis.txt",
+      "status": 0
+    },
+    {
+      "configuration": "inspector-release",
+      "source": "apps/render_probe/main.cpp",
+      "object": "CMakeFiles/render_probe.dir/apps/render_probe/main.cpp.o",
+      "compile_database_sha256": "6675335f990f5d0a1b952278af70126ef1f2531945112ce1a290b6b2f7904e3d",
+      "analysis": "build/m2-engine-color/flow-ast/inspector-release/22/analysis.txt",
+      "status": 0
+    },
+    {
+      "configuration": "inspector-release",
+      "source": "apps/resource_probe/main.cpp",
+      "object": "CMakeFiles/resource_probe.dir/apps/resource_probe/main.cpp.o",
+      "compile_database_sha256": "6675335f990f5d0a1b952278af70126ef1f2531945112ce1a290b6b2f7904e3d",
+      "analysis": "build/m2-engine-color/flow-ast/inspector-release/23/analysis.txt",
+      "status": 1
+    },
+    {
+      "configuration": "inspector-release",
+      "source": "engine/render/scene.cpp",
+      "object": "CMakeFiles/ngen_scene.dir/engine/render/scene.cpp.o",
+      "compile_database_sha256": "6675335f990f5d0a1b952278af70126ef1f2531945112ce1a290b6b2f7904e3d",
+      "analysis": "build/m2-engine-color/flow-ast/inspector-release/24/analysis.txt",
+      "status": 0
+    },
+    {
+      "configuration": "inspector-release",
+      "source": "engine/render/scene_draw.cpp",
+      "object": "CMakeFiles/ngen_scene.dir/engine/render/scene_draw.cpp.o",
+      "compile_database_sha256": "6675335f990f5d0a1b952278af70126ef1f2531945112ce1a290b6b2f7904e3d",
+      "analysis": "build/m2-engine-color/flow-ast/inspector-release/25/analysis.txt",
+      "status": 1
+    },
+    {
+      "configuration": "inspector-release",
+      "source": "apps/scene_workload/fixture.cpp",
+      "object": "CMakeFiles/scene_workload_fixture.dir/apps/scene_workload/fixture.cpp.o",
+      "compile_database_sha256": "6675335f990f5d0a1b952278af70126ef1f2531945112ce1a290b6b2f7904e3d",
+      "analysis": "build/m2-engine-color/flow-ast/inspector-release/26/analysis.txt",
+      "status": 0
+    },
+    {
+      "configuration": "inspector-release",
+      "source": "engine/tools/ui.cpp",
+      "object": "CMakeFiles/ngen_inspector_ui.dir/engine/tools/ui.cpp.o",
+      "compile_database_sha256": "6675335f990f5d0a1b952278af70126ef1f2531945112ce1a290b6b2f7904e3d",
+      "analysis": "build/m2-engine-color/flow-ast/inspector-release/28/analysis.txt",
+      "status": 0
+    },
+    {
+      "configuration": "inspector-release",
+      "source": "apps/scene_workload/main.cpp",
+      "object": "CMakeFiles/scene_workload.dir/apps/scene_workload/main.cpp.o",
+      "compile_database_sha256": "6675335f990f5d0a1b952278af70126ef1f2531945112ce1a290b6b2f7904e3d",
+      "analysis": "build/m2-engine-color/flow-ast/inspector-release/29/analysis.txt",
+      "status": 0
+    },
+    {
+      "configuration": "inspector-release",
+      "source": "apps/inspector_probe/main.cpp",
+      "object": "CMakeFiles/inspector_probe.dir/apps/inspector_probe/main.cpp.o",
+      "compile_database_sha256": "6675335f990f5d0a1b952278af70126ef1f2531945112ce1a290b6b2f7904e3d",
+      "analysis": "build/m2-engine-color/flow-ast/inspector-release/31/analysis.txt",
+      "status": 0
+    },
+    {
+      "configuration": "inspector-release",
+      "source": "apps/scene_probe/main.cpp",
+      "object": "CMakeFiles/scene_probe.dir/apps/scene_probe/main.cpp.o",
+      "compile_database_sha256": "6675335f990f5d0a1b952278af70126ef1f2531945112ce1a290b6b2f7904e3d",
+      "analysis": "build/m2-engine-color/flow-ast/inspector-release/32/analysis.txt",
+      "status": 0
+    },
+    {
+      "configuration": "inspector-release",
+      "source": "apps/scene_probe/draw.cpp",
+      "object": "CMakeFiles/scene_probe.dir/apps/scene_probe/draw.cpp.o",
+      "compile_database_sha256": "6675335f990f5d0a1b952278af70126ef1f2531945112ce1a290b6b2f7904e3d",
+      "analysis": "build/m2-engine-color/flow-ast/inspector-release/33/analysis.txt",
+      "status": 0
+    },
+    {
+      "configuration": "inspector-release",
+      "source": "tests/render_environment.cpp",
+      "object": "CMakeFiles/render_environment_tests.dir/tests/render_environment.cpp.o",
+      "compile_database_sha256": "6675335f990f5d0a1b952278af70126ef1f2531945112ce1a290b6b2f7904e3d",
+      "analysis": "build/m2-engine-color/flow-ast/inspector-release/38/analysis.txt",
+      "status": 0
+    },
+    {
+      "configuration": "inspector-release",
+      "source": "tests/workload.cpp",
+      "object": "CMakeFiles/scene_workload_tests.dir/tests/workload.cpp.o",
+      "compile_database_sha256": "6675335f990f5d0a1b952278af70126ef1f2531945112ce1a290b6b2f7904e3d",
+      "analysis": "build/m2-engine-color/flow-ast/inspector-release/39/analysis.txt",
+      "status": 0
+    },
+    {
+      "configuration": "inspector-release",
+      "source": "tests/shader_gpu.cpp",
+      "object": "CMakeFiles/shader_gpu_probe.dir/tests/shader_gpu.cpp.o",
+      "compile_database_sha256": "6675335f990f5d0a1b952278af70126ef1f2531945112ce1a290b6b2f7904e3d",
+      "analysis": "build/m2-engine-color/flow-ast/inspector-release/44/analysis.txt",
+      "status": 0
+    },
+    {
+      "configuration": "inspector-release",
+      "source": "tests/render_startup.cpp",
+      "object": "CMakeFiles/render_startup_tests.dir/tests/render_startup.cpp.o",
+      "compile_database_sha256": "6675335f990f5d0a1b952278af70126ef1f2531945112ce1a290b6b2f7904e3d",
+      "analysis": "build/m2-engine-color/flow-ast/inspector-release/45/analysis.txt",
+      "status": 0
+    },
+    {
+      "configuration": "inspector-asan",
+      "source": "tests/shader_layout.cpp",
+      "object": "CMakeFiles/shader_contract_layout.dir/tests/shader_layout.cpp.o",
+      "compile_database_sha256": "e1b90ba736223054c4082f008302677ea00ac2cf86aa09ab4ae86d9f218598cb",
+      "analysis": "build/m2-engine-color/flow-ast/inspector-asan/10/analysis.txt",
+      "status": 0
+    },
+    {
+      "configuration": "inspector-asan",
+      "source": "engine/render/context.cpp",
+      "object": "CMakeFiles/ngen_render.dir/engine/render/context.cpp.o",
+      "compile_database_sha256": "e1b90ba736223054c4082f008302677ea00ac2cf86aa09ab4ae86d9f218598cb",
+      "analysis": "build/m2-engine-color/flow-ast/inspector-asan/12/analysis.txt",
+      "status": 0
+    },
+    {
+      "configuration": "inspector-asan",
+      "source": "engine/render/presentation.cpp",
+      "object": "CMakeFiles/ngen_render.dir/engine/render/presentation.cpp.o",
+      "compile_database_sha256": "e1b90ba736223054c4082f008302677ea00ac2cf86aa09ab4ae86d9f218598cb",
+      "analysis": "build/m2-engine-color/flow-ast/inspector-asan/14/analysis.txt",
+      "status": 0
+    },
+    {
+      "configuration": "inspector-asan",
+      "source": "engine/render/resources.cpp",
+      "object": "CMakeFiles/ngen_render.dir/engine/render/resources.cpp.o",
+      "compile_database_sha256": "e1b90ba736223054c4082f008302677ea00ac2cf86aa09ab4ae86d9f218598cb",
+      "analysis": "build/m2-engine-color/flow-ast/inspector-asan/15/analysis.txt",
+      "status": 0
+    },
+    {
+      "configuration": "inspector-asan",
+      "source": "engine/render/post.cpp",
+      "object": "CMakeFiles/ngen_render.dir/engine/render/post.cpp.o",
+      "compile_database_sha256": "e1b90ba736223054c4082f008302677ea00ac2cf86aa09ab4ae86d9f218598cb",
+      "analysis": "build/m2-engine-color/flow-ast/inspector-asan/16/analysis.txt",
+      "status": 0
+    },
+    {
+      "configuration": "inspector-asan",
+      "source": "engine/render/mesh.cpp",
+      "object": "CMakeFiles/ngen_render.dir/engine/render/mesh.cpp.o",
+      "compile_database_sha256": "e1b90ba736223054c4082f008302677ea00ac2cf86aa09ab4ae86d9f218598cb",
+      "analysis": "build/m2-engine-color/flow-ast/inspector-asan/17/analysis.txt",
+      "status": 0
+    },
+    {
+      "configuration": "inspector-asan",
+      "source": "engine/render/environment.cpp",
+      "object": "CMakeFiles/ngen_render.dir/engine/render/environment.cpp.o",
+      "compile_database_sha256": "e1b90ba736223054c4082f008302677ea00ac2cf86aa09ab4ae86d9f218598cb",
+      "analysis": "build/m2-engine-color/flow-ast/inspector-asan/18/analysis.txt",
+      "status": 0
+    },
+    {
+      "configuration": "inspector-asan",
+      "source": "engine/render/overlay.cpp",
+      "object": "CMakeFiles/ngen_render.dir/engine/render/overlay.cpp.o",
+      "compile_database_sha256": "e1b90ba736223054c4082f008302677ea00ac2cf86aa09ab4ae86d9f218598cb",
+      "analysis": "build/m2-engine-color/flow-ast/inspector-asan/19/analysis.txt",
+      "status": 0
+    },
+    {
+      "configuration": "inspector-asan",
+      "source": "apps/probe/presentation.cpp",
+      "object": "CMakeFiles/ngen_probe_support.dir/apps/probe/presentation.cpp.o",
+      "compile_database_sha256": "e1b90ba736223054c4082f008302677ea00ac2cf86aa09ab4ae86d9f218598cb",
+      "analysis": "build/m2-engine-color/flow-ast/inspector-asan/20/analysis.txt",
+      "status": 0
+    },
+    {
+      "configuration": "inspector-asan",
+      "source": "apps/probe/capture.cpp",
+      "object": "CMakeFiles/ngen_probe_support.dir/apps/probe/capture.cpp.o",
+      "compile_database_sha256": "e1b90ba736223054c4082f008302677ea00ac2cf86aa09ab4ae86d9f218598cb",
+      "analysis": "build/m2-engine-color/flow-ast/inspector-asan/21/analysis.txt",
+      "status": 0
+    },
+    {
+      "configuration": "inspector-asan",
+      "source": "apps/render_probe/main.cpp",
+      "object": "CMakeFiles/render_probe.dir/apps/render_probe/main.cpp.o",
+      "compile_database_sha256": "e1b90ba736223054c4082f008302677ea00ac2cf86aa09ab4ae86d9f218598cb",
+      "analysis": "build/m2-engine-color/flow-ast/inspector-asan/22/analysis.txt",
+      "status": 0
+    },
+    {
+      "configuration": "inspector-asan",
+      "source": "apps/resource_probe/main.cpp",
+      "object": "CMakeFiles/resource_probe.dir/apps/resource_probe/main.cpp.o",
+      "compile_database_sha256": "e1b90ba736223054c4082f008302677ea00ac2cf86aa09ab4ae86d9f218598cb",
+      "analysis": "build/m2-engine-color/flow-ast/inspector-asan/23/analysis.txt",
+      "status": 1
+    },
+    {
+      "configuration": "inspector-asan",
+      "source": "engine/render/scene.cpp",
+      "object": "CMakeFiles/ngen_scene.dir/engine/render/scene.cpp.o",
+      "compile_database_sha256": "e1b90ba736223054c4082f008302677ea00ac2cf86aa09ab4ae86d9f218598cb",
+      "analysis": "build/m2-engine-color/flow-ast/inspector-asan/24/analysis.txt",
+      "status": 0
+    },
+    {
+      "configuration": "inspector-asan",
+      "source": "engine/render/scene_draw.cpp",
+      "object": "CMakeFiles/ngen_scene.dir/engine/render/scene_draw.cpp.o",
+      "compile_database_sha256": "e1b90ba736223054c4082f008302677ea00ac2cf86aa09ab4ae86d9f218598cb",
+      "analysis": "build/m2-engine-color/flow-ast/inspector-asan/25/analysis.txt",
+      "status": 1
+    },
+    {
+      "configuration": "inspector-asan",
+      "source": "apps/scene_workload/fixture.cpp",
+      "object": "CMakeFiles/scene_workload_fixture.dir/apps/scene_workload/fixture.cpp.o",
+      "compile_database_sha256": "e1b90ba736223054c4082f008302677ea00ac2cf86aa09ab4ae86d9f218598cb",
+      "analysis": "build/m2-engine-color/flow-ast/inspector-asan/26/analysis.txt",
+      "status": 0
+    },
+    {
+      "configuration": "inspector-asan",
+      "source": "engine/tools/ui.cpp",
+      "object": "CMakeFiles/ngen_inspector_ui.dir/engine/tools/ui.cpp.o",
+      "compile_database_sha256": "e1b90ba736223054c4082f008302677ea00ac2cf86aa09ab4ae86d9f218598cb",
+      "analysis": "build/m2-engine-color/flow-ast/inspector-asan/28/analysis.txt",
+      "status": 0
+    },
+    {
+      "configuration": "inspector-asan",
+      "source": "apps/scene_workload/main.cpp",
+      "object": "CMakeFiles/scene_workload.dir/apps/scene_workload/main.cpp.o",
+      "compile_database_sha256": "e1b90ba736223054c4082f008302677ea00ac2cf86aa09ab4ae86d9f218598cb",
+      "analysis": "build/m2-engine-color/flow-ast/inspector-asan/29/analysis.txt",
+      "status": 0
+    },
+    {
+      "configuration": "inspector-asan",
+      "source": "apps/inspector_probe/main.cpp",
+      "object": "CMakeFiles/inspector_probe.dir/apps/inspector_probe/main.cpp.o",
+      "compile_database_sha256": "e1b90ba736223054c4082f008302677ea00ac2cf86aa09ab4ae86d9f218598cb",
+      "analysis": "build/m2-engine-color/flow-ast/inspector-asan/31/analysis.txt",
+      "status": 0
+    },
+    {
+      "configuration": "inspector-asan",
+      "source": "apps/scene_probe/main.cpp",
+      "object": "CMakeFiles/scene_probe.dir/apps/scene_probe/main.cpp.o",
+      "compile_database_sha256": "e1b90ba736223054c4082f008302677ea00ac2cf86aa09ab4ae86d9f218598cb",
+      "analysis": "build/m2-engine-color/flow-ast/inspector-asan/32/analysis.txt",
+      "status": 0
+    },
+    {
+      "configuration": "inspector-asan",
+      "source": "apps/scene_probe/draw.cpp",
+      "object": "CMakeFiles/scene_probe.dir/apps/scene_probe/draw.cpp.o",
+      "compile_database_sha256": "e1b90ba736223054c4082f008302677ea00ac2cf86aa09ab4ae86d9f218598cb",
+      "analysis": "build/m2-engine-color/flow-ast/inspector-asan/33/analysis.txt",
+      "status": 0
+    },
+    {
+      "configuration": "inspector-asan",
+      "source": "tests/render_environment.cpp",
+      "object": "CMakeFiles/render_environment_tests.dir/tests/render_environment.cpp.o",
+      "compile_database_sha256": "e1b90ba736223054c4082f008302677ea00ac2cf86aa09ab4ae86d9f218598cb",
+      "analysis": "build/m2-engine-color/flow-ast/inspector-asan/38/analysis.txt",
+      "status": 0
+    },
+    {
+      "configuration": "inspector-asan",
+      "source": "tests/workload.cpp",
+      "object": "CMakeFiles/scene_workload_tests.dir/tests/workload.cpp.o",
+      "compile_database_sha256": "e1b90ba736223054c4082f008302677ea00ac2cf86aa09ab4ae86d9f218598cb",
+      "analysis": "build/m2-engine-color/flow-ast/inspector-asan/39/analysis.txt",
+      "status": 0
+    },
+    {
+      "configuration": "inspector-asan",
+      "source": "tests/shader_gpu.cpp",
+      "object": "CMakeFiles/shader_gpu_probe.dir/tests/shader_gpu.cpp.o",
+      "compile_database_sha256": "e1b90ba736223054c4082f008302677ea00ac2cf86aa09ab4ae86d9f218598cb",
+      "analysis": "build/m2-engine-color/flow-ast/inspector-asan/44/analysis.txt",
+      "status": 0
+    },
+    {
+      "configuration": "inspector-asan",
+      "source": "tests/render_startup.cpp",
+      "object": "CMakeFiles/render_startup_tests.dir/tests/render_startup.cpp.o",
+      "compile_database_sha256": "e1b90ba736223054c4082f008302677ea00ac2cf86aa09ab4ae86d9f218598cb",
+      "analysis": "build/m2-engine-color/flow-ast/inspector-asan/45/analysis.txt",
+      "status": 0
+    },
+    {
+      "configuration": "scene-shipping",
+      "source": "tests/shader_layout.cpp",
+      "object": "CMakeFiles/shader_contract_layout.dir/tests/shader_layout.cpp.o",
+      "compile_database_sha256": "efcedea1ddabca92fc67dadd534c5d81e58eef2a8fec0258ef941063c3c9769a",
+      "analysis": "build/m2-engine-color/flow-ast/scene-shipping/8/analysis.txt",
+      "status": 0
+    },
+    {
+      "configuration": "scene-shipping",
+      "source": "engine/render/context.cpp",
+      "object": "CMakeFiles/ngen_render.dir/engine/render/context.cpp.o",
+      "compile_database_sha256": "efcedea1ddabca92fc67dadd534c5d81e58eef2a8fec0258ef941063c3c9769a",
+      "analysis": "build/m2-engine-color/flow-ast/scene-shipping/10/analysis.txt",
+      "status": 0
+    },
+    {
+      "configuration": "scene-shipping",
+      "source": "engine/render/presentation.cpp",
+      "object": "CMakeFiles/ngen_render.dir/engine/render/presentation.cpp.o",
+      "compile_database_sha256": "efcedea1ddabca92fc67dadd534c5d81e58eef2a8fec0258ef941063c3c9769a",
+      "analysis": "build/m2-engine-color/flow-ast/scene-shipping/12/analysis.txt",
+      "status": 0
+    },
+    {
+      "configuration": "scene-shipping",
+      "source": "engine/render/resources.cpp",
+      "object": "CMakeFiles/ngen_render.dir/engine/render/resources.cpp.o",
+      "compile_database_sha256": "efcedea1ddabca92fc67dadd534c5d81e58eef2a8fec0258ef941063c3c9769a",
+      "analysis": "build/m2-engine-color/flow-ast/scene-shipping/13/analysis.txt",
+      "status": 0
+    },
+    {
+      "configuration": "scene-shipping",
+      "source": "engine/render/post.cpp",
+      "object": "CMakeFiles/ngen_render.dir/engine/render/post.cpp.o",
+      "compile_database_sha256": "efcedea1ddabca92fc67dadd534c5d81e58eef2a8fec0258ef941063c3c9769a",
+      "analysis": "build/m2-engine-color/flow-ast/scene-shipping/14/analysis.txt",
+      "status": 0
+    },
+    {
+      "configuration": "scene-shipping",
+      "source": "engine/render/mesh.cpp",
+      "object": "CMakeFiles/ngen_render.dir/engine/render/mesh.cpp.o",
+      "compile_database_sha256": "efcedea1ddabca92fc67dadd534c5d81e58eef2a8fec0258ef941063c3c9769a",
+      "analysis": "build/m2-engine-color/flow-ast/scene-shipping/15/analysis.txt",
+      "status": 0
+    },
+    {
+      "configuration": "scene-shipping",
+      "source": "engine/render/environment.cpp",
+      "object": "CMakeFiles/ngen_render.dir/engine/render/environment.cpp.o",
+      "compile_database_sha256": "efcedea1ddabca92fc67dadd534c5d81e58eef2a8fec0258ef941063c3c9769a",
+      "analysis": "build/m2-engine-color/flow-ast/scene-shipping/16/analysis.txt",
+      "status": 0
+    },
+    {
+      "configuration": "scene-shipping",
+      "source": "apps/probe/presentation.cpp",
+      "object": "CMakeFiles/ngen_probe_support.dir/apps/probe/presentation.cpp.o",
+      "compile_database_sha256": "efcedea1ddabca92fc67dadd534c5d81e58eef2a8fec0258ef941063c3c9769a",
+      "analysis": "build/m2-engine-color/flow-ast/scene-shipping/17/analysis.txt",
+      "status": 0
+    },
+    {
+      "configuration": "scene-shipping",
+      "source": "apps/probe/capture.cpp",
+      "object": "CMakeFiles/ngen_probe_support.dir/apps/probe/capture.cpp.o",
+      "compile_database_sha256": "efcedea1ddabca92fc67dadd534c5d81e58eef2a8fec0258ef941063c3c9769a",
+      "analysis": "build/m2-engine-color/flow-ast/scene-shipping/18/analysis.txt",
+      "status": 0
+    },
+    {
+      "configuration": "scene-shipping",
+      "source": "apps/render_probe/main.cpp",
+      "object": "CMakeFiles/render_probe.dir/apps/render_probe/main.cpp.o",
+      "compile_database_sha256": "efcedea1ddabca92fc67dadd534c5d81e58eef2a8fec0258ef941063c3c9769a",
+      "analysis": "build/m2-engine-color/flow-ast/scene-shipping/19/analysis.txt",
+      "status": 0
+    },
+    {
+      "configuration": "scene-shipping",
+      "source": "apps/resource_probe/main.cpp",
+      "object": "CMakeFiles/resource_probe.dir/apps/resource_probe/main.cpp.o",
+      "compile_database_sha256": "efcedea1ddabca92fc67dadd534c5d81e58eef2a8fec0258ef941063c3c9769a",
+      "analysis": "build/m2-engine-color/flow-ast/scene-shipping/20/analysis.txt",
+      "status": 1
+    },
+    {
+      "configuration": "scene-shipping",
+      "source": "engine/render/scene.cpp",
+      "object": "CMakeFiles/ngen_scene.dir/engine/render/scene.cpp.o",
+      "compile_database_sha256": "efcedea1ddabca92fc67dadd534c5d81e58eef2a8fec0258ef941063c3c9769a",
+      "analysis": "build/m2-engine-color/flow-ast/scene-shipping/21/analysis.txt",
+      "status": 0
+    },
+    {
+      "configuration": "scene-shipping",
+      "source": "engine/render/scene_draw.cpp",
+      "object": "CMakeFiles/ngen_scene.dir/engine/render/scene_draw.cpp.o",
+      "compile_database_sha256": "efcedea1ddabca92fc67dadd534c5d81e58eef2a8fec0258ef941063c3c9769a",
+      "analysis": "build/m2-engine-color/flow-ast/scene-shipping/22/analysis.txt",
+      "status": 1
+    },
+    {
+      "configuration": "scene-shipping",
+      "source": "apps/scene_workload/fixture.cpp",
+      "object": "CMakeFiles/scene_workload_fixture.dir/apps/scene_workload/fixture.cpp.o",
+      "compile_database_sha256": "efcedea1ddabca92fc67dadd534c5d81e58eef2a8fec0258ef941063c3c9769a",
+      "analysis": "build/m2-engine-color/flow-ast/scene-shipping/23/analysis.txt",
+      "status": 0
+    },
+    {
+      "configuration": "scene-shipping",
+      "source": "apps/scene_workload/main.cpp",
+      "object": "CMakeFiles/scene_workload.dir/apps/scene_workload/main.cpp.o",
+      "compile_database_sha256": "efcedea1ddabca92fc67dadd534c5d81e58eef2a8fec0258ef941063c3c9769a",
+      "analysis": "build/m2-engine-color/flow-ast/scene-shipping/24/analysis.txt",
+      "status": 0
+    },
+    {
+      "configuration": "scene-shipping",
+      "source": "apps/scene_probe/main.cpp",
+      "object": "CMakeFiles/scene_probe.dir/apps/scene_probe/main.cpp.o",
+      "compile_database_sha256": "efcedea1ddabca92fc67dadd534c5d81e58eef2a8fec0258ef941063c3c9769a",
+      "analysis": "build/m2-engine-color/flow-ast/scene-shipping/26/analysis.txt",
+      "status": 0
+    },
+    {
+      "configuration": "scene-shipping",
+      "source": "apps/scene_probe/draw.cpp",
+      "object": "CMakeFiles/scene_probe.dir/apps/scene_probe/draw.cpp.o",
+      "compile_database_sha256": "efcedea1ddabca92fc67dadd534c5d81e58eef2a8fec0258ef941063c3c9769a",
+      "analysis": "build/m2-engine-color/flow-ast/scene-shipping/27/analysis.txt",
+      "status": 0
+    },
+    {
+      "configuration": "scene-shipping",
+      "source": "tests/render_environment.cpp",
+      "object": "CMakeFiles/render_environment_tests.dir/tests/render_environment.cpp.o",
+      "compile_database_sha256": "efcedea1ddabca92fc67dadd534c5d81e58eef2a8fec0258ef941063c3c9769a",
+      "analysis": "build/m2-engine-color/flow-ast/scene-shipping/32/analysis.txt",
+      "status": 0
+    },
+    {
+      "configuration": "scene-shipping",
+      "source": "tests/workload.cpp",
+      "object": "CMakeFiles/scene_workload_tests.dir/tests/workload.cpp.o",
+      "compile_database_sha256": "efcedea1ddabca92fc67dadd534c5d81e58eef2a8fec0258ef941063c3c9769a",
+      "analysis": "build/m2-engine-color/flow-ast/scene-shipping/33/analysis.txt",
+      "status": 0
+    },
+    {
+      "configuration": "scene-shipping",
+      "source": "tests/shader_gpu.cpp",
+      "object": "CMakeFiles/shader_gpu_probe.dir/tests/shader_gpu.cpp.o",
+      "compile_database_sha256": "efcedea1ddabca92fc67dadd534c5d81e58eef2a8fec0258ef941063c3c9769a",
+      "analysis": "build/m2-engine-color/flow-ast/scene-shipping/36/analysis.txt",
+      "status": 0
+    },
+    {
+      "configuration": "scene-shipping",
+      "source": "tests/render_startup.cpp",
+      "object": "CMakeFiles/render_startup_tests.dir/tests/render_startup.cpp.o",
+      "compile_database_sha256": "efcedea1ddabca92fc67dadd534c5d81e58eef2a8fec0258ef941063c3c9769a",
+      "analysis": "build/m2-engine-color/flow-ast/scene-shipping/37/analysis.txt",
+      "status": 0
+    },
+    {
+      "configuration": "scene-no-shaders",
+      "source": "engine/render/context.cpp",
+      "object": "CMakeFiles/ngen_render.dir/engine/render/context.cpp.o",
+      "compile_database_sha256": "a20d9c34bc46a3d21c535c8685492af74b2a57e05deffba72cbadf3b986e8906",
+      "analysis": "build/m2-engine-color/flow-ast/scene-no-shaders/9/analysis.txt",
+      "status": 0
+    },
+    {
+      "configuration": "scene-no-shaders",
+      "source": "engine/render/presentation.cpp",
+      "object": "CMakeFiles/ngen_render.dir/engine/render/presentation.cpp.o",
+      "compile_database_sha256": "a20d9c34bc46a3d21c535c8685492af74b2a57e05deffba72cbadf3b986e8906",
+      "analysis": "build/m2-engine-color/flow-ast/scene-no-shaders/11/analysis.txt",
+      "status": 0
+    },
+    {
+      "configuration": "scene-no-shaders",
+      "source": "engine/render/resources.cpp",
+      "object": "CMakeFiles/ngen_render.dir/engine/render/resources.cpp.o",
+      "compile_database_sha256": "a20d9c34bc46a3d21c535c8685492af74b2a57e05deffba72cbadf3b986e8906",
+      "analysis": "build/m2-engine-color/flow-ast/scene-no-shaders/12/analysis.txt",
+      "status": 0
+    },
+    {
+      "configuration": "scene-no-shaders",
+      "source": "engine/render/post.cpp",
+      "object": "CMakeFiles/ngen_render.dir/engine/render/post.cpp.o",
+      "compile_database_sha256": "a20d9c34bc46a3d21c535c8685492af74b2a57e05deffba72cbadf3b986e8906",
+      "analysis": "build/m2-engine-color/flow-ast/scene-no-shaders/13/analysis.txt",
+      "status": 0
+    },
+    {
+      "configuration": "scene-no-shaders",
+      "source": "engine/render/mesh.cpp",
+      "object": "CMakeFiles/ngen_render.dir/engine/render/mesh.cpp.o",
+      "compile_database_sha256": "a20d9c34bc46a3d21c535c8685492af74b2a57e05deffba72cbadf3b986e8906",
+      "analysis": "build/m2-engine-color/flow-ast/scene-no-shaders/14/analysis.txt",
+      "status": 0
+    },
+    {
+      "configuration": "scene-no-shaders",
+      "source": "engine/render/environment.cpp",
+      "object": "CMakeFiles/ngen_render.dir/engine/render/environment.cpp.o",
+      "compile_database_sha256": "a20d9c34bc46a3d21c535c8685492af74b2a57e05deffba72cbadf3b986e8906",
+      "analysis": "build/m2-engine-color/flow-ast/scene-no-shaders/15/analysis.txt",
+      "status": 0
+    },
+    {
+      "configuration": "scene-no-shaders",
+      "source": "apps/probe/presentation.cpp",
+      "object": "CMakeFiles/ngen_probe_support.dir/apps/probe/presentation.cpp.o",
+      "compile_database_sha256": "a20d9c34bc46a3d21c535c8685492af74b2a57e05deffba72cbadf3b986e8906",
+      "analysis": "build/m2-engine-color/flow-ast/scene-no-shaders/16/analysis.txt",
+      "status": 0
+    },
+    {
+      "configuration": "scene-no-shaders",
+      "source": "apps/probe/capture.cpp",
+      "object": "CMakeFiles/ngen_probe_support.dir/apps/probe/capture.cpp.o",
+      "compile_database_sha256": "a20d9c34bc46a3d21c535c8685492af74b2a57e05deffba72cbadf3b986e8906",
+      "analysis": "build/m2-engine-color/flow-ast/scene-no-shaders/17/analysis.txt",
+      "status": 0
+    },
+    {
+      "configuration": "scene-no-shaders",
+      "source": "apps/render_probe/main.cpp",
+      "object": "CMakeFiles/render_probe.dir/apps/render_probe/main.cpp.o",
+      "compile_database_sha256": "a20d9c34bc46a3d21c535c8685492af74b2a57e05deffba72cbadf3b986e8906",
+      "analysis": "build/m2-engine-color/flow-ast/scene-no-shaders/18/analysis.txt",
+      "status": 0
+    },
+    {
+      "configuration": "scene-no-shaders",
+      "source": "apps/resource_probe/main.cpp",
+      "object": "CMakeFiles/resource_probe.dir/apps/resource_probe/main.cpp.o",
+      "compile_database_sha256": "a20d9c34bc46a3d21c535c8685492af74b2a57e05deffba72cbadf3b986e8906",
+      "analysis": "build/m2-engine-color/flow-ast/scene-no-shaders/19/analysis.txt",
+      "status": 0
+    },
+    {
+      "configuration": "scene-no-shaders",
+      "source": "engine/render/scene.cpp",
+      "object": "CMakeFiles/ngen_scene.dir/engine/render/scene.cpp.o",
+      "compile_database_sha256": "a20d9c34bc46a3d21c535c8685492af74b2a57e05deffba72cbadf3b986e8906",
+      "analysis": "build/m2-engine-color/flow-ast/scene-no-shaders/20/analysis.txt",
+      "status": 0
+    },
+    {
+      "configuration": "scene-no-shaders",
+      "source": "engine/render/scene_draw.cpp",
+      "object": "CMakeFiles/ngen_scene.dir/engine/render/scene_draw.cpp.o",
+      "compile_database_sha256": "a20d9c34bc46a3d21c535c8685492af74b2a57e05deffba72cbadf3b986e8906",
+      "analysis": "build/m2-engine-color/flow-ast/scene-no-shaders/21/analysis.txt",
+      "status": 1
+    },
+    {
+      "configuration": "scene-no-shaders",
+      "source": "apps/scene_workload/fixture.cpp",
+      "object": "CMakeFiles/scene_workload_fixture.dir/apps/scene_workload/fixture.cpp.o",
+      "compile_database_sha256": "a20d9c34bc46a3d21c535c8685492af74b2a57e05deffba72cbadf3b986e8906",
+      "analysis": "build/m2-engine-color/flow-ast/scene-no-shaders/22/analysis.txt",
+      "status": 0
+    },
+    {
+      "configuration": "scene-no-shaders",
+      "source": "apps/scene_probe/main.cpp",
+      "object": "CMakeFiles/scene_probe.dir/apps/scene_probe/main.cpp.o",
+      "compile_database_sha256": "a20d9c34bc46a3d21c535c8685492af74b2a57e05deffba72cbadf3b986e8906",
+      "analysis": "build/m2-engine-color/flow-ast/scene-no-shaders/23/analysis.txt",
+      "status": 0
+    },
+    {
+      "configuration": "scene-no-shaders",
+      "source": "apps/scene_probe/draw.cpp",
+      "object": "CMakeFiles/scene_probe.dir/apps/scene_probe/draw.cpp.o",
+      "compile_database_sha256": "a20d9c34bc46a3d21c535c8685492af74b2a57e05deffba72cbadf3b986e8906",
+      "analysis": "build/m2-engine-color/flow-ast/scene-no-shaders/24/analysis.txt",
+      "status": 0
+    },
+    {
+      "configuration": "scene-no-shaders",
+      "source": "tests/render_environment.cpp",
+      "object": "CMakeFiles/render_environment_tests.dir/tests/render_environment.cpp.o",
+      "compile_database_sha256": "a20d9c34bc46a3d21c535c8685492af74b2a57e05deffba72cbadf3b986e8906",
+      "analysis": "build/m2-engine-color/flow-ast/scene-no-shaders/29/analysis.txt",
+      "status": 0
+    },
+    {
+      "configuration": "scene-no-shaders",
+      "source": "tests/workload.cpp",
+      "object": "CMakeFiles/scene_workload_tests.dir/tests/workload.cpp.o",
+      "compile_database_sha256": "a20d9c34bc46a3d21c535c8685492af74b2a57e05deffba72cbadf3b986e8906",
+      "analysis": "build/m2-engine-color/flow-ast/scene-no-shaders/30/analysis.txt",
+      "status": 0
+    },
+    {
+      "configuration": "scene-no-shaders",
+      "source": "tests/render_startup.cpp",
+      "object": "CMakeFiles/render_startup_tests.dir/tests/render_startup.cpp.o",
+      "compile_database_sha256": "a20d9c34bc46a3d21c535c8685492af74b2a57e05deffba72cbadf3b986e8906",
+      "analysis": "build/m2-engine-color/flow-ast/scene-no-shaders/33/analysis.txt",
+      "status": 0
+    }
+  ],
+  "generated_and_third_party_sources": "not owned-policy AST; covered by native builds",
+  "gcc_ast": "separate native-command compatibility check; never strip unsupported flags"
+}

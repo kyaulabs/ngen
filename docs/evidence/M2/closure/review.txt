@@ -1,0 +1,104 @@
+Initial same-session review of the b2fa7da closure controls, not the independent baseline review.
+
+Range: new inspector_probe checked-package fixtures, PowerShell measurement mode,
+observer/system-boundary tests, retained verification and acceptance status.
+Production engine/render and shader diffs are empty. No new dependency or ABI.
+
+Checked real package admission/upload/draw/retirement through SceneRenderer;
+independent HDR composition and opaque-occlusion expectations, reversed input
+orders and coplanar LESS/depth-readonly behavior. Both intentional production
+mutations fail the intended assertions, are restored byte-for-byte and are absent
+from the final diff. Four native probes and 12/12 CTests per graph pass; final
+Clang Debug/Release/ASan TUs pass actual compilation-aware analysis after two
+width fixes. Actual GCC module arguments fail clang-tidy and remain unchanged.
+
+Checked owned-child argument arrays, separate async output streams, timeout/kill
+cleanup, existing build/package admission, original-versus-current build records,
+binary/package identity and fresh artifact validation. CIM reads only local
+per-process memory with exact post-query PID filtering, unique instance counting,
+integer/range/capacity checks, distinct dedicated/shared/committed measures and
+fail-closed missing/malformed/entirely-zero or over-budget evidence. Parent clock
+window/sample ticks support actual returned-data correlation, not an assumption.
+All process-boundary tests pass with real children and only CIM mocked on Linux.
+
+No demonstrated task-related defect remains in this review. Native Windows CIM
+availability/semantics are still unverified. Sampling is not a continuous hard
+memory bound; CIM can extend nominal observation cadence and its operation timeout
+is not an OS sandbox/hard interrupt. An original clean-build log does not prove
+binary/source equivalence. Driver/WSI accounting remains a scoped owner evidence
+gate. Existing generated Conan runtime scripts are executed only from the user's
+own build, never extracted returned evidence.
+
+Resize failure is still real and retained. Old-swapchain and minimum-image
+controls do not repair it. A separate observation correlates active focus with
+faster cadence on 60 Hz KDE, but exact external cause is not established. Do not
+promote a speculative renderer patch, discard bad runs, weaken fixed-resolution
+budgets or infer owner acceptance. Follow-up independent review, actual Windows
+memory/new transparency execution and explicit owner/compiler/resize decisions
+remain before formal M2 closure or any M3 implementation.
+
+Subsequent independent review at b2fa7da found an observer defect missed above:
+valid-then-missing/foreign-only queries could disappear while status stayed passing.
+Public-process Red/Green now covers that failure, native measured-window wiring
+and deadline overruns when a child exits during CIM. Every attempt is retained;
+missing active-window data and observation gaps over one second fail coverage.
+CSV admission bounds rows/header expansion, correlates native clocks and retains
+invalid-report failure. Bounded native exception diagnostics prevent another
+opaque CimException-only return. The full corrected boundary suite passes, not
+native WDDM execution. No provider availability or continuous-peak claim is made.
+
+Returned b2fa7da MSVC Release passes 10/10 and all new actual NVIDIA transparency
+controls. Its 3600-frame workload passes but GPU observation fails with CimException
+and no samples; budget is correctly null. Original JSON/CSV and normalized text,
+separate hashes and safe exclusion records are retained without images/sessions.
+
+The UI alone now projects the checked package world union, avoiding a selected
+armor-component box and double transforms. Public native selection/cleared-selection
+controls, actual pixels, four 12/12 graphs, six Clang analyses and Release/ASan
+physical process suites pass. The owner accepts this specific rear-engine box fix
+and Slang, not unrelated gates. No bloom/emission or renderer/shader ABI changes.
+
+The owner reports laptop thermal/power changes before the latest paired runs.
+A genuinely visible/unfocused control no longer reproduces the old stall, so focus
+alone is not an established cause. Fresh clean 3600-frame mixed execution passes
+all original timing bounds, maximum 103.571 ms, without dropping resize/reload
+frames. Earlier failed runs remain historical evidence, not waived or rewritten.
+Post-run settings are recorded read-only; no exact thermal cause or engine repair
+is inferred. Native GPU memory remains open; M3 is not implemented.
+
+Fresh independent read-only review confirms clean b92ee53576e9443788c3035ee1fd293a75612f5f
+and tree 5bd0a12dc6c74bdcfe25904f73e2a26c9cf70961. It confirms the previous observer P2
+is substantively addressed and finds no additional demonstrated P1/P2 in scope.
+It verifies 145 selected hashes, all seven distributions and 23 exact native
+JSON/CSV hash pairs without running tests/builds. Its two P3 evidence advisories
+are corrected: duplicate-counter rejection has source-review support but no
+specific public-process regression, and nested resize summaries now distinguish
+old retained failures from passing current-host results. No production change
+or repeated native matrix is needed for these prose corrections. Review remains
+bounded agent advice, not human acceptance or Windows GPU accounting proof.
+
+Subsequent native schema-3 return at script 5a2f841 passes using the exact reused
+b2fa7da binary/cache and canonical package. Recomputed all 3600 rows, native/parent
+QPC correlation, 50 attempt/48 positive sample ordering, every active-window gap,
+all four byte maxima, same-sample sums and declared artifact hashes. Two empty
+queries precede measured frames; no active-window observation is missing. Maximum
+gap is 605.3581 ms. Dedicated+shared peaks at 304472064 bytes, committed separately
+at 304537600; observed working set is 925749248. Both sampled GPU caps and process
+cap pass. VMA peaks at 448107760/451045936 and settles at 199302016/202240192 with
+22 live/zero retiring records through the last 300 frames. The original failed
+wrapper remains retained, with unknown CimException cause. The diagnostic query
+and actual provider are now verified, without a speculative API/permission fix.
+No capture pixels or session bytes were inspected or redistributed in this slice.
+Native UI bounds compilation/execution and final personal visual/input/PR gates
+remain separate. No M3 implementation is started.
+
+Independent read-only evidence review confirms clean 25cf89f/tree
+557e0c41745256f7be32e4a8dd6c985165f4631e and independently closes the missing native
+sampled-accounting evidence gap. It verifies all rows/distributions, hashes, 50
+attempts, 48 positive samples (46 within measurement), endpoint/max gaps and
+separate byte maxima. No P1/P2 is demonstrated. Its P3 settings-wording defect is
+corrected: the unchanged scripted edit uses exposure .75/FXAA off at measured
+frames 1-2 and restores exposure 1/FXAA on at frame 3. No frame is dropped, no
+memory verdict changes and no production patch or repeat run is needed. The
+source trigger at apps/scene_workload/main.cpp:428 was verified in this session.
+Report remains bounded agent advice, not personal visual/input acceptance.

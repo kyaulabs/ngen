@@ -1,0 +1,358 @@
+{
+  "archive_sha256": "e3db751f44d747320b37385581e9086d5b128bca92acbdd3880d8dc2972a4061",
+  "archive_bytes": 589854,
+  "uncompressed_bytes": 15688036,
+  "entry_count": 58,
+  "selected_count": 53,
+  "selected": [
+    {
+      "name": "build-profile.txt",
+      "bytes": 132,
+      "sha256": "356c05aea86b6062ecc0be681ed5e638a3af5bcbd82366c9ce29642db12f8ae8"
+    },
+    {
+      "name": "cmake-version.txt",
+      "bytes": 93,
+      "sha256": "90d36654ad4780345f1d3a3d542a7fee869fb70755350c845a5abb692b121bc7"
+    },
+    {
+      "name": "conan-version.txt",
+      "bytes": 22,
+      "sha256": "5f32b073e26212e1eadcea12fb2b0070d8669890df0ff3a467c14051d29a0f56"
+    },
+    {
+      "name": "host-profile.txt",
+      "bytes": 132,
+      "sha256": "356c05aea86b6062ecc0be681ed5e638a3af5bcbd82366c9ce29642db12f8ae8"
+    },
+    {
+      "name": "ninja-version.txt",
+      "bytes": 37,
+      "sha256": "cc30d39e321dcb24ca5c4c5d5b7730e25ab769876a825616360194c634824754"
+    },
+    {
+      "name": "profile.txt",
+      "bytes": 377,
+      "sha256": "8d60a8abec37a77bc37ec7341b4bc60fc81893b7229a48531447263e3f1c1f3b"
+    },
+    {
+      "name": "Release-build.txt",
+      "bytes": 12342,
+      "sha256": "b924200f109f827800b9aca88ef2dc1ade6cd14bdc7f72710120eb59639581e5"
+    },
+    {
+      "name": "Release-configure.txt",
+      "bytes": 2008,
+      "sha256": "ff8af3132f2dc8565c2231e9f5337572ea9f9a41aeddee9ff32e2284db7c0ca3"
+    },
+    {
+      "name": "Release-cull.reflection.json",
+      "bytes": 15512,
+      "sha256": "8c25f5bf2dae27145bc480db5affd5e72517016c3c3a602fe66aaaa600e032d6"
+    },
+    {
+      "name": "Release-inspection.artifacts.json",
+      "bytes": 314,
+      "sha256": "634519be593a5c96719cb7873f20456525cf5afb2ad274eee33a6e26a73cc007"
+    },
+    {
+      "name": "Release-inspection.bmp",
+      "bytes": 3686538,
+      "sha256": "3ab7f581c0a4324811999e64baf4379b52ed5e09aa5025b4aa598dd043878190"
+    },
+    {
+      "name": "Release-inspection.csv",
+      "bytes": 171164,
+      "sha256": "0ddc4a094303df624811ef519d29b5109f887d4012936751ecf08e931fb83315"
+    },
+    {
+      "name": "Release-inspection.txt",
+      "bytes": 1340,
+      "sha256": "fd279bf58f0d029848ca3b0f4dc19cb21ee1e7ffd1092a491ee6fe1a190a441b"
+    },
+    {
+      "name": "Release-inspection.txt.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "Release-inspection.working-set.json",
+      "bytes": 403,
+      "sha256": "b346394b61e0ba8d1934a8ae798d7b3c65447776ab85c82d5ff6469f9bda08a3"
+    },
+    {
+      "name": "Release-inspector.txt",
+      "bytes": 746,
+      "sha256": "2ffac0369d18845c49eaf28c918cb435ddb53ddfde12ea7e5b95b26b4660c591"
+    },
+    {
+      "name": "Release-overlay-fragment.reflection.json",
+      "bytes": 15820,
+      "sha256": "38d05c4a46c96430f1d2c2fd957060728d6a7c997c296af7332afb938ffa5bf9"
+    },
+    {
+      "name": "Release-overlay-vertex.reflection.json",
+      "bytes": 17899,
+      "sha256": "bb7035b5941fa723975a82ad4ef30d29c1c889e48562aabc8a3cad05281e21e7"
+    },
+    {
+      "name": "Release-pbr-fragment.reflection.json",
+      "bytes": 110487,
+      "sha256": "ceeb6547bc8da4047e61092ce4b70a64dbb447164b9dc148d26265037315ff0a"
+    },
+    {
+      "name": "Release-pbr-vertex.reflection.json",
+      "bytes": 112389,
+      "sha256": "e9d735ae26f60a0020484a131c038b041a3561739323aa1ecd515220b5a8031f"
+    },
+    {
+      "name": "Release-post-fragment.reflection.json",
+      "bytes": 17178,
+      "sha256": "fec80329a0b9fa2ede95fdfc4f3e877cb6c9360fb860aa3bf62b7a6ebbe4b449"
+    },
+    {
+      "name": "Release-post-vertex.reflection.json",
+      "bytes": 14845,
+      "sha256": "f7560a61857f7a0ec8cddcd1127d3cf08d651fb5c884d3c9e03058e17ec2183f"
+    },
+    {
+      "name": "Release-presentation.txt",
+      "bytes": 246,
+      "sha256": "010aae97766c34209e3786f2d9b6f14d2eed048186d8803d803c2cb931267e43"
+    },
+    {
+      "name": "Release-render-startup.txt",
+      "bytes": 148,
+      "sha256": "8ad47fadb8e5e7e5874d55f7930295bacabd26677c29007620a659b7bd9dc8e3"
+    },
+    {
+      "name": "Release-resources.txt",
+      "bytes": 1838,
+      "sha256": "43b9ff3d2fd637e30862d6b7a7553e4e21fe37a78b1ded1b383a080bfec36e4a"
+    },
+    {
+      "name": "Release-scene-package.bmp",
+      "bytes": 3686538,
+      "sha256": "621978da723790ad88190eae45ebf08fb2b20875e67ec3d48a57248108f3b924"
+    },
+    {
+      "name": "Release-scene-package.json",
+      "bytes": 150,
+      "sha256": "70019ac3ea57a52b1c329b126f4346d2861ea23556aa43066d6233064fdd22aa"
+    },
+    {
+      "name": "Release-scene-package.txt",
+      "bytes": 1171,
+      "sha256": "f8039525aa69235bcf0c4fd7e1da71fa2fb7f156b9e71cdabf8293a5a89831f7"
+    },
+    {
+      "name": "Release-scene.txt",
+      "bytes": 1126,
+      "sha256": "79f7e995d7d2e0934d5b77d5f31e5158d9d2a0a8dd1b062c5bc7253bd4ea5dcc"
+    },
+    {
+      "name": "Release-serial.txt",
+      "bytes": 170,
+      "sha256": "388d7c789368e790abc5e2d940a902c253f228ef5f264264d65d516d95ebb9d8"
+    },
+    {
+      "name": "Release-shader-manifest.json",
+      "bytes": 9716,
+      "sha256": "1b77d6689dfa4ef528b388a40b19c854e2c97f850151d9d634877c38a3d95487"
+    },
+    {
+      "name": "Release-shaders.txt",
+      "bytes": 403,
+      "sha256": "44c66a838642647f81034ce1650462617836f089f9f4e614d36e8ff3bf7cdd2a"
+    },
+    {
+      "name": "Release-shadow-fragment.reflection.json",
+      "bytes": 101374,
+      "sha256": "653644cdd1742af8e71abbfebebde013a804b6d505cc1424b4cf619b3b433117"
+    },
+    {
+      "name": "Release-shadow-vertex.reflection.json",
+      "bytes": 108925,
+      "sha256": "5d1d04075883bd55cb6e64275ff5a65a9e49e9814dc944f7acdb23c6628a1156"
+    },
+    {
+      "name": "Release-steady.artifacts.json",
+      "bytes": 305,
+      "sha256": "e416456de95c9a90283f47866cd048e1fd9fe594e08a227a13961ab4c64765e1"
+    },
+    {
+      "name": "Release-steady.bmp",
+      "bytes": 3686538,
+      "sha256": "876def0e4deffb9505b7dd0fe597978135aafae0932c23ca304ed1dbb867d2ba"
+    },
+    {
+      "name": "Release-steady.csv",
+      "bytes": 85383,
+      "sha256": "6ff81698108e1f63c221c31cd67cd6fcf06e6c83f9e809a483c3a25aa0100240"
+    },
+    {
+      "name": "Release-steady.txt",
+      "bytes": 1101,
+      "sha256": "19ee3a2ff3fc82502522668774f9929aca16add3784b8c74dd1fea117dacc36f"
+    },
+    {
+      "name": "Release-steady.txt.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "Release-steady.working-set.json",
+      "bytes": 403,
+      "sha256": "603c5858f5d59a8809e5973c8feb5578b6a673121bbabdda18f7f8333512d665"
+    },
+    {
+      "name": "Release-stream.artifacts.json",
+      "bytes": 305,
+      "sha256": "9aa155200f3e840653398cc109e9a6f6dd17912e6ce7ca4d9d73ae12641e056a"
+    },
+    {
+      "name": "Release-stream.bmp",
+      "bytes": 3686538,
+      "sha256": "8e54a0fc549b007ba20b8bd708cd410838d0f9dc448d1ac8f906cd2bd7370564"
+    },
+    {
+      "name": "Release-stream.csv",
+      "bytes": 85338,
+      "sha256": "2b03db8fa7fec87920d7878fb582b797129871213f42926dd75e477de95980f7"
+    },
+    {
+      "name": "Release-stream.txt",
+      "bytes": 1337,
+      "sha256": "9d7e579e3282d38556f5dccae47345b0c4d11b615994d59d2c2d9ce3dd27221a"
+    },
+    {
+      "name": "Release-stream.txt.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "Release-stream.working-set.json",
+      "bytes": 403,
+      "sha256": "5163f9ef9f105477b77833703bbddf5b4d271d6efc0482e343e8055cf63e7c9f"
+    },
+    {
+      "name": "Release-test-list.txt",
+      "bytes": 406,
+      "sha256": "c9b7a401ddf8a7a9e04611fa7ccc9def92d20417e9e9f17341fa9b3433f5e382"
+    },
+    {
+      "name": "Release-tests.txt",
+      "bytes": 1227,
+      "sha256": "f65c8219c6328b3caba4567f3a6296a44c4142f2d3c94303290d24aed39c9504"
+    },
+    {
+      "name": "Release-validation-callback.txt",
+      "bytes": 212,
+      "sha256": "c6eecfd33ef01a81b7ed77866afe7aabb1c4d5e7e8030641af1a71e26c9eaab8"
+    },
+    {
+      "name": "Release-workers.txt",
+      "bytes": 171,
+      "sha256": "26b69ccfa2561911e142609da3be384e2270be90d26e571e7de606476f9b18ab"
+    },
+    {
+      "name": "revision.txt",
+      "bytes": 42,
+      "sha256": "cbcaf15fdd60e130d017fbc0075ee2ba0b6bfdc0d66903a05d1a05003ee728f6"
+    },
+    {
+      "name": "vulkan-sdk.txt",
+      "bytes": 35,
+      "sha256": "5a69b4d3308bb71bdcc75d9691b07e507ccf2753a7a32427db91f401a3bb314b"
+    },
+    {
+      "name": "working-tree.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "excluded_unread": [
+    "Release-conan.txt",
+    "profile-detect.txt",
+    "session.txt",
+    "slang-recipe.txt",
+    "tools-install.txt"
+  ],
+  "scope": "Bounded flat regular files/types/counts/sizes/compression; selective extraction only. Returned commands/scripts/binaries never executed.",
+  "public_retained_record_count": 40,
+  "private_captures": 4,
+  "duplicate_reflections_referenced": [
+    {
+      "name": "Release-cull.reflection.json",
+      "sha256": "8c25f5bf2dae27145bc480db5affd5e72517016c3c3a602fe66aaaa600e032d6",
+      "identical_retained_record": "docs/evidence/M2/closure/windows-b2/release/Release-cull.reflection.json"
+    },
+    {
+      "name": "Release-overlay-fragment.reflection.json",
+      "sha256": "38d05c4a46c96430f1d2c2fd957060728d6a7c997c296af7332afb938ffa5bf9",
+      "identical_retained_record": "docs/evidence/M2/closure/windows-b2/release/Release-overlay-fragment.reflection.json"
+    },
+    {
+      "name": "Release-overlay-vertex.reflection.json",
+      "sha256": "bb7035b5941fa723975a82ad4ef30d29c1c889e48562aabc8a3cad05281e21e7",
+      "identical_retained_record": "docs/evidence/M2/closure/windows-b2/release/Release-overlay-vertex.reflection.json"
+    },
+    {
+      "name": "Release-pbr-fragment.reflection.json",
+      "sha256": "ceeb6547bc8da4047e61092ce4b70a64dbb447164b9dc148d26265037315ff0a",
+      "identical_retained_record": "docs/evidence/M2/closure/windows-b2/release/Release-pbr-fragment.reflection.json"
+    },
+    {
+      "name": "Release-pbr-vertex.reflection.json",
+      "sha256": "e9d735ae26f60a0020484a131c038b041a3561739323aa1ecd515220b5a8031f",
+      "identical_retained_record": "docs/evidence/M2/closure/windows-b2/release/Release-pbr-vertex.reflection.json"
+    },
+    {
+      "name": "Release-post-fragment.reflection.json",
+      "sha256": "fec80329a0b9fa2ede95fdfc4f3e877cb6c9360fb860aa3bf62b7a6ebbe4b449",
+      "identical_retained_record": "docs/evidence/M2/closure/windows-b2/release/Release-post-fragment.reflection.json"
+    },
+    {
+      "name": "Release-post-vertex.reflection.json",
+      "sha256": "f7560a61857f7a0ec8cddcd1127d3cf08d651fb5c884d3c9e03058e17ec2183f",
+      "identical_retained_record": "docs/evidence/M2/closure/windows-b2/release/Release-post-vertex.reflection.json"
+    },
+    {
+      "name": "Release-shadow-fragment.reflection.json",
+      "sha256": "653644cdd1742af8e71abbfebebde013a804b6d505cc1424b4cf619b3b433117",
+      "identical_retained_record": "docs/evidence/M2/closure/windows-b2/release/Release-shadow-fragment.reflection.json"
+    },
+    {
+      "name": "Release-shadow-vertex.reflection.json",
+      "sha256": "5d1d04075883bd55cb6e64275ff5a65a9e49e9814dc944f7acdb23c6628a1156",
+      "identical_retained_record": "docs/evidence/M2/closure/windows-b2/release/Release-shadow-vertex.reflection.json"
+    }
+  ],
+  "privacy": "Five setup/session logs unread/unextracted; model/package/reference/brand/archive and all capture bytes excluded from Git. Native JSON/CSV exact, text paths/EOL normalized.",
+  "static_exhaust_runtime": {
+    "archive_sha256": "44ad6601f42fad44d863914eac86253634d6b52603f1bfb1497413c8a1d9832a",
+    "archive_bytes": 127459,
+    "selected_native_records": [
+      "static-exhaust/input.json",
+      "static-exhaust/exit.txt",
+      "static-exhaust/plume.txt",
+      "static-exhaust/plume.err",
+      "static-exhaust/plume.csv"
+    ],
+    "private_capture": {
+      "sha256": "780423256efd08c4df89c31e5a002a691978247867e5edf6e144db4de57b53cf",
+      "bytes": 3686538,
+      "native_extent": [
+        1280,
+        720
+      ],
+      "actual_left_gutter": 16,
+      "actual_right_gutter": 16,
+      "visually_inspected": true,
+      "contents": "accepted blue-white exhaust inside complete ship bounds; 14-material/194-ship-draw UI; no upscaling"
+    },
+    "verified_build_revision": "5a2f8415aa226d9f757dfa18af403ab039d51806",
+    "package_sha256": "067407fb5fa2527771212cc7280a345b02ad3dd2a823ae8ba81b3553689ec52b",
+    "scope": "Already verified 600-frame validated static-package run, four reloads/two resizes; reused compiled binary, no new compiler/memory/performance/motion claim"
+  }
+}

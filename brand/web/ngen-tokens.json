@@ -1,0 +1,46 @@
+{
+  "name": "NGEN",
+  "version": "1.0",
+  "themes": {
+    "dark": {
+      "bg": "#0E222C",
+      "surface": "#14313D",
+      "surface-alt": "#1B4050",
+      "text": "#DDF3F8",
+      "muted": "#A9C5D0",
+      "border": "#315362",
+      "control-border": "#7899A6",
+      "accent": "#63DDF8",
+      "accent-hover": "#89E8FA",
+      "on-accent": "#08212B",
+      "secondary": "#B6A5FF",
+      "on-secondary": "#21163A",
+      "focus": "#89E8FA",
+      "success": "#7FDFBB",
+      "warning": "#FFD38A",
+      "danger": "#FFA9AC"
+    },
+    "light": {
+      "bg": "#EAF8FB",
+      "surface": "#FFFFFF",
+      "surface-alt": "#DDEFF5",
+      "text": "#173B4B",
+      "muted": "#466473",
+      "border": "#B8D2DC",
+      "control-border": "#5C7D8B",
+      "accent": "#006D89",
+      "accent-hover": "#005B74",
+      "on-accent": "#FFFFFF",
+      "secondary": "#5B45B4",
+      "on-secondary": "#FFFFFF",
+      "focus": "#006D89",
+      "success": "#006649",
+      "warning": "#80500A",
+      "danger": "#A52F42"
+    }
+  },
+  "typography": {
+    "sans": "system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
+    "mono": "ui-monospace, 'SFMono-Regular', Consolas, 'Liberation Mono', monospace"
+  }
+}

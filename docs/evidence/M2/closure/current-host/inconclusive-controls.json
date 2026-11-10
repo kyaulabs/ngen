@@ -1,0 +1,134 @@
+{
+  "focus-pair": {
+    "original_sha256": "5340a7a772f38d64017d7370ab749ede3cf23d77bce4ddd5630ae94725ce4588",
+    "outcomes": [
+      {
+        "mode": "delayed",
+        "exit": 0,
+        "rows": 600,
+        "metrics": {
+          "before_request": {
+            "p50_ms": 16.487471,
+            "max_ms": 107.65735
+          },
+          "after_request": {
+            "p50_ms": 16.598074,
+            "max_ms": 29.894054
+          },
+          "resize_window": {
+            "p50_ms": 16.210656,
+            "max_ms": 107.65735
+          }
+        },
+        "scope": "instrumented causal diagnostic; actual activation may be declined, inspect real flags"
+      },
+      {
+        "mode": "immediate",
+        "exit": 0,
+        "rows": 600,
+        "metrics": {
+          "before_request": {
+            "p50_ms": 16.503,
+            "max_ms": 103.020721
+          },
+          "after_request": {
+            "p50_ms": 16.706954,
+            "max_ms": 35.902224
+          },
+          "resize_window": {
+            "p50_ms": 16.208042,
+            "max_ms": 103.020721
+          }
+        },
+        "scope": "instrumented causal diagnostic; actual activation may be declined, inspect real flags"
+      }
+    ],
+    "control_validity": "No valid unfocused separation: automatic cases became focused; peer case aborted before measurement. Not used for causal acceptance."
+  },
+  "focus-create-pair": {
+    "original_sha256": "6f1034feb8da07eefec7c707438206749ef8a1209d51e90eef7ce1052bdf838a",
+    "outcomes": [
+      {
+        "mode": "unfocusable",
+        "exit": 0,
+        "rows": 600,
+        "metrics": {
+          "early_frames": {
+            "p50_ms": 16.538645,
+            "max_ms": 104.720655
+          },
+          "late_frames": {
+            "p50_ms": 16.569452,
+            "max_ms": 30.951219
+          },
+          "resize_window": {
+            "p50_ms": 16.152747,
+            "max_ms": 104.720655
+          }
+        },
+        "scope": "instrumented causal diagnostic; actual activation may be declined, inspect real flags"
+      },
+      {
+        "mode": "immediate",
+        "exit": 0,
+        "rows": 600,
+        "metrics": {
+          "early_frames": {
+            "p50_ms": 16.554461,
+            "max_ms": 101.74057
+          },
+          "late_frames": {
+            "p50_ms": 16.626056,
+            "max_ms": 30.401797
+          },
+          "resize_window": {
+            "p50_ms": 16.132158,
+            "max_ms": 101.74057
+          }
+        },
+        "scope": "instrumented causal diagnostic; actual activation may be declined, inspect real flags"
+      }
+    ],
+    "control_validity": "No valid unfocused separation: automatic cases became focused; peer case aborted before measurement. Not used for causal acceptance."
+  },
+  "focus-peer-pair": {
+    "original_sha256": "e6a8353d3cb7954289fa066600b2bbfce20b410ddd9c9e19a228eff8ec472a5b",
+    "outcomes": [
+      {
+        "mode": "peer",
+        "exit": -6,
+        "rows": 0,
+        "metrics": {},
+        "scope": "instrumented causal diagnostic; actual activation may be declined, inspect real flags"
+      }
+    ],
+    "control_validity": "No valid unfocused separation: automatic cases became focused; peer case aborted before measurement. Not used for causal acceptance."
+  },
+  "operator-focused1": {
+    "rows": 600,
+    "report_sha256": "4728b567343c29475c3463691adcbe4332813597eb18714a049bf0d2570b241e",
+    "state_events": [
+      "window_state at_ns=480109232297496 flags=268435488 hidden=0 minimized=0 occluded=0 focus=0 refresh_hz=60.000",
+      "window_state at_ns=480109304959428 flags=268436000 hidden=0 minimized=0 occluded=0 focus=1 refresh_hz=60.000"
+    ],
+    "control_validity": "Operator reported away/screen-off interruption; not a controlled visible/unfocused comparison."
+  },
+  "operator-unfocused1": {
+    "rows": 600,
+    "report_sha256": "d7b351524293419b7c7905cca6124190a987b99f77bd8b1af8b694404a05bcd5",
+    "state_events": [
+      "window_state at_ns=480578783134512 flags=268435488 hidden=0 minimized=0 occluded=0 focus=0 refresh_hz=60.000",
+      "window_state at_ns=480578851792929 flags=268436000 hidden=0 minimized=0 occluded=0 focus=1 refresh_hz=60.000"
+    ],
+    "control_validity": "Operator reported away/screen-off interruption; not a controlled visible/unfocused comparison."
+  },
+  "operator-unfocused2": {
+    "rows": 600,
+    "report_sha256": "1592867ca64a08a012f0513029c300aafea7c06cf03e751ee7c79a10ffdc61ff",
+    "state_events": [
+      "window_state at_ns=482016038863410 flags=268435488 hidden=0 minimized=0 occluded=0 focus=0 refresh_hz=60.000",
+      "window_state at_ns=482016144053461 flags=268437024 hidden=0 minimized=0 occluded=0 focus=1 refresh_hz=60.000"
+    ],
+    "control_validity": "Operator reported away/screen-off interruption; not a controlled visible/unfocused comparison."
+  }
+}

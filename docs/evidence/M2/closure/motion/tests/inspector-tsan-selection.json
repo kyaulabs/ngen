@@ -1,0 +1,190 @@
+{
+  "backtraceGraph" :
+  {
+    "commands" :
+    [
+      "add_test"
+    ],
+    "files" :
+    [
+      "/home/kyau/projects/kyaulabs/ngen/CMakeLists.txt"
+    ],
+    "nodes" :
+    [
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 211,
+        "parent" : 0
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 214,
+        "parent" : 2
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 234,
+        "parent" : 4
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 240,
+        "parent" : 6
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 288,
+        "parent" : 8
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 289,
+        "parent" : 10
+      }
+    ]
+  },
+  "kind" : "ctestInfo",
+  "tests" :
+  [
+    {
+      "backtrace" : 1,
+      "command" :
+      [
+        "/home/kyau/projects/kyaulabs/ngen/build/inspector-tsan/ngen_tests"
+      ],
+      "name" : "ngen_tests",
+      "properties" :
+      [
+        {
+          "name" : "TIMEOUT",
+          "value" : 60.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "/home/kyau/projects/kyaulabs/ngen/build/inspector-tsan"
+        }
+      ]
+    },
+    {
+      "backtrace" : 3,
+      "command" :
+      [
+        "/home/kyau/projects/kyaulabs/ngen/build/inspector-tsan/render_contract_tests"
+      ],
+      "name" : "render_contract_tests",
+      "properties" :
+      [
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "/home/kyau/projects/kyaulabs/ngen/build/inspector-tsan"
+        }
+      ]
+    },
+    {
+      "backtrace" : 5,
+      "command" :
+      [
+        "/home/kyau/projects/kyaulabs/ngen/build/inspector-tsan/asset_package_tests"
+      ],
+      "name" : "asset_package_tests",
+      "properties" :
+      [
+        {
+          "name" : "TIMEOUT",
+          "value" : 90.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "/home/kyau/projects/kyaulabs/ngen/build/inspector-tsan"
+        }
+      ]
+    },
+    {
+      "backtrace" : 7,
+      "command" :
+      [
+        "/home/kyau/projects/kyaulabs/ngen/build/inspector-tsan/inspector_tests"
+      ],
+      "name" : "inspector_tests",
+      "properties" :
+      [
+        {
+          "name" : "TIMEOUT",
+          "value" : 30.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "/home/kyau/projects/kyaulabs/ngen/build/inspector-tsan"
+        }
+      ]
+    },
+    {
+      "backtrace" : 9,
+      "command" :
+      [
+        "/home/kyau/projects/kyaulabs/ngen/build/inspector-tsan/sim_harness"
+      ],
+      "name" : "replay_serial",
+      "properties" :
+      [
+        {
+          "name" : "TIMEOUT",
+          "value" : 60.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "/home/kyau/projects/kyaulabs/ngen/build/inspector-tsan"
+        }
+      ]
+    },
+    {
+      "backtrace" : 11,
+      "command" :
+      [
+        "/home/kyau/projects/kyaulabs/ngen/build/inspector-tsan/sim_harness",
+        "--workers=2"
+      ],
+      "name" : "replay_workers",
+      "properties" :
+      [
+        {
+          "name" : "TIMEOUT",
+          "value" : 60.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "/home/kyau/projects/kyaulabs/ngen/build/inspector-tsan"
+        }
+      ]
+    }
+  ],
+  "version" :
+  {
+    "major" : 1,
+    "minor" : 0
+  }
+}

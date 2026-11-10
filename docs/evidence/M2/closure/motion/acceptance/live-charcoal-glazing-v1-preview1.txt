@@ -1,0 +1,2 @@
+device=Intel(R) Iris(R) Xe Graphics (TGL GT2) api=1.4 driver=109060102 queue=0 display=wayland
+live_flow_frames=5020 owner_closed=0 native_extent=1280x720 camera_only=1 validation=1 camera_orbit=continuous camera_segments=bridge_then_midship_then_cladding sky=unchanged flow_cycle_seconds=16 flow_cells_per_second=32 flow_shutter_ms=18.75

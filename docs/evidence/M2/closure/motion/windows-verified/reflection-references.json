@@ -1,0 +1,56 @@
+[
+  {
+    "name": "Release-cull.reflection.json",
+    "sha256": "8c25f5bf2dae27145bc480db5affd5e72517016c3c3a602fe66aaaa600e032d6",
+    "existing_record": "docs/evidence/M2/closure/windows-b2/release/Release-cull.reflection.json",
+    "byte_identical": true
+  },
+  {
+    "name": "Release-overlay-fragment.reflection.json",
+    "sha256": "38d05c4a46c96430f1d2c2fd957060728d6a7c997c296af7332afb938ffa5bf9",
+    "existing_record": "docs/evidence/M2/closure/windows-b2/release/Release-overlay-fragment.reflection.json",
+    "byte_identical": true
+  },
+  {
+    "name": "Release-overlay-vertex.reflection.json",
+    "sha256": "bb7035b5941fa723975a82ad4ef30d29c1c889e48562aabc8a3cad05281e21e7",
+    "existing_record": "docs/evidence/M2/closure/windows-b2/release/Release-overlay-vertex.reflection.json",
+    "byte_identical": true
+  },
+  {
+    "name": "Release-pbr-fragment.reflection.json",
+    "sha256": "ceeb6547bc8da4047e61092ce4b70a64dbb447164b9dc148d26265037315ff0a",
+    "existing_record": "docs/evidence/M2/closure/windows-b2/release/Release-pbr-fragment.reflection.json",
+    "byte_identical": true
+  },
+  {
+    "name": "Release-pbr-vertex.reflection.json",
+    "sha256": "e9d735ae26f60a0020484a131c038b041a3561739323aa1ecd515220b5a8031f",
+    "existing_record": "docs/evidence/M2/closure/windows-b2/release/Release-pbr-vertex.reflection.json",
+    "byte_identical": true
+  },
+  {
+    "name": "Release-post-fragment.reflection.json",
+    "sha256": "fec80329a0b9fa2ede95fdfc4f3e877cb6c9360fb860aa3bf62b7a6ebbe4b449",
+    "existing_record": "docs/evidence/M2/closure/windows-b2/release/Release-post-fragment.reflection.json",
+    "byte_identical": true
+  },
+  {
+    "name": "Release-post-vertex.reflection.json",
+    "sha256": "f7560a61857f7a0ec8cddcd1127d3cf08d651fb5c884d3c9e03058e17ec2183f",
+    "existing_record": "docs/evidence/M2/closure/windows-b2/release/Release-post-vertex.reflection.json",
+    "byte_identical": true
+  },
+  {
+    "name": "Release-shadow-fragment.reflection.json",
+    "sha256": "653644cdd1742af8e71abbfebebde013a804b6d505cc1424b4cf619b3b433117",
+    "existing_record": "docs/evidence/M2/closure/windows-b2/release/Release-shadow-fragment.reflection.json",
+    "byte_identical": true
+  },
+  {
+    "name": "Release-shadow-vertex.reflection.json",
+    "sha256": "5d1d04075883bd55cb6e64275ff5a65a9e49e9814dc944f7acdb23c6628a1156",
+    "existing_record": "docs/evidence/M2/closure/windows-b2/release/Release-shadow-vertex.reflection.json",
+    "byte_identical": true
+  }
+]

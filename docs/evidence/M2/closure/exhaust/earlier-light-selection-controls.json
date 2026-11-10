@@ -1,0 +1,31 @@
+{
+  "overlit": {
+    "selected_point_count": 16,
+    "selected_drive_core_count": 6,
+    "selected_core_names": [
+      "F01_Light_Dorsal_core.001",
+      "F01_Light_Ventral_core.001",
+      "F01_Light_PortUpper_core.001",
+      "F01_Light_StarboardUpper_core.001",
+      "F01_Light_PortLower_core.001",
+      "F01_Light_StarboardLower_core.001"
+    ]
+  },
+  "low-power-control": {
+    "selected_point_count": 16,
+    "selected_drive_core_count": 0,
+    "selected_core_names": []
+  },
+  "localized": {
+    "selected_point_count": 16,
+    "selected_drive_core_count": 6,
+    "selected_core_names": [
+      "F01_Light_Dorsal_core.001",
+      "F01_Light_Ventral_core.001",
+      "F01_Light_PortUpper_core.001",
+      "F01_Light_StarboardUpper_core.001",
+      "F01_Light_PortLower_core.001",
+      "F01_Light_StarboardLower_core.001"
+    ]
+  }
+}

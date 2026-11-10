@@ -1,0 +1,2 @@
+seed=0x4e47454e workers=2 ticks=1000 entities=8 commands=32000 sum=11930
+tick_ns p50=4200 p95=5700 p99=7900 allocation_probe=1 new_allocations=0 scheduler_allocations=0

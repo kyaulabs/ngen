@@ -1,0 +1,32 @@
+{
+  "script_revision": "5a2f8415aa226d9f757dfa18af403ab039d51806",
+  "declared_binary_revision": "b2fa7da44d569cba2aec8221eac04b6df840b20a",
+  "same_binary_as_failed_b2_run": true,
+  "frames": 3600,
+  "sample_count": 48,
+  "query_count": 50,
+  "query_status_counts": {
+    "no_own_instances": 2,
+    "observed": 48
+  },
+  "maximum_measured_observation_gap_ms": 605.3581,
+  "missing_active_window_queries": 0,
+  "peak_dedicated_bytes": 250916864.0,
+  "peak_shared_bytes": 69296128.0,
+  "peak_same_sample_dedicated_plus_shared_bytes": 304472064.0,
+  "peak_total_committed_bytes": 304537600.0,
+  "observed_process_working_set_bytes": 925749248,
+  "both_sampled_gpu_budgets_pass": true,
+  "frame_ns": {
+    "p50_ns": 7105200,
+    "p95_ns": 8245500,
+    "p99_ns": 8509100,
+    "max_ns": 15517200
+  },
+  "peak_vma_allocation_bytes": 448107760,
+  "peak_vma_reserved_bytes": 451045936,
+  "final_vma_allocation_bytes": 199302016,
+  "final_vma_reserved_bytes": 202240192,
+  "elapsed_ms": 27580,
+  "scope": "Sampled/provider-refreshed per-process WDDM, separate dedicated+shared/committed measures; no exact continuous/global peak or newer native UI execution claim. Original CimException cause remains unknown."
+}

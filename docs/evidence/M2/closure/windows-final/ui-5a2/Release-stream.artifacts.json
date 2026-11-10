@@ -1,0 +1,12 @@
+[
+  {
+    "name": "Release-stream.bmp",
+    "bytes": 3686538,
+    "sha256": "8e54a0fc549b007ba20b8bd708cd410838d0f9dc448d1ac8f906cd2bd7370564"
+  },
+  {
+    "name": "Release-stream.csv",
+    "bytes": 85338,
+    "sha256": "2b03db8fa7fec87920d7878fb582b797129871213f42926dd75e477de95980f7"
+  }
+]

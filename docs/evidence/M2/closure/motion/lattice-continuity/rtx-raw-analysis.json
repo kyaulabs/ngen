@@ -1,0 +1,14 @@
+{
+  "archive_sha256": "91d1f0fe86f856f41ad9a2ee1675ecc4f9bb6d9ab0191f3065cb24dca89c168d",
+  "reported_revision": "b6ea825e0b9037a43ea53f26130ee2da9d6aa0c7",
+  "binary_sha256": "4cf0dee4a692302c829d12a380eba9fd0b0b52267014e52c6b808992fb5fe5c1",
+  "diagnostic_marker": false,
+  "probe_exit_record_present": false,
+  "stderr_member_present": false,
+  "numeric_sample_present": false,
+  "owner_reported_capture_error": "-RedirectStandardError was parsed as a separate command after a line break; environment restoration appeared before that error.",
+  "conclusion": "The selected executable lacks the diagnostic marker despite updated checkout. Capture is incomplete; absent stderr is not inferred empty, and no numeric shader cause or repair is established.",
+  "next": "Use existing trusted build-windows.ps1 once, MSVC Release Inspector, current source/final package, structured parameter splat inside one script block. Fresh build avoids the stale executable without a new collector, manual redirection or compiler matrix.",
+  "source_changes": false,
+  "shader_or_threshold_changes": false
+}

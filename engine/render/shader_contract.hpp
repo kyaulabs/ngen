@@ -51,7 +51,10 @@ struct alignas(16) MaterialConstants {
     Float4 metallicRoughnessNormalOcclusion{1, 1, 1, 1};
     // [0]: opaque=0, mask=1, blend=2; [1]: UV1 bits in package map order
     // (base, metallic/roughness, normal, occlusion, emissive); [2] bit0: no normal
-    // texture, bit1: double-sided normal flip. Remaining bits, including [3], are reserved.
+    // texture, bit1: double-sided normal flip, high16: stable emissive-flow seed.
+    // [3]: emissive blend flow, low16 normalized phase /65536, high16 amount
+    // /65535; zero disables. Phase-only words and seeds without flow are invalid.
+    // All other bits in [0..2] remain reserved.
     std::array<std::uint32_t, 4> flags{};
 };
 

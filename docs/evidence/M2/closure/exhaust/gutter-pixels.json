@@ -1,0 +1,13 @@
+{
+  "private_capture": "build/m2-engine-color/plume-wide-steady-clean1.bmp",
+  "native_extent": [
+    1280,
+    720
+  ],
+  "row": 100,
+  "left_panel_first_pixel": 16,
+  "right_panel_last_pixel": 1263,
+  "left_gutter_pixels": 16,
+  "right_gutter_pixels": 16,
+  "no_source_only_or_upscaled_pixel_claim": true
+}

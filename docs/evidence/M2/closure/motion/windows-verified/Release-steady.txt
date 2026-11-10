@@ -1,0 +1,9 @@
+device=NVIDIA GeForce RTX 5070 api=1.4 driver=2588573696 queue=0 display=windows
+asteroid_instances=100 asteroid_triangles=80 ship_triangles=239542 total_triangles=247542 scene_draws=211 fixture_seed=0x4e47454e fixture_crc32=3f1c5f23 package_crc32=a2eb7c22
+emissive_flow_enabled=1 flow_material=13 flow_clock=steady flow_cycle_seconds=16 flow_cells_per_second=32 flow_shutter_ms=18.75
+workload_frames=600 workload_warmup=60 workload_wsi_queued=600 workload_hdr_finite=1 workload_lit_pixels=26968 workload_capture=1 width=1280 height=720 shadow_extent=1024 validation=0
+post_exposure=1.00 fxaa=1 bloom_strength=0.0400 bloom_kernel=9x9 bloom_samples=25 gpu_post_includes_bloom=1
+frame_ns p50=7200500 p95=7674100 p99=8358000 max=8645000 gpu_timestamps=available allocation_probe=1 warm_cpp_allocations=0 vma_allocation_bytes=217529888 vma_reserved_bytes=220376928
+cpu_prepare_ns p50=632800 p95=764800 cpu_present_ns p50=6397600 p95=6860300
+gpu_shadow_ns p50=56064 p95=59456 gpu_pbr_ns p50=81600 p95=87808 gpu_post_ns p50=56928 p95=58336
+inspector_reloads=0 inspector_ui=1 inspector_snapshot_generation=1 inspector_vertices=3150 inspector_draws=10 warm_imgui_allocations=0 ui_prepare_ns_p95=187200 gpu_ui_ns_p95=15264

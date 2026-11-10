@@ -1,0 +1,88 @@
+[0/2] Re-checking globbed directories...
+[1/2] Re-running CMake...
+-- Using Conan toolchain: <ROOT>/build/inspector-release/conan_toolchain.cmake
+-- Conan toolchain: Defining architecture flag: -m64
+-- Conan toolchain: Defining libcxx as C++ flags: -stdlib=libstdc++
+-- Conan toolchain: C++ Standard 20 with extensions OFF
+-- Conan: Target declared 'enkiTS::enkiTS'
+-- Conan: Target declared 'ZLIB::ZLIB'
+-- Conan: Component target declared 'SDL3::Headers'
+-- Conan: Component target declared 'SDL3::SDL3'
+-- Conan: Target declared 'sdl::sdl'
+-- Conan: Component target declared 'xkbcommon::libxkbcommon'
+-- Conan: Component target declared 'xkbcommon::libxkbregistry'
+-- Conan: Component target declared 'xkbcommon::xkbcli-interactive-wayland'
+-- Conan: Target declared 'xkbcommon::xkbcommon'
+-- Conan: Target declared 'xkeyboard-config::xkeyboard-config'
+-- Conan: Component target declared 'wayland::wayland-scanner'
+-- Conan: Component target declared 'wayland::wayland-server'
+-- Conan: Component target declared 'wayland::wayland-client'
+-- Conan: Component target declared 'wayland::wayland-egl-backend'
+-- Conan: Component target declared 'wayland::wayland-cursor'
+-- Conan: Component target declared 'wayland::wayland-egl'
+-- Conan: Target declared 'wayland::wayland'
+-- Conan: Target declared 'libffi::libffi'
+-- Conan: Target declared 'LibXml2::LibXml2'
+-- Conan: Target declared 'Iconv::Iconv'
+-- Conan: Target declared 'expat::expat'
+-- Conan: Target declared 'egl::egl'
+-- Conan: Target declared 'GPUOpen::VulkanMemoryAllocator'
+-- Conan: Component target declared 'Vulkan::Registry'
+-- Conan: Target declared 'vulkan-headers::vulkan-headers'
+-- Conan: Target declared 'imgui::imgui'
+-- Conan: Component target declared 'Catch2::Catch2'
+-- Conan: Component target declared 'Catch2::Catch2WithMain'
+-- Configuring done (0.5s)
+-- Generating done (0.1s)
+-- Build files have been written to: <ROOT>/build/inspector-release
+[0/4] Re-checking globbed directories...
+[1/63] Scanning <ROOT>/engine/core/entities.cpp for CXX dependencies
+[2/63] Scanning <ROOT>/engine/core/values.cpp for CXX dependencies
+[3/63] Scanning <ROOT>/engine/render/capabilities.cpp for CXX dependencies
+[4/63] Scanning <ROOT>/engine/assets/package.cpp for CXX dependencies
+[5/63] Scanning <ROOT>/engine/render/vma.cpp for CXX dependencies
+[6/63] Generating CXX dyndep file CMakeFiles/ngen_core.dir/CXX.dd
+[7/60] Generating CXX dyndep file CMakeFiles/ngen_render_contract.dir/CXX.dd
+[8/58] Generating CXX dyndep file CMakeFiles/ngen_assets.dir/CXX.dd
+[9/58] Scanning <ROOT>/engine/tools/inspector.cpp for CXX dependencies
+[10/58] Scanning <ROOT>/engine/tools/reload.cpp for CXX dependencies
+[11/58] Generating CXX dyndep file CMakeFiles/ngen_vma.dir/CXX.dd
+[12/56] Building CXX object CMakeFiles/ngen_assets.dir/engine/assets/package.cpp.o
+[13/56] Generating CXX dyndep file CMakeFiles/ngen_inspector.dir/CXX.dd
+[14/56] Generating CXX dyndep file CMakeFiles/ngen_imgui_sdl.dir/CXX.dd
+[15/54] Linking CXX static library libngen_assets.a
+[16/54] Generating shaders/666a28ad7115246e3f6ec80fc734a9be21f5448ca97042d86a1621da2481de09/manifest.json
+[17/54] Scanning <ROOT>/engine/render/context.cpp for CXX dependencies
+[18/54] Scanning <ROOT>/engine/render/surface.cpp for CXX dependencies
+[19/54] Scanning <ROOT>/engine/render/presentation.cpp for CXX dependencies
+[20/54] Scanning <ROOT>/engine/render/resources.cpp for CXX dependencies
+[21/54] Scanning <ROOT>/engine/render/post.cpp for CXX dependencies
+[22/54] Scanning <ROOT>/engine/render/mesh.cpp for CXX dependencies
+[23/54] Building CXX object CMakeFiles/ngen_inspector.dir/engine/tools/inspector.cpp.o
+[24/54] Scanning <ROOT>/engine/render/environment.cpp for CXX dependencies
+[25/54] Scanning <ROOT>/engine/render/overlay.cpp for CXX dependencies
+[26/54] Generating CXX dyndep file CMakeFiles/ngen_render.dir/CXX.dd
+[27/53] Scanning <ROOT>/engine/render/scene.cpp for CXX dependencies
+[28/53] Scanning <ROOT>/engine/render/scene_draw.cpp for CXX dependencies
+[29/53] Scanning <ROOT>/engine/tools/ui.cpp for CXX dependencies
+[30/53] Building CXX object CMakeFiles/ngen_inspector.dir/engine/tools/reload.cpp.o
+[31/53] Building CXX object CMakeFiles/ngen_render.dir/engine/render/context.cpp.o
+[32/53] Building CXX object CMakeFiles/ngen_render.dir/engine/render/presentation.cpp.o
+[33/53] Building CXX object CMakeFiles/ngen_render.dir/engine/render/post.cpp.o
+[34/53] Building CXX object CMakeFiles/ngen_render.dir/engine/render/mesh.cpp.o
+[35/53] Building CXX object CMakeFiles/ngen_render.dir/engine/render/resources.cpp.o
+[36/53] Building CXX object CMakeFiles/ngen_render.dir/engine/render/environment.cpp.o
+[37/53] Generating CXX dyndep file CMakeFiles/ngen_scene.dir/CXX.dd
+[38/53] Generating CXX dyndep file CMakeFiles/ngen_inspector_ui.dir/CXX.dd
+[39/53] Scanning <ROOT>/apps/inspector_probe/main.cpp for CXX dependencies
+[40/53] Linking CXX static library libngen_inspector.a
+[41/53] Building CXX object CMakeFiles/ngen_render.dir/engine/render/overlay.cpp.o
+[42/53] Linking CXX static library libngen_render.a
+[43/53] Building CXX object CMakeFiles/ngen_scene.dir/engine/render/scene.cpp.o
+[44/53] Building CXX object CMakeFiles/ngen_scene.dir/engine/render/scene_draw.cpp.o
+[45/53] Generating CXX dyndep file CMakeFiles/inspector_probe.dir/CXX.dd
+[46/53] Linking CXX static library libngen_scene.a
+[47/53] Building CXX object CMakeFiles/ngen_inspector_ui.dir/engine/tools/ui.cpp.o
+[48/53] Linking CXX static library libngen_inspector_ui.a
+[49/53] Building CXX object CMakeFiles/inspector_probe.dir/apps/inspector_probe/main.cpp.o
+[50/53] Linking CXX executable inspector_probe

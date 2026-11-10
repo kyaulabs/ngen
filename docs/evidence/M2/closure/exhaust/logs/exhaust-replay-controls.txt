@@ -1,0 +1,3 @@
+PASS existing file/directory/link preservation and source identity rejection (python -O)
+PASS actual pinned tools/native admission/byte-exact accepted package replay
+{"package_sha256": "067407fb5fa2527771212cc7280a345b02ad3dd2a823ae8ba81b3553689ec52b", "reproducer_sha256": "f987a2c787b05888aeed86463bcf3f07dc5c422debb89ed7b29fa7aade1438a1", "runtime": {"checksum": 152999810, "images": 5, "indices": 3309156, "instances": 194, "light_instances": 612, "lights": 612, "lod_triangles": [574168, 290836, 238112], "materials": 14, "package_valid": 1, "primitives": 189, "texture_bytes": 89522172, "textures": 16, "vertices": 1304372}}

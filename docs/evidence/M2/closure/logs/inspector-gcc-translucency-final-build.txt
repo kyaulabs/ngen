@@ -1,0 +1,5 @@
+[0/2] Re-checking globbed directories...
+[1/5] Scanning <ROOT>/apps/inspector_probe/main.cpp for CXX dependencies
+[2/5] Generating CXX dyndep file CMakeFiles/inspector_probe.dir/CXX.dd
+[3/5] Building CXX object CMakeFiles/inspector_probe.dir/apps/inspector_probe/main.cpp.o
+[4/5] Linking CXX executable inspector_probe

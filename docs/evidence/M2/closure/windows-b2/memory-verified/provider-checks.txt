@@ -1,0 +1,16 @@
+Owner-provided native metadata before the verified return, PowerShell 7.6.9:
+
+Get-CimClass succeeds for
+Win32_PerfFormattedData_GPUPerformanceCounters_GPUProcessMemory.
+Properties include DedicatedUsage, LocalUsage, NonLocalUsage, SharedUsage,
+TotalCommitted, Name, Caption, Description and the standard frequency/timestamp
+fields. Get-Counter reports GPU Local Adapter Memory, GPU Engine, GPU Adapter
+Memory, GPU Process Memory and GPU Non Local Adapter Memory sets.
+
+The exact projected-field/PID-filtered Get-CimInstance query with a two-second
+operation timeout succeeds with zero rows for the PowerShell process. That is
+normal for a non-GPU PID and does not itself prove active-workload GPU accounting.
+The later returned real-child run supplies the 48 positive samples separately.
+No provider or query change was needed. The original schema-2 CimException cause
+is unknown because its message was not retained; no timeout/permission cause is
+invented. No full session/account transcript is retained here.

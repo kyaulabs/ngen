@@ -2,10 +2,13 @@
 #include "render/scene_draw.hpp"
 #include "tools/inspector.hpp"
 #include "tools/ui.hpp"
+#include <algorithm>
+#include <bit>
 #include <cmath>
 #include <cstdio>
 #include <limits>
 #include <numbers>
+#include <optional>
 #include <stdexcept>
 
 namespace {
@@ -26,7 +29,7 @@ void wait(Context &context, const Submission &submission) {
         SDL_Delay(1);
     }
 }
-ngen::assets::PackagePin package() {
+ngen::assets::PackagePin package(bool rear_engine = false) {
     auto sections = package_fixture::triangle();
     auto &material = sections[3];
     for (const float value : std::array<float, 13>{0, 0, 0, 1, .25F, .5F, .75F, 2, 1, 1, 1, 1, .5F})
@@ -39,9 +42,62 @@ ngen::assets::PackagePin package() {
     }
     material.resize(128, std::byte{0});
     package_fixture::set32(sections[2], 8, 0);
+    if (rear_engine) {
+        auto engine = sections[8];
+        package_fixture::set32(engine, 8 + 12 * 4, std::bit_cast<std::uint32_t>(8.0F));
+        sections[8].insert(sections[8].end(), engine.begin(), engine.end());
+    }
     auto loaded = ngen::assets::load_package(package_fixture::encode(sections));
     require(std::holds_alternative<ngen::assets::PackagePin>(loaded),
             "inspector fixture was not admitted");
+    return std::get<ngen::assets::PackagePin>(std::move(loaded));
+}
+ngen::assets::PackagePin translucent_package(bool reverse, bool coplanar) {
+    package_fixture::Sections sections;
+    for (std::uint32_t primitive = 0; primitive < 3; ++primitive) {
+        const auto z = primitive == 2 ? .3F : primitive == 0 || coplanar ? -.2F : .2F;
+        const auto left = primitive == 2 ? .5F : 0.0F;
+        const std::array<std::array<float, 2>, 4> corners{{{left, 0}, {1, 0}, {1, 1}, {left, 1}}};
+        for (const auto &corner : corners)
+            for (const auto value : std::array<float, 14>{corner[0], corner[1], z, 0, 0, 1, .6F,
+                                                          .5F, 0, 0, 1, 0, 0, 1})
+                package_fixture::f32(sections[0], value);
+        for (const auto index : std::array<std::uint32_t, 6>{0, 1, 2, 0, 2, 3})
+            package_fixture::u32(sections[1], index);
+        for (const auto value : std::array<std::uint32_t, 4>{primitive * 4, 4, primitive, 1})
+            package_fixture::u32(sections[2], value);
+        for (const auto value : std::array<float, 6>{left, 0, z, 1, 1, z})
+            package_fixture::f32(sections[2], value);
+        package_fixture::u32(sections[2], primitive * 6);
+        package_fixture::u32(sections[2], 6);
+        package_fixture::f32(sections[2], 0);
+        sections[2].resize((std::size_t{primitive} + 1) * 80, std::byte{0});
+        const auto alpha = primitive == 2 ? 1.0F : .5F;
+        const std::array<float, 3> emission{primitive == 0 ? 1.0F : 0.0F,
+                                            primitive == 1 ? 1.0F : 0.0F,
+                                            primitive == 2 ? 1.0F : 0.0F};
+        for (const auto value : std::array<float, 13>{0, 0, 0, alpha, emission[0], emission[1],
+                                                      emission[2], 1, 0, 1, 1, 1, .5F})
+            package_fixture::f32(sections[3], value);
+        package_fixture::u32(sections[3], primitive == 2 ? 0U : 2U);
+        package_fixture::u32(sections[3], 1);
+        for (unsigned map = 0; map < 5; ++map) {
+            package_fixture::u32(sections[3], UINT32_MAX);
+            package_fixture::u32(sections[3], 0);
+        }
+        sections[3].resize((std::size_t{primitive} + 1) * 128, std::byte{0});
+    }
+    // Opaque input is deliberately between the two translucent inputs.
+    for (const auto primitive : reverse ? std::array{1U, 2U, 0U} : std::array{0U, 2U, 1U}) {
+        package_fixture::u32(sections[8], primitive);
+        package_fixture::u32(sections[8], primitive);
+        for (const auto value :
+             std::array<float, 16>{1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 4, 6, 6, 1})
+            package_fixture::f32(sections[8], value);
+    }
+    auto loaded = ngen::assets::load_package(package_fixture::encode(sections));
+    require(std::holds_alternative<ngen::assets::PackagePin>(loaded),
+            "translucent fixture package was not admitted");
     return std::get<ngen::assets::PackagePin>(std::move(loaded));
 }
 class Gate {
@@ -207,6 +263,109 @@ int main() try {
     require(std::holds_alternative<Failure>(renderer.draw(*context, version, view, targets)) &&
                 take(renderer.collect(*context)) == 0,
             "nonfinite factor table published a frame");
+    view.material_factors = {};
+    std::array<EmissiveFlow, 2> wrong_flows{};
+    view.material_flows = wrong_flows;
+    require(std::holds_alternative<Failure>(renderer.draw(*context, version, view, targets)) &&
+                take(renderer.collect(*context)) == 0,
+            "mismatched emissive flow table published a frame");
+    const auto nan = std::numeric_limits<float>::quiet_NaN();
+    const auto infinity = std::numeric_limits<float>::infinity();
+    for (const auto &flow : std::array<EmissiveFlow, 7>{
+             {{-1, 0}, {1, 0}, {nan, 0}, {infinity, 0}, {0, -1}, {0, 2}, {0, nan}}}) {
+        view.material_flows = std::span{&flow, 1};
+        require(std::holds_alternative<Failure>(renderer.draw(*context, version, view, targets)) &&
+                    take(renderer.collect(*context)) == 0,
+                "invalid emissive phase/amount table published a frame");
+    }
+    const EmissiveFlow opaque_flow{0, 1};
+    view.material_flows = std::span{&opaque_flow, 1};
+    require(std::holds_alternative<Failure>(renderer.draw(*context, version, view, targets)) &&
+                take(renderer.collect(*context)) == 0,
+            "opaque material accepted emissive blend flow");
+    view.material_flows = {};
+    {
+        SceneView layered{};
+        layered.view_projection.columns = {2, 0, 0, 0, 0, -2, 0, 0, 0, 0, -1, 0, -9, 13, 6.5F, 1};
+        layered.light_view_projection = layered.view_projection;
+        layered.camera_position = {4.5F, 6.5F, 10, 1};
+        layered.key_direction_intensity = {0, 0, -1, 0};
+        std::array<std::uint16_t, 64> reference{};
+        for (unsigned scenario = 0; scenario < 4; ++scenario) {
+            const bool reverse = scenario % 2 != 0, coplanar = scenario >= 2;
+            auto pending =
+                take(SceneUpload::begin(*context, translucent_package(reverse, coplanar)));
+            ScenePin scene;
+            const auto began = SDL_GetTicks();
+            while (!scene) {
+                auto progress = take(pending->advance(*context));
+                if (progress)
+                    scene = std::move(*progress);
+                require(SDL_GetTicks() - began < 5000, "translucent fixture upload timed out");
+                SDL_Delay(1);
+            }
+            wait(*context, take(renderer.draw(*context, scene, layered, targets)));
+            require(take(renderer.collect(*context)) == 0, "translucent frame did not retire");
+            wait(*context, take(context->copy_from_image({color, readback})));
+            std::array<std::uint16_t, 64> actual{};
+            (void)take(readback.read(0, std::as_writable_bytes(std::span(actual))));
+            const auto unoccluded = (1U * 4 + 1) * 4, occluded = (1U * 4 + 2) * 4;
+            // Linear HDR: near green(.5) over far red(.5), over black.
+            const auto red = half(actual[unoccluded]), green = half(actual[unoccluded + 1]);
+            if (!coplanar)
+                require(red == .25F && green == .5F && half(actual[unoccluded + 2]) == 0,
+                        "checked scene translucent order/composition differs");
+            else
+                // Equal-depth layers both pass LESS only when transparency does not write depth.
+                // Either tie order is valid: do not couple this check to the sorting tie-breaker.
+                require(red > 0 && green > 0 && red + green == .75F &&
+                            half(actual[unoccluded + 2]) == 0,
+                        "coplanar translucent geometry wrote depth");
+            require(half(actual[occluded]) == 0 && half(actual[occluded + 1]) == 0 &&
+                        half(actual[occluded + 2]) == 1,
+                    "opaque depth did not occlude checked translucent geometry");
+            if (scenario == 1)
+                require(actual == reference, "translucent pixels depend on package instance order");
+            else if (scenario == 0)
+                reference = actual;
+            if (scenario == 0) {
+                std::array<EmissiveFlow, 3> flows{};
+                flows[1] = {0, 1};
+                layered.material_flows = flows;
+                const auto read_flow = [&](const Submission &submission) {
+                    wait(*context, submission);
+                    require(take(renderer.collect(*context)) == 0,
+                            "completed scene flow frame did not retire");
+                    wait(*context, take(context->copy_from_image({color, readback})));
+                    std::array<std::uint16_t, 64> result{};
+                    (void)take(readback.read(0, std::as_writable_bytes(std::span(result))));
+                    return result;
+                };
+                const auto zero = read_flow(take(renderer.draw(*context, scene, layered, targets)));
+                require(zero[occluded + 2] == actual[occluded + 2],
+                        "scene flow changed an unmarked opaque material");
+                flows[1].phase = .25F;
+                const auto quarter =
+                    read_flow(take(renderer.draw(*context, scene, layered, targets)));
+                require(quarter != zero, "scene material flow did not reach native pixels");
+                Gate flow_gate(*context);
+                const auto queued =
+                    take(renderer.draw(*context, scene, layered, targets, {flow_gate.handle, 1}));
+                flow_gate.pending = true;
+                flows.fill({}); // The submitted constants must no longer borrow this table.
+                require(flow_gate.signal(), "scene flow frame gate did not signal");
+                const auto copied = read_flow(queued);
+                flow_gate.completed = true;
+                require(copied == quarter, "pending scene flow borrowed a mutated caller table");
+                require(read_flow(take(renderer.draw(*context, scene, layered, targets))) == actual,
+                        "disabled scene flow mutated source/default material factors");
+                layered.material_flows = {};
+                std::puts("scene_emissive_flow=1 scene_flow_copied=1 scene_flow_disabled=1");
+            }
+        }
+        std::puts("scene_translucent_order=1 scene_opaque_occlusion=1 "
+                  "scene_translucent_depth_readonly=1");
+    }
     auto ldr = take(
         context->create_image({{4, 4},
                                VK_FORMAT_R8G8B8A8_SRGB,
@@ -417,6 +576,43 @@ int main() try {
             require(SDL_GetTicks() < deadline, "inspector frontend WSI timed out");
             SDL_Delay(1);
         }
+    }
+    {
+        auto created_box = ngen::tools::Inspector::create(package(true));
+        require(std::holds_alternative<ngen::tools::Inspector>(created_box),
+                "ship bounds fixture model failed");
+        auto boxed = std::get<ngen::tools::Inspector>(std::move(created_box));
+        auto bounds_view = view;
+        bounds_view.view_projection.columns[0] = .125F;
+        bounds_view.view_projection.columns[5] = -.25F;
+        bounds_view.view_projection.columns[12] = -.75F;
+        bounds_view.view_projection.columns[13] = 1.5F;
+        for (const auto selected :
+             {std::optional<std::uint32_t>{0}, std::optional<std::uint32_t>{1},
+              std::optional<std::uint32_t>{}}) {
+            const auto current = boxed.snapshot();
+            require(std::holds_alternative<std::monostate>(
+                        boxed.enqueue(ngen::tools::Select{current.generation, selected})),
+                    "ship bounds fixture selection failed");
+            (void)boxed.advance();
+            ui->frame(boxed, boxed.snapshot(), bounds_view, {});
+            const auto geometry = take(ui->overlay({1280, 720}));
+            if (!geometry)
+                throw std::runtime_error("ship bounds fixture produced no overlay");
+            float minimum = std::numeric_limits<float>::max(), maximum = -minimum;
+            for (const auto &vertex : geometry->vertices)
+                if ((vertex.color & 0x00ffffffU) == 0x00cfc482U && (vertex.color >> 24U) != 0) {
+                    minimum = std::min(minimum, vertex.position[0]);
+                    maximum = std::max(maximum, vertex.position[0]);
+                }
+            // Hull x=[3,5], separate engine x=[7,9]; full-ship projection x=[400,880].
+            // Allow a scaled antialiased stroke (up to four pixels at 2x), not
+            // the 320-pixel truncation from selecting only the hull component.
+            require(std::abs(minimum - 400) < 5 && std::abs(maximum - 880) < 5,
+                    "ship bounds omit the separately instanced rear engine or depend on part "
+                    "selection");
+        }
+        std::puts("inspector_ship_bounds=1 inspector_rear_engine_bounds=1");
     }
     ui.reset(); // SDL platform state ends before Context destroys its window.
     std::printf(

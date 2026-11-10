@@ -1,0 +1,15 @@
+{
+  "verdict": "Hull is good",
+  "scope": "Hull finish only; bridge/cockpit glazing remains unaccepted",
+  "shown_package": "build/cooked-candidate/frigate-charcoal-glazing-v1/scene.ngas",
+  "shown_package_sha256": "27de456e8f29b6392a50099dd65f69b2bd42a8ce2a73b3b3b0cc2c716811ee81",
+  "accepted_coating_materials": [14, 15, 16],
+  "accepted_finish": "Current charcoal-gray coating, existing panel/wear/normal/ORM maps and forward drive cladding",
+  "freeze": "Do not retune the accepted hull finish or previously accepted exhaust",
+  "preview_log": "build/m2-engine-color/live-charcoal-glazing-v1-preview1.txt",
+  "preview_queued_frames": 5020,
+  "preview_stderr_bytes": 0,
+  "preview_scope": "Camera-only visual inspection, not performance evidence",
+  "global_post": {"exposure": 1, "fxaa": true, "bloom": 0.04},
+  "m2_complete": false
+}
