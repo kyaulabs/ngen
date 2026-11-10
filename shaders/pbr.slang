@@ -32,7 +32,8 @@ struct MaterialConstants
     float4 baseColor;
     float4 emissiveAlphaCutoff;
     float4 metallicRoughnessNormalOcclusion;
-    uint4 flags; // x: alpha mode; y: per-map UV1 bits; z bits: no normal texture, double sided; w reserved.
+    // w: emissive blend flow, normalized phase(low16), amount(high16); zero disables.
+    uint4 flags; // x: alpha; y: UV1 bits; z: low2 normal/facing, high16 stable flow seed.
 };
 [[vk::binding(0, 0)]] ConstantBuffer<FrameConstants> frame;
 [[vk::binding(1, 0)]] ConstantBuffer<LightConstants> localLights;
@@ -150,11 +151,70 @@ float2 textureUv(Varying input, uint slot)
 {
     return (material.flags.y & (1u << slot)) != 0 ? input.uv1 : input.uv;
 }
+float jetHash(int2 cell, uint mask)
+{
+    uint2 wrapped = uint2(cell) & uint2(mask, mask);
+    uint bits = wrapped.x * 0x8da6b343u ^ wrapped.y * 0xd8163841u;
+    bits ^= (material.flags.z >> 16u) * 0x9e3779b9u;
+    bits ^= bits >> 13u;
+    bits *= 0x85ebca6bu;
+    bits ^= bits >> 16u;
+    return float(bits >> 8u) / 16777216.0;
+}
+float jetNoise(float2 coordinate, uint mask)
+{
+    int2 cell = int2(floor(coordinate));
+    float2 f = frac(coordinate);
+    float2 blend = f * f * (3 - 2 * f);
+    float lower = lerp(jetHash(cell, mask), jetHash(cell + int2(1, 0), mask), blend.x);
+    float upper = lerp(jetHash(cell + int2(0, 1), mask), jetHash(cell + int2(1, 1), mask), blend.x);
+    return lerp(lower, upper, blend.y);
+}
+float jetField(float2 coordinate)
+{
+    return 0.60 * jetNoise(coordinate, 511u)
+         + 0.25 * jetNoise(coordinate * 2 + float2(11, 19), 511u)
+         + 0.15 * jetNoise(coordinate * 0.125 + float2(2, 5), 63u);
+}
+// UV0.u guides aft flow. A 512-cell cycle gives a long, continuous loop rather
+// than repeating transverse sine bands. Anisotropic density makes longitudinal
+// filaments. Four trailing samples soften subframe motion without erasing it.
+// The workload traverses this cycle in 16 seconds; the hot base stays anchored.
+float2 emissiveFlow(float2 guide)
+{
+    if (material.flags.w == 0)
+        return float2(0, 1);
+    // Packages may contain finite tiled/large UVs. Bound only this normalized
+    // guide before multiplying or converting lattice coordinates to integers.
+    if (any(guide < 0) || any(guide > 1))
+        guide = saturate(guide);
+    float phase = float(material.flags.w & 65535u) / 65536.0;
+    float amount = float(material.flags.w >> 16u) / 65535.0;
+    float tail = smoothstep(0.12, 0.28, guide.x) * amount;
+    float advected = guide.x * 3 - phase * 512;
+    float field = 0;
+    [unroll]
+    for (uint sample = 0; sample < 4; ++sample)
+        field += jetField(float2(advected + float(sample) * 0.2, guide.y * 24)) * 0.25;
+    float density = 1 + tail * 0.9 * (field - 0.5);
+    float skin = tail * smoothstep(0.5, 0.95, abs(guide.y * 2 - 1));
+    float tip = amount * smoothstep(0.60, 0.93, guide.x);
+    density *= lerp(1.0, smoothstep(0.15, 0.75, field), max(skin, tip));
+    // Texture alpha alone cannot guarantee a soft end: coarse/oblique mips
+    // average nonzero alpha across the card. Enforce the aft envelope analytically.
+    density *= lerp(1.0, 1 - smoothstep(0.68, 0.995, guide.x), amount);
+    float transverse = tail * 0.04 * (jetNoise(float2(advected * 0.125, guide.y * 3), 63u) - 0.5);
+    return float2(transverse, density);
+}
 [shader("fragment")]
 float4 fragmentMain(Varying input, bool frontFace : SV_IsFrontFace) : SV_Target0
 {
+    float2 flow = emissiveFlow(input.uv);
+    float2 flowOffset = float2(0, flow.x);
     // Color/emissive views decode sRGB; all other texture inputs are linear.
-    float4 albedo = baseColorMap.Sample(materialSamplers[0], textureUv(input, 0)) * material.baseColor;
+    float4 albedo = baseColorMap.Sample(materialSamplers[0], textureUv(input, 0) + flowOffset) * material.baseColor;
+    if (material.flags.w != 0)
+        albedo.a = saturate(albedo.a * flow.y);
     if (material.flags.x == 1 && albedo.a < material.emissiveAlphaCutoff.w)
         discard;
     float3 n = normalize(input.normal);
@@ -199,6 +259,6 @@ float4 fragmentMain(Varying input, bool frontFace : SV_IsFrontFace) : SV_Target0
     float occlusion = lerp(1.0, occlusionMap.Sample(materialSamplers[3], textureUv(input, 3)).r,
                            material.metallicRoughnessNormalOcclusion.w);
     color += ((1 - f) * (1 - metal) * diffuse + prefiltered * (f * brdf.x + brdf.y)) * occlusion;
-    color += emissiveMap.Sample(materialSamplers[4], textureUv(input, 4)).rgb * material.emissiveAlphaCutoff.rgb;
+    color += emissiveMap.Sample(materialSamplers[4], textureUv(input, 4) + flowOffset).rgb * material.emissiveAlphaCutoff.rgb * flow.y;
     return float4(color, albedo.a); // Linear HDR; tone mapping belongs to the post pass.
 }

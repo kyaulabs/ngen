@@ -1,0 +1,26 @@
+{
+  "views": {
+    "side": {
+      "byte_identical": false,
+      "changed_pixels": 118,
+      "max_channel_delta": 4,
+      "mean_abs_channel_delta": 2.1862139917695473e-05,
+      "sha256": "d736f381f86bf1b1a3378210c648384f8fef23190891e024227e97d040190406"
+    },
+    "quarter": {
+      "byte_identical": false,
+      "changed_pixels": 223,
+      "max_channel_delta": 15,
+      "mean_abs_channel_delta": 5.931712962962963e-05,
+      "sha256": "f1f5b92bb7a94367767d324953678d144dce0e188db6a5d4db8c532275b5e2a1"
+    },
+    "rear": {
+      "byte_identical": false,
+      "changed_pixels": 44,
+      "max_channel_delta": 3,
+      "mean_abs_channel_delta": 8.359053497942386e-06,
+      "sha256": "fee6192765c7a02297706223576bb8ecf3f9c0f4877233ca7b41effb5e83db20"
+    }
+  },
+  "shader_sha256": "7233fb61f2f1977eb4389ade3fd03ea9c0593808aa77792f7a7818bbd6c4c6d8"
+}

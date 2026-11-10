@@ -7,10 +7,13 @@
 #include "tools/ui.hpp"
 #endif
 #include <algorithm>
+#include <array>
 #include <charconv>
 #include <chrono>
+#include <cmath>
 #include <cstdio>
 #include <filesystem>
+#include <optional>
 #include <stdexcept>
 #include <string>
 #include <string_view>
@@ -150,6 +153,7 @@ struct Sample {
     std::uint64_t generation{1}, host_ns{};
     bool reloading{};
     VkExtent2D presented_extent{};
+    float emissive_flow_phase{};
 };
 std::uint64_t count_ship_triangles(const ngen::assets::Scene &package, std::size_t asteroids) {
     std::uint64_t total = 0;
@@ -195,6 +199,19 @@ int main(int argc, char **argv) try {
     if (const auto *failure = std::get_if<ngen::assets::Failure>(&loaded))
         throw std::runtime_error(failure->message);
     auto package = std::get<ngen::assets::PackagePin>(std::move(loaded));
+    std::array<EmissiveFlow, 256> material_flows{};
+    std::optional<std::size_t> flow_material;
+    const auto bind_flow = [&] {
+        material_flows.fill({});
+        flow_material.reset();
+        // This workload owns the presentation preset binding; the renderer has
+        // no asset names or implicit animation policy.
+        for (std::size_t i = 0; i < package->materials.size(); ++i)
+            if (package->materials[i].name == "M2_BlueWhiteDrivePlume" &&
+                package->materials[i].alpha == 2)
+                flow_material = i;
+    };
+    bind_flow();
     auto fixture = take(ngen::workload::make_fixture(package->bounds));
     const auto asteroid_triangles = fixture.indices.size() / 3 * fixture.instances.size();
     auto ship_triangles = count_ship_triangles(*package, asteroid_triangles);
@@ -307,6 +324,7 @@ int main(int argc, char **argv) try {
                 if (std::holds_alternative<std::monostate>(staged)) {
                     version = std::move(*ready);
                     package = version->package();
+                    bind_flow();
                     fixture = replacement_fixture.value();
                     asteroids.instances = fixture.instances;
                     ship_triangles = replacement_triangles;
@@ -367,6 +385,7 @@ int main(int argc, char **argv) try {
     };
 #endif
     std::vector<Sample> samples(settings.frames);
+    const auto flow_epoch = Clock::now();
     Submission last;
     const auto frame = [&](std::uint32_t index) {
         const auto started = Clock::now();
@@ -390,6 +409,18 @@ int main(int argc, char **argv) try {
         }
 #endif
         auto selected = take(ngen::workload::view(fixture, index, extent));
+        float flow_phase = 0;
+        if (flow_material) {
+            const auto seconds = std::chrono::duration<double>(started - flow_epoch).count();
+            const auto phase = std::min(std::nextafter(1.0F, 0.0F),
+                                        static_cast<float>(std::fmod(seconds, 16.0) / 16.0));
+            // Record the same bounded 16-bit phase sent to the GPU, rather than
+            // rounding an almost-one floating phase to 1.000000 in the CSV.
+            flow_phase =
+                static_cast<float>(static_cast<std::uint32_t>(phase * 65536.0F)) / 65536.0F;
+            material_flows[*flow_material] = {flow_phase, 1};
+            selected.material_flows = std::span(material_flows).first(package->materials.size());
+        }
         std::uint64_t ui_prepare_ns = 0;
         const Overlay *overlay = nullptr;
         std::uint64_t generation = 1;
@@ -538,7 +569,8 @@ int main(int argc, char **argv) try {
                       generation,
                       elapsed(Clock::time_point{}),
                       reloading,
-                      context->presentation_state().extent};
+                      context->presentation_state().extent,
+                      flow_phase};
     };
     for (std::uint32_t i = 0; i < settings.warmup; ++i) {
         const auto warmed = frame(i);
@@ -622,7 +654,7 @@ int main(int argc, char **argv) try {
         std::string report("frame,frame_ns,prepare_ns,present_ns,gpu_shadow_ns,gpu_pbr_ns,gpu_post_"
                            "ns,ui_prepare_ns,gpu_ui_ns,vma_allocation_bytes,vma_reserved_bytes,"
                            "resource_live,resource_retiring,generation,reload_active,host_ns,"
-                           "surface_width,surface_height\n");
+                           "surface_width,surface_height,emissive_flow_phase\n");
         report.reserve(samples.size() * 160);
         for (std::size_t i = 0; i < samples.size(); ++i) {
             const auto &sample = samples[i];
@@ -638,7 +670,8 @@ int main(int argc, char **argv) try {
                 ',' + std::to_string(sample.generation) + ',' +
                 std::to_string(sample.reloading ? 1 : 0) + ',' + std::to_string(sample.host_ns) +
                 ',' + std::to_string(sample.presented_extent.width) + ',' +
-                std::to_string(sample.presented_extent.height) + '\n';
+                std::to_string(sample.presented_extent.height) + ',' +
+                std::to_string(sample.emissive_flow_phase) + '\n';
         }
         (void)take(ngen::probe::write_exclusive(settings.report, std::as_bytes(std::span(report))));
     }
@@ -655,6 +688,10 @@ int main(int argc, char **argv) try {
         static_cast<unsigned long long>(ship_triangles) +
             static_cast<unsigned long long>(asteroid_triangles),
         package->instances.size() + 1, fixture.seed, fixture_crc(fixture), package->checksum);
+    std::printf(
+        "emissive_flow_enabled=%u flow_material=%zu flow_clock=steady flow_cycle_seconds=16 "
+        "flow_cells_per_second=32 flow_shutter_ms=18.75\n",
+        flow_material ? 1U : 0U, flow_material.value_or(0));
     std::printf(
         "workload_frames=%u workload_warmup=%u workload_wsi_queued=%u workload_hdr_finite=1 "
         "workload_lit_pixels=%zu workload_capture=%u width=1280 height=720 shadow_extent=1024 "

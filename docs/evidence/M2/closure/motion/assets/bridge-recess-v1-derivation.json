@@ -1,0 +1,254 @@
+{
+  "package": "/home/kyau/projects/kyaulabs/ngen/build/cooked-candidate/frigate-bridge-recess-v1/scene.ngas",
+  "sha256": "a02d5438ad32d9c8fb917ce847d5a822688ca5b51d69125f6da71cf2ba2116ed",
+  "runtime": {
+    "package_valid": 1,
+    "vertices": 1328627,
+    "indices": 3307404,
+    "primitives": 205,
+    "instances": 210,
+    "materials": 17,
+    "images": 9,
+    "textures": 20,
+    "lights": 612,
+    "light_instances": 612,
+    "texture_bytes": 106343076,
+    "lod_triangles": [
+      573892,
+      290954,
+      238342
+    ],
+    "checksum": 2733341730
+  },
+  "bridge_recess": {
+    "name": "six-recessed-bridge-windows-v1",
+    "base_sha256": "27de456e8f29b6392a50099dd65f69b2bd42a8ce2a73b3b3b0cc2c716811ee81",
+    "author_sha256": "eb9a0ad926540e68341bb7a6a45bc73d0a4fa0ed090ee12c9dc65b88c6ed9822",
+    "numpy_version": "2.5.4",
+    "modified_hull_primitive": 1,
+    "replaced_glazing_primitive": 62,
+    "new_interior_primitive": 204,
+    "cut_source_triangles_per_lod": [
+      6,
+      8,
+      8
+    ],
+    "windows": [
+      {
+        "center": [
+          -4.708064302692973,
+          11.830703764608968,
+          -6.654085159301758
+        ],
+        "normal": [
+          -0.5399567746415022,
+          0.6884447783117693,
+          -0.48424215918691427
+        ],
+        "across": [
+          -0.29884520412313603,
+          0.38102757473259863,
+          0.8749340153783
+        ],
+        "vertical": [
+          0.7868533697528067,
+          0.6171399958750468,
+          0.0
+        ],
+        "half": [
+          0.936331805746521,
+          0.3978295343591868,
+          0.25
+        ]
+      },
+      {
+        "center": [
+          -4.9543044738600885,
+          12.241249265012932,
+          -4.277626037597656
+        ],
+        "normal": [
+          -0.51436108179102,
+          0.8575737155129998,
+          0.0
+        ],
+        "across": [
+          0.0,
+          -0.0,
+          1.0
+        ],
+        "vertical": [
+          0.8575737155129999,
+          0.5143610817910201,
+          0.0
+        ],
+        "half": [
+          0.824231185913086,
+          0.46933053291951793,
+          0.25
+        ]
+      },
+      {
+        "center": [
+          -4.9543044738600885,
+          12.241249265012932,
+          -1.9011671543121338
+        ],
+        "normal": [
+          -0.51436108179102,
+          0.8575737155129998,
+          0.0
+        ],
+        "across": [
+          0.0,
+          -0.0,
+          1.0
+        ],
+        "vertical": [
+          0.8575737155129999,
+          0.5143610817910201,
+          0.0
+        ],
+        "half": [
+          0.824231185913086,
+          0.46933053291951793,
+          0.25
+        ]
+      },
+      {
+        "center": [
+          -4.9543044738600885,
+          12.241249265012932,
+          1.9011671543121338
+        ],
+        "normal": [
+          -0.51436108179102,
+          0.8575737155129998,
+          0.0
+        ],
+        "across": [
+          0.0,
+          -0.0,
+          1.0
+        ],
+        "vertical": [
+          0.8575737155129999,
+          0.5143610817910201,
+          0.0
+        ],
+        "half": [
+          0.824231185913086,
+          0.46933053291951793,
+          0.25
+        ]
+      },
+      {
+        "center": [
+          -4.9543044738600885,
+          12.241249265012932,
+          4.277626037597656
+        ],
+        "normal": [
+          -0.51436108179102,
+          0.8575737155129998,
+          0.0
+        ],
+        "across": [
+          0.0,
+          -0.0,
+          1.0
+        ],
+        "vertical": [
+          0.8575737155129999,
+          0.5143610817910201,
+          0.0
+        ],
+        "half": [
+          0.8242314243316651,
+          0.46933053291951793,
+          0.25
+        ]
+      },
+      {
+        "center": [
+          -4.7080643644624125,
+          11.830703867594462,
+          6.654085159301758
+        ],
+        "normal": [
+          -0.5399567817864005,
+          0.6884447450635566,
+          0.4842421984887811
+        ],
+        "across": [
+          0.2988452397620198,
+          -0.3810275967286739,
+          0.8749339936262346
+        ],
+        "vertical": [
+          0.7868533513142423,
+          0.617140019384212,
+          0.0
+        ],
+        "half": [
+          0.9363318280305655,
+          0.3978295207281251,
+          0.25
+        ]
+      }
+    ],
+    "recess_depth_m": 0.9,
+    "interior_proxy_positions": [
+      {
+        "light": 294,
+        "position": [
+          -3.088194019103211,
+          9.765369632403793,
+          5.201358563835415
+        ]
+      },
+      {
+        "light": 295,
+        "position": [
+          -3.4112212284870287,
+          9.668528118473933,
+          4.277626037597656
+        ]
+      },
+      {
+        "light": 296,
+        "position": [
+          -3.4112212284870287,
+          9.668528118473933,
+          1.9011671543121338
+        ]
+      },
+      {
+        "light": 297,
+        "position": [
+          -3.4112212284870287,
+          9.668528118473933,
+          -1.9011671543121338
+        ]
+      },
+      {
+        "light": 298,
+        "position": [
+          -3.4112212284870287,
+          9.668528118473933,
+          -4.277626037597656
+        ]
+      },
+      {
+        "light": 299,
+        "position": [
+          -3.0881939787684667,
+          9.76536942967366,
+          -5.201358681741015
+        ]
+      }
+    ],
+    "visible_workload_triangles": 247542,
+    "scope": "Owner authorized localized geometry openings and shallow dark backing behind the six bridge windows. Cut only bounded roof patches; replace raised solid window boxes with recessed single glass panes following the actual raked/chamfered surface. Reuse original black material for frames/interiors. Preserve accepted charcoal coating/materials/maps, all unrelated geometry and accepted exhaust. Move existing bridge-light proxies deeper inside so their unchanged short range cannot wash visible recesses. No full cockpit, new light definitions, dependencies, shader or pass."
+  }
+}

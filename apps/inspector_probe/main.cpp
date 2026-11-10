@@ -59,8 +59,8 @@ ngen::assets::PackagePin translucent_package(bool reverse, bool coplanar) {
         const auto left = primitive == 2 ? .5F : 0.0F;
         const std::array<std::array<float, 2>, 4> corners{{{left, 0}, {1, 0}, {1, 1}, {left, 1}}};
         for (const auto &corner : corners)
-            for (const auto value :
-                 std::array<float, 14>{corner[0], corner[1], z, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 1})
+            for (const auto value : std::array<float, 14>{corner[0], corner[1], z, 0, 0, 1, .6F,
+                                                          .5F, 0, 0, 1, 0, 0, 1})
                 package_fixture::f32(sections[0], value);
         for (const auto index : std::array<std::uint32_t, 6>{0, 1, 2, 0, 2, 3})
             package_fixture::u32(sections[1], index);
@@ -263,6 +263,27 @@ int main() try {
     require(std::holds_alternative<Failure>(renderer.draw(*context, version, view, targets)) &&
                 take(renderer.collect(*context)) == 0,
             "nonfinite factor table published a frame");
+    view.material_factors = {};
+    std::array<EmissiveFlow, 2> wrong_flows{};
+    view.material_flows = wrong_flows;
+    require(std::holds_alternative<Failure>(renderer.draw(*context, version, view, targets)) &&
+                take(renderer.collect(*context)) == 0,
+            "mismatched emissive flow table published a frame");
+    const auto nan = std::numeric_limits<float>::quiet_NaN();
+    const auto infinity = std::numeric_limits<float>::infinity();
+    for (const auto &flow : std::array<EmissiveFlow, 7>{
+             {{-1, 0}, {1, 0}, {nan, 0}, {infinity, 0}, {0, -1}, {0, 2}, {0, nan}}}) {
+        view.material_flows = std::span{&flow, 1};
+        require(std::holds_alternative<Failure>(renderer.draw(*context, version, view, targets)) &&
+                    take(renderer.collect(*context)) == 0,
+                "invalid emissive phase/amount table published a frame");
+    }
+    const EmissiveFlow opaque_flow{0, 1};
+    view.material_flows = std::span{&opaque_flow, 1};
+    require(std::holds_alternative<Failure>(renderer.draw(*context, version, view, targets)) &&
+                take(renderer.collect(*context)) == 0,
+            "opaque material accepted emissive blend flow");
+    view.material_flows = {};
     {
         SceneView layered{};
         layered.view_projection.columns = {2, 0, 0, 0, 0, -2, 0, 0, 0, 0, -1, 0, -9, 13, 6.5F, 1};
@@ -307,6 +328,40 @@ int main() try {
                 require(actual == reference, "translucent pixels depend on package instance order");
             else if (scenario == 0)
                 reference = actual;
+            if (scenario == 0) {
+                std::array<EmissiveFlow, 3> flows{};
+                flows[1] = {0, 1};
+                layered.material_flows = flows;
+                const auto read_flow = [&](const Submission &submission) {
+                    wait(*context, submission);
+                    require(take(renderer.collect(*context)) == 0,
+                            "completed scene flow frame did not retire");
+                    wait(*context, take(context->copy_from_image({color, readback})));
+                    std::array<std::uint16_t, 64> result{};
+                    (void)take(readback.read(0, std::as_writable_bytes(std::span(result))));
+                    return result;
+                };
+                const auto zero = read_flow(take(renderer.draw(*context, scene, layered, targets)));
+                require(zero[occluded + 2] == actual[occluded + 2],
+                        "scene flow changed an unmarked opaque material");
+                flows[1].phase = .25F;
+                const auto quarter =
+                    read_flow(take(renderer.draw(*context, scene, layered, targets)));
+                require(quarter != zero, "scene material flow did not reach native pixels");
+                Gate flow_gate(*context);
+                const auto queued =
+                    take(renderer.draw(*context, scene, layered, targets, {flow_gate.handle, 1}));
+                flow_gate.pending = true;
+                flows.fill({}); // The submitted constants must no longer borrow this table.
+                require(flow_gate.signal(), "scene flow frame gate did not signal");
+                const auto copied = read_flow(queued);
+                flow_gate.completed = true;
+                require(copied == quarter, "pending scene flow borrowed a mutated caller table");
+                require(read_flow(take(renderer.draw(*context, scene, layered, targets))) == actual,
+                        "disabled scene flow mutated source/default material factors");
+                layered.material_flows = {};
+                std::puts("scene_emissive_flow=1 scene_flow_copied=1 scene_flow_disabled=1");
+            }
         }
         std::puts("scene_translucent_order=1 scene_opaque_occlusion=1 "
                   "scene_translucent_depth_readonly=1");

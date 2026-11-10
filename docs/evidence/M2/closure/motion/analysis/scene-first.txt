@@ -1,0 +1,7 @@
+48 warnings generated.
+/home/kyau/projects/kyaulabs/ngen/engine/render/scene_draw.cpp:247:60: error: casting (double + 0.5) to integer leads to incorrect rounding; consider using lround (#include <cmath>) instead [bugprone-incorrect-roundings,-warnings-as-errors]
+  247 |             const auto amount = static_cast<std::uint32_t>(flow.amount * 65535.0F + .5F);
+      |                                                            ^
+Suppressed 47 warnings (47 in non-user code).
+Use -header-filter=.* or leave it as default to display errors from all non-system headers. Use -system-headers to display errors from system headers as well.
+1 warning treated as error

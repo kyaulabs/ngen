@@ -1,0 +1,51 @@
+{
+  "package_sha256": "27de456e8f29b6392a50099dd65f69b2bd42a8ce2a73b3b3b0cc2c716811ee81",
+  "changed_materials": [
+    9,
+    14,
+    15,
+    16
+  ],
+  "all_geometry_images_samplers_models_lights_unchanged": true,
+  "accepted_exhaust_material_unchanged": true,
+  "native_regions": {
+    "sunlit_coating": {
+      "roi_xyxy": [
+        1350,
+        250,
+        1450,
+        290
+      ],
+      "before_median_rgb": [
+        132.0,
+        139.0,
+        148.0
+      ],
+      "after_median_rgb": [
+        88.0,
+        94.0,
+        103.0
+      ]
+    },
+    "citadel_hull": {
+      "roi_xyxy": [
+        850,
+        470,
+        1070,
+        500
+      ],
+      "before_median_rgb": [
+        39.0,
+        48.0,
+        65.0
+      ],
+      "after_median_rgb": [
+        18.0,
+        23.0,
+        34.0
+      ]
+    }
+  },
+  "glazing": "existing alpha-blend dielectric PBR; no emission, no cockpit interior/refraction claim",
+  "acceptance": "not yet shown or accepted"
+}

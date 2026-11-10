@@ -1,0 +1,53 @@
+{
+  "scope": "Exact current-host Release-native/tool-pinned replay in a new owned scratch directory, not a cross-platform bitwise reproducibility claim",
+  "all_six_exact_package_identities_match": true,
+  "originals_preserved": {
+    "planning/models/frigate/frigate-01.glb": "e68cd409c479036556446ed1753b287c0e7a40260109b3cd442abe7f533941fe",
+    "build/cooked-candidate/frigate-blue-white-plume-wide/scene.ngas": "067407fb5fa2527771212cc7280a345b02ad3dd2a823ae8ba81b3553689ec52b",
+    "build/cooked-candidate/frigate-bridge-recess-v1/scene.ngas": "a02d5438ad32d9c8fb917ce847d5a822688ca5b51d69125f6da71cf2ba2116ed"
+  },
+  "steps": [
+    {
+      "author": "author-jet.py",
+      "author_sha256": "a2f98161aa7aec84de303a5467eeee606b66121d7e5237eba06dc227c5249753",
+      "package_sha256": "5e69d51b48539b17b00b15d9b8e71d1d705b625bbfceab7cb539390aa24e988b",
+      "expected_sha256": "5e69d51b48539b17b00b15d9b8e71d1d705b625bbfceab7cb539390aa24e988b",
+      "exact_match": true
+    },
+    {
+      "author": "author-droplet.py",
+      "author_sha256": "81248ef7249c2518227bdd867ca1079e65a0514eee5e1b27dc1f5f478835042a",
+      "package_sha256": "9b645de103ea92677c3cfe97cb8bd88ede8e7109f34c0f926888ba65c7522e63",
+      "expected_sha256": "9b645de103ea92677c3cfe97cb8bd88ede8e7109f34c0f926888ba65c7522e63",
+      "exact_match": true
+    },
+    {
+      "author": "author-panelled.py",
+      "author_sha256": "c6c3cc4ef3f42e313b724110d2f9de55fbb068b55555add74a4453c088f02b10",
+      "package_sha256": "a1f70ef7b3e6b7e67341e36b5828a759e9ca3502859d3fc6dba7c9a02688929f",
+      "expected_sha256": "a1f70ef7b3e6b7e67341e36b5828a759e9ca3502859d3fc6dba7c9a02688929f",
+      "exact_match": true
+    },
+    {
+      "author": "author-bridge.py",
+      "author_sha256": "d06fc3469311f9a81985172bf4852e221cd3b79dcdf22272667ce007870253bf",
+      "package_sha256": "bce7f71bfa18eea6c73d425565be71144915e9b3fde66063a263bcc424d09cc5",
+      "expected_sha256": "bce7f71bfa18eea6c73d425565be71144915e9b3fde66063a263bcc424d09cc5",
+      "exact_match": true
+    },
+    {
+      "author": "author-charcoal-glazing.py",
+      "author_sha256": "665de53b3b4d72785cfa023fa5e39844ac12c6f0a08a7d63e25dae6290790565",
+      "package_sha256": "27de456e8f29b6392a50099dd65f69b2bd42a8ce2a73b3b3b0cc2c716811ee81",
+      "expected_sha256": "27de456e8f29b6392a50099dd65f69b2bd42a8ce2a73b3b3b0cc2c716811ee81",
+      "exact_match": true
+    },
+    {
+      "author": "author-bridge-recess.py",
+      "author_sha256": "eb9a0ad926540e68341bb7a6a45bc73d0a4fa0ed090ee12c9dc65b88c6ed9822",
+      "package_sha256": "a02d5438ad32d9c8fb917ce847d5a822688ca5b51d69125f6da71cf2ba2116ed",
+      "expected_sha256": "a02d5438ad32d9c8fb917ce847d5a822688ca5b51d69125f6da71cf2ba2116ed",
+      "exact_match": true
+    }
+  ]
+}

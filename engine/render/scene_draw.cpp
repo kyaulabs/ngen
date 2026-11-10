@@ -179,12 +179,21 @@ std::variant<Submission, Failure> SceneRenderer::draw(Context &context, ScenePin
     const auto count = package->instances.size() + extras.size();
     if (!view.material_factors.empty() && view.material_factors.size() != package->materials.size())
         return Failure{"scene material factor table must match the immutable package"};
+    if (!view.material_flows.empty() && view.material_flows.size() != package->materials.size())
+        return Failure{"scene material flow table must match the immutable package"};
     const auto unit = [](float value) { return std::isfinite(value) && value >= 0 && value <= 1; };
     for (const auto &factors : view.material_factors)
         if (!std::all_of(factors.base_color.begin(), factors.base_color.end(), unit) ||
             !unit(factors.metallic) || !unit(factors.roughness) ||
             !std::isfinite(factors.emissive_strength) || factors.emissive_strength < 0)
             return Failure{"scene material factors must be finite and within authored domains"};
+    for (std::size_t i = 0; i < view.material_flows.size(); ++i) {
+        const auto &flow = view.material_flows[i];
+        if (!std::isfinite(flow.phase) || flow.phase < 0 || flow.phase >= 1 || !unit(flow.amount))
+            return Failure{"scene emissive flow phase/amount must be finite within [0,1)/[0,1]"};
+        if (flow.amount > 0 && package->materials[i].alpha != 2)
+            return Failure{"scene emissive flow requires a blend material"};
+    }
     for (const auto &light : package->lights)
         if (light.type != 1)
             return Failure{"scene forward tier currently requires point-light definitions"};
@@ -233,6 +242,16 @@ std::variant<Submission, Failure> SceneRenderer::draw(Context &context, ScenePin
         draw.material.flags[0] = material.alpha;
         draw.material.flags[2] =
             (material.maps[2].texture == UINT32_MAX ? 1U : 0U) | (material.double_sided ? 2U : 0U);
+        if (primitive.material != UINT32_MAX && !view.material_flows.empty()) {
+            const auto &flow = view.material_flows[primitive.material];
+            const auto amount = static_cast<std::uint32_t>(std::lround(flow.amount * 65535.0F));
+            if (amount != 0) {
+                const auto phase = static_cast<std::uint32_t>(flow.phase * 65536.0F);
+                draw.material.flags[3] = (amount << 16U) | phase;
+                const auto node = instance.source_node;
+                draw.material.flags[2] |= ((node ^ (node >> 16U)) & 65535U) << 16U;
+            }
+        }
         for (std::size_t map = 0; map < 5; ++map) {
             const auto &reference = material.maps[map];
             draw.maps[map] = &targets.default_texture;

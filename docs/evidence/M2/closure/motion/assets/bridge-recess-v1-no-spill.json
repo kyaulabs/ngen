@@ -1,0 +1,23 @@
+{
+  "image_sha256": "6e9edf41f9169362e8d36c4fa8b44d4f2d1f2d5360e00092b2b4957b515dba82",
+  "native_extent": [
+    1920,
+    1080
+  ],
+  "region": "front citadel hull above the six narrow glazing strips",
+  "roi_xyxy": [
+    850,
+    470,
+    1070,
+    500
+  ],
+  "pixels": 6600,
+  "nearly_clipped_cyan_pixels": 0,
+  "nearly_clipped_cyan_fraction": 0.0,
+  "median_rgb": [
+    18.0,
+    23.0,
+    34.0
+  ],
+  "maximum_allowed_fraction": 0.01
+}
