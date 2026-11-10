@@ -4,7 +4,10 @@
 Release execution of the new renderer/final package, not another approval,
 compiler matrix, capability capture or WDDM collection. The historical compiled
 UI/bounds and static-package results are [complete](../windows-final/README.md).
-Their old binary predates explicit flow and cannot verify this change.
+Their old binary predates explicit flow and cannot verify this change. The latest
+[final-package return](windows-source-mismatch.md) also reports clean `5a2f841`:
+the asset is correct, but flow markers and the phase column are absent. Keep that
+asset and update source before the next build.
 
 The private input is `build/m2-final-visual-input.zip`, 48,245,561 bytes, SHA256
 `bbc551a3a2a2dd412891805e09a00e75724d52b736ba7e584f4d4fb2fa8e6edb`.
@@ -18,16 +21,23 @@ preserving old inputs/evidence. In PowerShell7 at the repository root, update th
 existing work branch without resetting local edits:
 
 ```powershell
+$tree = @(git status --porcelain)
+if ($LASTEXITCODE -ne 0 -or $tree.Count -ne 0) { throw 'Stop: preserve local edits or fix the repository path.' }
 git fetch origin
+if ($LASTEXITCODE -ne 0) { throw 'Fetch failed; do not build old source.' }
 git switch feat/kyau-ade38c-m2-acceptance
-git pull --ff-only
-git status --short
+if ($LASTEXITCODE -ne 0) { throw 'Branch switch failed; do not build.' }
+git pull --ff-only origin feat/kyau-ade38c-m2-acceptance
+if ($LASTEXITCODE -ne 0) { throw 'Fast-forward failed; preserve local changes and stop.' }
+git merge-base --is-ancestor 659d570f61e4d9a5ab8fb5e505cc03ab127775fc HEAD
+if ($LASTEXITCODE -ne 0) { throw 'New flow renderer is missing; do not build.' }
+git rev-parse HEAD
 ```
 
-Stop if source edits are present; do not delete/reset them. The branch must
-contain signed renderer `659d570`; later evidence-only commits do not change that
-renderer. The native return records its actual build revision. Confirm input
-identity, then run the existing workflow once:
+Do not delete/reset owner edits. The ancestry check must succeed before building;
+later evidence-only commits are fine. The native return records its actual build
+revision. Confirm the already-correct input identity, then run the existing
+workflow once:
 
 ```powershell
 Get-FileHash .\build\m2-final-visual-input\scene.ngas -Algorithm SHA256
