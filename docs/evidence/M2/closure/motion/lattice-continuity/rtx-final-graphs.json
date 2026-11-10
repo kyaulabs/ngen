@@ -1,0 +1,38 @@
+[
+  {
+    "configuration": "inspector-debug",
+    "build": 0,
+    "selected": 12,
+    "tests": 0
+  },
+  {
+    "configuration": "inspector-release",
+    "build": 0,
+    "selected": 12,
+    "tests": 0
+  },
+  {
+    "configuration": "inspector-asan",
+    "build": 0,
+    "selected": 12,
+    "tests": 0
+  },
+  {
+    "configuration": "inspector-gcc",
+    "build": 0,
+    "selected": 12,
+    "tests": 0
+  },
+  {
+    "configuration": "scene-shipping",
+    "build": 0,
+    "selected": 11,
+    "tests": 0
+  },
+  {
+    "configuration": "scene-no-shaders",
+    "build": 0,
+    "selected": 10,
+    "tests": 0
+  }
+]

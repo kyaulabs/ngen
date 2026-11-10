@@ -8,9 +8,11 @@ Their old binary predates explicit flow and cannot verify this change. An earlie
 [final-package return](windows-source-mismatch.md) reports clean old `5a2f841`.
 The subsequent [correct-source return](windows-wrap-failure/README.md) builds
 `062b4b9` and passes10/10 CTests but fails native phase-wrap continuity on RTX.
-Run the [focused existing-build diagnostic](windows-diagnostic.md) next, not another
-full workflow. Keep the correct asset and accepted appearance; a fix is not yet
-selected.
+A fresh `b6ea825` build now supplies [numeric diagnostics and a local fix](lattice-continuity/README.md).
+Use the corrected [fresh single-Release handoff](windows-diagnostic.md) next.
+It avoids stale executables and the earlier pasted-command binding/redirection
+errors. Keep the correct asset and accepted appearance; Windows verification of
+the continuity fix remains open.
 
 The private input is `build/m2-final-visual-input.zip`, 48,245,561 bytes, SHA256
 `bbc551a3a2a2dd412891805e09a00e75724d52b736ba7e584f4d4fb2fa8e6edb`.
@@ -43,8 +45,13 @@ revision. Confirm the already-correct input identity, then run the existing
 workflow once:
 
 ```powershell
-Get-FileHash .\build\m2-final-visual-input\scene.ngas -Algorithm SHA256
-.\tools\build-windows.ps1 -Compiler MSVC -Configuration Release -Inspector -ScenePackage .\build\m2-final-visual-input\scene.ngas
+$options = @{
+    Compiler      = 'MSVC'
+    Configuration = 'Release'
+    Inspector     = $true
+    ScenePackage  = '.\build\m2-final-visual-input\scene.ngas'
+}
+& .\tools\build-windows.ps1 @options
 ```
 
 Use the existing SDK/tools/cache; do not select `All`, `ClangCl`, `-GpuInfo` or

@@ -164,7 +164,9 @@ float jetHash(int2 cell, uint mask)
 float jetNoise(float2 coordinate, uint mask)
 {
     int2 cell = int2(floor(coordinate));
-    float2 f = frac(coordinate);
+    // Hash and interpolation must share one lattice origin. Independent
+    // floor/frac evaluation can disagree at integer boundaries under fast math.
+    float2 f = coordinate - float2(cell);
     float2 blend = f * f * (3 - 2 * f);
     float lower = lerp(jetHash(cell, mask), jetHash(cell + int2(1, 0), mask), blend.x);
     float upper = lerp(jetHash(cell + int2(0, 1), mask), jetHash(cell + int2(1, 1), mask), blend.x);

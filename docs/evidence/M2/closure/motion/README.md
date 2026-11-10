@@ -11,9 +11,12 @@ not started. An [earlier final-package Windows return](windows-source-mismatch.m
 passes asset/native checks with old `5a2f841`, not the flow renderer. The subsequent
 [clean `062b4b9` return](windows-wrap-failure/README.md) builds and passes10/10
 CTests but fails the native RTX phase-wrap continuity probe before workloads run.
-The shader and detector are unchanged; [bounded diagnostics](windows-diagnostic.md)
-are ready to identify the failing values. This is not a claimed repair or waived
-gate. Use the focused probe before repeating a full Windows workflow.
+The [fresh `b6ea825` numeric return](lattice-continuity/README.md) now supplies the
+failing half values. A symmetric detector corrects the one-sided R16F plateau
+false positive and exposes a separate local lattice-boundary spike; shared-origin
+shader arithmetic removes that spike in A/B/A native checks. Six graphs/eight
+native runs and post-fix timing pass locally, not yet on Windows. Use the corrected
+[named-parameter fresh-build handoff](windows-diagnostic.md); the gate is not waived.
 
 `identities.json` binds the tested source files, actual compile databases,
 Release executables and final package. Its parent revision identifies the

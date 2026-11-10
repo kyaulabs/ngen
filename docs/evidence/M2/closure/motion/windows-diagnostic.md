@@ -1,53 +1,62 @@
-# Focused RTX wrap diagnostic
+# Windows continuity-fix verification
 
-Use the **same PowerShell7 terminal** that just built
-`build\windows\20261110-094948-812\Release`, so its MSVC environment is still
-active. Update the work branch, then rebuild/run only `resource_probe` against
-that existing Release graph. No new matrix, full workload, asset, driver or
-memory collection is needed.
+The [numeric return and local regression](lattice-continuity/README.md) identify
+both an R16F plateau that defeated the old one-sided estimate and a separate
+lattice-boundary spike exposed by the stronger check. The fix shares one lattice
+origin between hashing/interpolation and checks both boundary steps against the
+two outer steps. The multiplier2 and absolute1/1024 allowance stay unchanged.
+The shader arithmetic changes; materials, authored noise/tail parameters, ABI,
+bindings, private package and accepted art settings do not.
 
-The patch adds one bounded raw/linear sample on failure. It does not change the
-shader, accepted art, half decoder or continuity threshold and is not a claimed
-NVIDIA repair. A nonzero probe exit is preserved in the log.
+Use the existing build workflow for **one fresh MSVC Release** graph. Do not reuse
+the earlier executable: its diagnostic-marker check was false despite updated Git
+source. Earlier manual capture also split `-RedirectStandardError` into a command;
+a positional `Select-String` example was wrong. The named parameter splats below
+avoid both command-line binding/wrapping errors. No additional collector, old
+compiler matrix, recook, WDDM measurement or visual approval is required.
+
+In PowerShell7 at `D:\Git\kyaulabs\ngen`, run the entire block:
 
 ```powershell
-$ErrorActionPreference = 'Stop'
-$tree = @(git status --porcelain)
-if ($LASTEXITCODE -ne 0 -or $tree.Count -ne 0) { throw 'Stop: preserve local edits.' }
-git switch feat/kyau-ade38c-m2-acceptance
-if ($LASTEXITCODE -ne 0) { throw 'Branch switch failed' }
-git pull --ff-only origin feat/kyau-ade38c-m2-acceptance
-if ($LASTEXITCODE -ne 0) { throw 'Source update failed' }
-if (-not (Select-String -LiteralPath .\apps\resource_probe\main.cpp -SimpleMatch 'wrap_sample x=')) { throw 'Diagnostic source is missing' }
-if (-not (Get-Command cl.exe -ErrorAction SilentlyContinue)) { throw 'Use the same terminal that built Release; MSVC is not active.' }
+& {
+    $ErrorActionPreference = 'Stop'
+    $tree = @(git status --porcelain)
+    if ($LASTEXITCODE -ne 0 -or $tree.Count -ne 0) {
+        throw 'Stop: preserve local edits or fix the repository path.'
+    }
+    git switch feat/kyau-ade38c-m2-acceptance
+    if ($LASTEXITCODE -ne 0) { throw 'Branch switch failed' }
+    git pull --ff-only origin feat/kyau-ade38c-m2-acceptance
+    if ($LASTEXITCODE -ne 0) { throw 'Source update failed' }
 
-$build = Join-Path $PWD 'build\windows\20261110-094948-812\Release'
-$log = Join-Path $PWD ('build\rtx-wrap-' + (Get-Date -Format 'yyyyMMdd-HHmmss-fff') + '.txt')
-$revision = git rev-parse HEAD
-if ($LASTEXITCODE -ne 0) { throw 'Could not record source revision' }
-if (Test-Path -LiteralPath $log) { throw 'Diagnostic output already exists' }
-Set-Content -LiteralPath $log -Value "revision=$revision"
-& .\build\windows-tools\Scripts\cmake.exe --build $build --target resource_probe -j 2 2>&1 | Tee-Object -FilePath $log -Append
-if ($LASTEXITCODE -ne 0) { throw "Probe rebuild failed; send $log" }
-
-$nativePreference = $PSNativeCommandUseErrorActionPreference
-try {
-    $PSNativeCommandUseErrorActionPreference = $false
-    . (Join-Path $build 'conanrun.ps1')
-    $hash = (Get-FileHash (Join-Path $build 'resource_probe.exe') -Algorithm SHA256).Hash
-    Add-Content -LiteralPath $log -Value "probe_sha256=$hash"
-    & (Join-Path $build 'resource_probe.exe') 2>&1 | Tee-Object -FilePath $log -Append
-    $probeExit = $LASTEXITCODE
-    Add-Content -LiteralPath $log -Value "probe_exit=$probeExit"
-} finally {
-    . (Join-Path $build 'deactivate_conanrun.ps1')
-    $PSNativeCommandUseErrorActionPreference = $nativePreference
+    $check = @{
+        LiteralPath = '.\apps\resource_probe\main.cpp'
+        Pattern     = 'emissive_flow_continuity_calibration=1'
+        SimpleMatch = $true
+        Quiet       = $true
+    }
+    if (-not (Select-String @check)) {
+        throw 'Continuity-fix source is missing; do not build.'
+    }
+    $options = @{
+        Compiler      = 'MSVC'
+        Configuration = 'Release'
+        Inspector     = $true
+        ScenePackage  = '.\build\m2-final-visual-input\scene.ngas'
+    }
+    & .\tools\build-windows.ps1 @options
 }
-Write-Host "Send this diagnostic file: $log"
 ```
 
-Send that single text file, not another full build archive. The failure sample
-provides coordinate/channel, raw R16F words and radiance at phase ticks−2/−1/0/+1/+2,
-plus the unchanged predicate values. That distinguishes numeric representation/
-local curvature from a real seam before a fix is selected. Do not supply PINs or
-credentials, change execution policy or mark the failure waived.
+The already-correct package remains194,096,492bytes/SHA256
+`a02d5438ad32d9c8fb917ce847d5a822688ca5b51d69125f6da71cf2ba2116ed`.
+The normal script records its input identity and archives the native output even
+if the probe fails. `Restoring environment` plus its exit1 exception is ordinary
+cleanup/reporting of that probe result, not a separate engine failure.
+
+Return the new `evidence.zip` printed by this invocation, even on failure. Expect
+`emissive_flow_continuity_calibration=1`, all existing resource/inspector controls,
+and the final-package workloads if native checks pass. On failure, preserve the
+bounded `wrap_sample` and actual revision. Do not infer Windows success from the
+local Iris runs. M2 remains open until current Windows execution and normal
+reviewed integration complete; M3 has not started.

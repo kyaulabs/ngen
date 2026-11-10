@@ -728,19 +728,69 @@ bool check_mesh(ngen::render::Context &context, const ngen::render::Buffer &read
                                  : std::ldexp(static_cast<float>(1024U + (bits & 1023U)),
                                               static_cast<int>(exponent) - 25);
         };
+        const auto continuous = [](const std::array<float, 5> &samples) {
+            if (!std::all_of(samples.begin(), samples.end(),
+                             [](float value) { return std::isfinite(value); }))
+                return false;
+            // Estimate ordinary motion on both sides, outside the boundary.
+            // A single half-quantized forward step may be flat. Do not use
+            // either boundary step as its own allowance: that hides spikes.
+            const auto normal =
+                std::max(std::abs(samples[1] - samples[0]), std::abs(samples[4] - samples[3]));
+            const auto boundary =
+                std::max(std::abs(samples[2] - samples[1]), std::abs(samples[3] - samples[2]));
+            return boundary <= normal * 2 + 1.0F / 1024;
+        };
+        // Actual RTX R16F samples at ticks -2/-1/0/+1/+2: the forward
+        // difference rounds to zero even though both outer steps show motion.
+        const std::array<std::uint16_t, 5> captured{0x38cb, 0x38c9, 0x38c6, 0x38c6, 0x38c4};
+        std::array<float, 5> captured_linear{};
+        std::transform(captured.begin(), captured.end(), captured_linear.begin(), decode);
+        if (!continuous(captured_linear)) {
+            std::fputs("Vulkan resource: smooth R16F flow plateau was rejected\n", stderr);
+            return false;
+        }
+        auto reversed = captured_linear;
+        std::reverse(reversed.begin(), reversed.end());
+        if (!continuous(reversed) || !continuous({0, 0, 0, 0, 0}) ||
+            !continuous({decode(0x3bfe), decode(0x3bff), 1, 1, decode(0x3c01)})) {
+            std::fputs("Vulkan resource: symmetric R16F continuity calibration differs\n", stderr);
+            return false;
+        }
+        for (const auto &seam : std::array{std::array<float, 5>{1, 1, .5F, .5F, .5F},
+                                           std::array<float, 5>{.5F, .5F, .5F, 1, 1},
+                                           std::array<float, 5>{.5F, .5F, 1, .5F, .5F}})
+            if (continuous(seam)) {
+                std::fputs("Vulkan resource: continuity calibration accepted a seam or spike\n",
+                           stderr);
+                return false;
+            }
+        for (std::size_t i = 0; i < captured_linear.size(); ++i)
+            for (const auto invalid : {std::numeric_limits<float>::infinity(),
+                                       std::numeric_limits<float>::quiet_NaN()}) {
+                auto samples = captured_linear;
+                samples[i] = invalid;
+                if (continuous(samples)) {
+                    std::fputs("Vulkan resource: continuity calibration accepted nonfinite HDR\n",
+                               stderr);
+                    return false;
+                }
+            }
+        std::puts("emissive_flow_continuity_calibration=1");
         for (std::size_t i = 0; i < flow_pixels.size(); ++i) {
-            const auto zero = decode(phase_zero[i]);
-            const auto next = decode(next_tick[i]);
-            const auto wrapped = decode(flow_pixels[i]);
-            // Compare linear HDR, not half-bit distances: ULP spacing doubles
-            // at 1.0, where the alpha clamp also changes the radiance slope.
+            const std::array<float, 5> samples{decode(previous_tick[i]), decode(flow_pixels[i]),
+                                               decode(phase_zero[i]), decode(next_tick[i]),
+                                               decode(second_tick[i])};
+            const auto zero = samples[2], next = samples[3], wrapped = samples[1];
+            // Linear HDR spacing doubles at 1.0; estimate both outer slopes
+            // rather than treating a quantization plateau as stationary motion.
             const auto wrap_delta = std::abs(wrapped - zero);
-            const auto regular_delta = std::abs(next - zero);
-            if (!std::isfinite(zero) || !std::isfinite(next) || !std::isfinite(wrapped) ||
-                wrap_delta > regular_delta * 2 + 1.0F / 1024) {
+            const auto forward_delta = std::abs(next - zero);
+            const auto normal_delta =
+                std::max(std::abs(samples[1] - samples[0]), std::abs(samples[4] - samples[3]));
+            if (!continuous(samples)) {
                 std::fputs("Vulkan resource: emissive flow phase wrap is discontinuous\n", stderr);
-                // Keep the detector unchanged; collect one bounded failing sample
-                // and both neighboring slopes for device-specific diagnosis.
+                // Keep one bounded failing sample with both neighboring slopes.
                 std::fprintf(
                     stderr,
                     "wrap_sample x=%zu y=%zu channel=%zu "
@@ -748,13 +798,13 @@ bool check_mesh(ngen::render::Context &context, const ngen::render::Buffer &read
                     "half_plus1=%04x half_plus2=%04x "
                     "linear_minus2=%.9g linear_minus1=%.9g linear_zero=%.9g "
                     "linear_plus1=%.9g linear_plus2=%.9g "
-                    "wrap_delta=%.9g regular_delta=%.9g limit=%.9g\n",
+                    "wrap_delta=%.9g forward_delta=%.9g normal_delta=%.9g limit=%.9g\n",
                     (i / 4) % width, (i / 4) / width, i % 4,
                     static_cast<unsigned>(previous_tick[i]), static_cast<unsigned>(flow_pixels[i]),
                     static_cast<unsigned>(phase_zero[i]), static_cast<unsigned>(next_tick[i]),
                     static_cast<unsigned>(second_tick[i]), decode(previous_tick[i]), wrapped, zero,
-                    next, decode(second_tick[i]), wrap_delta, regular_delta,
-                    regular_delta * 2 + 1.0F / 1024);
+                    next, decode(second_tick[i]), wrap_delta, forward_delta, normal_delta,
+                    normal_delta * 2 + 1.0F / 1024);
                 return false;
             }
         }

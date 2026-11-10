@@ -1,0 +1,136 @@
+[0/2] Re-checking globbed directories...
+[1/2] Re-running CMake...
+-- Using Conan toolchain: /home/kyau/projects/kyaulabs/ngen/build/inspector-asan/conan_toolchain.cmake
+-- Conan toolchain: Defining architecture flag: -m64
+-- Conan toolchain: Defining libcxx as C++ flags: -stdlib=libstdc++
+-- Conan toolchain: C++ Standard 20 with extensions OFF
+-- Conan: Target declared 'enkiTS::enkiTS'
+-- Conan: Target declared 'ZLIB::ZLIB'
+-- Conan: Component target declared 'SDL3::Headers'
+-- Conan: Component target declared 'SDL3::SDL3'
+-- Conan: Target declared 'sdl::sdl'
+-- Conan: Component target declared 'xkbcommon::libxkbcommon'
+-- Conan: Component target declared 'xkbcommon::libxkbregistry'
+-- Conan: Component target declared 'xkbcommon::xkbcli-interactive-wayland'
+-- Conan: Target declared 'xkbcommon::xkbcommon'
+-- Conan: Target declared 'xkeyboard-config::xkeyboard-config'
+-- Conan: Component target declared 'wayland::wayland-scanner'
+-- Conan: Component target declared 'wayland::wayland-server'
+-- Conan: Component target declared 'wayland::wayland-client'
+-- Conan: Component target declared 'wayland::wayland-egl-backend'
+-- Conan: Component target declared 'wayland::wayland-cursor'
+-- Conan: Component target declared 'wayland::wayland-egl'
+-- Conan: Target declared 'wayland::wayland'
+-- Conan: Target declared 'libffi::libffi'
+-- Conan: Target declared 'LibXml2::LibXml2'
+-- Conan: Target declared 'Iconv::Iconv'
+-- Conan: Target declared 'expat::expat'
+-- Conan: Target declared 'egl::egl'
+-- Conan: Target declared 'GPUOpen::VulkanMemoryAllocator'
+-- Conan: Component target declared 'Vulkan::Registry'
+-- Conan: Target declared 'vulkan-headers::vulkan-headers'
+-- Conan: Target declared 'imgui::imgui'
+-- Conan: Component target declared 'Catch2::Catch2'
+-- Conan: Component target declared 'Catch2::Catch2WithMain'
+-- Configuring done (0.5s)
+-- Generating done (0.1s)
+-- Build files have been written to: /home/kyau/projects/kyaulabs/ngen/build/inspector-asan
+[0/4] Re-checking globbed directories...
+[1/159] Scanning /home/kyau/projects/kyaulabs/ngen/engine/render/capabilities.cpp for CXX dependencies
+[2/159] Scanning /home/kyau/projects/kyaulabs/ngen/engine/render/vma.cpp for CXX dependencies
+[3/159] Scanning /home/kyau/projects/kyaulabs/ngen/engine/core/values.cpp for CXX dependencies
+[4/159] Scanning /home/kyau/projects/kyaulabs/ngen/engine/core/entities.cpp for CXX dependencies
+[5/159] Generating CXX dyndep file CMakeFiles/ngen_render_contract.dir/CXX.dd
+[6/157] Scanning /home/kyau/projects/kyaulabs/ngen/engine/assets/package.cpp for CXX dependencies
+[7/157] Generating CXX dyndep file CMakeFiles/ngen_vma.dir/CXX.dd
+[8/155] Generating CXX dyndep file CMakeFiles/ngen_core.dir/CXX.dd
+[9/152] Scanning /home/kyau/projects/kyaulabs/ngen/engine/jobs/jobs.cpp for CXX dependencies
+[10/152] Generating CXX dyndep file CMakeFiles/ngen_assets.dir/CXX.dd
+[11/150] Scanning /home/kyau/projects/kyaulabs/ngen/engine/tools/inspector.cpp for CXX dependencies
+[12/150] Scanning /home/kyau/projects/kyaulabs/ngen/engine/tools/reload.cpp for CXX dependencies
+[13/150] Generating CXX dyndep file CMakeFiles/ngen_jobs.dir/CXX.dd
+[14/148] Scanning /home/kyau/projects/kyaulabs/ngen/engine/simulation/simulation.cpp for CXX dependencies
+[15/148] Generating CXX dyndep file CMakeFiles/ngen_inspector.dir/CXX.dd
+[16/145] Generating CXX dyndep file CMakeFiles/ngen_imgui_sdl.dir/CXX.dd
+[17/143] Generating CXX dyndep file CMakeFiles/ngen_simulation.dir/CXX.dd
+[18/141] Scanning /home/kyau/projects/kyaulabs/ngen/apps/sim_harness/main.cpp for CXX dependencies
+[19/141] Scanning /home/kyau/projects/kyaulabs/ngen/apps/asset_probe/main.cpp for CXX dependencies
+[20/141] Scanning /home/kyau/projects/kyaulabs/ngen/tests/core.cpp for CXX dependencies
+[21/141] Scanning /home/kyau/projects/kyaulabs/ngen/tests/jobs.cpp for CXX dependencies
+[22/141] Scanning /home/kyau/projects/kyaulabs/ngen/tests/simulation.cpp for CXX dependencies
+[23/141] Scanning /home/kyau/projects/kyaulabs/ngen/tests/render_capabilities.cpp for CXX dependencies
+[24/141] Scanning /home/kyau/projects/kyaulabs/ngen/tests/assets.cpp for CXX dependencies
+[25/141] Scanning /home/kyau/projects/kyaulabs/ngen/tests/inspector.cpp for CXX dependencies
+[26/141] Scanning /home/kyau/projects/kyaulabs/ngen/tests/reload.cpp for CXX dependencies
+[27/141] Scanning /home/kyau/projects/kyaulabs/ngen/tests/wayland_tablets.cpp for CXX dependencies
+[28/141] Generating CXX dyndep file CMakeFiles/sim_harness.dir/CXX.dd
+[29/139] Generating CXX dyndep file CMakeFiles/asset_package_probe.dir/CXX.dd
+[30/137] Generating CXX dyndep file CMakeFiles/ngen_tests.dir/CXX.dd
+[31/133] Generating CXX dyndep file CMakeFiles/render_contract_tests.dir/CXX.dd
+[32/131] Generating CXX dyndep file CMakeFiles/asset_package_tests.dir/CXX.dd
+[33/129] Generating CXX dyndep file CMakeFiles/inspector_tests.dir/CXX.dd
+[34/126] Generating CXX dyndep file CMakeFiles/wayland_tablet_tests.dir/CXX.dd
+[35/124] Generating shaders/86a8eada6605cc9aadc991d8c280efb5ea3f16a574c5930ff39cf6ff1d80fb8c/manifest.json
+[36/124] Scanning /home/kyau/projects/kyaulabs/ngen/engine/render/surface.cpp for CXX dependencies
+[37/124] Scanning /home/kyau/projects/kyaulabs/ngen/engine/render/context.cpp for CXX dependencies
+[38/124] Scanning /home/kyau/projects/kyaulabs/ngen/engine/render/presentation.cpp for CXX dependencies
+[39/124] Scanning /home/kyau/projects/kyaulabs/ngen/engine/render/resources.cpp for CXX dependencies
+[40/124] Scanning /home/kyau/projects/kyaulabs/ngen/engine/render/post.cpp for CXX dependencies
+[41/124] Scanning /home/kyau/projects/kyaulabs/ngen/engine/render/mesh.cpp for CXX dependencies
+[42/124] Scanning /home/kyau/projects/kyaulabs/ngen/engine/render/environment.cpp for CXX dependencies
+[43/124] Scanning /home/kyau/projects/kyaulabs/ngen/engine/render/overlay.cpp for CXX dependencies
+[44/124] Generating CXX dyndep file CMakeFiles/ngen_render.dir/CXX.dd
+[45/124] Scanning /home/kyau/projects/kyaulabs/ngen/engine/render/scene.cpp for CXX dependencies
+[46/124] Scanning /home/kyau/projects/kyaulabs/ngen/engine/render/scene_draw.cpp for CXX dependencies
+[47/124] Building CXX object CMakeFiles/ngen_render.dir/engine/render/surface.cpp.o
+[48/124] Building CXX object CMakeFiles/ngen_render.dir/engine/render/presentation.cpp.o
+[49/124] Building CXX object CMakeFiles/ngen_render.dir/engine/render/context.cpp.o
+[50/124] Building CXX object CMakeFiles/ngen_render.dir/engine/render/post.cpp.o
+[51/124] Building CXX object CMakeFiles/ngen_render.dir/engine/render/resources.cpp.o
+[52/124] Building CXX object CMakeFiles/ngen_render.dir/engine/render/mesh.cpp.o
+[53/124] Building CXX object CMakeFiles/ngen_render.dir/engine/render/overlay.cpp.o
+[54/124] Scanning /home/kyau/projects/kyaulabs/ngen/apps/probe/presentation.cpp for CXX dependencies
+[55/124] Scanning /home/kyau/projects/kyaulabs/ngen/apps/probe/capture.cpp for CXX dependencies
+[56/124] Generating CXX dyndep file CMakeFiles/ngen_scene.dir/CXX.dd
+[57/121] Scanning /home/kyau/projects/kyaulabs/ngen/apps/scene_workload/fixture.cpp for CXX dependencies
+[58/121] Scanning /home/kyau/projects/kyaulabs/ngen/engine/tools/ui.cpp for CXX dependencies
+[59/121] Scanning /home/kyau/projects/kyaulabs/ngen/tests/shader_layout.cpp for CXX dependencies
+[60/121] Building CXX object CMakeFiles/ngen_render.dir/engine/render/environment.cpp.o
+[61/121] Generating CXX dyndep file CMakeFiles/ngen_probe_support.dir/CXX.dd
+[62/118] Linking CXX static library libngen_render.a
+[63/118] Scanning /home/kyau/projects/kyaulabs/ngen/apps/render_probe/main.cpp for CXX dependencies
+[64/118] Scanning /home/kyau/projects/kyaulabs/ngen/apps/resource_probe/main.cpp for CXX dependencies
+[65/118] Generating CXX dyndep file CMakeFiles/scene_workload_fixture.dir/CXX.dd
+[66/116] Generating CXX dyndep file CMakeFiles/ngen_inspector_ui.dir/CXX.dd
+[67/114] Scanning /home/kyau/projects/kyaulabs/ngen/apps/scene_workload/allocations.cpp for CXX dependencies
+[68/114] Scanning /home/kyau/projects/kyaulabs/ngen/apps/scene_workload/main.cpp for CXX dependencies
+[69/114] Scanning /home/kyau/projects/kyaulabs/ngen/apps/inspector_probe/main.cpp for CXX dependencies
+[70/114] Scanning /home/kyau/projects/kyaulabs/ngen/apps/scene_probe/main.cpp for CXX dependencies
+[71/114] Scanning /home/kyau/projects/kyaulabs/ngen/tests/render_environment.cpp for CXX dependencies
+[72/114] Scanning /home/kyau/projects/kyaulabs/ngen/apps/scene_probe/draw.cpp for CXX dependencies
+[73/114] Scanning /home/kyau/projects/kyaulabs/ngen/apps/scene_workload/allocations.cpp for CXX dependencies
+[74/114] Scanning /home/kyau/projects/kyaulabs/ngen/tests/workload.cpp for CXX dependencies
+[75/114] Scanning /home/kyau/projects/kyaulabs/ngen/tests/shader_gpu.cpp for CXX dependencies
+[76/114] Scanning /home/kyau/projects/kyaulabs/ngen/tests/render_startup.cpp for CXX dependencies
+[77/114] Generating CXX dyndep file CMakeFiles/shader_contract_layout.dir/CXX.dd
+[78/112] Generating CXX dyndep file CMakeFiles/render_probe.dir/CXX.dd
+[79/111] Generating CXX dyndep file CMakeFiles/resource_probe.dir/CXX.dd
+[80/111] Generating CXX dyndep file CMakeFiles/scene_workload.dir/CXX.dd
+[81/109] Generating CXX dyndep file CMakeFiles/inspector_probe.dir/CXX.dd
+[82/108] Generating CXX dyndep file CMakeFiles/scene_probe.dir/CXX.dd
+[83/106] Generating CXX dyndep file CMakeFiles/render_environment_tests.dir/CXX.dd
+[84/105] Scanning /home/kyau/projects/kyaulabs/ngen/tests/render_surface.cpp for CXX dependencies
+[85/105] Generating CXX dyndep file CMakeFiles/shader_gpu_probe.dir/CXX.dd
+[86/105] Generating CXX dyndep file CMakeFiles/scene_workload_tests.dir/CXX.dd
+[87/103] Generating CXX dyndep file CMakeFiles/render_startup_tests.dir/CXX.dd
+[88/101] Building CXX object CMakeFiles/shader_gpu_probe.dir/tests/shader_gpu.cpp.o
+[89/101] Building CXX object CMakeFiles/resource_probe.dir/apps/resource_probe/main.cpp.o
+[90/101] Linking CXX executable render_probe
+[91/101] Linking CXX executable resource_probe
+[92/101] Linking CXX executable scene_workload
+[93/101] Linking CXX executable inspector_probe
+[94/101] Linking CXX executable scene_probe
+[95/101] Linking CXX executable render_environment_tests
+[96/101] Linking CXX executable scene_workload_tests
+[97/101] Linking CXX executable shader_gpu_probe
+[98/101] Linking CXX executable render_startup_tests

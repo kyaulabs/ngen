@@ -1,0 +1,2 @@
+Vulkan resource: emissive flow phase wrap is discontinuous
+wrap_sample x=96 y=0 channel=0 half_minus2=398a half_minus1=3980 half_zero=3976 half_plus1=3957 half_plus2=3960 linear_minus2=0.692382812 linear_minus1=0.6875 linear_zero=0.682617188 linear_plus1=0.667480469 linear_plus2=0.671875 wrap_delta=0.0048828125 forward_delta=0.0151367188 normal_delta=0.0048828125 limit=0.0107421875
