@@ -1,7 +1,9 @@
 # Targeted Windows flow verification
 
-**Pending.** All personal visual gates are accepted. This is one fresh MSVC
-Release execution of the new renderer/final package, not another approval,
+**Complete:** [current-source MSVC Release execution](windows-verified/README.md)
+passes at `c6b82da`, including all native controls and2,400 measurement rows.
+No rerun or new personal approval is requested. The historical handoff below is
+one fresh Release execution of the new renderer/final package, not another approval,
 compiler matrix, capability capture or WDDM collection. The historical compiled
 UI/bounds and static-package results are [complete](../windows-final/README.md).
 Their old binary predates explicit flow and cannot verify this change. An earlier
@@ -11,8 +13,8 @@ The subsequent [correct-source return](windows-wrap-failure/README.md) builds
 A fresh `b6ea825` build now supplies [numeric diagnostics and a local fix](lattice-continuity/README.md).
 Use the corrected [fresh single-Release handoff](windows-diagnostic.md) next.
 It avoids stale executables and the earlier pasted-command binding/redirection
-errors. Keep the correct asset and accepted appearance; Windows verification of
-the continuity fix remains open.
+errors. Its subsequent verified return closes continuity/final-asset Windows
+execution; keep the accepted appearance and finish normal PR delivery.
 
 The private input is `build/m2-final-visual-input.zip`, 48,245,561 bytes, SHA256
 `bbc551a3a2a2dd412891805e09a00e75724d52b736ba7e584f4d4fb2fa8e6edb`.

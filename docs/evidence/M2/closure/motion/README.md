@@ -5,9 +5,11 @@ finish and six recessed bridge windows. The final private package is
 `a02d5438ad32d9c8fb917ce847d5a822688ca5b51d69125f6da71cf2ba2116ed`.
 These are visual verdicts, not M2 completion. A [separate read-only review](../independent-659d570.md)
 finds no demonstrated P1/P2 defect and recomputes all public measurement rows;
-its stale-progress wording advisory is corrected. Scoped Windows execution of
-the new renderer, exact-head CI and normal PR integration remain open. M3 has
-not started. An [earlier final-package Windows return](windows-source-mismatch.md)
+its stale-progress wording advisory is corrected. [Current-source Windows execution](windows-verified/README.md)
+now passes at `c6b82da`, including native flow/copied state, the exact final asset
+and all2,400 measurement rows. Its eight CI jobs pass. Final review, merge and
+post-merge verification are tracked by [PR#9](https://github.com/kyaulabs/ngen/pull/9);
+complete that delivery before M3. An [earlier final-package Windows return](windows-source-mismatch.md)
 passes asset/native checks with old `5a2f841`, not the flow renderer. The subsequent
 [clean `062b4b9` return](windows-wrap-failure/README.md) builds and passes10/10
 CTests but fails the native RTX phase-wrap continuity probe before workloads run.
@@ -15,8 +17,9 @@ The [fresh `b6ea825` numeric return](lattice-continuity/README.md) now supplies 
 failing half values. A symmetric detector corrects the one-sided R16F plateau
 false positive and exposes a separate local lattice-boundary spike; shared-origin
 shader arithmetic removes that spike in A/B/A native checks. Six graphs/eight
-native runs and post-fix timing pass locally, not yet on Windows. Use the corrected
-[named-parameter fresh-build handoff](windows-diagnostic.md); the gate is not waived.
+native runs and post-fix timing pass locally; the subsequent verified Windows
+return closes that execution gate. The corrected [handoff](windows-diagnostic.md)
+is retained for reproducibility, not another requested run.
 
 `identities.json` binds the tested source files, actual compile databases,
 Release executables and final package. Its parent revision identifies the

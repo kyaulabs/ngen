@@ -1,5 +1,9 @@
 # Windows continuity-fix verification
 
+**Complete:** the [current-source Windows return](windows-verified/README.md)
+passes at `c6b82da`. No further run is requested. Commands below retain the exact
+corrected handoff; normal final delivery is tracked by PR#9.
+
 The [numeric return and local regression](lattice-continuity/README.md) identify
 both an R16F plateau that defeated the old one-sided estimate and a separate
 lattice-boundary spike exposed by the stronger check. The fix shares one lattice
@@ -58,5 +62,5 @@ Return the new `evidence.zip` printed by this invocation, even on failure. Expec
 `emissive_flow_continuity_calibration=1`, all existing resource/inspector controls,
 and the final-package workloads if native checks pass. On failure, preserve the
 bounded `wrap_sample` and actual revision. Do not infer Windows success from the
-local Iris runs. M2 remains open until current Windows execution and normal
-reviewed integration complete; M3 has not started.
+local Iris runs. The linked return now demonstrates Windows success. Complete
+normal reviewed integration and post-merge checks before starting M3.

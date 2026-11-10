@@ -1,6 +1,8 @@
 # M2 closure verification
 
-**M2 remains open. M3 has not started.** PR #8 integrated the implementation at
+**M2 implementation, owner and platform verification gates pass.** Complete final
+review/merge/post-merge verification through [PR#9](https://github.com/kyaulabs/ngen/pull/9)
+before declaring delivery and beginning M3. PR #8 integrated the implementation at
 `20f1222`; integration is not milestone acceptance. This follow-up obtains a
 separate read-only agent review, closes its checked-scene transparency coverage
 gap, extends the measured reload run and verifies native Windows GPU accounting.
@@ -12,9 +14,11 @@ bridge windows; freeze their appearance. All 1,200 final-package clean frame row
 local native/sanitizer checks and exact six-stage current-host replay pass.
 [Separate source review](independent-659d570.md) demonstrates no P1/P2 defect; its
 stale-progress wording advisory is corrected. Historical compiled UI/bounds and
-static-package execution are [complete](windows-final/README.md). Remaining:
-[targeted new Windows flow execution](motion/windows.md), exact-head CI and normal
-PR integration. Neither visual approval nor old static results close this scope.
+static-package execution are [complete](windows-final/README.md). The subsequent
+[current-flow Windows return](motion/windows-verified/README.md) verifies the
+`c6b82da` continuity fix, native copied-state controls, final package and all2,400
+rows; its eight CI jobs pass. Only final normal PR delivery remains. This result,
+not visual approval or old static evidence, closes the new execution scope.
 
 Owner follow-up: Slang 2026.21 and the specific rear-engine
 [ship-bounds correction](ship-bounds/README.md) are accepted. After owner-reported

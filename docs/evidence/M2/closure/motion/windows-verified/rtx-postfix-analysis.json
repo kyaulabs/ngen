@@ -1,0 +1,546 @@
+{
+  "archive_sha256": "b5a91d23d43f6a1c3eed9e6d4ed9419f3728cfc4f01edbaea38fdf5fcce18649",
+  "revision": "c6b82dac08c41f9b73b92cad7ae6b00e569a40fc",
+  "reported_working_tree_clean": true,
+  "native_ctests": 10,
+  "native_flow_calibration_and_contracts_pass": true,
+  "scene_copied_flow_and_disabled_pass": true,
+  "package": {
+    "schema": 1,
+    "name": "scene.ngas",
+    "bytes": 194096492,
+    "sha256": "a02d5438ad32d9c8fb917ce847d5a822688ca5b51d69125f6da71cf2ba2116ed"
+  },
+  "shader_manifest_sha256": "774510d2fe089f79be313744d766bfa2c9645587c4b2c3d640d9197e484fa7ab",
+  "all_nine_shader_sources_and_reflections_match": true,
+  "shader_identities": [
+    {
+      "name": "cull",
+      "stage": "compute",
+      "entry": "cullMain",
+      "source_sha256": "8e7bd81509655f5d1229f9ed9e15fa8118e15b9075fd60b0553a26d70eda7f0e",
+      "sha256": "c02bd1d5144d5d6175a4eb79073f6eea71d4bc88da1b95f65885ef6cd1927e09",
+      "reflection_sha256": "8c25f5bf2dae27145bc480db5affd5e72517016c3c3a602fe66aaaa600e032d6"
+    },
+    {
+      "name": "pbr-vertex",
+      "stage": "vertex",
+      "entry": "vertexMain",
+      "source_sha256": "b51d68f28ce5eec2e9335f30499289bd44e3cdae9040e4e241e2dc7a339894f7",
+      "sha256": "3d3f91124693c13d2d95c0075b386cbfb51b53342b1eea8e683c4413eb78bb7d",
+      "reflection_sha256": "e9d735ae26f60a0020484a131c038b041a3561739323aa1ecd515220b5a8031f"
+    },
+    {
+      "name": "pbr-fragment",
+      "stage": "fragment",
+      "entry": "fragmentMain",
+      "source_sha256": "b51d68f28ce5eec2e9335f30499289bd44e3cdae9040e4e241e2dc7a339894f7",
+      "sha256": "9bec308c5ffd93bd0c0bf65eebed163f94d5bc03baa0f0db585e91d0d6aebdcb",
+      "reflection_sha256": "ceeb6547bc8da4047e61092ce4b70a64dbb447164b9dc148d26265037315ff0a"
+    },
+    {
+      "name": "shadow-vertex",
+      "stage": "vertex",
+      "entry": "shadowVertex",
+      "source_sha256": "b51d68f28ce5eec2e9335f30499289bd44e3cdae9040e4e241e2dc7a339894f7",
+      "sha256": "1bd5775966ba80e6e9803c0980c702d8e65fbf0ae23407db9dc1d063297da38b",
+      "reflection_sha256": "5d1d04075883bd55cb6e64275ff5a65a9e49e9814dc944f7acdb23c6628a1156"
+    },
+    {
+      "name": "shadow-fragment",
+      "stage": "fragment",
+      "entry": "shadowFragment",
+      "source_sha256": "b51d68f28ce5eec2e9335f30499289bd44e3cdae9040e4e241e2dc7a339894f7",
+      "sha256": "4d3b674db7fd4e5af0b834f1885fec078a218f0c135d914b1b33d9475b2213b2",
+      "reflection_sha256": "653644cdd1742af8e71abbfebebde013a804b6d505cc1424b4cf619b3b433117"
+    },
+    {
+      "name": "post-vertex",
+      "stage": "vertex",
+      "entry": "postVertex",
+      "source_sha256": "63591463fd184091305723c87473f26f4d60a30d73eaf92056ea468657159fa4",
+      "sha256": "99fd5b75fb074d38b0fd3d0d74962193c71e0dd59d18d769cfd4bd1acc81dcb6",
+      "reflection_sha256": "f7560a61857f7a0ec8cddcd1127d3cf08d651fb5c884d3c9e03058e17ec2183f"
+    },
+    {
+      "name": "post-fragment",
+      "stage": "fragment",
+      "entry": "postFragment",
+      "source_sha256": "63591463fd184091305723c87473f26f4d60a30d73eaf92056ea468657159fa4",
+      "sha256": "e974c78ed12b363c34e90f94d833883172c5bb3be581a647b70bda086bbb5785",
+      "reflection_sha256": "fec80329a0b9fa2ede95fdfc4f3e877cb6c9360fb860aa3bf62b7a6ebbe4b449"
+    },
+    {
+      "name": "overlay-vertex",
+      "stage": "vertex",
+      "entry": "overlayVertex",
+      "source_sha256": "8284e3e80a357008c7a0991095c36984992108888d25a22232ada349118b6bea",
+      "sha256": "8b094f645dfbc359bc2ea4dd1f8ae27b658ac6e0b62e743c52682b9bb206a403",
+      "reflection_sha256": "bb7035b5941fa723975a82ad4ef30d29c1c889e48562aabc8a3cad05281e21e7"
+    },
+    {
+      "name": "overlay-fragment",
+      "stage": "fragment",
+      "entry": "overlayFragment",
+      "source_sha256": "8284e3e80a357008c7a0991095c36984992108888d25a22232ada349118b6bea",
+      "sha256": "4b3597df0eb4a436f82b35d34a3c4d097ba56345a882e7637c3ac006b82e7221",
+      "reflection_sha256": "38d05c4a46c96430f1d2c2fd957060728d6a7c997c296af7332afb938ffa5bf9"
+    }
+  ],
+  "runs": {
+    "inspection": {
+      "measured_frames": 1200,
+      "warmup_frames": 60,
+      "validation": true,
+      "phase_unique": 1200,
+      "phase_domain_and_progression_checked": true,
+      "distributions_ns": {
+        "frame_ns": {
+          "p50": 10258900.0,
+          "p95": 12173000.0,
+          "p99": 14976200.0,
+          "max": 50921300.0
+        },
+        "prepare_ns": {
+          "p50": 9280400.0,
+          "p95": 10715400.0,
+          "p99": 11864900.0,
+          "max": 40077000.0
+        },
+        "present_ns": {
+          "p50": 720000.0,
+          "p95": 1132400.0,
+          "p99": 1414200.0,
+          "max": 22362100.0
+        },
+        "gpu_shadow_ns": {
+          "p50": 55264.0,
+          "p95": 59872.0,
+          "p99": 135392.0,
+          "max": 244192.0
+        },
+        "gpu_pbr_ns": {
+          "p50": 80544.0,
+          "p95": 87584.0,
+          "p99": 199648.0,
+          "max": 560864.0
+        },
+        "gpu_post_ns": {
+          "p50": 56064.0,
+          "p95": 57024.0,
+          "p99": 57408.0,
+          "max": 69568.0
+        },
+        "ui_prepare_ns": {
+          "p50": 107900.0,
+          "p95": 162100.0,
+          "p99": 329800.0,
+          "max": 565700.0
+        },
+        "gpu_ui_ns": {
+          "p50": 13472.0,
+          "p95": 14560.0,
+          "p99": 15872.0,
+          "max": 182752.0
+        }
+      },
+      "extent_transitions": [
+        {
+          "frame": 0,
+          "extent": [
+            1280,
+            720
+          ]
+        },
+        {
+          "frame": 20,
+          "extent": [
+            1024,
+            640
+          ]
+        },
+        {
+          "frame": 40,
+          "extent": [
+            1280,
+            720
+          ]
+        }
+      ],
+      "extent_counts": {
+        "1280x720": 1180,
+        "1024x640": 20
+      },
+      "generation_transitions": [
+        {
+          "frame": 0,
+          "generation": 1
+        },
+        {
+          "frame": 45,
+          "generation": 2
+        },
+        {
+          "frame": 115,
+          "generation": 3
+        }
+      ],
+      "tracked": {
+        "vma_allocation_bytes": {
+          "peak": 485924528,
+          "final": 217529888,
+          "last300_min": 217529888,
+          "last300_max": 217529888
+        },
+        "vma_reserved_bytes": {
+          "peak": 488680432,
+          "final": 220376928,
+          "last300_min": 220376928,
+          "last300_max": 220376928
+        },
+        "resource_live": {
+          "peak": 39,
+          "final": 27,
+          "last300_min": 27,
+          "last300_max": 27
+        },
+        "resource_retiring": {
+          "peak": 0,
+          "final": 0,
+          "last300_min": 0,
+          "last300_max": 0
+        }
+      },
+      "settlement": {
+        "final_generation": 3,
+        "first_frame": 115,
+        "frames": 1085,
+        "every_final_generation_row_matches_steady_baseline": true,
+        "baseline": {
+          "vma_allocation_bytes": 217529888,
+          "vma_reserved_bytes": 220376928,
+          "resource_live": 27,
+          "resource_retiring": 0
+        },
+        "last300_includes_active_reload": false
+      },
+      "observed_working_set": {
+        "schema": 1,
+        "process_id": 216068,
+        "exit_code": 0,
+        "timed_out": false,
+        "elapsed_ms": 14879,
+        "sample_period_ms": 25,
+        "observed_peak_working_set_bytes": 902963200,
+        "observed_peak_counter_bytes": 902963200,
+        "sampled_resident_bytes": 902963200,
+        "scope": "Observed OS process working set/high-water counter, including startup; not GPU memory or an exact continuous peak."
+      },
+      "private_capture_sha256": "dfe0cb592ccd6824302eaeb1e4e768410afd4fc43095374cc7854a143b7bb033",
+      "private_capture_extent": [
+        1280,
+        720
+      ],
+      "capture_gutters": [
+        16,
+        16
+      ],
+      "optimized_timing": false,
+      "settings_scope": "Every frame counted; walkthrough1-2 exposure.75/FXAAoff, restored3"
+    },
+    "steady": {
+      "measured_frames": 600,
+      "warmup_frames": 60,
+      "validation": false,
+      "phase_unique": 600,
+      "phase_domain_and_progression_checked": true,
+      "distributions_ns": {
+        "frame_ns": {
+          "p50": 7200500.0,
+          "p95": 7674100.0,
+          "p99": 8358000.0,
+          "max": 8645000.0
+        },
+        "prepare_ns": {
+          "p50": 632800.0,
+          "p95": 764800.0,
+          "p99": 848000.0,
+          "max": 1098500.0
+        },
+        "present_ns": {
+          "p50": 6397600.0,
+          "p95": 6860300.0,
+          "p99": 7591500.0,
+          "max": 8038800.0
+        },
+        "gpu_shadow_ns": {
+          "p50": 56064.0,
+          "p95": 59456.0,
+          "p99": 61344.0,
+          "max": 85504.0
+        },
+        "gpu_pbr_ns": {
+          "p50": 81600.0,
+          "p95": 87808.0,
+          "p99": 89664.0,
+          "max": 91104.0
+        },
+        "gpu_post_ns": {
+          "p50": 56928.0,
+          "p95": 58336.0,
+          "p99": 60256.0,
+          "max": 180224.0
+        },
+        "ui_prepare_ns": {
+          "p50": 143900.0,
+          "p95": 187200.0,
+          "p99": 211900.0,
+          "max": 256600.0
+        },
+        "gpu_ui_ns": {
+          "p50": 14752.0,
+          "p95": 15264.0,
+          "p99": 15648.0,
+          "max": 27840.0
+        }
+      },
+      "extent_transitions": [
+        {
+          "frame": 0,
+          "extent": [
+            1280,
+            720
+          ]
+        }
+      ],
+      "extent_counts": {
+        "1280x720": 600
+      },
+      "generation_transitions": [
+        {
+          "frame": 0,
+          "generation": 1
+        }
+      ],
+      "tracked": {
+        "vma_allocation_bytes": {
+          "peak": 217529888,
+          "final": 217529888,
+          "last300_min": 217529888,
+          "last300_max": 217529888
+        },
+        "vma_reserved_bytes": {
+          "peak": 220376928,
+          "final": 220376928,
+          "last300_min": 220376928,
+          "last300_max": 220376928
+        },
+        "resource_live": {
+          "peak": 27,
+          "final": 27,
+          "last300_min": 27,
+          "last300_max": 27
+        },
+        "resource_retiring": {
+          "peak": 0,
+          "final": 0,
+          "last300_min": 0,
+          "last300_max": 0
+        }
+      },
+      "settlement": {
+        "final_generation": 1,
+        "first_frame": 0,
+        "frames": 600,
+        "every_final_generation_row_matches_steady_baseline": true,
+        "baseline": {
+          "vma_allocation_bytes": 217529888,
+          "vma_reserved_bytes": 220376928,
+          "resource_live": 27,
+          "resource_retiring": 0
+        },
+        "last300_includes_active_reload": false
+      },
+      "observed_working_set": {
+        "schema": 1,
+        "process_id": 222216,
+        "exit_code": 0,
+        "timed_out": false,
+        "elapsed_ms": 5858,
+        "sample_period_ms": 25,
+        "observed_peak_working_set_bytes": 421277696,
+        "observed_peak_counter_bytes": 421277696,
+        "sampled_resident_bytes": 409649152,
+        "scope": "Observed OS process working set/high-water counter, including startup; not GPU memory or an exact continuous peak."
+      },
+      "private_capture_sha256": "9278c311b8e4bcf72d89acccbd064dc25969fdfd67a34109e883e7ae70f19fb3",
+      "private_capture_extent": [
+        1280,
+        720
+      ],
+      "capture_gutters": [
+        16,
+        16
+      ],
+      "optimized_timing": true,
+      "settings_scope": "Default exposure1/FXAAon/bloom.04 throughout"
+    },
+    "stream": {
+      "measured_frames": 600,
+      "warmup_frames": 60,
+      "validation": false,
+      "phase_unique": 600,
+      "phase_domain_and_progression_checked": true,
+      "distributions_ns": {
+        "frame_ns": {
+          "p50": 7172500.0,
+          "p95": 7781000.0,
+          "p99": 8514800.0,
+          "max": 23254600.0
+        },
+        "prepare_ns": {
+          "p50": 663300.0,
+          "p95": 946000.0,
+          "p99": 3193400.0,
+          "max": 12468900.0
+        },
+        "present_ns": {
+          "p50": 6248800.0,
+          "p95": 6743500.0,
+          "p99": 7568800.0,
+          "max": 7838800.0
+        },
+        "gpu_shadow_ns": {
+          "p50": 56000.0,
+          "p95": 59744.0,
+          "p99": 62656.0,
+          "max": 71008.0
+        },
+        "gpu_pbr_ns": {
+          "p50": 81632.0,
+          "p95": 88480.0,
+          "p99": 90080.0,
+          "max": 93088.0
+        },
+        "gpu_post_ns": {
+          "p50": 56864.0,
+          "p95": 58272.0,
+          "p99": 59264.0,
+          "max": 209408.0
+        },
+        "ui_prepare_ns": {
+          "p50": 131200.0,
+          "p95": 186200.0,
+          "p99": 223900.0,
+          "max": 862700.0
+        },
+        "gpu_ui_ns": {
+          "p50": 13728.0,
+          "p95": 15744.0,
+          "p99": 16480.0,
+          "max": 26720.0
+        }
+      },
+      "extent_transitions": [
+        {
+          "frame": 0,
+          "extent": [
+            1280,
+            720
+          ]
+        }
+      ],
+      "extent_counts": {
+        "1280x720": 600
+      },
+      "generation_transitions": [
+        {
+          "frame": 0,
+          "generation": 1
+        },
+        {
+          "frame": 69,
+          "generation": 2
+        },
+        {
+          "frame": 159,
+          "generation": 3
+        },
+        {
+          "frame": 251,
+          "generation": 4
+        },
+        {
+          "frame": 352,
+          "generation": 5
+        }
+      ],
+      "tracked": {
+        "vma_allocation_bytes": {
+          "peak": 485924528,
+          "final": 217529888,
+          "last300_min": 217529888,
+          "last300_max": 485924528
+        },
+        "vma_reserved_bytes": {
+          "peak": 488680432,
+          "final": 220376928,
+          "last300_min": 220376928,
+          "last300_max": 488680432
+        },
+        "resource_live": {
+          "peak": 39,
+          "final": 27,
+          "last300_min": 27,
+          "last300_max": 39
+        },
+        "resource_retiring": {
+          "peak": 0,
+          "final": 0,
+          "last300_min": 0,
+          "last300_max": 0
+        }
+      },
+      "settlement": {
+        "final_generation": 5,
+        "first_frame": 352,
+        "frames": 248,
+        "every_final_generation_row_matches_steady_baseline": true,
+        "baseline": {
+          "vma_allocation_bytes": 217529888,
+          "vma_reserved_bytes": 220376928,
+          "resource_live": 27,
+          "resource_retiring": 0
+        },
+        "last300_includes_active_reload": true
+      },
+      "observed_working_set": {
+        "schema": 1,
+        "process_id": 221680,
+        "exit_code": 0,
+        "timed_out": false,
+        "elapsed_ms": 5812,
+        "sample_period_ms": 25,
+        "observed_peak_working_set_bytes": 923742208,
+        "observed_peak_counter_bytes": 923742208,
+        "sampled_resident_bytes": 914948096,
+        "scope": "Observed OS process working set/high-water counter, including startup; not GPU memory or an exact continuous peak."
+      },
+      "private_capture_sha256": "d7a48326aec4806aa2631b7720a14ca7c81c2ba8fd4e8faab57480b8d61996fa",
+      "private_capture_extent": [
+        1280,
+        720
+      ],
+      "capture_gutters": [
+        16,
+        16
+      ],
+      "optimized_timing": true,
+      "settings_scope": "Every frame counted; walkthrough1-2 exposure.75/FXAAoff, restored3"
+    }
+  },
+  "all_measured_rows": 2400,
+  "binary_scope": "Fresh graph links/executes owned resource/inspector/scene/workload executables with exact reported clean source and new calibration/copy/phase markers. No executable bytes or standalone executable SHA was returned; do not invent one.",
+  "memory_scope": "Observed OS working set/high-water counters and tracked VMA only. Prior WDDM evidence remains separate; no new continuous/global/GPU process peak claim.",
+  "acceptance_scope": "Current-source Windows flow/final-package physical execution gate demonstrated. Normal reviewed PR integration and post-merge verification remain before M2 closure/M3."
+}
