@@ -182,6 +182,23 @@ and VMA observations retain their actual scope; no global/continuous GPU-memory 
 scanout proof is inferred. Correctness and instrumented recording are separate.
 
 Next: finish current Windows MSVC/ClangCl, app-local offline startup and scoped RTX
-timing/memory, then final review and normal reviewed integration. M3 remains open
-until those gates and exact post-merge CI complete. No mandatory tracker workflow
-or per-command reapproval is introduced.
+timing/memory, plus the remaining non-UI M3 implementation/delivery checks.
+
+The owner requests another UI refinement pass **after all other M3 work, but before
+M3 completion**. Keep it queued until those remaining technical checks are finished;
+then use all three EVE Online articles as references:
+
+- https://www.eveonline.com/news/view/photon-ui-iterating-and-improving
+- https://www.eveonline.com/news/view/eve-evolved-a-new-horizon-for-the-hud
+- https://www.eveonline.com/news/view/evolution-not-revolution
+
+Review all three when the UI phase begins and settle the concrete panel/control
+scope then; these references are not an implemented or approved UI design. Use
+layout, hierarchy and interaction principles, not copied EVE assets or branding.
+Preserve accepted ship/material/effect policy and physical control contracts.
+Verify the UI changes and rerun affected acceptance/performance checks before
+final review and normal reviewed integration. Do not mark M3 complete or merge it
+before this requested pass is implemented and reviewed with the owner.
+
+M3 remains open until these gates and exact post-merge CI complete. No mandatory
+tracker workflow or per-command reapproval is introduced.
