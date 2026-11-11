@@ -747,7 +747,8 @@ try {
             "-DNGEN_BUILD_RENDERER=$rendererBuild", "-DNGEN_BUILD_ASSETS=$assetsBuild", "-DNGEN_BUILD_INSPECTOR=$inspectorBuild",
             "-DNGEN_BUILD_PHYSICS=$flightBuild", "-DNGEN_BUILD_AUDIO=$flightBuild", "-DNGEN_BUILD_FLIGHT_DEMO=$flightBuild"
         ) -LogPath (Join-Path $logs "$config-configure.txt")
-        Invoke-NgenNative -FilePath $cmake -Arguments @('--build', $build, '-j', '2') -LogPath (Join-Path $logs "$config-build.txt")
+        # Keep diagnostics from all independent translation units; any error still fails the run.
+        Invoke-NgenNative -FilePath $cmake -Arguments @('--build', $build, '-j', '2', '--', '-k', '0') -LogPath (Join-Path $logs "$config-build.txt")
         $checks = {
             Invoke-NgenNative -FilePath $ctest -Arguments @('--test-dir', $build, '--show-only') -LogPath (Join-Path $logs "$config-test-list.txt")
             Invoke-NgenNative -FilePath $ctest -Arguments @('--test-dir', $build, '--output-on-failure', '--no-tests=error') -LogPath (Join-Path $logs "$config-tests.txt")

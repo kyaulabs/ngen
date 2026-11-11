@@ -1,0 +1,572 @@
+{
+  "native_failure_revision": "131bc550312afc5d89e49719b020ca9d44493b39",
+  "graphs": [
+    {
+      "configuration": "demo-debug",
+      "ctests": 21,
+      "build": "passed",
+      "ctest": "passed"
+    },
+    {
+      "configuration": "demo-release",
+      "ctests": 21,
+      "build": "passed",
+      "ctest": "passed"
+    },
+    {
+      "configuration": "demo-asan",
+      "ctests": 21,
+      "build": "passed",
+      "ctest": "passed"
+    },
+    {
+      "configuration": "demo-gcc",
+      "ctests": 21,
+      "build": "passed",
+      "ctest": "passed"
+    },
+    {
+      "configuration": "inspector-debug",
+      "ctests": 12,
+      "build": "passed",
+      "ctest": "passed"
+    },
+    {
+      "configuration": "inspector-release",
+      "ctests": 12,
+      "build": "passed",
+      "ctest": "passed"
+    },
+    {
+      "configuration": "inspector-asan",
+      "ctests": 12,
+      "build": "passed",
+      "ctest": "passed"
+    },
+    {
+      "configuration": "inspector-gcc",
+      "ctests": 12,
+      "build": "passed",
+      "ctest": "passed"
+    },
+    {
+      "configuration": "scene-shipping",
+      "ctests": 11,
+      "build": "passed",
+      "ctest": "passed"
+    },
+    {
+      "configuration": "scene-no-shaders",
+      "ctests": 10,
+      "build": "passed",
+      "ctest": "passed"
+    }
+  ],
+  "ast": [
+    {
+      "configuration": "demo-debug",
+      "source": "engine/render/scene_draw.cpp",
+      "status": 0,
+      "scope": "complete actual native invocation; owned headers visible; no flags removed"
+    },
+    {
+      "configuration": "demo-debug",
+      "source": "apps/scene_workload/fixture.cpp",
+      "status": 0,
+      "scope": "complete actual native invocation; owned headers visible; no flags removed"
+    },
+    {
+      "configuration": "demo-debug",
+      "source": "engine/tools/ui.cpp",
+      "status": 0,
+      "scope": "complete actual native invocation; owned headers visible; no flags removed"
+    },
+    {
+      "configuration": "demo-debug",
+      "source": "apps/scene_workload/main.cpp",
+      "status": 0,
+      "scope": "complete actual native invocation; owned headers visible; no flags removed"
+    },
+    {
+      "configuration": "demo-debug",
+      "source": "apps/inspector_probe/main.cpp",
+      "status": 0,
+      "scope": "complete actual native invocation; owned headers visible; no flags removed"
+    },
+    {
+      "configuration": "demo-debug",
+      "source": "apps/scene_probe/main.cpp",
+      "status": 0,
+      "scope": "complete actual native invocation; owned headers visible; no flags removed"
+    },
+    {
+      "configuration": "demo-debug",
+      "source": "apps/scene_probe/draw.cpp",
+      "status": 0,
+      "scope": "complete actual native invocation; owned headers visible; no flags removed"
+    },
+    {
+      "configuration": "demo-debug",
+      "source": "apps/flight_demo/preset.cpp",
+      "status": 0,
+      "scope": "complete actual native invocation; owned headers visible; no flags removed"
+    },
+    {
+      "configuration": "demo-debug",
+      "source": "apps/flight_demo/view.cpp",
+      "status": 0,
+      "scope": "complete actual native invocation; owned headers visible; no flags removed"
+    },
+    {
+      "configuration": "demo-debug",
+      "source": "apps/flight_demo/main.cpp",
+      "status": 0,
+      "scope": "complete actual native invocation; owned headers visible; no flags removed"
+    },
+    {
+      "configuration": "demo-debug",
+      "source": "apps/flight_demo/app.cpp",
+      "status": 0,
+      "scope": "complete actual native invocation; owned headers visible; no flags removed"
+    },
+    {
+      "configuration": "demo-debug",
+      "source": "tests/flight_scene.cpp",
+      "status": 0,
+      "scope": "complete actual native invocation; owned headers visible; no flags removed"
+    },
+    {
+      "configuration": "demo-debug",
+      "source": "tests/workload.cpp",
+      "status": 0,
+      "scope": "complete actual native invocation; owned headers visible; no flags removed"
+    },
+    {
+      "configuration": "demo-release",
+      "source": "engine/render/scene_draw.cpp",
+      "status": 0,
+      "scope": "complete actual native invocation; owned headers visible; no flags removed"
+    },
+    {
+      "configuration": "demo-release",
+      "source": "apps/scene_workload/fixture.cpp",
+      "status": 0,
+      "scope": "complete actual native invocation; owned headers visible; no flags removed"
+    },
+    {
+      "configuration": "demo-release",
+      "source": "engine/tools/ui.cpp",
+      "status": 0,
+      "scope": "complete actual native invocation; owned headers visible; no flags removed"
+    },
+    {
+      "configuration": "demo-release",
+      "source": "apps/scene_workload/main.cpp",
+      "status": 0,
+      "scope": "complete actual native invocation; owned headers visible; no flags removed"
+    },
+    {
+      "configuration": "demo-release",
+      "source": "apps/inspector_probe/main.cpp",
+      "status": 0,
+      "scope": "complete actual native invocation; owned headers visible; no flags removed"
+    },
+    {
+      "configuration": "demo-release",
+      "source": "apps/scene_probe/main.cpp",
+      "status": 0,
+      "scope": "complete actual native invocation; owned headers visible; no flags removed"
+    },
+    {
+      "configuration": "demo-release",
+      "source": "apps/scene_probe/draw.cpp",
+      "status": 0,
+      "scope": "complete actual native invocation; owned headers visible; no flags removed"
+    },
+    {
+      "configuration": "demo-release",
+      "source": "apps/flight_demo/preset.cpp",
+      "status": 0,
+      "scope": "complete actual native invocation; owned headers visible; no flags removed"
+    },
+    {
+      "configuration": "demo-release",
+      "source": "apps/flight_demo/view.cpp",
+      "status": 0,
+      "scope": "complete actual native invocation; owned headers visible; no flags removed"
+    },
+    {
+      "configuration": "demo-release",
+      "source": "apps/flight_demo/main.cpp",
+      "status": 0,
+      "scope": "complete actual native invocation; owned headers visible; no flags removed"
+    },
+    {
+      "configuration": "demo-release",
+      "source": "apps/flight_demo/app.cpp",
+      "status": 0,
+      "scope": "complete actual native invocation; owned headers visible; no flags removed"
+    },
+    {
+      "configuration": "demo-release",
+      "source": "tests/flight_scene.cpp",
+      "status": 0,
+      "scope": "complete actual native invocation; owned headers visible; no flags removed"
+    },
+    {
+      "configuration": "demo-release",
+      "source": "tests/workload.cpp",
+      "status": 0,
+      "scope": "complete actual native invocation; owned headers visible; no flags removed"
+    },
+    {
+      "configuration": "demo-asan",
+      "source": "engine/render/scene_draw.cpp",
+      "status": 0,
+      "scope": "complete actual native invocation; owned headers visible; no flags removed"
+    },
+    {
+      "configuration": "demo-asan",
+      "source": "apps/scene_workload/fixture.cpp",
+      "status": 0,
+      "scope": "complete actual native invocation; owned headers visible; no flags removed"
+    },
+    {
+      "configuration": "demo-asan",
+      "source": "engine/tools/ui.cpp",
+      "status": 0,
+      "scope": "complete actual native invocation; owned headers visible; no flags removed"
+    },
+    {
+      "configuration": "demo-asan",
+      "source": "apps/scene_workload/main.cpp",
+      "status": 0,
+      "scope": "complete actual native invocation; owned headers visible; no flags removed"
+    },
+    {
+      "configuration": "demo-asan",
+      "source": "apps/inspector_probe/main.cpp",
+      "status": 0,
+      "scope": "complete actual native invocation; owned headers visible; no flags removed"
+    },
+    {
+      "configuration": "demo-asan",
+      "source": "apps/scene_probe/main.cpp",
+      "status": 0,
+      "scope": "complete actual native invocation; owned headers visible; no flags removed"
+    },
+    {
+      "configuration": "demo-asan",
+      "source": "apps/scene_probe/draw.cpp",
+      "status": 0,
+      "scope": "complete actual native invocation; owned headers visible; no flags removed"
+    },
+    {
+      "configuration": "demo-asan",
+      "source": "apps/flight_demo/preset.cpp",
+      "status": 0,
+      "scope": "complete actual native invocation; owned headers visible; no flags removed"
+    },
+    {
+      "configuration": "demo-asan",
+      "source": "apps/flight_demo/view.cpp",
+      "status": 0,
+      "scope": "complete actual native invocation; owned headers visible; no flags removed"
+    },
+    {
+      "configuration": "demo-asan",
+      "source": "apps/flight_demo/main.cpp",
+      "status": 0,
+      "scope": "complete actual native invocation; owned headers visible; no flags removed"
+    },
+    {
+      "configuration": "demo-asan",
+      "source": "apps/flight_demo/app.cpp",
+      "status": 0,
+      "scope": "complete actual native invocation; owned headers visible; no flags removed"
+    },
+    {
+      "configuration": "demo-asan",
+      "source": "tests/flight_scene.cpp",
+      "status": 0,
+      "scope": "complete actual native invocation; owned headers visible; no flags removed"
+    },
+    {
+      "configuration": "demo-asan",
+      "source": "tests/workload.cpp",
+      "status": 0,
+      "scope": "complete actual native invocation; owned headers visible; no flags removed"
+    },
+    {
+      "configuration": "inspector-debug",
+      "source": "engine/render/scene_draw.cpp",
+      "status": 0,
+      "scope": "complete actual native invocation; owned headers visible; no flags removed"
+    },
+    {
+      "configuration": "inspector-debug",
+      "source": "apps/scene_workload/fixture.cpp",
+      "status": 0,
+      "scope": "complete actual native invocation; owned headers visible; no flags removed"
+    },
+    {
+      "configuration": "inspector-debug",
+      "source": "engine/tools/ui.cpp",
+      "status": 0,
+      "scope": "complete actual native invocation; owned headers visible; no flags removed"
+    },
+    {
+      "configuration": "inspector-debug",
+      "source": "apps/scene_workload/main.cpp",
+      "status": 0,
+      "scope": "complete actual native invocation; owned headers visible; no flags removed"
+    },
+    {
+      "configuration": "inspector-debug",
+      "source": "apps/inspector_probe/main.cpp",
+      "status": 0,
+      "scope": "complete actual native invocation; owned headers visible; no flags removed"
+    },
+    {
+      "configuration": "inspector-debug",
+      "source": "apps/scene_probe/main.cpp",
+      "status": 0,
+      "scope": "complete actual native invocation; owned headers visible; no flags removed"
+    },
+    {
+      "configuration": "inspector-debug",
+      "source": "apps/scene_probe/draw.cpp",
+      "status": 0,
+      "scope": "complete actual native invocation; owned headers visible; no flags removed"
+    },
+    {
+      "configuration": "inspector-debug",
+      "source": "tests/workload.cpp",
+      "status": 0,
+      "scope": "complete actual native invocation; owned headers visible; no flags removed"
+    },
+    {
+      "configuration": "inspector-release",
+      "source": "engine/render/scene_draw.cpp",
+      "status": 0,
+      "scope": "complete actual native invocation; owned headers visible; no flags removed"
+    },
+    {
+      "configuration": "inspector-release",
+      "source": "apps/scene_workload/fixture.cpp",
+      "status": 0,
+      "scope": "complete actual native invocation; owned headers visible; no flags removed"
+    },
+    {
+      "configuration": "inspector-release",
+      "source": "engine/tools/ui.cpp",
+      "status": 0,
+      "scope": "complete actual native invocation; owned headers visible; no flags removed"
+    },
+    {
+      "configuration": "inspector-release",
+      "source": "apps/scene_workload/main.cpp",
+      "status": 0,
+      "scope": "complete actual native invocation; owned headers visible; no flags removed"
+    },
+    {
+      "configuration": "inspector-release",
+      "source": "apps/inspector_probe/main.cpp",
+      "status": 0,
+      "scope": "complete actual native invocation; owned headers visible; no flags removed"
+    },
+    {
+      "configuration": "inspector-release",
+      "source": "apps/scene_probe/main.cpp",
+      "status": 0,
+      "scope": "complete actual native invocation; owned headers visible; no flags removed"
+    },
+    {
+      "configuration": "inspector-release",
+      "source": "apps/scene_probe/draw.cpp",
+      "status": 0,
+      "scope": "complete actual native invocation; owned headers visible; no flags removed"
+    },
+    {
+      "configuration": "inspector-release",
+      "source": "tests/workload.cpp",
+      "status": 0,
+      "scope": "complete actual native invocation; owned headers visible; no flags removed"
+    },
+    {
+      "configuration": "inspector-asan",
+      "source": "engine/render/scene_draw.cpp",
+      "status": 0,
+      "scope": "complete actual native invocation; owned headers visible; no flags removed"
+    },
+    {
+      "configuration": "inspector-asan",
+      "source": "apps/scene_workload/fixture.cpp",
+      "status": 0,
+      "scope": "complete actual native invocation; owned headers visible; no flags removed"
+    },
+    {
+      "configuration": "inspector-asan",
+      "source": "engine/tools/ui.cpp",
+      "status": 0,
+      "scope": "complete actual native invocation; owned headers visible; no flags removed"
+    },
+    {
+      "configuration": "inspector-asan",
+      "source": "apps/scene_workload/main.cpp",
+      "status": 0,
+      "scope": "complete actual native invocation; owned headers visible; no flags removed"
+    },
+    {
+      "configuration": "inspector-asan",
+      "source": "apps/inspector_probe/main.cpp",
+      "status": 0,
+      "scope": "complete actual native invocation; owned headers visible; no flags removed"
+    },
+    {
+      "configuration": "inspector-asan",
+      "source": "apps/scene_probe/main.cpp",
+      "status": 0,
+      "scope": "complete actual native invocation; owned headers visible; no flags removed"
+    },
+    {
+      "configuration": "inspector-asan",
+      "source": "apps/scene_probe/draw.cpp",
+      "status": 0,
+      "scope": "complete actual native invocation; owned headers visible; no flags removed"
+    },
+    {
+      "configuration": "inspector-asan",
+      "source": "tests/workload.cpp",
+      "status": 0,
+      "scope": "complete actual native invocation; owned headers visible; no flags removed"
+    },
+    {
+      "configuration": "scene-shipping",
+      "source": "engine/render/scene_draw.cpp",
+      "status": 0,
+      "scope": "complete actual native invocation; owned headers visible; no flags removed"
+    },
+    {
+      "configuration": "scene-shipping",
+      "source": "apps/scene_workload/fixture.cpp",
+      "status": 0,
+      "scope": "complete actual native invocation; owned headers visible; no flags removed"
+    },
+    {
+      "configuration": "scene-shipping",
+      "source": "apps/scene_workload/main.cpp",
+      "status": 0,
+      "scope": "complete actual native invocation; owned headers visible; no flags removed"
+    },
+    {
+      "configuration": "scene-shipping",
+      "source": "apps/scene_probe/main.cpp",
+      "status": 0,
+      "scope": "complete actual native invocation; owned headers visible; no flags removed"
+    },
+    {
+      "configuration": "scene-shipping",
+      "source": "apps/scene_probe/draw.cpp",
+      "status": 0,
+      "scope": "complete actual native invocation; owned headers visible; no flags removed"
+    },
+    {
+      "configuration": "scene-shipping",
+      "source": "tests/workload.cpp",
+      "status": 0,
+      "scope": "complete actual native invocation; owned headers visible; no flags removed"
+    },
+    {
+      "configuration": "scene-no-shaders",
+      "source": "engine/render/scene_draw.cpp",
+      "status": 0,
+      "scope": "complete actual native invocation; owned headers visible; no flags removed"
+    },
+    {
+      "configuration": "scene-no-shaders",
+      "source": "apps/scene_workload/fixture.cpp",
+      "status": 0,
+      "scope": "complete actual native invocation; owned headers visible; no flags removed"
+    },
+    {
+      "configuration": "scene-no-shaders",
+      "source": "apps/scene_probe/main.cpp",
+      "status": 0,
+      "scope": "complete actual native invocation; owned headers visible; no flags removed"
+    },
+    {
+      "configuration": "scene-no-shaders",
+      "source": "apps/scene_probe/draw.cpp",
+      "status": 0,
+      "scope": "complete actual native invocation; owned headers visible; no flags removed"
+    },
+    {
+      "configuration": "scene-no-shaders",
+      "source": "tests/workload.cpp",
+      "status": 0,
+      "scope": "complete actual native invocation; owned headers visible; no flags removed"
+    }
+  ],
+  "native": [
+    {
+      "configuration": "inspector-debug",
+      "status": 0,
+      "stderr_bytes": 0,
+      "markers": true
+    },
+    {
+      "configuration": "inspector-release",
+      "status": 0,
+      "stderr_bytes": 0,
+      "markers": true
+    },
+    {
+      "configuration": "inspector-asan",
+      "status": 0,
+      "stderr_bytes": 0,
+      "markers": true
+    },
+    {
+      "configuration": "inspector-gcc",
+      "status": 0,
+      "stderr_bytes": 0,
+      "markers": true
+    },
+    {
+      "configuration": "demo-debug",
+      "status": 0,
+      "stderr_bytes": 0,
+      "checks": true,
+      "markers": true
+    },
+    {
+      "configuration": "demo-release",
+      "status": 0,
+      "stderr_bytes": 0,
+      "checks": true,
+      "markers": true
+    },
+    {
+      "configuration": "demo-asan",
+      "status": 0,
+      "stderr_bytes": 0,
+      "checks": true,
+      "markers": true
+    },
+    {
+      "configuration": "demo-gcc",
+      "status": 0,
+      "stderr_bytes": 0,
+      "checks": true,
+      "markers": true
+    }
+  ],
+  "powershell_suites": [
+    "original: passed",
+    "flight: passed"
+  ],
+  "ninja_failure_propagation": "Both independent failing targets execute and build returns nonzero.",
+  "msvc_rerun": "required",
+  "review": "Same-session only; no additional actionable defect identified; actual Windows compilation remains unverified."
+}
