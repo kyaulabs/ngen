@@ -1,0 +1,34 @@
+Test project /home/kyau/projects/kyaulabs/ngen/build/flight-debug
+    Start 1: physics
+1/1 Test #1: physics ..........................***Failed    0.03 sec
+Randomness seeded to: 2273433726
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+physics_tests is a Catch2 v3.16.0 host application.
+Run with -? for options
+
+-------------------------------------------------------------------------------
+unsupported impulses are rejected before the native velocity clamps can lose
+force
+-------------------------------------------------------------------------------
+/home/kyau/projects/kyaulabs/ngen/tests/physics.cpp:164
+...............................................................................
+
+/home/kyau/projects/kyaulabs/ngen/tests/physics.cpp:168: FAILED:
+  REQUIRE( std::holds_alternative<Error>(force) )
+with expansion:
+  false
+
+===============================================================================
+test cases:    8 |    7 passed | 1 failed
+assertions: 2235 | 2234 passed | 1 failed
+
+
+
+0% tests passed, 1 tests failed out of 1
+
+Total Test time (real) =   0.03 sec
+
+The following tests FAILED:
+	  1 - physics (Failed)
+Errors while running CTest

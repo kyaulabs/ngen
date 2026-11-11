@@ -9,12 +9,17 @@ asset_tools=false
 assets=false
 scene=false
 inspector=false
+physics=false
 case "$preset" in
   debug) ;;
   asan) profile=linux-asan ;;
   tsan) profile=linux-tsan ;;
   release) type=Release ;;
   gcc) profile=linux-gcc ;;
+  flight-debug) physics=true ;;
+  flight-release) physics=true; type=Release ;;
+  flight-asan) physics=true; profile=linux-asan ;;
+  flight-gcc) physics=true; profile=linux-gcc ;;
   renderer-debug) renderer=true ;;
   renderer-release) renderer=true; type=Release ;;
   renderer-asan) renderer=true; profile=linux-asan ;;
@@ -31,7 +36,7 @@ case "$preset" in
   inspector-release) scene=true; inspector=true; type=Release ;;
   inspector-asan) scene=true; inspector=true; profile=linux-asan ;;
   inspector-gcc) scene=true; inspector=true; profile=linux-gcc ;;
-  *) echo "Usage: sh tools/prepare.sh {debug|release|gcc|asan|tsan|renderer-debug|renderer-release|renderer-asan|asset-debug|asset-release|asset-asan|asset-gcc|asset-runtime-debug|scene-debug|scene-release|scene-asan|scene-gcc|inspector-debug|inspector-release|inspector-asan|inspector-gcc} [Conan install options]" >&2; exit 2 ;;
+  *) echo "Usage: sh tools/prepare.sh {debug|release|gcc|asan|tsan|flight-debug|flight-release|flight-asan|flight-gcc|renderer-debug|renderer-release|renderer-asan|asset-debug|asset-release|asset-asan|asset-gcc|asset-runtime-debug|scene-debug|scene-release|scene-asan|scene-gcc|inspector-debug|inspector-release|inspector-asan|inspector-gcc} [Conan install options]" >&2; exit 2 ;;
 esac
 [ "$(cmake --version | head -1)" = 'cmake version 4.4.5' ] || { echo 'Expected CMake 4.4.5' >&2; exit 2; }
 [ "$(ninja --version)" = '1.13.2' ] || { echo 'Expected Ninja 1.13.2' >&2; exit 2; }
@@ -42,7 +47,10 @@ else
 fi
 command -v conan >/dev/null || { echo 'Conan 2.34.0 required; install it in a virtualenv and add its bin directory to PATH.' >&2; exit 2; }
 [ "$(conan --version)" = 'Conan version 2.34.0' ] || { echo 'Expected Conan 2.34.0' >&2; exit 2; }
-if [ "$scene" = true ]; then
+if [ "$physics" = true ]; then
+  conan export recipes/joltphysics --version=5.6.0 --user=ngen --channel=headless-double
+  conan install . -pr:h "profiles/$profile" -pr:b profiles/linux-clang -s:h "build_type=$type" -s:b build_type=Release -o '&:physics=True' --lockfile conan-physics.lock --build=missing -c tools.build:jobs=2 -of "build/$preset" "$@"
+elif [ "$scene" = true ]; then
   lockfile=conan-scene.lock
   inspector_option=False
   if [ "$inspector" = true ]; then

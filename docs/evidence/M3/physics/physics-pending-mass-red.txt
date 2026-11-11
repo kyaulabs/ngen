@@ -1,0 +1,34 @@
+Test project /home/kyau/projects/kyaulabs/ngen/build/flight-debug
+    Start 1: physics
+1/1 Test #1: physics ..........................***Failed    0.05 sec
+Randomness seeded to: 1758551903
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+physics_tests is a Catch2 v3.16.0 host application.
+Run with -? for options
+
+-------------------------------------------------------------------------------
+a mass change cannot make already accepted force exceed the native motion
+envelope
+-------------------------------------------------------------------------------
+/home/kyau/projects/kyaulabs/ngen/tests/physics.cpp:180
+...............................................................................
+
+/home/kyau/projects/kyaulabs/ngen/tests/physics.cpp:185: FAILED:
+  REQUIRE( std::holds_alternative<Error>(changed) )
+with expansion:
+  false
+
+===============================================================================
+test cases:    9 |    8 passed | 1 failed
+assertions: 2244 | 2243 passed | 1 failed
+
+
+
+0% tests passed, 1 tests failed out of 1
+
+Total Test time (real) =   0.05 sec
+
+The following tests FAILED:
+	  1 - physics (Failed)
+Errors while running CTest
