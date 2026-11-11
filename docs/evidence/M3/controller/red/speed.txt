@@ -1,0 +1,33 @@
+Test project /home/kyau/projects/kyaulabs/ngen/build/flight-debug
+    Start 2: flight
+1/1 Test #2: flight ...........................***Failed    0.02 sec
+Randomness seeded to: 3952948755
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+flight_tests is a Catch2 v3.16.0 host application.
+Run with -? for options
+
+-------------------------------------------------------------------------------
+the direct speed limit limits applied force instead of resetting velocity
+-------------------------------------------------------------------------------
+/home/kyau/projects/kyaulabs/ngen/tests/flight.cpp:84
+...............................................................................
+
+/home/kyau/projects/kyaulabs/ngen/tests/flight.cpp:95: FAILED:
+  REQUIRE( state.body.velocity_mps[0] <= 10.0001F )
+with expansion:
+  10.100002289f <= 10.000100136f
+
+===============================================================================
+test cases:   4 |   3 passed | 1 failed
+assertions: 769 | 768 passed | 1 failed
+
+
+
+0% tests passed, 1 tests failed out of 1
+
+Total Test time (real) =   0.02 sec
+
+The following tests FAILED:
+	  2 - flight (Failed)
+Errors while running CTest

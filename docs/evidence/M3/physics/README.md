@@ -61,8 +61,10 @@ already-validated box directly into the settings' single local shape owner;
 native success retains it and failure releases it. No analyzer, warning or
 lifetime check is disabled. An additional public invalid-extent characterization
 proves validation remains before construction. All11 physics cases pass in the
-four native configurations and six Clang23 invocations pass; hosted18 rerun is
-reported separately, not presumed from local analysis.
+four native configurations and six Clang23 invocations pass. Exact-head
+`a8918ef` [hosted CI42935201684](https://github.com/kyaulabs/ngen/actions/runs/42935201684)
+passes4/4, including the original Clang18 check in Debug/Release/ASan. This closes
+the hosted ownership diagnostic, not the remaining M3 demonstration gates.
 
 Current scope does not establish Windows compatibility, actual selected-hull
 contact fidelity, cross-platform whole-physics bitwise replay, M4 rebasing or

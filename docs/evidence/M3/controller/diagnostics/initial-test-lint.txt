@@ -1,0 +1,22 @@
+44 warnings generated.
+/home/kyau/projects/kyaulabs/ngen/tests/flight.cpp:10:34: error: 2 adjacent parameters of 'body_force' of similar type ('const Snapshot &') are easily swapped by mistake [bugprone-easily-swappable-parameters,-warnings-as-errors]
+   10 | std::array<double, 3> body_force(const Snapshot &before, const Snapshot &after) {
+      |                                  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/kyau/projects/kyaulabs/ngen/tests/flight.cpp:10:50: note: the first parameter in the range is 'before'
+   10 | std::array<double, 3> body_force(const Snapshot &before, const Snapshot &after) {
+      |                                                  ^~~~~~
+/home/kyau/projects/kyaulabs/ngen/tests/flight.cpp:10:74: note: the last parameter in the range is 'after'
+   10 | std::array<double, 3> body_force(const Snapshot &before, const Snapshot &after) {
+      |                                                                          ^~~~~
+/home/kyau/projects/kyaulabs/ngen/tests/flight.cpp:333:56: error: The value '255' provided to the cast expression is not in the valid range of values for 'Mode' [clang-analyzer-optin.core.EnumCastOutOfRange,-warnings-as-errors]
+  333 |           Intent{Pilot{{1.01F, 0, 0}}}, Intent{SetMode{static_cast<Mode>(255)}},
+      |                                                        ^~~~~~~~~~~~~~~~~~~~~~
+/home/kyau/projects/kyaulabs/ngen/game/flight/flight.hpp:9:12: note: enum declared here
+    9 | enum class Mode : std::uint8_t { tactical, direct };
+      | ~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/kyau/projects/kyaulabs/ngen/tests/flight.cpp:333:56: note: The value '255' provided to the cast expression is not in the valid range of values for 'Mode'
+  333 |           Intent{Pilot{{1.01F, 0, 0}}}, Intent{SetMode{static_cast<Mode>(255)}},
+      |                                                        ^~~~~~~~~~~~~~~~~~~~~~
+Suppressed 145 warnings (42 in non-user code, 103 NOLINT).
+Use -header-filter=.* or leave it as default to display errors from all non-system headers. Use -system-headers to display errors from system headers as well.
+2 warnings treated as errors

@@ -74,20 +74,26 @@ VM result without its display/access validation. Correctness/validation and clea
 timing remain separate; report actual allocation/memory scope. Audio/video and
 owner feedback are real completion gates, not substituted by screenshots.
 
-Current implementation checkpoint: the separately identified headless-double
-Jolt5.6.0 package and bounded128-body local adapter build on Clang debug/release,
-ASan+UBSan and GCC. Ten public physics cases cover force/mass, owned precision,
-coast/brake, contacts, torque, admission/foreign/thread/capacity boundaries and
-rejected impulses/mass changes that would trigger native velocity clipping.
-Force/mass/impulse regressions have actual behavioral Reds/Greens. No SDL/Vulkan
-appears in the headless binary dependencies. The initial package include-order
-failure, concurrent Conan-export race and ASan PIE/shadow startup failure are
-setup failures, not behavioral Reds; they remain recorded. Serialized preparation
-and the existing host `-no-pie` ASan link configuration pass with sanitizers intact.
+Current checkpoint: the headless-double Jolt5.6.0 package and bounded128-body
+adapter pass11 public physics cases on Clang debug/release, ASan+UBSan and GCC.
+The Clang18 intrusive-reference diagnostic is resolved by simplifying shape
+ownership without disabling checks; exact-head `a8918ef` hosted CI passes4/4.
+Initial include-order/export-race/ASan PIE failures remain scoped as setup failures.
 
-Next: finish same-session verification/review of this adapter slice, then build
-the shared direct/tactical flight controller, bounded command/snapshot replay and
-camera contracts. These backend tests do not complete M3-A or the demo. All five slices, native
-verification, same-session review, signed commits and normal reviewed integration
-must finish before M3 is declared complete. No mandatory tracker workflow or
-per-command reapproval is introduced.
+The shared controller now passes16 public cases for direct force/attitude,
+coast/brake, feasible force-based speed limiting, tactical arrival/heading and
+both orbit directions, co-moving mass, atomic orbit/mass rejection, copied and
+bounded next-tick commands, owner-thread rejection, reset generations, mode
+changes under thrust/spin and same-build cadence-independent replay. Four complete
+headless graphs pass6/6 each, with final affected test reruns and twelve complete
+Clang command analyses. Native GCC passes; GCC AST flags remain unsupported by
+Clang tooling and are not stripped. No SDL/Vulkan appears in either headless binary.
+See [controller evidence](../evidence/M3/controller/README.md) for exact scope.
+
+Next: implement the authored mounted first-person/tactical camera contracts, then
+the playable accepted-asset renderer bridge, bounded audio and offline delivery.
+Headless tests do not complete M3-A/B presentation or the demo: traces, collision
+preset, actual Windows compatibility, warmed benchmarks, recording and owner
+control-feel feedback remain. All five slices, native verification, same-session
+review, signed commits and normal reviewed integration must finish before M3 is
+complete. No mandatory tracker workflow or per-command reapproval is introduced.

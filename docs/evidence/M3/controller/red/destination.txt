@@ -1,0 +1,33 @@
+Test project /home/kyau/projects/kyaulabs/ngen/build/flight-debug
+    Start 2: flight
+1/1 Test #2: flight ...........................***Failed    0.03 sec
+Randomness seeded to: 2613796733
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+flight_tests is a Catch2 v3.16.0 host application.
+Run with -? for options
+
+-------------------------------------------------------------------------------
+a tactical destination converges through the same bounded physical force model
+-------------------------------------------------------------------------------
+/home/kyau/projects/kyaulabs/ngen/tests/flight.cpp:108
+...............................................................................
+
+/home/kyau/projects/kyaulabs/ngen/tests/flight.cpp:113: FAILED:
+  REQUIRE( std::holds_alternative<std::monostate>( flight->submit({Tick{1}, 1, flight->snapshot().entity, Destination{{100, 0, 0}}})) )
+with expansion:
+  false
+
+===============================================================================
+test cases:    5 |    4 passed | 1 failed
+assertions: 1774 | 1773 passed | 1 failed
+
+
+
+0% tests passed, 1 tests failed out of 1
+
+Total Test time (real) =   0.03 sec
+
+The following tests FAILED:
+	  2 - flight (Failed)
+Errors while running CTest

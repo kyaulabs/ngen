@@ -1,0 +1,34 @@
+Test project /home/kyau/projects/kyaulabs/ngen/build/flight-debug
+    Start 2: flight
+1/1 Test #2: flight ...........................***Failed    1.02 sec
+Randomness seeded to: 3074204338
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+flight_tests is a Catch2 v3.16.0 host application.
+Run with -? for options
+
+-------------------------------------------------------------------------------
+a jointly infeasible orbit and mass batch changes neither native nor published
+state
+-------------------------------------------------------------------------------
+/home/kyau/projects/kyaulabs/ngen/tests/flight.cpp:220
+...............................................................................
+
+/home/kyau/projects/kyaulabs/ngen/tests/flight.cpp:228: FAILED:
+  REQUIRE( std::holds_alternative<Error>(rejected) )
+with expansion:
+  false
+
+===============================================================================
+test cases:     9 |     8 passed | 1 failed
+assertions: 87119 | 87118 passed | 1 failed
+
+
+
+0% tests passed, 1 tests failed out of 1
+
+Total Test time (real) =   1.03 sec
+
+The following tests FAILED:
+	  2 - flight (Failed)
+Errors while running CTest

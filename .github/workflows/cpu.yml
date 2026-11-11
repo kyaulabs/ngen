@@ -89,12 +89,15 @@ jobs:
           cmake --build --preset "flight-$PRESET"
           ctest --preset "flight-$PRESET" --show-only
           sudo unshare --net -- runuser -u "$(id -un)" -- env -u DISPLAY -u WAYLAND_DISPLAY "$(command -v ctest)" --preset "flight-$PRESET"
-          clang-tidy-18 -p "build/flight-$PRESET" engine/physics/world.cpp tests/physics.cpp
-          readelf -d "build/flight-$PRESET/physics_tests" > "build/flight-$PRESET/headless-dynamic.txt"
-          if grep -Ei 'NEEDED.*(SDL|vulkan|libX11|wayland|libGL\.|libEGL|dxgi|d3d)' "build/flight-$PRESET/headless-dynamic.txt"; then
-            echo 'Unexpected presentation dependency in headless physics' >&2
-            exit 1
-          fi
+          clang-tidy-18 -p "build/flight-$PRESET" engine/physics/world.cpp tests/physics.cpp game/flight/flight.cpp tests/flight.cpp
+          for binary in physics_tests flight_tests; do
+            dynamic="build/flight-$PRESET/$binary-dynamic.txt"
+            readelf -d "build/flight-$PRESET/$binary" > "$dynamic"
+            if grep -Ei 'NEEDED.*(SDL|vulkan|libX11|wayland|libGL\.|libEGL|dxgi|d3d)' "$dynamic"; then
+              echo 'Unexpected presentation dependency in headless flight' >&2
+              exit 1
+            fi
+          done
       - name: Build renderer and checked scene contracts with offline shaders
         if: matrix.preset == 'debug' || matrix.preset == 'asan'
         env:

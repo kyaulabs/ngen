@@ -1,0 +1,59 @@
+=== flight-debug: /home/kyau/projects/kyaulabs/ngen/engine/physics/world.cpp ===
+73 warnings generated.
+Suppressed 73 warnings (73 in non-user code).
+Use -header-filter=.* or leave it as default to display errors from all non-system headers. Use -system-headers to display errors from system headers as well.
+
+=== flight-debug: /home/kyau/projects/kyaulabs/ngen/game/flight/flight.cpp ===
+67 warnings generated.
+Suppressed 67 warnings (67 in non-user code).
+Use -header-filter=.* or leave it as default to display errors from all non-system headers. Use -system-headers to display errors from system headers as well.
+
+=== flight-debug: /home/kyau/projects/kyaulabs/ngen/tests/physics.cpp ===
+42 warnings generated.
+Suppressed 89 warnings (42 in non-user code, 47 NOLINT).
+Use -header-filter=.* or leave it as default to display errors from all non-system headers. Use -system-headers to display errors from system headers as well.
+
+=== flight-debug: /home/kyau/projects/kyaulabs/ngen/tests/flight.cpp ===
+42 warnings generated.
+Suppressed 145 warnings (42 in non-user code, 103 NOLINT).
+Use -header-filter=.* or leave it as default to display errors from all non-system headers. Use -system-headers to display errors from system headers as well.
+
+=== flight-release: /home/kyau/projects/kyaulabs/ngen/engine/physics/world.cpp ===
+72 warnings generated.
+Suppressed 72 warnings (72 in non-user code).
+Use -header-filter=.* or leave it as default to display errors from all non-system headers. Use -system-headers to display errors from system headers as well.
+
+=== flight-release: /home/kyau/projects/kyaulabs/ngen/game/flight/flight.cpp ===
+66 warnings generated.
+Suppressed 66 warnings (66 in non-user code).
+Use -header-filter=.* or leave it as default to display errors from all non-system headers. Use -system-headers to display errors from system headers as well.
+
+=== flight-release: /home/kyau/projects/kyaulabs/ngen/tests/physics.cpp ===
+41 warnings generated.
+Suppressed 88 warnings (41 in non-user code, 47 NOLINT).
+Use -header-filter=.* or leave it as default to display errors from all non-system headers. Use -system-headers to display errors from system headers as well.
+
+=== flight-release: /home/kyau/projects/kyaulabs/ngen/tests/flight.cpp ===
+41 warnings generated.
+Suppressed 144 warnings (41 in non-user code, 103 NOLINT).
+Use -header-filter=.* or leave it as default to display errors from all non-system headers. Use -system-headers to display errors from system headers as well.
+
+=== flight-asan: /home/kyau/projects/kyaulabs/ngen/engine/physics/world.cpp ===
+73 warnings generated.
+Suppressed 73 warnings (73 in non-user code).
+Use -header-filter=.* or leave it as default to display errors from all non-system headers. Use -system-headers to display errors from system headers as well.
+
+=== flight-asan: /home/kyau/projects/kyaulabs/ngen/game/flight/flight.cpp ===
+67 warnings generated.
+Suppressed 67 warnings (67 in non-user code).
+Use -header-filter=.* or leave it as default to display errors from all non-system headers. Use -system-headers to display errors from system headers as well.
+
+=== flight-asan: /home/kyau/projects/kyaulabs/ngen/tests/physics.cpp ===
+42 warnings generated.
+Suppressed 89 warnings (42 in non-user code, 47 NOLINT).
+Use -header-filter=.* or leave it as default to display errors from all non-system headers. Use -system-headers to display errors from system headers as well.
+
+=== flight-asan: /home/kyau/projects/kyaulabs/ngen/tests/flight.cpp ===
+42 warnings generated.
+Suppressed 145 warnings (42 in non-user code, 103 NOLINT).
+Use -header-filter=.* or leave it as default to display errors from all non-system headers. Use -system-headers to display errors from system headers as well.

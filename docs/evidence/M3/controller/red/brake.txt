@@ -1,0 +1,33 @@
+Test project /home/kyau/projects/kyaulabs/ngen/build/flight-debug
+    Start 2: flight
+1/1 Test #2: flight ...........................***Failed    0.01 sec
+Randomness seeded to: 3654958995
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+flight_tests is a Catch2 v3.16.0 host application.
+Run with -? for options
+
+-------------------------------------------------------------------------------
+direct input release coasts and the explicit brake uses bounded opposing thrust
+-------------------------------------------------------------------------------
+/home/kyau/projects/kyaulabs/ngen/tests/flight.cpp:30
+...............................................................................
+
+/home/kyau/projects/kyaulabs/ngen/tests/flight.cpp:48: FAILED:
+  REQUIRE( first.force_newtons[0] < 0 )
+with expansion:
+  0.0f < 0
+
+===============================================================================
+test cases:   2 |   1 passed | 1 failed
+assertions: 197 | 196 passed | 1 failed
+
+
+
+0% tests passed, 1 tests failed out of 1
+
+Total Test time (real) =   0.02 sec
+
+The following tests FAILED:
+	  2 - flight (Failed)
+Errors while running CTest

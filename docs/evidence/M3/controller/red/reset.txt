@@ -1,0 +1,34 @@
+Test project /home/kyau/projects/kyaulabs/ngen/build/flight-debug
+    Start 2: flight
+1/1 Test #2: flight ...........................***Failed    1.04 sec
+Randomness seeded to: 1005128309
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+flight_tests is a Catch2 v3.16.0 host application.
+Run with -? for options
+
+-------------------------------------------------------------------------------
+reset replaces the physical scene and invalidates queued and stale-generation
+intents
+-------------------------------------------------------------------------------
+/home/kyau/projects/kyaulabs/ngen/tests/flight.cpp:290
+...............................................................................
+
+/home/kyau/projects/kyaulabs/ngen/tests/flight.cpp:304: FAILED:
+  REQUIRE( std::holds_alternative<Snapshot>(reset) )
+with expansion:
+  false
+
+===============================================================================
+test cases:    12 |    11 passed | 1 failed
+assertions: 87673 | 87672 passed | 1 failed
+
+
+
+0% tests passed, 1 tests failed out of 1
+
+Total Test time (real) =   1.04 sec
+
+The following tests FAILED:
+	  2 - flight (Failed)
+Errors while running CTest

@@ -1,0 +1,58 @@
+[
+  {
+    "configuration": "flight-debug",
+    "build": 0,
+    "selected": 6,
+    "tests": 0,
+    "selected_names": [
+      "physics",
+      "flight",
+      "ngen_tests",
+      "render_contract_tests",
+      "replay_serial",
+      "replay_workers"
+    ]
+  },
+  {
+    "configuration": "flight-release",
+    "build": 0,
+    "selected": 6,
+    "tests": 0,
+    "selected_names": [
+      "physics",
+      "flight",
+      "ngen_tests",
+      "render_contract_tests",
+      "replay_serial",
+      "replay_workers"
+    ]
+  },
+  {
+    "configuration": "flight-asan",
+    "build": 0,
+    "selected": 6,
+    "tests": 0,
+    "selected_names": [
+      "physics",
+      "flight",
+      "ngen_tests",
+      "render_contract_tests",
+      "replay_serial",
+      "replay_workers"
+    ]
+  },
+  {
+    "configuration": "flight-gcc",
+    "build": 0,
+    "selected": 6,
+    "tests": 0,
+    "selected_names": [
+      "physics",
+      "flight",
+      "ngen_tests",
+      "render_contract_tests",
+      "replay_serial",
+      "replay_workers"
+    ]
+  }
+]
