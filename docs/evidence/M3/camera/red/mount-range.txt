@@ -1,0 +1,34 @@
+Test project /home/kyau/projects/kyaulabs/ngen/build/flight-debug
+    Start 3: flight_camera
+1/1 Test #3: flight_camera ....................***Failed    0.00 sec
+Randomness seeded to: 1271479021
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+flight_camera_tests is a Catch2 v3.16.0 host application.
+Run with -? for options
+
+-------------------------------------------------------------------------------
+a presentation mount outside the admitted per-ship range cannot teleport the
+eye
+-------------------------------------------------------------------------------
+/home/kyau/projects/kyaulabs/ngen/tests/flight_camera.cpp:265
+...............................................................................
+
+/home/kyau/projects/kyaulabs/ngen/tests/flight_camera.cpp:272: FAILED:
+  REQUIRE( std::holds_alternative<Error>(result) )
+with expansion:
+  false
+
+===============================================================================
+test cases:  12 |  11 passed | 1 failed
+assertions: 180 | 179 passed | 1 failed
+
+
+
+0% tests passed, 1 tests failed out of 1
+
+Total Test time (real) =   0.00 sec
+
+The following tests FAILED:
+	  3 - flight_camera (Failed)
+Errors while running CTest

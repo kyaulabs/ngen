@@ -1,0 +1,56 @@
+[
+  {
+    "configuration": "flight-debug",
+    "native_command": {
+      "directory": "/home/kyau/projects/kyaulabs/ngen/build/flight-debug",
+      "command": "/bin/clang++ -DJPH_DOUBLE_PRECISION -DJPH_OBJECT_LAYER_BITS=16 -I/home/kyau/projects/kyaulabs/ngen/game -I/home/kyau/projects/kyaulabs/ngen/engine -isystem /home/kyau/.conan2/p/b/joltp58a1846f79ca4/p/include -m64 -stdlib=libstdc++ -g -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror @CMakeFiles/ngen_flight.dir/game/flight/camera.cpp.o.modmap -o CMakeFiles/ngen_flight.dir/game/flight/camera.cpp.o -c /home/kyau/projects/kyaulabs/ngen/game/flight/camera.cpp",
+      "file": "/home/kyau/projects/kyaulabs/ngen/game/flight/camera.cpp",
+      "output": "/home/kyau/projects/kyaulabs/ngen/build/flight-debug/CMakeFiles/ngen_flight.dir/game/flight/camera.cpp.o"
+    }
+  },
+  {
+    "configuration": "flight-debug",
+    "native_command": {
+      "directory": "/home/kyau/projects/kyaulabs/ngen/build/flight-debug",
+      "command": "/bin/clang++ -I/home/kyau/projects/kyaulabs/ngen/game -I/home/kyau/projects/kyaulabs/ngen/engine -isystem /home/kyau/.conan2/p/b/catch646a1245bf61b/p/include -m64 -stdlib=libstdc++ -g -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror @CMakeFiles/flight_camera_tests.dir/tests/flight_camera.cpp.o.modmap -o CMakeFiles/flight_camera_tests.dir/tests/flight_camera.cpp.o -c /home/kyau/projects/kyaulabs/ngen/tests/flight_camera.cpp",
+      "file": "/home/kyau/projects/kyaulabs/ngen/tests/flight_camera.cpp",
+      "output": "/home/kyau/projects/kyaulabs/ngen/build/flight-debug/CMakeFiles/flight_camera_tests.dir/tests/flight_camera.cpp.o"
+    }
+  },
+  {
+    "configuration": "flight-release",
+    "native_command": {
+      "directory": "/home/kyau/projects/kyaulabs/ngen/build/flight-release",
+      "command": "/bin/clang++ -DJPH_DOUBLE_PRECISION -DJPH_OBJECT_LAYER_BITS=16 -I/home/kyau/projects/kyaulabs/ngen/game -I/home/kyau/projects/kyaulabs/ngen/engine -isystem /home/kyau/.conan2/p/b/joltp0b2df0d6522bf/p/include -m64 -stdlib=libstdc++ -O3 -DNDEBUG -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror @CMakeFiles/ngen_flight.dir/game/flight/camera.cpp.o.modmap -o CMakeFiles/ngen_flight.dir/game/flight/camera.cpp.o -c /home/kyau/projects/kyaulabs/ngen/game/flight/camera.cpp",
+      "file": "/home/kyau/projects/kyaulabs/ngen/game/flight/camera.cpp",
+      "output": "/home/kyau/projects/kyaulabs/ngen/build/flight-release/CMakeFiles/ngen_flight.dir/game/flight/camera.cpp.o"
+    }
+  },
+  {
+    "configuration": "flight-release",
+    "native_command": {
+      "directory": "/home/kyau/projects/kyaulabs/ngen/build/flight-release",
+      "command": "/bin/clang++ -I/home/kyau/projects/kyaulabs/ngen/game -I/home/kyau/projects/kyaulabs/ngen/engine -isystem /home/kyau/.conan2/p/b/catcha767e5502f6e3/p/include -m64 -stdlib=libstdc++ -O3 -DNDEBUG -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror @CMakeFiles/flight_camera_tests.dir/tests/flight_camera.cpp.o.modmap -o CMakeFiles/flight_camera_tests.dir/tests/flight_camera.cpp.o -c /home/kyau/projects/kyaulabs/ngen/tests/flight_camera.cpp",
+      "file": "/home/kyau/projects/kyaulabs/ngen/tests/flight_camera.cpp",
+      "output": "/home/kyau/projects/kyaulabs/ngen/build/flight-release/CMakeFiles/flight_camera_tests.dir/tests/flight_camera.cpp.o"
+    }
+  },
+  {
+    "configuration": "flight-asan",
+    "native_command": {
+      "directory": "/home/kyau/projects/kyaulabs/ngen/build/flight-asan",
+      "command": "/bin/clang++ -DJPH_DOUBLE_PRECISION -DJPH_OBJECT_LAYER_BITS=16 -I/home/kyau/projects/kyaulabs/ngen/game -I/home/kyau/projects/kyaulabs/ngen/engine -isystem /home/kyau/.conan2/p/b/joltpb79dcdc3a1854/p/include -m64 -stdlib=libstdc++ -fsanitize=address,undefined -fno-sanitize-recover=all -fno-omit-frame-pointer -g -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror -fsanitize=address,undefined -fno-sanitize-recover=all -fno-omit-frame-pointer @CMakeFiles/ngen_flight.dir/game/flight/camera.cpp.o.modmap -o CMakeFiles/ngen_flight.dir/game/flight/camera.cpp.o -c /home/kyau/projects/kyaulabs/ngen/game/flight/camera.cpp",
+      "file": "/home/kyau/projects/kyaulabs/ngen/game/flight/camera.cpp",
+      "output": "/home/kyau/projects/kyaulabs/ngen/build/flight-asan/CMakeFiles/ngen_flight.dir/game/flight/camera.cpp.o"
+    }
+  },
+  {
+    "configuration": "flight-asan",
+    "native_command": {
+      "directory": "/home/kyau/projects/kyaulabs/ngen/build/flight-asan",
+      "command": "/bin/clang++ -I/home/kyau/projects/kyaulabs/ngen/game -I/home/kyau/projects/kyaulabs/ngen/engine -isystem /home/kyau/.conan2/p/b/catch6ca307d792caf/p/include -m64 -stdlib=libstdc++ -fsanitize=address,undefined -fno-sanitize-recover=all -fno-omit-frame-pointer -g -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror -fsanitize=address,undefined -fno-sanitize-recover=all -fno-omit-frame-pointer @CMakeFiles/flight_camera_tests.dir/tests/flight_camera.cpp.o.modmap -o CMakeFiles/flight_camera_tests.dir/tests/flight_camera.cpp.o -c /home/kyau/projects/kyaulabs/ngen/tests/flight_camera.cpp",
+      "file": "/home/kyau/projects/kyaulabs/ngen/tests/flight_camera.cpp",
+      "output": "/home/kyau/projects/kyaulabs/ngen/build/flight-asan/CMakeFiles/flight_camera_tests.dir/tests/flight_camera.cpp.o"
+    }
+  }
+]

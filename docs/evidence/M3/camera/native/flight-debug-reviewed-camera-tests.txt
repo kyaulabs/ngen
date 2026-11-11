@@ -1,0 +1,7 @@
+Test project /home/kyau/projects/kyaulabs/ngen/build/flight-debug
+    Start 3: flight_camera
+1/1 Test #3: flight_camera ....................   Passed    0.00 sec
+
+100% tests passed out of 1
+
+Total Test time (real) =   0.00 sec

@@ -1,0 +1,20 @@
+[1/20] Scanning /home/kyau/projects/kyaulabs/ngen/engine/core/entities.cpp for CXX dependencies
+[2/20] Scanning /home/kyau/projects/kyaulabs/ngen/engine/core/values.cpp for CXX dependencies
+[3/20] Generating CXX dyndep file CMakeFiles/ngen_core.dir/CXX.dd
+[4/17] Scanning /home/kyau/projects/kyaulabs/ngen/engine/physics/world.cpp for CXX dependencies
+[5/17] Generating CXX dyndep file CMakeFiles/ngen_physics.dir/CXX.dd
+[6/15] Scanning /home/kyau/projects/kyaulabs/ngen/game/flight/flight.cpp for CXX dependencies
+[7/15] Scanning /home/kyau/projects/kyaulabs/ngen/game/flight/camera.cpp for CXX dependencies
+[8/15] Scanning /home/kyau/projects/kyaulabs/ngen/tests/flight_camera.cpp for CXX dependencies
+[9/15] Generating CXX dyndep file CMakeFiles/ngen_flight.dir/CXX.dd
+[10/14] Generating CXX dyndep file CMakeFiles/flight_camera_tests.dir/CXX.dd
+[11/13] Building CXX object CMakeFiles/ngen_flight.dir/game/flight/camera.cpp.o
+FAILED: [code=1] CMakeFiles/ngen_flight.dir/game/flight/camera.cpp.o
+/bin/clang++ -DJPH_DOUBLE_PRECISION -DJPH_OBJECT_LAYER_BITS=16 -I/home/kyau/projects/kyaulabs/ngen/game -I/home/kyau/projects/kyaulabs/ngen/engine -isystem /home/kyau/.conan2/p/b/joltp58a1846f79ca4/p/include -m64 -stdlib=libstdc++ -g -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror -MD -MT CMakeFiles/ngen_flight.dir/game/flight/camera.cpp.o -MF CMakeFiles/ngen_flight.dir/game/flight/camera.cpp.o.d @CMakeFiles/ngen_flight.dir/game/flight/camera.cpp.o.modmap -o CMakeFiles/ngen_flight.dir/game/flight/camera.cpp.o -c /home/kyau/projects/kyaulabs/ngen/game/flight/camera.cpp
+/home/kyau/projects/kyaulabs/ngen/game/flight/camera.cpp:58:29: error: no member named 'Slerp' in 'JPH::Quat'
+   57 |             components(quaternion(previous.body.rotation_xyzw)
+      |                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   58 |                            .Slerp(quaternion(state.body.rotation_xyzw), fraction)
+      |                             ^
+1 error generated.
+ninja: build stopped: subcommand failed.

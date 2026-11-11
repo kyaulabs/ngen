@@ -1,0 +1,34 @@
+Test project /home/kyau/projects/kyaulabs/ngen/build/flight-debug
+    Start 3: flight_camera
+1/1 Test #3: flight_camera ....................***Failed    0.00 sec
+Randomness seeded to: 2634948157
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+flight_camera_tests is a Catch2 v3.16.0 host application.
+Run with -? for options
+
+-------------------------------------------------------------------------------
+a near-contact blocked boom tries bounded alternative angles rather than
+entering the hull
+-------------------------------------------------------------------------------
+/home/kyau/projects/kyaulabs/ngen/tests/flight_camera.cpp:179
+...............................................................................
+
+/home/kyau/projects/kyaulabs/ngen/tests/flight_camera.cpp:188: FAILED:
+  REQUIRE( std::holds_alternative<CameraFrame>(result) )
+with expansion:
+  false
+
+===============================================================================
+test cases:   8 |   7 passed | 1 failed
+assertions: 152 | 151 passed | 1 failed
+
+
+
+0% tests passed, 1 tests failed out of 1
+
+Total Test time (real) =   0.00 sec
+
+The following tests FAILED:
+	  3 - flight_camera (Failed)
+Errors while running CTest

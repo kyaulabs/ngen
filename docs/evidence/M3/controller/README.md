@@ -55,9 +55,10 @@ frontend does not support the GCC module flags, which are not stripped.
 
 The preceding ownership correction at `a8918ef` passes hosted CI4/4, including the
 original Clang18 checks. Its metadata is retained as backend evidence, not proof
-of this later controller source. This change extends hosted headless tests,
-Clang18 analysis and dependency checks to the controller; its exact-head CI is
-reported on the corresponding commit/run, not presumed here.
+of this later controller source. The controller itself at `aae5f8a` subsequently
+passes [CI42941442060](https://github.com/kyaulabs/ngen/actions/runs/42941442060)4/4,
+including Clang18 and network/display-isolated headless execution. Its source
+manifest describes that checkpoint, not later camera/presentation additions.
 
 Cameras, contact preset, force/velocity plots, actual Windows compatibility,
 playable accepted-asset presentation, bounded audio, offline packaging, warmed

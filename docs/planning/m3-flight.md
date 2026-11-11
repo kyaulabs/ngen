@@ -90,8 +90,16 @@ Clang command analyses. Native GCC passes; GCC AST flags remain unsupported by
 Clang tooling and are not stripped. No SDL/Vulkan appears in either headless binary.
 See [controller evidence](../evidence/M3/controller/README.md) for exact scope.
 
-Next: implement the authored mounted first-person/tactical camera contracts, then
-the playable accepted-asset renderer bridge, bounded audio and offline delivery.
+The controller's exact-head `aae5f8a` hosted CI now passes4/4. Camera math now
+passes13 public cases: per-ship mounts, shortest-path pose interpolation,
+world-up tactical orbit, bounded drag/zoom and free look, copied target focus,
+bounded obstacle/own-hull clearance, reset/gap snaps and stateless cadence.
+Four complete graphs pass7/7, followed by final affected camera reruns in all
+four configurations; six actual-command camera/header-consumer Clang checks pass.
+These are numerical contracts, not actual SDL focus-loss or visual acceptance.
+
+Next: input/focus/capture integration and the playable accepted-asset renderer
+bridge, contact preset and traces, then bounded audio and offline delivery.
 Headless tests do not complete M3-A/B presentation or the demo: traces, collision
 preset, actual Windows compatibility, warmed benchmarks, recording and owner
 control-feel feedback remain. All five slices, native verification, same-session

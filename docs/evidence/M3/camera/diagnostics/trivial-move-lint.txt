@@ -1,0 +1,7 @@
+68 warnings generated.
+/home/kyau/projects/kyaulabs/ngen/game/flight/camera.cpp:65:14: error: std::move of the variable 'target' of the trivially-copyable type 'std::optional<CameraSphere>' has no effect; remove std::move() [performance-move-const-arg,-warnings-as-errors]
+   65 |     focus_ = std::move(target);
+      |              ^~~~~~~~~~      ~
+Suppressed 67 warnings (67 in non-user code).
+Use -header-filter=.* or leave it as default to display errors from all non-system headers. Use -system-headers to display errors from system headers as well.
+1 warning treated as error
