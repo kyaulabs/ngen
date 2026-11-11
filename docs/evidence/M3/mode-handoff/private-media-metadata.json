@@ -1,0 +1,115 @@
+{
+  "source": "489fb5388aa1c473213434d28f29ddc1a6109082",
+  "originals": {
+    "video": {
+      "path": "Screencast_20261111_095609.webm",
+      "bytes": 11234759,
+      "mtime_ns": 1794419870900577725,
+      "sha256": "74cce793e5ba3a00e7f2e6644ce53e8e85d08684fd01d456ca2f44e0fa3edc4e",
+      "media": {
+        "programs": [],
+        "stream_groups": [],
+        "streams": [
+          {
+            "codec_name": "vp9",
+            "codec_type": "video",
+            "width": 2580,
+            "height": 1506,
+            "r_frame_rate": "60/1",
+            "start_time": "0.000000"
+          }
+        ],
+        "format": {
+          "start_time": "0.000000",
+          "duration": "95.849000",
+          "size": "11234759",
+          "tags": {}
+        }
+      }
+    },
+    "audio": {
+      "path": "owner-flight-final-audio.wav",
+      "bytes": 79683628,
+      "mtime_ns": 1794419890741733550,
+      "sha256": "520b578b06f7d71f4539b15adc0e1bc4cc2e04c298247a8952b5cc5e9e3f93c9",
+      "media": {
+        "programs": [],
+        "stream_groups": [],
+        "streams": [
+          {
+            "codec_name": "pcm_s32le",
+            "codec_type": "audio",
+            "sample_rate": "48000",
+            "channels": 2,
+            "bits_per_sample": 32,
+            "r_frame_rate": "0/0",
+            "duration": "207.509333",
+            "bits_per_raw_sample": "32"
+          }
+        ],
+        "format": {
+          "duration": "207.509333",
+          "size": "79683628"
+        }
+      }
+    }
+  },
+  "combined": {
+    "path": "owner-flight-before-handoff-fix.mkv",
+    "sha256": "6bcfdfe76d4a2008c810b70ae99d73bf2efd133cdc5a94476d7e8668fea6a432",
+    "bytes": 48050374,
+    "media": {
+      "programs": [],
+      "stream_groups": [],
+      "streams": [
+        {
+          "codec_name": "vp9",
+          "codec_type": "video",
+          "width": 2580,
+          "height": 1506
+        },
+        {
+          "codec_name": "pcm_f32le",
+          "codec_type": "audio",
+          "sample_rate": "48000",
+          "channels": 2
+        }
+      ],
+      "format": {
+        "duration": "95.849000",
+        "size": "48050374"
+      }
+    },
+    "full_decode_exit": 0
+  },
+  "alignment": {
+    "audio_trim_seconds": 86.805,
+    "video_mode_transition_seconds": [
+      4.999,
+      13.632,
+      20.382,
+      46.682,
+      64.299,
+      91.232
+    ],
+    "audio_confirmation_seconds": [
+      91.79875,
+      100.439188,
+      107.222729,
+      133.484521,
+      151.105875,
+      177.900521
+    ],
+    "residual_seconds": [
+      -0.005250000000003752,
+      0.0021879999999896427,
+      0.03572899999998924,
+      -0.0024790000000081136,
+      0.0018749999999840838,
+      -0.13647900000000845
+    ],
+    "scope": "Six actual mode changes matched with 880 Hz confirmation cues. Approximately 0.14 s late drift; original recording logged two recovered ALSA underruns. Not a latency or glitch-free playback proof."
+  },
+  "format_note": "Original ALSA file-PCM WAV marked native float32 payload as integer PCM. All original samples validated finite within mixer bound; corrected-format derivative preserves floats. Original files unchanged.",
+  "acceptance": "Private pre-handoff-fix bug demonstration, not post-fix acceptance footage."
+}

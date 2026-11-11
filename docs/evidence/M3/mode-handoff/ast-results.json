@@ -1,0 +1,92 @@
+[
+  {
+    "configuration": "demo-debug",
+    "source": "game/flight/flight.cpp",
+    "status": 0,
+    "scope": "complete native invocation; owned headers; no flags removed"
+  },
+  {
+    "configuration": "demo-debug",
+    "source": "tests/flight.cpp",
+    "status": 0,
+    "scope": "complete native invocation; owned headers; no flags removed"
+  },
+  {
+    "configuration": "demo-debug",
+    "source": "apps/flight_demo/app.cpp",
+    "status": 0,
+    "scope": "complete native invocation; owned headers; no flags removed"
+  },
+  {
+    "configuration": "demo-release",
+    "source": "game/flight/flight.cpp",
+    "status": 0,
+    "scope": "complete native invocation; owned headers; no flags removed"
+  },
+  {
+    "configuration": "demo-release",
+    "source": "tests/flight.cpp",
+    "status": 0,
+    "scope": "complete native invocation; owned headers; no flags removed"
+  },
+  {
+    "configuration": "demo-release",
+    "source": "apps/flight_demo/app.cpp",
+    "status": 0,
+    "scope": "complete native invocation; owned headers; no flags removed"
+  },
+  {
+    "configuration": "demo-asan",
+    "source": "game/flight/flight.cpp",
+    "status": 0,
+    "scope": "complete native invocation; owned headers; no flags removed"
+  },
+  {
+    "configuration": "demo-asan",
+    "source": "tests/flight.cpp",
+    "status": 0,
+    "scope": "complete native invocation; owned headers; no flags removed"
+  },
+  {
+    "configuration": "demo-asan",
+    "source": "apps/flight_demo/app.cpp",
+    "status": 0,
+    "scope": "complete native invocation; owned headers; no flags removed"
+  },
+  {
+    "configuration": "flight-debug",
+    "source": "game/flight/flight.cpp",
+    "status": 0,
+    "scope": "complete native invocation; owned headers; no flags removed"
+  },
+  {
+    "configuration": "flight-debug",
+    "source": "tests/flight.cpp",
+    "status": 0,
+    "scope": "complete native invocation; owned headers; no flags removed"
+  },
+  {
+    "configuration": "flight-release",
+    "source": "game/flight/flight.cpp",
+    "status": 0,
+    "scope": "complete native invocation; owned headers; no flags removed"
+  },
+  {
+    "configuration": "flight-release",
+    "source": "tests/flight.cpp",
+    "status": 0,
+    "scope": "complete native invocation; owned headers; no flags removed"
+  },
+  {
+    "configuration": "flight-asan",
+    "source": "game/flight/flight.cpp",
+    "status": 0,
+    "scope": "complete native invocation; owned headers; no flags removed"
+  },
+  {
+    "configuration": "flight-asan",
+    "source": "tests/flight.cpp",
+    "status": 0,
+    "scope": "complete native invocation; owned headers; no flags removed"
+  }
+]

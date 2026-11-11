@@ -1,0 +1,59 @@
+{
+  "parent": "489fb5388aa1c473213434d28f29ddc1a6109082",
+  "source_sha256": {
+    "game/flight/flight.cpp": "4aa0440db4838bea00cfeee8c51f19862da98ab8f1226f4ea39c6b9b71c44f95",
+    "tests/flight.cpp": "3c5e3a396aa17ce2f6e4e38c571c99066511e4f724b8b9d6c36b30e283364079",
+    "apps/flight_demo/app.cpp": "a1ee74b48ad413b9ee65c5379518aaa39243fb802b8c497b73f9c2f3148cb678"
+  },
+  "ctest": {
+    "demo-debug": {
+      "selected": 21,
+      "executed": 21,
+      "failed": 0,
+      "skipped": 0
+    },
+    "demo-release": {
+      "selected": 21,
+      "executed": 21,
+      "failed": 0,
+      "skipped": 0
+    },
+    "demo-asan": {
+      "selected": 21,
+      "executed": 21,
+      "failed": 0,
+      "skipped": 0
+    },
+    "demo-gcc": {
+      "selected": 21,
+      "executed": 21,
+      "failed": 0,
+      "skipped": 0
+    },
+    "flight-debug": {
+      "selected": 8,
+      "executed": 8,
+      "failed": 0,
+      "skipped": 0
+    },
+    "flight-release": {
+      "selected": 8,
+      "executed": 8,
+      "failed": 0,
+      "skipped": 0
+    },
+    "flight-asan": {
+      "selected": 8,
+      "executed": 8,
+      "failed": 0,
+      "skipped": 0
+    },
+    "flight-gcc": {
+      "selected": 8,
+      "executed": 8,
+      "failed": 0,
+      "skipped": 0
+    }
+  },
+  "native": "Four current 330-frame control/audio traces; explicit manual-to-tactical coasting and fresh reset-orbit checks pass."
+}

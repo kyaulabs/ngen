@@ -383,7 +383,7 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
             (void)sound.cue(audio::Cue::confirm);
             metrics.status = wanted == flight::Mode::direct
                                  ? "Direct bow sensor / hold RMB for virtual-stick steering"
-                                 : "Tactical view / release thrust coasts in direct control";
+                                 : "Tactical coast / G or O starts fresh navigation";
         }
     };
     const auto reset = [&] {

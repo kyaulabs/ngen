@@ -366,6 +366,46 @@ TEST_CASE("the next-tick queue rejects its sixty-fifth command without replacing
     REQUIRE(std::get<Snapshot>(flight->step()).mode == Mode::tactical);
 }
 
+TEST_CASE("manual control cancels old autopilot instead of restarting it on tactical return") {
+    for (const auto &goal :
+         {Intent{Destination{{100, 0, 0}}}, Intent{Orbit{{0, 0, -100}, 100, 10, false}}}) {
+        auto flight = std::get<std::unique_ptr<Flight>>(Flight::create(ShipDefinition{}));
+        const auto entity = flight->snapshot().entity;
+        REQUIRE(std::holds_alternative<std::monostate>(flight->submit({Tick{1}, 1, entity, goal})));
+        for (unsigned tick = 0; tick < 60; ++tick)
+            REQUIRE(std::holds_alternative<Snapshot>(flight->step()));
+        const auto before = flight->snapshot();
+        REQUIRE(std::holds_alternative<std::monostate>(
+            flight->submit({Tick{61}, 2, entity, SetMode{Mode::direct}})));
+        const auto direct = std::get<Snapshot>(flight->step());
+        REQUIRE(direct.navigation.goal == Goal::coast);
+        REQUIRE(direct.force_newtons == std::array<float, 3>{});
+        REQUIRE(direct.body.velocity_mps == before.body.velocity_mps);
+        REQUIRE(std::holds_alternative<std::monostate>(
+            flight->submit({Tick{62}, 3, entity, Pilot{{0, 1, 0}, {0, 1, 0}}})));
+        for (unsigned tick = 0; tick < 60; ++tick)
+            REQUIRE(std::holds_alternative<Snapshot>(flight->step()));
+        const auto manual = flight->snapshot();
+        REQUIRE(std::holds_alternative<std::monostate>(
+            flight->submit({Tick{122}, 4, entity, Pilot{}})));
+        REQUIRE(std::holds_alternative<std::monostate>(
+            flight->submit({Tick{122}, 5, entity, SetMode{Mode::tactical}})));
+        for (unsigned tick = 0; tick < 120; ++tick) {
+            const auto state = std::get<Snapshot>(flight->step());
+            REQUIRE(state.mode == Mode::tactical);
+            REQUIRE(state.navigation.goal == Goal::coast);
+            REQUIRE(state.force_newtons == std::array<float, 3>{});
+            REQUIRE(state.body.velocity_mps == manual.body.velocity_mps);
+            REQUIRE(state.entity == entity);
+        }
+        REQUIRE(std::holds_alternative<std::monostate>(
+            flight->submit({Tick{242}, 6, entity, Destination{{50, 0, -50}}})));
+        const auto commanded = std::get<Snapshot>(flight->step());
+        REQUIRE(commanded.navigation.goal == Goal::destination);
+        REQUIRE(commanded.force_newtons != std::array<float, 3>{});
+    }
+}
+
 TEST_CASE(
     "mode changes during thrust and spin preserve pose and momentum instead of snapping state") {
     auto flight = std::get<std::unique_ptr<Flight>>(Flight::create(ShipDefinition{}));

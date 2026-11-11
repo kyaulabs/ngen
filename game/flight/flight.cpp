@@ -280,9 +280,12 @@ Result<Snapshot> Flight::step() {
     auto body = impl_->published.body;
     for (std::size_t i = 0; i < impl_->command_count; ++i) {
         const auto &intent = impl_->commands[i].intent;
-        if (const auto *value = std::get_if<SetMode>(&intent))
+        if (const auto *value = std::get_if<SetMode>(&intent)) {
+            // Manual takeover cancels old navigation instead of parking stale autopilot intent.
+            if (mode != value->mode && value->mode == Mode::direct)
+                navigation = {};
             mode = value->mode;
-        else if (const auto *value = std::get_if<Pilot>(&intent))
+        } else if (const auto *value = std::get_if<Pilot>(&intent))
             pilot = *value;
         else if (const auto *value = std::get_if<Destination>(&intent)) {
             navigation = {value->position_metres, 0, 0, Goal::destination, false};
