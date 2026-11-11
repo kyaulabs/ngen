@@ -10,6 +10,7 @@ assets=false
 scene=false
 inspector=false
 physics=false
+demo=false
 case "$preset" in
   debug) ;;
   asan) profile=linux-asan ;;
@@ -20,6 +21,10 @@ case "$preset" in
   flight-release) physics=true; type=Release ;;
   flight-asan) physics=true; profile=linux-asan ;;
   flight-gcc) physics=true; profile=linux-gcc ;;
+  demo-debug) demo=true ;;
+  demo-release) demo=true; type=Release ;;
+  demo-asan) demo=true; profile=linux-asan ;;
+  demo-gcc) demo=true; profile=linux-gcc ;;
   renderer-debug) renderer=true ;;
   renderer-release) renderer=true; type=Release ;;
   renderer-asan) renderer=true; profile=linux-asan ;;
@@ -36,7 +41,7 @@ case "$preset" in
   inspector-release) scene=true; inspector=true; type=Release ;;
   inspector-asan) scene=true; inspector=true; profile=linux-asan ;;
   inspector-gcc) scene=true; inspector=true; profile=linux-gcc ;;
-  *) echo "Usage: sh tools/prepare.sh {debug|release|gcc|asan|tsan|flight-debug|flight-release|flight-asan|flight-gcc|renderer-debug|renderer-release|renderer-asan|asset-debug|asset-release|asset-asan|asset-gcc|asset-runtime-debug|scene-debug|scene-release|scene-asan|scene-gcc|inspector-debug|inspector-release|inspector-asan|inspector-gcc} [Conan install options]" >&2; exit 2 ;;
+  *) echo "Usage: sh tools/prepare.sh {debug|release|gcc|asan|tsan|flight-debug|flight-release|flight-asan|flight-gcc|demo-debug|demo-release|demo-asan|demo-gcc|renderer-debug|renderer-release|renderer-asan|asset-debug|asset-release|asset-asan|asset-gcc|asset-runtime-debug|scene-debug|scene-release|scene-asan|scene-gcc|inspector-debug|inspector-release|inspector-asan|inspector-gcc} [Conan install options]" >&2; exit 2 ;;
 esac
 [ "$(cmake --version | head -1)" = 'cmake version 4.4.5' ] || { echo 'Expected CMake 4.4.5' >&2; exit 2; }
 [ "$(ninja --version)" = '1.13.2' ] || { echo 'Expected Ninja 1.13.2' >&2; exit 2; }
@@ -47,7 +52,12 @@ else
 fi
 command -v conan >/dev/null || { echo 'Conan 2.34.0 required; install it in a virtualenv and add its bin directory to PATH.' >&2; exit 2; }
 [ "$(conan --version)" = 'Conan version 2.34.0' ] || { echo 'Expected Conan 2.34.0' >&2; exit 2; }
-if [ "$physics" = true ]; then
+if [ "$demo" = true ]; then
+  conan export recipes/joltphysics --version=5.6.0 --user=ngen --channel=headless-double
+  conan export recipes/sdl --version=3.4.16 --user=ngen --channel=wayland
+  conan export recipes/slangc --version=2026.21 --user=ngen --channel=tools
+  conan install . -pr:h "profiles/$profile" -pr:b profiles/linux-clang -s:h "build_type=$type" -s:b build_type=Release -o '&:physics=True' -o '&:renderer=True' -o '&:shaders=True' -o '&:assets=True' -o '&:inspector=True' --lockfile conan-demo.lock --build=missing -c tools.build:jobs=2 -of "build/$preset" "$@"
+elif [ "$physics" = true ]; then
   conan export recipes/joltphysics --version=5.6.0 --user=ngen --channel=headless-double
   conan install . -pr:h "profiles/$profile" -pr:b profiles/linux-clang -s:h "build_type=$type" -s:b build_type=Release -o '&:physics=True' --lockfile conan-physics.lock --build=missing -c tools.build:jobs=2 -of "build/$preset" "$@"
 elif [ "$scene" = true ]; then

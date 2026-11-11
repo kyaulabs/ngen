@@ -1,0 +1,5 @@
+Traceback (most recent call last):
+  File "/home/kyau/projects/kyaulabs/ngen/build/m3-flight/check-sdl-walkthrough.py", line 19, in <module>
+    assert all(float(r['drive_power']) < 1e-6 for r in rows[90:120]), 'lateral thrust while turning must not ignite the aft main drive'
+           ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: lateral thrust while turning must not ignite the aft main drive

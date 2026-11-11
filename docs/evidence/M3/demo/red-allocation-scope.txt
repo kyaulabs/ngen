@@ -1,0 +1,3 @@
+Traceback (most recent call last):
+  File "<stdin>", line 3, in <module>
+AssertionError: sanitizer-disabled C++ counter must be distinguished from an observed zero

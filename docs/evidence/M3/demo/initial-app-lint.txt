@@ -1,0 +1,14 @@
+100 warnings generated.
+/home/kyau/projects/kyaulabs/ngen/apps/flight_demo/app.cpp:290:29: error: the parameter 'package' of type 'assets::PackagePin' (aka 'std::shared_ptr<const Scene>') is copied for each invocation but only used as a const reference; consider making it a const reference [performance-unnecessary-value-param,-warnings-as-errors]
+  290 | void run(assets::PackagePin package, const Preset &preset, const Options &options) {
+      |                             ^
+      |          const             &
+/home/kyau/projects/kyaulabs/ngen/apps/flight_demo/app.cpp:360:75: error: std::move of the variable 'intent' of the trivially-copyable type 'flight::Intent' (aka 'std::variant<Pilot, SetMode, Destination, Orbit, SetMass>') has no effect; remove std::move() [performance-move-const-arg,-warnings-as-errors]
+  360 |             {std::get<Tick>(target), ++sequence, game->snapshot().entity, std::move(intent)});
+      |                                                                           ^~~~~~~~~~      ~
+/home/kyau/projects/kyaulabs/ngen/apps/flight_demo/app.cpp:763:34: error: std::move of the variable 'camera' of the trivially-copyable type 'Result<CameraFrame>' (aka 'std::variant<CameraFrame, Error>') has no effect; remove std::move() [performance-move-const-arg,-warnings-as-errors]
+  763 |         last_camera = game_value(std::move(camera));
+      |                                  ^~~~~~~~~~      ~
+Suppressed 95 warnings (95 in non-user code).
+Use -header-filter=.* or leave it as default to display errors from all non-system headers. Use -system-headers to display errors from system headers as well.
+3 warnings treated as errors

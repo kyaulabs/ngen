@@ -1,0 +1,5 @@
+Traceback (most recent call last):
+  File "/home/kyau/projects/kyaulabs/ngen/build/m3-flight/check-sdl-walkthrough.py", line 12, in <module>
+    assert abs(float(rows[89]['vz_mps'])) < .02
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError

@@ -1,0 +1,5 @@
+Traceback (most recent call last):
+  File "/home/kyau/projects/kyaulabs/ngen/build/m3-flight/check-sdl-walkthrough.py", line 5, in <module>
+    assert rows and int(rows[0]['mode']) == 1, ('first SDL TAB must enter direct mode', rows[0]['mode'] if rows else 'no rows')
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ('first SDL TAB must enter direct mode', '0')

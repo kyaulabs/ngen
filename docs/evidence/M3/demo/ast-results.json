@@ -1,0 +1,110 @@
+[
+  {
+    "configuration": "demo-debug",
+    "source": "apps/flight_demo/preset.cpp",
+    "status": 0,
+    "flags": "Complete actual native command; no compiler flags removed; owned header diagnostic filter expanded"
+  },
+  {
+    "configuration": "demo-debug",
+    "source": "apps/flight_demo/view.cpp",
+    "status": 0,
+    "flags": "Complete actual native command; no compiler flags removed; owned header diagnostic filter expanded"
+  },
+  {
+    "configuration": "demo-debug",
+    "source": "apps/flight_demo/main.cpp",
+    "status": 0,
+    "flags": "Complete actual native command; no compiler flags removed; owned header diagnostic filter expanded"
+  },
+  {
+    "configuration": "demo-debug",
+    "source": "apps/flight_demo/app.cpp",
+    "status": 0,
+    "flags": "Complete actual native command; no compiler flags removed; owned header diagnostic filter expanded"
+  },
+  {
+    "configuration": "demo-debug",
+    "source": "apps/scene_workload/allocations.cpp",
+    "status": 0,
+    "flags": "Complete actual native command; no compiler flags removed; owned header diagnostic filter expanded"
+  },
+  {
+    "configuration": "demo-debug",
+    "source": "tests/flight_scene.cpp",
+    "status": 0,
+    "flags": "Complete actual native command; no compiler flags removed; owned header diagnostic filter expanded"
+  },
+  {
+    "configuration": "demo-release",
+    "source": "apps/flight_demo/preset.cpp",
+    "status": 0,
+    "flags": "Complete actual native command; no compiler flags removed; owned header diagnostic filter expanded"
+  },
+  {
+    "configuration": "demo-release",
+    "source": "apps/flight_demo/view.cpp",
+    "status": 0,
+    "flags": "Complete actual native command; no compiler flags removed; owned header diagnostic filter expanded"
+  },
+  {
+    "configuration": "demo-release",
+    "source": "apps/flight_demo/main.cpp",
+    "status": 0,
+    "flags": "Complete actual native command; no compiler flags removed; owned header diagnostic filter expanded"
+  },
+  {
+    "configuration": "demo-release",
+    "source": "apps/flight_demo/app.cpp",
+    "status": 0,
+    "flags": "Complete actual native command; no compiler flags removed; owned header diagnostic filter expanded"
+  },
+  {
+    "configuration": "demo-release",
+    "source": "apps/scene_workload/allocations.cpp",
+    "status": 0,
+    "flags": "Complete actual native command; no compiler flags removed; owned header diagnostic filter expanded"
+  },
+  {
+    "configuration": "demo-release",
+    "source": "tests/flight_scene.cpp",
+    "status": 0,
+    "flags": "Complete actual native command; no compiler flags removed; owned header diagnostic filter expanded"
+  },
+  {
+    "configuration": "demo-asan",
+    "source": "apps/flight_demo/preset.cpp",
+    "status": 0,
+    "flags": "Complete actual native command; no compiler flags removed; owned header diagnostic filter expanded"
+  },
+  {
+    "configuration": "demo-asan",
+    "source": "apps/flight_demo/view.cpp",
+    "status": 0,
+    "flags": "Complete actual native command; no compiler flags removed; owned header diagnostic filter expanded"
+  },
+  {
+    "configuration": "demo-asan",
+    "source": "apps/flight_demo/main.cpp",
+    "status": 0,
+    "flags": "Complete actual native command; no compiler flags removed; owned header diagnostic filter expanded"
+  },
+  {
+    "configuration": "demo-asan",
+    "source": "apps/flight_demo/app.cpp",
+    "status": 0,
+    "flags": "Complete actual native command; no compiler flags removed; owned header diagnostic filter expanded"
+  },
+  {
+    "configuration": "demo-asan",
+    "source": "apps/scene_workload/allocations.cpp",
+    "status": 0,
+    "flags": "Complete actual native command; no compiler flags removed; owned header diagnostic filter expanded"
+  },
+  {
+    "configuration": "demo-asan",
+    "source": "tests/flight_scene.cpp",
+    "status": 0,
+    "flags": "Complete actual native command; no compiler flags removed; owned header diagnostic filter expanded"
+  }
+]

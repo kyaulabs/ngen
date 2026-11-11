@@ -26,7 +26,11 @@
     {"name":"inspector-debug","inherits":"scene-debug","cacheVariables":{"NGEN_BUILD_INSPECTOR":"ON"}},
     {"name":"inspector-release","inherits":"scene-release","cacheVariables":{"NGEN_BUILD_INSPECTOR":"ON"}},
     {"name":"inspector-asan","inherits":"scene-asan","cacheVariables":{"NGEN_BUILD_INSPECTOR":"ON"}},
-    {"name":"inspector-gcc","inherits":"scene-gcc","cacheVariables":{"NGEN_BUILD_INSPECTOR":"ON"}}
+    {"name":"inspector-gcc","inherits":"scene-gcc","cacheVariables":{"NGEN_BUILD_INSPECTOR":"ON"}},
+    {"name":"demo-debug","inherits":"inspector-debug","cacheVariables":{"NGEN_BUILD_PHYSICS":"ON","NGEN_BUILD_FLIGHT_DEMO":"ON"}},
+    {"name":"demo-release","inherits":"inspector-release","cacheVariables":{"NGEN_BUILD_PHYSICS":"ON","NGEN_BUILD_FLIGHT_DEMO":"ON"}},
+    {"name":"demo-asan","inherits":"inspector-asan","cacheVariables":{"NGEN_BUILD_PHYSICS":"ON","NGEN_BUILD_FLIGHT_DEMO":"ON"}},
+    {"name":"demo-gcc","inherits":"inspector-gcc","cacheVariables":{"NGEN_BUILD_PHYSICS":"ON","NGEN_BUILD_FLIGHT_DEMO":"ON"}}
   ],
   "buildPresets": [
     {"name":"debug","configurePreset":"debug","jobs":2},
@@ -53,7 +57,11 @@
     {"name":"inspector-debug","configurePreset":"inspector-debug","jobs":2},
     {"name":"inspector-release","configurePreset":"inspector-release","jobs":2},
     {"name":"inspector-asan","configurePreset":"inspector-asan","jobs":2},
-    {"name":"inspector-gcc","configurePreset":"inspector-gcc","jobs":2}
+    {"name":"inspector-gcc","configurePreset":"inspector-gcc","jobs":2},
+    {"name":"demo-debug","configurePreset":"demo-debug","jobs":2},
+    {"name":"demo-release","configurePreset":"demo-release","jobs":2},
+    {"name":"demo-asan","configurePreset":"demo-asan","jobs":2},
+    {"name":"demo-gcc","configurePreset":"demo-gcc","jobs":2}
   ],
   "testPresets": [
     {"name":"debug","configurePreset":"debug","output":{"outputOnFailure":true},"execution":{"noTestsAction":"error"}},
@@ -80,6 +88,10 @@
     {"name":"inspector-debug","inherits":"scene-debug","configurePreset":"inspector-debug"},
     {"name":"inspector-release","inherits":"scene-release","configurePreset":"inspector-release"},
     {"name":"inspector-asan","inherits":"scene-asan","configurePreset":"inspector-asan"},
-    {"name":"inspector-gcc","inherits":"scene-gcc","configurePreset":"inspector-gcc"}
+    {"name":"inspector-gcc","inherits":"scene-gcc","configurePreset":"inspector-gcc"},
+    {"name":"demo-debug","inherits":"inspector-debug","configurePreset":"demo-debug"},
+    {"name":"demo-release","inherits":"inspector-release","configurePreset":"demo-release"},
+    {"name":"demo-asan","inherits":"inspector-asan","configurePreset":"demo-asan"},
+    {"name":"demo-gcc","inherits":"inspector-gcc","configurePreset":"demo-gcc"}
   ]
 }

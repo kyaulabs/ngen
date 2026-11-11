@@ -1,0 +1,16 @@
+[
+  {
+    "path": "build/m3-flight/demo-first-green.bmp",
+    "sha256": "ba59b540d6a09dd93ae72f5af2aa21a6e8d0043a57aa916762706ca5cec1beb7",
+    "bytes": 3686538,
+    "scope": "early tactical baseline before later default-orbit/root/review changes",
+    "private": true
+  },
+  {
+    "path": "build/m3-flight/demo-first-person.bmp",
+    "sha256": "f0a6ae60f8876382e9eed608005b04d39148f5b506f61f49e0585a84ae33d6ba",
+    "bytes": 3686538,
+    "scope": "early first-person transition baseline before later default-orbit/root/review changes",
+    "private": true
+  }
+]

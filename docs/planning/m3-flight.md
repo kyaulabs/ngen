@@ -4,8 +4,8 @@ M2 delivery completed before this work: [PR#9](https://github.com/kyaulabs/ngen/
 merged the verified tree at `4b554cc`; post-merge
 [CI42920708365](https://github.com/kyaulabs/ngen/actions/runs/42920708365) passes4/4.
 The completed branch and clean review worktrees are removed. Current M3 branch
-starts from that exact integration. M3 is **not implemented or accepted** by this
-plan; execute the five [milestone outcomes](milestones.md#M3--ship-the-polished-offline-flight-demonstration).
+starts from that exact integration. M3 is **not complete or accepted**;
+execute the five [milestone outcomes](milestones.md#M3--ship-the-polished-offline-flight-demonstration).
 
 Owner decisions: tactical orbit is the default. Direct control switches to a
 first-person view at the active ship's authored flight-camera mount; different
@@ -105,8 +105,9 @@ it, while independent extras stay world-space. Two native GPU Reds are fixed;
 root/copy/lighting/rotation/depth/extras/admission controls pass in four native
 configurations. Six complete scene graphs pass69 CTests;35 actual-command Clang
 header-consumer invocations pass after three affected probe lint reruns. This
-adds no pass, resource owner, material ABI or authored asset change. The playable
-application is still not implemented. Root `0fd447b` hosted CI passes4/4.
+adds no pass, resource owner, material ABI or authored asset change. At that
+checkpoint the playable application was not implemented. Root `0fd447b` hosted CI
+passes4/4.
 
 The platform-neutral input value now passes8 public cases: held six-axis/brake
 mapping, focus-loss neutralization/no stale resume, bounded persistent direct
@@ -132,10 +133,27 @@ pass69 CTests, four native configurations pass with empty stderr, and nine actua
 Clang implementation/header-consumer invocations pass. The original inspector
 layout/style and GPU resource ownership remain unchanged.
 
-Next: the actual scene preset and live SDL/render application integration,
-force traces, then bounded audio and offline delivery.
-Headless tests do not complete M3-A/B presentation or the demo: traces, collision
-preset, actual Windows compatibility, warmed benchmarks, recording and owner
-control-feel feedback remain. All five slices, native verification, same-session
-review, signed commits and normal reviewed integration must finish before M3 is
+GUI/contact `7b4615d` exact-head CI42957019450 passes4/4. The playable application
+now renders the accepted immutable frigate and100 asteroid instances with matching
+copied contacts. The authored default is a20m/s tactical orbit; direct view uses
+the bow sensor mount. Double-origin presentation, bounded SDL event routing,
+60Hz stepping, shared HUD/force-speed plots, fixed-tick replay, exclusive CSV/BMP
+outputs and copied actuation traces are implemented. No new pass, GPU owner,
+shader/material ABI or accepted appearance settings are introduced.
+
+Five scene/presentation cases and headless CLI admission pass in four18/18 graphs;
+shipping and shader-disabled graphs pass11/11 and10/10. Eighteen complete Clang
+commands pass, followed by three affected implementation reruns after review.
+Four330-frame native correctness runs pass with finite HDR, all GPU query rows,
+empty stderr, strict sanitizer/leak checks and synthetic SDL keyboard/mouse/focus
+routing. Actual ImGui reset clicks no longer mix old rendered and reset physical
+snapshots. Native SDK relative-mode acceptance is proven; real OS focus loss,
+physical control feel and current Windows behavior are not substituted by injected
+events. See [playable bridge evidence](../evidence/M3/demo/README.md).
+
+Next: bounded audio, offline packaging and current Windows compatibility, then
+three warmed laptop replays/scoped RTX measurements, recording and owner
+control-feel feedback. The current application explicitly reports audio pending;
+its correctness runs are not performance acceptance. All five slices, native
+verification, same-session review, signed commits and normal reviewed integration must finish before M3 is
 complete. No mandatory tracker workflow or per-command reapproval is introduced.
