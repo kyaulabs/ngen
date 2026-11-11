@@ -279,18 +279,9 @@ Actions hud(tools::Gui &gui, const flight::Snapshot &state, const Preset &preset
     draw->AddLine({center.x, center.y - 7}, {center.x, center.y + 7}, IM_COL32(190, 225, 230, 180));
     if (selected) {
         const auto &point = preset.camera_obstacles[*selected].centre_metres;
-        std::array<double, 4> local{point[0] - view.origin_metres[0],
-                                    point[1] - view.origin_metres[1],
-                                    point[2] - view.origin_metres[2], 1},
-            clip{};
-        for (std::size_t row = 0; row < 4; ++row)
-            for (std::size_t column = 0; column < 4; ++column)
-                clip[row] += view.scene.view_projection.columns[column * 4 + row] * local[column];
-        if (clip[3] > 0 && clip[2] >= 0 && clip[2] <= clip[3]) {
-            const ImVec2 screen{static_cast<float>(clip[0] / clip[3] * .5 + .5) * size.x,
-                                static_cast<float>(clip[1] / clip[3] * .5 + .5) * size.y};
-            draw->AddCircle(screen, 12, IM_COL32(110, 215, 230, 230), 24, 1.5F);
-        }
+        if (const auto screen = project_target(view, point, {size.x, size.y}))
+            draw->AddCircle({(*screen)[0], (*screen)[1]}, 12, IM_COL32(110, 215, 230, 230), 24,
+                            1.5F);
     }
     gui.end();
     return action;

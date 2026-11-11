@@ -8,6 +8,59 @@
 
 using namespace ngen;
 
+TEST_CASE("visible target markers use GUI-local pixels without moving the shared world origin") {
+    demo::Preset preset;
+    preset.ship_radius = 10;
+    flight::CameraFrame camera;
+    camera.ship.position_metres = {100, 200, 300};
+    camera.camera.position_metres = {100, 200, 310};
+    const auto frame = std::get<demo::FrameView>(demo::present(preset, camera, {1280, 720}));
+    const auto pixel = demo::project_target(frame, {100, 200, 300}, {1280, 720});
+    REQUIRE(pixel == std::array<float, 2>{640, 360});
+    REQUIRE(demo::project_target(frame, {100, 200, 300}, {640, 360}) ==
+            std::array<float, 2>{320, 180});
+    const auto left = demo::project_target(frame, {99, 200, 300}, {1280, 720});
+    REQUIRE(left.has_value());
+    if (left)
+        REQUIRE((*left)[0] < 640);
+    REQUIRE(frame.origin_metres == camera.ship.position_metres);
+}
+
+TEST_CASE("invalid marker viewport and homogeneous coordinates publish no pixel") {
+    demo::Preset preset;
+    preset.ship_radius = 10;
+    flight::CameraFrame camera;
+    camera.camera.position_metres = {0, 0, 10};
+    auto frame = std::get<demo::FrameView>(demo::present(preset, camera, {1280, 720}));
+    const std::array<std::array<float, 2>, 4> invalid{
+        {{0, 720},
+         {1280, 8193},
+         {std::numeric_limits<float>::quiet_NaN(), 720},
+         {1280, std::numeric_limits<float>::infinity()}}};
+    for (const auto size : invalid)
+        REQUIRE(!demo::project_target(frame, {0, 0, 0}, size).has_value());
+    frame.scene.view_projection.columns[15] = std::numeric_limits<float>::infinity();
+    REQUIRE(!demo::project_target(frame, {0, 0, 0}, {1280, 720}).has_value());
+}
+
+TEST_CASE("off-screen and camera-plane targets cannot generate unbounded HUD geometry") {
+    demo::Preset preset;
+    preset.ship_radius = 10;
+    flight::CameraFrame camera;
+    camera.ship.position_metres = {100, 200, 300};
+    camera.camera.position_metres = {100, 200, 310};
+    const auto frame = std::get<demo::FrameView>(demo::present(preset, camera, {1280, 720}));
+    const std::array<std::array<double, 3>, 7> outside{{{2000, 200, 309.8},
+                                                        {-2000, 200, 309.8},
+                                                        {100, 2000, 309.8},
+                                                        {100, -2000, 309.8},
+                                                        {100, 200, 311},
+                                                        {100, 200, 309.95},
+                                                        {100, 200, -10000}}};
+    for (const auto &point : outside)
+        REQUIRE(!demo::project_target(frame, point, {1280, 720}).has_value());
+}
+
 TEST_CASE("rotated ship roots and camera axes share a double-position presentation origin") {
     const auto package =
         std::get<assets::PackagePin>(assets::load_package(package_fixture::encode()));

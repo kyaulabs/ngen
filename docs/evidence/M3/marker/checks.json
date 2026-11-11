@@ -1,0 +1,48 @@
+{
+  "parent": "660c9dd1dc8efc033760ca3a2de1468edf376bd9",
+  "files_sha256": {
+    "apps/flight_demo/app.cpp": "78dcc338ea7f5ea2d9db0d93bba785fb1196daa8e2a85a20cce44384a0adad31",
+    "apps/flight_demo/view.cpp": "ca4a4dbff1661ef38b0a984f3b44421e828758bac2dc7bb9402069dd4be0af9c",
+    "apps/flight_demo/view.hpp": "111298922238f89d384000f957834c02bf6807fa6ede93a95ab6558141bfe7fa",
+    "tests/flight_scene.cpp": "ccc1a14c7242c9cebbf0c6f87ce2f18bbb4185c62cf959912aa1709ae5384a5a"
+  },
+  "ctest": {
+    "demo-debug": {
+      "selected": 21,
+      "executed": 21,
+      "failed": 0,
+      "final_affected_rerun": true
+    },
+    "demo-release": {
+      "selected": 21,
+      "executed": 21,
+      "failed": 0,
+      "final_affected_rerun": true
+    },
+    "demo-asan": {
+      "selected": 21,
+      "executed": 21,
+      "failed": 0,
+      "final_affected_rerun": true
+    },
+    "demo-gcc": {
+      "selected": 21,
+      "executed": 21,
+      "failed": 0,
+      "final_affected_rerun": true
+    }
+  },
+  "ast": {
+    "actual_invocations": 12,
+    "initial_passed": 9,
+    "affected_test_reruns_passed": 3
+  },
+  "native": {
+    "configurations": 4,
+    "frames_each": 330,
+    "process_exit_zero": true,
+    "stderr_empty": true,
+    "affected_gui_reset_reruns": 2,
+    "physical_acceptance": false
+  }
+}

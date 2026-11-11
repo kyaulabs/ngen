@@ -105,4 +105,24 @@ present(const Preset &preset, const flight::CameraFrame &camera, VkExtent2D exte
                 static_cast<double>(instance.model.columns[12 + axis]) - origin[axis]);
     return output;
 }
+std::optional<std::array<float, 2>> project_target(const FrameView &view,
+                                                   const std::array<double, 3> &point,
+                                                   std::array<float, 2> size) {
+    if (!std::all_of(size.begin(), size.end(), [](float value) {
+            return std::isfinite(value) && value > 0 && value <= 8192;
+        }))
+        return std::nullopt;
+    std::array<double, 4> local{point[0] - view.origin_metres[0], point[1] - view.origin_metres[1],
+                                point[2] - view.origin_metres[2], 1},
+        clip{};
+    for (std::size_t row = 0; row < 4; ++row)
+        for (std::size_t column = 0; column < 4; ++column)
+            clip[row] += view.scene.view_projection.columns[column * 4 + row] * local[column];
+    if (std::all_of(clip.begin(), clip.end(), [](double value) { return std::isfinite(value); }) &&
+        clip[3] > 0 && clip[2] >= 0 && clip[2] <= clip[3] && std::abs(clip[0]) <= clip[3] &&
+        std::abs(clip[1]) <= clip[3])
+        return std::array<float, 2>{static_cast<float>(clip[0] / clip[3] * .5 + .5) * size[0],
+                                    static_cast<float>(clip[1] / clip[3] * .5 + .5) * size[1]};
+    return std::nullopt;
+}
 } // namespace ngen::demo
