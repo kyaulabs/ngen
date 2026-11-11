@@ -1,11 +1,13 @@
 #include "package_fixture.hpp"
 #include "render/scene_draw.hpp"
+#include "tools/gui.hpp"
 #include "tools/inspector.hpp"
 #include "tools/ui.hpp"
 #include <algorithm>
 #include <bit>
 #include <cmath>
 #include <cstdio>
+#include <imgui.h>
 #include <limits>
 #include <numbers>
 #include <optional>
@@ -759,6 +761,21 @@ int main() try {
         std::puts("inspector_ship_bounds=1 inspector_rear_engine_bounds=1");
     }
     ui.reset(); // SDL platform state ends before Context destroys its window.
+    {
+        auto gui = take(ngen::tools::Gui::create(*context));
+        require(std::holds_alternative<Failure>(ngen::tools::Gui::create(*context)),
+                "generic frontend admitted a second active ImGui owner");
+        gui->begin();
+        ImGui::GetBackgroundDrawList()->AddRectFilled({0, 0}, ImGui::GetIO().DisplaySize,
+                                                      IM_COL32(255, 0, 0, 255));
+        gui->end();
+        const auto custom = take(gui->overlay({4, 4}));
+        require(custom.has_value(), "generic frontend generated no custom overlay");
+        const auto pixel = composite(&*custom);
+        require(pixel[0] == 255 && pixel[1] == 0 && pixel[2] == 0,
+                "generic frontend custom geometry did not reach native pixels");
+    }
+    std::puts("gui_custom_pixels=1 gui_sequential_context=1 gui_single_owner=1");
     std::printf(
         "inspector_material_gpu=1 next_frame_edit=1 old_snapshot_gpu=1 immutable_material=1 "
         "inspector_pbr_factors=3 factor_admission=1 overlay_pixels=1 overlay_clip=1 overlay_srgb=1 "

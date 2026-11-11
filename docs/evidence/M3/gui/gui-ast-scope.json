@@ -1,0 +1,26 @@
+[
+  {
+    "configuration": "inspector-debug",
+    "consumers": [
+      "engine/tools/gui.cpp",
+      "engine/tools/ui.cpp",
+      "apps/inspector_probe/main.cpp"
+    ]
+  },
+  {
+    "configuration": "inspector-release",
+    "consumers": [
+      "engine/tools/gui.cpp",
+      "engine/tools/ui.cpp",
+      "apps/inspector_probe/main.cpp"
+    ]
+  },
+  {
+    "configuration": "inspector-asan",
+    "consumers": [
+      "engine/tools/gui.cpp",
+      "engine/tools/ui.cpp",
+      "apps/inspector_probe/main.cpp"
+    ]
+  }
+]

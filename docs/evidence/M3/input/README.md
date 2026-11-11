@@ -33,6 +33,8 @@ held versus consume-once semantics, mode/free-look transitions and copies. No
 remaining demonstrated P1/P2 defect was found in this value-only slice; it is not
 independent review, concurrency proof or actual SDL/device evidence. Parent root
 `0fd447b` passes hosted CI4/4, retained separately; this input source requires its
-own exact-head check. Live event routing, focus/capture behavior, playable contact
+own exact-head check. It subsequently passes `c87d1e1`
+[CI42953451372](https://github.com/kyaulabs/ngen/actions/runs/42953451372)4/4.
+Live event routing, focus/capture behavior, playable contact
 preset/renderer, traces, audio, offline package, Windows, warmed measurements,
 recording and owner control-feel acceptance remain. M3 is not complete.

@@ -1,0 +1,44 @@
+=== inspector-debug: /home/kyau/projects/kyaulabs/ngen/engine/tools/gui.cpp ===
+45 warnings generated.
+Suppressed 45 warnings (45 in non-user code).
+Use -header-filter=.* or leave it as default to display errors from all non-system headers. Use -system-headers to display errors from system headers as well.
+
+=== inspector-debug: /home/kyau/projects/kyaulabs/ngen/engine/tools/ui.cpp ===
+53 warnings generated.
+Suppressed 53 warnings (53 in non-user code).
+Use -header-filter=.* or leave it as default to display errors from all non-system headers. Use -system-headers to display errors from system headers as well.
+
+=== inspector-debug: /home/kyau/projects/kyaulabs/ngen/apps/inspector_probe/main.cpp ===
+64 warnings generated.
+Suppressed 64 warnings (64 in non-user code).
+Use -header-filter=.* or leave it as default to display errors from all non-system headers. Use -system-headers to display errors from system headers as well.
+
+=== inspector-release: /home/kyau/projects/kyaulabs/ngen/engine/tools/gui.cpp ===
+44 warnings generated.
+Suppressed 44 warnings (44 in non-user code).
+Use -header-filter=.* or leave it as default to display errors from all non-system headers. Use -system-headers to display errors from system headers as well.
+
+=== inspector-release: /home/kyau/projects/kyaulabs/ngen/engine/tools/ui.cpp ===
+52 warnings generated.
+Suppressed 52 warnings (52 in non-user code).
+Use -header-filter=.* or leave it as default to display errors from all non-system headers. Use -system-headers to display errors from system headers as well.
+
+=== inspector-release: /home/kyau/projects/kyaulabs/ngen/apps/inspector_probe/main.cpp ===
+63 warnings generated.
+Suppressed 63 warnings (63 in non-user code).
+Use -header-filter=.* or leave it as default to display errors from all non-system headers. Use -system-headers to display errors from system headers as well.
+
+=== inspector-asan: /home/kyau/projects/kyaulabs/ngen/engine/tools/gui.cpp ===
+45 warnings generated.
+Suppressed 45 warnings (45 in non-user code).
+Use -header-filter=.* or leave it as default to display errors from all non-system headers. Use -system-headers to display errors from system headers as well.
+
+=== inspector-asan: /home/kyau/projects/kyaulabs/ngen/engine/tools/ui.cpp ===
+53 warnings generated.
+Suppressed 53 warnings (53 in non-user code).
+Use -header-filter=.* or leave it as default to display errors from all non-system headers. Use -system-headers to display errors from system headers as well.
+
+=== inspector-asan: /home/kyau/projects/kyaulabs/ngen/apps/inspector_probe/main.cpp ===
+64 warnings generated.
+Suppressed 64 warnings (64 in non-user code).
+Use -header-filter=.* or leave it as default to display errors from all non-system headers. Use -system-headers to display errors from system headers as well.

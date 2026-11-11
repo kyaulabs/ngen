@@ -1,0 +1,56 @@
+[
+  {
+    "configuration": "inspector-debug",
+    "source": "engine/tools/gui.cpp",
+    "status": 0,
+    "flags": "Complete actual native command; no flags removed"
+  },
+  {
+    "configuration": "inspector-debug",
+    "source": "engine/tools/ui.cpp",
+    "status": 0,
+    "flags": "Complete actual native command; no flags removed"
+  },
+  {
+    "configuration": "inspector-debug",
+    "source": "apps/inspector_probe/main.cpp",
+    "status": 0,
+    "flags": "Complete actual native command; no flags removed"
+  },
+  {
+    "configuration": "inspector-release",
+    "source": "engine/tools/gui.cpp",
+    "status": 0,
+    "flags": "Complete actual native command; no flags removed"
+  },
+  {
+    "configuration": "inspector-release",
+    "source": "engine/tools/ui.cpp",
+    "status": 0,
+    "flags": "Complete actual native command; no flags removed"
+  },
+  {
+    "configuration": "inspector-release",
+    "source": "apps/inspector_probe/main.cpp",
+    "status": 0,
+    "flags": "Complete actual native command; no flags removed"
+  },
+  {
+    "configuration": "inspector-asan",
+    "source": "engine/tools/gui.cpp",
+    "status": 0,
+    "flags": "Complete actual native command; no flags removed"
+  },
+  {
+    "configuration": "inspector-asan",
+    "source": "engine/tools/ui.cpp",
+    "status": 0,
+    "flags": "Complete actual native command; no flags removed"
+  },
+  {
+    "configuration": "inspector-asan",
+    "source": "apps/inspector_probe/main.cpp",
+    "status": 0,
+    "flags": "Complete actual native command; no flags removed"
+  }
+]

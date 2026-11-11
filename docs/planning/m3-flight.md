@@ -123,6 +123,15 @@ headless graphs pass, with18 actual-command header-consumer Clang checks. These
 are box proxies, not exact mesh contacts or a completed asteroid scene. The merged
 pinned graphics/physics dependency graph is prepared for the playable application.
 
+Input `c87d1e1` hosted CI passes4/4. The existing ImGui/SDL atlas and bounded
+Context-overlay frontend is now shared by inspector widgets and custom flight
+HUD drawing, not reimplemented with a second renderer backend. Inspector native
+characterization stays green; a real custom-GUI admission Red is fixed and its
+pixels, sequential context reuse and exclusive ownership pass. Six scene graphs
+pass69 CTests, four native configurations pass with empty stderr, and nine actual
+Clang implementation/header-consumer invocations pass. The original inspector
+layout/style and GPU resource ownership remain unchanged.
+
 Next: the actual scene preset and live SDL/render application integration,
 force traces, then bounded audio and offline delivery.
 Headless tests do not complete M3-A/B presentation or the demo: traces, collision
