@@ -731,6 +731,10 @@ try {
             '-s:h', "build_type=$config", '-s:b', "build_type=$buildType",
             '-c:h', 'tools.cmake.cmaketoolchain:generator=Ninja',
             '-c:b', 'tools.cmake.cmaketoolchain:generator=Ninja',
+            # The x64 developer shell above is already active. Re-entering vcvars
+            # inside cmd.exe can overflow its command/environment line limit.
+            '-c:h', 'tools.microsoft.msbuild:installation_path=',
+            '-c:b', 'tools.microsoft.msbuild:installation_path=',
             '-c:h', 'tools.build:jobs=2', '-c:b', 'tools.build:jobs=2',
             '-o:h', "&:renderer=$rendererOption", '-o:h', "&:shaders=$rendererOption", '-o:h', "&:assets=$assetsOption", '-o:h', "&:inspector=$inspectorOption",
             '-o:h', "&:physics=$flightOption", '-o:h', "&:audio=$flightOption",
