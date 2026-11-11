@@ -168,9 +168,20 @@ and native frame clocks correlate in all four configurations. The preliminary
 Linux bundle starts/renders with networking unshared and Conan hidden; final
 packaging must follow its source commit. See [packaging evidence](../evidence/M3/package/README.md).
 
-Next: regenerate final delivery, execute current Windows compatibility and three
-warmed laptop/scoped RTX measurements, record audio/video and obtain physical
-owner control/listening feedback. Correctness runs are not performance acceptance.
-All five slices, native verification, same-session review, signed commits and
-normal reviewed integration must finish before M3 is complete. No mandatory
-tracker workflow or per-command reapproval is introduced.
+Current behavior source `95645f6` passes exact-head CI43077400206,4/4. Private v7
+bundling verifies its complete manifest/source archive and renders with networking
+unshared and Conan hidden. Owner feedback repaired off-screen HUD projection,
+steering response and stale-autopilot TAB handoff without changing accepted art.
+The final0.37rad/s steering, bounded braking/coasting, handoff, mute/listening and
+real playback-device recovery are confirmed; corrected original audio/video stays
+private. See [final laptop/owner evidence](../evidence/M3/laptop/README.md).
+
+Three final-source warmed2400-frame laptop runs pass B1 with every measured frame
+retained: medians16.67–16.69ms, P95≤18.48ms and maximum20.99ms. Allocation, resident
+and VMA observations retain their actual scope; no global/continuous GPU-memory or
+scanout proof is inferred. Correctness and instrumented recording are separate.
+
+Next: finish current Windows MSVC/ClangCl, app-local offline startup and scoped RTX
+timing/memory, then final review and normal reviewed integration. M3 remains open
+until those gates and exact post-merge CI complete. No mandatory tracker workflow
+or per-command reapproval is introduced.

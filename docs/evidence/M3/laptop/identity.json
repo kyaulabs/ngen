@@ -1,0 +1,18 @@
+{
+  "behavior_revision": "95645f6deb565ca05d4c820f8c695b726f7fe38a",
+  "compiler_version": "clang version 23.1.4",
+  "actual_application_compile_command": {
+    "directory": "/home/kyau/projects/kyaulabs/ngen/build/demo-release",
+    "command": "/bin/clang++ -DFFI_STATIC_BUILD -DJPH_DOUBLE_PRECISION -DJPH_OBJECT_LAYER_BITS=16 -DLIBXML_STATIC -DNGEN_ALLOCATION_PROBE=1 -DXML_STATIC -I/home/kyau/projects/kyaulabs/ngen/apps -I/home/kyau/projects/kyaulabs/ngen/game -I/home/kyau/projects/kyaulabs/ngen/engine -isystem /home/kyau/.conan2/p/b/sdla2f602f4f5692/p/include -isystem /home/kyau/.conan2/p/b/waylaedcc845c0414e/p/include -isystem /home/kyau/.conan2/p/b/zlib2105ec2ddcc7e/p/include -isystem /home/kyau/.conan2/p/b/libal0e23a5a609c9e/p/include -isystem /home/kyau/.conan2/p/vulkabd7575518f65a/p/include -isystem /home/kyau/.conan2/p/b/imgui7c58339a2e1d0/p/include -isystem /home/kyau/.conan2/p/b/joltp0b2df0d6522bf/p/include -m64 -stdlib=libstdc++ -O3 -DNDEBUG -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror @CMakeFiles/flight_demo.dir/apps/flight_demo/app.cpp.o.modmap -o CMakeFiles/flight_demo.dir/apps/flight_demo/app.cpp.o -c /home/kyau/projects/kyaulabs/ngen/apps/flight_demo/app.cpp",
+    "file": "/home/kyau/projects/kyaulabs/ngen/apps/flight_demo/app.cpp",
+    "output": "/home/kyau/projects/kyaulabs/ngen/build/demo-release/CMakeFiles/flight_demo.dir/apps/flight_demo/app.cpp.o"
+  },
+  "lock_sha256": "cef557eebd3ad4761e1fca14bf82f68007315f8ba48e5a362f04e1217041fddb",
+  "profile_sha256": "a29e429aa134b1e6b85c58bea98d9438a736c17adb1e19655810dab45288dbf3",
+  "earlier_background_raw_sha256": {
+    "b1-current-run-1.csv": "a1d1d4b57cdc9a880609395d40b71def2b59152a6803e0db55675fde56440e90",
+    "b1-current-run-2.csv": "cc46fa52e40b7ca6106dc6f819f001689717f6d98f13c0baf7358a4fe4f2c9bd",
+    "b1-current-run-3.csv": "50664da8d6c0d6dcfa956e7bc528237b636234953f667b3ba6573bccbb7036f6"
+  },
+  "scope": "Earlier raw samples remain at their ignored working paths; final raw CSVs retained here. Native compile invocation includes real SDK include paths, not credential contents."
+}

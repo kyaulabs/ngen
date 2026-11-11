@@ -1,0 +1,114 @@
+{
+  "video": {
+    "path": "Screencast_20261111_105600.webm",
+    "bytes": 5625317,
+    "mtime_ns": 1794423421592550318,
+    "sha256": "52943a54a9a0a9e83120df56526ff3768320848264068ab6cac88d2a9fe3287c",
+    "media": {
+      "programs": [],
+      "stream_groups": [],
+      "streams": [
+        {
+          "codec_name": "vp9",
+          "codec_type": "video",
+          "width": 2580,
+          "height": 1506
+        }
+      ],
+      "format": {
+        "duration": "60.165000",
+        "size": "5625317"
+      }
+    }
+  },
+  "audio": {
+    "path": "owner-handoff-audio.wav",
+    "bytes": 726712364,
+    "mtime_ns": 1794423460870003845,
+    "sha256": "e06f0ef332f3447c20f579c42d08b4c60eb8885297cae52e925f0777698007ae",
+    "media": {
+      "programs": [],
+      "stream_groups": [],
+      "streams": [
+        {
+          "codec_name": "pcm_s32le",
+          "codec_type": "audio",
+          "sample_rate": "48000",
+          "channels": 2,
+          "bits_per_sample": 32
+        }
+      ],
+      "format": {
+        "duration": "1892.480000",
+        "size": "726712364"
+      }
+    }
+  },
+  "source": "95645f6deb565ca05d4c820f8c695b726f7fe38a",
+  "audio_window": {
+    "original_start_seconds": 1773.037546473,
+    "duration_seconds": 100.16499999999999,
+    "peak": 0.07410871237516403,
+    "native_payload": "float32; original ALSA WAV tag was integer PCM; original preserved"
+  },
+  "combined": {
+    "path": "owner-flight-corrected.mkv",
+    "bytes": 28734817,
+    "sha256": "f7bbfef75951bc40093f965d02a4f86244d0e233bc9372d46ea977542baff1a3",
+    "media": {
+      "programs": [],
+      "stream_groups": [],
+      "streams": [
+        {
+          "codec_name": "vp9",
+          "codec_type": "video",
+          "width": 2580,
+          "height": 1506
+        },
+        {
+          "codec_name": "pcm_f32le",
+          "codec_type": "audio",
+          "sample_rate": "48000",
+          "channels": 2
+        }
+      ],
+      "format": {
+        "duration": "60.165000",
+        "size": "28734817"
+      }
+    },
+    "full_decode_exit": 0,
+    "original_video_stream_hash": "0,v,SHA256=42bca4cde79d2dcb8fe21015162198584ee98572a36739b0acddffa5dbbe5341",
+    "video_stream_unchanged": true
+  },
+  "alignment": {
+    "bounded_window_trim_seconds": 20.028979,
+    "original_audio_start_seconds": 1793.066525473,
+    "video_mode_changes_seconds": [
+      2.182,
+      19.265,
+      24.515,
+      29.432,
+      32.065,
+      46.948
+    ],
+    "audio_confirmation_seconds_in_window": [
+      22.185646,
+      39.316313,
+      44.542979,
+      49.470979,
+      52.094979,
+      66.964312
+    ],
+    "residual_seconds": [
+      -0.025332999999999828,
+      0.022334000000000742,
+      -0.0009999999999976694,
+      0.010000000000001563,
+      0.0010000000000047748,
+      -0.012666999999993322
+    ],
+    "scope": "Six actual TAB/UI cues aligned; maximum absolute residual is below26ms. Not an independent audio-device latency measurement."
+  },
+  "acceptance": "Owner confirmed repaired mode handoff and final steering; original post-fix private AV clip retained."
+}

@@ -1,0 +1,81 @@
+{
+  "source": "660c9dd1dc8efc033760ca3a2de1468edf376bd9",
+  "binary_sha256": "051ffde13fc0c7be34dc051260060859a3ba61865ec8ea80e3c4872a533d1ad2",
+  "bundle_manifest_sha256": "ba54d35dc282b0c441171efc8601194c1a2c6f6bfe1d62bdea06c3da85c3f73e",
+  "quantiles": "median and nearest rank p95/p99; every measured frame retained",
+  "scope": "Three sequential unsanitized/unvalidated final-bundle replays; no intentional concurrent builds/scans/recording; kernel wait4 peak RSS per owned process; VMA is not global GPU pressure. No system power settings changed.",
+  "runs": [
+    {
+      "run": 1,
+      "frames": 2400,
+      "warmup": 60,
+      "median_ms": 50.623138,
+      "p95_ms": 51.313601,
+      "p99_ms": 51.55286,
+      "max_ms": 52.298605,
+      "peak_rss_bytes": 395755520,
+      "vma_allocation_max_bytes": 232000808,
+      "vma_reserved_max_bytes": 234698712,
+      "audio_states": [
+        "2"
+      ],
+      "audio_generations": [
+        "1"
+      ],
+      "input_focus_values": [
+        "0"
+      ],
+      "process_seconds": 125.171247264,
+      "timing_budget_pass": false,
+      "resident_budget_pass": true
+    },
+    {
+      "run": 2,
+      "frames": 2400,
+      "warmup": 60,
+      "median_ms": 50.7165015,
+      "p95_ms": 51.308411,
+      "p99_ms": 51.79908,
+      "max_ms": 52.270322,
+      "peak_rss_bytes": 394964992,
+      "vma_allocation_max_bytes": 232000808,
+      "vma_reserved_max_bytes": 234698712,
+      "audio_states": [
+        "2"
+      ],
+      "audio_generations": [
+        "1"
+      ],
+      "input_focus_values": [
+        "0"
+      ],
+      "process_seconds": 125.074806026,
+      "timing_budget_pass": false,
+      "resident_budget_pass": true
+    },
+    {
+      "run": 3,
+      "frames": 2400,
+      "warmup": 60,
+      "median_ms": 50.804147,
+      "p95_ms": 51.276779,
+      "p99_ms": 51.456581,
+      "max_ms": 52.176177,
+      "peak_rss_bytes": 394797056,
+      "vma_allocation_max_bytes": 232000808,
+      "vma_reserved_max_bytes": 234698712,
+      "audio_states": [
+        "2"
+      ],
+      "audio_generations": [
+        "1"
+      ],
+      "input_focus_values": [
+        "0"
+      ],
+      "process_seconds": 125.069700438,
+      "timing_budget_pass": false,
+      "resident_budget_pass": true
+    }
+  ]
+}
