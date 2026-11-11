@@ -1,0 +1,45 @@
+Test project /home/kyau/projects/kyaulabs/ngen/build/demo-release
+      Start  1: audio_mixer
+ 1/20 Test  #1: audio_mixer ......................   Passed    0.00 sec
+      Start  2: audio_output
+ 2/20 Test  #2: audio_output .....................   Passed    0.33 sec
+      Start  3: physics
+ 3/20 Test  #3: physics ..........................   Passed    0.01 sec
+      Start  4: flight
+ 4/20 Test  #4: flight ...........................   Passed    0.07 sec
+      Start  5: flight_camera
+ 5/20 Test  #5: flight_camera ....................   Passed    0.00 sec
+      Start  6: flight_input
+ 6/20 Test  #6: flight_input .....................   Passed    0.00 sec
+      Start  7: shader_offline
+ 7/20 Test  #7: shader_offline ...................   Passed   20.89 sec
+      Start  8: flight_scene
+ 8/20 Test  #8: flight_scene .....................   Passed    0.00 sec
+      Start  9: flight_demo_cli
+ 9/20 Test  #9: flight_demo_cli ..................   Passed    0.11 sec
+      Start 10: ngen_tests
+10/20 Test #10: ngen_tests .......................   Passed    0.00 sec
+      Start 11: render_contract_tests
+11/20 Test #11: render_contract_tests ............   Passed    0.00 sec
+      Start 12: render_environment_tests
+12/20 Test #12: render_environment_tests .........   Passed    0.12 sec
+      Start 13: scene_workload_tests
+13/20 Test #13: scene_workload_tests .............   Passed    0.00 sec
+      Start 14: asset_package_tests
+14/20 Test #14: asset_package_tests ..............   Passed    0.03 sec
+      Start 15: inspector_tests
+15/20 Test #15: inspector_tests ..................   Passed    0.00 sec
+      Start 16: render_startup_tests
+16/20 Test #16: render_startup_tests .............   Passed    0.00 sec
+      Start 17: wayland_tablet_shutdown
+17/20 Test #17: wayland_tablet_shutdown ..........   Passed    0.03 sec
+      Start 18: wayland_tablet_removal
+18/20 Test #18: wayland_tablet_removal ...........   Passed    0.02 sec
+      Start 19: replay_serial
+19/20 Test #19: replay_serial ....................   Passed    0.00 sec
+      Start 20: replay_workers
+20/20 Test #20: replay_workers ...................   Passed    0.01 sec
+
+100% tests passed out of 20
+
+Total Test time (real) =  21.65 sec

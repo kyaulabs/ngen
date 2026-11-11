@@ -1,0 +1,9 @@
+Test project /home/kyau/projects/kyaulabs/ngen/build/demo-debug
+    Start 2: audio_output
+1/2 Test #2: audio_output .....................   Passed    0.34 sec
+    Start 9: flight_demo_cli
+2/2 Test #9: flight_demo_cli ..................   Passed    0.14 sec
+
+100% tests passed out of 2
+
+Total Test time (real) =   0.48 sec

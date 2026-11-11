@@ -1,0 +1,33 @@
+Test project /home/kyau/projects/kyaulabs/ngen/build/demo-release
+    Start 1: audio_mixer
+1/1 Test #1: audio_mixer ......................***Failed    0.00 sec
+Randomness seeded to: 3588016631
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+audio_mixer_tests is a Catch2 v3.16.0 host application.
+Run with -? for options
+
+-------------------------------------------------------------------------------
+bounded procedural cues are audible, drain, and reject excess voices
+-------------------------------------------------------------------------------
+/home/kyau/projects/kyaulabs/ngen/tests/audio_mixer.cpp:23
+...............................................................................
+
+/home/kyau/projects/kyaulabs/ngen/tests/audio_mixer.cpp:29: FAILED:
+  REQUIRE( std::any_of(pcm.begin(), pcm.end(), [](float value) { return std::abs(value) > .01F; }) )
+with expansion:
+  false
+
+===============================================================================
+test cases: 2 | 1 passed | 1 failed
+assertions: 9 | 8 passed | 1 failed
+
+
+
+0% tests passed, 1 tests failed out of 1
+
+Total Test time (real) =   0.00 sec
+
+The following tests FAILED:
+	  1 - audio_mixer (Failed)
+Errors while running CTest

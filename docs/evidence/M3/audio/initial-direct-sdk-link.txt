@@ -1,0 +1,2 @@
+/home/kyau/projects/kyaulabs/ngen/tests/audio_output.cpp:126:(.text+0x64db): undefined reference to `snd_asoundlib_version'
+clang++: error: linker command failed with exit code 1 (use -v to see invocation)

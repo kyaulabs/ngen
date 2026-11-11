@@ -1,0 +1,56 @@
+[
+  {
+    "configuration": "demo-debug",
+    "source": "engine/audio/output.cpp",
+    "status": 0,
+    "scope": "affected output-header consumers, exact native flags"
+  },
+  {
+    "configuration": "demo-debug",
+    "source": "tests/audio_output.cpp",
+    "status": 0,
+    "scope": "affected output-header consumers, exact native flags"
+  },
+  {
+    "configuration": "demo-debug",
+    "source": "apps/flight_demo/app.cpp",
+    "status": 0,
+    "scope": "affected output-header consumers, exact native flags"
+  },
+  {
+    "configuration": "demo-release",
+    "source": "engine/audio/output.cpp",
+    "status": 0,
+    "scope": "affected output-header consumers, exact native flags"
+  },
+  {
+    "configuration": "demo-release",
+    "source": "tests/audio_output.cpp",
+    "status": 0,
+    "scope": "affected output-header consumers, exact native flags"
+  },
+  {
+    "configuration": "demo-release",
+    "source": "apps/flight_demo/app.cpp",
+    "status": 0,
+    "scope": "affected output-header consumers, exact native flags"
+  },
+  {
+    "configuration": "demo-asan",
+    "source": "engine/audio/output.cpp",
+    "status": 0,
+    "scope": "affected output-header consumers, exact native flags"
+  },
+  {
+    "configuration": "demo-asan",
+    "source": "tests/audio_output.cpp",
+    "status": 0,
+    "scope": "affected output-header consumers, exact native flags"
+  },
+  {
+    "configuration": "demo-asan",
+    "source": "apps/flight_demo/app.cpp",
+    "status": 0,
+    "scope": "affected output-header consumers, exact native flags"
+  }
+]

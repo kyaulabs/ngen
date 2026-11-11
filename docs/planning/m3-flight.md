@@ -151,9 +151,18 @@ snapshots. Native SDK relative-mode acceptance is proven; real OS focus loss,
 physical control feel and current Windows behavior are not substituted by injected
 events. See [playable bridge evidence](../evidence/M3/demo/README.md).
 
-Next: bounded audio, offline packaging and current Windows compatibility, then
-three warmed laptop replays/scoped RTX measurements, recording and owner
-control-feel feedback. The current application explicitly reports audio pending;
-its correctness runs are not performance acceptance. All five slices, native
-verification, same-session review, signed commits and normal reviewed integration must finish before M3 is
+Playable `cf72519` exact-head hosted CI42970251740 passes4/4, including the new
+Clang18 demo consumer checks. Original bounded48kHz audio now feeds an owning
+SDL stream: eight procedural voices, a4096-frame input queue, native mute/clear,
+reported device-loss/reopen and soft unavailable-driver recovery. Five mixer and
+six native SDL cases pass in four20/20 graphs; four330-frame combined runs prove
+reported loss does not stop physics, native M mute toggles, help and repeated
+keyboard/GUI reset. The actual ALSA endpoint also opens quietly paused/muted;
+listening/physical unplug are not inferred. Audio-disabled graphs and original
+native probes stay green. See [audio evidence](../evidence/M3/audio/README.md).
+
+Next: offline packaging and current Windows compatibility, then three warmed
+laptop replays/scoped RTX measurements, recording and owner control/listening
+feedback. Correctness runs are not performance acceptance. All five slices,
+native verification, same-session review, signed commits and normal reviewed integration must finish before M3 is
 complete. No mandatory tracker workflow or per-command reapproval is introduced.

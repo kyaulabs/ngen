@@ -8,6 +8,8 @@ The recipe is copied from Conan Center revision `fe421775c8e1866eb22a3ba23ef8fd6
 
 `0002-clang-shared-asan.patch` permits Clang's shared-library sanitizer imports to resolve through the final instrumented executable, as required by [Clang's AddressSanitizer link model](https://clang.llvm.org/docs/AddressSanitizer.html#usage). Normal builds retain `--no-undefined`; ASan/UBSan and fail-fast recovery flags remain enabled in the instrumented build. Conan's sanitizer profile supplies the actual compiler flags; the unrelated upstream `SDL_ASAN` CMake option is not used. Loader checks also run with process-local `LD_BIND_NOW=1`. This is not a warning or leak suppression.
 
+Audio backend options explicitly propagate both true and false to CMake. Otherwise `pulseaudio=False` and `sndio=False` still allowed ambient host SDK detection. PipeWire is disabled because this recipe declares no pinned PipeWire requirement or option. M3 alone enables SDL audio with the locked shared ALSA client; ordinary renderer/inspector graphs keep audio disabled. No sound server, codec framework or new physics dependency is introduced. The public SDL driver-list regression rejects undeclared Linux backends; the tablet and sanitizer repairs remain unchanged.
+
 Prepare and run the separate Linux renderer graphs with the native presets:
 
 ```sh

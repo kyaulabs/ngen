@@ -6,7 +6,7 @@ from conan.tools.env import VirtualRunEnv
 
 class NgenDependencies(ConanFile):
     settings = "os", "compiler", "build_type", "arch"
-    options = {"renderer": [True, False], "asset_tools": [True, False], "assets": [True, False], "shaders": [True, False], "inspector": [True, False], "physics": [True, False]}
+    options = {"renderer": [True, False], "asset_tools": [True, False], "assets": [True, False], "shaders": [True, False], "inspector": [True, False], "physics": [True, False], "audio": [True, False]}
     default_options = {
         "renderer": False,
         "asset_tools": False,
@@ -14,9 +14,11 @@ class NgenDependencies(ConanFile):
         "shaders": False,
         "inspector": False,
         "physics": False,
+        "audio": False,
         "sdl/*:shared": True,
+        "libalsa/*:shared": True,
         **{f"sdl/*:{name}": False for name in (
-            "audio", "gpu", "render", "camera", "joystick", "haptic", "hidapi",
+            "gpu", "render", "camera", "joystick", "haptic", "hidapi",
             "power", "sensor", "dialog", "tray", "opengl", "opengles", "directx",
             "libudev", "dbus", "x11",
         )},
@@ -24,6 +26,8 @@ class NgenDependencies(ConanFile):
     }
 
     def validate(self):
+        if self.options.audio and not self.options.renderer:
+            raise ConanInvalidConfiguration("The audio frontend requires the existing SDL platform graph")
         if self.options.inspector and not (self.options.renderer and self.options.assets and self.options.shaders):
             raise ConanInvalidConfiguration("The inspector frontend requires renderer, assets and offline shaders")
 
@@ -48,7 +52,14 @@ class NgenDependencies(ConanFile):
             # Only Linux needs the local Wayland ownership repair; Windows keeps
             # the independently verified upstream recipe and binaries.
             reference = "sdl/3.4.16@ngen/wayland" if self.settings.os == "Linux" else "sdl/3.4.16"
-            self.requires(reference)
+            sdl_options = {"audio": bool(self.options.audio)}
+            if self.settings.os == "Linux" and self.options.audio:
+                # One native ALSA client, not a new sound framework or server.
+                sdl_options.update(alsa=True, pulseaudio=False, sndio=False)
+                # The eager-binding SDK regression directly calls this client;
+                # do not rely on a shared SDL dependency's transitive lib trait.
+                self.test_requires("libalsa/1.2.16.1")
+            self.requires(reference, options=sdl_options)
             self.requires("vulkan-memory-allocator/3.3.0")
             self.requires("vulkan-headers/1.3.296.0", override=True)
             if self.settings.os == "Linux":
@@ -69,6 +80,8 @@ class NgenDependencies(ConanFile):
         toolchain.user_presets_path = False
         if self.options.physics:
             toolchain.variables["NGEN_BUILD_PHYSICS"] = True
+        if self.options.audio:
+            toolchain.variables["NGEN_BUILD_AUDIO"] = True
         if self.options.inspector:
             toolchain.variables["NGEN_BUILD_INSPECTOR"] = True
             toolchain.variables["NGEN_IMGUI_BINDINGS_DIR"] = self.dependencies["imgui"].package_folder.replace("\\", "/") + "/res/bindings"

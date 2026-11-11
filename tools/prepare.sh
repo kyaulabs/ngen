@@ -56,7 +56,7 @@ if [ "$demo" = true ]; then
   conan export recipes/joltphysics --version=5.6.0 --user=ngen --channel=headless-double
   conan export recipes/sdl --version=3.4.16 --user=ngen --channel=wayland
   conan export recipes/slangc --version=2026.21 --user=ngen --channel=tools
-  conan install . -pr:h "profiles/$profile" -pr:b profiles/linux-clang -s:h "build_type=$type" -s:b build_type=Release -o '&:physics=True' -o '&:renderer=True' -o '&:shaders=True' -o '&:assets=True' -o '&:inspector=True' --lockfile conan-demo.lock --build=missing -c tools.build:jobs=2 -of "build/$preset" "$@"
+  conan install . -pr:h "profiles/$profile" -pr:b profiles/linux-clang -s:h "build_type=$type" -s:b build_type=Release -o '&:physics=True' -o '&:renderer=True' -o '&:shaders=True' -o '&:assets=True' -o '&:inspector=True' -o '&:audio=True' --lockfile conan-demo.lock --build=missing -c tools.build:jobs=2 -of "build/$preset" "$@"
 elif [ "$physics" = true ]; then
   conan export recipes/joltphysics --version=5.6.0 --user=ngen --channel=headless-double
   conan install . -pr:h "profiles/$profile" -pr:b profiles/linux-clang -s:h "build_type=$type" -s:b build_type=Release -o '&:physics=True' --lockfile conan-physics.lock --build=missing -c tools.build:jobs=2 -of "build/$preset" "$@"

@@ -1,0 +1,26 @@
+[
+  {
+    "configuration": "inspector-debug",
+    "status": 0,
+    "stderr_bytes": 0,
+    "markers": true
+  },
+  {
+    "configuration": "inspector-release",
+    "status": 0,
+    "stderr_bytes": 0,
+    "markers": true
+  },
+  {
+    "configuration": "inspector-asan",
+    "status": 0,
+    "stderr_bytes": 0,
+    "markers": true
+  },
+  {
+    "configuration": "inspector-gcc",
+    "status": 0,
+    "stderr_bytes": 0,
+    "markers": true
+  }
+]

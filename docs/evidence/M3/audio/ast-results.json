@@ -1,0 +1,182 @@
+[
+  {
+    "configuration": "demo-debug",
+    "source": "engine/audio/mixer.cpp",
+    "status": 0,
+    "flags": "complete native command, no flags removed, owned headers visible"
+  },
+  {
+    "configuration": "demo-debug",
+    "source": "engine/audio/output.cpp",
+    "status": 0,
+    "scope": "affected output-header consumers, exact native flags"
+  },
+  {
+    "configuration": "demo-debug",
+    "source": "tests/audio_mixer.cpp",
+    "status": 0,
+    "flags": "complete native command, no flags removed, owned headers visible"
+  },
+  {
+    "configuration": "demo-debug",
+    "source": "tests/audio_output.cpp",
+    "status": 0,
+    "scope": "affected output-header consumers, exact native flags"
+  },
+  {
+    "configuration": "demo-debug",
+    "source": "apps/flight_demo/preset.cpp",
+    "status": 0,
+    "flags": "complete native command, no flags removed, owned headers visible"
+  },
+  {
+    "configuration": "demo-debug",
+    "source": "apps/flight_demo/view.cpp",
+    "status": 0,
+    "flags": "complete native command, no flags removed, owned headers visible"
+  },
+  {
+    "configuration": "demo-debug",
+    "source": "apps/flight_demo/main.cpp",
+    "status": 0,
+    "flags": "complete native command, no flags removed, owned headers visible"
+  },
+  {
+    "configuration": "demo-debug",
+    "source": "apps/flight_demo/app.cpp",
+    "status": 0,
+    "scope": "affected output-header consumers, exact native flags"
+  },
+  {
+    "configuration": "demo-debug",
+    "source": "apps/scene_workload/allocations.cpp",
+    "status": 0,
+    "flags": "complete native command, no flags removed, owned headers visible"
+  },
+  {
+    "configuration": "demo-debug",
+    "source": "tests/flight_scene.cpp",
+    "status": 0,
+    "flags": "complete native command, no flags removed, owned headers visible"
+  },
+  {
+    "configuration": "demo-release",
+    "source": "engine/audio/mixer.cpp",
+    "status": 0,
+    "flags": "complete native command, no flags removed, owned headers visible"
+  },
+  {
+    "configuration": "demo-release",
+    "source": "engine/audio/output.cpp",
+    "status": 0,
+    "scope": "affected output-header consumers, exact native flags"
+  },
+  {
+    "configuration": "demo-release",
+    "source": "tests/audio_mixer.cpp",
+    "status": 0,
+    "flags": "complete native command, no flags removed, owned headers visible"
+  },
+  {
+    "configuration": "demo-release",
+    "source": "tests/audio_output.cpp",
+    "status": 0,
+    "scope": "affected output-header consumers, exact native flags"
+  },
+  {
+    "configuration": "demo-release",
+    "source": "apps/flight_demo/preset.cpp",
+    "status": 0,
+    "flags": "complete native command, no flags removed, owned headers visible"
+  },
+  {
+    "configuration": "demo-release",
+    "source": "apps/flight_demo/view.cpp",
+    "status": 0,
+    "flags": "complete native command, no flags removed, owned headers visible"
+  },
+  {
+    "configuration": "demo-release",
+    "source": "apps/flight_demo/main.cpp",
+    "status": 0,
+    "flags": "complete native command, no flags removed, owned headers visible"
+  },
+  {
+    "configuration": "demo-release",
+    "source": "apps/flight_demo/app.cpp",
+    "status": 0,
+    "scope": "affected output-header consumers, exact native flags"
+  },
+  {
+    "configuration": "demo-release",
+    "source": "apps/scene_workload/allocations.cpp",
+    "status": 0,
+    "flags": "complete native command, no flags removed, owned headers visible"
+  },
+  {
+    "configuration": "demo-release",
+    "source": "tests/flight_scene.cpp",
+    "status": 0,
+    "flags": "complete native command, no flags removed, owned headers visible"
+  },
+  {
+    "configuration": "demo-asan",
+    "source": "engine/audio/mixer.cpp",
+    "status": 0,
+    "flags": "complete native command, no flags removed, owned headers visible"
+  },
+  {
+    "configuration": "demo-asan",
+    "source": "engine/audio/output.cpp",
+    "status": 0,
+    "scope": "affected output-header consumers, exact native flags"
+  },
+  {
+    "configuration": "demo-asan",
+    "source": "tests/audio_mixer.cpp",
+    "status": 0,
+    "flags": "complete native command, no flags removed, owned headers visible"
+  },
+  {
+    "configuration": "demo-asan",
+    "source": "tests/audio_output.cpp",
+    "status": 0,
+    "scope": "affected output-header consumers, exact native flags"
+  },
+  {
+    "configuration": "demo-asan",
+    "source": "apps/flight_demo/preset.cpp",
+    "status": 0,
+    "flags": "complete native command, no flags removed, owned headers visible"
+  },
+  {
+    "configuration": "demo-asan",
+    "source": "apps/flight_demo/view.cpp",
+    "status": 0,
+    "flags": "complete native command, no flags removed, owned headers visible"
+  },
+  {
+    "configuration": "demo-asan",
+    "source": "apps/flight_demo/main.cpp",
+    "status": 0,
+    "flags": "complete native command, no flags removed, owned headers visible"
+  },
+  {
+    "configuration": "demo-asan",
+    "source": "apps/flight_demo/app.cpp",
+    "status": 0,
+    "scope": "affected output-header consumers, exact native flags"
+  },
+  {
+    "configuration": "demo-asan",
+    "source": "apps/scene_workload/allocations.cpp",
+    "status": 0,
+    "flags": "complete native command, no flags removed, owned headers visible"
+  },
+  {
+    "configuration": "demo-asan",
+    "source": "tests/flight_scene.cpp",
+    "status": 0,
+    "flags": "complete native command, no flags removed, owned headers visible"
+  }
+]

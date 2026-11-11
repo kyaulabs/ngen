@@ -1,5 +1,6 @@
 #include <Jolt/Jolt.h>
 
+#include "audio/output.hpp"
 #include "flight/input.hpp"
 #include "flight_demo/app.hpp"
 #include "flight_demo/view.hpp"
@@ -156,6 +157,7 @@ struct Sample {
     std::uint64_t frame_ns{};
     flight::Snapshot state;
     flight::CameraFrame camera;
+    audio::Statistics audio;
     Submission mesh, post;
     GpuTimings gpu;
     ResourceStatistics memory;
@@ -169,6 +171,7 @@ struct Hud {
     double frame_ms{};
     GpuTimings gpu;
     ResourceStatistics memory;
+    audio::Statistics audio;
     const char *status{"Select an asteroid, or click the flight plane to travel"};
     bool help{};
 };
@@ -193,8 +196,10 @@ Actions hud(tools::Gui &gui, const flight::Snapshot &state, const Preset &preset
         ImGui::TextUnformatted(state.mode == flight::Mode::tactical
                                    ? "TACTICAL / ORBIT VIEW"
                                    : "DIRECT / AUTHORED BOW SENSOR");
-        ImGui::SameLine(std::max(650.0F, size.x - 270));
+        ImGui::SameLine(std::max(650.0F, size.x - 425));
         ImGui::Text("%s  |  60 Hz", replay ? "FIXED-TICK REPLAY" : "LOCAL AUTHORITY");
+        ImGui::SameLine(std::max(900.0F, size.x - 160));
+        action.mute = ImGui::Button(mute ? "Unmute [M]" : "Mute [M]", {112, 25});
     }
     ImGui::End();
     ImGui::SetNextWindowPos({16, 70});
@@ -240,7 +245,11 @@ Actions hud(tools::Gui &gui, const flight::Snapshot &state, const Preset &preset
     if (ImGui::Begin("Flight bindings", nullptr, flags)) {
         ImGui::TextUnformatted("WASD thrust | SHIFT/CTRL vertical | QE roll | SPACE brake | RMB "
                                "steer/orbit | ALT+RMB look | F1 help");
-        ImGui::TextDisabled("%s", metrics.status);
+        ImGui::TextDisabled("AUDIO %s / M | %s",
+                            metrics.audio.state == audio::State::disconnected
+                                ? "OFFLINE (retrying)"
+                                : (metrics.audio.muted ? "MUTED" : "ACTIVE"),
+                            metrics.status);
     }
     ImGui::End();
     if (metrics.help) {
@@ -259,7 +268,8 @@ Actions hud(tools::Gui &gui, const flight::Snapshot &state, const Preset &preset
                 "W/S forward/back, A/D lateral, SHIFT/CTRL vertical. Release thrust to coast; hold "
                 "SPACE to brake. TAB changes mode without resetting motion. R resets the preset; "
                 "ESC releases controls. Closing the window exits.");
-            ImGui::TextDisabled("Audio integration pending; mute flag is retained.");
+            ImGui::TextWrapped("M toggles audio. Focus loss silences playback. Device loss retries "
+                               "without changing simulation; original cues use no media files.");
         }
         ImGui::End();
     }
@@ -282,7 +292,6 @@ Actions hud(tools::Gui &gui, const flight::Snapshot &state, const Preset &preset
             draw->AddCircle(screen, 12, IM_COL32(110, 215, 230, 230), 24, 1.5F);
         }
     }
-    (void)mute;
     gui.end();
     return action;
 }
@@ -338,12 +347,15 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
     asteroids.indices = &indices;
     SceneRenderer renderer;
     auto gui = take(tools::Gui::create(*context));
+    audio::Output sound;
+    bool muted = options.mute;
+    (void)sound.mute(muted);
     Hud metrics;
     bool quit = false, captured = false, reset_requested = false;
     bool focused = (SDL_GetWindowFlags(context->window()) & SDL_WINDOW_INPUT_FOCUS) != 0;
     input.focus(focused);
     std::optional<std::size_t> selected, camera_target;
-    std::uint64_t sequence = 0;
+    std::uint64_t sequence = 0, impact_after_tick = 0;
     auto pending_mode = flight::Mode::tactical;
     auto last_camera = game_value(rig.sample({previous, current}, 1, preset.camera_obstacles));
     std::array<assets::MaterialFactors, 256> materials{};
@@ -377,6 +389,7 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
         if (send(flight::SetMode{wanted})) {
             pending_mode = wanted;
             (void)input.mode(wanted);
+            (void)sound.cue(audio::Cue::confirm);
             metrics.status = wanted == flight::Mode::direct
                                  ? "Direct bow sensor / hold RMB for virtual-stick steering"
                                  : "Tactical view / release thrust coasts in direct control";
@@ -386,6 +399,9 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
         current = game_value(game->reset());
         previous = current;
         sequence = 0;
+        (void)sound.reset();
+        (void)sound.cue(audio::Cue::reset);
+        impact_after_tick = 0;
         input.release();
         (void)input.mode(flight::Mode::tactical);
         pending_mode = flight::Mode::tactical;
@@ -407,6 +423,7 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
             camera_target.reset();
             metrics.status = "Camera follows the ship; physical motion is unchanged";
         }
+        (void)sound.cue(audio::Cue::confirm);
     };
     const auto approach = [&] {
         if (!selected)
@@ -418,9 +435,10 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
         if (delta.LengthSq() < 1e-8)
             delta = JPH::DVec3{0, 0, 1};
         delta = delta.Normalized() * (preset.ship_radius + target.radius_metres + 30);
-        (void)send(flight::Destination{{target.centre_metres[0] + delta.GetX(),
-                                        target.centre_metres[1] + delta.GetY(),
-                                        target.centre_metres[2] + delta.GetZ()}});
+        if (send(flight::Destination{{target.centre_metres[0] + delta.GetX(),
+                                      target.centre_metres[1] + delta.GetY(),
+                                      target.centre_metres[2] + delta.GetZ()}}))
+            (void)sound.cue(audio::Cue::confirm);
     };
     const auto orbit = [&] {
         if (!selected)
@@ -433,7 +451,8 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
         const auto radius = static_cast<float>(
             std::max({600.0, static_cast<double>(preset.ship_radius) * 3.5 + target.radius_metres,
                       400 / (.4 * acceleration)}));
-        (void)send(flight::Orbit{target.centre_metres, radius, 20, false});
+        if (send(flight::Orbit{target.centre_metres, radius, 20, false}))
+            (void)sound.cue(audio::Cue::confirm);
     };
     const auto walkthrough = [&](std::uint64_t index) {
         const auto id = SDL_GetWindowID(context->window());
@@ -470,6 +489,11 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
             key(SDL_SCANCODE_TAB, true);
             key(SDL_SCANCODE_TAB, false);
             key(SDL_SCANCODE_W, true);
+            break;
+        case 5:
+        case 15:
+            key(SDL_SCANCODE_F1, true);
+            key(SDL_SCANCODE_F1, false);
             break;
         case 30:
             key(SDL_SCANCODE_W, false);
@@ -511,6 +535,15 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
         case 150:
             focus_event(true);
             break;
+        case 160:
+        case 170: {
+            SDL_Event event{};
+            event.type =
+                index == 160 ? SDL_EVENT_AUDIO_DEVICE_REMOVED : SDL_EVENT_AUDIO_DEVICE_ADDED;
+            event.adevice.recording = false;
+            push(event);
+            break;
+        }
         case 180:
             key(SDL_SCANCODE_TAB, true);
             key(SDL_SCANCODE_TAB, false);
@@ -539,6 +572,11 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
         case 301:
             button(SDL_BUTTON_LEFT, false);
             break;
+        case 320:
+        case 325:
+            key(SDL_SCANCODE_M, true);
+            key(SDL_SCANCODE_M, false);
+            break;
         default:
             break;
         }
@@ -547,6 +585,7 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
         SDL_Event event{};
         for (unsigned n = 0; n < 256 && SDL_PollEvent(&event); ++n) {
             gui->event(event);
+            (void)sound.event(event);
             if (event.type == SDL_EVENT_QUIT || event.type == SDL_EVENT_WINDOW_CLOSE_REQUESTED) {
                 quit = true;
                 continue;
@@ -554,6 +593,7 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
             if (event.type == SDL_EVENT_WINDOW_FOCUS_LOST) {
                 focused = false;
                 input.focus(false);
+                (void)sound.mute(true);
                 continue;
             }
             if (event.type == SDL_EVENT_WINDOW_FOCUS_GAINED) {
@@ -575,6 +615,10 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
                 }
                 if (event.key.scancode == SDL_SCANCODE_F1 && !event.key.repeat) {
                     metrics.help = !metrics.help;
+                    continue;
+                }
+                if (event.key.scancode == SDL_SCANCODE_M && !event.key.repeat) {
+                    muted = !muted;
                     continue;
                 }
                 if (options.replay)
@@ -664,6 +708,17 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
         (void)input.mode(current.mode);
         const auto &v = current.body.velocity_mps;
         const auto &f = current.force_newtons;
+        double residual_squared = 0;
+        for (std::size_t axis = 0; axis < 3; ++axis) {
+            const auto residual = static_cast<double>(v[axis]) - previous.body.velocity_mps[axis] -
+                                  static_cast<double>(f[axis]) / previous.body.mass_kg / 60;
+            residual_squared += residual * residual;
+        }
+        // An audible impulse estimate, not a new authoritative contact stream.
+        if (residual_squared > .25 * .25 && current.tick.value >= impact_after_tick) {
+            (void)sound.cue(audio::Cue::impact);
+            impact_after_tick = current.tick.value + 12;
+        }
         metrics.speed[metrics.cursor] = std::sqrt(v[0] * v[0] + v[1] * v[1] + v[2] * v[2]);
         metrics.force[metrics.cursor] = std::sqrt(f[0] * f[0] + f[1] * f[1] + f[2] * f[2]) / 1e6F;
         metrics.cursor = (metrics.cursor + 1) % metrics.speed.size();
@@ -767,6 +822,7 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
         if (!options.frames &&
             (SDL_GetWindowFlags(context->window()) & SDL_WINDOW_MINIMIZED) != 0) {
             input.release();
+            (void)sound.mute(true);
             time = Clock::now();
             SDL_Delay(16);
             continue;
@@ -806,7 +862,9 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
         const VkExtent2D drawable{static_cast<unsigned>(width), static_cast<unsigned>(height)};
         auto view = take(present(preset, last_camera, drawable));
         const auto action =
-            hud(*gui, current, preset, metrics, selected, options.replay, options.mute, view);
+            hud(*gui, current, preset, metrics, selected, options.replay, muted, view);
+        if (action.mute)
+            muted = !muted;
         if (!options.replay) {
             if (action.mode)
                 change_mode();
@@ -833,6 +891,20 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
                            JPH::Vec3{force[0], force[1], force[2]};
         const auto power =
             std::clamp(-local.GetZ() / preset.ship.flight.maximum_force_newtons[2], 0.0F, 1.0F);
+        const auto &limits = preset.ship.flight.maximum_force_newtons;
+        const auto thrust = std::clamp(
+            std::max({std::abs(local.GetX()) / limits[0], std::abs(local.GetY()) / limits[1],
+                      std::abs(local.GetZ()) / limits[2]}),
+            0.0F, 1.0F);
+        const auto &velocity = current.body.velocity_mps;
+        const auto speed = std::sqrt(velocity[0] * velocity[0] + velocity[1] * velocity[1] +
+                                     velocity[2] * velocity[2]);
+        float work = 0;
+        for (std::size_t axis = 0; axis < 3; ++axis)
+            work += force[axis] * previous.body.velocity_mps[axis];
+        (void)sound.mute(muted || !focused);
+        (void)sound.update({.35F, thrust, work < 0 ? thrust : 0,
+                            std::clamp(speed / preset.ship.flight.maximum_speed_mps, 0.0F, 1.0F)});
         if (preset.drive_material) {
             const auto i = *preset.drive_material;
             materials[i].base_color = package->materials[i].base_color;
@@ -878,10 +950,12 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
         if (!presented)
             continue;
         metrics.memory = take(context->resource_statistics());
+        metrics.audio = sound.statistics();
         if (options.frames && frame_index >= warmup) {
             auto &sample = samples[measured++];
             sample.state = current;
             sample.camera = last_camera;
+            sample.audio = metrics.audio;
             sample.focused = focused;
             sample.capture_requested = input.capture();
             sample.capture_accepted = captured;
@@ -941,7 +1015,8 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
                "present_height,nav_goal,qx,qy,qz,qw,wx_radps,wy_radps,wz_radps,camera_x_m,"
                "camera_y_m,camera_z_m,camera_qx,camera_qy,camera_qz,camera_qw,camera_fov_deg,"
                "input_focused,capture_requested,capture_accepted,render_x_m,render_y_m,render_z_m,"
-               "entity_generation\n";
+               "entity_generation,audio_state,audio_gen,audio_losses,audio_queued_frames,audio_"
+               "muted,audio_paused\n";
         for (std::size_t i = 0; i < measured; ++i) {
             const auto &s = samples[i];
             csv << i << ',' << s.state.tick.value << ',' << static_cast<unsigned>(s.state.mode)
@@ -971,7 +1046,9 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
                 << s.capture_requested << ',' << s.capture_accepted;
             for (const auto v : s.camera.ship.position_metres)
                 csv << ',' << v;
-            csv << ',' << s.state.entity.generation << '\n';
+            csv << ',' << s.state.entity.generation << ',' << static_cast<unsigned>(s.audio.state)
+                << ',' << s.audio.generation << ',' << s.audio.losses << ','
+                << s.audio.queued_frames << ',' << s.audio.muted << ',' << s.audio.paused << '\n';
         }
         const auto text = csv.str();
         (void)take(probe::write_exclusive(options.report,
@@ -982,7 +1059,7 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
                 "allocation_probe=%u triangles=%llu contacts=101 "
                 "camera_mount=bow_sensor "
                 "cpp_new_calls=%llu imgui_calls=%llu gpu_timing_rows=%zu live=%u retiring=%u "
-                "allocation_bytes=%llu reserved_bytes=%llu audio_pending=1\n",
+                "allocation_bytes=%llu reserved_bytes=%llu audio_pending=0\n",
                 measured, warmup, options.replay ? 1U : 0U, options.walkthrough ? 1U : 0U,
                 options.validation ? 1U : 0U, workload::allocation_probe_enabled() ? 1U : 0U,
                 static_cast<unsigned long long>(preset.triangles),
@@ -993,7 +1070,16 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
                 memory.live, memory.retiring,
                 static_cast<unsigned long long>(memory.allocation_bytes),
                 static_cast<unsigned long long>(memory.reserved_bytes));
+    const auto audio_stats = sound.statistics();
+    std::printf(
+        "audio_state=%s audio_gen=%llu audio_losses=%llu audio_queue_max=%u audio_muted=%u\n",
+        audio_stats.state == audio::State::disconnected ? "offline"
+                                                        : (audio_stats.muted ? "muted" : "playing"),
+        static_cast<unsigned long long>(audio_stats.generation),
+        static_cast<unsigned long long>(audio_stats.losses), audio_stats.maximum_queued_frames,
+        audio_stats.muted ? 1U : 0U);
     (void)SDL_SetWindowRelativeMouseMode(context->window(), false);
+    (void)sound.close();
     gui.reset();
     require(context->close(), "flight context close failed");
     require(context->validation_errors() == 0, "flight Vulkan validation reported errors");

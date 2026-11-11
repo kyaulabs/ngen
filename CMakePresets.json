@@ -27,10 +27,10 @@
     {"name":"inspector-release","inherits":"scene-release","cacheVariables":{"NGEN_BUILD_INSPECTOR":"ON"}},
     {"name":"inspector-asan","inherits":"scene-asan","cacheVariables":{"NGEN_BUILD_INSPECTOR":"ON"}},
     {"name":"inspector-gcc","inherits":"scene-gcc","cacheVariables":{"NGEN_BUILD_INSPECTOR":"ON"}},
-    {"name":"demo-debug","inherits":"inspector-debug","cacheVariables":{"NGEN_BUILD_PHYSICS":"ON","NGEN_BUILD_FLIGHT_DEMO":"ON"}},
-    {"name":"demo-release","inherits":"inspector-release","cacheVariables":{"NGEN_BUILD_PHYSICS":"ON","NGEN_BUILD_FLIGHT_DEMO":"ON"}},
-    {"name":"demo-asan","inherits":"inspector-asan","cacheVariables":{"NGEN_BUILD_PHYSICS":"ON","NGEN_BUILD_FLIGHT_DEMO":"ON"}},
-    {"name":"demo-gcc","inherits":"inspector-gcc","cacheVariables":{"NGEN_BUILD_PHYSICS":"ON","NGEN_BUILD_FLIGHT_DEMO":"ON"}}
+    {"name":"demo-debug","inherits":"inspector-debug","cacheVariables":{"NGEN_BUILD_PHYSICS":"ON","NGEN_BUILD_FLIGHT_DEMO":"ON","NGEN_BUILD_AUDIO":"ON"}},
+    {"name":"demo-release","inherits":"inspector-release","cacheVariables":{"NGEN_BUILD_PHYSICS":"ON","NGEN_BUILD_FLIGHT_DEMO":"ON","NGEN_BUILD_AUDIO":"ON"}},
+    {"name":"demo-asan","inherits":"inspector-asan","cacheVariables":{"NGEN_BUILD_PHYSICS":"ON","NGEN_BUILD_FLIGHT_DEMO":"ON","NGEN_BUILD_AUDIO":"ON"}},
+    {"name":"demo-gcc","inherits":"inspector-gcc","cacheVariables":{"NGEN_BUILD_PHYSICS":"ON","NGEN_BUILD_FLIGHT_DEMO":"ON","NGEN_BUILD_AUDIO":"ON"}}
   ],
   "buildPresets": [
     {"name":"debug","configurePreset":"debug","jobs":2},
