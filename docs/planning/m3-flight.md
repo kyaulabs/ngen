@@ -106,10 +106,18 @@ root/copy/lighting/rotation/depth/extras/admission controls pass in four native
 configurations. Six complete scene graphs pass69 CTests;35 actual-command Clang
 header-consumer invocations pass after three affected probe lint reruns. This
 adds no pass, resource owner, material ABI or authored asset change. The playable
-application and live input are still not implemented.
+application is still not implemented. Root `0fd447b` hosted CI passes4/4.
 
-Next: input/focus/capture integration and the playable accepted-asset renderer
-bridge, contact preset and traces, then bounded audio and offline delivery.
+The platform-neutral input value now passes8 public cases: held six-axis/brake
+mapping, focus-loss neutralization/no stale resume, bounded persistent direct
+pointer stick, consume-once tactical deltas, free-look steering isolation,
+mode-change release, invalid/off-focus input and bounded camera event flood.
+Four headless graphs pass8/8 each, with final affected reruns; six actual-command
+Clang invocations pass after three equivalent test-assertion repairs. Actual SDL
+window events and relative-pointer acceptance are not yet proven by these tests.
+
+Next: the physical contact preset and live SDL/render application integration,
+force traces, then bounded audio and offline delivery.
 Headless tests do not complete M3-A/B presentation or the demo: traces, collision
 preset, actual Windows compatibility, warmed benchmarks, recording and owner
 control-feel feedback remain. All five slices, native verification, same-session

@@ -45,7 +45,9 @@ found in this bridge. This is not independent review or exhaustive geometry,
 compiler, driver or allocation-failure verification.
 
 The preceding camera `c3805b6` passes hosted CI4/4, recorded separately. This root
-source needs its own exact-head CI and current Windows integration. Native text
+source at `0fd447b` subsequently passes
+[CI42949707939](https://github.com/kyaulabs/ngen/actions/runs/42949707939)4/4;
+current Windows integration remains. Native text
 normalizes trailing whitespace; ignored originals are intact. Live SDL input,
 playable contact preset/renderer integration, force traces, audio, offline
 packaging, warmed benchmarks, recording and control-feel feedback remain. M3 is

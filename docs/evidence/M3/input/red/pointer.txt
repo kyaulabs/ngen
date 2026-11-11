@@ -1,0 +1,34 @@
+Test project /home/kyau/projects/kyaulabs/ngen/build/flight-debug
+    Start 4: flight_input
+1/1 Test #4: flight_input .....................***Failed    0.00 sec
+Randomness seeded to: 682553481
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+flight_input_tests is a Catch2 v3.16.0 host application.
+Run with -? for options
+
+-------------------------------------------------------------------------------
+captured direct mouse intent is a bounded virtual stick independent of sampling
+cadence
+-------------------------------------------------------------------------------
+/home/kyau/projects/kyaulabs/ngen/tests/flight_input.cpp:45
+...............................................................................
+
+/home/kyau/projects/kyaulabs/ngen/tests/flight_input.cpp:51: FAILED:
+  REQUIRE( target.rotation[0] == Catch::Approx(.2F) )
+with expansion:
+  0.0f == Approx( 0.20000000298023224 )
+
+===============================================================================
+test cases:  3 |  2 passed | 1 failed
+assertions: 30 | 29 passed | 1 failed
+
+
+
+0% tests passed, 1 tests failed out of 1
+
+Total Test time (real) =   0.00 sec
+
+The following tests FAILED:
+	  4 - flight_input (Failed)
+Errors while running CTest

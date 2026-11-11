@@ -1,0 +1,38 @@
+[
+  {
+    "configuration": "flight-debug",
+    "source": "game/flight/input.cpp",
+    "status": 0,
+    "flags": "Complete actual native command; no flags removed"
+  },
+  {
+    "configuration": "flight-debug",
+    "source": "tests/flight_input.cpp",
+    "status": 1,
+    "flags": "Complete actual native command; no flags removed"
+  },
+  {
+    "configuration": "flight-release",
+    "source": "game/flight/input.cpp",
+    "status": 0,
+    "flags": "Complete actual native command; no flags removed"
+  },
+  {
+    "configuration": "flight-release",
+    "source": "tests/flight_input.cpp",
+    "status": 1,
+    "flags": "Complete actual native command; no flags removed"
+  },
+  {
+    "configuration": "flight-asan",
+    "source": "game/flight/input.cpp",
+    "status": 0,
+    "flags": "Complete actual native command; no flags removed"
+  },
+  {
+    "configuration": "flight-asan",
+    "source": "tests/flight_input.cpp",
+    "status": 1,
+    "flags": "Complete actual native command; no flags removed"
+  }
+]

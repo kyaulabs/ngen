@@ -1,0 +1,92 @@
+43 warnings generated.
+/home/kyau/.conan2/p/b/catch646a1245bf61b/p/include/catch2/internal/catch_result_type.hpp:53:16: error: The value '5' provided to the cast expression is not in the valid range of values for 'Flags' [clang-analyzer-optin.core.EnumCastOutOfRange,-warnings-as-errors]
+   53 |         return static_cast<ResultDisposition::Flags>( static_cast<int>( lhs ) |
+      |                ^
+/home/kyau/.conan2/p/b/catch646a1245bf61b/p/include/catch2/internal/catch_result_type.hpp:43:37: note: enum declared here
+   43 |     struct ResultDisposition { enum Flags {
+      |                                ~~~~~^~~~~~~
+   44 |         Normal = 0x01,
+      |         ~~~~~~~~~~~~~~
+   45 |
+   46 |         ContinueOnFailure = 0x02,   // Failures fail test, but execution continues
+      |         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   47 |         FalseTest = 0x04,           // Prefix expression with !
+      |         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   48 |         SuppressFail = 0x08         // Failures are reported but do not fail the test
+      |         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   49 |     }; };
+      |     ~
+/home/kyau/projects/kyaulabs/ngen/tests/flight_input.cpp:12:5: note: Left side of '&&' is false
+   12 |     REQUIRE(std::holds_alternative<std::monostate>(input.mode(Mode::direct)));
+      |     ^
+/home/kyau/.conan2/p/b/catch646a1245bf61b/p/include/catch2/catch_test_macros.hpp:134:26: note: expanded from macro 'REQUIRE'
+  134 |   #define REQUIRE( ... ) INTERNAL_CATCH_TEST( "REQUIRE", Catch::ResultDisposition::Normal, __VA_ARGS__  )
+      |                          ^
+/home/kyau/.conan2/p/b/catch646a1245bf61b/p/include/catch2/internal/catch_test_macro_impl.hpp:60:31: note: expanded from macro 'INTERNAL_CATCH_TEST'
+   60 |     } while( (void)0, (false) && static_cast<const bool&>( !!(__VA_ARGS__) ) ) // the expression here is never evaluated at runtime but it forces the compiler to give it a look
+      |                               ^
+/home/kyau/projects/kyaulabs/ngen/tests/flight_input.cpp:12:5: note: Loop condition is false.  Exiting loop
+   12 |     REQUIRE(std::holds_alternative<std::monostate>(input.mode(Mode::direct)));
+      |     ^
+/home/kyau/.conan2/p/b/catch646a1245bf61b/p/include/catch2/catch_test_macros.hpp:134:26: note: expanded from macro 'REQUIRE'
+  134 |   #define REQUIRE( ... ) INTERNAL_CATCH_TEST( "REQUIRE", Catch::ResultDisposition::Normal, __VA_ARGS__  )
+      |                          ^
+/home/kyau/.conan2/p/b/catch646a1245bf61b/p/include/catch2/internal/catch_test_macro_impl.hpp:49:5: note: expanded from macro 'INTERNAL_CATCH_TEST'
+   49 |     do { /* NOLINT(bugprone-infinite-loop) */ \
+      |     ^
+/home/kyau/projects/kyaulabs/ngen/tests/flight_input.cpp:13:25: note: Assuming '__begin1' is equal to '__end1'
+   13 |     for (const auto key : {FlightKey::forward, FlightKey::right, FlightKey::up, FlightKey::pitch_up,
+      |                         ^
+/home/kyau/projects/kyaulabs/ngen/tests/flight_input.cpp:17:5: note: Left side of '&&' is false
+   17 |     REQUIRE(held.thrust == std::array<float, 3>{1, 1, -1});
+      |     ^
+/home/kyau/.conan2/p/b/catch646a1245bf61b/p/include/catch2/catch_test_macros.hpp:134:26: note: expanded from macro 'REQUIRE'
+  134 |   #define REQUIRE( ... ) INTERNAL_CATCH_TEST( "REQUIRE", Catch::ResultDisposition::Normal, __VA_ARGS__  )
+      |                          ^
+/home/kyau/.conan2/p/b/catch646a1245bf61b/p/include/catch2/internal/catch_test_macro_impl.hpp:60:31: note: expanded from macro 'INTERNAL_CATCH_TEST'
+   60 |     } while( (void)0, (false) && static_cast<const bool&>( !!(__VA_ARGS__) ) ) // the expression here is never evaluated at runtime but it forces the compiler to give it a look
+      |                               ^
+/home/kyau/projects/kyaulabs/ngen/tests/flight_input.cpp:17:5: note: Loop condition is false.  Exiting loop
+   17 |     REQUIRE(held.thrust == std::array<float, 3>{1, 1, -1});
+      |     ^
+/home/kyau/.conan2/p/b/catch646a1245bf61b/p/include/catch2/catch_test_macros.hpp:134:26: note: expanded from macro 'REQUIRE'
+  134 |   #define REQUIRE( ... ) INTERNAL_CATCH_TEST( "REQUIRE", Catch::ResultDisposition::Normal, __VA_ARGS__  )
+      |                          ^
+/home/kyau/.conan2/p/b/catch646a1245bf61b/p/include/catch2/internal/catch_test_macro_impl.hpp:49:5: note: expanded from macro 'INTERNAL_CATCH_TEST'
+   49 |     do { /* NOLINT(bugprone-infinite-loop) */ \
+      |     ^
+/home/kyau/projects/kyaulabs/ngen/tests/flight_input.cpp:18:5: note: Left side of '&&' is false
+   18 |     REQUIRE(held.rotation == std::array<float, 3>{1, 1, 1});
+      |     ^
+/home/kyau/.conan2/p/b/catch646a1245bf61b/p/include/catch2/catch_test_macros.hpp:134:26: note: expanded from macro 'REQUIRE'
+  134 |   #define REQUIRE( ... ) INTERNAL_CATCH_TEST( "REQUIRE", Catch::ResultDisposition::Normal, __VA_ARGS__  )
+      |                          ^
+/home/kyau/.conan2/p/b/catch646a1245bf61b/p/include/catch2/internal/catch_test_macro_impl.hpp:60:31: note: expanded from macro 'INTERNAL_CATCH_TEST'
+   60 |     } while( (void)0, (false) && static_cast<const bool&>( !!(__VA_ARGS__) ) ) // the expression here is never evaluated at runtime but it forces the compiler to give it a look
+      |                               ^
+/home/kyau/projects/kyaulabs/ngen/tests/flight_input.cpp:18:5: note: Loop condition is false.  Exiting loop
+   18 |     REQUIRE(held.rotation == std::array<float, 3>{1, 1, 1});
+      |     ^
+/home/kyau/.conan2/p/b/catch646a1245bf61b/p/include/catch2/catch_test_macros.hpp:134:26: note: expanded from macro 'REQUIRE'
+  134 |   #define REQUIRE( ... ) INTERNAL_CATCH_TEST( "REQUIRE", Catch::ResultDisposition::Normal, __VA_ARGS__  )
+      |                          ^
+/home/kyau/.conan2/p/b/catch646a1245bf61b/p/include/catch2/internal/catch_test_macro_impl.hpp:49:5: note: expanded from macro 'INTERNAL_CATCH_TEST'
+   49 |     do { /* NOLINT(bugprone-infinite-loop) */ \
+      |     ^
+/home/kyau/projects/kyaulabs/ngen/tests/flight_input.cpp:19:5: note: Calling 'operator|'
+   19 |     REQUIRE_FALSE(held.brake);
+      |     ^
+/home/kyau/.conan2/p/b/catch646a1245bf61b/p/include/catch2/catch_test_macros.hpp:135:70: note: expanded from macro 'REQUIRE_FALSE'
+  135 |   #define REQUIRE_FALSE( ... ) INTERNAL_CATCH_TEST( "REQUIRE_FALSE", Catch::ResultDisposition::Normal | Catch::ResultDisposition::FalseTest, __VA_ARGS__ )
+      |                                                                      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/kyau/.conan2/p/b/catch646a1245bf61b/p/include/catch2/internal/catch_test_macro_impl.hpp:52:142: note: expanded from macro 'INTERNAL_CATCH_TEST'
+   52 |         Catch::AssertionHandler catchAssertionHandler( macroName##_catch_sr, CATCH_INTERNAL_LINEINFO, CATCH_INTERNAL_STRINGIFY(__VA_ARGS__), resultDisposition ); \
+      |                                                                                                                                              ^~~~~~~~~~~~~~~~~
+/home/kyau/.conan2/p/b/catch646a1245bf61b/p/include/catch2/internal/catch_result_type.hpp:53:16: note: The value '5' provided to the cast expression is not in the valid range of values for 'Flags'
+   53 |         return static_cast<ResultDisposition::Flags>( static_cast<int>( lhs ) |
+      |                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   54 |                                                       static_cast<int>( rhs ) );
+      |                                                       ~~~~~~~~~~~~~~~~~~~~~~~~~
+Suppressed 84 warnings (42 in non-user code, 42 NOLINT).
+Use -header-filter=.* or leave it as default to display errors from all non-system headers. Use -system-headers to display errors from system headers as well.
+1 warning treated as error

@@ -1,0 +1,7 @@
+Test project /home/kyau/projects/kyaulabs/ngen/build/flight-release
+    Start 4: flight_input
+1/1 Test #4: flight_input .....................   Passed    0.00 sec
+
+100% tests passed out of 1
+
+Total Test time (real) =   0.00 sec

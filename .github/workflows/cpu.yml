@@ -89,8 +89,8 @@ jobs:
           cmake --build --preset "flight-$PRESET"
           ctest --preset "flight-$PRESET" --show-only
           sudo unshare --net -- runuser -u "$(id -un)" -- env -u DISPLAY -u WAYLAND_DISPLAY "$(command -v ctest)" --preset "flight-$PRESET"
-          clang-tidy-18 -p "build/flight-$PRESET" engine/physics/world.cpp tests/physics.cpp game/flight/flight.cpp tests/flight.cpp game/flight/camera.cpp tests/flight_camera.cpp
-          for binary in physics_tests flight_tests flight_camera_tests; do
+          clang-tidy-18 -p "build/flight-$PRESET" engine/physics/world.cpp tests/physics.cpp game/flight/flight.cpp tests/flight.cpp game/flight/camera.cpp tests/flight_camera.cpp game/flight/input.cpp tests/flight_input.cpp
+          for binary in physics_tests flight_tests flight_camera_tests flight_input_tests; do
             dynamic="build/flight-$PRESET/$binary-dynamic.txt"
             readelf -d "build/flight-$PRESET/$binary" > "$dynamic"
             if grep -Ei 'NEEDED.*(SDL|vulkan|libX11|wayland|libGL\.|libEGL|dxgi|d3d)' "$dynamic"; then
