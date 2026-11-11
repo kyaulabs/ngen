@@ -30,7 +30,7 @@ Real public-interface Reds then Greens:
 - A mass reduction initially accepted an already excessive pending force;
   shared preflight now rejects it without changing mass or the accepted force.
 
-Characterization also covers10s coasting/physical braking, actual static/dynamic
+At the initial `1189843` checkpoint, characterization also covers10s coasting/physical braking, actual static/dynamic
 contact, torque/inertia, double-position precision, nonfinite input, foreign/stale
 handles, off-owner access and capacity exhaustion. Ten physics cases pass. Exact
 zero off-axis angular velocity was an overly strict test expectation: observed
@@ -52,6 +52,17 @@ are separate: prerequisite Jolt header ordering was corrected; a concurrent
 Conan export race passed when serialized without cache deletion; PIE ASan shadow
 startup collision passed with the existing host non-PIE link configuration.
 ASan/UBSan/leak checks stay enabled; those failures are not behavioral Reds.
+
+Hosted Clang18 subsequently diagnoses overlapping Jolt intrusive shape references
+on the native body-allocation failure path, while native/ASan checks pass. Review
+traces the factory cache/result/settings references rather than treating the
+atomic decrement as an unconditional deletion. The adapter now constructs its
+already-validated box directly into the settings' single local shape owner;
+native success retains it and failure releases it. No analyzer, warning or
+lifetime check is disabled. An additional public invalid-extent characterization
+proves validation remains before construction. All11 physics cases pass in the
+four native configurations and six Clang23 invocations pass; hosted18 rerun is
+reported separately, not presumed from local analysis.
 
 Current scope does not establish Windows compatibility, actual selected-hull
 contact fidelity, cross-platform whole-physics bitwise replay, M4 rebasing or

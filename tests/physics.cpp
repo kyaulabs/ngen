@@ -188,6 +188,22 @@ TEST_CASE("unsupported impulses are rejected before the native velocity clamps c
     REQUIRE(state.angular_velocity_rps == std::array<float, 3>{});
 }
 
+TEST_CASE(
+    "invalid box extents fail admission before shape construction without consuming capacity") {
+    auto world = std::get<std::unique_ptr<World>>(World::create());
+    for (std::size_t axis = 0; axis < 3; ++axis)
+        for (const auto invalid : {0.0F, -.1F, 257.0F, std::numeric_limits<float>::infinity(),
+                                   std::numeric_limits<float>::quiet_NaN()}) {
+            auto description = Box{};
+            description.half_extent_metres[axis] = invalid;
+            const auto result = world->add_box(description);
+            REQUIRE(std::holds_alternative<Error>(result));
+            REQUIRE(std::get<Error>(result) == Error::invalid);
+        }
+    REQUIRE(std::holds_alternative<BodyId>(world->add_box({})));
+    REQUIRE(std::holds_alternative<Tick>(world->step()));
+}
+
 TEST_CASE("a mass change cannot make already accepted force exceed the native motion envelope") {
     auto world = std::get<std::unique_ptr<World>>(World::create());
     const auto id = std::get<BodyId>(world->add_box(Box{{2, 1, 1}, {}, 1000}));

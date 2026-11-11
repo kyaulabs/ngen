@@ -139,12 +139,11 @@ Result<BodyId> World::add_box(const Box &description) {
                            [](const Impl::Slot &s) { return !s.live; });
     if (at == impl_->slots.end())
         return Error::capacity;
-    JPH::BoxShapeSettings shape(vector(description.half_extent_metres));
-    auto created = shape.Create();
-    if (created.HasError())
-        return Error::invalid;
     const auto &p = description.position_metres;
-    JPH::BodyCreationSettings settings(created.Get(), {p[0], p[1], p[2]}, JPH::Quat::sIdentity(),
+    // Extents are validated above. Give the settings one explicit shape owner;
+    // the native body retains it on success, and settings releases it on failure.
+    JPH::BodyCreationSettings settings(new JPH::BoxShape(vector(description.half_extent_metres)),
+                                       {p[0], p[1], p[2]}, JPH::Quat::sIdentity(),
                                        description.dynamic ? JPH::EMotionType::Dynamic
                                                            : JPH::EMotionType::Static,
                                        description.dynamic ? 1 : 0);
