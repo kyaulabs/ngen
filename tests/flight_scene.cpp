@@ -1,3 +1,4 @@
+#include "flight/input.hpp"
 #include "flight_demo/preset.hpp"
 #include "flight_demo/view.hpp"
 #include "package_fixture.hpp"
@@ -7,6 +8,58 @@
 #include <utility>
 
 using namespace ngen;
+
+TEST_CASE("the authored frigate reaches a useful bounded direct turn rate within one second") {
+    const auto ship = demo::frigate_profile().flight;
+    for (std::size_t axis = 0; axis < 3; ++axis) {
+        auto game = std::get<std::unique_ptr<flight::Flight>>(flight::Flight::create(ship));
+        const auto entity = game->snapshot().entity;
+        REQUIRE(std::holds_alternative<std::monostate>(
+            game->submit({Tick{1}, 1, entity, flight::SetMode{flight::Mode::direct}})));
+        flight::Pilot pilot;
+        pilot.rotation[axis] = 1;
+        REQUIRE(std::holds_alternative<std::monostate>(game->submit({Tick{1}, 2, entity, pilot})));
+        for (unsigned tick = 0; tick < 60; ++tick)
+            REQUIRE(std::holds_alternative<flight::Snapshot>(game->step()));
+        const auto rate = std::abs(game->snapshot().body.angular_velocity_rps[axis]);
+        REQUIRE(rate >= .35F);
+        REQUIRE(rate <= ship.maximum_angular_speed_rps + .0001F);
+    }
+}
+
+TEST_CASE("RMB release promptly arrests authored steering through bounded torque without a reset") {
+    const auto ship = demo::frigate_profile().flight;
+    for (std::size_t axis = 0; axis < 2; ++axis) {
+        auto game = std::get<std::unique_ptr<flight::Flight>>(flight::Flight::create(ship));
+        const auto entity = game->snapshot().entity;
+        flight::FlightInput input;
+        REQUIRE(std::holds_alternative<std::monostate>(input.mode(flight::Mode::direct)));
+        input.pointer(true);
+        REQUIRE(std::holds_alternative<std::monostate>(
+            input.motion(axis == 0 ? flight::PointerDelta{0, 250} : flight::PointerDelta{250, 0})));
+        REQUIRE(std::holds_alternative<std::monostate>(
+            game->submit({Tick{1}, 1, entity, flight::SetMode{flight::Mode::direct}})));
+        REQUIRE(std::holds_alternative<std::monostate>(
+            game->submit({Tick{1}, 2, entity, input.pilot()})));
+        for (unsigned tick = 0; tick < 60; ++tick)
+            REQUIRE(std::holds_alternative<flight::Snapshot>(game->step()));
+        input.pointer(false);
+        REQUIRE(input.pilot().rotation == std::array<float, 3>{});
+        REQUIRE(std::holds_alternative<std::monostate>(
+            game->submit({Tick{61}, 3, entity, input.pilot()})));
+        for (unsigned tick = 0; tick < 18; ++tick) {
+            const auto state = std::get<flight::Snapshot>(game->step());
+            if (tick == 0)
+                REQUIRE(std::abs(state.body.angular_velocity_rps[axis]) > .25F);
+            REQUIRE(std::abs(state.torque_newton_metres[axis]) <=
+                    ship.maximum_torque_newton_metres[axis] * 1.00001F);
+            REQUIRE(state.body.velocity_mps == std::array<float, 3>{});
+            REQUIRE(state.body.position_metres == std::array<double, 3>{});
+            REQUIRE(state.entity == entity);
+        }
+        REQUIRE(std::abs(game->snapshot().body.angular_velocity_rps[axis]) < .04F);
+    }
+}
 
 TEST_CASE("visible target markers use GUI-local pixels without moving the shared world origin") {
     demo::Preset preset;

@@ -1,0 +1,59 @@
+{
+  "parent": "fb8135dacd1d4ace6bb91a61d0980b79f57b8313",
+  "source_sha256": {
+    "apps/flight_demo/preset.cpp": "bcbbbb179980f9c14b18c54e5a2079c7d4da7213a441467d5a24b91d15c6b4e2",
+    "game/flight/flight.cpp": "4af7d071acccca6a909b7a1343ba6a58a23a6e5181412bde1d67d1b1c5cabe9b",
+    "tests/flight_scene.cpp": "335d206b7b4ff6054fedb0b9cda7c1dd7740c72f3037675b1bc5f6b5c9c3364e"
+  },
+  "ctest": {
+    "demo-debug": {
+      "selected": 21,
+      "executed": 21,
+      "failed": 0,
+      "skipped": 0
+    },
+    "demo-release": {
+      "selected": 21,
+      "executed": 21,
+      "failed": 0,
+      "skipped": 0
+    },
+    "demo-asan": {
+      "selected": 21,
+      "executed": 21,
+      "failed": 0,
+      "skipped": 0
+    },
+    "demo-gcc": {
+      "selected": 21,
+      "executed": 21,
+      "failed": 0,
+      "skipped": 0
+    },
+    "flight-debug": {
+      "selected": 8,
+      "executed": 8,
+      "failed": 0,
+      "skipped": 0
+    },
+    "flight-release": {
+      "selected": 8,
+      "executed": 8,
+      "failed": 0,
+      "skipped": 0
+    },
+    "flight-asan": {
+      "selected": 8,
+      "executed": 8,
+      "failed": 0,
+      "skipped": 0
+    },
+    "flight-gcc": {
+      "selected": 8,
+      "executed": 8,
+      "failed": 0,
+      "skipped": 0
+    }
+  },
+  "physical_retest": "not yet done; original feedback requests faster steering and arrest after RMB release"
+}

@@ -177,7 +177,7 @@ Wrench control_wrench(const ShipDefinition &ship, const physics::BodyState &body
         target_rate = target_rate.Normalized() * ship.maximum_angular_speed_rps;
     const auto &w = body.angular_velocity_rps;
     const auto acceleration =
-        (target_rate - rotation.Conjugated() * JPH::Vec3{w[0], w[1], w[2]}) / .25F;
+        (target_rate - rotation.Conjugated() * JPH::Vec3{w[0], w[1], w[2]}) / .1F;
     const auto &h = ship.hull.half_extent_metres;
     const auto mass = static_cast<float>(body.mass_kg);
     const JPH::Vec3 requested_torque{mass * (h[1] * h[1] + h[2] * h[2]) / 3 * acceleration.GetX(),

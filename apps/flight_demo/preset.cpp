@@ -58,9 +58,9 @@ ShipProfile frigate_profile() {
     ShipProfile profile;
     profile.flight.hull = {{36, 23, 162}, {}, 12000000, true};
     profile.flight.maximum_force_newtons = {24000000.0F, 24000000.0F, 72000000.0F};
-    profile.flight.maximum_torque_newton_metres = {6.43e9F, 6.61e9F, 4.4e8F};
+    profile.flight.maximum_torque_newton_metres = {1.72e11F, 1.76e11F, 1.17e10F};
     profile.flight.maximum_speed_mps = 100;
-    profile.flight.maximum_angular_speed_rps = .15F;
+    profile.flight.maximum_angular_speed_rps = .4F;
     // Authored bow navigation sensor, inside the conservative contact proxy but
     // ahead of opaque geometry. This is ship data, not a universal camera offset.
     profile.flight.flight_camera = {{0, 6, -161}, {0, 0, 0, 1}, 75};
