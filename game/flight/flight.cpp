@@ -280,24 +280,24 @@ Result<Snapshot> Flight::step() {
     auto body = impl_->published.body;
     for (std::size_t i = 0; i < impl_->command_count; ++i) {
         const auto &intent = impl_->commands[i].intent;
-        if (const auto *value = std::get_if<SetMode>(&intent)) {
+        if (const auto *set_mode = std::get_if<SetMode>(&intent)) {
             // Manual takeover cancels old navigation instead of parking stale autopilot intent.
-            if (mode != value->mode && value->mode == Mode::direct)
+            if (mode != set_mode->mode && set_mode->mode == Mode::direct)
                 navigation = {};
-            mode = value->mode;
-        } else if (const auto *value = std::get_if<Pilot>(&intent))
-            pilot = *value;
-        else if (const auto *value = std::get_if<Destination>(&intent)) {
-            navigation = {value->position_metres, 0, 0, Goal::destination, false};
+            mode = set_mode->mode;
+        } else if (const auto *set_pilot = std::get_if<Pilot>(&intent))
+            pilot = *set_pilot;
+        else if (const auto *destination = std::get_if<Destination>(&intent)) {
+            navigation = {destination->position_metres, 0, 0, Goal::destination, false};
             mode = Mode::tactical;
             pilot.brake = false;
-        } else if (const auto *value = std::get_if<Orbit>(&intent)) {
-            navigation = {value->centre_metres, value->radius_metres, value->speed_mps, Goal::orbit,
-                          value->clockwise};
+        } else if (const auto *orbit = std::get_if<Orbit>(&intent)) {
+            navigation = {orbit->centre_metres, orbit->radius_metres, orbit->speed_mps, Goal::orbit,
+                          orbit->clockwise};
             mode = Mode::tactical;
             pilot.brake = false;
-        } else if (const auto *value = std::get_if<SetMass>(&intent)) {
-            body.mass_kg = value->kilograms;
+        } else if (const auto *set_mass = std::get_if<SetMass>(&intent)) {
+            body.mass_kg = set_mass->kilograms;
         }
     }
     // Validate the complete candidate before changing native mass or applying a wrench.

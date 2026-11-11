@@ -1,0 +1,1 @@
+ship_definition=136 size=224 align=16 flight=0 root=144 crc=208

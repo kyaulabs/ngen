@@ -506,12 +506,12 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
         }
         case 90: {
             key(SDL_SCANCODE_SPACE, false);
-            SDL_Event button{};
-            button.type = SDL_EVENT_MOUSE_BUTTON_DOWN;
-            button.button.windowID = id;
-            button.button.button = SDL_BUTTON_RIGHT;
-            button.button.down = true;
-            push(button);
+            SDL_Event button_event{};
+            button_event.type = SDL_EVENT_MOUSE_BUTTON_DOWN;
+            button_event.button.windowID = id;
+            button_event.button.button = SDL_BUTTON_RIGHT;
+            button_event.button.down = true;
+            push(button_event);
             SDL_Event motion{};
             motion.type = SDL_EVENT_MOUSE_MOTION;
             motion.motion.windowID = id;

@@ -261,10 +261,10 @@ TEST_CASE(
     const auto original = profile.asset_to_body;
     const std::array<std::pair<std::size_t, float>, 7> invalid{
         {{0, .5F},
-         {0, -1},
+         {0, -1.0F},
          {4, .25F},
          {3, .25F},
-         {15, 0},
+         {15, 0.0F},
          {7, std::numeric_limits<float>::quiet_NaN()},
          {14, std::numeric_limits<float>::infinity()}}};
     for (const auto &[index, value] : invalid) {

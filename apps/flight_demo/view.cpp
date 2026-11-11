@@ -24,10 +24,8 @@ JPH::Quat quaternion(const flight::Pose &pose) {
 }
 JPH::Mat44 matrix(const render::shader::Matrix &value) {
     const auto &m = value.columns;
-    return {{m[0], m[1], m[2], m[3]},
-            {m[4], m[5], m[6], m[7]},
-            {m[8], m[9], m[10], m[11]},
-            {m[12], m[13], m[14], m[15]}};
+    return JPH::Mat44{JPH::Vec4{m[0], m[1], m[2], m[3]}, JPH::Vec4{m[4], m[5], m[6], m[7]},
+                      JPH::Vec4{m[8], m[9], m[10], m[11]}, JPH::Vec4{m[12], m[13], m[14], m[15]}};
 }
 } // namespace
 std::variant<FrameView, render::Failure>

@@ -1,0 +1,29 @@
+{
+  "archive_sha256": "b41ea1ae142ce61cc571e30ea57cc9a3dfceaa2b471ecc26b64d0ee54eea7b2b",
+  "archive_bytes": 19067,
+  "entry_count": 18,
+  "uncompressed_bytes": 82276,
+  "selected": [
+    "Debug-build.txt",
+    "Debug-configure.txt",
+    "build-profile.txt",
+    "cmake-version.txt",
+    "conan-version.txt",
+    "failure.txt",
+    "host-profile.txt",
+    "ninja-version.txt",
+    "profile.txt",
+    "revision.txt",
+    "vulkan-sdk.txt",
+    "working-tree.txt"
+  ],
+  "excluded_unread": [
+    "Debug-conan.txt",
+    "jolt-recipe.txt",
+    "profile-detect.txt",
+    "session.txt",
+    "slang-recipe.txt",
+    "tools-install.txt"
+  ],
+  "scope": "Bounded flat regular metadata preflight, selective compiler diagnostics; no returned code executed."
+}

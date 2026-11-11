@@ -31,7 +31,7 @@ Result<std::monostate> Mixer::render(std::span<float> output) {
     if (output.size() / channels > frame_capacity)
         return Error::capacity;
     if (muted_) {
-        std::fill(output.begin(), output.end(), 0);
+        std::fill(output.begin(), output.end(), 0.0F);
         return std::monostate{};
     }
     const auto ramp = [](float &value, float target) {

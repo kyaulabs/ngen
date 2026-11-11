@@ -6,8 +6,10 @@
 namespace ngen::demo {
 struct ShipProfile {
     flight::ShipDefinition flight;
+    std::uint64_t root_padding{}; // Existing alignment gap before the copied matrix.
     render::shader::Matrix asset_to_body{{1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1}};
     std::uint32_t expected_package_crc{}; // Compatibility/corruption marker, not authentication.
+    std::array<std::uint32_t, 3> profile_padding{};
 };
 struct Preset {
     ShipProfile ship;
