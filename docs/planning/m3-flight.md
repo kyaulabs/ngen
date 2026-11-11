@@ -183,6 +183,16 @@ scanout proof is inferred. Correctness and instrumented recording are separate.
 
 Next: finish current Windows MSVC/ClangCl, app-local offline startup and scoped RTX
 timing/memory, plus the remaining non-UI M3 implementation/delivery checks.
+Owner-confirmed Windows disconnected-network startup now succeeds.
+
+The owner also requests visible side/RCS thrusters for turning, rolling and
+strafing before the UI pass. The authored hull already contains `RCS_mount`,
+`RCS_socket` and `RCS_dark_throat` geometry; the current demo binds only the rear
+`M2_BlueWhiteDrivePlume`. Inspect the accepted derivative/mount data and add the
+missing RCS actuation visuals from actual applied force/torque, including bounded
+stabilization, not input state alone. Preserve the accepted rear exhaust and hull;
+verify directional/moment-pair behavior and affected rendering/delivery budgets.
+This is queued work, not an implemented RCS visual system.
 
 The owner requests another UI refinement pass **after all other M3 work, but before
 M3 completion**. Keep it queued until those remaining technical checks are finished;
