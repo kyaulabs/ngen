@@ -191,6 +191,8 @@ Actions hud(tools::Gui &gui, const flight::Snapshot &state, const Preset &preset
     ImGui::SetNextWindowPos({16, 12});
     ImGui::SetNextWindowSize({std::max(320.0F, size.x - 32), 42});
     if (ImGui::Begin("Flight header", nullptr, flags)) {
+        // Mode labels must not grow the warmed header beyond its reserved index storage.
+        ImGui::GetWindowDrawList()->IdxBuffer.reserve(static_cast<int>(overlay_index_limit));
         ImGui::TextUnformatted("NGEN  /  OFFLINE FLIGHT");
         ImGui::SameLine(285);
         ImGui::TextUnformatted(state.mode == flight::Mode::tactical

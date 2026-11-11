@@ -45,9 +45,10 @@ std::variant<std::monostate, render::Failure>
 capture(render::Context &context, const render::Image &hdr, VkExtent2D extent,
         const std::filesystem::path &path, float exposure, bool fxaa,
         const render::Overlay *overlay, float bloom) try {
+    constexpr auto capacity = std::size_t{8} * 1024 * 1024;
     const auto bytes = VkDeviceSize{extent.width} * extent.height * 4;
     require(extent.width > 0 && extent.height > 0 && extent.width <= 8192 &&
-                extent.height <= 8192 && bytes <= 4U * 1024U * 1024U - 1024,
+                extent.height <= 8192 && bytes <= capacity - 1024,
             "scene capture extent exceeds bounded encoding storage");
     auto ldr = take(
         context.create_image({extent, VK_FORMAT_R8G8B8A8_SRGB,
@@ -65,7 +66,7 @@ capture(render::Context &context, const render::Image &hdr, VkExtent2D extent,
                               static_cast<int>(extent.width * 4)),
         SDL_DestroySurface);
     require(surface != nullptr, "scene capture surface creation failed");
-    std::vector<std::byte> encoded(std::size_t{4} * 1024 * 1024);
+    std::vector<std::byte> encoded(capacity);
     const auto stream = std::unique_ptr<SDL_IOStream, decltype(&SDL_CloseIO)>(
         SDL_IOFromMem(encoded.data(), encoded.size()), SDL_CloseIO);
     require(stream != nullptr && SDL_SaveBMP_IO(surface.get(), stream.get(), false),

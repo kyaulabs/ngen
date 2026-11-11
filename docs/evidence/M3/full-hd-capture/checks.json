@@ -1,0 +1,208 @@
+{
+  "native_windows_revision": "41e71a8540a23fd29d6218d2cabef6751d4a461e",
+  "native_msvc_ctests": {
+    "Debug": 19,
+    "Release": 19
+  },
+  "graphs": [
+    {
+      "configuration": "demo-debug",
+      "selected": 21,
+      "build": "passed",
+      "ctest": "passed"
+    },
+    {
+      "configuration": "demo-release",
+      "selected": 21,
+      "build": "passed",
+      "ctest": "passed"
+    },
+    {
+      "configuration": "demo-asan",
+      "selected": 21,
+      "build": "passed",
+      "ctest": "passed"
+    },
+    {
+      "configuration": "demo-gcc",
+      "selected": 21,
+      "build": "passed",
+      "ctest": "passed"
+    },
+    {
+      "configuration": "inspector-debug",
+      "selected": 12,
+      "build": "passed",
+      "ctest": "passed"
+    },
+    {
+      "configuration": "inspector-release",
+      "selected": 12,
+      "build": "passed",
+      "ctest": "passed"
+    },
+    {
+      "configuration": "inspector-asan",
+      "selected": 12,
+      "build": "passed",
+      "ctest": "passed"
+    },
+    {
+      "configuration": "inspector-gcc",
+      "selected": 12,
+      "build": "passed",
+      "ctest": "passed"
+    },
+    {
+      "configuration": "scene-shipping",
+      "selected": 11,
+      "build": "passed",
+      "ctest": "passed"
+    },
+    {
+      "configuration": "scene-no-shaders",
+      "selected": 10,
+      "build": "passed",
+      "ctest": "passed"
+    }
+  ],
+  "ast": [
+    {
+      "configuration": "demo-debug",
+      "source": "apps/probe/capture.cpp",
+      "status": 0,
+      "scope": "complete actual native invocation; owned headers visible; no flags removed"
+    },
+    {
+      "configuration": "demo-debug",
+      "source": "apps/flight_demo/app.cpp",
+      "status": 0,
+      "scope": "complete actual native invocation; owned headers visible; no flags removed"
+    },
+    {
+      "configuration": "demo-release",
+      "source": "apps/probe/capture.cpp",
+      "status": 0,
+      "scope": "complete actual native invocation; owned headers visible; no flags removed"
+    },
+    {
+      "configuration": "demo-release",
+      "source": "apps/flight_demo/app.cpp",
+      "status": 0,
+      "scope": "complete actual native invocation; owned headers visible; no flags removed"
+    },
+    {
+      "configuration": "demo-asan",
+      "source": "apps/probe/capture.cpp",
+      "status": 0,
+      "scope": "complete actual native invocation; owned headers visible; no flags removed"
+    },
+    {
+      "configuration": "demo-asan",
+      "source": "apps/flight_demo/app.cpp",
+      "status": 0,
+      "scope": "complete actual native invocation; owned headers visible; no flags removed"
+    },
+    {
+      "configuration": "inspector-debug",
+      "source": "apps/probe/capture.cpp",
+      "status": 0,
+      "scope": "complete actual native invocation; owned headers visible; no flags removed"
+    },
+    {
+      "configuration": "inspector-release",
+      "source": "apps/probe/capture.cpp",
+      "status": 0,
+      "scope": "complete actual native invocation; owned headers visible; no flags removed"
+    },
+    {
+      "configuration": "inspector-asan",
+      "source": "apps/probe/capture.cpp",
+      "status": 0,
+      "scope": "complete actual native invocation; owned headers visible; no flags removed"
+    },
+    {
+      "configuration": "scene-shipping",
+      "source": "apps/probe/capture.cpp",
+      "status": 0,
+      "scope": "complete actual native invocation; owned headers visible; no flags removed"
+    },
+    {
+      "configuration": "scene-no-shaders",
+      "source": "apps/probe/capture.cpp",
+      "status": 0,
+      "scope": "complete actual native invocation; owned headers visible; no flags removed"
+    }
+  ],
+  "physical_device_cases": [
+    {
+      "configuration": "demo-debug",
+      "status": 0,
+      "cases": 3,
+      "complete": true,
+      "scope": "Real automated native GPU/validation; no owner recording client."
+    },
+    {
+      "configuration": "demo-release",
+      "status": 0,
+      "cases": 3,
+      "complete": true,
+      "scope": "Real automated native GPU/validation; no owner recording client."
+    },
+    {
+      "configuration": "demo-asan",
+      "status": 0,
+      "cases": 3,
+      "complete": true,
+      "scope": "Real automated native GPU/validation; no owner recording client."
+    },
+    {
+      "configuration": "demo-gcc",
+      "status": 0,
+      "cases": 3,
+      "complete": true,
+      "scope": "Real automated native GPU/validation; no owner recording client."
+    },
+    {
+      "configuration": "inspector-debug",
+      "status": 0,
+      "cases": 3,
+      "complete": true,
+      "scope": "Real automated native GPU/validation; no owner recording client."
+    },
+    {
+      "configuration": "inspector-release",
+      "status": 0,
+      "cases": 3,
+      "complete": true,
+      "scope": "Real automated native GPU/validation; no owner recording client."
+    },
+    {
+      "configuration": "inspector-asan",
+      "status": 0,
+      "cases": 3,
+      "complete": true,
+      "scope": "Real automated native GPU/validation; no owner recording client."
+    },
+    {
+      "configuration": "inspector-gcc",
+      "status": 0,
+      "cases": 3,
+      "complete": true,
+      "scope": "Real automated native GPU/validation; no owner recording client."
+    }
+  ],
+  "full_length": {
+    "frames": 2400,
+    "bmp_bytes": 8294538,
+    "width": 1920,
+    "height": 1080,
+    "gpu_rows": 2400,
+    "cpp_new_calls": 0,
+    "imgui_calls": 0,
+    "stderr_bytes": 0,
+    "bmp_sha256": "8920f972da7552174263bd20849284f42345bdf3bdc1beadabc25873c3302028",
+    "scope": "Full-length validation-free native correctness/allocation check; no RTX or B1 timing / process-memory acceptance claim."
+  },
+  "review": "Same-session only. Bounds, cold allocation, exclusive output, copied overlay lifetime and shared Context ownership preserved. No further actionable defect identified. Windows full replay/package and ClangCl remain pending."
+}

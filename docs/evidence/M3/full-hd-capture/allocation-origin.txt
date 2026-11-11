@@ -1,0 +1,5 @@
+Observed warm allocation: 2106 bytes
+Gui::Impl::allocate -> ImGui::MemAlloc -> ImVector<unsigned short>::reserve
+-> ImDrawList::PrimReserve -> ImFont::RenderText -> ImGui::ButtonEx
+-> application flight header (mode-dependent text).
+Original complete GDB trace: build/m3-flight/trace-warm-gui.txt

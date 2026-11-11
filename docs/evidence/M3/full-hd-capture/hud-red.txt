@@ -1,0 +1,14 @@
+F
+======================================================================
+FAIL: test_full_hd_handoff_keeps_warm_hud_storage (__main__.FlightCapture.test_full_hd_handoff_keeps_warm_hud_storage)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/kyau/projects/kyaulabs/ngen/tests/flight_capture.py", line 58, in test_full_hd_handoff_keeps_warm_hud_storage
+    self.assertIn("imgui_calls=0", result.stdout)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'imgui_calls=0' not found in 'device=Intel(R) Iris(R) Xe Graphics (TGL GT2) api=1.4 driver=109060102 queue=0 display=wayland\nflight_hdr_finite=1 flight_lit_pixels=32504\nflight_frames=330 warmup=60 replay=1 walkthrough=0 validation=0 allocation_probe=1 triangles=247542 contacts=101 camera_mount=bow_sensor cpp_new_calls=0 imgui_calls=1 gpu_timing_rows=330 live=27 retiring=0 allocation_bytes=246370088 reserved_bytes=249067992 audio_pending=0\naudio_state=muted audio_gen=1 audio_losses=0 audio_queue_max=0 audio_muted=1\n'
+
+----------------------------------------------------------------------
+Ran 1 test in 7.257s
+
+FAILED (failures=1)
