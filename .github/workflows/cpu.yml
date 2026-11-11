@@ -31,6 +31,8 @@ jobs:
       - name: Test flight handoff boundaries (no Windows build)
         shell: pwsh
         run: ./tests/windows_flight.ps1
+      - name: Test Jolt CRT generator contract (no Windows compilation)
+        run: python tests/jolt_recipe.py
       - name: Select reviewed revision range
         env:
           EVENT_BASE: ${{ github.event.pull_request.base.sha || github.event.before }}

@@ -2,7 +2,6 @@ from conan import ConanFile
 from conan.tools.build import check_min_cppstd
 from conan.tools.cmake import CMake, CMakeToolchain, cmake_layout
 from conan.tools.files import copy, get, rmdir
-from conan.tools.microsoft import is_msvc, is_msvc_static_runtime
 import os
 
 
@@ -45,8 +44,9 @@ class HeadlessDoubleJolt(ConanFile):
             "USE_F16C", "USE_FMADD",
         ):
             tc.cache_variables[option] = False
-        if is_msvc(self):
-            tc.cache_variables["USE_STATIC_MSVC_RUNTIME_LIBRARY"] = is_msvc_static_runtime(self)
+        runtime = self.settings.get_safe("compiler.runtime")
+        if runtime is not None:
+            tc.cache_variables["USE_STATIC_MSVC_RUNTIME_LIBRARY"] = runtime == "static"
         tc.generate()
 
     def build(self):

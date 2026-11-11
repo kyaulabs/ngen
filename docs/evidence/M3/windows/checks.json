@@ -1,0 +1,59 @@
+{
+  "recorded_windows_revision": "9f5dbbf0e5c5bfbcf5a1a2ae6f8e339abfbd9b60",
+  "archives": {
+    "msvc_sha256": "ac0aa308e4815703b2fd84b458273f4d79bf3a0fc66e5fb337e0e0f8c8ae59ff",
+    "msvc_entries": 84,
+    "clangcl_sha256": "7636d3532a1876c21883cd3bfb67bbd4caf25c8491524c205ba2544dd9ca1971",
+    "clangcl_entries": 19
+  },
+  "msvc": {
+    "debug_ctests": 19,
+    "release_ctests": 19,
+    "native_walkthroughs": "Both pass existing SDL/audio/coast/reset trace checkers",
+    "clean_replay": {
+      "frames": 2400,
+      "resolution": [1920, 1080],
+      "median_ms": 7.21795,
+      "p95_nearest_ms": 7.7425,
+      "p99_nearest_ms": 8.7533,
+      "maximum_ms": 9.4156,
+      "gpu_ready_rows": 2400,
+      "cpp_allocations": 0,
+      "imgui_allocations": 0
+    },
+    "instrumented_memory": {
+      "native_frame_rows": 2400,
+      "samples": 31,
+      "query_attempts": 31,
+      "missing_queries": 0,
+      "maximum_gap_ms": 567.7227,
+      "maximum_query_ms": 1945,
+      "working_set_peak_bytes": 433311744,
+      "dedicated_plus_shared_peak_bytes": 379162624,
+      "committed_peak_bytes": 379228160,
+      "physics_trace_matches_clean": true
+    },
+    "release_artifacts": "All six declared SHA256/size pairs verified; BMPs not extracted or published",
+    "sdk_path_isolated_startup": "Headless verify and three rendered frames pass",
+    "disconnected_network_startup": "Owner confirmed offline worked fine",
+    "scope": "One clean baseline run; sampled process/provider memory, not continuous or global GPU usage"
+  },
+  "clangcl": {
+    "version": "19.1.5",
+    "observed_failure": "Jolt MTd_StaticDebug objects mismatch application MDd_DynamicDebug objects",
+    "new_jolt_recipe_revision": "67a3b4c0d2e06dc7514a970066ac5074",
+    "generator_regression": "All four ClangCl variants fail before repair; all eight frontend/configuration/runtime variants pass after repair",
+    "native_linux_graphs": 8,
+    "native_linux_ctests": 116,
+    "native_linux_walkthroughs": 4,
+    "new_native_windows_link_run": "Pending owner rerun"
+  },
+  "review": "Same-session only; declared CRT drives Jolt configuration without bypassing linker checks, changing upstream physics or introducing dependencies",
+  "raw_local_evidence": [
+    "build/windows-m3-msvc-success-1",
+    "build/windows-m3-clang-failure-1",
+    "build/m3-flight/jolt-clang-crt-*",
+    "build/m3-flight/crt-*"
+  ],
+  "remaining_m3": ["ClangCl native verification", "RCS actuation visuals", "Deferred UI pass", "Affected final acceptance and reviewed integration"]
+}
