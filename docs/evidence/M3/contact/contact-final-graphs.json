@@ -1,0 +1,26 @@
+[
+  {
+    "configuration": "flight-debug",
+    "build": 0,
+    "selected": 8,
+    "tests": 0
+  },
+  {
+    "configuration": "flight-release",
+    "build": 0,
+    "selected": 8,
+    "tests": 0
+  },
+  {
+    "configuration": "flight-asan",
+    "build": 0,
+    "selected": 8,
+    "tests": 0
+  },
+  {
+    "configuration": "flight-gcc",
+    "build": 0,
+    "selected": 8,
+    "tests": 0
+  }
+]

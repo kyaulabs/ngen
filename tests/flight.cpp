@@ -462,3 +462,44 @@ TEST_CASE(
         REQUIRE(fixed[i].torque_newton_metres == variable[i].torque_newton_metres);
     }
 }
+
+TEST_CASE(
+    "declared static obstacles share the physical flight domain and survive an owning reset") {
+    std::array obstacles{physics::Box{{1, 4, 4}, {8, 0, 0}, 1000, false}};
+    auto flight = std::get<std::unique_ptr<Flight>>(Flight::create(ShipDefinition{}, obstacles));
+    obstacles[0].position_metres = {100, 0, 0};
+    for (unsigned run = 0; run < 2; ++run) {
+        const auto entity = flight->snapshot().entity;
+        REQUIRE(std::holds_alternative<std::monostate>(
+            flight->submit({Tick{1}, 1, entity, SetMode{Mode::direct}})));
+        REQUIRE(std::holds_alternative<std::monostate>(
+            flight->submit({Tick{1}, 2, entity, Pilot{{1, 0, 0}}})));
+        for (unsigned tick = 0; tick < 180; ++tick)
+            REQUIRE(std::holds_alternative<Snapshot>(flight->step()));
+        const auto stopped = flight->snapshot();
+        REQUIRE(stopped.body.position_metres[0] <= 5.25);
+        REQUIRE(stopped.body.position_metres[0] >= 4.9);
+        REQUIRE(std::abs(stopped.body.velocity_mps[0]) < .3F);
+        REQUIRE(std::holds_alternative<Snapshot>(flight->reset()));
+    }
+}
+
+TEST_CASE("the contact preset bounds capacity and rejects invalid partial construction without "
+          "publication") {
+    std::array<physics::Box, physics::World::body_capacity> obstacles{};
+    for (std::size_t i = 0; i < obstacles.size(); ++i) {
+        obstacles[i].dynamic = false;
+        obstacles[i].half_extent_metres = {.5F, .5F, .5F};
+        obstacles[i].position_metres = {20 + static_cast<double>(i) * 3, 0, 0};
+    }
+    REQUIRE(std::get<Error>(Flight::create(ShipDefinition{}, obstacles)) == Error::capacity);
+    const auto admitted = std::span(obstacles).first(obstacles.size() - 1);
+    REQUIRE(std::holds_alternative<std::unique_ptr<Flight>>(
+        Flight::create(ShipDefinition{}, admitted)));
+    obstacles[0].dynamic = true;
+    REQUIRE(std::get<Error>(Flight::create(ShipDefinition{}, admitted)) == Error::invalid);
+    obstacles[0].dynamic = false;
+    obstacles[obstacles.size() - 2].half_extent_metres[0] = 0;
+    REQUIRE(std::get<Error>(Flight::create(ShipDefinition{}, admitted)) == Error::invalid);
+    REQUIRE(std::holds_alternative<std::unique_ptr<Flight>>(Flight::create(ShipDefinition{})));
+}

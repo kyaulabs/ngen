@@ -194,15 +194,20 @@ struct Flight::Impl {
     physics::BodyId body;
     Snapshot published;
     std::array<Command, command_capacity> commands{};
-    std::size_t command_count{};
+    std::array<physics::Box, physics::World::body_capacity - 1> obstacles{};
+    std::size_t command_count{}, obstacle_count{};
     std::uint64_t sequence{};
     Pilot pilot;
     bool failed{};
 };
 Flight::Flight(std::unique_ptr<Impl> impl) : impl_(std::move(impl)) {}
 Flight::~Flight() = default;
-Result<std::unique_ptr<Flight>> Flight::create(const ShipDefinition &definition) {
-    if (!valid(definition))
+Result<std::unique_ptr<Flight>> Flight::create(const ShipDefinition &definition,
+                                               std::span<const physics::Box> static_obstacles) {
+    if (static_obstacles.size() >= physics::World::body_capacity)
+        return Error::capacity;
+    if (!valid(definition) || std::any_of(static_obstacles.begin(), static_obstacles.end(),
+                                          [](const auto &box) { return box.dynamic; }))
         return Error::invalid;
     auto created = physics::World::create();
     if (const auto *error = std::get_if<Error>(&created))
@@ -211,9 +216,16 @@ Result<std::unique_ptr<Flight>> Flight::create(const ShipDefinition &definition)
     const auto admitted = world->add_box(definition.hull);
     if (const auto *error = std::get_if<Error>(&admitted))
         return *error;
+    for (const auto &description : static_obstacles) {
+        const auto obstacle = world->add_box(description);
+        if (const auto *error = std::get_if<Error>(&obstacle))
+            return *error;
+    }
     auto impl = std::make_unique<Impl>();
     impl->world = std::move(world);
     impl->ship = definition;
+    std::copy(static_obstacles.begin(), static_obstacles.end(), impl->obstacles.begin());
+    impl->obstacle_count = static_obstacles.size();
     impl->body = std::get<physics::BodyId>(admitted);
     impl->published.entity = {0, 1};
     impl->published.body = std::get<physics::BodyState>(impl->world->state(impl->body));
@@ -227,7 +239,8 @@ Result<Snapshot> Flight::reset() {
     const auto generation = next_generation(impl_->published.entity.generation);
     if (const auto *error = std::get_if<Error>(&generation))
         return *error;
-    auto created = Flight::create(impl_->ship);
+    auto created =
+        Flight::create(impl_->ship, std::span(impl_->obstacles).first(impl_->obstacle_count));
     if (const auto *error = std::get_if<Error>(&created))
         return *error;
     auto replacement = std::get<std::unique_ptr<Flight>>(std::move(created));

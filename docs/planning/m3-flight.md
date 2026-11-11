@@ -116,7 +116,14 @@ Four headless graphs pass8/8 each, with final affected reruns; six actual-comman
 Clang invocations pass after three equivalent test-assertion repairs. Actual SDL
 window events and relative-pointer acceptance are not yet proven by these tests.
 
-Next: the physical contact preset and live SDL/render application integration,
+The contact bridge now copies up to127 static proxies into the controlled
+hull's existing domain and preserves them across reset. A real wall-pass Red
+(27.150021467m versus≤5.25m) is fixed. Eighteen controller cases and four8/8
+headless graphs pass, with18 actual-command header-consumer Clang checks. These
+are box proxies, not exact mesh contacts or a completed asteroid scene. The merged
+pinned graphics/physics dependency graph is prepared for the playable application.
+
+Next: the actual scene preset and live SDL/render application integration,
 force traces, then bounded audio and offline delivery.
 Headless tests do not complete M3-A/B presentation or the demo: traces, collision
 preset, actual Windows compatibility, warmed benchmarks, recording and owner

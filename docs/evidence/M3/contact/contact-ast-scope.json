@@ -1,0 +1,35 @@
+[
+  {
+    "configuration": "flight-debug",
+    "consumers": [
+      "game/flight/flight.cpp",
+      "game/flight/camera.cpp",
+      "game/flight/input.cpp",
+      "tests/flight.cpp",
+      "tests/flight_camera.cpp",
+      "tests/flight_input.cpp"
+    ]
+  },
+  {
+    "configuration": "flight-release",
+    "consumers": [
+      "game/flight/flight.cpp",
+      "game/flight/camera.cpp",
+      "game/flight/input.cpp",
+      "tests/flight.cpp",
+      "tests/flight_camera.cpp",
+      "tests/flight_input.cpp"
+    ]
+  },
+  {
+    "configuration": "flight-asan",
+    "consumers": [
+      "game/flight/flight.cpp",
+      "game/flight/camera.cpp",
+      "game/flight/input.cpp",
+      "tests/flight.cpp",
+      "tests/flight_camera.cpp",
+      "tests/flight_input.cpp"
+    ]
+  }
+]

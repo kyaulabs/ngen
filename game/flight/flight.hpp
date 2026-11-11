@@ -2,6 +2,7 @@
 #include "physics/world.hpp"
 #include <array>
 #include <memory>
+#include <span>
 #include <thread>
 #include <variant>
 
@@ -68,7 +69,10 @@ struct Snapshot {
 class Flight {
   public:
     static constexpr std::size_t command_capacity = 64;
-    [[nodiscard]] static Result<std::unique_ptr<Flight>> create(const ShipDefinition &definition);
+    // Copy at most127 static contact proxies into the same bounded domain.
+    // Failed preparation publishes no Flight; reset preserves the copied preset.
+    [[nodiscard]] static Result<std::unique_ptr<Flight>>
+    create(const ShipDefinition &definition, std::span<const physics::Box> static_obstacles = {});
     ~Flight();
     Flight(const Flight &) = delete;
     Flight &operator=(const Flight &) = delete;
