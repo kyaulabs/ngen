@@ -1,0 +1,1 @@
+2400 native frames: lit final world; no reset/impulse at mode change (velocity follows admitted interval force); bounded pose continuity; all GPU rows; no measured C++/ImGui allocation

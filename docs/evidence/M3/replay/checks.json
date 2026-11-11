@@ -1,0 +1,33 @@
+{
+  "parent": "19acb3c165016212affb771d0c22be7dcda3a8ba",
+  "changed_source_sha256": "4645c2d6ba177d77ebb96a5543a99f829b5eb5c949131d4a38b99e6a4c3bf655",
+  "native_frames": 2400,
+  "native_configuration": "demo-release; dummy audio; no validation; regression only",
+  "ctest": {
+    "demo-debug": {
+      "selected": 21,
+      "executed": 21,
+      "failed": 0,
+      "skipped": 0
+    },
+    "demo-release": {
+      "selected": 21,
+      "executed": 21,
+      "failed": 0,
+      "skipped": 0
+    },
+    "demo-asan": {
+      "selected": 21,
+      "executed": 21,
+      "failed": 0,
+      "skipped": 0
+    },
+    "demo-gcc": {
+      "selected": 21,
+      "executed": 21,
+      "failed": 0,
+      "skipped": 0
+    }
+  },
+  "trace_sha256": "03fe1018d951e2e176dcba386c7af16f99b215f57ff8c5597bdc330f0fae7ed2"
+}

@@ -762,6 +762,8 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
             break;
         case 1980:
             (void)send(flight::Pilot{});
+            // Keep the detailed hull in the benchmark after the direct-turn sample.
+            (void)send(flight::SetMode{flight::Mode::tactical});
             break;
         case 2400:
             (void)send(flight::Pilot{{}, {}, true});
