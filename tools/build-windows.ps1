@@ -14,6 +14,8 @@ param(
     [Parameter(ParameterSetName = 'CPU')]
     [switch]$Inspector,
     [Parameter(ParameterSetName = 'CPU')]
+    [switch]$FlightDemo,
+    [Parameter(ParameterSetName = 'CPU')]
     [Parameter(Mandatory, ParameterSetName = 'Measurement')]
     [string]$ScenePackage = '',
     [Parameter(Mandatory, ParameterSetName = 'Measurement')]
@@ -188,7 +190,7 @@ function Invoke-NgenWorkload {
                     if ($report -isnot [IO.FileInfo] -or ($report.Attributes -band [IO.FileAttributes]::ReparsePoint) -or
                         $report.Extension -ine '.csv' -or $report.Length -lt 1 -or $report.Length -gt 8388608) { throw 'Invalid native frame report.' }
                     $header = Get-Content -LiteralPath $FrameReport -TotalCount 1
-                    if ($header.Length -gt 2048 -or $header.Split(',').Count -gt 32) { throw 'Native frame header exceeds admission.' }
+                    if ($header.Length -gt 2048 -or $header.Split(',').Count -gt 64) { throw 'Native frame header exceeds admission.' }
                     # Stop enumeration at the admitted row bound, not after materializing an arbitrary CSV.
                     $frames = @(Import-Csv -LiteralPath $FrameReport | Select-Object -First 3601)
                     if ($frames.Count -lt 1 -or $frames.Count -gt 3600) { throw 'Invalid native frame count.' }
@@ -344,6 +346,92 @@ function Invoke-NgenMeasurement {
     }
 }
 
+function Invoke-NgenFlight {
+    param(
+        [Parameter(Mandatory)][string]$BuildDirectory,
+        [Parameter(Mandatory)][string]$LogDirectory,
+        [Parameter(Mandatory)][ValidateSet('Debug', 'Release')][string]$Configuration,
+        [Parameter(Mandatory)][string]$ScenePackage,
+        [Parameter(Mandatory)][string]$Python,
+        [Parameter(Mandatory)][string]$SourceRoot
+    )
+    $identity = Get-NgenSceneIdentity -Path $ScenePackage | ConvertTo-Json
+    $prefix = Join-Path $LogDirectory "$Configuration-flight"
+    $bundle = $null
+    foreach ($extension in @('verify.txt', 'verify.txt.stderr.txt', 'txt', 'txt.stderr.txt', 'bmp', 'csv', 'working-set.json', 'artifacts.json',
+        'replay.txt', 'replay.txt.stderr.txt', 'replay.csv', 'replay.bmp',
+        'memory.txt', 'memory.txt.stderr.txt', 'memory.csv', 'memory.bmp', 'memory.working-set.json',
+        'package.txt', 'package.txt.stderr.txt', 'offline-verify.txt', 'offline-verify.txt.stderr.txt',
+        'offline.txt', 'offline.txt.stderr.txt', 'offline.csv')) {
+        if (Test-Path -LiteralPath "$prefix.$extension") { throw 'Flight evidence path is not fresh.' }
+    }
+    try {
+        . (Join-Path $BuildDirectory 'conanrun.ps1')
+        $binary = Join-Path $BuildDirectory 'flight_demo.exe'
+        Invoke-NgenNative -FilePath $binary -Arguments @($ScenePackage, '--verify') -LogPath "$prefix.verify.txt"
+        $arguments = @($ScenePackage, '--walkthrough', '--frames=330', '--warmup=60', '--validation', '--mute',
+            "--capture=$prefix.bmp", "--report=$prefix.csv")
+        Invoke-NgenWorkload -FilePath $binary -Arguments $arguments -LogPath "$prefix.txt" -MemoryPath "$prefix.working-set.json"
+        if ((Get-NgenSceneIdentity -Path $ScenePackage | ConvertTo-Json) -cne $identity) {
+            throw 'ScenePackage changed during flight verification.'
+        }
+        $artifactPaths = @("$prefix.bmp", "$prefix.csv")
+        if ($Configuration -eq 'Release') {
+            foreach ($mode in @('replay', 'memory')) {
+                $report = "$prefix.$mode.csv"; $capture = "$prefix.$mode.bmp"
+                $arguments = @($ScenePackage, '--replay', '--frames=2400', '--warmup=60', '--width=1920', '--height=1080',
+                    "--capture=$capture", "--report=$report")
+                if ($mode -eq 'replay') {
+                    # No CIM or per-process observation in the clean timing run.
+                    Invoke-NgenNative -FilePath $binary -Arguments $arguments -LogPath "$prefix.$mode.txt"
+                } else {
+                    Invoke-NgenWorkload -FilePath $binary -Arguments $arguments -LogPath "$prefix.$mode.txt" -MemoryPath "$prefix.$mode.working-set.json" -GpuMemory -FrameReport $report
+                }
+                $artifactPaths += @($capture, $report)
+                if ((Get-NgenSceneIdentity -Path $ScenePackage | ConvertTo-Json) -cne $identity) { throw 'ScenePackage changed during replay.' }
+            }
+        }
+        $artifacts = foreach ($path in $artifactPaths) {
+            $item = Get-Item -LiteralPath $path -Force -ErrorAction Stop
+            if ($item -isnot [IO.FileInfo] -or ($item.Attributes -band [IO.FileAttributes]::ReparsePoint) -or $item.Length -lt 1 -or $item.Length -gt 8388608) {
+                throw 'Flight capture/report is missing, linked, empty or oversized.'
+            }
+            [ordered]@{ name = $item.Name; bytes = $item.Length; sha256 = (Get-FileHash -LiteralPath $path -Algorithm SHA256).Hash.ToLowerInvariant() }
+        }
+        [ordered]@{ schema = 1; package = $identity | ConvertFrom-Json; files = @($artifacts) } |
+            ConvertTo-Json -Depth 5 | Set-Content -LiteralPath "$prefix.artifacts.json"
+        if ($Configuration -eq 'Release') {
+            $output = Join-Path (Split-Path -Parent $BuildDirectory) 'offline'
+            Invoke-NgenNative -FilePath $Python -Arguments @((Join-Path $SourceRoot 'tools/package_demo.py'),
+                '--build', $BuildDirectory, '--asset', $ScenePackage, '--output', $output) -LogPath "$prefix.package.txt"
+            $bundle = Join-Path $output 'ngen-flight'
+        }
+    } finally {
+        . (Join-Path $BuildDirectory 'deactivate_conanrun.ps1')
+    }
+    if ($bundle) {
+        $saved = @{}
+        foreach ($name in @('PATH', 'VULKAN_SDK', 'VK_LAYER_PATH', 'VK_INSTANCE_LAYERS')) {
+            $saved[$name] = [Environment]::GetEnvironmentVariable($name, 'Process')
+        }
+        Push-Location -LiteralPath $bundle
+        try {
+            $env:PATH = (Join-Path $env:SystemRoot 'System32') + [IO.Path]::PathSeparator + $env:SystemRoot
+            $env:VULKAN_SDK = $null; $env:VK_LAYER_PATH = $null; $env:VK_INSTANCE_LAYERS = $null
+            # Native DLL discovery now has only the application directory and Windows.
+            # This does not change adapters/firewall or claim the network was disconnected.
+            Invoke-NgenNative -FilePath (Join-Path $bundle 'flight_demo.exe') -Arguments @(
+                (Join-Path $bundle 'assets/ship.ngas'), '--verify') -LogPath "$prefix.offline-verify.txt"
+            Invoke-NgenNative -FilePath (Join-Path $bundle 'flight_demo.exe') -Arguments @(
+                (Join-Path $bundle 'assets/ship.ngas'), '--replay', '--frames=3', '--warmup=2', '--mute',
+                "--report=$prefix.offline.csv") -LogPath "$prefix.offline.txt"
+        } finally {
+            Pop-Location
+            foreach ($name in $saved.Keys) { [Environment]::SetEnvironmentVariable($name, $saved[$name], 'Process') }
+        }
+    }
+}
+
 function Invoke-NgenRenderer {
     param(
         [Parameter(Mandatory)][string]$BuildDirectory,
@@ -479,7 +567,8 @@ function Invoke-NgenGpuInfo {
     Write-Host 'GPU capability capture completed. This is not a rendering or presentation test.'
 }
 
-# Inspector selects the optional GUI graph over the combined checked scene.
+# Flight adds physics/audio to the same GUI, renderer and checked scene graph.
+if ($FlightDemo) { $Inspector = $true }
 if ($Inspector) { $Scene = $true }
 if ($ScenePackage) { $Scene = $true }
 if ($Scene) { $Renderer = $true }
@@ -523,6 +612,7 @@ try {
         exit 0
     }
 
+    if ($FlightDemo -and -not $ScenePackage) { throw 'Flight verification requires -ScenePackage.' }
     if ($Inspector -and -not $ScenePackage) { throw 'Inspector verification requires -ScenePackage.' }
     if ($ScenePackage) {
         Get-NgenSceneIdentity -Path $ScenePackage | Out-Null
@@ -620,13 +710,18 @@ try {
     if ($Renderer) {
         Invoke-NgenNative -FilePath $conan -Arguments @('export', 'recipes/slangc', '--version=2026.21', '--user=ngen', '--channel=tools') -LogPath (Join-Path $logs 'slang-recipe.txt')
     }
-    $lockfile = if ($Inspector) { 'conan-inspector.lock' } elseif ($Scene) { 'conan-scene.lock' } elseif ($Renderer) { 'conan-render.lock' } else { 'conan.lock' }
+    if ($FlightDemo) {
+        Invoke-NgenNative -FilePath $conan -Arguments @('export', 'recipes/joltphysics', '--version=5.6.0', '--user=ngen', '--channel=headless-double') -LogPath (Join-Path $logs 'jolt-recipe.txt')
+    }
+    $lockfile = if ($FlightDemo) { 'conan-demo.lock' } elseif ($Inspector) { 'conan-inspector.lock' } elseif ($Scene) { 'conan-scene.lock' } elseif ($Renderer) { 'conan-render.lock' } else { 'conan.lock' }
     $inspectorOption = if ($Inspector) { 'True' } else { 'False' }
     $inspectorBuild = if ($Inspector) { 'ON' } else { 'OFF' }
     $assetsOption = if ($Scene) { 'True' } else { 'False' }
     $assetsBuild = if ($Scene) { 'ON' } else { 'OFF' }
     $rendererOption = if ($Renderer) { 'True' } else { 'False' }
     $rendererBuild = if ($Renderer) { 'ON' } else { 'OFF' }
+    $flightOption = if ($FlightDemo) { 'True' } else { 'False' }
+    $flightBuild = if ($FlightDemo) { 'ON' } else { 'OFF' }
     foreach ($config in $configurations) {
         $build = Join-Path $run $config
         $buildType = if ($Renderer) { 'Release' } else { $config }
@@ -638,13 +733,15 @@ try {
             '-c:b', 'tools.cmake.cmaketoolchain:generator=Ninja',
             '-c:h', 'tools.build:jobs=2', '-c:b', 'tools.build:jobs=2',
             '-o:h', "&:renderer=$rendererOption", '-o:h', "&:shaders=$rendererOption", '-o:h', "&:assets=$assetsOption", '-o:h', "&:inspector=$inspectorOption",
+            '-o:h', "&:physics=$flightOption", '-o:h', "&:audio=$flightOption",
             '--lockfile', $lockfile, '--build=missing', '-of', $build
         ) -LogPath (Join-Path $logs "$config-conan.txt")
         $toolchain = Join-Path $build 'conan_toolchain.cmake'
         Invoke-NgenNative -FilePath $cmake -Arguments @(
             '-S', $root, '-B', $build, '-G', 'Ninja',
             "-DCMAKE_TOOLCHAIN_FILE=$toolchain", "-DCMAKE_BUILD_TYPE=$config",
-            "-DNGEN_BUILD_RENDERER=$rendererBuild", "-DNGEN_BUILD_ASSETS=$assetsBuild", "-DNGEN_BUILD_INSPECTOR=$inspectorBuild"
+            "-DNGEN_BUILD_RENDERER=$rendererBuild", "-DNGEN_BUILD_ASSETS=$assetsBuild", "-DNGEN_BUILD_INSPECTOR=$inspectorBuild",
+            "-DNGEN_BUILD_PHYSICS=$flightBuild", "-DNGEN_BUILD_AUDIO=$flightBuild", "-DNGEN_BUILD_FLIGHT_DEMO=$flightBuild"
         ) -LogPath (Join-Path $logs "$config-configure.txt")
         Invoke-NgenNative -FilePath $cmake -Arguments @('--build', $build, '-j', '2') -LogPath (Join-Path $logs "$config-build.txt")
         $checks = {
@@ -654,13 +751,19 @@ try {
             Invoke-NgenNative -FilePath $harness -LogPath (Join-Path $logs "$config-serial.txt")
             Invoke-NgenNative -FilePath $harness -Arguments @('--workers=2') -LogPath (Join-Path $logs "$config-workers.txt")
         }
-        if ($Renderer) {
+        if ($FlightDemo) {
+            # Keep prerequisite fixture checks; do not rerun M2 inspector/appearance acceptance.
+            Invoke-NgenRenderer -BuildDirectory $build -LogDirectory $logs -Configuration $config -Checks $checks
+            Invoke-NgenFlight -BuildDirectory $build -LogDirectory $logs -Configuration $config -ScenePackage $ScenePackage -Python $python -SourceRoot $root
+        } elseif ($Renderer) {
             Invoke-NgenRenderer -BuildDirectory $build -LogDirectory $logs -Configuration $config -Checks $checks -Scene:$Scene -Inspector:$Inspector -ScenePackage $ScenePackage
         } else {
             & $checks
         }
     }
-    if ($Inspector) {
+    if ($FlightDemo) {
+        Write-Host "Windows $Compiler flight checks completed. Release records separate 1080p clean replay and sampled process-memory runs, plus an app-local bundle startup without SDK paths. Review actual budgets, network-disconnected startup, listening and controls separately; this is not owner acceptance. The private bundle stays outside evidence.zip."
+    } elseif ($Inspector) {
         Write-Host "Windows $Compiler inspector/bloom/reload validation completed. Release additionally records fixed-resolution steady/streaming CSVs and observed process working set. Inspect actual budgets, captures and GPU-memory scope; this is not personal visual or formal M2 acceptance."
     } elseif ($ScenePackage) {
         Write-Host "Windows $Compiler CPU, renderer/shader, built-in fixture and supplied checked-package upload/PBR/frame-pin checks passed. See the package hash and separate scene-package logs. This is not final visual, performance or M2 acceptance."

@@ -28,6 +28,9 @@ jobs:
       - name: Test Windows script boundaries (no Windows build)
         shell: pwsh
         run: ./tests/windows_build.ps1
+      - name: Test flight handoff boundaries (no Windows build)
+        shell: pwsh
+        run: ./tests/windows_flight.ps1
       - name: Select reviewed revision range
         env:
           EVENT_BASE: ${{ github.event.pull_request.base.sha || github.event.before }}

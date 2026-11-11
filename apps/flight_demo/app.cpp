@@ -154,7 +154,7 @@ std::optional<std::size_t> pick(const Ray &ray, const Preset &preset) {
     return selected;
 }
 struct Sample {
-    std::uint64_t frame_ns{};
+    std::uint64_t frame_ns{}, host_ns{};
     flight::Snapshot state;
     flight::CameraFrame camera;
     audio::Statistics audio;
@@ -966,7 +966,12 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
             sample.phase = phase;
             sample.power = power;
             collect();
-            sample.frame_ns = nanoseconds(began);
+            const auto ended = Clock::now();
+            sample.frame_ns = static_cast<std::uint64_t>(
+                std::chrono::duration_cast<std::chrono::nanoseconds>(ended - began).count());
+            sample.host_ns = static_cast<std::uint64_t>(
+                std::chrono::duration_cast<std::chrono::nanoseconds>(ended.time_since_epoch())
+                    .count());
             metrics.frame_ms = static_cast<double>(sample.frame_ns) / 1e6;
         } else
             metrics.frame_ms = static_cast<double>(nanoseconds(began)) / 1e6;
@@ -1016,7 +1021,7 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
                "camera_y_m,camera_z_m,camera_qx,camera_qy,camera_qz,camera_qw,camera_fov_deg,"
                "input_focused,capture_requested,capture_accepted,render_x_m,render_y_m,render_z_m,"
                "entity_generation,audio_state,audio_gen,audio_losses,audio_queued_frames,audio_"
-               "muted,audio_paused\n";
+               "muted,audio_paused,host_ns\n";
         for (std::size_t i = 0; i < measured; ++i) {
             const auto &s = samples[i];
             csv << i << ',' << s.state.tick.value << ',' << static_cast<unsigned>(s.state.mode)
@@ -1048,7 +1053,8 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
                 csv << ',' << v;
             csv << ',' << s.state.entity.generation << ',' << static_cast<unsigned>(s.audio.state)
                 << ',' << s.audio.generation << ',' << s.audio.losses << ','
-                << s.audio.queued_frames << ',' << s.audio.muted << ',' << s.audio.paused << '\n';
+                << s.audio.queued_frames << ',' << s.audio.muted << ',' << s.audio.paused << ','
+                << s.host_ns << '\n';
         }
         const auto text = csv.str();
         (void)take(probe::write_exclusive(options.report,

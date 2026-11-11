@@ -1,0 +1,38 @@
+[
+  {
+    "preset": "demo-debug",
+    "frames": 3,
+    "warmup": 2,
+    "parent_native_clock_correlated": true,
+    "validation": true,
+    "device": "dummy",
+    "stderr_empty": true
+  },
+  {
+    "preset": "demo-release",
+    "frames": 3,
+    "warmup": 2,
+    "parent_native_clock_correlated": true,
+    "validation": false,
+    "device": "dummy",
+    "stderr_empty": true
+  },
+  {
+    "preset": "demo-asan",
+    "frames": 3,
+    "warmup": 2,
+    "parent_native_clock_correlated": true,
+    "validation": true,
+    "device": "dummy",
+    "stderr_empty": true
+  },
+  {
+    "preset": "demo-gcc",
+    "frames": 3,
+    "warmup": 2,
+    "parent_native_clock_correlated": true,
+    "validation": false,
+    "device": "dummy",
+    "stderr_empty": true
+  }
+]

@@ -477,7 +477,10 @@ $begin = TickNs
 Start-Sleep -Milliseconds 1700
 $end = TickNs
 Set-Content -LiteralPath $phase 'shutdown'
-"frame,frame_ns,host_ns`n0,0,$begin`n1,0,$end" | Set-Content -LiteralPath $report
+# Flight adds bounded control/camera/audio diagnostics to the same frame clock.
+$columns = (0..56 | ForEach-Object { "diagnostic$_" }) -join ','
+$values = (0..56 | ForEach-Object { '0' }) -join ','
+"frame,frame_ns,host_ns,$columns`n0,0,$begin,$values`n1,0,$end,$values" | Set-Content -LiteralPath $report
 Start-Sleep -Milliseconds 900
 '@
             $script:gpuFailure = 'scoped-window'
@@ -485,7 +488,15 @@ Start-Sleep -Milliseconds 900
             $script:gpuFramePhasePath = Join-Path $directory 'GPU child phase.txt'
             $scopedReport = Join-Path $directory 'native frame window.csv'
             $scopedLog = Join-Path $directory 'GPU measured window.txt'
-            Invoke-NgenWorkload -FilePath $pwsh -Arguments @('-NoProfile', '-File', $frameChild, $scopedReport, $script:gpuFramePhasePath) -LogPath $scopedLog -MemoryPath "$scopedLog.json" -GpuMemory -FrameReport $scopedReport
+            try {
+                Invoke-NgenWorkload -FilePath $pwsh -Arguments @('-NoProfile', '-File', $frameChild, $scopedReport, $script:gpuFramePhasePath) -LogPath $scopedLog -MemoryPath "$scopedLog.json" -GpuMemory -FrameReport $scopedReport
+            } catch {
+                $rejected = Get-Content -Raw "$scopedLog.json" | ConvertFrom-Json
+                if ($rejected.gpu_memory.coverage.error -ceq 'InvalidOrUncorrelatedNativeFrameReport') {
+                    throw 'The bounded flight-width native clock report was rejected.'
+                }
+                throw
+            }
             $scoped = Get-Content -Raw "$scopedLog.json" | ConvertFrom-Json
             if ($scoped.gpu_memory.status -cne 'observed' -or -not $scoped.gpu_memory.coverage.complete -or
                 $scoped.gpu_memory.coverage.scope -cne 'native_measured_frames' -or

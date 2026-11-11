@@ -161,8 +161,16 @@ keyboard/GUI reset. The actual ALSA endpoint also opens quietly paused/muted;
 listening/physical unplug are not inferred. Audio-disabled graphs and original
 native probes stay green. See [audio evidence](../evidence/M3/audio/README.md).
 
-Next: offline packaging and current Windows compatibility, then three warmed
-laptop replays/scoped RTX measurements, recording and owner control/listening
-feedback. Correctness runs are not performance acceptance. All five slices,
-native verification, same-session review, signed commits and normal reviewed integration must finish before M3 is
-complete. No mandatory tracker workflow or per-command reapproval is introduced.
+Audio `2837627` exact-head hosted CI42982673426 passes4/4. Offline packaging
+and the [current Windows handoff](m3-windows-handoff.md) are implemented. Four
+package-enabled graphs pass21/21, eight filesystem/process-boundary cases pass,
+and native frame clocks correlate in all four configurations. The preliminary
+Linux bundle starts/renders with networking unshared and Conan hidden; final
+packaging must follow its source commit. See [packaging evidence](../evidence/M3/package/README.md).
+
+Next: regenerate final delivery, execute current Windows compatibility and three
+warmed laptop/scoped RTX measurements, record audio/video and obtain physical
+owner control/listening feedback. Correctness runs are not performance acceptance.
+All five slices, native verification, same-session review, signed commits and
+normal reviewed integration must finish before M3 is complete. No mandatory
+tracker workflow or per-command reapproval is introduced.

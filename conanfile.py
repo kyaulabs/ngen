@@ -1,7 +1,10 @@
+import json
+import os
 from conan import ConanFile
 from conan.errors import ConanInvalidConfiguration
 from conan.tools.cmake import CMakeDeps, CMakeToolchain
 from conan.tools.env import VirtualRunEnv
+from conan.tools.files import save
 
 
 class NgenDependencies(ConanFile):
@@ -76,6 +79,24 @@ class NgenDependencies(ConanFile):
     def generate(self):
         CMakeDeps(self).generate()
         VirtualRunEnv(self).generate()
+        if self.options.audio:
+            packages = []
+            for _, dependency in self.dependencies.host.items():
+                if not dependency.package_folder:
+                    continue
+                info = dependency.cpp_info.aggregated_components()
+                packages.append({
+                    "name": dependency.ref.name,
+                    "reference": dependency.ref.repr_notime(),
+                    "root": dependency.package_folder.replace("\\", "/"),
+                    "libdirs": info.libdirs,
+                    "bindirs": info.bindirs,
+                })
+            save(self, os.path.join(self.generators_folder, "demo-runtime.json"),
+                 json.dumps({"schema": 1, "os": str(self.settings.os),
+                             "configuration": str(self.settings.build_type),
+                             "sanitizer": self.conf.get("user.ngen:sanitizer", default=""),
+                             "packages": packages}, indent=2) + "\n")
         toolchain = CMakeToolchain(self, generator="Ninja")
         toolchain.user_presets_path = False
         if self.options.physics:
