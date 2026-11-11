@@ -427,7 +427,14 @@ function Invoke-NgenFlight {
                 "--report=$prefix.offline.csv") -LogPath "$prefix.offline.txt"
         } finally {
             Pop-Location
-            foreach ($name in $saved.Keys) { [Environment]::SetEnvironmentVariable($name, $saved[$name], 'Process') }
+            foreach ($name in $saved.Keys) {
+                if ($null -eq $saved[$name]) {
+                    # A plain $null binds to an empty string on current PowerShell/.NET.
+                    [Environment]::SetEnvironmentVariable($name, [NullString]::Value, 'Process')
+                } else {
+                    [Environment]::SetEnvironmentVariable($name, $saved[$name], 'Process')
+                }
+            }
         }
     }
 }

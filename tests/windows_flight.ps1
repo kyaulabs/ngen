@@ -61,6 +61,8 @@ $old = $env:NGEN_FLIGHT_ENV
 $oldSystemRoot = $env:SystemRoot
 $oldPath = $env:PATH
 $oldSdk = $env:VULKAN_SDK
+$oldLayerPath = $env:VK_LAYER_PATH
+$oldInstanceLayers = $env:VK_INSTANCE_LAYERS
 try {
     $build = Join-Path $temporary 'build'; $logs = Join-Path $temporary 'logs'
     New-Item -ItemType Directory -Path $build, $logs | Out-Null
@@ -130,12 +132,46 @@ try {
     try { Invoke-NgenFlight @parameters } catch { $failed = $_.Exception.Message -ceq 'fixture offline process failed' }
     if (-not $failed -or $env:PATH -cne $beforePath -or $env:VULKAN_SDK -cne 'fixture-sdk' -or
         $env:NGEN_FLIGHT_ENV -cne 'before' -or (Get-Location).Path -cne $location) { throw 'Offline failure lost owner environment or location cleanup' }
+    foreach ($state in @('absent', 'empty', 'value')) {
+        foreach ($outcome in @('success', 'failure')) {
+            $caseRoot = Join-Path $temporary "restore-$state-$outcome"
+            $caseBuild = Join-Path $caseRoot 'Release'; $caseLogs = Join-Path $caseRoot 'logs'
+            New-Item -ItemType Directory -Path $caseBuild, $caseLogs | Out-Null
+            Copy-Item -LiteralPath (Join-Path $build 'conanrun.ps1'), (Join-Path $build 'deactivate_conanrun.ps1') -Destination $caseBuild
+            $expected = @{}
+            foreach ($name in @('VK_LAYER_PATH', 'VK_INSTANCE_LAYERS')) {
+                switch ($state) {
+                    'absent' { Remove-Item -LiteralPath "Env:$name" -ErrorAction SilentlyContinue }
+                    'empty' { [Environment]::SetEnvironmentVariable($name, '', 'Process') }
+                    'value' { [Environment]::SetEnvironmentVariable($name, 'owner-layer-setting', 'Process') }
+                }
+                $expected[$name] = @{ Exists = (Test-Path -LiteralPath "Env:$name")
+                    Value = [Environment]::GetEnvironmentVariable($name, 'Process') }
+            }
+            $candidate = $parameters.Clone(); $candidate.BuildDirectory = $caseBuild; $candidate.LogDirectory = $caseLogs
+            $script:failure = if ($outcome -eq 'failure') { 'offline-failure' } else { '' }
+            $failed = $false
+            try { Invoke-NgenFlight @candidate } catch {
+                if ($_.Exception.Message -cne 'fixture offline process failed') { throw }
+                $failed = $true
+            }
+            if ($failed -ne ($outcome -eq 'failure')) { throw 'Offline outcome changed during environment restoration check' }
+            foreach ($name in $expected.Keys) {
+                if ((Test-Path -LiteralPath "Env:$name") -ne $expected[$name].Exists -or
+                    [Environment]::GetEnvironmentVariable($name, 'Process') -cne $expected[$name].Value) {
+                    throw "Offline $outcome changed $state environment presence/value for $name"
+                }
+            }
+        }
+    }
     Write-Host 'PASS: flight orchestration/process boundaries; not native Windows verification'
 } finally {
     $env:NGEN_FLIGHT_ENV = $old
     $env:SystemRoot = $oldSystemRoot
     $env:PATH = $oldPath
     $env:VULKAN_SDK = $oldSdk
+    $env:VK_LAYER_PATH = $oldLayerPath
+    $env:VK_INSTANCE_LAYERS = $oldInstanceLayers
     Remove-Item -LiteralPath $temporary -Recurse -Force
 }
 exit 0
