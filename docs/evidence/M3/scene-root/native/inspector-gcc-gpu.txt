@@ -1,0 +1,8 @@
+device=Intel(R) Iris(R) Xe Graphics (TGL GT2) api=1.4 driver=109060102 queue=0 display=wayland
+scene_root_rigid=1 scene_root_copied=1 scene_root_lights=1 scene_root_extras=1
+scene_root_transparent_order=1
+scene_emissive_flow=1 scene_flow_copied=1 scene_flow_disabled=1
+scene_translucent_order=1 scene_opaque_occlusion=1 scene_translucent_depth_readonly=1
+device=Intel(R) Iris(R) Xe Graphics (TGL GT2) api=1.4 driver=109060102 queue=0 display=wayland
+inspector_ship_bounds=1 inspector_rear_engine_bounds=1
+inspector_material_gpu=1 next_frame_edit=1 old_snapshot_gpu=1 immutable_material=1 inspector_pbr_factors=3 factor_admission=1 overlay_pixels=1 overlay_clip=1 overlay_srgb=1 overlay_alpha=1 overlay_font_alpha=1 overlay_bloom_order=1 overlay_admission=1 overlay_capacity=3 overlay_foreign=1 overlay_gpu_timing=1 overlay_snapshot=2 overlay_atlas_retirement=1 overlay_wsi_queued=4 inspector_frontend_frames=3 inspector_frontend_resize_race=1

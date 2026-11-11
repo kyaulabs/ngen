@@ -96,7 +96,17 @@ world-up tactical orbit, bounded drag/zoom and free look, copied target focus,
 bounded obstacle/own-hull clearance, reset/gap snaps and stateless cadence.
 Four complete graphs pass7/7, followed by final affected camera reruns in all
 four configurations; six actual-command camera/header-consumer Clang checks pass.
-These are numerical contracts, not actual SDL focus-loss or visual acceptance.
+Camera `c3805b6` hosted CI passes4/4. These are numerical contracts, not actual
+SDL focus-loss or visual acceptance.
+
+The generic renderer bridge now accepts a copied proper-rigid scene root:
+geometry, normal transforms, point-light instances and transparent depth follow
+it, while independent extras stay world-space. Two native GPU Reds are fixed;
+root/copy/lighting/rotation/depth/extras/admission controls pass in four native
+configurations. Six complete scene graphs pass69 CTests;35 actual-command Clang
+header-consumer invocations pass after three affected probe lint reruns. This
+adds no pass, resource owner, material ABI or authored asset change. The playable
+application and live input are still not implemented.
 
 Next: input/focus/capture integration and the playable accepted-asset renderer
 bridge, contact preset and traces, then bounded audio and offline delivery.

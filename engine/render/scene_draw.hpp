@@ -21,6 +21,10 @@ struct SceneView {
     // Clamped normalized UV0.u guides aft flow. Blend materials only;
     // values are copied before draw returns.
     std::span<const EmissiveFlow> material_flows{};
+    // Proper rigid local-to-world transform for the immutable scene only:
+    // unit/orthogonal rotation within 1e-4, local translation within +/-16384m.
+    // Extras remain in their own world frame; constants are copied by draw().
+    shader::Matrix root_transform{{1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1}};
 };
 struct SceneTargets {
     const Image &color;

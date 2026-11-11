@@ -31,6 +31,32 @@ std::optional<double> normal(const std::array<float, 16> &model, shader::Matrix 
         }
     return determinant;
 }
+bool rigid(const shader::Matrix &root) {
+    const auto &m = root.columns;
+    if (m[3] != 0 || m[7] != 0 || m[11] != 0 || m[15] != 1 || std::abs(m[12]) > 16384 ||
+        std::abs(m[13]) > 16384 || std::abs(m[14]) > 16384)
+        return false;
+    const Vector a{m[0], m[1], m[2]}, b{m[4], m[5], m[6]}, c{m[8], m[9], m[10]};
+    constexpr double tolerance = 1e-4;
+    return std::abs(dot(a, a) - 1) <= tolerance && std::abs(dot(b, b) - 1) <= tolerance &&
+           std::abs(dot(c, c) - 1) <= tolerance && std::abs(dot(a, b)) <= tolerance &&
+           std::abs(dot(a, c)) <= tolerance && std::abs(dot(b, c)) <= tolerance &&
+           std::abs(dot(a, cross(b, c)) - 1) <= tolerance;
+}
+std::optional<shader::Matrix> compose_root(const shader::Matrix &root,
+                                           const std::array<float, 16> &local) {
+    shader::Matrix result{};
+    for (std::size_t column = 0; column < 4; ++column)
+        for (std::size_t row = 0; row < 4; ++row) {
+            double value = 0;
+            for (std::size_t k = 0; k < 4; ++k)
+                value += static_cast<double>(root.columns[k * 4 + row]) * local[column * 4 + k];
+            if (!std::isfinite(value) || std::abs(value) > std::numeric_limits<float>::max())
+                return {};
+            result.columns[column * 4 + row] = static_cast<float>(value);
+        }
+    return result;
+}
 MeshSampler sampler(const assets::Sampler *source) {
     MeshSampler output{};
     if (!source)
@@ -71,7 +97,8 @@ MeshSampler sampler(const assets::Sampler *source) {
 }
 // Fixed forward tier: retain all CPU definitions, choose the 16 point-light
 // instances with greatest estimated irradiance at the admitted scene center.
-shader::LightConstants lights(const assets::Scene &scene) {
+std::variant<shader::LightConstants, Failure> lights(const assets::Scene &scene,
+                                                     const shader::Matrix &root) {
     struct Selection {
         double score{-1};
         std::uint32_t instance{};
@@ -112,9 +139,12 @@ shader::LightConstants lights(const assets::Scene &scene) {
             break;
         const auto &instance = scene.light_instances[choice.instance];
         const auto &light = scene.lights[instance.light];
+        const auto transform = compose_root(root, instance.transform);
+        if (!transform)
+            return Failure{"rooted scene light transform is not representable"};
         auto &native = output.lights[output.count++];
-        native.positionRange = {instance.transform[12], instance.transform[13],
-                                instance.transform[14], light.range};
+        native.positionRange = {transform->columns[12], transform->columns[13],
+                                transform->columns[14], light.range};
         native.colorIntensity = {light.color[0], light.color[1], light.color[2], light.intensity};
     }
     return output;
@@ -163,6 +193,8 @@ std::variant<Submission, Failure> SceneRenderer::draw(Context &context, ScenePin
         !finite(view.camera_position) || !finite(view.key_direction_intensity) ||
         !finite(view.key_color))
         return Failure{"scene view must be finite"};
+    if (!finite(view.root_transform.columns) || !rigid(view.root_transform))
+        return Failure{"scene root must be a finite proper rigid local transform"};
     const auto collected = collect(context);
     if (const auto *failure = std::get_if<Failure>(&collected))
         return *failure;
@@ -197,7 +229,10 @@ std::variant<Submission, Failure> SceneRenderer::draw(Context &context, ScenePin
     for (const auto &light : package->lights)
         if (light.type != 1)
             return Failure{"scene forward tier currently requires point-light definitions"};
-    const auto point_lights = lights(*package);
+    const auto selected_lights = lights(*package, view.root_transform);
+    if (const auto *failure = std::get_if<Failure>(&selected_lights))
+        return *failure;
+    const auto &point_lights = std::get<shader::LightConstants>(selected_lights);
     const assets::Material default_material{};
     for (std::size_t i = 0; i < package->instances.size(); ++i) {
         const auto &instance = package->instances[i];
@@ -213,8 +248,11 @@ std::variant<Submission, Failure> SceneRenderer::draw(Context &context, ScenePin
         draw.first_index = primitive.lods[lod].first_index;
         draw.index_count = primitive.lods[lod].index_count;
         draw.vertex_offset = static_cast<std::int32_t>(primitive.first_vertex);
-        draw.frame.model.columns = instance.transform;
-        const auto determinant = normal(instance.transform, draw.frame.normalMatrix);
+        const auto model = compose_root(view.root_transform, instance.transform);
+        if (!model)
+            return Failure{"rooted scene model is not representable"};
+        draw.frame.model = *model;
+        const auto determinant = normal(draw.frame.model.columns, draw.frame.normalMatrix);
         if (!determinant)
             return Failure{"scene model normal transform is not representable"};
         draw.frame.viewProjection = view.view_projection;
@@ -266,9 +304,9 @@ std::variant<Submission, Failure> SceneRenderer::draw(Context &context, ScenePin
         }
         std::array<double, 4> center{0, 0, 0, 1};
         for (std::size_t row = 0; row < 3; ++row) {
-            center[row] = instance.transform[12 + row];
+            center[row] = draw.frame.model.columns[12 + row];
             for (std::size_t column = 0; column < 3; ++column)
-                center[row] += static_cast<double>(instance.transform[column * 4 + row]) *
+                center[row] += static_cast<double>(draw.frame.model.columns[column * 4 + row]) *
                                (static_cast<double>(primitive.bounds.minimum[column]) +
                                 primitive.bounds.maximum[column]) *
                                .5;

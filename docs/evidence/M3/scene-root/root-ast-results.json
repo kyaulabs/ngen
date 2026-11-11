@@ -1,0 +1,212 @@
+[
+  {
+    "configuration": "inspector-debug",
+    "source": "engine/render/scene_draw.cpp",
+    "status": 0,
+    "flags": "Complete actual command; no flags removed"
+  },
+  {
+    "configuration": "inspector-debug",
+    "source": "apps/scene_workload/fixture.cpp",
+    "status": 0,
+    "flags": "Complete actual command; no flags removed"
+  },
+  {
+    "configuration": "inspector-debug",
+    "source": "engine/tools/ui.cpp",
+    "status": 0,
+    "flags": "Complete actual command; no flags removed"
+  },
+  {
+    "configuration": "inspector-debug",
+    "source": "apps/scene_workload/main.cpp",
+    "status": 0,
+    "flags": "Complete actual command; no flags removed"
+  },
+  {
+    "configuration": "inspector-debug",
+    "source": "apps/inspector_probe/main.cpp",
+    "status": 1,
+    "flags": "Complete actual command; no flags removed"
+  },
+  {
+    "configuration": "inspector-debug",
+    "source": "apps/scene_probe/main.cpp",
+    "status": 0,
+    "flags": "Complete actual command; no flags removed"
+  },
+  {
+    "configuration": "inspector-debug",
+    "source": "apps/scene_probe/draw.cpp",
+    "status": 0,
+    "flags": "Complete actual command; no flags removed"
+  },
+  {
+    "configuration": "inspector-debug",
+    "source": "tests/workload.cpp",
+    "status": 0,
+    "flags": "Complete actual command; no flags removed"
+  },
+  {
+    "configuration": "inspector-release",
+    "source": "engine/render/scene_draw.cpp",
+    "status": 0,
+    "flags": "Complete actual command; no flags removed"
+  },
+  {
+    "configuration": "inspector-release",
+    "source": "apps/scene_workload/fixture.cpp",
+    "status": 0,
+    "flags": "Complete actual command; no flags removed"
+  },
+  {
+    "configuration": "inspector-release",
+    "source": "engine/tools/ui.cpp",
+    "status": 0,
+    "flags": "Complete actual command; no flags removed"
+  },
+  {
+    "configuration": "inspector-release",
+    "source": "apps/scene_workload/main.cpp",
+    "status": 0,
+    "flags": "Complete actual command; no flags removed"
+  },
+  {
+    "configuration": "inspector-release",
+    "source": "apps/inspector_probe/main.cpp",
+    "status": 1,
+    "flags": "Complete actual command; no flags removed"
+  },
+  {
+    "configuration": "inspector-release",
+    "source": "apps/scene_probe/main.cpp",
+    "status": 0,
+    "flags": "Complete actual command; no flags removed"
+  },
+  {
+    "configuration": "inspector-release",
+    "source": "apps/scene_probe/draw.cpp",
+    "status": 0,
+    "flags": "Complete actual command; no flags removed"
+  },
+  {
+    "configuration": "inspector-release",
+    "source": "tests/workload.cpp",
+    "status": 0,
+    "flags": "Complete actual command; no flags removed"
+  },
+  {
+    "configuration": "inspector-asan",
+    "source": "engine/render/scene_draw.cpp",
+    "status": 0,
+    "flags": "Complete actual command; no flags removed"
+  },
+  {
+    "configuration": "inspector-asan",
+    "source": "apps/scene_workload/fixture.cpp",
+    "status": 0,
+    "flags": "Complete actual command; no flags removed"
+  },
+  {
+    "configuration": "inspector-asan",
+    "source": "engine/tools/ui.cpp",
+    "status": 0,
+    "flags": "Complete actual command; no flags removed"
+  },
+  {
+    "configuration": "inspector-asan",
+    "source": "apps/scene_workload/main.cpp",
+    "status": 0,
+    "flags": "Complete actual command; no flags removed"
+  },
+  {
+    "configuration": "inspector-asan",
+    "source": "apps/inspector_probe/main.cpp",
+    "status": 1,
+    "flags": "Complete actual command; no flags removed"
+  },
+  {
+    "configuration": "inspector-asan",
+    "source": "apps/scene_probe/main.cpp",
+    "status": 0,
+    "flags": "Complete actual command; no flags removed"
+  },
+  {
+    "configuration": "inspector-asan",
+    "source": "apps/scene_probe/draw.cpp",
+    "status": 0,
+    "flags": "Complete actual command; no flags removed"
+  },
+  {
+    "configuration": "inspector-asan",
+    "source": "tests/workload.cpp",
+    "status": 0,
+    "flags": "Complete actual command; no flags removed"
+  },
+  {
+    "configuration": "scene-shipping",
+    "source": "engine/render/scene_draw.cpp",
+    "status": 0,
+    "flags": "Complete actual command; no flags removed"
+  },
+  {
+    "configuration": "scene-shipping",
+    "source": "apps/scene_workload/fixture.cpp",
+    "status": 0,
+    "flags": "Complete actual command; no flags removed"
+  },
+  {
+    "configuration": "scene-shipping",
+    "source": "apps/scene_workload/main.cpp",
+    "status": 0,
+    "flags": "Complete actual command; no flags removed"
+  },
+  {
+    "configuration": "scene-shipping",
+    "source": "apps/scene_probe/main.cpp",
+    "status": 0,
+    "flags": "Complete actual command; no flags removed"
+  },
+  {
+    "configuration": "scene-shipping",
+    "source": "apps/scene_probe/draw.cpp",
+    "status": 0,
+    "flags": "Complete actual command; no flags removed"
+  },
+  {
+    "configuration": "scene-shipping",
+    "source": "tests/workload.cpp",
+    "status": 0,
+    "flags": "Complete actual command; no flags removed"
+  },
+  {
+    "configuration": "scene-no-shaders",
+    "source": "engine/render/scene_draw.cpp",
+    "status": 0,
+    "flags": "Complete actual command; no flags removed"
+  },
+  {
+    "configuration": "scene-no-shaders",
+    "source": "apps/scene_workload/fixture.cpp",
+    "status": 0,
+    "flags": "Complete actual command; no flags removed"
+  },
+  {
+    "configuration": "scene-no-shaders",
+    "source": "apps/scene_probe/main.cpp",
+    "status": 0,
+    "flags": "Complete actual command; no flags removed"
+  },
+  {
+    "configuration": "scene-no-shaders",
+    "source": "apps/scene_probe/draw.cpp",
+    "status": 0,
+    "flags": "Complete actual command; no flags removed"
+  },
+  {
+    "configuration": "scene-no-shaders",
+    "source": "tests/workload.cpp",
+    "status": 0,
+    "flags": "Complete actual command; no flags removed"
+  }
+]

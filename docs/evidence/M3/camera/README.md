@@ -44,7 +44,9 @@ Native text has trailing-whitespace normalization; ignored originals are intact.
 
 The preceding controller `aae5f8a` passes hosted CI4/4, retained separately from
 this later camera source. This commit extends hosted Clang18/dependency checks
-to the camera; its own CI is reported on its exact revision. Same-session Core/
+to the camera; exact `c3805b6` subsequently passes
+[CI42946061436](https://github.com/kyaulabs/ngen/actions/runs/42946061436)4/4.
+Same-session Core/
 C++ review checks copies/borrows, normalized transforms, range/epoch rules,
 bounded proxy iteration and errors before output. No remaining demonstrated
 P1/P2 defect was found in this numerical slice; this is not independent review.

@@ -29,10 +29,16 @@ void wait(Context &context, const Submission &submission) {
         SDL_Delay(1);
     }
 }
-ngen::assets::PackagePin package(bool rear_engine = false) {
+enum class Fixture : std::uint8_t { emissive, rear_engine, point_light };
+ngen::assets::PackagePin package(Fixture fixture = Fixture::emissive) {
     auto sections = package_fixture::triangle();
     auto &material = sections[3];
-    for (const float value : std::array<float, 13>{0, 0, 0, 1, .25F, .5F, .75F, 2, 1, 1, 1, 1, .5F})
+    std::array<float, 13> factors{0, 0, 0, 1, .25F, .5F, .75F, 2, 1, 1, 1, 1, .5F};
+    if (fixture == Fixture::point_light) {
+        factors[0] = factors[1] = factors[2] = 1;
+        factors[4] = factors[5] = factors[6] = factors[8] = 0;
+    }
+    for (const float value : factors)
         package_fixture::f32(material, value);
     package_fixture::u32(material, 0);
     package_fixture::u32(material, 1);
@@ -42,10 +48,20 @@ ngen::assets::PackagePin package(bool rear_engine = false) {
     }
     material.resize(128, std::byte{0});
     package_fixture::set32(sections[2], 8, 0);
-    if (rear_engine) {
+    if (fixture == Fixture::rear_engine) {
         auto engine = sections[8];
         package_fixture::set32(engine, 8 + 12 * 4, std::bit_cast<std::uint32_t>(8.0F));
         sections[8].insert(sections[8].end(), engine.begin(), engine.end());
+    }
+    if (fixture == Fixture::point_light) {
+        package_fixture::u32(sections[9], 1);
+        for (const auto value : std::array<float, 7>{1, 1, 1, 4, 3, 0, 0})
+            package_fixture::f32(sections[9], value);
+        package_fixture::u32(sections[10], 0);
+        package_fixture::u32(sections[10], 8);
+        for (const auto value :
+             std::array<float, 16>{1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 4.25F, 6.25F, 7, 1})
+            package_fixture::f32(sections[10], value);
     }
     auto loaded = ngen::assets::load_package(package_fixture::encode(sections));
     require(std::holds_alternative<ngen::assets::PackagePin>(loaded),
@@ -205,9 +221,8 @@ int main() try {
     require(std::holds_alternative<ngen::tools::Inspector>(created),
             "inspector fixture model failed");
     auto inspector = std::get<ngen::tools::Inspector>(std::move(created));
-    const auto render = [&](const ngen::tools::InspectorSnapshot &snapshot) {
-        view.material_factors = std::span(snapshot.materials).first(snapshot.material_count);
-        wait(*context, take(renderer.draw(*context, version, view, targets)));
+    const auto read_scene = [&](const Submission &submission) {
+        wait(*context, submission);
         require(take(renderer.collect(*context)) == 0, "inspector frame did not retire");
         wait(*context, take(context->copy_from_image({color, readback})));
         std::array<std::uint16_t, 64> actual{};
@@ -215,9 +230,124 @@ int main() try {
         const auto at = (1U * 4 + 2) * 4;
         return std::array{half(actual[at]), half(actual[at + 1]), half(actual[at + 2])};
     };
+    const auto render_scene = [&](ScenePin pin, const SceneView &frame_view) {
+        return read_scene(take(renderer.draw(*context, std::move(pin), frame_view, targets)));
+    };
+    const auto render = [&](const ngen::tools::InspectorSnapshot &snapshot) {
+        view.material_factors = std::span(snapshot.materials).first(snapshot.material_count);
+        return render_scene(version, view);
+    };
     const auto old = inspector.snapshot();
     const auto baseline = render(old);
     require(baseline == std::array{.5F, 1.0F, 1.5F}, "authored inspector emission pixels differ");
+    view.root_transform.columns[12] = -1;
+    require(render(old) == std::array<float, 3>{},
+            "scene root translation did not move the old native pixel");
+    std::array<std::uint16_t, 64> rooted_pixels{};
+    (void)take(readback.read(0, std::as_writable_bytes(std::span(rooted_pixels))));
+    constexpr auto rooted_at = (1U * 4) * 4;
+    require(std::array{half(rooted_pixels[rooted_at]), half(rooted_pixels[rooted_at + 1]),
+                       half(rooted_pixels[rooted_at + 2])} == baseline,
+            "scene root translation did not reach its new native pixel");
+    {
+        Gate root_gate(*context);
+        const auto queued_root =
+            take(renderer.draw(*context, version, view, targets, {root_gate.handle, 1}));
+        root_gate.pending = true;
+        view.root_transform.columns[12] = 0;
+        require(root_gate.signal(), "scene root gate did not signal");
+        const auto copied_root = read_scene(queued_root);
+        root_gate.completed = true;
+        require(copied_root == std::array<float, 3>{},
+                "pending scene root borrowed mutated view storage");
+    }
+    require(render(old) == baseline, "identity root did not restore authored native pixels");
+    const auto identity_root = view.root_transform;
+    for (unsigned scenario = 0; scenario < 7; ++scenario) {
+        auto invalid = identity_root;
+        switch (scenario) {
+        case 0:
+            invalid.columns[0] = 2;
+            break;
+        case 1:
+            invalid.columns[0] = -1;
+            break;
+        case 2:
+            invalid.columns[4] = .5F;
+            break;
+        case 3:
+            invalid.columns[3] = .1F;
+            break;
+        case 4:
+            invalid.columns[15] = 0;
+            break;
+        case 5:
+            invalid.columns[12] = 16385;
+            break;
+        default:
+            invalid.columns[12] = std::numeric_limits<float>::quiet_NaN();
+            break;
+        }
+        view.root_transform = invalid;
+        require(std::holds_alternative<Failure>(renderer.draw(*context, version, view, targets)) &&
+                    take(renderer.collect(*context)) == 0,
+                "invalid scene root published a frame");
+    }
+    view.root_transform = identity_root;
+    {
+        MeshDraw extra{};
+        extra.vertices = &version->vertices();
+        extra.indices = &version->indices();
+        extra.index_count = 3;
+        extra.frame.model.columns = source->instances[0].transform;
+        extra.frame.normalMatrix = identity_root;
+        extra.material.baseColor = {0, 0, 0, 1};
+        extra.material.emissiveAlphaCutoff = {.75F, .25F, .5F, .5F};
+        extra.material.flags[2] = 3;
+        extra.facing = MeshFacing::both;
+        extra.maps.fill(&white);
+        view.root_transform.columns[12] = 10;
+        const auto with_extra = read_scene(
+            take(renderer.draw(*context, version, view, targets, {}, std::span{&extra, 1})));
+        require(with_extra == std::array{.75F, .25F, .5F},
+                "scene root incorrectly moved independent world-space extras");
+        view.root_transform = identity_root;
+    }
+    {
+        auto lit_upload = take(SceneUpload::begin(*context, package(Fixture::point_light)));
+        ScenePin lit_scene;
+        const auto began = SDL_GetTicks();
+        while (!lit_scene) {
+            auto progress = take(lit_upload->advance(*context));
+            if (progress)
+                lit_scene = std::move(*progress);
+            require(SDL_GetTicks() - began < 5000, "rooted light fixture upload timed out");
+            SDL_Delay(1);
+        }
+        auto lit_view = view;
+        lit_view.material_factors = {};
+        const auto lit = render_scene(lit_scene, lit_view);
+        require(lit[0] > .1F, "rooted light fixture did not illuminate the reference surface");
+        lit_view.root_transform.columns[12] = 10;
+        lit_view.view_projection.columns[12] -= 10;
+        lit_view.light_view_projection.columns[12] -= 10;
+        lit_view.camera_position[0] += 10;
+        const auto translated = render_scene(lit_scene, lit_view);
+        for (std::size_t channel = 0; channel < lit.size(); ++channel)
+            require(std::abs(translated[channel] - lit[channel]) < .002F,
+                    "point-light instance did not follow its scene root");
+        lit_view = view;
+        lit_view.material_factors = {};
+        lit_view.root_transform.columns = {0, 0, -1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1};
+        lit_view.view_projection.columns = {0, 0, 1, 0, 0, -1, 0, 0, -1, 0, 0, 0, -4, 6, -5.5F, 1};
+        lit_view.light_view_projection = lit_view.view_projection;
+        lit_view.camera_position = {10, 6.25F, -4.25F, 1};
+        const auto rotated = render_scene(lit_scene, lit_view);
+        for (std::size_t channel = 0; channel < lit.size(); ++channel)
+            require(std::abs(rotated[channel] - lit[channel]) < .002F,
+                    "rigid scene rotation changed co-rotated normal/light pixels");
+    }
+    std::puts("scene_root_rigid=1 scene_root_copied=1 scene_root_lights=1 scene_root_extras=1");
     auto changed = old.materials[0];
     changed.emissive_strength = 4;
     require(std::holds_alternative<std::monostate>(
@@ -329,6 +459,20 @@ int main() try {
             else if (scenario == 0)
                 reference = actual;
             if (scenario == 0) {
+                const auto authored_root = layered.root_transform;
+                layered.root_transform.columns = {-1, 0, 0,  0, 0, 1, 0,  0,
+                                                  0,  0, -1, 0, 9, 0, 12, 1};
+                wait(*context, take(renderer.draw(*context, scene, layered, targets)));
+                require(take(renderer.collect(*context)) == 0,
+                        "rooted translucent frame did not retire");
+                wait(*context, take(context->copy_from_image({color, readback})));
+                std::array<std::uint16_t, 64> rotated{};
+                (void)take(readback.read(0, std::as_writable_bytes(std::span(rotated))));
+                require(half(rotated[occluded]) == .5F && half(rotated[occluded + 1]) == .25F &&
+                            half(rotated[occluded + 2]) == 0,
+                        "translucent sorting did not use rooted world depth");
+                layered.root_transform = authored_root;
+                std::puts("scene_root_transparent_order=1");
                 std::array<EmissiveFlow, 3> flows{};
                 flows[1] = {0, 1};
                 layered.material_flows = flows;
@@ -578,7 +722,7 @@ int main() try {
         }
     }
     {
-        auto created_box = ngen::tools::Inspector::create(package(true));
+        auto created_box = ngen::tools::Inspector::create(package(Fixture::rear_engine));
         require(std::holds_alternative<ngen::tools::Inspector>(created_box),
                 "ship bounds fixture model failed");
         auto boxed = std::get<ngen::tools::Inspector>(std::move(created_box));

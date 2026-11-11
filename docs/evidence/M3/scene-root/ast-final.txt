@@ -1,0 +1,174 @@
+=== inspector-debug: /home/kyau/projects/kyaulabs/ngen/engine/render/scene_draw.cpp ===
+47 warnings generated.
+Suppressed 47 warnings (47 in non-user code).
+Use -header-filter=.* or leave it as default to display errors from all non-system headers. Use -system-headers to display errors from system headers as well.
+
+=== inspector-debug: /home/kyau/projects/kyaulabs/ngen/apps/scene_workload/fixture.cpp ===
+47 warnings generated.
+Suppressed 47 warnings (47 in non-user code).
+Use -header-filter=.* or leave it as default to display errors from all non-system headers. Use -system-headers to display errors from system headers as well.
+
+=== inspector-debug: /home/kyau/projects/kyaulabs/ngen/engine/tools/ui.cpp ===
+53 warnings generated.
+Suppressed 53 warnings (53 in non-user code).
+Use -header-filter=.* or leave it as default to display errors from all non-system headers. Use -system-headers to display errors from system headers as well.
+
+=== inspector-debug: /home/kyau/projects/kyaulabs/ngen/apps/scene_workload/main.cpp ===
+60 warnings generated.
+Suppressed 60 warnings (60 in non-user code).
+Use -header-filter=.* or leave it as default to display errors from all non-system headers. Use -system-headers to display errors from system headers as well.
+
+=== inspector-debug: /home/kyau/projects/kyaulabs/ngen/apps/inspector_probe/main.cpp ===
+58 warnings generated.
+Suppressed 58 warnings (58 in non-user code).
+Use -header-filter=.* or leave it as default to display errors from all non-system headers. Use -system-headers to display errors from system headers as well.
+
+=== inspector-debug: /home/kyau/projects/kyaulabs/ngen/apps/scene_probe/main.cpp ===
+59 warnings generated.
+Suppressed 59 warnings (59 in non-user code).
+Use -header-filter=.* or leave it as default to display errors from all non-system headers. Use -system-headers to display errors from system headers as well.
+
+=== inspector-debug: /home/kyau/projects/kyaulabs/ngen/apps/scene_probe/draw.cpp ===
+47 warnings generated.
+Suppressed 47 warnings (47 in non-user code).
+Use -header-filter=.* or leave it as default to display errors from all non-system headers. Use -system-headers to display errors from system headers as well.
+
+=== inspector-debug: /home/kyau/projects/kyaulabs/ngen/tests/workload.cpp ===
+56 warnings generated.
+Suppressed 81 warnings (56 in non-user code, 25 NOLINT).
+Use -header-filter=.* or leave it as default to display errors from all non-system headers. Use -system-headers to display errors from system headers as well.
+
+=== inspector-release: /home/kyau/projects/kyaulabs/ngen/engine/render/scene_draw.cpp ===
+46 warnings generated.
+Suppressed 46 warnings (46 in non-user code).
+Use -header-filter=.* or leave it as default to display errors from all non-system headers. Use -system-headers to display errors from system headers as well.
+
+=== inspector-release: /home/kyau/projects/kyaulabs/ngen/apps/scene_workload/fixture.cpp ===
+46 warnings generated.
+Suppressed 46 warnings (46 in non-user code).
+Use -header-filter=.* or leave it as default to display errors from all non-system headers. Use -system-headers to display errors from system headers as well.
+
+=== inspector-release: /home/kyau/projects/kyaulabs/ngen/engine/tools/ui.cpp ===
+52 warnings generated.
+Suppressed 52 warnings (52 in non-user code).
+Use -header-filter=.* or leave it as default to display errors from all non-system headers. Use -system-headers to display errors from system headers as well.
+
+=== inspector-release: /home/kyau/projects/kyaulabs/ngen/apps/scene_workload/main.cpp ===
+59 warnings generated.
+Suppressed 59 warnings (59 in non-user code).
+Use -header-filter=.* or leave it as default to display errors from all non-system headers. Use -system-headers to display errors from system headers as well.
+
+=== inspector-release: /home/kyau/projects/kyaulabs/ngen/apps/inspector_probe/main.cpp ===
+57 warnings generated.
+Suppressed 57 warnings (57 in non-user code).
+Use -header-filter=.* or leave it as default to display errors from all non-system headers. Use -system-headers to display errors from system headers as well.
+
+=== inspector-release: /home/kyau/projects/kyaulabs/ngen/apps/scene_probe/main.cpp ===
+58 warnings generated.
+Suppressed 58 warnings (58 in non-user code).
+Use -header-filter=.* or leave it as default to display errors from all non-system headers. Use -system-headers to display errors from system headers as well.
+
+=== inspector-release: /home/kyau/projects/kyaulabs/ngen/apps/scene_probe/draw.cpp ===
+46 warnings generated.
+Suppressed 46 warnings (46 in non-user code).
+Use -header-filter=.* or leave it as default to display errors from all non-system headers. Use -system-headers to display errors from system headers as well.
+
+=== inspector-release: /home/kyau/projects/kyaulabs/ngen/tests/workload.cpp ===
+55 warnings generated.
+Suppressed 80 warnings (55 in non-user code, 25 NOLINT).
+Use -header-filter=.* or leave it as default to display errors from all non-system headers. Use -system-headers to display errors from system headers as well.
+
+=== inspector-asan: /home/kyau/projects/kyaulabs/ngen/engine/render/scene_draw.cpp ===
+47 warnings generated.
+Suppressed 47 warnings (47 in non-user code).
+Use -header-filter=.* or leave it as default to display errors from all non-system headers. Use -system-headers to display errors from system headers as well.
+
+=== inspector-asan: /home/kyau/projects/kyaulabs/ngen/apps/scene_workload/fixture.cpp ===
+47 warnings generated.
+Suppressed 47 warnings (47 in non-user code).
+Use -header-filter=.* or leave it as default to display errors from all non-system headers. Use -system-headers to display errors from system headers as well.
+
+=== inspector-asan: /home/kyau/projects/kyaulabs/ngen/engine/tools/ui.cpp ===
+53 warnings generated.
+Suppressed 53 warnings (53 in non-user code).
+Use -header-filter=.* or leave it as default to display errors from all non-system headers. Use -system-headers to display errors from system headers as well.
+
+=== inspector-asan: /home/kyau/projects/kyaulabs/ngen/apps/scene_workload/main.cpp ===
+60 warnings generated.
+Suppressed 60 warnings (60 in non-user code).
+Use -header-filter=.* or leave it as default to display errors from all non-system headers. Use -system-headers to display errors from system headers as well.
+
+=== inspector-asan: /home/kyau/projects/kyaulabs/ngen/apps/inspector_probe/main.cpp ===
+58 warnings generated.
+Suppressed 58 warnings (58 in non-user code).
+Use -header-filter=.* or leave it as default to display errors from all non-system headers. Use -system-headers to display errors from system headers as well.
+
+=== inspector-asan: /home/kyau/projects/kyaulabs/ngen/apps/scene_probe/main.cpp ===
+59 warnings generated.
+Suppressed 59 warnings (59 in non-user code).
+Use -header-filter=.* or leave it as default to display errors from all non-system headers. Use -system-headers to display errors from system headers as well.
+
+=== inspector-asan: /home/kyau/projects/kyaulabs/ngen/apps/scene_probe/draw.cpp ===
+47 warnings generated.
+Suppressed 47 warnings (47 in non-user code).
+Use -header-filter=.* or leave it as default to display errors from all non-system headers. Use -system-headers to display errors from system headers as well.
+
+=== inspector-asan: /home/kyau/projects/kyaulabs/ngen/tests/workload.cpp ===
+56 warnings generated.
+Suppressed 81 warnings (56 in non-user code, 25 NOLINT).
+Use -header-filter=.* or leave it as default to display errors from all non-system headers. Use -system-headers to display errors from system headers as well.
+
+=== scene-shipping: /home/kyau/projects/kyaulabs/ngen/engine/render/scene_draw.cpp ===
+46 warnings generated.
+Suppressed 46 warnings (46 in non-user code).
+Use -header-filter=.* or leave it as default to display errors from all non-system headers. Use -system-headers to display errors from system headers as well.
+
+=== scene-shipping: /home/kyau/projects/kyaulabs/ngen/apps/scene_workload/fixture.cpp ===
+46 warnings generated.
+Suppressed 46 warnings (46 in non-user code).
+Use -header-filter=.* or leave it as default to display errors from all non-system headers. Use -system-headers to display errors from system headers as well.
+
+=== scene-shipping: /home/kyau/projects/kyaulabs/ngen/apps/scene_workload/main.cpp ===
+57 warnings generated.
+Suppressed 57 warnings (57 in non-user code).
+Use -header-filter=.* or leave it as default to display errors from all non-system headers. Use -system-headers to display errors from system headers as well.
+
+=== scene-shipping: /home/kyau/projects/kyaulabs/ngen/apps/scene_probe/main.cpp ===
+58 warnings generated.
+Suppressed 58 warnings (58 in non-user code).
+Use -header-filter=.* or leave it as default to display errors from all non-system headers. Use -system-headers to display errors from system headers as well.
+
+=== scene-shipping: /home/kyau/projects/kyaulabs/ngen/apps/scene_probe/draw.cpp ===
+46 warnings generated.
+Suppressed 46 warnings (46 in non-user code).
+Use -header-filter=.* or leave it as default to display errors from all non-system headers. Use -system-headers to display errors from system headers as well.
+
+=== scene-shipping: /home/kyau/projects/kyaulabs/ngen/tests/workload.cpp ===
+55 warnings generated.
+Suppressed 80 warnings (55 in non-user code, 25 NOLINT).
+Use -header-filter=.* or leave it as default to display errors from all non-system headers. Use -system-headers to display errors from system headers as well.
+
+=== scene-no-shaders: /home/kyau/projects/kyaulabs/ngen/engine/render/scene_draw.cpp ===
+47 warnings generated.
+Suppressed 47 warnings (47 in non-user code).
+Use -header-filter=.* or leave it as default to display errors from all non-system headers. Use -system-headers to display errors from system headers as well.
+
+=== scene-no-shaders: /home/kyau/projects/kyaulabs/ngen/apps/scene_workload/fixture.cpp ===
+47 warnings generated.
+Suppressed 47 warnings (47 in non-user code).
+Use -header-filter=.* or leave it as default to display errors from all non-system headers. Use -system-headers to display errors from system headers as well.
+
+=== scene-no-shaders: /home/kyau/projects/kyaulabs/ngen/apps/scene_probe/main.cpp ===
+59 warnings generated.
+Suppressed 59 warnings (59 in non-user code).
+Use -header-filter=.* or leave it as default to display errors from all non-system headers. Use -system-headers to display errors from system headers as well.
+
+=== scene-no-shaders: /home/kyau/projects/kyaulabs/ngen/apps/scene_probe/draw.cpp ===
+47 warnings generated.
+Suppressed 47 warnings (47 in non-user code).
+Use -header-filter=.* or leave it as default to display errors from all non-system headers. Use -system-headers to display errors from system headers as well.
+
+=== scene-no-shaders: /home/kyau/projects/kyaulabs/ngen/tests/workload.cpp ===
+56 warnings generated.
+Suppressed 81 warnings (56 in non-user code, 25 NOLINT).
+Use -header-filter=.* or leave it as default to display errors from all non-system headers. Use -system-headers to display errors from system headers as well.
