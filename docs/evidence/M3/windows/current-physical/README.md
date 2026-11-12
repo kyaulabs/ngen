@@ -53,3 +53,9 @@ returned code is never executed. No private media/assets are committed.
 `checks.json` records archive identities and scoped results. Same-session review
 is not independent review. MSVC memory/startup, required UI refinement, final
 budgets and reviewed integration still keep M3 open.
+
+A subsequent unchanged MSVC Release return again times out and reproduces 2 warm
+ImGui allocations in its clean replay. The [force-tooltip investigation](../../tooltip/README.md)
+now reproduces a concrete hover-dependent allocation path locally and primes its
+bounded buffers. Native Windows confirmation of that fix remains pending; the
+new result supersedes treating the earlier zero-allocation runs as resolution.

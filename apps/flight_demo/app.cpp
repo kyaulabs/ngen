@@ -341,6 +341,16 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
     asteroids.indices = &indices;
     SceneRenderer renderer;
     auto gui = take(tools::Gui::create(*context));
+    // Prime the plot tooltip's bounded buffers before measuring or presenting it.
+    // Later numeric formats and first hover must not grow its draw storage.
+    gui->begin();
+    if (ImGui::BeginTooltip()) {
+        auto *tooltip = ImGui::GetWindowDrawList();
+        tooltip->VtxBuffer.reserve(static_cast<int>(overlay_vertex_limit));
+        tooltip->IdxBuffer.reserve(static_cast<int>(overlay_index_limit));
+        ImGui::EndTooltip();
+    }
+    gui->end();
     audio::Output sound;
     bool muted = options.mute;
     (void)sound.mute(muted);
