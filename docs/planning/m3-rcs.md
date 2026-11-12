@@ -68,6 +68,30 @@ independence. Preserve demanded versus displayed actuation in the bounded CSV.
 The all-on coverage view remains a deliberately nonphysical location inspection,
 not evidence of normal firing behavior. Show the owner a separate pulsed preview.
 
+The owner then corrected the simultaneous all-around firing and authorized re-aiming
+nozzle pairs while keeping all 32 mount locations and the accepted flight response.
+The previous averaging policy deliberately lit redundant/opposing banks, and its
+constant-torque inspection fixture did not demonstrate a physical turn/coast/stop.
+Remove that policy. Author sparse minimum-total-impulse allocations per signed
+axis; no active bank may counteract a requested pure axis. Pure turn and arrest
+sets must be disjoint. Zero-component helpers may cancel incidental force/moment.
+Forward thrust remains exclusive to the main drive.
+
+Preserve all socket-body pivots and mount plates. Re-aim the sleeves, throats and
+plumes together; change original vertices only at the four upper fore/middle
+socket pairs, with an independent exact whitelist check. All other original
+vertex bytes, UVs/handedness, indices, primitive/instance/material prefixes,
+textures, lights and the main drive stay unchanged. Keep the workload limits.
+Verify all 32 actual rendered exhaust centerlines after re-aiming, not assumed
+local socket offsets. Show actual controller spin-up, quiet rotation and opposing
+arrest, not a permanently held synthetic torque. This corrects the implementation;
+it does not certify a propellant/valve model or change physical control behavior.
+
+Current slice: directional calibration and native Red/Green are implemented;
+finish complete profiles/analysis/native asset checks, replay preservation,
+owner-closed physical-wrench inspection and a signed private delivery checkpoint.
+Owner appearance acceptance of the nozzle aim remains pending.
+
 Finish affected Linux/Windows, packaging and performance checks before the UI pass.
 The latest ClangCl baseline builds and validates both configurations, but its first
 CIM query failed with a general provider error and its clean replay reports 2 warm

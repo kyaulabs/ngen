@@ -122,23 +122,21 @@ TEST_CASE("RCS selection is bounded, owning and covariant with the interval atti
         REQUIRE((std::isfinite(value) && value >= 0 && value <= 1));
 }
 
-TEST_CASE("every forward and aft RCS bank participates in admitted wrench patterns") {
+TEST_CASE("pure turns and arrest use selective nonoverlapping RCS sets") {
     const auto profile = demo::frigate_profile();
-    std::array<bool, 16> used{};
-    for (std::size_t axis = 0; axis < 6; ++axis)
-        for (const float sign : {-1.0F, 1.0F}) {
-            std::array<float, 3> force{}, torque{};
-            if (axis < 3)
-                force[axis] = profile.flight.maximum_force_newtons[axis] * sign;
-            else
-                torque[axis - 3] = profile.flight.maximum_torque_newton_metres[axis - 3] * sign;
-            const auto levels =
-                std::get<demo::RcsLevels>(demo::rcs_levels(profile, {0, 0, 0, 1}, force, torque));
-            for (std::size_t bank = 0; bank < 16; ++bank)
-                used[bank] = used[bank] || levels[bank] > 1e-6F;
-        }
-    for (const bool active : used)
-        REQUIRE(active);
+    for (std::size_t axis = 0; axis < 3; ++axis) {
+        std::array<float, 3> torque{};
+        torque[axis] = profile.flight.maximum_torque_newton_metres[axis];
+        const auto turning =
+            std::get<demo::RcsLevels>(demo::rcs_levels(profile, {0, 0, 0, 1}, {}, torque));
+        torque[axis] = -torque[axis];
+        const auto stopping =
+            std::get<demo::RcsLevels>(demo::rcs_levels(profile, {0, 0, 0, 1}, {}, torque));
+        REQUIRE(std::count_if(turning.begin(), turning.end(), [](float v) { return v > 1e-6F; }) <=
+                6);
+        for (std::size_t bank = 0; bank < 16; ++bank)
+            REQUIRE((turning[bank] <= 1e-6F || stopping[bank] <= 1e-6F));
+    }
 }
 
 TEST_CASE("invalid RCS inputs reject before quaternion math or visual publication") {

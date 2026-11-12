@@ -100,8 +100,11 @@ class FlightRcs(unittest.TestCase):
         before, after = sections(Path(original)), sections(self.asset)
         for key in (5, 6, 7, 8, 10, 11):
             self.assertEqual(before[key], after[key], "frozen texture/light section changed")
-        for key in (1, 2, 3, 4, 9, 12):
+        for key in (2, 3, 4, 9, 12):
             self.assertEqual(before[key], after[key][:len(before[key])], "accepted prefix changed")
+        # Only forward socket positions/normals/tangents may change, under the
+        # owner-approved re-aim. The exact vertex whitelist and all 32 unchanged
+        # pivots are independently checked against the old rig by rcs_visibility.
 
 
 if __name__ == "__main__":

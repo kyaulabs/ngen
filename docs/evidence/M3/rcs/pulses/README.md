@@ -1,5 +1,8 @@
 # M3 demand-driven RCS puffs
 
+This checkpoint is superseded by the [directional nozzle correction](../directional/README.md),
+which retains pulse timing but replaces all-bank mixing and the synthetic preview.
+
 The owner accepts every location in the 32-jet rig and requests pulsed firing.
 This change preserves the approved private asset, mounts, plume geometry/materials,
 main rear exhaust, physical controller and audio policy. It changes presentation

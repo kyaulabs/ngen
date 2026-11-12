@@ -70,7 +70,7 @@ ShipProfile frigate_profile() {
     // ahead of opaque geometry. This is ship data, not a universal camera offset.
     profile.flight.flight_camera = {{0, 6, -161}, {0, 0, 0, 1}, 75};
     profile.asset_to_body.columns = {0, 0, 1, 0, 0, 1, 0, 0, -1, 0, 0, 0, 0, -2.07433414F, 0, 1};
-    profile.expected_package_crc = 0x65ddab97U;
+    profile.expected_package_crc = 0x6bbe6157U;
     profile.rcs_mix = frigate_rcs_mix;
     return profile;
 }

@@ -150,9 +150,15 @@ void verify(const ngen::demo::Preset &preset, const ngen::assets::Scene &package
                         direction[component] *= levels[bank] / length;
                         wrench[component] += direction[component];
                     }
-                    wrench[3] += (center[1] * direction[2] - center[2] * direction[1]) / 100;
-                    wrench[4] += (center[2] * direction[0] - center[0] * direction[2]) / 100;
-                    wrench[5] += (center[0] * direction[1] - center[1] * direction[0]) / 100;
+                    const std::array<double, 3> moment{
+                        (center[1] * direction[2] - center[2] * direction[1]) / 100,
+                        (center[2] * direction[0] - center[0] * direction[2]) / 100,
+                        (center[0] * direction[1] - center[1] * direction[0]) / 100};
+                    const auto contribution = axis < 3 ? direction[axis] : moment[axis - 3];
+                    require(contribution * sign >= -1e-8,
+                            "RCS bank counteracts its requested pure wrench axis");
+                    for (std::size_t component = 0; component < 3; ++component)
+                        wrench[component + 3] += moment[component];
                 }
                 require(wrench[axis] * sign > 0, "RCS jets oppose their requested wrench axis");
                 for (std::size_t other = 0; other < 6; ++other)

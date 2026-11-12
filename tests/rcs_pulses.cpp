@@ -157,16 +157,20 @@ TEST_CASE("actual attitude arrest wakes a coordinated RCS puff after the pilot r
             game->submit({Tick{1}, 1, entity, flight::SetMode{flight::Mode::direct}})));
         REQUIRE(std::holds_alternative<std::monostate>(game->submit({Tick{1}, 2, entity, pilot})));
         demo::RcsPulses pulses;
+        demo::RcsLevels starting{};
         for (unsigned tick = 0; tick < 180; ++tick) {
             const auto before = game->snapshot();
             const auto after = std::get<flight::Snapshot>(game->step());
             const auto demand = std::get<demo::RcsLevels>(
                 demo::rcs_levels(profile, before.body.rotation_xyzw, after.force_newtons,
                                  after.torque_newton_metres));
-            REQUIRE(std::holds_alternative<demo::RcsLevels>(pulses.step(demand)));
+            const auto visible = std::get<demo::RcsLevels>(pulses.step(demand));
+            if (tick == 0)
+                starting = visible;
         }
         REQUIRE(pulses.levels() == demo::RcsLevels{});
         const auto before = game->snapshot();
+        REQUIRE(before.body.angular_velocity_rps[axis] > .35F);
         REQUIRE(std::holds_alternative<std::monostate>(
             game->submit({Tick{181}, 3, entity, flight::Pilot{}})));
         const auto after = std::get<flight::Snapshot>(game->step());
@@ -176,6 +180,8 @@ TEST_CASE("actual attitude arrest wakes a coordinated RCS puff after the pilot r
         const auto visible = std::get<demo::RcsLevels>(pulses.step(demand));
         REQUIRE(visible == demand);
         REQUIRE(std::count_if(visible.begin(), visible.end(), [](float v) { return v > 0; }) >= 2);
+        for (std::size_t bank = 0; bank < demo::rcs_bank_count; ++bank)
+            REQUIRE((starting[bank] <= 1e-6F || visible[bank] <= 1e-6F));
         REQUIRE(after.body.position_metres == std::array<double, 3>{});
     }
 }

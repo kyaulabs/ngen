@@ -1,0 +1,156 @@
+{
+  "schema": 1,
+  "parent_revision": "fc5d985f13671790a36ee870af4b4fa34121eaea",
+  "scope": "Owner-authorized nozzle re-aim and selective turn/coast/arrest presentation; physical controller unchanged, not M3 completion.",
+  "private_asset": {
+    "sha256": "99c996f33d3cc98dbd801e3aa302ee2a5894d0fa6bcfdd18f59b73e72e74d834",
+    "crc32": "6bbe6157",
+    "instances": 247,
+    "materials": 33,
+    "banks": 16,
+    "jets": 32,
+    "workload_triangles": 249942,
+    "original_socket_vertices_changed": 2204
+  },
+  "design": {
+    "all_32_socket_pivots_preserved": true,
+    "all_32_rendered_exhaust_centerlines_clear": true,
+    "frozen_original_vertices_except_verified_socket_whitelist": true,
+    "original_uv_handedness_preserved": true,
+    "original_nonvertex_prefixes_textures_lights_preserved": true,
+    "allocation": "Sparse minimum total impulse per signed axis, no forced participation; no runtime solver.",
+    "no_bank_opposes_requested_pure_axis": true,
+    "pure_turn_arrest_sets_disjoint": true,
+    "signed_axis_bank_sets": {
+      "0": [
+        0,
+        2,
+        8
+      ],
+      "1": [
+        3,
+        5,
+        11
+      ],
+      "2": [
+        7,
+        10,
+        14
+      ],
+      "3": [
+        1,
+        4,
+        12
+      ],
+      "4": [
+        6,
+        7,
+        9,
+        12,
+        13
+      ],
+      "5": [],
+      "6": [
+        7,
+        12,
+        13
+      ],
+      "7": [
+        1,
+        14,
+        15
+      ],
+      "8": [
+        2,
+        3,
+        8
+      ],
+      "9": [
+        0,
+        5,
+        11
+      ],
+      "10": [
+        12,
+        15
+      ],
+      "11": [
+        13,
+        14
+      ]
+    }
+  },
+  "verification": {
+    "configurations": [
+      "demo-debug",
+      "demo-release",
+      "demo-asan",
+      "demo-gcc"
+    ],
+    "ctests_per_configuration": 22,
+    "affected_test_reruns_per_configuration": 2,
+    "pulse_cases": 9,
+    "scene_cases": 17,
+    "actual_clang_commands": 12,
+    "native_rcs_cases": 12,
+    "author_boundary_cases": 4,
+    "exact_geometry_cases": 3,
+    "frames": 2400,
+    "warmup": 60,
+    "extent": [
+      1920,
+      1080
+    ],
+    "csv_columns": 63,
+    "cpp_new_calls": 0,
+    "imgui_calls": 0,
+    "gpu_rows": 2400,
+    "physical_and_main_drive_fields_exact": [
+      "tick",
+      "mode",
+      "x_m",
+      "y_m",
+      "z_m",
+      "vx_mps",
+      "vy_mps",
+      "vz_mps",
+      "fx_N",
+      "fy_N",
+      "fz_N",
+      "tx_Nm",
+      "ty_Nm",
+      "tz_Nm",
+      "mass_kg",
+      "nav_goal",
+      "qx",
+      "qy",
+      "qz",
+      "qw",
+      "wx_radps",
+      "wy_radps",
+      "wz_radps",
+      "drive_power"
+    ],
+    "gcc_ast": "Unavailable, unsupported flags not removed.",
+    "audio": "Muted dummy backend; no listening claim.",
+    "final_timing_memory_acceptance": false,
+    "diagnostics": "Catch REQUIRE_FALSE enum flag analyzer finding avoided with equivalent positive assertion, no detector suppression. Initial Catch expression/header transcription compilation failures retained separately from behavioral Red."
+  },
+  "review": "Same-session re-aim/pivot/normal/tangent/selection/budget/preservation/publication and consumer review; not independent review.",
+  "pending": [
+    "Owner nozzle aim and physical-wrench inspection review",
+    "Current Windows/RTX and historical CIM/ImGui findings",
+    "Deferred UI pass",
+    "Final affected budgets and reviewed integration"
+  ],
+  "source_sha256": {
+    "apps/flight_demo/author_rcs.py": "6ed433bed9671e08f1022c3bcd6d08c166e88035d879abae9ee383ce74f68783",
+    "apps/flight_demo/frigate_rcs.hpp": "2762e0dbf5c612fd3d4ef6a611b085d384b8a67d0cb319ea5cac8e141a39facb",
+    "apps/flight_demo/preset.cpp": "439eaa577f58b671772274b0c32a1ded95cebf56f06cd9e9ac314df0ea39bce0",
+    "apps/flight_demo/main.cpp": "86e2d187a1b8e151383052a90f7133bfcb9bb72c4791900a089f018abcb99378",
+    "tests/flight_scene.cpp": "ed75bcdb2bbf96f8cf3940fd7723a8d498954689670e41d1b6fbae673694c725",
+    "tests/rcs_pulses.cpp": "bced20a4e567307cc5a45c0be4778f06294a20a278a66bdcbcba288475c7cefa",
+    "tests/flight_rcs.py": "381320af02c4162a94c03fdd31f4851fcaffcf98fbe547e1496bbc39e3412390",
+    "tests/rcs_visibility.py": "219e298ccf4e15fa6b6edba45bd5033c1952dcdc0a38c798abe5e6713473c7d8"
+  }
+}

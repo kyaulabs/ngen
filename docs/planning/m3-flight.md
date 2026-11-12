@@ -199,8 +199,18 @@ checks and a clean 2,400-frame 1080p allocation replay pass. See the
 requests demand-driven puffs. The [pulse implementation](../evidence/M3/rcs/pulses/README.md)
 now gates complete calibrated patterns once per successful 60 Hz tick, with quiet
 intervals, residual hysteresis and continuous exhaust only at saturation. The
-approved asset and physical traces remain unchanged. Owner pulse-timing review
-and affected final Windows/bundle/budget checks remain open; this is not M3 acceptance.
+then-approved asset and physical traces remained unchanged at that checkpoint.
+
+The owner then authorized nozzle re-aiming to correct simultaneous counteracting
+jets. The [directional rig](../evidence/M3/rcs/directional/README.md) preserves all
+32 socket pivots and mount plates, re-aims sleeves/throats/plumes together, and
+uses sparse per-axis minimum-impulse couples instead of forced bank participation.
+Three paired banks turn pitch/yaw and two turn roll; arrest uses disjoint sets.
+Only 2,204 original forward socket vertices change; all other original vertices,
+UVs/handedness, other section prefixes, main exhaust and physical traces are exact.
+All 32 rendered centerlines are clear; the workload stays at 249,942 triangles.
+Owner re-aim/physical-wrench preview review and affected final Windows/bundle/budget
+checks remain open; this is not M3 acceptance.
 
 The post-environment-fix ClangCl baseline reaches both configurations and the full
 RTX replay. Its first CIM query fails with no GPU-memory samples, and its clean

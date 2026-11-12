@@ -68,7 +68,7 @@ def fairing_ring(x, side, lower):
     raise ValueError("RCS station outside authored drive fairing")
 
 
-def banks():
+def mount_banks():
     result = []
 
     def add(x, side, lower, fairing):
@@ -108,6 +108,38 @@ def banks():
     return result
 
 
+def banks():
+    result = mount_banks()
+    for bank in result:
+        index = bank["index"]
+        side = math.copysign(1., bank["force_direction"][0])
+        if index in (0, 2, 3, 5, 8, 11):
+            force = np.array([side, 0, 0.])
+        elif index in (6, 9):
+            # Cant bowward exhaust outboard so the paired sockets cannot obstruct
+            # one another. Mirrored banks cancel the lateral braking component.
+            force = np.array([side * .8, 0, 1.])
+        else:
+            force = np.array([0, 1. if bank["lower"] else -1., 0])
+        force /= np.linalg.norm(force)
+        mount = bank["model"].copy()
+        before = mount[:3, 0] / np.linalg.norm(mount[:3, 0])
+        after = -(BODY.T @ force)
+        cross = np.cross(before, after)
+        skew = np.array([[0, -cross[2], cross[1]], [cross[2], 0, -cross[0]],
+                         [-cross[1], cross[0], 0]])
+        cosine = float(before @ after)
+        require(cosine > -1 + 1e-8, "nozzle aim reversal requires an explicit frame")
+        rotation = np.eye(3) + skew + skew @ skew / (1 + cosine)
+        model = mount.copy()
+        model[:3, :3] = rotation @ mount[:3, :3]
+        model[:3, 3] += mount[:3, 0] * .3
+        bank.update(mount_model=mount, aim_rotation=rotation, model=model,
+                    position_metres=BODY @ model[:3, 3] + np.array([0, -2.07433414, 0]),
+                    force_direction=force)
+    return result
+
+
 def mixing(rig):
     matrix = np.column_stack([np.concatenate([b["force_direction"],
                               np.cross(b["position_metres"], b["force_direction"]) / 100])
@@ -117,10 +149,10 @@ def mixing(rig):
         magnitude = FORCE[axis] / 1e9 if axis < 3 else TORQUE[axis - 3] / 1e11
         targets[axis, axis * 2] = magnitude
         targets[axis, axis * 2 + 1] = -magnitude
+    # Forward thrust belongs exclusively to the accepted main rear exhaust.
+    targets[:, 5] = 0
     solutions = [None] * 12
     scores = [math.inf] * 12
-    participation = [[None] * len(rig) for _ in range(12)]
-    participation_scores = np.full((12, len(rig)), math.inf)
     for selected in itertools.combinations(range(len(rig)), 6):
         basis = matrix[:, selected]
         if abs(np.linalg.det(basis)) < 1e-10:
@@ -132,22 +164,20 @@ def mixing(rig):
                 continue
             full = np.zeros(len(rig))
             full[list(selected)] = np.maximum(column, 0)
+            full[full < 1e-10] = 0
             if np.max(np.abs(matrix @ full - targets[:, axis])) > 1e-6:
                 continue
-            score = float(full.max())
-            if score < scores[axis]:
+            requested = axis // 2
+            sign = 1 if axis % 2 == 0 else -1
+            if np.any((full > 1e-7) & (matrix[requested] * sign < -1e-8)):
+                continue
+            # Minimum total impulse at fixed common bank force, not minimum peak
+            # or a blend of redundant solutions that fires counteracting jets.
+            score = float(full.sum())
+            if score < scores[axis] - 1e-10:
                 solutions[axis], scores[axis] = full, score
-            for bank in np.flatnonzero(full > 1e-7):
-                if score < participation_scores[axis, bank]:
-                    participation[axis][bank] = full
-                    participation_scores[axis, bank] = score
     require(all(s is not None for s in solutions), "authored RCS cone cannot span the actuator axes")
-    # Average feasible allocations so redundant authored banks participate instead
-    # of permanently favoring only the farthest pair. Convex averaging preserves
-    # the exact requested force/moment and nonnegative bank levels.
-    raw = np.column_stack([np.mean([solutions[axis], *[
-        candidate for candidate in participation[axis] if candidate is not None]], axis=0)
-        for axis in range(12)])
+    raw = np.column_stack(solutions)
     nominal = max(1., float(raw.max()))
     weights = raw / nominal
     require(np.max(np.abs(matrix @ weights - targets / nominal)) < 1e-6,
@@ -221,6 +251,80 @@ def bake_hardware(mesh, models):
     return result
 
 
+def aimed_mesh(mesh, bank):
+    result = bake_hardware(mesh, [bank["mount_model"]])
+    vertices = np.asarray(result.vertices)
+    source = np.asarray(mesh.vertices)
+    pivot = np.zeros((len(source), 3))
+    pivot[:, 0] = .3
+    pivot[:, 1] = np.where(source[:, 1] < 0, -.6, .6)
+    mount, rotation = bank["mount_model"], bank["aim_rotation"]
+    pivot = pivot @ mount[:3, :3].T + mount[:3, 3]
+    vertices[:, :3] = pivot + (vertices[:, :3] - pivot) @ rotation.T
+    vertices[:, 3:6] = vertices[:, 3:6] @ rotation.T
+    vertices[:, 10:13] = vertices[:, 10:13] @ rotation.T
+    result.vertices = vertices.tolist()
+    return result
+
+
+def combine_meshes(meshes):
+    result = Mesh()
+    for mesh in meshes:
+        first = len(result.vertices)
+        result.vertices.extend(mesh.vertices)
+        result.indices.extend(first + i for i in mesh.indices)
+    return result
+
+
+def reaim_original_sockets(parts, rig):
+    vertices = np.frombuffer(parts[1], dtype="<f4").reshape(-1, 14).copy()
+    indices = np.frombuffer(parts[2], dtype="<u4")
+    touched = np.zeros(len(vertices), dtype=bool)
+    for bank in rig:
+        if bank["index"] not in (0, 1, 3, 4):
+            continue
+        mount, rotation = bank["mount_model"], bank["aim_rotation"]
+        inverse_mount = np.linalg.inv(mount)
+        for offset in range(0, len(parts[9]), 72):
+            primitive = struct.unpack_from("<I", parts[9], offset)[0]
+            first, count, material, levels = struct.unpack_from("<4I", parts[3], primitive * 80)
+            if material not in (3, 4):
+                continue
+            instance = np.array(struct.unpack_from("<16f", parts[9], offset + 8)).reshape(4, 4).T
+            linear = instance[:3, :3]
+            data = vertices[first:first + count]
+            world = data[:, :3] @ linear.T + instance[:3, 3]
+            local = world @ inverse_mount[:3, :3].T + inverse_mount[:3, 3]
+            selected = np.zeros(count, dtype=bool)
+            for socket in (-.6, .6):
+                selected |= ((local[:, 0] >= .174) & (local[:, 0] <= .491) &
+                             (np.linalg.norm(local[:, 1:] - [socket, 0], axis=1) < .46))
+            if not selected.any():
+                continue
+            require(not touched[first:first + count][selected].any(), "RCS vertices selected twice")
+            for level in range(levels):
+                begin, size = struct.unpack_from("<2I", parts[3], primitive * 80 + 40 + level * 12)
+                faces = selected[indices[begin:begin + size].reshape(-1, 3)]
+                require(np.all(faces.all(axis=1) | ~faces.any(axis=1)), "RCS selection cuts a mesh face")
+            pivot = np.zeros((int(selected.sum()), 3))
+            pivot[:, 0] = .3
+            pivot[:, 1] = np.where(local[selected, 1] < 0, -.6, .6)
+            pivot = pivot @ mount[:3, :3].T + mount[:3, 3]
+            transform = np.linalg.inv(linear) @ rotation @ linear
+            changed = pivot + (world[selected] - pivot) @ rotation.T
+            data[selected, :3] = (changed - instance[:3, 3]) @ np.linalg.inv(linear).T
+            normals = data[selected, 3:6] @ np.linalg.inv(transform)
+            normals /= np.linalg.norm(normals, axis=1)[:, None]
+            tangents = data[selected, 10:13] @ transform.T
+            tangents -= normals * np.einsum("ij,ij->i", normals, tangents)[:, None]
+            tangents /= np.linalg.norm(tangents, axis=1)[:, None]
+            data[selected, 3:6], data[selected, 10:13] = normals, tangents
+            touched[first:first + count] |= selected
+    require(touched.any(), "original forward socket geometry was not found")
+    parts[1] = vertices.tobytes()
+    return int(touched.sum())
+
+
 def plume():
     mesh = Mesh()
     profile = [(u, max(.005, (1 - u) ** 1.3 * (1 + 3 * u)))
@@ -250,6 +354,7 @@ def author(base, output, probe):
     original = dict(parts)
     rig = banks()
     weights, nominal, matrix = mixing(rig)
+    changed_socket_vertices = reaim_original_sockets(parts, rig)
     vertex_count, index_count = len(parts[1]) // 56, len(parts[2]) // 4
 
     def append_mesh(mesh, material):
@@ -268,37 +373,36 @@ def author(base, output, probe):
         index_count += len(indices)
         return primitive, bytes(record)
 
-    hardware_ids = [append_mesh(m, material)[0] for m, material in zip(hardware(), (2, 3, 4))]
-    template_id, template = append_mesh(plume(), 17)
+    plate, sleeve, throat = hardware()
+    plate_id = append_mesh(plate, 2)[0]
     for bank in rig:
         index = bank["index"]
         model = bank["model"].T.reshape(-1)
         if bank["lower"] and index < 12:
-            for primitive in hardware_ids:
-                parts[9] += struct.pack("<2I16f", primitive, 1024 + index, *model)
+            parts[9] += struct.pack("<2I16f", plate_id, 1024 + index,
+                                    *bank["mount_model"].T.reshape(-1))
+            for mesh, material in ((sleeve, 3), (throat, 4)):
+                primitive = append_mesh(aimed_mesh(mesh, bank), material)[0]
+                parts[9] += struct.pack("<2I16f", primitive, 1024 + index, *np.eye(4).T.reshape(-1))
         name = f"M3_RCS_{index:02d}".encode()
         material = bytearray(original[4][13 * 128:14 * 128])
         struct.pack_into("<2I", material, 100, len(parts[12]), len(name))
         parts[12] += name
         parts[4] += material
-        if index == 0:
-            primitive = template_id
-        else:
-            primitive = len(parts[3]) // 80
-            record = bytearray(template)
-            struct.pack_into("<I", record, 8, 17 + index)
-            parts[3] += record
+        local_plume = bake_hardware(aimed_mesh(plume(), bank), [np.linalg.inv(bank["model"])])
+        primitive = append_mesh(local_plume, 17 + index)[0]
         parts[9] += struct.pack("<2I16f", primitive, 1024 + index, *model)
-    # The six additional hardware sets share three material-grouped draws.
-    # Existing fore/middle hardware and all original M2 records stay untouched.
-    models = [b["model"] for b in rig
-              if b["index"] >= 12 or (not b["lower"] and b["surface"] == "drive_fairing")]
-    for mesh, material in zip(hardware(), (2, 3, 4)):
-        primitive = append_mesh(bake_hardware(mesh, models), material)[0]
+    # Group added hardware by existing material, preserving the draw/triangle limits.
+    added = [b for b in rig
+             if b["index"] >= 12 or (not b["lower"] and b["surface"] == "drive_fairing")]
+    for mesh, material in ((plate, 2), (sleeve, 3), (throat, 4)):
+        meshes = [bake_hardware(mesh, [b["mount_model"]]) if material == 2 else aimed_mesh(mesh, b)
+                  for b in added]
+        primitive = append_mesh(combine_meshes(meshes), material)[0]
         parts[9] += struct.pack("<2I16f", primitive, 2048 + material, *np.eye(4).T.reshape(-1))
     for key in (5, 6, 7, 8, 10, 11):
         require(parts[key] == original[key], "frozen texture/light section changed")
-    for key in (1, 2, 3, 4, 9, 12):
+    for key in (2, 3, 4, 9, 12):
         require(parts[key].startswith(original[key]), "accepted asset prefix changed")
     rendered = 8000
     for offset in range(0, len(parts[9]), 72):
@@ -312,7 +416,8 @@ def author(base, output, probe):
                    {k: (v.tolist() if isinstance(v, np.ndarray) else v) for k, v in b.items()} for b in rig],
                "mix": weights.tolist(), "nominal_bank_force_newtons": nominal,
                "mixing_matrix": matrix.tolist(), "visible_workload_triangles": rendered,
-               "scope": "Preserve the 16 fore/middle jets; relocate the occluded eight aft jets onto outer drive fairings and add eight more aft jets. Preserve original M2 prefixes, rear exhaust, textures and lights; group only added hardware draws."}
+               "changed_original_socket_vertices": changed_socket_vertices,
+               "scope": "Preserve all 32 approved mount locations. Re-aim sockets and exhaust for selective turn/coast/arrest couples; minimum-total-impulse allocation, no forced bank participation. Change original vertices only at the four forward upper socket pairs; preserve hull, rear exhaust, other original records, textures and lights."}
     provenance = json.loads(parts[13])
     provenance["m3_rcs"] = profile
     parts[13] = json.dumps(provenance, sort_keys=True, separators=(",", ":")).encode()
