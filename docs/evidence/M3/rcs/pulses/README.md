@@ -54,6 +54,14 @@ inside the unchanged 64-column Windows observer bound. Muted dummy-backend repla
 is correctness/allocation evidence, not listening, final timing or Windows memory
 acceptance. `checks.json` binds results to source hashes.
 
+The private Linux v10 bundle is `build/m3-offline-linux-v10/ngen-flight`, from
+signed behavior source `8968947fb9ecbb17bdc04e6bb462392e05980b70`. All 23 manifest
+hashes and the bounded 244-member source archive validate, including the new pulse
+implementation/header/test/build sources. Headless verification and three rendered
+frames pass with networking unshared, Conan hidden and SDK/library-path overrides
+absent. See `offline.json`; platform ABI and final UI/Windows/budget qualifications
+remain unchanged.
+
 Same-session review traced pulse state, saturation transitions, budget bounds,
 invalid atomicity, tick/render separation, reset and borrowed material-table
 lifetimes. The verified burst transition repair is included. This is not independent
