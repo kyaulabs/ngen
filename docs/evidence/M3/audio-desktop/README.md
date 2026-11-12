@@ -20,8 +20,10 @@ with the desktop backend. The bundle-manifest regression likewise first found
 `libpulse.so.0` missing and is now Green. The runtime ABI list and private launch
 instructions now require the platform client and desktop service, not direct
 `libasound.so.2`. **Do not use Linux flight bundles through v12 for new playback:**
-they retain the unsafe direct route. The accepted private directional asset and
-all 27 physical/actuation fields across the 2,400-frame replay are unchanged.
+they retain the unsafe direct route. The private directional asset and all 27
+physical/actuation fields across the 2,400-frame replay are unchanged. This
+comparison uses the prior implementation checkpoint, not owner acceptance of
+physical flight or nozzle aim.
 
 Native bundle admission also rejected unnecessary direct imports of
 `libpulse-simple.so.0` and private `libpulsecommon-17.0.so`. SDL already opens its
@@ -90,6 +92,16 @@ env -u SDL_AUDIO_DRIVER -u SDL_AUDIODRIVER \
   UBSAN_OPTIONS=halt_on_error=1:print_stacktrace=1 LD_BIND_NOW=1 \
   build/demo-asan/audio_output_tests '[desktop]'
 ```
+
+The replacement is `build/m3-offline-linux-v13/ngen-flight`, built from signed
+source `7c9b0d798d16462fae44161e43e1a7552c60d2c4`. All 25 manifest hashes verify;
+the bounded 258-member source archive matches the committed sources. Network-
+unshared startup with Conan hidden and SDK/library overrides absent passes
+physical geometry verification and three rendered frames after two warmup frames.
+The real desktop backend opens muted, not dummy, and other-application playback
+works during and after startup without changing the desktop graph. No SDK-private
+client imports are required. See `offline.json`; this is startup evidence, not
+final performance/listening acceptance. Platform libraries/services remain needed.
 
 `checks.json` records source/log hashes and evidence scope. Real coexistence uses
 silent PCM, not a recording or subjective listening test. Sampling is not

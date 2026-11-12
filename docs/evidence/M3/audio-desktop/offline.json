@@ -1,0 +1,30 @@
+{
+  "source_revision": "7c9b0d798d16462fae44161e43e1a7552c60d2c4",
+  "bundle": "build/m3-offline-linux-v13/ngen-flight",
+  "manifest_files_verified": 25,
+  "source_archive_members": 258,
+  "source_correspondence": true,
+  "network_unshared": true,
+  "conan_hidden": true,
+  "sdk_environment_absent": true,
+  "headless_geometry_verified": true,
+  "rendered_frames": 3,
+  "warmup": 2,
+  "finite_hdr_all_gpu_rows": true,
+  "stderr_bytes": 0,
+  "platform_abi_still_required": true,
+  "desktop_audio_backend": "PulseAudio API through actual existing PipeWire service; no dummy/ALSA driver",
+  "desktop_graph_unchanged": true,
+  "other_app_playback_during_and_after": true,
+  "no_direct_audio_sdk_imports": true,
+  "scope": "Shared desktop audio replacement, no final UI/Windows/three-run/listening acceptance.",
+  "manifest_sha256": "37c0c1c9b52362d9cf10c5d3cdc3a47c0014dbbd9ce214f7add3f1e6f67c9dbb",
+  "source_archive_sha256": "e914eeac3d9de22c3ed60544e9bcab76bde58bede5c80ec6948bcc15f7f33b23",
+  "private_log_sha256": {
+    "verify.txt": "431c7a44899be895a0c842ce557a0437914b496c8acd719de51abbfae2bdf8f1",
+    "verify.err": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "frames.txt": "87593b1fa999d592b2b45ba0e6def05e2fc0c2d7304fd1f929b4e7c9daf9cb7f",
+    "frames.err": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "frames.csv": "ec3b9838c4ac9e1b25e9d62914a2971a53b6b9d162401a9284e15c173c5b05a5"
+  }
+}
