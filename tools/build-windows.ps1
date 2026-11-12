@@ -96,6 +96,7 @@ function Invoke-NgenWorkload {
     $gpuError = ''
     $gpuErrorMessage = ''
     $gpuErrorHresult = $null
+    $gpuErrorDetails = $null
     $nextGpuSample = 0L
     try {
         $started = $process.Start()
@@ -147,6 +148,17 @@ function Invoke-NgenWorkload {
                     $detail = [string]$_.Exception.Message
                     $gpuErrorMessage = $detail.Substring(0, [Math]::Min($detail.Length, 512))
                     $gpuErrorHresult = $_.Exception.HResult
+                    $identifier = [string]$_.FullyQualifiedErrorId
+                    $gpuErrorDetails = [ordered]@{
+                        fully_qualified_error_id = $identifier.Substring(0, [Math]::Min($identifier.Length, 512))
+                        category = [string]$_.CategoryInfo.Category
+                        native_error_code = $null
+                        status_code = $null
+                    }
+                    if ($_.Exception -is [Microsoft.Management.Infrastructure.CimException]) {
+                        $gpuErrorDetails.native_error_code = [string]$_.Exception.NativeErrorCode
+                        $gpuErrorDetails.status_code = [uint32]$_.Exception.StatusCode
+                    }
                 } finally {
                     $attempt.timestamp_ticks = [Diagnostics.Stopwatch]::GetTimestamp()
                     $attempt.elapsed_ms = $clock.ElapsedMilliseconds
@@ -251,6 +263,7 @@ function Invoke-NgenWorkload {
             $memory.gpu_memory = [ordered]@{
                 status = $gpuStatus; error_type = $gpuError; within_1gib_budget = $gpuBudgetOk
                 error_message = $gpuErrorMessage; error_hresult = $gpuErrorHresult
+                error_details = $gpuErrorDetails
                 provider = 'Win32_PerfFormattedData_GPUPerformanceCounters_GPUProcessMemory'
                 target_sample_period_ms = 500; operation_timeout_seconds = 2
                 parent_qpc_started_ticks = $clockStarted; parent_qpc_ended_ticks = $clockEnded

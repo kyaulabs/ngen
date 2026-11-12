@@ -357,6 +357,12 @@ exit 0
             if ($Query -notmatch "Name LIKE 'pid_(\d+)_%'") { throw 'GPU query is not scoped to its owned child' }
             $target = $Matches[1]
             if ($script:gpuFailure -eq 'unavailable') { throw 'fixture CIM class unavailable' }
+            if ($script:gpuFailure -eq 'cim-error') {
+                $exception = [Microsoft.Management.Infrastructure.CimException]::new('fixture CIM provider failure')
+                $record = [Management.Automation.ErrorRecord]::new($exception, ('NgenFixtureCimFailure' + ('x' * 600)),
+                    [Management.Automation.ErrorCategory]::ResourceUnavailable, $null)
+                Write-Error -ErrorRecord $record -ErrorAction Stop
+            }
             if ($script:gpuFailure -eq 'late-query') {
                 if (++$script:gpuReadCalls -eq 1) { Start-Sleep -Milliseconds 1300 }
             }
@@ -424,8 +430,25 @@ exit 0
             if (-not $failed -or $missing.gpu_memory.status -cne 'unavailable' -or
                 $missing.gpu_memory.error_message -cne 'fixture CIM class unavailable' -or
                 $null -eq $missing.gpu_memory.error_hresult -or
+                $null -ne $missing.gpu_memory.error_details.native_error_code -or
+                $null -ne $missing.gpu_memory.error_details.status_code -or
                 $null -ne $missing.gpu_memory.peak_dedicated_plus_shared_bytes -or
                 $missing.gpu_memory.samples.Count -ne 0 -or $missing.exit_code -ne 0) { throw 'Unavailable GPU counters were accepted as measured zero, or diagnostics/actual child result were lost' }
+            $script:gpuFailure = 'cim-error'
+            $cimLog = Join-Path $directory 'structured CIM failure.txt'
+            $failed = $false
+            try {
+                Invoke-NgenWorkload -FilePath $pwsh -Arguments @('-NoProfile', '-Command', 'Start-Sleep -Milliseconds 600') -LogPath $cimLog -MemoryPath "$cimLog.json" -GpuMemory
+            } catch { $failed = $_.Exception.Message -match 'GPU memory' }
+            $cimFailure = Get-Content -Raw "$cimLog.json" | ConvertFrom-Json
+            $detail = $cimFailure.gpu_memory.error_details
+            if (-not $failed -or $cimFailure.gpu_memory.status -cne 'unavailable' -or
+                $null -ne $cimFailure.gpu_memory.within_1gib_budget -or
+                $cimFailure.gpu_memory.samples.Count -ne 0 -or $cimFailure.exit_code -ne 0 -or
+                $null -eq $detail -or $detail.fully_qualified_error_id -notlike 'NgenFixtureCimFailure*' -or
+                $detail.fully_qualified_error_id.Length -ne 512 -or
+                $detail.category -cne 'ResourceUnavailable' -or $detail.native_error_code -cne 'Ok' -or
+                $detail.status_code -ne 0) { throw 'Structured CIM failure diagnostics were lost or accepted as GPU memory proof' }
             foreach ($budgetCase in @('over-budget-shared', 'over-budget-committed')) {
                 $script:gpuFailure = $budgetCase
                 $gpuBudget = Join-Path $directory "$budgetCase.txt"

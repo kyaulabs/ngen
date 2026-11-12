@@ -27,7 +27,9 @@ $check = @{
 & ./tools/build-windows.ps1 @check
 ```
 
-After it finishes successfully, run the second compiler sequentially:
+After that run exits, preserve its evidence archive and run the second compiler
+sequentially, even if the first run failed. Do not change profiles or suppress a
+failed check to reach the other compiler:
 
 ```powershell
 $check.Compiler = 'ClangCl'
@@ -40,6 +42,16 @@ validation/control/audio walkthrough, a separate unvalidated 2,400-frame 1080p r
 and another replay with sampled working-set/WDDM observations. The latter is
 instrumented memory evidence, not clean timing or a continuous global-memory bound.
 No GTX VM result is implied.
+
+The historical ClangCl return reported 2 warm ImGui allocations in the clean
+replay and a first-query CIM failure with no GPU-memory samples. These findings
+remain open until a current-source run establishes the affected behavior. The
+observer now retains `error_details` in `Release-flight.memory.working-set.json`:
+PowerShell error identifier/category and, for an actual CIM exception, its native
+error name and numeric status. The 2 s operation timeout, sampling/coverage rules
+and budgets are unchanged. A failed query still fails memory acceptance; do not
+restart services, rebuild counters, elevate permissions or relax checks on the
+basis of the historical generic message.
 
 The Release private bundle is beside that run's build directories at
 `offline/ngen-flight`. The workflow checks headless admission and three rendered

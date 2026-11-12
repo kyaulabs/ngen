@@ -245,5 +245,12 @@ Verify the UI changes and rerun affected acceptance/performance checks before
 final review and normal reviewed integration. Do not mark M3 complete or merge it
 before this requested pass is implemented and reviewed with the owner.
 
+The owner confirms the [v13 shared-desktop audio repair](../evidence/M3/audio-desktop/README.md)
+works; a reported recurrence was an accidental v1 launch. Linux audio no longer
+uses direct ALSA hardware. Current Windows physical-RCS verification remains open,
+including the historical warm ImGui allocations and failed CIM sampling. The
+observer now preserves structured provider errors without changing acceptance
+limits; this diagnostic improvement is not a native provider repair or acceptance.
+
 M3 remains open until these gates and exact post-merge CI complete. No mandatory
 tracker workflow or per-command reapproval is introduced.
