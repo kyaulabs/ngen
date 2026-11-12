@@ -1,0 +1,33 @@
+Test project /home/kyau/projects/kyaulabs/ngen/build/demo-debug
+    Start 8: flight_scene
+1/1 Test #8: flight_scene .....................***Failed    0.09 sec
+Randomness seeded to: 3322761179
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+flight_scene_tests is a Catch2 v3.16.0 host application.
+Run with -? for options
+
+-------------------------------------------------------------------------------
+RCS jets respond to actual applied lateral force
+-------------------------------------------------------------------------------
+/home/kyau/projects/kyaulabs/ngen/tests/flight_scene.cpp:77
+...............................................................................
+
+/home/kyau/projects/kyaulabs/ngen/tests/flight_scene.cpp:82: FAILED:
+  REQUIRE( std::count_if(levels.begin(), levels.end(), [](float v) { return v > 0; }) >= 2 )
+with expansion:
+  0 >= 2
+
+===============================================================================
+test cases:   13 |   12 passed | 1 failed
+assertions: 1174 | 1173 passed | 1 failed
+
+
+
+0% tests passed, 1 tests failed out of 1
+
+Total Test time (real) =   0.09 sec
+
+The following tests FAILED:
+	  8 - flight_scene (Failed)
+Errors while running CTest

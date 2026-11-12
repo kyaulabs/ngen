@@ -185,14 +185,21 @@ Next: finish current Windows MSVC/ClangCl, app-local offline startup and scoped 
 timing/memory, plus the remaining non-UI M3 implementation/delivery checks.
 Owner-confirmed Windows disconnected-network startup now succeeds.
 
-The owner also requests visible side/RCS thrusters for turning, rolling and
-strafing before the UI pass. The authored hull already contains `RCS_mount`,
-`RCS_socket` and `RCS_dark_throat` geometry; the current demo binds only the rear
-`M2_BlueWhiteDrivePlume`. Inspect the accepted derivative/mount data and add the
-missing RCS actuation visuals from actual applied force/torque, including bounded
-stabilization, not input state alone. Preserve the accepted rear exhaust and hull;
-verify directional/moment-pair behavior and affected rendering/delivery budgets.
-This is queued work, not an implemented RCS visual system.
+The owner approved matching lower opposing RCS banks for turning, rolling and
+strafing before the UI pass. The [RCS candidate](../evidence/M3/rcs/README.md) now
+has 12 banks and 24 socket plumes, driven by actual interval force/torque and
+stabilization rather than keys. Original asset prefixes, rear exhaust and physical
+traces remain exact; 248,934 workload triangles and 240 ship instances stay inside
+existing limits. Four native graphs, affected Clang analyses, native rig/replay
+checks and a clean 2,400-frame 1080p allocation replay pass. See the
+[scoped implementation plan](m3-rcs.md). Owner visual review and affected final
+Windows/bundle/budget checks remain open; this is not M3 acceptance.
+
+The post-environment-fix ClangCl baseline reaches both configurations and the full
+RTX replay. Its first CIM query fails with no GPU-memory samples, and its clean
+replay reports 2 warm ImGui allocations. Preserve these findings until verified
+repairs or successful current-source checks; Linux zero-allocation results do not
+waive the Windows findings. Parent `6a41458` hosted CI passes all four jobs.
 
 The owner requests another UI refinement pass **after all other M3 work, but before
 M3 completion**. Keep it queued until those remaining technical checks are finished;

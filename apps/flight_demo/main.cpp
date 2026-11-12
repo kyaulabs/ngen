@@ -1,5 +1,6 @@
 #include "flight_demo/app.hpp"
 #include "flight_demo/view.hpp"
+#include <algorithm>
 #include <charconv>
 #include <cmath>
 #include <cstdio>
@@ -96,6 +97,71 @@ void verify(const ngen::demo::Preset &preset, const ngen::assets::Scene &package
         package.checksum, package.instances.size(),
         static_cast<unsigned long long>(preset.triangles), preset.contacts.size(),
         after.body.mass_kg, camera.vertical_fov_degrees);
+    const auto banks = static_cast<std::size_t>(
+        std::count_if(preset.rcs_materials.begin(), preset.rcs_materials.end(),
+                      [](const auto &material) { return material.has_value(); }));
+    std::printf("flight_rcs_banks=%zu flight_rcs_sockets=%zu\n", banks, banks * 2);
+    if (banks) {
+        // Check the compiled visual mix against actual immutable plume transforms,
+        // independently of authoring provenance or duplicated expected coefficients.
+        for (std::size_t axis = 0; axis < 6; ++axis)
+            for (const float sign : {-1.0F, 1.0F}) {
+                std::array<float, 3> force{}, torque{};
+                if (axis < 3)
+                    force[axis] = preset.ship.flight.maximum_force_newtons[axis] * sign;
+                else
+                    torque[axis - 3] =
+                        preset.ship.flight.maximum_torque_newton_metres[axis - 3] * sign;
+                const auto levels =
+                    rendered(ngen::demo::rcs_levels(preset.ship, {0, 0, 0, 1}, force, torque));
+                if (axis == 2 && sign < 0) {
+                    require(levels == ngen::demo::RcsLevels{}, "rear drive was duplicated by RCS");
+                    continue;
+                }
+                std::array<double, 6> wrench{};
+                const auto &root = preset.ship.asset_to_body.columns;
+                for (std::size_t bank = 0; bank < ngen::demo::rcs_bank_count; ++bank) {
+                    const auto material = preset.rcs_materials[bank];
+                    if (!material)
+                        throw std::runtime_error("RCS bank binding disappeared");
+                    const auto index = *material;
+                    const auto instance = std::find_if(
+                        package.instances.begin(), package.instances.end(), [&](const auto &i) {
+                            return package.primitives[i.primitive].material == index;
+                        });
+                    if (instance == package.instances.end())
+                        throw std::runtime_error("RCS bank geometry disappeared");
+                    std::array<double, 3> center{}, direction{};
+                    const auto &model = instance->transform;
+                    for (std::size_t row = 0; row < 3; ++row) {
+                        center[row] = root[12 + row];
+                        for (std::size_t column = 0; column < 3; ++column) {
+                            center[row] +=
+                                static_cast<double>(root[column * 4 + row]) * model[12 + column];
+                            direction[row] -=
+                                static_cast<double>(root[column * 4 + row]) * model[column];
+                        }
+                    }
+                    const auto length =
+                        std::sqrt(direction[0] * direction[0] + direction[1] * direction[1] +
+                                  direction[2] * direction[2]);
+                    require(std::isfinite(length) && length > 0, "invalid RCS nozzle axis");
+                    for (std::size_t component = 0; component < 3; ++component) {
+                        direction[component] *= levels[bank] / length;
+                        wrench[component] += direction[component];
+                    }
+                    wrench[3] += (center[1] * direction[2] - center[2] * direction[1]) / 100;
+                    wrench[4] += (center[2] * direction[0] - center[0] * direction[2]) / 100;
+                    wrench[5] += (center[0] * direction[1] - center[1] * direction[0]) / 100;
+                }
+                require(wrench[axis] * sign > 0, "RCS jets oppose their requested wrench axis");
+                for (std::size_t other = 0; other < 6; ++other)
+                    if (other != axis)
+                        require(std::abs(wrench[other]) < std::abs(wrench[axis]) * 1e-4,
+                                "RCS mix introduces an unintended force or moment");
+            }
+        std::puts("flight_rcs_geometry_verified=1");
+    }
 }
 } // namespace
 int main(int argc, char **argv) try {

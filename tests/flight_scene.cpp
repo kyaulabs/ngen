@@ -2,12 +2,183 @@
 #include "flight_demo/preset.hpp"
 #include "flight_demo/view.hpp"
 #include "package_fixture.hpp"
+#include <algorithm>
 #include <catch2/catch_test_macros.hpp>
 #include <cmath>
 #include <limits>
+#include <string>
 #include <utility>
 
 using namespace ngen;
+
+namespace {
+package_fixture::Sections rcs_sections() {
+    auto sections = package_fixture::triangle();
+    const auto primitive = sections[2];
+    const auto instance = sections[8];
+    for (std::uint32_t bank = 0; bank < 12; ++bank) {
+        auto material = std::vector<std::byte>{};
+        for (const auto value : std::array<float, 13>{1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, .5F})
+            package_fixture::f32(material, value);
+        package_fixture::u32(material, 2);
+        package_fixture::u32(material, 1);
+        for (unsigned map = 0; map < 5; ++map) {
+            package_fixture::u32(material, UINT32_MAX);
+            package_fixture::u32(material, 0);
+        }
+        const auto name = std::string("M3_RCS_") + (bank < 10 ? "0" : "") + std::to_string(bank);
+        package_fixture::u32(material, static_cast<std::uint32_t>(sections[11].size()));
+        package_fixture::u32(material, static_cast<std::uint32_t>(name.size()));
+        material.resize(128, std::byte{0});
+        sections[3].insert(sections[3].end(), material.begin(), material.end());
+        for (const auto character : name)
+            sections[11].push_back(static_cast<std::byte>(character));
+        auto draw = primitive;
+        package_fixture::set32(draw, 8, bank);
+        sections[2].insert(sections[2].end(), draw.begin(), draw.end());
+        draw = instance;
+        package_fixture::set32(draw, 0, bank + 1);
+        sections[8].insert(sections[8].end(), draw.begin(), draw.end());
+    }
+    return sections;
+}
+} // namespace
+
+TEST_CASE("flight presets bind the complete authored RCS material table") {
+    const auto package =
+        std::get<assets::PackagePin>(assets::load_package(package_fixture::encode(rcs_sections())));
+    demo::ShipProfile profile;
+    profile.flight.hull.half_extent_metres = {10, 10, 10};
+    const auto result = demo::make_preset(package, profile);
+    REQUIRE(std::holds_alternative<demo::Preset>(result));
+    const auto &preset = std::get<demo::Preset>(result);
+    for (std::size_t bank = 0; bank < 12; ++bank) {
+        REQUIRE(preset.rcs_materials[bank] == std::optional<std::size_t>{bank});
+    }
+    REQUIRE(!preset.drive_material.has_value());
+    REQUIRE(package->materials[0].name == "M3_RCS_00");
+}
+
+TEST_CASE("flight presets reject partial, duplicate or invalid RCS binding tables atomically") {
+    auto sections = rcs_sections();
+    SECTION("missing bank") { sections[11][99] = std::byte{'X'}; }
+    SECTION("duplicate bank") { sections[11][107] = std::byte{'0'}; }
+    SECTION("opaque bank") { package_fixture::set32(sections[3], std::size_t{11} * 128 + 52, 0); }
+    SECTION("malformed bank") { sections[11][107] = std::byte{'x'}; }
+    SECTION("out of range bank") { sections[11][106] = std::byte{'2'}; }
+    SECTION("unused bank") { package_fixture::set32(sections[8], std::size_t{12} * 72, 0); }
+    SECTION("two instances use a bank") {
+        package_fixture::set32(sections[8], std::size_t{12} * 72, 11);
+    }
+    const auto package =
+        std::get<assets::PackagePin>(assets::load_package(package_fixture::encode(sections)));
+    demo::ShipProfile profile;
+    profile.flight.hull.half_extent_metres = {10, 10, 10};
+    REQUIRE(std::holds_alternative<render::Failure>(demo::make_preset(package, profile)));
+}
+
+TEST_CASE("RCS jets respond to actual applied lateral force") {
+    const auto result =
+        demo::rcs_levels(demo::frigate_profile(), {0, 0, 0, 1}, {12000000, 0, 0}, {});
+    REQUIRE(std::holds_alternative<demo::RcsLevels>(result));
+    const auto &levels = std::get<demo::RcsLevels>(result);
+    REQUIRE(std::count_if(levels.begin(), levels.end(), [](float v) { return v > 0; }) >= 2);
+}
+
+TEST_CASE("RCS selection is bounded, owning and covariant with the interval attitude") {
+    const auto profile = demo::frigate_profile();
+    const std::array<float, 4> identity{0, 0, 0, 1};
+    const auto idle = std::get<demo::RcsLevels>(demo::rcs_levels(profile, identity, {}, {}));
+    REQUIRE(idle == demo::RcsLevels{});
+    const auto forward = std::get<demo::RcsLevels>(
+        demo::rcs_levels(profile, identity, {0, 0, -profile.flight.maximum_force_newtons[2]}, {}));
+    REQUIRE(forward == idle); // The accepted rear exhaust owns pure forward thrust.
+    for (std::size_t axis = 0; axis < 3; ++axis) {
+        std::array<float, 3> force{};
+        force[axis] = profile.flight.maximum_force_newtons[axis];
+        const auto positive =
+            std::get<demo::RcsLevels>(demo::rcs_levels(profile, identity, force, {}));
+        REQUIRE(positive != idle);
+        for (const auto value : positive)
+            REQUIRE((std::isfinite(value) && value >= 0 && value <= 1));
+        force[axis] = -force[axis];
+        const auto negative =
+            std::get<demo::RcsLevels>(demo::rcs_levels(profile, identity, force, {}));
+        REQUIRE(positive != negative);
+        force = {};
+        REQUIRE(positive != idle); // Later inputs/results do not mutate the copied output.
+    }
+    const auto expected = std::get<demo::RcsLevels>(
+        demo::rcs_levels(profile, identity, {12000000, 0, 0}, {20000000000.0F, 0, 0}));
+    const auto quarter_turn = std::sqrt(.5F);
+    const auto rotated = std::get<demo::RcsLevels>(demo::rcs_levels(
+        profile, {0, 0, quarter_turn, quarter_turn}, {0, 12000000, 0}, {0, 20000000000.0F, 0}));
+    for (std::size_t bank = 0; bank < 12; ++bank)
+        REQUIRE(std::abs(expected[bank] - rotated[bank]) < 1e-6F);
+    const auto mixed = std::get<demo::RcsLevels>(
+        demo::rcs_levels(profile, identity, profile.flight.maximum_force_newtons,
+                         profile.flight.maximum_torque_newton_metres));
+    for (const auto value : mixed)
+        REQUIRE((std::isfinite(value) && value >= 0 && value <= 1));
+}
+
+TEST_CASE("invalid RCS inputs reject before quaternion math or visual publication") {
+    auto profile = demo::frigate_profile();
+    std::array<float, 4> rotation{0, 0, 0, 1};
+    std::array<float, 3> force{}, torque{};
+    SECTION("nonfinite force") { force[0] = std::numeric_limits<float>::quiet_NaN(); }
+    SECTION("nonfinite torque") { torque[2] = std::numeric_limits<float>::infinity(); }
+    SECTION("nonfinite attitude") { rotation[0] = std::numeric_limits<float>::quiet_NaN(); }
+    SECTION("zero attitude") { rotation = {}; }
+    SECTION("scaled attitude") { rotation[3] = 1.1F; }
+    SECTION("zero force limit") { profile.flight.maximum_force_newtons[0] = 0; }
+    SECTION("negative torque limit") { profile.flight.maximum_torque_newton_metres[0] = -1; }
+    SECTION("nonfinite limit") {
+        profile.flight.maximum_torque_newton_metres[1] = std::numeric_limits<float>::quiet_NaN();
+    }
+    SECTION("nonfinite calibration") {
+        profile.rcs_mix[1][3] = std::numeric_limits<float>::quiet_NaN();
+    }
+    SECTION("negative calibration") { profile.rcs_mix[0][0] = -.1F; }
+    SECTION("unbounded calibration") { profile.rcs_mix[0][0] = 1.1F; }
+    REQUIRE(std::holds_alternative<render::Failure>(
+        demo::rcs_levels(profile, rotation, force, torque)));
+}
+
+TEST_CASE("physical turning and released-stick stabilization light different RCS moment pairs") {
+    const auto profile = demo::frigate_profile();
+    for (std::size_t axis = 0; axis < 3; ++axis) {
+        auto game =
+            std::get<std::unique_ptr<flight::Flight>>(flight::Flight::create(profile.flight));
+        const auto initial = game->snapshot();
+        flight::Pilot pilot;
+        pilot.rotation[axis] = 1;
+        REQUIRE(std::holds_alternative<std::monostate>(
+            game->submit({Tick{1}, 1, initial.entity, flight::SetMode{flight::Mode::direct}})));
+        REQUIRE(std::holds_alternative<std::monostate>(
+            game->submit({Tick{1}, 2, initial.entity, pilot})));
+        const auto turning = std::get<flight::Snapshot>(game->step());
+        const auto accelerating = std::get<demo::RcsLevels>(
+            demo::rcs_levels(profile, initial.body.rotation_xyzw, turning.force_newtons,
+                             turning.torque_newton_metres));
+        REQUIRE(turning.torque_newton_metres[axis] > 0);
+        REQUIRE(std::count_if(accelerating.begin(), accelerating.end(),
+                              [](float v) { return v > 0; }) >= 2);
+        for (unsigned tick = 1; tick < 60; ++tick)
+            REQUIRE(std::holds_alternative<flight::Snapshot>(game->step()));
+        const auto before_release = game->snapshot();
+        REQUIRE(std::holds_alternative<std::monostate>(
+            game->submit({Tick{61}, 3, initial.entity, flight::Pilot{}})));
+        const auto arresting = std::get<flight::Snapshot>(game->step());
+        const auto braking = std::get<demo::RcsLevels>(
+            demo::rcs_levels(profile, before_release.body.rotation_xyzw, arresting.force_newtons,
+                             arresting.torque_newton_metres));
+        REQUIRE(arresting.torque_newton_metres[axis] < 0);
+        REQUIRE(std::count_if(braking.begin(), braking.end(), [](float v) { return v > 0; }) >= 2);
+        REQUIRE(braking != accelerating);
+        REQUIRE(arresting.body.velocity_mps == std::array<float, 3>{});
+    }
+}
 
 TEST_CASE("the authored frigate reaches a useful bounded direct turn rate within one second") {
     const auto ship = demo::frigate_profile().flight;

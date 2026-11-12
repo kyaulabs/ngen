@@ -1,11 +1,14 @@
 # M3 Windows flight check
 
-Use a clean checkout of `feat/kyau-023ba5-m3-flight`. Set `$scene` to the existing
-accepted cooked package, not the GLB. Its SHA256 is
-`a02d5438ad32d9c8fb917ce847d5a822688ca5b51d69125f6da71cf2ba2116ed`.
-This checks M3; it does not reopen accepted M2 appearance or request new art approval.
+Use a clean checkout of `feat/kyau-023ba5-m3-flight`. Set `$scene` to the new
+private RCS cooked derivative, not the GLB or original M2 package. Its SHA-256 is
+`bc42a7935562bdfde872b2d09dbb473996cdbcddc5101418bca2f632ca5dc427`;
+its CRC compatibility marker is `423256f5`. Copy it to a new path and preserve the
+accepted M2 original. The owner-requested RCS addition needs visual review; the
+accepted rear exhaust/hull appearance is not reopened. See the
+[RCS checkpoint](../evidence/M3/rcs/README.md).
 
-Run in PowerShell7.2 or newer. Use the named splat; do not split `Start-Process`
+Run in PowerShell 7.2 or newer. Use the named splat; do not split `Start-Process`
 arguments or use positional `Select-String` examples.
 
 ```powershell
@@ -26,8 +29,8 @@ $check.Compiler = 'ClangCl'
 ```
 
 Each run prints its `evidence.zip` path. Send those two archives privately, not the
-whole build directory. They contain current-source build/test results, a330-frame
-validation/control/audio walkthrough, a separate unvalidated2400-frame1080p replay,
+whole build directory. They contain current-source build/test results, a 330-frame
+validation/control/audio walkthrough, a separate unvalidated 2,400-frame 1080p replay,
 and another replay with sampled working-set/WDDM observations. The latter is
 instrumented memory evidence, not clean timing or a continuous global-memory bound.
 No GTX VM result is implied.
@@ -46,4 +49,5 @@ cleanly. Listen to engine/thrust/brake/UI cues; try M, real focus loss and a rea
 playback-device removal/reconnection where available. Report control feel, sound
 comfort and any discontinuity. Synthetic SDL events are not substitutes for this.
 Keep a short original audio/video recording private; send its hash and feedback.
-M3 remains open until these checks, laptop/RTX budgets and reviewed integration finish.
+M3 remains open until these checks, RCS owner review, the required deferred UI pass,
+laptop/RTX budgets and reviewed integration finish.

@@ -162,7 +162,8 @@ struct Sample {
     GpuTimings gpu;
     ResourceStatistics memory;
     VkExtent2D extent{};
-    float phase{}, power{};
+    float phase{}, power{}, rcs_power{};
+    std::uint32_t rcs_active{};
     bool gpu_ready{}, focused{}, capture_requested{}, capture_accepted{};
 };
 struct Hud {
@@ -886,6 +887,8 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
                            JPH::Vec3{force[0], force[1], force[2]};
         const auto power =
             std::clamp(-local.GetZ() / preset.ship.flight.maximum_force_newtons[2], 0.0F, 1.0F);
+        const auto rcs =
+            take(rcs_levels(preset.ship, q, current.force_newtons, current.torque_newton_metres));
         const auto &limits = preset.ship.flight.maximum_force_newtons;
         const auto thrust = std::clamp(
             std::max({std::abs(local.GetX()) / limits[0], std::abs(local.GetY()) / limits[1],
@@ -906,6 +909,21 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
             materials[i].base_color[3] *= power;
             materials[i].emissive_strength = package->materials[i].emissive_strength * power;
             flows[i] = {phase, power > 0 ? 1.0F : 0.0F};
+        }
+        for (std::size_t bank = 0; bank < rcs_bank_count; ++bank)
+            if (preset.rcs_materials[bank]) {
+                const auto i = *preset.rcs_materials[bank];
+                // Radiance is perceptual, not another physical actuator. Keep small
+                // translation jets visible alongside the much stronger attitude pairs.
+                const auto brightness = std::sqrt(std::sqrt(rcs[bank]));
+                materials[i].base_color = package->materials[i].base_color;
+                materials[i].base_color[3] *= brightness;
+                materials[i].emissive_strength =
+                    package->materials[i].emissive_strength * brightness;
+                flows[i] = {std::fmod(phase + static_cast<float>(bank) / 12.0F, 1.0F),
+                            rcs[bank] > 0 ? 1.0F : 0.0F};
+            }
+        if (preset.drive_material || preset.rcs_materials[0]) {
             view.scene.material_factors = std::span(materials).first(package->materials.size());
             view.scene.material_flows = std::span(flows).first(package->materials.size());
         }
@@ -960,6 +978,9 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
             sample.extent = context->presentation_state().extent;
             sample.phase = phase;
             sample.power = power;
+            sample.rcs_power = *std::max_element(rcs.begin(), rcs.end());
+            sample.rcs_active = static_cast<std::uint32_t>(
+                std::count_if(rcs.begin(), rcs.end(), [](float v) { return v > 0; }));
             collect();
             const auto ended = Clock::now();
             sample.frame_ns = static_cast<std::uint64_t>(
@@ -1016,7 +1037,7 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
                "camera_y_m,camera_z_m,camera_qx,camera_qy,camera_qz,camera_qw,camera_fov_deg,"
                "input_focused,capture_requested,capture_accepted,render_x_m,render_y_m,render_z_m,"
                "entity_generation,audio_state,audio_gen,audio_losses,audio_queued_frames,audio_"
-               "muted,audio_paused,host_ns\n";
+               "muted,audio_paused,host_ns,rcs_active,rcs_power\n";
         for (std::size_t i = 0; i < measured; ++i) {
             const auto &s = samples[i];
             csv << i << ',' << s.state.tick.value << ',' << static_cast<unsigned>(s.state.mode)
@@ -1049,7 +1070,7 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
             csv << ',' << s.state.entity.generation << ',' << static_cast<unsigned>(s.audio.state)
                 << ',' << s.audio.generation << ',' << s.audio.losses << ','
                 << s.audio.queued_frames << ',' << s.audio.muted << ',' << s.audio.paused << ','
-                << s.host_ns << '\n';
+                << s.host_ns << ',' << s.rcs_active << ',' << s.rcs_power << '\n';
         }
         const auto text = csv.str();
         (void)take(probe::write_exclusive(options.report,

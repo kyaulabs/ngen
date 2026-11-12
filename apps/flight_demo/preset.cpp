@@ -1,7 +1,12 @@
 #include "flight_demo/preset.hpp"
+#include "flight_demo/frigate_rcs.hpp"
 #include <algorithm>
 #include <cmath>
 #include <limits>
+
+#include <Jolt/Jolt.h>
+
+#include <Jolt/Math/Quat.h>
 
 namespace ngen::demo {
 namespace {
@@ -65,8 +70,55 @@ ShipProfile frigate_profile() {
     // ahead of opaque geometry. This is ship data, not a universal camera offset.
     profile.flight.flight_camera = {{0, 6, -161}, {0, 0, 0, 1}, 75};
     profile.asset_to_body.columns = {0, 0, 1, 0, 0, 1, 0, 0, -1, 0, 0, 0, 0, -2.07433414F, 0, 1};
-    profile.expected_package_crc = 0xa2eb7c22U;
+    profile.expected_package_crc = 0x423256f5U;
+    profile.rcs_mix = frigate_rcs_mix;
     return profile;
+}
+std::variant<RcsLevels, render::Failure> rcs_levels(const ShipProfile &profile,
+                                                    const std::array<float, 4> &q,
+                                                    const std::array<float, 3> &world_force,
+                                                    const std::array<float, 3> &world_torque) {
+    double norm = 0;
+    for (const auto value : q) {
+        if (!std::isfinite(value))
+            return render::Failure{"RCS interval attitude must be finite and normalized"};
+        norm += static_cast<double>(value) * value;
+    }
+    if (std::abs(norm - 1) > 1e-4)
+        return render::Failure{"RCS interval attitude must be finite and normalized"};
+    for (std::size_t axis = 0; axis < 3; ++axis)
+        if (!std::isfinite(world_force[axis]) || !std::isfinite(world_torque[axis]) ||
+            !std::isfinite(profile.flight.maximum_force_newtons[axis]) ||
+            !std::isfinite(profile.flight.maximum_torque_newton_metres[axis]) ||
+            profile.flight.maximum_force_newtons[axis] <= 0 ||
+            profile.flight.maximum_torque_newton_metres[axis] <= 0)
+            return render::Failure{"RCS wrench and positive actuator limits must be finite"};
+    for (const auto &bank : profile.rcs_mix)
+        for (const auto value : bank)
+            if (!std::isfinite(value) || value < 0 || value > 1)
+                return render::Failure{"RCS visual calibration must be finite unit weights"};
+    const auto inverse = JPH::Quat(q[0], q[1], q[2], q[3]).Normalized().Conjugated();
+    const auto force = inverse * JPH::Vec3{world_force[0], world_force[1], world_force[2]};
+    const auto torque = inverse * JPH::Vec3{world_torque[0], world_torque[1], world_torque[2]};
+    const std::array<float, 6> local{force.GetX(),  force.GetY(),  force.GetZ(),
+                                     torque.GetX(), torque.GetY(), torque.GetZ()};
+    RcsLevels output{};
+    for (std::size_t axis = 0; axis < 6; ++axis) {
+        if (!std::isfinite(local[axis]))
+            return render::Failure{"RCS local wrench exceeds finite storage"};
+        if (axis == 2 && local[axis] < 0)
+            continue; // The accepted rear drive already represents forward thrust.
+        const auto limit = axis < 3 ? profile.flight.maximum_force_newtons[axis]
+                                    : profile.flight.maximum_torque_newton_metres[axis - 3];
+        const auto power = std::clamp(local[axis] / limit, -1.0F, 1.0F);
+        const auto column = axis * 2 + (power < 0 ? 1U : 0U);
+        for (std::size_t bank = 0; bank < rcs_bank_count; ++bank)
+            output[bank] += profile.rcs_mix[bank][column] * std::abs(power);
+    }
+    const auto largest = std::max(1.0F, *std::max_element(output.begin(), output.end()));
+    for (auto &value : output)
+        value /= largest;
+    return output;
 }
 std::variant<Preset, render::Failure> make_preset(const assets::PackagePin &package,
                                                   const ShipProfile &profile) {
@@ -163,10 +215,37 @@ std::variant<Preset, render::Failure> make_preset(const assets::PackagePin &pack
             box.position_metres,
             std::sqrt(hbox[0] * hbox[0] + hbox[1] * hbox[1] + hbox[2] * hbox[2])};
     }
-    for (std::size_t i = 0; i < package->materials.size(); ++i)
-        if (package->materials[i].name == "M2_BlueWhiteDrivePlume" &&
-            package->materials[i].alpha == 2)
+    std::size_t rcs_count = 0;
+    for (std::size_t i = 0; i < package->materials.size(); ++i) {
+        const auto &material = package->materials[i];
+        if (material.name == "M2_BlueWhiteDrivePlume" && material.alpha == 2)
             output.drive_material = i;
+        if (!material.name.starts_with("M3_RCS_"))
+            continue;
+        if (material.alpha != 2 || material.name.size() != 9 || material.name[7] < '0' ||
+            material.name[7] > '9' || material.name[8] < '0' || material.name[8] > '9')
+            return render::Failure{"RCS bank requires a named blend material"};
+        const auto bank = static_cast<unsigned>(material.name[7] - '0') * 10U +
+                          static_cast<unsigned>(material.name[8] - '0');
+        if (bank >= rcs_bank_count || output.rcs_materials[bank])
+            return render::Failure{"RCS bank index is repeated or out of range"};
+        output.rcs_materials[bank] = i;
+        ++rcs_count;
+    }
+    if (rcs_count != 0 && rcs_count != rcs_bank_count)
+        return render::Failure{"RCS bank material table is incomplete"};
+    if (rcs_count != 0)
+        for (const auto material : output.rcs_materials) {
+            if (!material)
+                return render::Failure{"RCS bank material table is incomplete"};
+            const auto index = *material;
+            const auto uses = std::count_if(
+                package->instances.begin(), package->instances.end(), [&](const auto &instance) {
+                    return package->primitives[instance.primitive].material == index;
+                });
+            if (uses != 1)
+                return render::Failure{"RCS bank needs one authored paired-socket instance"};
+        }
     return output;
 }
 } // namespace ngen::demo
