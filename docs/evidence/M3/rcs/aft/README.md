@@ -57,6 +57,13 @@ environment, not a new native/runtime dependency. `checks.json` binds results to
 actual source hashes. Same-session review covers placement, baking, ownership,
 calibration, original preservation and capacity; it is not independent review.
 
+The private Linux v9 bundle is `build/m3-offline-linux-v9/ngen-flight`, built
+from signed behavior source `c63c4520430f1e50ff93f6b45b112a5eb7cf5881`. All 23
+manifest hashes and its bounded 241-member source archive validate. Headless rig
+verification and three rendered frames pass with networking unshared, Conan hidden
+and SDK/library-path overrides absent. See `offline.json`; platform ABI and final
+UI/Windows/budget qualifications still apply.
+
 Previous RCS behavior source `464d3fd` and evidence source `bc65a1b` hosted runs
 43136111167 and 43136920511 pass all four jobs. New-source hosted CI, owner review,
 current Windows/RTX checks and the recorded CIM/ImGui findings remain separate
