@@ -53,34 +53,58 @@ def ring(x):
                                   (.65, -1), (-.65, -1), (-1, -.46), (-1, .46)]])
 
 
+def fairing_ring(x, side, lower):
+    # Exact authored side-drive fairing sections, not the enclosed pressure hull.
+    sections = [(77, 7.2 * 1.1, 7.2 * .8), (91, 7.2 * 2.15, 7.2 * 1.8),
+                (126, 7.2 * 2.2, 7.2 * 1.9), (148, 7.2 * 1.95, 7.2 * 1.85)]
+    for a, b in zip(sections, sections[1:]):
+        if a[0] <= x <= b[0]:
+            t = (x - a[0]) / (b[0] - a[0])
+            width, height = [a[i] * (1 - t) + b[i] * t for i in (1, 2)]
+            return np.array([(x, side * 16 + width * y / 2,
+                              (-7 if lower else 7) + height * z / 2)
+                             for y, z in [(-.65, 1), (.65, 1), (1, .5), (1, -.5),
+                                          (.65, -1), (-.65, -1), (-1, -.5), (-1, .5)]])
+    raise ValueError("RCS station outside authored drive fairing")
+
+
 def banks():
     result = []
+
+    def add(x, side, lower, fairing):
+        facet = (5 if side < 0 else 3) if lower else (7 if side < 0 else 1)
+        sample = lambda at: fairing_ring(at, side, lower) if fairing else ring(at)
+        vertices = sample(x)
+        p = (vertices[facet] + vertices[(facet + 1) % 8]) * .5
+        v = vertices[(facet + 1) % 8] - vertices[facet]
+        v /= np.linalg.norm(v)
+        ahead, behind = sample(x + .01), sample(x - .01)
+        u = ((ahead[facet] + ahead[(facet + 1) % 8]) -
+             (behind[facet] + behind[(facet + 1) % 8])) * .5
+        u /= np.linalg.norm(u)
+        n = np.cross(u, v)
+        n /= np.linalg.norm(n)
+        p += n * .75
+        # Blender X/Y/Z -> glTF X/Z/-Y, after the verified export scale.
+        convert = lambda a: (a * SCALE)[[0, 2, 1]] * np.array([1, 1, -1])
+        model = np.eye(4)
+        model[:3, :3] = np.column_stack([convert(n), convert(u), convert(v)])
+        model[:3, 3] = convert(p)
+        center = BODY @ model[:3, 3] + np.array([0, -2.07433414, 0])
+        direction = -(BODY @ model[:3, 0])
+        direction /= np.linalg.norm(direction)
+        result.append({"index": len(result), "lower": lower, "model": model,
+                       "surface": "drive_fairing" if fairing else "hull",
+                       "position_metres": center, "force_direction": direction})
+
     for lower in (False, True):
         for side in (-1, 1):
-            facet = (5 if side < 0 else 3) if lower else (7 if side < 0 else 1)
             for x in (-102., -58., 113.):
-                vertices = ring(x)
-                p = (vertices[facet] + vertices[(facet + 1) % 8]) * .5
-                v = vertices[(facet + 1) % 8] - vertices[facet]
-                v /= np.linalg.norm(v)
-                ahead, behind = ring(x + .01), ring(x - .01)
-                u = ((ahead[facet] + ahead[(facet + 1) % 8]) -
-                     (behind[facet] + behind[(facet + 1) % 8])) * .5
-                u /= np.linalg.norm(u)
-                n = np.cross(u, v)
-                n /= np.linalg.norm(n)
-                p += n * .75
-                # Blender X/Y/Z -> glTF X/Z/-Y, after the verified export scale.
-                convert = lambda a: (a * SCALE)[[0, 2, 1]] * np.array([1, 1, -1])
-                model = np.eye(4)
-                model[:3, :3] = np.column_stack([convert(n), convert(u), convert(v)])
-                model[:3, 3] = convert(p)
-                center = BODY @ model[:3, 3] + np.array([0, -2.07433414, 0])
-                direction = -(BODY @ model[:3, 0])
-                direction /= np.linalg.norm(direction)
-                result.append({"index": len(result), "lower": lower, "model": model,
-                               "position_metres": center, "force_direction": direction})
-    require(len(result) == 12, "RCS bank count differs")
+                add(x, side, lower, x == 113)
+    for lower in (False, True):
+        for side in (-1, 1):
+            add(141., side, lower, True)
+    require(len(result) == 16, "RCS bank count differs")
     return result
 
 
@@ -95,7 +119,9 @@ def mixing(rig):
         targets[axis, axis * 2 + 1] = -magnitude
     solutions = [None] * 12
     scores = [math.inf] * 12
-    for selected in itertools.combinations(range(12), 6):
+    participation = [[None] * len(rig) for _ in range(12)]
+    participation_scores = np.full((12, len(rig)), math.inf)
+    for selected in itertools.combinations(range(len(rig)), 6):
         basis = matrix[:, selected]
         if abs(np.linalg.det(basis)) < 1e-10:
             continue
@@ -104,15 +130,24 @@ def mixing(rig):
             column = weights[:, axis]
             if column.min() < -1e-7:
                 continue
-            full = np.zeros(12)
+            full = np.zeros(len(rig))
             full[list(selected)] = np.maximum(column, 0)
             if np.max(np.abs(matrix @ full - targets[:, axis])) > 1e-6:
                 continue
             score = float(full.max())
             if score < scores[axis]:
                 solutions[axis], scores[axis] = full, score
+            for bank in np.flatnonzero(full > 1e-7):
+                if score < participation_scores[axis, bank]:
+                    participation[axis][bank] = full
+                    participation_scores[axis, bank] = score
     require(all(s is not None for s in solutions), "authored RCS cone cannot span the actuator axes")
-    raw = np.column_stack(solutions)
+    # Average feasible allocations so redundant authored banks participate instead
+    # of permanently favoring only the farthest pair. Convex averaging preserves
+    # the exact requested force/moment and nonnegative bank levels.
+    raw = np.column_stack([np.mean([solutions[axis], *[
+        candidate for candidate in participation[axis] if candidate is not None]], axis=0)
+        for axis in range(12)])
     nominal = max(1., float(raw.max()))
     weights = raw / nominal
     require(np.max(np.abs(matrix @ weights - targets / nominal)) < 1e-6,
@@ -164,6 +199,26 @@ def hardware():
         throat.polygon([[.49, center + .28 * math.cos(i * math.tau / 8),
                          .28 * math.sin(i * math.tau / 8)] for i in range(8)], [1, 0, 0])
     return plate, sleeve, throat
+
+
+def bake_hardware(mesh, models):
+    result = Mesh()
+    source = np.asarray(mesh.vertices, dtype=float)
+    for model in models:
+        linear = model[:3, :3]
+        require(np.linalg.det(linear) > 0, "hardware frame must preserve facing")
+        vertices = source.copy()
+        vertices[:, :3] = source[:, :3] @ linear.T + model[:3, 3]
+        normals = source[:, 3:6] @ np.linalg.inv(linear)
+        normals /= np.linalg.norm(normals, axis=1)[:, None]
+        tangents = source[:, 10:13] @ linear.T
+        tangents -= normals * np.einsum("ij,ij->i", normals, tangents)[:, None]
+        tangents /= np.linalg.norm(tangents, axis=1)[:, None]
+        vertices[:, 3:6], vertices[:, 10:13] = normals, tangents
+        first = len(result.vertices)
+        result.vertices.extend(vertices.tolist())
+        result.indices.extend(first + i for i in mesh.indices)
+    return result
 
 
 def plume():
@@ -218,7 +273,7 @@ def author(base, output, probe):
     for bank in rig:
         index = bank["index"]
         model = bank["model"].T.reshape(-1)
-        if bank["lower"]:
+        if bank["lower"] and index < 12:
             for primitive in hardware_ids:
                 parts[9] += struct.pack("<2I16f", primitive, 1024 + index, *model)
         name = f"M3_RCS_{index:02d}".encode()
@@ -234,6 +289,13 @@ def author(base, output, probe):
             struct.pack_into("<I", record, 8, 17 + index)
             parts[3] += record
         parts[9] += struct.pack("<2I16f", primitive, 1024 + index, *model)
+    # The six additional hardware sets share three material-grouped draws.
+    # Existing fore/middle hardware and all original M2 records stay untouched.
+    models = [b["model"] for b in rig
+              if b["index"] >= 12 or (not b["lower"] and b["surface"] == "drive_fairing")]
+    for mesh, material in zip(hardware(), (2, 3, 4)):
+        primitive = append_mesh(bake_hardware(mesh, models), material)[0]
+        parts[9] += struct.pack("<2I16f", primitive, 2048 + material, *np.eye(4).T.reshape(-1))
     for key in (5, 6, 7, 8, 10, 11):
         require(parts[key] == original[key], "frozen texture/light section changed")
     for key in (1, 2, 3, 4, 9, 12):
@@ -250,7 +312,7 @@ def author(base, output, probe):
                    {k: (v.tolist() if isinstance(v, np.ndarray) else v) for k, v in b.items()} for b in rig],
                "mix": weights.tolist(), "nominal_bank_force_newtons": nominal,
                "mixing_matrix": matrix.tolist(), "visible_workload_triangles": rendered,
-               "scope": "Append matching lower RCS hardware and 24 small original socket plumes; preserve every accepted asset prefix, rear exhaust, texture and light."}
+               "scope": "Preserve the 16 fore/middle jets; relocate the occluded eight aft jets onto outer drive fairings and add eight more aft jets. Preserve original M2 prefixes, rear exhaust, textures and lights; group only added hardware draws."}
     provenance = json.loads(parts[13])
     provenance["m3_rcs"] = profile
     parts[13] = json.dumps(provenance, sort_keys=True, separators=(",", ":")).encode()
@@ -268,7 +330,7 @@ def author(base, output, probe):
                                     timeout=60, check=False)
             require(result.returncode == 0 and not result.stderr, result.stdout + result.stderr)
             runtime = json.loads(result.stdout)
-            require(runtime["instances"] == 240 and runtime["materials"] == 29,
+            require(runtime["instances"] == 247 and runtime["materials"] == 33,
                     "unexpected RCS package catalog")
             require(digest(base) == BASE_SHA256, "accepted base changed")
             manifest = {"package_sha256": digest(staged), "runtime": runtime, "m3_rcs": profile}

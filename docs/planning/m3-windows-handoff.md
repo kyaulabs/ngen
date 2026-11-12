@@ -2,11 +2,11 @@
 
 Use a clean checkout of `feat/kyau-023ba5-m3-flight`. Set `$scene` to the new
 private RCS cooked derivative, not the GLB or original M2 package. Its SHA-256 is
-`bc42a7935562bdfde872b2d09dbb473996cdbcddc5101418bca2f632ca5dc427`;
-its CRC compatibility marker is `423256f5`. Copy it to a new path and preserve the
+`90e55636228021f6bd04e800d2884883d6a3418eef716b396a28640e2e5270d2`;
+its CRC compatibility marker is `65ddab97`. Copy it to a new path and preserve the
 accepted M2 original. The owner-requested RCS addition needs visual review; the
 accepted rear exhaust/hull appearance is not reopened. See the
-[RCS checkpoint](../evidence/M3/rcs/README.md).
+[32-jet RCS checkpoint](../evidence/M3/rcs/aft/README.md).
 
 Run in PowerShell 7.2 or newer. Use the named splat; do not split `Start-Process`
 arguments or use positional `Select-String` examples.

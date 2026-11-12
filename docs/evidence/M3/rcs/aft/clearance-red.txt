@@ -1,0 +1,77 @@
+FFFFFFFF
+======================================================================
+FAIL: test_every_socket_has_an_unobstructed_opaque_mesh_exhaust_path (__main__.RcsVisibility.test_every_socket_has_an_unobstructed_opaque_mesh_exhaust_path) (bank='M3_RCS_02', socket=-0.6)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/kyau/projects/kyaulabs/ngen/tests/rcs_visibility.py", line 89, in test_every_socket_has_an_unobstructed_opaque_mesh_exhaust_path
+    self.assertIsNone(hit, f"{name} socket {socket}: opaque mesh blocks exhaust after {hit:.4f} m" if hit is not None else "")
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1.445438710106397 is not None : M3_RCS_02 socket -0.6: opaque mesh blocks exhaust after 1.4454 m
+
+======================================================================
+FAIL: test_every_socket_has_an_unobstructed_opaque_mesh_exhaust_path (__main__.RcsVisibility.test_every_socket_has_an_unobstructed_opaque_mesh_exhaust_path) (bank='M3_RCS_02', socket=0.6)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/kyau/projects/kyaulabs/ngen/tests/rcs_visibility.py", line 89, in test_every_socket_has_an_unobstructed_opaque_mesh_exhaust_path
+    self.assertIsNone(hit, f"{name} socket {socket}: opaque mesh blocks exhaust after {hit:.4f} m" if hit is not None else "")
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1.5038766194952873 is not None : M3_RCS_02 socket 0.6: opaque mesh blocks exhaust after 1.5039 m
+
+======================================================================
+FAIL: test_every_socket_has_an_unobstructed_opaque_mesh_exhaust_path (__main__.RcsVisibility.test_every_socket_has_an_unobstructed_opaque_mesh_exhaust_path) (bank='M3_RCS_05', socket=-0.6)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/kyau/projects/kyaulabs/ngen/tests/rcs_visibility.py", line 89, in test_every_socket_has_an_unobstructed_opaque_mesh_exhaust_path
+    self.assertIsNone(hit, f"{name} socket {socket}: opaque mesh blocks exhaust after {hit:.4f} m" if hit is not None else "")
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1.3150819400211438 is not None : M3_RCS_05 socket -0.6: opaque mesh blocks exhaust after 1.3151 m
+
+======================================================================
+FAIL: test_every_socket_has_an_unobstructed_opaque_mesh_exhaust_path (__main__.RcsVisibility.test_every_socket_has_an_unobstructed_opaque_mesh_exhaust_path) (bank='M3_RCS_05', socket=0.6)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/kyau/projects/kyaulabs/ngen/tests/rcs_visibility.py", line 89, in test_every_socket_has_an_unobstructed_opaque_mesh_exhaust_path
+    self.assertIsNone(hit, f"{name} socket {socket}: opaque mesh blocks exhaust after {hit:.4f} m" if hit is not None else "")
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1.3731380641513868 is not None : M3_RCS_05 socket 0.6: opaque mesh blocks exhaust after 1.3731 m
+
+======================================================================
+FAIL: test_every_socket_has_an_unobstructed_opaque_mesh_exhaust_path (__main__.RcsVisibility.test_every_socket_has_an_unobstructed_opaque_mesh_exhaust_path) (bank='M3_RCS_08', socket=-0.6)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/kyau/projects/kyaulabs/ngen/tests/rcs_visibility.py", line 89, in test_every_socket_has_an_unobstructed_opaque_mesh_exhaust_path
+    self.assertIsNone(hit, f"{name} socket {socket}: opaque mesh blocks exhaust after {hit:.4f} m" if hit is not None else "")
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0.682002851945537 is not None : M3_RCS_08 socket -0.6: opaque mesh blocks exhaust after 0.6820 m
+
+======================================================================
+FAIL: test_every_socket_has_an_unobstructed_opaque_mesh_exhaust_path (__main__.RcsVisibility.test_every_socket_has_an_unobstructed_opaque_mesh_exhaust_path) (bank='M3_RCS_08', socket=0.6)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/kyau/projects/kyaulabs/ngen/tests/rcs_visibility.py", line 89, in test_every_socket_has_an_unobstructed_opaque_mesh_exhaust_path
+    self.assertIsNone(hit, f"{name} socket {socket}: opaque mesh blocks exhaust after {hit:.4f} m" if hit is not None else "")
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0.7076853580207162 is not None : M3_RCS_08 socket 0.6: opaque mesh blocks exhaust after 0.7077 m
+
+======================================================================
+FAIL: test_every_socket_has_an_unobstructed_opaque_mesh_exhaust_path (__main__.RcsVisibility.test_every_socket_has_an_unobstructed_opaque_mesh_exhaust_path) (bank='M3_RCS_11', socket=-0.6)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/kyau/projects/kyaulabs/ngen/tests/rcs_visibility.py", line 89, in test_every_socket_has_an_unobstructed_opaque_mesh_exhaust_path
+    self.assertIsNone(hit, f"{name} socket {socket}: opaque mesh blocks exhaust after {hit:.4f} m" if hit is not None else "")
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0.6820028519455368 is not None : M3_RCS_11 socket -0.6: opaque mesh blocks exhaust after 0.6820 m
+
+======================================================================
+FAIL: test_every_socket_has_an_unobstructed_opaque_mesh_exhaust_path (__main__.RcsVisibility.test_every_socket_has_an_unobstructed_opaque_mesh_exhaust_path) (bank='M3_RCS_11', socket=0.6)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/kyau/projects/kyaulabs/ngen/tests/rcs_visibility.py", line 89, in test_every_socket_has_an_unobstructed_opaque_mesh_exhaust_path
+    self.assertIsNone(hit, f"{name} socket {socket}: opaque mesh blocks exhaust after {hit:.4f} m" if hit is not None else "")
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0.707685358020716 is not None : M3_RCS_11 socket 0.6: opaque mesh blocks exhaust after 0.7077 m
+
+----------------------------------------------------------------------
+Ran 1 test in 1.538s
+
+FAILED (failures=8)

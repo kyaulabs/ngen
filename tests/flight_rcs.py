@@ -31,9 +31,9 @@ class FlightRcs(unittest.TestCase):
 
     def test_compiled_mix_matches_authored_force_and_moment_axes(self):
         text = self.run_demo("--verify")
-        self.assertIn("flight_rcs_banks=12 flight_rcs_sockets=24", text)
+        self.assertIn("flight_rcs_banks=16 flight_rcs_sockets=32", text)
         self.assertIn("flight_rcs_geometry_verified=1", text)
-        self.assertIn("triangles=248934", text)
+        self.assertIn("triangles=249942", text)
 
     def test_native_replay_drives_rcs_and_extinguishes_it_when_coasting(self):
         with tempfile.TemporaryDirectory(prefix="ngen-rcs-") as directory:
@@ -53,7 +53,7 @@ class FlightRcs(unittest.TestCase):
             active, idle = 0, 0
             for row in rows:
                 count, power = int(row["rcs_active"]), float(row["rcs_power"])
-                self.assertTrue(0 <= count <= 12 and math.isfinite(power) and 0 <= power <= 1)
+                self.assertTrue(0 <= count <= 16 and math.isfinite(power) and 0 <= power <= 1)
                 force = [float(row[k]) for k in ("fx_N", "fy_N", "fz_N")]
                 torque = [float(row[k]) for k in ("tx_Nm", "ty_Nm", "tz_Nm")]
                 if all(v == 0 for v in force + torque):

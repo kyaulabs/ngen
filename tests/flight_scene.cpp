@@ -16,7 +16,7 @@ package_fixture::Sections rcs_sections() {
     auto sections = package_fixture::triangle();
     const auto primitive = sections[2];
     const auto instance = sections[8];
-    for (std::uint32_t bank = 0; bank < 12; ++bank) {
+    for (std::uint32_t bank = 0; bank < 16; ++bank) {
         auto material = std::vector<std::byte>{};
         for (const auto value : std::array<float, 13>{1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, .5F})
             package_fixture::f32(material, value);
@@ -52,7 +52,7 @@ TEST_CASE("flight presets bind the complete authored RCS material table") {
     const auto result = demo::make_preset(package, profile);
     REQUIRE(std::holds_alternative<demo::Preset>(result));
     const auto &preset = std::get<demo::Preset>(result);
-    for (std::size_t bank = 0; bank < 12; ++bank) {
+    for (std::size_t bank = 0; bank < 16; ++bank) {
         REQUIRE(preset.rcs_materials[bank] == std::optional<std::size_t>{bank});
     }
     REQUIRE(!preset.drive_material.has_value());
@@ -113,13 +113,32 @@ TEST_CASE("RCS selection is bounded, owning and covariant with the interval atti
     const auto quarter_turn = std::sqrt(.5F);
     const auto rotated = std::get<demo::RcsLevels>(demo::rcs_levels(
         profile, {0, 0, quarter_turn, quarter_turn}, {0, 12000000, 0}, {0, 20000000000.0F, 0}));
-    for (std::size_t bank = 0; bank < 12; ++bank)
+    for (std::size_t bank = 0; bank < 16; ++bank)
         REQUIRE(std::abs(expected[bank] - rotated[bank]) < 1e-6F);
     const auto mixed = std::get<demo::RcsLevels>(
         demo::rcs_levels(profile, identity, profile.flight.maximum_force_newtons,
                          profile.flight.maximum_torque_newton_metres));
     for (const auto value : mixed)
         REQUIRE((std::isfinite(value) && value >= 0 && value <= 1));
+}
+
+TEST_CASE("every forward and aft RCS bank participates in admitted wrench patterns") {
+    const auto profile = demo::frigate_profile();
+    std::array<bool, 16> used{};
+    for (std::size_t axis = 0; axis < 6; ++axis)
+        for (const float sign : {-1.0F, 1.0F}) {
+            std::array<float, 3> force{}, torque{};
+            if (axis < 3)
+                force[axis] = profile.flight.maximum_force_newtons[axis] * sign;
+            else
+                torque[axis - 3] = profile.flight.maximum_torque_newton_metres[axis - 3] * sign;
+            const auto levels =
+                std::get<demo::RcsLevels>(demo::rcs_levels(profile, {0, 0, 0, 1}, force, torque));
+            for (std::size_t bank = 0; bank < 16; ++bank)
+                used[bank] = used[bank] || levels[bank] > 1e-6F;
+        }
+    for (const bool active : used)
+        REQUIRE(active);
 }
 
 TEST_CASE("invalid RCS inputs reject before quaternion math or visual publication") {

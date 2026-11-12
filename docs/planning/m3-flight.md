@@ -187,9 +187,12 @@ Owner-confirmed Windows disconnected-network startup now succeeds.
 
 The owner approved matching lower opposing RCS banks for turning, rolling and
 strafing before the UI pass. The [RCS candidate](../evidence/M3/rcs/README.md) now
-has 12 banks and 24 socket plumes, driven by actual interval force/torque and
-stabilization rather than keys. Original asset prefixes, rear exhaust and physical
-traces remain exact; 248,934 workload triangles and 240 ship instances stay inside
+has 16 banks and 32 socket plumes after the owner's rear-visibility request,
+driven by actual interval force/torque and stabilization rather than keys.
+The [aft correction](../evidence/M3/rcs/aft/README.md) moves eight obstructed jets
+onto outer fairings and adds eight aft jets, retaining the accepted forward look.
+Original M2 prefixes, rear exhaust and physical traces remain exact;
+249,942 workload triangles and 247 ship instances stay inside
 existing limits. Four native graphs, affected Clang analyses, native rig/replay
 checks and a clean 2,400-frame 1080p allocation replay pass. See the
 [scoped implementation plan](m3-rcs.md). Owner visual review and affected final

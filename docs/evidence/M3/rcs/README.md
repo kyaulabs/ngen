@@ -1,5 +1,8 @@
 # M3 RCS implementation checkpoint
 
+This records the initial 24-jet version. The current
+[32-jet aft-visibility correction](aft/README.md) supersedes its package/profile pin.
+
 The owner approved matching lower opposing banks in addition to the existing
 upper sockets. The candidate now has 12 banks and 24 blue-white socket plumes.
 Only the application owns the rig/mixing policy; no engine, shader, renderer pass,

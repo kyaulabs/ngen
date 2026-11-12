@@ -4,7 +4,7 @@
 #include <optional>
 
 namespace ngen::demo {
-inline constexpr std::size_t rcs_bank_count = 12;
+inline constexpr std::size_t rcs_bank_count = 16;
 using RcsLevels = std::array<float, rcs_bank_count>;
 // Columns are +Fx, -Fx, +Fy, -Fy, +Fz, -Fz, +Tx, -Tx, +Ty, -Ty, +Tz, -Tz.
 using RcsMix = std::array<std::array<float, 12>, rcs_bank_count>;

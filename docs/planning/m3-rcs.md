@@ -1,9 +1,12 @@
 # M3 RCS actuation visuals
 
-The owner confirms the rear exhaust works and requests visible side jets for
-turning, rolling and strafing. The existing model source has 6 upper-side banks
-with 12 sockets. The owner chose matching lower opposing banks: 12 banks and
-24 sockets in total. Implement this before the deferred UI refinement.
+The owner confirms the rear exhaust works and requests visible maneuvering jets
+for turning, rolling and strafing. The initial 24-jet look was approved, but the
+aft jets were hard to see. The owner now requests 16 forward and 16 aft jets:
+16 paired banks and 32 sockets. Preserve the forward look, expose the existing
+aft banks on the outer drive fairings and add four aft pairs. Implement this
+before the deferred UI refinement; current evidence is in the
+[aft RCS checkpoint](../evidence/M3/rcs/aft/README.md).
 
 Preserve the accepted rear exhaust, original hull/material/image/light data and
 physical controller. Create a new private derivative; never overwrite the accepted
@@ -13,8 +16,9 @@ new renderer pass/backend/resource owner, dependency or material ABI is needed.
 New hardware and plumes must stay inside the existing 250,000-triangle workload,
 256-instance admission and local bounds. Do not relax those limits.
 
-Place lower banks on matching ventral side facets using the original hull stations
-and verified exported scale. Reuse existing opaque materials. Add small blue-white
+Use actual outer fairing surfaces for aft mounts, not the enclosed pressure hull.
+Check all exhaust centerlines against rendered opaque LOD 2 geometry. Preserve
+existing fore/middle mounts and use the verified exported scale. Reuse existing opaque materials. Add small blue-white
 plumes at all sockets using the accepted drive texture/style and existing blend
 and emissive-flow path. The new geometry is original; no EVE assets are involved.
 Existing package sections/prefixes remain exact except for appended records and

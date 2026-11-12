@@ -75,10 +75,11 @@ class RcsAuthor(unittest.TestCase):
                 "from pathlib import Path\nimport sys\n"
                 "owner = Path(sys.argv[1]).parents[1] / 'manifest.json'\n"
                 "with owner.open('x') as stream: stream.write('owner manifest\\n')\n"
-                "print('{\"instances\":240,\"materials\":29}')\n")
+                "print('{\"instances\":247,\"materials\":33}')\n")
             probe.chmod(0o700)
             result = self.invoke(self.base, output, probe)
             self.assertNotEqual(result.returncode, 0)
+            self.assertIn("FileExistsError", result.stderr)
             self.assertFalse((output / "scene.ngas").exists())
             self.assertEqual((output / "manifest.json").read_text(), "owner manifest\n")
             self.assertEqual([p.name for p in output.iterdir()], ["manifest.json"])
