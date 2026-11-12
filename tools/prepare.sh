@@ -54,9 +54,13 @@ command -v conan >/dev/null || { echo 'Conan 2.34.0 required; install it in a vi
 [ "$(conan --version)" = 'Conan version 2.34.0' ] || { echo 'Expected Conan 2.34.0' >&2; exit 2; }
 if [ "$demo" = true ]; then
   conan export recipes/joltphysics --version=5.6.0 --user=ngen --channel=headless-double
+  conan export recipes/pulseaudio --version=17.0 --user=ngen --channel=callback-safe
   conan export recipes/sdl --version=3.4.16 --user=ngen --channel=wayland
   conan export recipes/slangc --version=2026.21 --user=ngen --channel=tools
-  conan install . -pr:h "profiles/$profile" -pr:b profiles/linux-clang -s:h "build_type=$type" -s:b build_type=Release -o '&:physics=True' -o '&:renderer=True' -o '&:shaders=True' -o '&:assets=True' -o '&:inspector=True' -o '&:audio=True' --lockfile conan-demo.lock --build=missing -c tools.build:jobs=2 -of "build/$preset" "$@"
+  # libsndfile declares its MPEG option before project()/the toolchain loads;
+  # pass OFF on the actual configure command so ambient codecs cannot leak in.
+  # Pulse's client also needs no ambient systemd/DNS integration libraries.
+  conan install . -pr:h "profiles/$profile" -pr:b profiles/linux-clang -s:h "build_type=$type" -s:b build_type=Release -o '&:physics=True' -o '&:renderer=True' -o '&:shaders=True' -o '&:assets=True' -o '&:inspector=True' -o '&:audio=True' --lockfile conan-demo.lock --build=missing -c tools.build:jobs=2 -c:h 'libsndfile/*:tools.cmake:configure_args=["-DENABLE_MPEG=OFF"]' -c:h 'pulseaudio/*:tools.meson.mesontoolchain:extra_variables={"project_options":{"systemd":"disabled","asyncns":"disabled"}}' -of "build/$preset" "$@"
 elif [ "$physics" = true ]; then
   conan export recipes/joltphysics --version=5.6.0 --user=ngen --channel=headless-double
   conan install . -pr:h "profiles/$profile" -pr:b profiles/linux-clang -s:h "build_type=$type" -s:b build_type=Release -o '&:physics=True' --lockfile conan-physics.lock --build=missing -c tools.build:jobs=2 -of "build/$preset" "$@"

@@ -1,5 +1,9 @@
 # M3 authoritative physical RCS
 
+The v12 Linux bundle below is historical and retains the unsafe direct ALSA route.
+Use the [desktop-audio replacement](../../audio-desktop/README.md) for new playback.
+That audio repair preserves this checkpoint's physical replay and private asset.
+
 The owner explicitly chose physical RCS: individual firings must drive the body,
 and exhaust must show those same states. This supersedes the pulse-only and
 post-physics directional checkpoints. Their exact old motion traces are historical,

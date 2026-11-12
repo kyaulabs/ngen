@@ -1,0 +1,148 @@
+{
+  "scope": "Linux shared desktop route; owning output/mixer/PCM/flight interfaces unchanged. Same-session Core/C++ review, not independent review or M3 acceptance.",
+  "source_sha256": {
+    ".gitattributes": "3af6224e5c7f2e1cd60957246b5734aa36a9e3fbebc6513e258ae0cdb513907e",
+    ".github/workflows/cpu.yml": "3308ccab5de9fdc6c08d409d7707674439a2b683a0c43f44d35a5ab3b7fd3ac8",
+    "CMakeLists.txt": "9ec4c2a18869a1df7843b695749353ee98711eb0318714f770bc7d2108ea98cf",
+    "conanfile.py": "cb97e7cd1d1ceea3dc8aeb18cb2157bd7fc88b7a7ca374a3df663ea6498b2aeb",
+    "conan-demo.lock": "f9e452d82ceac5743c86f574b0691d1867a14974d6c9905d7c9142066105570a",
+    "conan-render.lock": "a16c9260888e22cdda9a3972d31db5e48bc78a29dcf98e342e1a52daa0f40670",
+    "conan-scene.lock": "8445f4c3458b95bc6ccef08fc87726b9b30e61f378fe9aac2b86f52ebc71693d",
+    "conan-inspector.lock": "2e82120ecb729f6caf097f56e5eea9f79721ed1b2f81e1de6f43b98b722780f5",
+    "engine/audio/output.cpp": "2ab4326fb8ca3ab7200e83500a7fd3ee33dde2a2469b70b0d75e681d318edc65",
+    "tests/audio_output.cpp": "7a7829b112c298ec06c40fd89b34b36064cd439cf2d5fe136088083583d3badd",
+    "tests/demo_package.py": "cbd1023507918cf624be3543434db95c1d98b1b66d25dd4ff896e645855b8e56",
+    "tools/package_demo.py": "a346d0a80cb520285c562d5b3d537f678674e87e1ca55d0b7dc1509b7f014fcd",
+    "tools/prepare.sh": "7176d3ac88eb20c2be1bf4dc4910e8d6d6d5de98751953ba5967f6b0d6c95d23",
+    "profiles/linux-asan": "761077fd2369da4933b71441b1e0debc1f2458ba253a2ee2a4b40429a9fc8333",
+    "profiles/meson-clang-asan.ini": "337b8843a7ce3ece95e458d11ff2b9d8a540cc1c3e40996277f8b1f06526a541",
+    "recipes/sdl/conandata.yml": "7382ea49b39d55217dc9b0a347ef7fadd9d8bbe43b26bc7c8b4f9ad1993b785a",
+    "recipes/sdl/patches/0003-audio-assert-lookup.patch": "13e1e392ea5bcd4eba693e38928502df420a2ac0003973d8ec81e42c4eefc311",
+    "recipes/pulseaudio/conanfile.py": "6779bf01d38a1c7cf8414dd19ea76ad41fbb1bae3dac849d59efaf4c90d51161",
+    "recipes/pulseaudio/conandata.yml": "b2aea3ff3ff712b6c251339d7448bf2030af50a07cce53715979bbd3ef78ef8e",
+    "recipes/pulseaudio/patches/0001-property-free-callback.patch": "d9c1073776f836a47ff891ce3cae3e7777ebf04b3d7bdfa0173244f658065bc6"
+  },
+  "dependency_pins": {
+    "sdl": "3.4.16@ngen/wayland#6a35b483f98d9692e69a3b88780f8ac2",
+    "pulseaudio": "17.0@ngen/callback-safe#de399e43d377dc7f2e034fb0452ffbf2",
+    "pulse_source_sha256": "053794d6671a3e397d849e478a80b82a63cb9d8ca296bd35b73317bb5ceb87b5"
+  },
+  "red_diagnostics": {
+    "backend-red.txt": {
+      "original_sha256": "8b65972cee515319118d9e7483e7a971e39b655d9c2f2cb433d8b48dbc68241e",
+      "tracked_sha256": "8b65972cee515319118d9e7483e7a971e39b655d9c2f2cb433d8b48dbc68241e",
+      "normalization": "Trailing whitespace and final blank lines only, diagnostics retained."
+    },
+    "package-red.txt": {
+      "original_sha256": "ae68f4faa423674fae0be37dfd4e537df0d3691b3b147d1cbedb652a03826479",
+      "tracked_sha256": "ae68f4faa423674fae0be37dfd4e537df0d3691b3b147d1cbedb652a03826479",
+      "normalization": "Trailing whitespace and final blank lines only, diagnostics retained."
+    },
+    "callback-ubsan-red.txt": {
+      "original_sha256": "cf2e358999e86de24eb82e2ed801e5d6d0c5b70bade97203a1b1c81e99f35df2",
+      "tracked_sha256": "8ef2df9dbf14599aa425e6474a4753a0facafd136ac48695cd2fd7dc564d8df2",
+      "normalization": "Trailing whitespace and final blank lines only, diagnostics retained."
+    },
+    "tls-leak-red.txt": {
+      "original_sha256": "2f17fdbb0069466c94ff759d14ac37281079f9af6491d1e76a078e576e8e69f0",
+      "tracked_sha256": "2f17fdbb0069466c94ff759d14ac37281079f9af6491d1e76a078e576e8e69f0",
+      "normalization": "Trailing whitespace and final blank lines only, diagnostics retained."
+    }
+  },
+  "native_ctest": {
+    "demo-debug": 22,
+    "demo-release": 22,
+    "demo-asan": 22,
+    "demo-gcc": 22,
+    "inspector-release_audio_disabled": 12,
+    "total": 100,
+    "status": "Passed",
+    "followup": "Affected audio_output test rebuilt/rerun on all four graphs after adding hidden desktop case."
+  },
+  "desktop_optin": {
+    "configurations": [
+      "demo-debug",
+      "demo-release",
+      "demo-asan",
+      "demo-gcc"
+    ],
+    "selected_cases_each": 1,
+    "assertions_each": 424,
+    "failed_each": 0,
+    "status": "Passed",
+    "default_ctest_selection": "Not selected: explicitly hidden, requires existing desktop service; normal tests use dummy."
+  },
+  "ast": {
+    "commands": 6,
+    "status": "Passed",
+    "files": [
+      "engine/audio/output.cpp",
+      "tests/audio_output.cpp"
+    ],
+    "configurations": [
+      "demo-debug",
+      "demo-release",
+      "demo-asan"
+    ],
+    "method": "Actual native compile commands; no flags removed, no changed public headers.",
+    "gcc_ast": "Unavailable: unsupported native compiler flags retained; native GCC graph passes."
+  },
+  "real_desktop": {
+    "two_independent_ngen_plus_other_player": "Passed, 8 overlapping samples, unchanged Speaker/sinks/profiles/default and no NGEN hardware sound fds.",
+    "rendered_flight": "Passed, 330 frames, 41 stream samples, playing, zero losses, other player works during/after, zero warm C++/ImGui allocations.",
+    "missing_server": "Passed: explicit nonexistent server address returns soft-disconnected probe code 2; no direct hardware fallback.",
+    "services_profiles_changed": false,
+    "microphone_or_audio_recording": false
+  },
+  "full_hd_replay": {
+    "status": "Passed",
+    "frames": 2400,
+    "warmup_frames": 60,
+    "width": 1920,
+    "height": 1080,
+    "gpu_rows": 2400,
+    "warm_cpp_new": 0,
+    "warm_imgui": 0,
+    "stderr_bytes": 0,
+    "unchanged_physical_and_actuation_columns": 27,
+    "comparison_source": "4aa217c physical RCS replay, not superseded smooth-wrench motion.",
+    "scope": "Muted/dummy correctness, not timing/listening/global-memory acceptance."
+  },
+  "windows_orchestration": "Passed both PowerShell suites; initial missing-Conan PATH setup failure retained separately, fixed by child PATH.",
+  "native_windows": "Not run: current-source MSVC/ClangCl/RTX remain separate M3 gates.",
+  "review": "No remaining concrete task-related defect after native callback and expected-absence lookup repairs; not exhaustive/vendor-wide/independent review.",
+  "private_log_sha256": {
+    "audio-desktop-final-demo-debug-tests.txt": "ff30607da25d07390db321a40c4e28c757dddbfeccc7e47669f9011cc563844c",
+    "audio-desktop-final-demo-release-tests.txt": "2ad83ce9f476ea6a9c4fd93599d6cdd5465559e5728239f5b17c1f98a5f1e90a",
+    "audio-desktop-final-demo-gcc-tests.txt": "44e8dcc5004cfc343c0685c2d6f11c5eba0385a48e566150e5e0564588fc3134",
+    "audio-desktop-demo-asan-tls-tests.txt": "760d75fbc992e5a422e67322b8fde2ee79bfb4362f9d198199a662b47a5b8938",
+    "audio-desktop-inspector-release-tests.txt": "e6ad8ae906d62839c0206fa578cb4e7c5dd9a6f469087d6e30b78b62766a5e8f",
+    "audio-desktop-release-full.txt": "b31d019eb1050a6264dfe8168edb0146c23a58f05b06ac5d1cb45586261e2096",
+    "audio-desktop-release-full.csv": "6851b51fcce39f17754b6dcfa8ecf71dd0bca40db8145321c46cd1dc5537c741",
+    "audio-desktop-release-full.err": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "audio-desktop-probe-asan-tls.txt": "dac32b8827403e70dafeca7cc05876ee8caec9508748a3877ef1f132ebbc0b70",
+    "audio-desktop-probe-asan-tls.err": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "audio-desktop-windows-build-tests-green.txt": "cde3c6bc03c6b05315f34f50a02ef5b5171c37ae2ee3175811550e4dc85df2b9",
+    "audio-desktop-windows-flight-tests.txt": "a7dcdf5b3fb8af0c2878d99f63c48402cf5882ad664d5987a806e24c41669fe3",
+    "audio-desktop-server-absent.err": "b2de83858fc24a4e4506f58f3162f770a0a5b845a19334acd822933d904fa83b",
+    "audio-desktop-demo-debug-optin.txt": "f5881f60ecb1dc8d81973be3729a255e3bf17d4b7cbc16bb8403bd984fb29417",
+    "audio-desktop-demo-debug-optin.err": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "audio-desktop-demo-debug-optin-dummy.txt": "e2af258f82de314b40c52523e9c39a900c2213fe0663a44ad6ede646da48d98c",
+    "audio-desktop-demo-release-optin.txt": "bf0efae8ebb565123c111ed44c085593ceea6ad360716a3884d5a0ff7a9148e7",
+    "audio-desktop-demo-release-optin.err": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "audio-desktop-demo-release-optin-dummy.txt": "c393dc50e78fe7dcd0f2c9a06d9864b59672f01ada64f642af47cad5108986d2",
+    "audio-desktop-demo-asan-optin.txt": "5826bc4a5ce35f781711046be57c0c0de1c6ac666cf89e03dd91155ea20b3889",
+    "audio-desktop-demo-asan-optin.err": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "audio-desktop-demo-asan-optin-dummy.txt": "41bd0fc050f6de9b90d6abdaa10d6327d4fba965f79730d6a10a4812dee068d7",
+    "audio-desktop-demo-gcc-optin.txt": "5f14900495664272cc8995653a06bece45583d2144d6afc1b63d68b063a96116",
+    "audio-desktop-demo-gcc-optin.err": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "audio-desktop-demo-gcc-optin-dummy.txt": "a851e454151ad231273e2fbf7c1233575260a307caddc29a0671189dbda7521f"
+  },
+  "limits": [
+    "Real sampling is not continuous observation or arbitrary device-loss proof.",
+    "Silent PCM success is not subjective listening or gain acceptance.",
+    "Private bundle uses platform libpulse ABI, not instrumented SDK client internals.",
+    "No current Windows/RTX or final performance acceptance claimed.",
+    "Owner physical/nozzle review, required UI, final budgets/review/integration remain open."
+  ]
+}

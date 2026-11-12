@@ -1,0 +1,38 @@
+[
+  {
+    "configuration": "demo-debug",
+    "source": "engine/audio/output.cpp",
+    "status": 0,
+    "scope": "Actual complete native command, no flags removed; no changed public header."
+  },
+  {
+    "configuration": "demo-debug",
+    "source": "tests/audio_output.cpp",
+    "status": 0,
+    "scope": "Actual complete native command, no flags removed; no changed public header."
+  },
+  {
+    "configuration": "demo-release",
+    "source": "engine/audio/output.cpp",
+    "status": 0,
+    "scope": "Actual complete native command, no flags removed; no changed public header."
+  },
+  {
+    "configuration": "demo-release",
+    "source": "tests/audio_output.cpp",
+    "status": 0,
+    "scope": "Actual complete native command, no flags removed; no changed public header."
+  },
+  {
+    "configuration": "demo-asan",
+    "source": "engine/audio/output.cpp",
+    "status": 0,
+    "scope": "Actual complete native command, no flags removed; no changed public header."
+  },
+  {
+    "configuration": "demo-asan",
+    "source": "tests/audio_output.cpp",
+    "status": 0,
+    "scope": "Actual complete native command, no flags removed; no changed public header."
+  }
+]

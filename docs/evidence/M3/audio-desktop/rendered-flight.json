@@ -1,0 +1,9 @@
+{
+  "actual_flight_frames": 330,
+  "audio_playing": true,
+  "speaker_and_card_profiles_unchanged": true,
+  "server_stream_observation_samples": 41,
+  "hardware_sound_fds": 0,
+  "other_player_during_and_after": true,
+  "scope": "Automated real renderer/physics/audio flight on desktop server, no audio capture or service/profile changes."
+}

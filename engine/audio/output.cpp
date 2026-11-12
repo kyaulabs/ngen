@@ -47,10 +47,6 @@ bool Output::prepare() {
     if (SDL_GetTicksNS() < retry_ns_)
         return false;
     if (!initialized_) {
-#if defined(__linux__)
-        // Environment/user hints (including the test dummy driver) retain priority.
-        (void)SDL_SetHintWithPriority(SDL_HINT_AUDIO_DRIVER, "alsa", SDL_HINT_DEFAULT);
-#endif
         if (!SDL_InitSubSystem(SDL_INIT_AUDIO)) {
             disconnect("audio initialization");
             return false;

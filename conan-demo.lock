@@ -7,12 +7,14 @@
         "wayland/1.24.0#ac40d5647b1ce948e185c1a849f63cb6%1779188470.635",
         "vulkan-memory-allocator/3.3.0#5393b5bc9a6b8a2fb9612df877706608%1761667136.618",
         "vulkan-headers/1.3.296.0#4ea73880426698c2e903c3e7acd892dc%1778774706.839",
-        "sdl/3.4.16@ngen/wayland#fe543baa24110800628ab64f651dca5f%1794378860.311881",
+        "sdl/3.4.16@ngen/wayland#6a35b483f98d9692e69a3b88780f8ac2",
         "sdl/3.4.16#fe421775c8e1866eb22a3ba23ef8fd62%1790611343.755",
+        "pulseaudio/17.0@ngen/callback-safe#de399e43d377dc7f2e034fb0452ffbf2",
         "libxml2/2.15.4#9a0c674e87edc8d5bca8ccdb6761e4f8%1792501927.602",
+        "libsndfile/1.2.2#331a3bf2dc523194f5b4880ca807072a%1766399665.629",
         "libiconv/1.17#9923bc6dc6f106646d6967e0039a5ada%1774021608.288",
+        "libgettext/0.22#b09eea019e19b9b9c46d8f1da7d75444%1765809130.834",
         "libffi/3.4.8#a045c00fb26779635e3bed40e80c5254%1753360042.396",
-        "libalsa/1.2.16.1#f1f84174d706f61048a3e55eb5c2daac%1790078675.685",
         "joltphysics/5.6.0@ngen/headless-double#67a3b4c0d2e06dc7514a970066ac5074",
         "imgui/1.92.9b#b0eee8a52c7f9d1cae639b440b4bb234%1785711534.216",
         "expat/2.10.0#93425119c70db4e470b3d7d9b5daf3e6%1793616949.505",
@@ -28,8 +30,10 @@
         "spirv-headers/1.4.357.0#9a9853ce0dd278c90c13c95ac1d02993%1789470990.613",
         "slangc/2026.21@ngen/tools#6e871398eae564c7e6333ddea199e050%1793933756.7836273",
         "pkgconf/2.5.1#93c2051284cba1279494a43a4fcfeae2%1757684701.089",
+        "pkgconf/2.1.0#21f96520faf7660b99f872e956d2ac13%1755505630.82",
         "ninja/1.13.2#c8c5dc2a52ed6e4e42a66d75b4717ceb%1764096931.974",
         "meson/1.10.2#9d2d10681fe7fe61c788c58626c89b25%1775558003.754",
+        "meson/1.3.2#26ce8a76a36cc275cdfee1d757bc6561%1726730118.251",
         "m4/1.4.19#1727f439cf74e83826ec96d0b4904eee%1784541921.659",
         "libxml2/2.15.4#9a0c674e87edc8d5bca8ccdb6761e4f8%1792501927.602",
         "libiconv/1.17#9923bc6dc6f106646d6967e0039a5ada%1774021608.288",
@@ -42,6 +46,9 @@
     ],
     "python_requires": [],
     "overrides": {
+        "pulseaudio/17.0": [
+            "pulseaudio/17.0@ngen/callback-safe"
+        ],
         "vulkan-headers/[~1]": [
             "vulkan-headers/1.3.296.0"
         ]

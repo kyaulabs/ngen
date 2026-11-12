@@ -6,8 +6,4 @@ tools.build:cflags=["-fsanitize=address,undefined", "-fno-sanitize-recover=all",
 tools.build:cxxflags=["-fsanitize=address,undefined", "-fno-sanitize-recover=all", "-fno-omit-frame-pointer"]
 tools.build:exelinkflags=["-fsanitize=address,undefined"]
 tools.build:sharedlinkflags=["-fsanitize=address,undefined"]
-[buildenv]
-# Clang shared ASan imports resolve in the instrumented executable, as with SDL.
-# Only this new audio client loses the incompatible DSO -z,defs check; ordinary
-# builds remain strict, and LD_BIND_NOW consumer tests check resolved imports.
-libalsa/*:MAKEFLAGS=LDFLAGS_NOUNDEFINED=
+pulseaudio/*:tools.meson.mesontoolchain:extra_machine_files=["{{ profile_dir }}/meson-clang-asan.ini"]

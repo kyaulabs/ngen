@@ -19,7 +19,11 @@ class NgenDependencies(ConanFile):
         "physics": False,
         "audio": False,
         "sdl/*:shared": True,
-        "libalsa/*:shared": True,
+        "pulseaudio/*:with_x11": False,
+        "pulseaudio/*:with_openssl": False,
+        "libsndfile/*:programs": False,
+        "libsndfile/*:with_external_libs": False,
+        "libsndfile/*:with_mpeg": False,
         **{f"sdl/*:{name}": False for name in (
             "gpu", "render", "camera", "joystick", "haptic", "hidapi",
             "power", "sensor", "dialog", "tray", "opengl", "opengles", "directx",
@@ -57,11 +61,12 @@ class NgenDependencies(ConanFile):
             reference = "sdl/3.4.16@ngen/wayland" if self.settings.os == "Linux" else "sdl/3.4.16"
             sdl_options = {"audio": bool(self.options.audio)}
             if self.settings.os == "Linux" and self.options.audio:
-                # One native ALSA client, not a new sound framework or server.
-                sdl_options.update(alsa=True, pulseaudio=False, sndio=False)
-                # The eager-binding SDK regression directly calls this client;
-                # do not rely on a shared SDL dependency's transitive lib trait.
-                self.test_requires("libalsa/1.2.16.1")
+                # Use the desktop server (including PipeWire's PulseAudio API),
+                # never reserve a hardware PCM behind the session manager's back.
+                sdl_options.update(alsa=False, pulseaudio=True, sndio=False)
+                # Client-only package: its recipe disables the daemon. The eager
+                # SDK check directly loads its ABI; no daemon is built or bundled.
+                self.requires("pulseaudio/17.0@ngen/callback-safe", force=True)
             self.requires(reference, options=sdl_options)
             self.requires("vulkan-memory-allocator/3.3.0")
             self.requires("vulkan-headers/1.3.296.0", override=True)

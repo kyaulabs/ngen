@@ -118,9 +118,10 @@ jobs:
             conan_args=(-c:h 'tools.build:exelinkflags=["-fsanitize=address,undefined", "-no-pie"]')
             cmake_args=(-DCMAKE_EXE_LINKER_FLAGS=-no-pie)
           fi
+          conan export recipes/pulseaudio --version=17.0 --user=ngen --channel=callback-safe
           conan export recipes/sdl --version=3.4.16 --user=ngen --channel=wayland
           conan export recipes/slangc --version=2026.21 --user=ngen --channel=tools
-          conan install . -pr:h "profiles/$profile" -pr:h profiles/ci-linux-clang -pr:b profiles/ci-linux-clang -s:b build_type=Release -o '&:renderer=True' -o '&:shaders=True' -o '&:assets=True' -o '&:inspector=True' -o '&:physics=True' -o '&:audio=True' --lockfile conan-demo.lock --build=missing -c tools.build:jobs=2 -of "build/renderer-$PRESET" "${conan_args[@]}"
+          conan install . -pr:h "profiles/$profile" -pr:h profiles/ci-linux-clang -pr:b profiles/ci-linux-clang -s:b build_type=Release -o '&:renderer=True' -o '&:shaders=True' -o '&:assets=True' -o '&:inspector=True' -o '&:physics=True' -o '&:audio=True' --lockfile conan-demo.lock --build=missing -c tools.build:jobs=2 -c:h 'libsndfile/*:tools.cmake:configure_args=["-DENABLE_MPEG=OFF"]' -c:h 'pulseaudio/*:tools.meson.mesontoolchain:extra_variables={"project_options":{"systemd":"disabled","asyncns":"disabled"}}' -of "build/renderer-$PRESET" "${conan_args[@]}"
           cmake --preset "renderer-$PRESET" -DNGEN_BUILD_INSPECTOR=ON -DNGEN_BUILD_PHYSICS=ON -DNGEN_BUILD_FLIGHT_DEMO=ON "${cmake_args[@]}"
           cmake --build --preset "renderer-$PRESET"
           ctest --preset "renderer-$PRESET" --show-only

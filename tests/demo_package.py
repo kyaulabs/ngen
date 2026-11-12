@@ -147,6 +147,8 @@ class PackageDemo(unittest.TestCase):
         manifest = json.loads((bundle / "manifest.json").read_text())
         self.assertEqual(manifest["files"]["assets/ship.ngas"], hashlib.sha256(self.asset.read_bytes()).hexdigest())
         self.assertNotIn(str(self.root), json.dumps(manifest))
+        self.assertIn("libpulse.so.0", manifest["platform_runtimes"])
+        self.assertNotIn("libasound.so.2", manifest["platform_runtimes"])
         self.assertEqual((self.build / "flight_demo").read_bytes(), b"native flight executable")
 
 

@@ -4,7 +4,7 @@
 #include <string_view>
 #include <thread>
 #if defined(__linux__)
-#include <alsa/asoundlib.h>
+#include <pulse/version.h>
 #endif
 
 TEST_CASE(
@@ -119,11 +119,37 @@ TEST_CASE("the native audio owner opens a real SDL dummy stream and bounds its c
     REQUIRE(output.statistics().state == ngen::audio::State::closed);
 }
 
-TEST_CASE("the audio SDK contains its declared native backend and no ambient Linux backends") {
+TEST_CASE("desktop playback closes one client without disturbing another", "[.desktop]") {
+#if defined(__linux__)
+    ngen::audio::Output first, second;
+    for (unsigned tick = 0; tick < 60; ++tick) {
+        REQUIRE(std::holds_alternative<std::monostate>(first.update({})));
+        REQUIRE(std::holds_alternative<std::monostate>(second.update({})));
+        REQUIRE(first.statistics().state == ngen::audio::State::playing);
+        REQUIRE(second.statistics().state == ngen::audio::State::playing);
+        SDL_Delay(10);
+    }
+    const auto *driver = SDL_GetCurrentAudioDriver();
+    REQUIRE(driver != nullptr);
+    REQUIRE(std::string_view(driver) == "pulseaudio");
+    REQUIRE(std::holds_alternative<std::monostate>(first.close()));
+    for (unsigned tick = 0; tick < 60; ++tick) {
+        REQUIRE(std::holds_alternative<std::monostate>(second.update({})));
+        REQUIRE(second.statistics().state == ngen::audio::State::playing);
+        REQUIRE(second.statistics().queued_frames <= ngen::audio::Output::queue_frame_limit);
+        SDL_Delay(10);
+    }
+    REQUIRE(std::holds_alternative<std::monostate>(second.close()));
+#else
+    SKIP("Opt-in Linux desktop-server integration; no dummy or hardware fallback");
+#endif
+}
+
+TEST_CASE("the audio SDK routes Linux playback through the desktop server without hardware ALSA") {
 #if defined(__linux__)
     // Load the pinned shared client even with the dummy backend. LD_BIND_NOW
     // proves Clang sanitizer imports resolve from the final executable.
-    REQUIRE(snd_asoundlib_version() != nullptr);
+    REQUIRE(pa_get_library_version() != nullptr);
 #endif
     const auto count = SDL_GetNumAudioDrivers();
     REQUIRE(count > 0);
@@ -133,8 +159,8 @@ TEST_CASE("the audio SDK contains its declared native backend and no ambient Lin
         REQUIRE(name != nullptr);
         const std::string_view driver(name);
 #if defined(__linux__)
-        REQUIRE((driver == "alsa" || driver == "dummy" || driver == "disk"));
-        native = native || driver == "alsa";
+        REQUIRE((driver == "pulseaudio" || driver == "dummy" || driver == "disk"));
+        native = native || driver == "pulseaudio";
 #else
         native = native || (driver != "dummy" && driver != "disk");
 #endif

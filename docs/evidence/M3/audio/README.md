@@ -1,5 +1,11 @@
 # Bounded procedural flight audio
 
+Historical synthesis/output checkpoint. Its direct ALSA routing and ALSA-specific
+sanitizer accommodation are superseded by [shared desktop playback](../audio-desktop/README.md).
+Linux flight bundles through v12 can disrupt the desktop Speaker sink; do not use
+them for new playback. The procedural sounds, levels and owning Output contract
+are unchanged by the routing repair.
+
 M3 now uses original48kHz stereo synthesis for reactor/thrust/braking, UI/reset
 and estimated contact-impulse cues. The eight-voice value mixer has no heap,
 device, callback or gameplay dependency. Finite normalized admission is atomic;

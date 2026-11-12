@@ -20,7 +20,7 @@ SOURCE_PATHS = ["CMakeLists.txt", "CMakePresets.json", "conanfile.py", "conan.lo
 MIB = 1024 * 1024
 SYSTEM_LINUX = {"libc.so.6", "libm.so.6", "libdl.so.2", "librt.so.1", "libpthread.so.0",
                 "libstdc++.so.6", "libgcc_s.so.1", "libEGL.so.1", "libvulkan.so.1",
-                "libasound.so.2", "libdecor-0.so.0", "ld-linux-x86-64.so.2"}
+                "libpulse.so.0", "libdecor-0.so.0", "ld-linux-x86-64.so.2"}
 
 
 def private_path(path):
@@ -204,8 +204,9 @@ def create_bundle(build: Path, asset: Path, output: Path) -> Path:
                 "NGEN / offline flight demonstration\n\n"
                 "Launch run.sh (Linux) or run.cmd (Windows). No SDK, Conan, shader compiler,\n"
                 "login or Internet startup step is required. Linux targets the build host ABI\n"
-                "and needs compatible glibc/libstdc++, Vulkan/EGL, ALSA, libdecor and a supported\n"
-                "desktop session. Windows needs its installed Vulkan-capable driver.\n\n"
+                "and needs compatible glibc/libstdc++, Vulkan/EGL, libdecor, libpulse.so.0 and\n"
+                "a desktop audio server (PipeWire's PulseAudio service or PulseAudio). NGEN\n"
+                "does not open ALSA hardware directly. Windows needs its Vulkan-capable driver.\n\n"
                 "TAB switches tactical/direct; RMB orbits/steers; ALT+RMB free-looks; wheel\n"
                 "zooms. WASD thrusts, SHIFT/CTRL moves vertically, QE rolls, SPACE brakes.\n"
                 "Release thrust to coast. G/O/F approach/orbit/focus a selected asteroid.\n"
