@@ -23,6 +23,14 @@ instructions now require the platform client and desktop service, not direct
 they retain the unsafe direct route. The accepted private directional asset and
 all 27 physical/actuation fields across the 2,400-frame replay are unchanged.
 
+Native bundle admission also rejected unnecessary direct imports of
+`libpulse-simple.so.0` and private `libpulsecommon-17.0.so`. SDL already opens its
+client dynamically, but the SDK metadata overlinked the consumer. The Linux
+flight target now uses the standard `--as-needed` linker option to omit unused
+DSOs; the runtime allowlist is not relaxed. All four affected flight targets and
+CLI tests pass after relinking. Strict native desktop ASan playback and the full
+replay pass again with no direct ALSA/PulseAudio SDK imports in the executable.
+
 Real desktop playback then found two additional native dependency defects:
 
 - Strict UBSan diagnosed a property destructor called through an incompatible

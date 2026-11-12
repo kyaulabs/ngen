@@ -3,7 +3,7 @@
   "source_sha256": {
     ".gitattributes": "3af6224e5c7f2e1cd60957246b5734aa36a9e3fbebc6513e258ae0cdb513907e",
     ".github/workflows/cpu.yml": "3308ccab5de9fdc6c08d409d7707674439a2b683a0c43f44d35a5ab3b7fd3ac8",
-    "CMakeLists.txt": "9ec4c2a18869a1df7843b695749353ee98711eb0318714f770bc7d2108ea98cf",
+    "CMakeLists.txt": "16913813ed580f9f81a4e07cddc41f79a7dda3ebe5b25a8ad9d0f998b8212f10",
     "conanfile.py": "cb97e7cd1d1ceea3dc8aeb18cb2157bd7fc88b7a7ca374a3df663ea6498b2aeb",
     "conan-demo.lock": "f9e452d82ceac5743c86f574b0691d1867a14974d6c9905d7c9142066105570a",
     "conan-render.lock": "a16c9260888e22cdda9a3972d31db5e48bc78a29dcf98e342e1a52daa0f40670",
@@ -108,6 +108,14 @@
     "comparison_source": "4aa217c physical RCS replay, not superseded smooth-wrench motion.",
     "scope": "Muted/dummy correctness, not timing/listening/global-memory acceptance."
   },
+  "runtime_link_followup": {
+    "reason": "Native bundle admission correctly rejected consumer overlinking to unused private PulseAudio SDK DSOs.",
+    "repair": "Linux flight target only: standard LINKER:--as-needed, no allowlist relaxation.",
+    "scope": "Only flight_demo link command changes, not compiled TUs, ABI or other targets.",
+    "verification": "All four flight targets relink and pass flight_demo_cli; current strict ASan desktop playback and full 2400-frame physical-equality replay pass.",
+    "direct_audio_sdk_imports": 0,
+    "earlier_ctest_scope": "The 100-CTest source checkpoint is c6880a1; its other target compile/link commands are unchanged by this link-only followup."
+  },
   "windows_orchestration": "Passed both PowerShell suites; initial missing-Conan PATH setup failure retained separately, fixed by child PATH.",
   "native_windows": "Not run: current-source MSVC/ClangCl/RTX remain separate M3 gates.",
   "review": "No remaining concrete task-related defect after native callback and expected-absence lookup repairs; not exhaustive/vendor-wide/independent review.",
@@ -128,15 +136,26 @@
     "audio-desktop-demo-debug-optin.txt": "f5881f60ecb1dc8d81973be3729a255e3bf17d4b7cbc16bb8403bd984fb29417",
     "audio-desktop-demo-debug-optin.err": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
     "audio-desktop-demo-debug-optin-dummy.txt": "e2af258f82de314b40c52523e9c39a900c2213fe0663a44ad6ede646da48d98c",
+    "audio-desktop-demo-debug-runtime-tests.txt": "0e7994f3d853b87df66f1513cfe825f4edff71202d13d6f348832794d6b3d2ee",
     "audio-desktop-demo-release-optin.txt": "bf0efae8ebb565123c111ed44c085593ceea6ad360716a3884d5a0ff7a9148e7",
     "audio-desktop-demo-release-optin.err": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
     "audio-desktop-demo-release-optin-dummy.txt": "c393dc50e78fe7dcd0f2c9a06d9864b59672f01ada64f642af47cad5108986d2",
+    "audio-desktop-demo-release-runtime-tests.txt": "8644835ff099d6cfee8c234b19a0c1415a534fabd1c2eb135b890f50aca2df0b",
     "audio-desktop-demo-asan-optin.txt": "5826bc4a5ce35f781711046be57c0c0de1c6ac666cf89e03dd91155ea20b3889",
     "audio-desktop-demo-asan-optin.err": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
     "audio-desktop-demo-asan-optin-dummy.txt": "41bd0fc050f6de9b90d6abdaa10d6327d4fba965f79730d6a10a4812dee068d7",
+    "audio-desktop-demo-asan-runtime-tests.txt": "a8ebf61080ee4e8185cfd2deca4a327707ad846c556acfc4197ed789840036ea",
     "audio-desktop-demo-gcc-optin.txt": "5f14900495664272cc8995653a06bece45583d2144d6afc1b63d68b063a96116",
     "audio-desktop-demo-gcc-optin.err": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-    "audio-desktop-demo-gcc-optin-dummy.txt": "a851e454151ad231273e2fbf7c1233575260a307caddc29a0671189dbda7521f"
+    "audio-desktop-demo-gcc-optin-dummy.txt": "a851e454151ad231273e2fbf7c1233575260a307caddc29a0671189dbda7521f",
+    "audio-desktop-demo-gcc-runtime-tests.txt": "db2b292425fa6cf1b1d732eb4a873ce6cda24fc61ef3be32a4127e6b251e5193",
+    "audio-desktop-runtime-imports.txt": "ece8c9a5a3b8e7eae2d53ec9c7316bcd1273373d8e665fa721c695e32835ae7a",
+    "audio-desktop-runtime-asan.txt": "88b3af736e5b06d6195ba890391a90f4168acc9ea8966b9e0425669f36e6b597",
+    "audio-desktop-runtime-asan.err": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "audio-desktop-runtime-release-full.txt": "b31d019eb1050a6264dfe8168edb0146c23a58f05b06ac5d1cb45586261e2096",
+    "audio-desktop-runtime-release-full.csv": "1a202463a3699ff0e06a73ba2df87e2eff995a66af6cc190446b878f115bb803",
+    "audio-desktop-runtime-release-full.err": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "audio-desktop-package.err": "2ec69c9f5355b7dadb98a980412bbc583803981642e4c577637b60e1ff3aaa12"
   },
   "limits": [
     "Real sampling is not continuous observation or arbitrary device-loss proof.",
