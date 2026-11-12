@@ -64,6 +64,16 @@ Reproduce the opt-in checks with `NGEN_FLIGHT_DEMO`, `NGEN_FLIGHT_PACKAGE` and
 `python tests/rcs_author.py`. Ordinary CMake/CTest runs cover the public CPU cases.
 `checks.json` binds these results to source hashes and records the remaining scope.
 
+The private Linux v8 bundle is
+`build/m3-offline-linux-v8/ngen-flight`, built from signed behavior source
+`464d3fda1f8781cea2b96199c8ffe4e5db9c3874`. All 23 manifest hashes and the bounded
+240-member source archive validate; archived behavior files match this source.
+Headless rig verification and three native rendered frames pass with networking
+unshared, Conan hidden and SDK/library-path overrides absent. Platform ABI
+requirements still apply. This RCS checkpoint bundle is not final UI/Windows/
+three-run acceptance; see `offline.json`. Human preview clients are unlimited and
+owner-closed, without recording, microphone or automatic termination.
+
 Same-session review traced borrowed material tables, copied levels, finite/error
 admission, profile padding, actual bank moment arms, original asset preservation,
 exclusive publication/rollback and warm-loop work. No additional actionable defect
