@@ -103,6 +103,12 @@ works during and after startup without changing the desktop graph. No SDK-privat
 client imports are required. See `offline.json`; this is startup evidence, not
 final performance/listening acceptance. Platform libraries/services remain needed.
 
+The owner confirmed v13 works correctly on the desktop. An initially reported
+recurrence came from launching v1 instead. The corrected interactive summary has
+249,942 triangles, audio playing, generation 1, zero losses and a maximum queue of
+4,096 frames. This accepts the desktop-audio repair, not physical/nozzle behavior
+or final performance: the interactive summary has no measured GPU timing rows.
+
 `checks.json` records source/log hashes and evidence scope. Real coexistence uses
 silent PCM, not a recording or subjective listening test. Sampling is not
 continuous observation or arbitrary device-loss proof. The private Linux bundle
