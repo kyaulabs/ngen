@@ -55,6 +55,14 @@ fields exactly, finite HDR, all GPU rows, monotonic host clocks, empty stderr an
 64-column observer limit. Muted dummy audio is not listening, final timing or
 Windows memory acceptance. `checks.json` binds results to source hashes.
 
+The private Linux v11 bundle, `build/m3-offline-linux-v11/ngen-flight`, records
+signed behavior source `c561865dc36835b1e043bd05aa5a83b4dbbbcab6`. All 23 manifest
+hashes and the bounded 244-member source archive validate, including changed
+calibration, authoring, runtime verification and tests. Headless geometric checks
+and three rendered frames pass with networking unshared, Conan hidden and SDK/
+library-path overrides absent. `offline.json` records this limited startup proof;
+platform ABI, final UI/Windows/budget qualifications still apply.
+
 Same-session review checked the re-aim transforms, socket pivots, normal/tangent
 rotation, complete-face selection, sparse allocation, main-drive exclusion,
 geometry preservation, capacity and exclusive publication. No further actionable
