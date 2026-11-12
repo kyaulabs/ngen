@@ -212,6 +212,17 @@ All 32 rendered centerlines are clear; the workload stays at 249,942 triangles.
 Owner re-aim/physical-wrench preview review and affected final Windows/bundle/budget
 checks remain open; this is not M3 acceptance.
 
+The owner subsequently chose [physical RCS](../evidence/M3/rcs/physical/README.md),
+not a post-physics visual approximation. The graphics-free simulation now owns
+bank definitions and valve state, applies actual force and moment from firings to
+Jolt, and publishes the same firing states used by rendering. The old application
+pulse clock is removed. Main-drive isolation, configured authority, real quiet
+coast, opposing arrest and speed admission pass public tests. Eight native graphs
+and 60 actual Clang command analyses pass; the current full-HD replay has zero warm
+allocations. The earlier exact-motion-match claims are historical because physical
+pulsing intentionally changes trajectories. Owner gameplay and fresh Windows/hardware
+acceptance are pending; see [ADR 0017](../adr/0017-physical-rcs-actuation.md).
+
 The post-environment-fix ClangCl baseline reaches both configurations and the full
 RTX replay. Its first CIM query fails with no GPU-memory samples, and its clean
 replay reports 2 warm ImGui allocations. Preserve these findings until verified

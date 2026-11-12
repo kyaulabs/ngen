@@ -20,3 +20,4 @@ This is the authoritative NGEN ADR index. Full records remain **Proposed** unles
 | [0014](0014-reproducible-build-review-ci.md) | Preserve repository policy in builds and reviews | M0/M1 |
 | [0015](0015-development-art-provenance.md) | Keep generated art in a measured development pipeline | M2/M3/M11 |
 | [0016](0016-license-and-proprietary-game.md) | Resolve engine and game licensing deliberately | M0/M13 |
+| [0017](0017-physical-rcs-actuation.md) | Publish physical RCS firings from the flight simulation | M3 |

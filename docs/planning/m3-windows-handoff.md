@@ -9,6 +9,10 @@ accepted rear exhaust/hull appearance is not reopened. See the
 [directional 32-jet RCS checkpoint](../evidence/M3/rcs/directional/README.md).
 The current private input is `build/cooked-candidate/frigate-rcs-directional-v1/scene.ngas`;
 older all-bank firing candidates are not equivalent to this source/profile.
+The [physical RCS simulation](../evidence/M3/rcs/physical/README.md) now applies
+published bank firings to Jolt; rebuild the current source, including its changed
+owning ship/snapshot layout. Earlier smooth-wrench trajectories are historical,
+not current physical replay acceptance.
 
 Run in PowerShell 7.2 or newer. Use the named splat; do not split `Start-Process`
 arguments or use positional `Select-String` examples.

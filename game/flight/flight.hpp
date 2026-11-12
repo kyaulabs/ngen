@@ -1,7 +1,9 @@
 #pragma once
+#include "flight/actuation.hpp"
 #include "physics/world.hpp"
 #include <array>
 #include <memory>
+#include <optional>
 #include <span>
 #include <thread>
 #include <variant>
@@ -21,6 +23,9 @@ struct ShipDefinition {
     float maximum_speed_mps{100}, maximum_angular_speed_rps{.5F};
     // Authored per ship; presentation must not substitute a universal offset.
     CameraMount flight_camera;
+    // Absent for ideal continuous-actuator fixtures. When present, only actual
+    // bank firings plus the separate forward main drive may actuate the body.
+    std::optional<RcsDefinition> rcs;
 };
 struct Pilot {
     std::array<float, 3> thrust{}, rotation{};
@@ -63,6 +68,8 @@ struct Snapshot {
     Navigation navigation;
     // World-space actuation applied over this tick; body is the end-of-tick state.
     std::array<float, 3> force_newtons{}, torque_newton_metres{};
+    RcsLevels rcs_firing{};
+    float main_drive_level{}, rcs_demand_level{};
 };
 // Owner-thread-only. Copies of snapshots may cross threads; the Flight may not.
 // Tick-indexed intent only: no wall clock, window, renderer, audio or services.

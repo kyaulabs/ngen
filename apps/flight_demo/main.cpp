@@ -146,6 +146,20 @@ void verify(const ngen::demo::Preset &preset, const ngen::assets::Scene &package
                         std::sqrt(direction[0] * direction[0] + direction[1] * direction[1] +
                                   direction[2] * direction[2]);
                     require(std::isfinite(length) && length > 0, "invalid RCS nozzle axis");
+                    require(preset.ship.flight.rcs.has_value(), "physical RCS definition missing");
+                    const auto &jet = preset.ship.flight.rcs->banks[bank];
+                    double rating_squared = 0;
+                    for (const auto value : jet.force_newtons)
+                        rating_squared += static_cast<double>(value) * value;
+                    const auto rating = std::sqrt(rating_squared);
+                    require(rating > 0, "physical RCS bank has no thrust");
+                    for (std::size_t component = 0; component < 3; ++component) {
+                        require(std::abs(center[component] - jet.position_metres[component]) < 3e-5,
+                                "physical RCS moment arm differs from rendered socket pivot");
+                        require(std::abs(direction[component] / length -
+                                         jet.force_newtons[component] / rating) < 1e-5,
+                                "physical RCS thrust differs from rendered exhaust direction");
+                    }
                     for (std::size_t component = 0; component < 3; ++component) {
                         direction[component] *= levels[bank] / length;
                         wrench[component] += direction[component];

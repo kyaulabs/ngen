@@ -1,0 +1,46 @@
+Filters: "physical RCS admission*"
+Randomness seeded to: 4135432052
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+rcs_pulse_tests is a Catch2 v3.16.0 host application.
+Run with -? for options
+
+-------------------------------------------------------------------------------
+physical RCS admission rejects incomplete or geometrically inconsistent
+definitions
+-------------------------------------------------------------------------------
+/home/kyau/projects/kyaulabs/ngen/tests/rcs_pulses.cpp:9
+...............................................................................
+
+/home/kyau/projects/kyaulabs/ngen/tests/rcs_pulses.cpp:19: FAILED:
+  REQUIRE( std::holds_alternative<Error>(flight::Flight::create(ship)) )
+with expansion:
+  false
+
+-------------------------------------------------------------------------------
+physical RCS admission rejects incomplete or geometrically inconsistent
+definitions
+-------------------------------------------------------------------------------
+/home/kyau/projects/kyaulabs/ngen/tests/rcs_pulses.cpp:9
+...............................................................................
+
+/home/kyau/projects/kyaulabs/ngen/tests/rcs_pulses.cpp:19: FAILED:
+  REQUIRE( std::holds_alternative<Error>(flight::Flight::create(ship)) )
+with expansion:
+  false
+
+-------------------------------------------------------------------------------
+physical RCS admission rejects incomplete or geometrically inconsistent
+definitions
+-------------------------------------------------------------------------------
+/home/kyau/projects/kyaulabs/ngen/tests/rcs_pulses.cpp:9
+...............................................................................
+
+/home/kyau/projects/kyaulabs/ngen/tests/rcs_pulses.cpp:19: FAILED:
+  REQUIRE( std::holds_alternative<Error>(flight::Flight::create(ship)) )
+with expansion:
+  false
+
+===============================================================================
+test cases: 1 | 1 failed
+assertions: 6 | 3 passed | 3 failed

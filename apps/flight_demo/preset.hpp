@@ -4,17 +4,14 @@
 #include <optional>
 
 namespace ngen::demo {
-inline constexpr std::size_t rcs_bank_count = 16;
-using RcsLevels = std::array<float, rcs_bank_count>;
-// Columns are +Fx, -Fx, +Fy, -Fy, +Fz, -Fz, +Tx, -Tx, +Ty, -Ty, +Tz, -Tz.
-using RcsMix = std::array<std::array<float, 12>, rcs_bank_count>;
+inline constexpr std::size_t rcs_bank_count = flight::rcs_bank_count;
+using RcsLevels = flight::RcsLevels;
+using RcsMix = flight::RcsMix;
 struct ShipProfile {
     flight::ShipDefinition flight;
-    std::uint64_t root_padding{}; // Existing alignment gap before the copied matrix.
     render::shader::Matrix asset_to_body{{1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1}};
     std::uint32_t expected_package_crc{}; // Compatibility/corruption marker, not authentication.
     std::array<std::uint32_t, 3> profile_padding{};
-    RcsMix rcs_mix{};
 };
 struct Preset {
     ShipProfile ship;
@@ -27,7 +24,8 @@ struct Preset {
     std::array<std::optional<std::size_t>, rcs_bank_count> rcs_materials{};
 };
 [[nodiscard]] ShipProfile frigate_profile();
-// Applied world wrench and its before-tick attitude; never pilot intent or end attitude.
+// Static calibration inspection adapter. Rendering uses Snapshot::rcs_firing,
+// never this demand mapping or a second application-side pulse clock.
 [[nodiscard]] std::variant<RcsLevels, render::Failure>
 rcs_levels(const ShipProfile &profile, const std::array<float, 4> &interval_rotation_xyzw,
            const std::array<float, 3> &world_force, const std::array<float, 3> &world_torque);

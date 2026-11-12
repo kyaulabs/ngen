@@ -6,6 +6,7 @@
 #include <catch2/catch_test_macros.hpp>
 #include <cmath>
 #include <limits>
+#include <stdexcept>
 #include <string>
 #include <utility>
 
@@ -141,6 +142,9 @@ TEST_CASE("pure turns and arrest use selective nonoverlapping RCS sets") {
 
 TEST_CASE("invalid RCS inputs reject before quaternion math or visual publication") {
     auto profile = demo::frigate_profile();
+    if (!profile.flight.rcs)
+        throw std::logic_error("RCS admission fixture requires a physical rig");
+    auto &mix = profile.flight.rcs->mix;
     std::array<float, 4> rotation{0, 0, 0, 1};
     std::array<float, 3> force{}, torque{};
     SECTION("nonfinite force") { force[0] = std::numeric_limits<float>::quiet_NaN(); }
@@ -153,11 +157,9 @@ TEST_CASE("invalid RCS inputs reject before quaternion math or visual publicatio
     SECTION("nonfinite limit") {
         profile.flight.maximum_torque_newton_metres[1] = std::numeric_limits<float>::quiet_NaN();
     }
-    SECTION("nonfinite calibration") {
-        profile.rcs_mix[1][3] = std::numeric_limits<float>::quiet_NaN();
-    }
-    SECTION("negative calibration") { profile.rcs_mix[0][0] = -.1F; }
-    SECTION("unbounded calibration") { profile.rcs_mix[0][0] = 1.1F; }
+    SECTION("nonfinite calibration") { mix[1][3] = std::numeric_limits<float>::quiet_NaN(); }
+    SECTION("negative calibration") { mix[0][0] = -.1F; }
+    SECTION("unbounded calibration") { mix[0][0] = 1.1F; }
     REQUIRE(std::holds_alternative<render::Failure>(
         demo::rcs_levels(profile, rotation, force, torque)));
 }
@@ -175,25 +177,21 @@ TEST_CASE("physical turning and released-stick stabilization light different RCS
         REQUIRE(std::holds_alternative<std::monostate>(
             game->submit({Tick{1}, 2, initial.entity, pilot})));
         const auto turning = std::get<flight::Snapshot>(game->step());
-        const auto accelerating = std::get<demo::RcsLevels>(
-            demo::rcs_levels(profile, initial.body.rotation_xyzw, turning.force_newtons,
-                             turning.torque_newton_metres));
+        const auto accelerating = turning.rcs_firing;
         REQUIRE(turning.torque_newton_metres[axis] > 0);
         REQUIRE(std::count_if(accelerating.begin(), accelerating.end(),
                               [](float v) { return v > 0; }) >= 2);
         for (unsigned tick = 1; tick < 60; ++tick)
             REQUIRE(std::holds_alternative<flight::Snapshot>(game->step()));
-        const auto before_release = game->snapshot();
         REQUIRE(std::holds_alternative<std::monostate>(
             game->submit({Tick{61}, 3, initial.entity, flight::Pilot{}})));
         const auto arresting = std::get<flight::Snapshot>(game->step());
-        const auto braking = std::get<demo::RcsLevels>(
-            demo::rcs_levels(profile, before_release.body.rotation_xyzw, arresting.force_newtons,
-                             arresting.torque_newton_metres));
+        const auto braking = arresting.rcs_firing;
         REQUIRE(arresting.torque_newton_metres[axis] < 0);
         REQUIRE(std::count_if(braking.begin(), braking.end(), [](float v) { return v > 0; }) >= 2);
         REQUIRE(braking != accelerating);
-        REQUIRE(arresting.body.velocity_mps == std::array<float, 3>{});
+        for (const auto velocity : arresting.body.velocity_mps)
+            REQUIRE(std::abs(velocity) < 1e-4F); // Authored float force/moment rounding.
     }
 }
 
@@ -241,8 +239,10 @@ TEST_CASE("RMB release promptly arrests authored steering through bounded torque
                 REQUIRE(std::abs(state.body.angular_velocity_rps[axis]) > .25F);
             REQUIRE(std::abs(state.torque_newton_metres[axis]) <=
                     ship.maximum_torque_newton_metres[axis] * 1.00001F);
-            REQUIRE(state.body.velocity_mps == std::array<float, 3>{});
-            REQUIRE(state.body.position_metres == std::array<double, 3>{});
+            for (const auto velocity : state.body.velocity_mps)
+                REQUIRE(std::abs(velocity) < 1e-4F);
+            for (const auto position : state.body.position_metres)
+                REQUIRE(std::abs(position) < 1e-4);
             REQUIRE(state.entity == entity);
         }
         REQUIRE(std::abs(game->snapshot().body.angular_velocity_rps[axis]) < .04F);

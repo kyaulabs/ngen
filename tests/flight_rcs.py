@@ -35,7 +35,7 @@ class FlightRcs(unittest.TestCase):
         self.assertIn("flight_rcs_geometry_verified=1", text)
         self.assertIn("triangles=249942", text)
 
-    def test_native_replay_pulses_rcs_and_extinguishes_it_when_coasting(self):
+    def test_native_replay_renders_physical_braking_and_quiet_coast(self):
         with tempfile.TemporaryDirectory(prefix="ngen-rcs-") as directory:
             report = Path(directory) / "replay.csv"
             capture = Path(directory) / "replay.bmp"
@@ -50,33 +50,34 @@ class FlightRcs(unittest.TestCase):
                 rows = list(csv.DictReader(stream))
             self.assertEqual(len(rows), 330)
             self.assertLessEqual(len(rows[0]), 64)  # Existing Windows observer capacity.
-            active, idle, correcting_quiet = 0, 0, 0
+            active, idle = 0, 0
             for row in rows:
                 count, power = int(row["rcs_active"]), float(row["rcs_power"])
                 demand = float(row["rcs_demand"])
                 self.assertTrue(0 <= count <= 16 and math.isfinite(power) and 0 <= power <= 1)
                 self.assertTrue(math.isfinite(demand) and 0 <= demand <= 1)
                 if count:
-                    self.assertAlmostEqual(power, demand, delta=1e-7)
+                    self.assertGreater(power, 0)
+                    self.assertGreater(demand, 0)
                 else:
                     self.assertEqual(power, 0)
                 force = [float(row[k]) for k in ("fx_N", "fy_N", "fz_N")]
                 torque = [float(row[k]) for k in ("tx_Nm", "ty_Nm", "tz_Nm")]
+                if count == 0 and float(row["drive_power"]) == 0:
+                    self.assertTrue(all(v == 0 for v in force + torque),
+                                    "no physical thrust may exist with all actuators off")
                 if all(v == 0 for v in force + torque):
                     self.assertEqual((count, power), (0, 0))
                     idle += 1
                 # This unchanged fixture brakes along the unrotated forward axis.
                 if force[2] > 1:
-                    if count:
-                        self.assertGreaterEqual(count, 2)
-                        self.assertGreater(power, 0)
-                        active += 1
-                    else:
-                        self.assertEqual(power, 0)
-                        correcting_quiet += 1
+                    # These are now actual impulses, not a smooth desired wrench:
+                    # braking thrust cannot exist while the corresponding jets are off.
+                    self.assertGreaterEqual(count, 2)
+                    self.assertGreater(power, 0)
+                    active += 1
                 self.assertEqual(row["gpu_ready"], "1")
             self.assertGreater(active, 0)
-            self.assertGreater(correcting_quiet, 0)
             self.assertGreater(idle, 0)
 
     def test_accepted_asset_prefixes_images_lights_and_rear_exhaust_are_exact(self):

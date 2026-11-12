@@ -1,5 +1,8 @@
 # M3 directional RCS couples
 
+This checkpoint is superseded by [authoritative physical RCS](../physical/README.md).
+Its geometry remains current, but its post-physics firing/motion claims are historical.
+
 The owner corrected the all-around firing and authorized re-aiming nozzle pairs,
 not moving the 32 approved mounts or changing the accepted flight response.
 The earlier pulse scheduler only controlled timing. Its calibration averaged

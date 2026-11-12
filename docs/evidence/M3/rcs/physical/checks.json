@@ -1,0 +1,96 @@
+{
+  "schema": 1,
+  "parent_revision": "0ecaa50519abd99a3877654d053fa980d9d8da5f",
+  "scope": "Owner-authorized physical RCS: actual burns drive Jolt and the same snapshot states drive rendering; not M3 completion.",
+  "authority": {
+    "owner": "graphics-free Flight simulation",
+    "pipeline": "controller -> calibrated allocation/valves -> bounded bank forces and position-cross-force moments -> Jolt -> owning snapshot -> renderer",
+    "published_fields": [
+      "rcs_firing",
+      "main_drive_level",
+      "rcs_demand_level",
+      "force_newtons",
+      "torque_newton_metres"
+    ],
+    "second_application_pulse_clock": false,
+    "ideal_continuous_fixtures_preserved": true,
+    "minimum_burn_ticks": 6,
+    "minimum_off_ticks": 3,
+    "physical_throttle": "Off-time compensation from normalized configured actuator load; bank/force/torque/speed limits scale real firings before integration.",
+    "opposing_couple": "Fresh disjoint demand does not inherit old off debt.",
+    "physical_model": "Fictional throttleable pulsed RCS, not NASA valve/propellant certification."
+  },
+  "asset": {
+    "sha256": "99c996f33d3cc98dbd801e3aa302ee2a5894d0fa6bcfdd18f59b73e72e74d834",
+    "crc32": "6bbe6157",
+    "banks": 16,
+    "jets": 32,
+    "workload_triangles": 249942,
+    "instances": 247,
+    "geometry_unchanged_from_directional_checkpoint": true,
+    "material_constants_bytes": 64
+  },
+  "verification": {
+    "configurations": [
+      "demo-debug",
+      "demo-release",
+      "demo-asan",
+      "demo-gcc",
+      "flight-debug",
+      "flight-release",
+      "flight-asan",
+      "flight-gcc"
+    ],
+    "ctest_graphs": 8,
+    "ctests_total": 120,
+    "pulse_and_physical_cases": 16,
+    "scene_cases": 17,
+    "clang_actual_commands": 60,
+    "native_rcs_cases": 12,
+    "sdl_control_audio_walkthroughs": 4,
+    "frames": 2400,
+    "warmup": 60,
+    "extent": [
+      1920,
+      1080
+    ],
+    "csv_columns": 63,
+    "cpp_new_calls": 0,
+    "imgui_calls": 0,
+    "gpu_rows": 2400,
+    "firing_frames": 1009,
+    "all_actuators_off_frames": 463,
+    "dark_actuators_have_zero_actuation": true,
+    "old_motion_trace_equality_required": false,
+    "native_steering_targets": "At least 0.35 rad/s within 1 s; release below 0.04 rad/s within 0.3 s.",
+    "linear_brake": "Actual SDL release/braking retains less than 1 m/s after the unchanged walkthrough brake interval.",
+    "rounding": "Small physical cancellation residuals are integrated, not hidden. Pure-turn/focus linear drift is bounded to 1e-4 m/s; published forces are independently reconstructed.",
+    "layout": "Linux native ShipDefinition 1296 bytes, ShipProfile 1376 bytes/alignment 16, root 1296, CRC 1360; explicit obsolete root gap removed. Windows remains unverified.",
+    "gcc_ast": "Unavailable: unsupported native GCC flags retained.",
+    "audio": "Dummy native walkthroughs verify routing/mute/reset/queue boundaries, not listening or hardware unplug.",
+    "performance_acceptance": false
+  },
+  "review": "Same-session ownership, staged publication/reset, bounds, physical impulse reconstruction, source/schema consumers and renderer-authority review; not independent review.",
+  "pending": [
+    "Owner physical gameplay and nozzle-aim acceptance",
+    "Current native Windows/RTX plus historical CIM/ImGui findings",
+    "Deferred UI pass",
+    "Final affected budgets, delivery, review and integration"
+  ],
+  "source_sha256": {
+    "CMakeLists.txt": "3b251ca8b7ddf3ddc40da6bc0fcbe767b823caaf871a4d0389baaf379c2eac9c",
+    "game/flight/actuation.hpp": "a35a08ac82a895cc0c5eda6f690e739673db090c26b5f82e195b1930d927d315",
+    "game/flight/actuation.cpp": "8cfc345e8850a5c7ad7a612540f6ebbb89fec72a5d62ff4a87d372ed04df509b",
+    "game/flight/flight.hpp": "a2346730527c4c3e47ee7afca3c3805c359b4e77c039cde234d170c7598ecef9",
+    "game/flight/flight.cpp": "7cc468d8f24cd843a41103c9ae51e085119273f901ffc516dbbbfb2d08678feb",
+    "apps/flight_demo/app.cpp": "29e9b8ec00c58cb7fc7fb20cabaa77672ca89936918c3979f1b2e78607b74774",
+    "apps/flight_demo/preset.hpp": "9517d3cdbb6d2fe3feb228096530177979af12a84b8a026d1e5b00ff58cb5e1c",
+    "apps/flight_demo/preset.cpp": "cb4817e342e278e84f8c9259b820e9cf26bc00c96e15f635d985dff8b7f008e7",
+    "apps/flight_demo/frigate_rcs.hpp": "053884ffc60bf7a244568b53cfbcfe1cb99c494b71ece337e8e9e83db9c1f688",
+    "apps/flight_demo/main.cpp": "e6ce1d8cd0fcc3e5c8d60a6acf2e328976f32e5b79a38d1e14a1d75df3c5367c",
+    "tests/flight_scene.cpp": "089a9d2b50123d6dcf0c7ac5d8a84b200fb56374c8b975103c256d3f3b27b621",
+    "tests/rcs_pulses.cpp": "7b06a053a63eb780da0c589a0178c6b13056fc6b7ae6ad069b3119ee0804895d",
+    "tests/flight_rcs.py": "b9cab74feeda67e64633b8ca8535137dba9b6dd130df2fc3c60e49d8d83cdf09",
+    "docs/evidence/M3/rcs/physical/check-walkthrough.py": "8753e5efba24aae9d2629a3dd4aa688179d77732bbe42df33f8029ef3bf0d882"
+  }
+}

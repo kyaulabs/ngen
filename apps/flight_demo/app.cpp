@@ -3,7 +3,6 @@
 #include "audio/output.hpp"
 #include "flight/input.hpp"
 #include "flight_demo/app.hpp"
-#include "flight_demo/rcs.hpp"
 #include "flight_demo/view.hpp"
 #include "probe/capture.hpp"
 #include "render/environment.hpp"
@@ -295,8 +294,6 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
     const bool fixed_tick = options.replay || options.walkthrough;
     auto game = game_value(flight::Flight::create(preset.ship.flight, preset.contacts));
     auto current = game->snapshot(), previous = current;
-    RcsPulses rcs_pulses;
-    RcsLevels rcs_demand{};
     auto rig = game_value(flight::CameraRig::create(preset.ship_radius));
     flight::FlightInput input;
     auto context = take(Context::create({options.validation, true, true, true}));
@@ -395,8 +392,6 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
     const auto reset = [&] {
         current = game_value(game->reset());
         previous = current;
-        rcs_pulses.reset();
-        rcs_demand = {};
         sequence = 0;
         (void)sound.reset();
         (void)sound.cue(audio::Cue::reset);
@@ -703,9 +698,6 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
             return;
         }
         current = std::get<flight::Snapshot>(result);
-        rcs_demand = take(rcs_levels(preset.ship, previous.body.rotation_xyzw,
-                                     current.force_newtons, current.torque_newton_metres));
-        (void)take(rcs_pulses.step(rcs_demand));
         pending_mode = current.mode;
         (void)input.mode(current.mode);
         const auto &v = current.body.velocity_mps;
@@ -893,9 +885,8 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
         const auto &force = current.force_newtons;
         const auto local = JPH::Quat(q[0], q[1], q[2], q[3]).Conjugated() *
                            JPH::Vec3{force[0], force[1], force[2]};
-        const auto power =
-            std::clamp(-local.GetZ() / preset.ship.flight.maximum_force_newtons[2], 0.0F, 1.0F);
-        const auto rcs = rcs_pulses.levels();
+        const auto power = current.main_drive_level;
+        const auto &rcs = current.rcs_firing;
         const auto &limits = preset.ship.flight.maximum_force_newtons;
         const auto thrust = std::clamp(
             std::max({std::abs(local.GetX()) / limits[0], std::abs(local.GetY()) / limits[1],
@@ -986,7 +977,7 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
             sample.phase = phase;
             sample.power = power;
             sample.rcs_power = *std::max_element(rcs.begin(), rcs.end());
-            sample.rcs_demand = *std::max_element(rcs_demand.begin(), rcs_demand.end());
+            sample.rcs_demand = current.rcs_demand_level;
             sample.rcs_active = static_cast<std::uint32_t>(
                 std::count_if(rcs.begin(), rcs.end(), [](float v) { return v > 0; }));
             collect();

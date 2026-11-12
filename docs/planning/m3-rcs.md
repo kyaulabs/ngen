@@ -87,10 +87,30 @@ local socket offsets. Show actual controller spin-up, quiet rotation and opposin
 arrest, not a permanently held synthetic torque. This corrects the implementation;
 it does not certify a propellant/valve model or change physical control behavior.
 
-Current slice: directional calibration and native Red/Green are implemented;
-finish complete profiles/analysis/native asset checks, replay preservation,
-owner-closed physical-wrench inspection and a signed private delivery checkpoint.
-Owner appearance acceptance of the nozzle aim remains pending.
+The owner now explicitly chooses **physical RCS actuation**, not post-physics
+visual pulses. [ADR 0017](../adr/0017-physical-rcs-actuation.md) records the boundary:
+controller → allocation/valves → physical jet wrench → Jolt → owning snapshot →
+rendering. Retain mount geometry and handling targets; exact old trajectories are
+historical, not an oracle for the changed physical model.
+
+Current implementation slices:
+1. Add owning physical bank definitions and published firings. Public Red must show
+   the old smooth wrench without matching burns; Green reconstructs actual force
+   and moment from the firings supplied to Jolt.
+2. Move valve state into the graphics-free simulation and remove the application
+   pulse clock. Render only published firing/main-drive states. Verify true quiet
+   coast, opposing arrest, rotated/mixed actuation, reset, bounded admission and
+   speed-limited firing consistency.
+3. Recheck current-source handling, contacts, tactical navigation, all affected
+   consumers/configurations, native replay/allocation and private packaging. Show
+   owner-controlled physical gameplay, not a fixed-hull staged visual sequence.
+
+These slices are implemented and verified locally: eight complete graphs,
+60 actual Clang command analyses, 16 pulse/physical cases, native RCS/SDL checks
+and a full-HD allocation replay pass. The [physical checkpoint](../evidence/M3/rcs/physical/README.md)
+records real authority and supersedes the post-physics motion-match claims.
+Owner appearance/physical flight acceptance remains pending. Preserve historical
+pulse-only and direction-only evidence with explicit superseding links.
 
 Finish affected Linux/Windows, packaging and performance checks before the UI pass.
 The latest ClangCl baseline builds and validates both configurations, but its first

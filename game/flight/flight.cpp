@@ -9,6 +9,55 @@
 namespace ngen::flight {
 namespace {
 bool valid(const ShipDefinition &ship) {
+    if (ship.rcs) {
+        for (const auto &bank : ship.rcs->banks) {
+            bool thrust = false;
+            for (std::size_t axis = 0; axis < 3; ++axis) {
+                if (!std::isfinite(bank.position_metres[axis]) ||
+                    std::abs(bank.position_metres[axis]) > 1024 ||
+                    !std::isfinite(bank.force_newtons[axis]) ||
+                    std::abs(bank.force_newtons[axis]) > 1e9F)
+                    return false;
+                thrust = thrust || bank.force_newtons[axis] != 0;
+            }
+            if (!thrust)
+                return false;
+        }
+        for (const auto &row : ship.rcs->mix) {
+            if (row[5] != 0)
+                return false; // The separate main drive owns forward thrust.
+            for (const auto value : row)
+                if (!std::isfinite(value) || value < 0 || value > 1)
+                    return false;
+        }
+        for (std::size_t column = 0; column < 12; ++column) {
+            if (column == 5)
+                continue;
+            std::array<double, 6> wrench{};
+            for (std::size_t bank = 0; bank < rcs_bank_count; ++bank) {
+                const auto &jet = ship.rcs->banks[bank];
+                std::array<double, 3> force{};
+                for (std::size_t axis = 0; axis < 3; ++axis) {
+                    force[axis] =
+                        static_cast<double>(jet.force_newtons[axis]) * ship.rcs->mix[bank][column];
+                    wrench[axis] += force[axis];
+                }
+                for (std::size_t axis = 0; axis < 3; ++axis) {
+                    const auto b = (axis + 1) % 3, c = (axis + 2) % 3;
+                    wrench[axis + 3] += static_cast<double>(jet.position_metres[b]) * force[c] -
+                                        static_cast<double>(jet.position_metres[c]) * force[b];
+                }
+            }
+            for (std::size_t axis = 0; axis < 6; ++axis) {
+                const auto limit = axis < 3 ? ship.maximum_force_newtons[axis]
+                                            : ship.maximum_torque_newton_metres[axis - 3];
+                const auto expected =
+                    axis == column / 2 ? limit * (column % 2 == 0 ? 1.0F : -1.0F) : 0.0F;
+                if (std::abs(wrench[axis] - expected) > static_cast<double>(limit) * 1e-4)
+                    return false;
+            }
+        }
+    }
     const auto limits = [](const auto &values, float maximum) {
         return std::all_of(values.begin(), values.end(), [maximum](float v) {
             return std::isfinite(v) && v > 0 && v <= maximum;
@@ -89,6 +138,24 @@ JPH::Vec3 bounded(JPH::Vec3 value, const std::array<float, 3> &maximum) {
             std::clamp(value.GetY(), -maximum[1], maximum[1]),
             std::clamp(value.GetZ(), -maximum[2], maximum[2])};
 }
+float speed_scale(const ShipDefinition &ship, const physics::BodyState &body, JPH::Vec3 force) {
+    const auto &v = body.velocity_mps;
+    const auto divisor = body.mass_kg * physics::World::ticks_per_second;
+    const std::array<double, 3> delta{force.GetX() / divisor, force.GetY() / divisor,
+                                      force.GetZ() / divisor};
+    double speed_squared = 0, a = 0, b = 0;
+    for (std::size_t i = 0; i < delta.size(); ++i) {
+        speed_squared += static_cast<double>(v[i]) * v[i];
+        a += delta[i] * delta[i];
+        b += 2 * v[i] * delta[i];
+    }
+    const auto limit = static_cast<double>(ship.maximum_speed_mps);
+    const auto c = speed_squared - std::max(speed_squared, limit * limit);
+    if (a > 0 && a + b + c > 0)
+        return static_cast<float>(
+            std::clamp((-b + std::sqrt(b * b - 4 * a * c)) / (2 * a), 0.0, 1.0));
+    return 1;
+}
 Wrench control_wrench(const ShipDefinition &ship, const physics::BodyState &body,
                       const Pilot &pilot, Mode mode, const Navigation &navigation) {
     const auto &q = body.rotation_xyzw;
@@ -137,26 +204,8 @@ Wrench control_wrench(const ShipDefinition &ship, const physics::BodyState &body
                         ship.maximum_force_newtons);
     }
     auto force = rotation * local;
-    if (force.LengthSq() > 0) {
-        const auto &v = body.velocity_mps;
-        const auto divisor = body.mass_kg * physics::World::ticks_per_second;
-        const std::array<double, 3> delta{force.GetX() / divisor, force.GetY() / divisor,
-                                          force.GetZ() / divisor};
-        double speed_squared = 0, a = 0, b = 0;
-        for (std::size_t i = 0; i < delta.size(); ++i) {
-            speed_squared += static_cast<double>(v[i]) * v[i];
-            a += delta[i] * delta[i];
-            b += 2 * v[i] * delta[i];
-        }
-        // Scale the admitted wrench, never invent braking on an unavailable axis.
-        // Existing collision-induced overspeed may decelerate, not gain energy.
-        const auto limit = static_cast<double>(ship.maximum_speed_mps);
-        const auto c = speed_squared - std::max(speed_squared, limit * limit);
-        if (a > 0 && a + b + c > 0) {
-            const auto scale = std::clamp((-b + std::sqrt(b * b - 4 * a * c)) / (2 * a), 0.0, 1.0);
-            force *= static_cast<float>(scale);
-        }
-    }
+    // Scale admitted force, never assign velocity or invent unavailable braking.
+    force *= speed_scale(ship, body, force);
     JPH::Vec3 target_rate{pilot.rotation[0] * ship.maximum_angular_speed_rps,
                           pilot.rotation[1] * ship.maximum_angular_speed_rps,
                           pilot.rotation[2] * ship.maximum_angular_speed_rps};
@@ -187,6 +236,111 @@ Wrench control_wrench(const ShipDefinition &ship, const physics::BodyState &body
     return {{force.GetX(), force.GetY(), force.GetZ()},
             {torque.GetX(), torque.GetY(), torque.GetZ()}};
 }
+struct Actuation {
+    Wrench wrench;
+    RcsLevels firing{};
+    float main{}, demand{};
+};
+Actuation actuate(const ShipDefinition &ship, const physics::BodyState &body,
+                  const Wrench &requested, RcsPulses &pulses) {
+    const auto &q = body.rotation_xyzw;
+    const JPH::Quat rotation{q[0], q[1], q[2], q[3]};
+    const auto inverse = rotation.Conjugated();
+    const auto force =
+        inverse * JPH::Vec3{requested.force[0], requested.force[1], requested.force[2]};
+    Actuation result;
+    result.main = std::clamp(-force.GetZ() / ship.maximum_force_newtons[2], 0.0F, 1.0F);
+    if (!ship.rcs) {
+        result.wrench = requested;
+        return result;
+    }
+    const auto demand = std::get<RcsLevels>(rcs_demand(ship, q, requested.force, requested.torque));
+    result.demand = *std::max_element(demand.begin(), demand.end());
+    const auto torque =
+        inverse * JPH::Vec3{requested.torque[0], requested.torque[1], requested.torque[2]};
+    const std::array<float, 6> requested_local{force.GetX(),  force.GetY(),  force.GetZ(),
+                                               torque.GetX(), torque.GetY(), torque.GetZ()};
+    float load = 0;
+    for (std::size_t axis = 0; axis < 6; ++axis) {
+        if (axis == 2 && requested_local[axis] < 0)
+            continue;
+        const auto limit = axis < 3 ? ship.maximum_force_newtons[axis]
+                                    : ship.maximum_torque_newton_metres[axis - 3];
+        load = std::max(load, std::clamp(std::abs(requested_local[axis]) / limit, 0.0F, 1.0F));
+    }
+    // Valve duty follows requested actuator authority, not arbitrary bank rating
+    // units. Full configured force must not become one-third force just because
+    // its calibrated bank weights are small compared with a torque maneuver.
+    auto gate = demand;
+    if (result.demand > 0)
+        for (auto &value : gate)
+            value = std::min(1.0F, value / result.demand * load);
+    const auto gated = std::get<RcsLevels>(pulses.step(gate));
+    if (gated != RcsLevels{} && load > 0) {
+        const auto duty = std::sqrt(std::sqrt(load));
+        for (std::size_t bank = 0; bank < rcs_bank_count; ++bank)
+            result.firing[bank] = demand[bank] / duty;
+        const auto bank_scale =
+            std::max(1.0F, *std::max_element(result.firing.begin(), result.firing.end()));
+        for (auto &value : result.firing)
+            value /= bank_scale;
+    }
+    const auto sum = [&] {
+        std::array<double, 3> f{0, 0,
+                                -static_cast<double>(ship.maximum_force_newtons[2]) * result.main},
+            t{};
+        for (std::size_t bank = 0; bank < rcs_bank_count; ++bank) {
+            const auto &jet = ship.rcs->banks[bank];
+            std::array<double, 3> applied{};
+            for (std::size_t axis = 0; axis < 3; ++axis) {
+                applied[axis] = static_cast<double>(jet.force_newtons[axis]) * result.firing[bank];
+                f[axis] += applied[axis];
+            }
+            for (std::size_t axis = 0; axis < 3; ++axis) {
+                const auto b = (axis + 1) % 3, c = (axis + 2) % 3;
+                t[axis] += static_cast<double>(jet.position_metres[b]) * applied[c] -
+                           static_cast<double>(jet.position_metres[c]) * applied[b];
+            }
+        }
+        return Wrench{
+            {static_cast<float>(f[0]), static_cast<float>(f[1]), static_cast<float>(f[2])},
+            {static_cast<float>(t[0]), static_cast<float>(t[1]), static_cast<float>(t[2])}};
+    };
+    result.wrench = sum();
+    float limit_scale = 1;
+    for (std::size_t axis = 0; axis < 3; ++axis) {
+        if (std::abs(result.wrench.force[axis]) > ship.maximum_force_newtons[axis])
+            limit_scale = std::min(limit_scale, ship.maximum_force_newtons[axis] /
+                                                    std::abs(result.wrench.force[axis]));
+        if (std::abs(result.wrench.torque[axis]) > ship.maximum_torque_newton_metres[axis])
+            limit_scale = std::min(limit_scale, ship.maximum_torque_newton_metres[axis] /
+                                                    std::abs(result.wrench.torque[axis]));
+    }
+    const auto scale_firings = [&](float scale) {
+        for (auto &value : result.firing)
+            value *= scale;
+        result.main *= scale;
+        result.wrench = sum();
+    };
+    if (limit_scale < 1)
+        scale_firings(limit_scale);
+    const auto to_world = [&] {
+        const auto &f = result.wrench.force, &t = result.wrench.torque;
+        const auto world_force = rotation * JPH::Vec3{f[0], f[1], f[2]};
+        const auto world_torque = rotation * JPH::Vec3{t[0], t[1], t[2]};
+        return Wrench{{world_force.GetX(), world_force.GetY(), world_force.GetZ()},
+                      {world_torque.GetX(), world_torque.GetY(), world_torque.GetZ()}};
+    };
+    auto world = to_world();
+    const auto speed =
+        speed_scale(ship, body, JPH::Vec3{world.force[0], world.force[1], world.force[2]});
+    if (speed < 1) {
+        scale_firings(speed);
+        world = to_world();
+    }
+    result.wrench = world;
+    return result;
+}
 } // namespace
 struct Flight::Impl {
     std::unique_ptr<physics::World> world;
@@ -198,6 +352,7 @@ struct Flight::Impl {
     std::size_t command_count{}, obstacle_count{};
     std::uint64_t sequence{};
     Pilot pilot;
+    RcsPulses pulses;
     bool failed{};
 };
 Flight::Flight(std::unique_ptr<Impl> impl) : impl_(std::move(impl)) {}
@@ -312,7 +467,10 @@ Result<Snapshot> Flight::step() {
             return *error;
         }
     }
-    const auto wrench = control_wrench(impl_->ship, body, pilot, mode, navigation);
+    const auto requested = control_wrench(impl_->ship, body, pilot, mode, navigation);
+    auto staged_pulses = impl_->pulses;
+    const auto actuation = actuate(impl_->ship, body, requested, staged_pulses);
+    const auto &wrench = actuation.wrench;
     const auto applied = impl_->world->apply(impl_->body, wrench.force, wrench.torque);
     if (const auto *error = std::get_if<Error>(&applied)) {
         impl_->failed = true;
@@ -330,6 +488,10 @@ Result<Snapshot> Flight::step() {
     result.force_newtons = wrench.force;
     result.torque_newton_metres = wrench.torque;
     result.body = std::get<physics::BodyState>(impl_->world->state(impl_->body));
+    result.rcs_firing = actuation.firing;
+    result.main_drive_level = actuation.main;
+    result.rcs_demand_level = actuation.demand;
+    impl_->pulses = staged_pulses;
     impl_->pilot = pilot;
     impl_->published = result;
     impl_->command_count = 0;

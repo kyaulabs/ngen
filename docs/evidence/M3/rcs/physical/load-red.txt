@@ -1,0 +1,22 @@
+Filters: "saturated lateral authority*"
+Randomness seeded to: 50163509
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+rcs_pulse_tests is a Catch2 v3.16.0 host application.
+Run with -? for options
+
+-------------------------------------------------------------------------------
+saturated lateral authority sustains physical thrust despite small bank
+calibration weights
+-------------------------------------------------------------------------------
+/home/kyau/projects/kyaulabs/ngen/tests/rcs_pulses.cpp:166
+...............................................................................
+
+/home/kyau/projects/kyaulabs/ngen/tests/rcs_pulses.cpp:177: FAILED:
+  REQUIRE( state.force_newtons[0] >= ship.maximum_force_newtons[0] * .9999F )
+with expansion:
+  0.0f >= 23997600.0f
+
+===============================================================================
+test cases:  1 |  0 passed | 1 failed
+assertions: 15 | 14 passed | 1 failed
