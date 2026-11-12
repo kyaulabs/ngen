@@ -71,6 +71,19 @@ triangles/247 ship instances; the material ABI remains 64 bytes. Obsolete profil
 padding was removed after the larger owning rig changed native layout; Windows
 MSVC/ClangCl must still verify the new layout.
 
+The private Linux v12 bundle is `build/m3-offline-linux-v12/ngen-flight`, from
+signed behavior source `4aa217c41bc447abc98ca90435818bc6131e614e`. All 23 manifest
+hashes and the bounded 244-member source archive validate, including the moved
+simulation actuator sources and removal of the old application module. Headless
+physical-geometry checks and three rendered frames pass with networking unshared,
+Conan hidden and SDK/library-path overrides absent; see `offline.json`. Platform
+ABI and final Windows/UI/budget qualifications still apply.
+
+The actual interactive bundle was opened for owner review, with the accepted
+tactical-orbit startup and ordinary direct/tactical controls. It is not the old
+fixed-hull or scripted firing inspection. It has no frame/time limit, automatic
+closure, recording sidecar or microphone capture. Owner closes the window.
+
 Same-session review traced physical authority, copied ownership, admission,
 quaternion interval, staged publication/reset, compensation/limits, main-drive
 separation, numerical residuals and source/header consumers. It found no remaining
