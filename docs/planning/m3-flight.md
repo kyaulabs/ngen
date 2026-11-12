@@ -195,8 +195,12 @@ Original M2 prefixes, rear exhaust and physical traces remain exact;
 249,942 workload triangles and 247 ship instances stay inside
 existing limits. Four native graphs, affected Clang analyses, native rig/replay
 checks and a clean 2,400-frame 1080p allocation replay pass. See the
-[scoped implementation plan](m3-rcs.md). Owner visual review and affected final
-Windows/bundle/budget checks remain open; this is not M3 acceptance.
+[scoped implementation plan](m3-rcs.md). The owner accepts every location and
+requests demand-driven puffs. The [pulse implementation](../evidence/M3/rcs/pulses/README.md)
+now gates complete calibrated patterns once per successful 60 Hz tick, with quiet
+intervals, residual hysteresis and continuous exhaust only at saturation. The
+approved asset and physical traces remain unchanged. Owner pulse-timing review
+and affected final Windows/bundle/budget checks remain open; this is not M3 acceptance.
 
 The post-environment-fix ClangCl baseline reaches both configurations and the full
 RTX replay. Its first CIM query fails with no GPU-memory samples, and its clean

@@ -3,6 +3,7 @@
 #include "audio/output.hpp"
 #include "flight/input.hpp"
 #include "flight_demo/app.hpp"
+#include "flight_demo/rcs.hpp"
 #include "flight_demo/view.hpp"
 #include "probe/capture.hpp"
 #include "render/environment.hpp"
@@ -162,7 +163,7 @@ struct Sample {
     GpuTimings gpu;
     ResourceStatistics memory;
     VkExtent2D extent{};
-    float phase{}, power{}, rcs_power{};
+    float phase{}, power{}, rcs_power{}, rcs_demand{};
     std::uint32_t rcs_active{};
     bool gpu_ready{}, focused{}, capture_requested{}, capture_accepted{};
 };
@@ -294,6 +295,8 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
     const bool fixed_tick = options.replay || options.walkthrough;
     auto game = game_value(flight::Flight::create(preset.ship.flight, preset.contacts));
     auto current = game->snapshot(), previous = current;
+    RcsPulses rcs_pulses;
+    RcsLevels rcs_demand{};
     auto rig = game_value(flight::CameraRig::create(preset.ship_radius));
     flight::FlightInput input;
     auto context = take(Context::create({options.validation, true, true, true}));
@@ -392,6 +395,8 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
     const auto reset = [&] {
         current = game_value(game->reset());
         previous = current;
+        rcs_pulses.reset();
+        rcs_demand = {};
         sequence = 0;
         (void)sound.reset();
         (void)sound.cue(audio::Cue::reset);
@@ -698,6 +703,9 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
             return;
         }
         current = std::get<flight::Snapshot>(result);
+        rcs_demand = take(rcs_levels(preset.ship, previous.body.rotation_xyzw,
+                                     current.force_newtons, current.torque_newton_metres));
+        (void)take(rcs_pulses.step(rcs_demand));
         pending_mode = current.mode;
         (void)input.mode(current.mode);
         const auto &v = current.body.velocity_mps;
@@ -887,8 +895,7 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
                            JPH::Vec3{force[0], force[1], force[2]};
         const auto power =
             std::clamp(-local.GetZ() / preset.ship.flight.maximum_force_newtons[2], 0.0F, 1.0F);
-        const auto rcs =
-            take(rcs_levels(preset.ship, q, current.force_newtons, current.torque_newton_metres));
+        const auto rcs = rcs_pulses.levels();
         const auto &limits = preset.ship.flight.maximum_force_newtons;
         const auto thrust = std::clamp(
             std::max({std::abs(local.GetX()) / limits[0], std::abs(local.GetY()) / limits[1],
@@ -979,6 +986,7 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
             sample.phase = phase;
             sample.power = power;
             sample.rcs_power = *std::max_element(rcs.begin(), rcs.end());
+            sample.rcs_demand = *std::max_element(rcs_demand.begin(), rcs_demand.end());
             sample.rcs_active = static_cast<std::uint32_t>(
                 std::count_if(rcs.begin(), rcs.end(), [](float v) { return v > 0; }));
             collect();
@@ -1037,7 +1045,7 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
                "camera_y_m,camera_z_m,camera_qx,camera_qy,camera_qz,camera_qw,camera_fov_deg,"
                "input_focused,capture_requested,capture_accepted,render_x_m,render_y_m,render_z_m,"
                "entity_generation,audio_state,audio_gen,audio_losses,audio_queued_frames,audio_"
-               "muted,audio_paused,host_ns,rcs_active,rcs_power\n";
+               "muted,audio_paused,host_ns,rcs_active,rcs_power,rcs_demand\n";
         for (std::size_t i = 0; i < measured; ++i) {
             const auto &s = samples[i];
             csv << i << ',' << s.state.tick.value << ',' << static_cast<unsigned>(s.state.mode)
@@ -1070,7 +1078,8 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
             csv << ',' << s.state.entity.generation << ',' << static_cast<unsigned>(s.audio.state)
                 << ',' << s.audio.generation << ',' << s.audio.losses << ','
                 << s.audio.queued_frames << ',' << s.audio.muted << ',' << s.audio.paused << ','
-                << s.host_ns << ',' << s.rcs_active << ',' << s.rcs_power << '\n';
+                << s.host_ns << ',' << s.rcs_active << ',' << s.rcs_power << ',' << s.rcs_demand
+                << '\n';
         }
         const auto text = csv.str();
         (void)take(probe::write_exclusive(options.report,

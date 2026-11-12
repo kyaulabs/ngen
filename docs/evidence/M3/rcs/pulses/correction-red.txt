@@ -1,0 +1,33 @@
+Test project /home/kyau/projects/kyaulabs/ngen/build/demo-debug
+    Start 9: flight_rcs_pulses
+1/1 Test #9: flight_rcs_pulses ................***Failed    0.01 sec
+Randomness seeded to: 4017828950
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+rcs_pulse_tests is a Catch2 v3.16.0 host application.
+Run with -? for options
+
+-------------------------------------------------------------------------------
+small steady RCS corrections produce puffs with coordinated quiet intervals
+-------------------------------------------------------------------------------
+/home/kyau/projects/kyaulabs/ngen/tests/rcs_pulses.cpp:7
+...............................................................................
+
+/home/kyau/projects/kyaulabs/ngen/tests/rcs_pulses.cpp:26: FAILED:
+  REQUIRE( quiet > firing )
+with expansion:
+  0 > 180
+
+===============================================================================
+test cases:   1 |   0 passed | 1 failed
+assertions: 362 | 361 passed | 1 failed
+
+
+
+0% tests passed, 1 tests failed out of 1
+
+Total Test time (real) =   0.01 sec
+
+The following tests FAILED:
+	  9 - flight_rcs_pulses (Failed)
+Errors while running CTest

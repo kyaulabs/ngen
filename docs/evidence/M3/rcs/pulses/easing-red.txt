@@ -1,0 +1,38 @@
+Test project /home/kyau/projects/kyaulabs/ngen/build/demo-debug
+    Start 9: flight_rcs_pulses
+1/1 Test #9: flight_rcs_pulses ................***Failed    0.03 sec
+Randomness seeded to: 4149025664
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+rcs_pulse_tests is a Catch2 v3.16.0 host application.
+Run with -? for options
+
+-------------------------------------------------------------------------------
+a saturated correction preserves its minimum puff while easing into partial
+demand
+-------------------------------------------------------------------------------
+/home/kyau/projects/kyaulabs/ngen/tests/rcs_pulses.cpp:88
+...............................................................................
+
+/home/kyau/projects/kyaulabs/ngen/tests/rcs_pulses.cpp:95: FAILED:
+  REQUIRE( std::get<demo::RcsLevels>(pulses.step(demand)) == demand )
+with expansion:
+  { 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.
+  0f, 0.0f, 0.0f, 0.0f }
+  ==
+  { 0.0f, 0.01f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.
+  0f, 0.0f, 0.0f, 0.0f }
+
+===============================================================================
+test cases:    9 |    8 passed | 1 failed
+assertions: 5191 | 5190 passed | 1 failed
+
+
+
+0% tests passed, 1 tests failed out of 1
+
+Total Test time (real) =   0.03 sec
+
+The following tests FAILED:
+	  9 - flight_rcs_pulses (Failed)
+Errors while running CTest

@@ -3,7 +3,8 @@
 The owner found the original aft jets hard to see and requested 16 forward jets
 and 16 aft jets. This candidate has 16 paired banks: the accepted 16 fore/middle
 jets, the relocated 8 aft jets and 8 additional aft jets. Main rear exhaust and
-physical control behavior remain unchanged. Owner appearance acceptance is pending.
+physical control behavior remain unchanged. The owner subsequently accepted every
+location; the follow-on [pulsed firing work](../pulses/README.md) preserves this rig.
 
 The exact rendered opaque LOD 2 mesh exposed the visibility defect: all 8 original
 aft socket centerlines crossed engine housing geometry within 0.68–1.51 m. The

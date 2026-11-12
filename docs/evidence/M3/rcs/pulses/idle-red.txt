@@ -1,0 +1,37 @@
+Test project /home/kyau/projects/kyaulabs/ngen/build/demo-debug
+    Start 9: flight_rcs_pulses
+1/1 Test #9: flight_rcs_pulses ................***Failed    0.00 sec
+Randomness seeded to: 3543973575
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+rcs_pulse_tests is a Catch2 v3.16.0 host application.
+Run with -? for options
+
+-------------------------------------------------------------------------------
+RCS idle hysteresis suppresses residual chatter and cancels stale burns
+-------------------------------------------------------------------------------
+/home/kyau/projects/kyaulabs/ngen/tests/rcs_pulses.cpp:29
+...............................................................................
+
+/home/kyau/projects/kyaulabs/ngen/tests/rcs_pulses.cpp:34: FAILED:
+  REQUIRE( std::get<demo::RcsLevels>(pulses.step(demand)) == demo::RcsLevels{} )
+with expansion:
+  { 0.0f, 0.0f, 0.00015f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f,
+  0.0f, 0.0f, 0.0f, 0.0f }
+  ==
+  { 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.
+  0f, 0.0f, 0.0f, 0.0f }
+
+===============================================================================
+test cases:   2 |   1 passed | 1 failed
+assertions: 243 | 242 passed | 1 failed
+
+
+
+0% tests passed, 1 tests failed out of 1
+
+Total Test time (real) =   0.01 sec
+
+The following tests FAILED:
+	  9 - flight_rcs_pulses (Failed)
+Errors while running CTest

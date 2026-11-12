@@ -40,6 +40,34 @@ rear plume, materials, images and lights; check triangle/instance/memory limits.
 Native renders must show idle, strafe, pitch/yaw/roll and arresting jets in useful
 views. Keep captures private and get owner feedback on the added RCS only.
 
+The owner accepts all 32 locations and requests pulsed RCS rather than constant
+low-demand exhaust. Preserve every approved mount and the private asset pin.
+Conventional valved RCS uses on/off control, deadbands/hysteresis to limit chatter,
+and maneuver/coast/opposing-stop firings; see Hall et al., *Design and Stability of
+an On-Orbit Attitude Control System Using Reaction Control Thrusters* (NASA, 2016),
+[sections II, IV–VI](https://ntrs.nasa.gov/citations/20160001829). NASA also identifies
+minimum impulse bit as a control-precision constraint in its
+[GNC survey, section 5.2.4](https://www.nasa.gov/smallsat-institute/sst-soa/guidance-navigation-and-control/).
+These sources do not specify numerical timings for NGEN's fictional ship.
+
+Implement a bounded application-owned presentation pulse budget, advanced once
+per successful 60 Hz tick, never per rendered frame or wall-clock timer. Gate the
+whole calibrated wrench pattern together so moment pairs remain coordinated.
+Keep the existing on-burst appearance and derive visual duty from the existing
+perceptual response. Use an idle deadband with hysteresis, a 6-tick minimum burst
+and a 3-tick minimum off interval; saturated demand can remain on continuously.
+Those 100 ms/50 ms values are presentation choices, not measured valve limits or
+a certified impulse model. Minimum intervals apply while correction demand
+persists; idle/reset cancels promptly and saturated demand can respond immediately.
+Reset clears stale pulse credit. Invalid values reject atomically. The physical controller, applied
+wrench, audio policy, accepted rear exhaust and 64-byte material ABI do not change.
+
+Test low-demand puffs, quiet/coast and hysteresis, sustained saturation, changes
+from strong demand, invalid/reset state, owning results and render-cadence
+independence. Preserve demanded versus displayed actuation in the bounded CSV.
+The all-on coverage view remains a deliberately nonphysical location inspection,
+not evidence of normal firing behavior. Show the owner a separate pulsed preview.
+
 Finish affected Linux/Windows, packaging and performance checks before the UI pass.
 The latest ClangCl baseline builds and validates both configurations, but its first
 CIM query failed with a general provider error and its clean replay reports 2 warm
