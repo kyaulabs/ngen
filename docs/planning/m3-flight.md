@@ -247,10 +247,13 @@ before this requested pass is implemented and reviewed with the owner.
 
 The owner confirms the [v13 shared-desktop audio repair](../evidence/M3/audio-desktop/README.md)
 works; a reported recurrence was an accidental v1 launch. Linux audio no longer
-uses direct ALSA hardware. Current Windows physical-RCS verification remains open,
-including the historical warm ImGui allocations and failed CIM sampling. The
-observer now preserves structured provider errors without changing acceptance
-limits; this diagnostic improvement is not a native provider repair or acceptance.
+uses direct ALSA hardware. The owner also explicitly accepts v13's physical RCS
+handling and nozzle aim. The [current Windows return](../evidence/M3/windows/current-physical/README.md)
+passes both frontends/configurations, all physical walkthroughs and zero warm
+allocations in clean/memory replays. ClangCl has complete sampled WDDM coverage
+and app-local startup. MSVC still has a first-query WMI timeout and no GPU-memory
+samples; its unchanged Release rerun remains necessary. Diagnostic improvements
+do not waive this failed run or establish why the provider timed out.
 
 M3 remains open until these gates and exact post-merge CI complete. No mandatory
 tracker workflow or per-command reapproval is introduced.

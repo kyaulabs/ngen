@@ -10,6 +10,11 @@ post-physics directional checkpoints. Their exact old motion traces are historic
 not acceptance oracles for the changed physical model. See
 [ADR 0017](../../../../adr/0017-physical-rcs-actuation.md).
 
+The owner has now explicitly accepted v13's physical RCS handling, turn/coast/
+opposing-arrest behavior and nozzle aim. Its actuation and directional geometry
+are unchanged from this checkpoint. This is scoped flight/nozzle acceptance,
+not approval of the remaining UI, Windows memory, budgets or M3 integration.
+
 `Flight` now owns the copied physical rig, calibrated allocation and coordinated
 valve state. Both control modes request a wrench through the existing controller.
 Actual bank forces and position-cross-force moments, plus the separate forward

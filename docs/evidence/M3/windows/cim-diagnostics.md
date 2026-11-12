@@ -28,3 +28,9 @@ query or a provider repair. No C++ source, asset, timeout, capacity, coverage ru
 GPU/working-set budget or failure gate changes. Same-session review is not
 independent review. Run the [current Windows handoff](../../../planning/m3-windows-handoff.md)
 and retain any provider failure and the historical ImGui finding until resolved.
+
+The [fresh native return](current-physical/README.md) exercises these fields on
+both frontends. MSVC reports `HRESULT 0x40004`, native `Failed`, status 1; this is
+WMI's timeout identifier. ClangCl completes sampled coverage. The native timeout's
+underlying cause is still unproven; neither code nor observation limits change
+on the basis of the generic message alone.

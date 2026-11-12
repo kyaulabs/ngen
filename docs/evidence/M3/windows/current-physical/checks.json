@@ -1,0 +1,190 @@
+{
+  "source_revision": "5ea9e3c44fe5fa4660de38624b302ab637a1d1a6",
+  "exact_source_ci": {
+    "run": 43304156201,
+    "status": "success"
+  },
+  "owner_acceptance": "Explicit approval of v13 physical RCS handling, turn/coast/opposing-arrest behavior and nozzle aim; not overall M3 approval.",
+  "archive_preflight": [
+    {
+      "archive": "/home/kyau/evidence1.zip",
+      "sha256": "0506e4de03f028d28357f400ecb52e9a420e1b1047360b403d91b0ab2446284c",
+      "entries": 80,
+      "uncompressed_bytes": 28229076
+    },
+    {
+      "archive": "/home/kyau/evidence2.zip",
+      "sha256": "5bc2237daf294ca3b435a06c708a942a8ce864aa0b44ec33e5ddbf03eefaeb4e",
+      "entries": 85,
+      "uncompressed_bytes": 28131343
+    }
+  ],
+  "preflight_limits": {
+    "compressed_archive_bytes": 67108864,
+    "entries": 256,
+    "member_bytes": 8388608,
+    "uncompressed_total_bytes": 67108864,
+    "maximum_compression_ratio": 500,
+    "selection": "Explicit files only; no credentials, session, bootstrap, dependency-build, executable or extracted media payload.",
+    "checks": "Bounded relative names, regular/directory types, no links, casefold duplicates, encryption or unsupported compression."
+  },
+  "frontends": [
+    {
+      "compiler": "MSVC",
+      "source_revision": "5ea9e3c44fe5fa4660de38624b302ab637a1d1a6",
+      "ctests_debug": 20,
+      "ctests_release": 20,
+      "walkthroughs": 2,
+      "physical_geometry": true,
+      "warm_cpp_imgui_allocations": [
+        0,
+        0
+      ],
+      "allocation_scope": "Both clean and memory replays; correctness walkthrough allocations are not a steady-state budget.",
+      "clean_replay": {
+        "frames": 2400,
+        "median_ms": 7.15885,
+        "p95_ms": 7.7625,
+        "p99_ms": 8.7228,
+        "maximum_ms": 9.2985,
+        "scope": "One unvalidated clean timing run, not final three-run variance or post-UI acceptance."
+      },
+      "clean_memory_27_physical_columns_match": true,
+      "replay_telemetry": {
+        "allocation_bytes": 232547216,
+        "reserved_bytes": 235394256,
+        "audio_gen": 1,
+        "audio_losses": 0,
+        "audio_queue_max": 4096
+      },
+      "instrumented_memory": {
+        "status": "unavailable",
+        "working_set_peak_bytes": 433508352,
+        "samples": 0,
+        "queries": 1,
+        "coverage_complete": false,
+        "native_error_details": {
+          "fully_qualified_error_id": "HRESULT 0x40004,Microsoft.Management.Infrastructure.CimCmdlets.GetCimInstanceCommand",
+          "category": "NotSpecified",
+          "native_error_code": "Failed",
+          "status_code": 1
+        },
+        "scope": "Failed first query; no GPU-memory measurement accepted. WMI timed-out HRESULT identified, reason for timeout still unproven."
+      },
+      "sdk_isolated_startup": "Not run: CIM failure stopped the pipeline before packaging"
+    },
+    {
+      "compiler": "ClangCl",
+      "source_revision": "5ea9e3c44fe5fa4660de38624b302ab637a1d1a6",
+      "ctests_debug": 20,
+      "ctests_release": 20,
+      "walkthroughs": 2,
+      "physical_geometry": true,
+      "warm_cpp_imgui_allocations": [
+        0,
+        0
+      ],
+      "allocation_scope": "Both clean and memory replays; correctness walkthrough allocations are not a steady-state budget.",
+      "clean_replay": {
+        "frames": 2400,
+        "median_ms": 7.2315000000000005,
+        "p95_ms": 7.6696,
+        "p99_ms": 8.4471,
+        "maximum_ms": 9.2725,
+        "scope": "One unvalidated clean timing run, not final three-run variance or post-UI acceptance."
+      },
+      "clean_memory_27_physical_columns_match": true,
+      "replay_telemetry": {
+        "allocation_bytes": 232547216,
+        "reserved_bytes": 235394256,
+        "audio_gen": 1,
+        "audio_losses": 0,
+        "audio_queue_max": 4096
+      },
+      "instrumented_memory": {
+        "status": "observed",
+        "working_set_peak_bytes": 433086464,
+        "samples": 33,
+        "queries": 34,
+        "coverage_complete": true,
+        "native_error_details": null,
+        "peak_dedicated_plus_shared_bytes": 379494400.0,
+        "peak_total_committed_bytes": 379559936.0,
+        "maximum_gap_ms": 601.636,
+        "maximum_query_ms": 277
+      },
+      "sdk_isolated_startup": "Passed"
+    }
+  ],
+  "compiler_modes": "MSVC 19.44.35229.0 and ClangCl 19.1.5; C++20 extensions OFF and declared dynamic CRT verified from native configure logs.",
+  "msvc_return": "Failure preserved: no memory samples or Release package/startup acceptance; request unchanged Release rerun.",
+  "status_definition": "HRESULT 0x40004 = 262148 = local System.Management.ManagementStatus.Timedout; this identifies timeout, not why it occurred.",
+  "selected_evidence_sha256": {
+    "build/windows-m3-current-return-1": {
+      "Debug-flight.artifacts.json": "84066b93df92402360045f2d50b3b905b9248fc4c250af623d6711f28fc5f5a8",
+      "Debug-flight.txt": "542009b5961c79bae390ac00cc07d12f878f0a074da6d77d54966962b00967d5",
+      "Debug-flight.txt.stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "Debug-flight.verify.txt": "2f103e1eb6920839198c99f7959ee165a5a6d3a56a2be6edeebc4948ab60a26b",
+      "Debug-tests.txt": "cc4d8e8a95efd846463f7b295a0a43cad6aca6acd2389f8b7b3e9e906835a6a3",
+      "Release-flight.memory.txt": "0910c9bbfd83ae2925ca2531f7c29ae4891128ae0c43848aabc8b653adc17e9e",
+      "Release-flight.memory.txt.stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "Release-flight.memory.working-set.json": "d748c2ab090ee57a01506c0804581f46203d16c9398e1a95374e927197a3484b",
+      "Release-flight.replay.txt": "0910c9bbfd83ae2925ca2531f7c29ae4891128ae0c43848aabc8b653adc17e9e",
+      "Release-flight.txt": "02bb5114a166931746591ae8c70d77da148af175a3fb9838cfb2fdc9b7f22dd9",
+      "Release-flight.txt.stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "Release-flight.verify.txt": "2f103e1eb6920839198c99f7959ee165a5a6d3a56a2be6edeebc4948ab60a26b",
+      "Release-tests.txt": "511a1c9bf24177d1eae386ceb3a361680faa36b72e86efec89102621f3b30320",
+      "failure.txt": "2534ebb61e3a057d132b360b58dfc63bd42ab8422b8e522759733a8100ab5ee5",
+      "host-profile.txt": "356c05aea86b6062ecc0be681ed5e638a3af5bcbd82366c9ce29642db12f8ae8",
+      "revision.txt": "4a5d3b2fbfb57dd222b9437e3e4d9620a71b8674e556cd51739f003866803ca1",
+      "working-tree.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "Debug-configure.txt": "b89d5b4bbe4e56c5bb8ea4d854a64e5a136db58148fb1a6f0e1d815279b75a46",
+      "Debug-flight.csv": "bed3c5c2a8c0f2311563715b8e28e7c4b55a78b42cb423141161cb864f0c9b17",
+      "Debug-validation-callback.txt": "abd366e89d908942a5e708779754b27995cab4c5c666efb8222a343685cc8e0b",
+      "Release-configure.txt": "ec83c202e35b565442a842560402b3e2929ac2478f464460c4718494f046546d",
+      "Release-flight.csv": "c16251a1d1f06ac09b793b7e98399ebdb320cc95dac87fe72a096916d44e406a",
+      "Release-flight.memory.csv": "0146ec76ba4fe9355880850f76519a32385a1978915a304c30c2421a27b46eb1",
+      "Release-flight.replay.csv": "2e92a402af750c9824ecc919d92cb6a3b88d248e1f0001c5d50dac1bb908775c",
+      "Release-validation-callback.txt": "abd366e89d908942a5e708779754b27995cab4c5c666efb8222a343685cc8e0b"
+    },
+    "build/windows-m3-current-return-2": {
+      "Debug-flight.artifacts.json": "be60f06aa7d58d6b0c0e730160a29669cd61a689dc2bed617d3b64a46c3bea37",
+      "Debug-flight.txt": "542009b5961c79bae390ac00cc07d12f878f0a074da6d77d54966962b00967d5",
+      "Debug-flight.txt.stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "Debug-flight.verify.txt": "2f103e1eb6920839198c99f7959ee165a5a6d3a56a2be6edeebc4948ab60a26b",
+      "Debug-tests.txt": "fdc79ba6b85f766b4eaa5bef891eef166633d606b95b5c95f34b5a33e1aa0aea",
+      "Release-flight.artifacts.json": "eec5f517967304706584a831e4a70946fd59393ac9f9835c9bfa4a0127ebd4fd",
+      "Release-flight.memory.txt": "0910c9bbfd83ae2925ca2531f7c29ae4891128ae0c43848aabc8b653adc17e9e",
+      "Release-flight.memory.txt.stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "Release-flight.memory.working-set.json": "57d1f1753b5a392282532ab6bd42bcff8f079f0c1df259da2e632bdaaca2c543",
+      "Release-flight.offline-verify.txt": "2f103e1eb6920839198c99f7959ee165a5a6d3a56a2be6edeebc4948ab60a26b",
+      "Release-flight.offline.txt": "ac573d010c3a8300abbac5221f4bcc5634db94979462e59832a7ed660ecfdf39",
+      "Release-flight.package.txt": "8270e7aae5c69c8e1c5c9cfe202fc4cdddf36370c0ea8371baab8d9176ad484d",
+      "Release-flight.replay.txt": "0910c9bbfd83ae2925ca2531f7c29ae4891128ae0c43848aabc8b653adc17e9e",
+      "Release-flight.txt": "bf74c313fd28f95954a1632ebc1cdfc764eabcfb820c84dab71541521ebd3817",
+      "Release-flight.txt.stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "Release-flight.verify.txt": "2f103e1eb6920839198c99f7959ee165a5a6d3a56a2be6edeebc4948ab60a26b",
+      "Release-tests.txt": "8fced76f7765ed1995daa21113f122823f32ee87a595951f07ba41975aa5fb9c",
+      "host-profile.txt": "376e0b07313e1ffd2290b1c35fab89b63c7386716bc4eebed2a92c167b7d6eb3",
+      "revision.txt": "4a5d3b2fbfb57dd222b9437e3e4d9620a71b8674e556cd51739f003866803ca1",
+      "working-tree.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "Debug-configure.txt": "a6f718fee977030b4fff9c9fbaa536b957e0eab1a415a1cf3ea595c42ce243f9",
+      "Debug-flight.csv": "35b3acd875bf36cb0d5c31c90f02639e172579670dba56bd4539fd9c7e449f2e",
+      "Debug-validation-callback.txt": "abd366e89d908942a5e708779754b27995cab4c5c666efb8222a343685cc8e0b",
+      "Release-configure.txt": "de177e7e0eb114066b18151f07458c0e8289f56ce9362c177786e132957061d5",
+      "Release-flight.csv": "c954d9b1feb5f7a524263cbde477b8188c8237ef0dc432de0e6a0c74a8b48d54",
+      "Release-flight.memory.csv": "49bff175aa31773e847e51b7abb0e89ed52d1e3904746fe0716dc3e547dea433",
+      "Release-flight.offline.csv": "adcb2b4ab457c1f1dc7a040760ba4c01b3a1555efd10c0bc371d3267b052984e",
+      "Release-flight.replay.csv": "5c6913241679bd398061384a2a9529e79690378b32dd76381f70a8d732e6f982",
+      "Release-validation-callback.txt": "abd366e89d908942a5e708779754b27995cab4c5c666efb8222a343685cc8e0b",
+      "clang-cl-version.txt": "3a64c31205f894b283d54af1f2bd1b333c8853f51831d8753bc94aef46c9afed"
+    }
+  },
+  "local_validation_sha256": {
+    "windows-current-recorded-verification.txt": "e4b49dce278dfcc49ccb132983519883b9095a76d8e84e34e13198cafee1877b",
+    "windows-current-recorded-verification.err": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "windows-current-independent-coverage.txt": "e4b49dce278dfcc49ccb132983519883b9095a76d8e84e34e13198cafee1877b",
+    "windows-current-independent-coverage.err": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "scope": "Same-session verification of private native returns, not independent review, continuous/global GPU memory, final three-run variance or M3 completion."
+}
