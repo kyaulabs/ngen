@@ -48,7 +48,9 @@ App-local startup and geometry verification pass with SDK variables removed and
 PATH restricted to the application/Windows search scope. This is not newly
 observed network disconnection or complete final delivery-manifest acceptance.
 
-MSVC evidence is still missing. The RTX timing miss, final three-run/post-UI
-checks, demonstration recording, explicit hovered-tooltip scope, independent
-review and owner final acceptance remain open. No unchanged full rebuild is
-requested: inspect the already-produced MSVC sibling next.
+At this ClangCl checkpoint the MSVC sibling had not been inspected. Its
+[subsequent verification](msvc.md) also passes scoped native memory/F12 checks
+but misses the RTX P95 target. The RTX timing miss, final three-run/post-UI checks,
+demonstration recording, explicit hovered-tooltip scope, independent review and
+owner final acceptance remain open. Confirm display refresh/frame-cap state next;
+no unchanged full rebuild is requested.

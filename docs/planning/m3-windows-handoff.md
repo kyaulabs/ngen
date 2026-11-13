@@ -18,10 +18,12 @@ The [explicit-CSV comparison](../evidence/M3/windows/provider-comparison/pdh-csv
 now establishes matching direct-PDH and raw-CIM snapshots around three CIM
 timeouts. The observer transport has been replaced by a bounded native PDH
 helper, preserving existing coverage and budgets. The
-[ClangCl return](../evidence/M3/windows/pdh-collector/clangcl.md) at `7afeefe` now
-passes sampled memory coverage and native F12 readings. **Inspect the existing
-MSVC sibling archive next; do not repeat the unchanged full build or probe.**
-ClangCl's clean P95 of 21.8084 ms misses the unchanged 16.7 ms RTX target. Future
+[ClangCl](../evidence/M3/windows/pdh-collector/clangcl.md) and
+[MSVC](../evidence/M3/windows/pdh-collector/msvc.md) returns at `7afeefe` now pass
+sampled memory coverage and native F12 readings. Both clean replays miss the
+unchanged 16.7 ms RTX P95 target (21.8084 / 21.8387 ms). Their completion cadence
+is near 60 Hz versus roughly 144 Hz historically. **Confirm display refresh and
+frame-cap state next; do not repeat the unchanged full build or probe.** Future
 affected builds must include `gpu_memory_observer.exe` beside `flight_demo.exe`.
 
 For later read-only diagnosis only: start an **already built** native Windows
@@ -65,8 +67,8 @@ OS calls are not a hard real-time guarantee. Do not run the diagnostic alongside
 a clean timing or formal memory measurement.
 
 The checks below are the recipe for future affected current-source runs, not a
-request to repeat the passing ClangCl memory check. MSVC sampled-window and
-explicit hovered-tooltip evidence remain open. Use the named splat; do not split
+request to repeat either passing memory check. Explicit hovered-tooltip and final
+timing evidence remain open. Use the named splat; do not split
 `Start-Process` arguments or use positional `Select-String` examples.
 
 ```powershell
@@ -96,11 +98,11 @@ instrumented memory evidence, not clean timing or a continuous global-memory bou
 No GTX VM result is implied.
 
 The historical ClangCl return reported 2 warm ImGui allocations in the clean
-replay and a first-query CIM failure with no GPU-memory samples. These findings
-remain open until a current-source run establishes the affected behavior. The
-observer now retains `error_details` in `Release-flight.memory.working-set.json`:
-PowerShell error identifier/category and, for an actual CIM exception, its native
-error name and numeric status. The 2 s operation timeout, sampling/coverage rules
+replay and a first-query CIM failure with no GPU-memory samples. Both current
+compiler returns now have zero warm replay allocations and complete PDH coverage;
+explicit live-panel hovered-tooltip scope remains open. The observer retains
+`error_details` in `Release-flight.memory.working-set.json`, including native PDH
+status/kind on failure. The 2 s operation timeout, sampling/coverage rules
 and budgets are unchanged. A failed query still fails memory acceptance; do not
 restart services, rebuild counters, elevate permissions or relax checks on the
 basis of the historical generic message.

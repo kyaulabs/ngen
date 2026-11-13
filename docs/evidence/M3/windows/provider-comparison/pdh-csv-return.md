@@ -51,9 +51,10 @@ were repaired without disabling checks. Same-session review is not independent
 review.
 
 At this repair checkpoint the native helper had **not yet executed on Windows**.
-The subsequent [ClangCl return](../pdh-collector/clangcl.md) passes sampled memory
-coverage, native F12 readings and scoped app-local startup, but misses the RTX
-P95 target. MSVC and explicit hovered-tooltip evidence remain open.
+The subsequent [ClangCl](../pdh-collector/clangcl.md) and
+[MSVC](../pdh-collector/msvc.md) returns pass sampled memory coverage, native F12
+readings and scoped app-local startup, but both miss the RTX P95 target. Explicit
+hovered-tooltip evidence remains open.
 The required final M3 UI refinement and integration are not completed by this
 repair. See `docs/planning/windows-gpu-memory-collector.md`.
 
