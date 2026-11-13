@@ -265,3 +265,8 @@ not a substitute for the per-process GPU-memory budget observer.
 
 M3 remains open until these gates and exact post-merge CI complete. No mandatory
 tracker workflow or per-command reapproval is introduced.
+
+After M3 is completed and merged, the owner requests another refinement of the
+milestones and executive brief. Convert that agreed plan into GitHub milestones
+and a Project kanban board so work is easier to navigate and resume. This follows
+M3 closure; do not rewrite the roadmap or create the tracker structure during M3.
