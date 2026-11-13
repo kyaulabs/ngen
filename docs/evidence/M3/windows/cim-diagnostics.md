@@ -34,3 +34,9 @@ both frontends. MSVC reports `HRESULT 0x40004`, native `Failed`, status 1; this 
 WMI's timeout identifier. ClangCl completes sampled coverage. The native timeout's
 underlying cause is still unproven; neither code nor observation limits change
 on the basis of the generic message alone.
+
+The later [attached-process comparison](provider-comparison/README.md) records
+three timeouts across both classes, followed by one successful raw reading on the
+same live process. This is neither first-query-only nor limited to the formatted
+class. Direct PDH comparison is now available without a rebuild; it remains a
+diagnostic, not a replacement for the formal observer or its acceptance rules.

@@ -1,0 +1,37 @@
+{
+  "archive_sha256": "96374f4941172793f6807a140dcffc76236839f4ed524fa27a74395b65633ce1",
+  "compressed_bytes": 1842,
+  "entries": 4,
+  "uncompressed_bytes": 4221,
+  "selected_payload_bytes": 2325,
+  "session_read": false,
+  "returned_code_executed": false,
+  "script_revision": "a206b31cd09fb4cc62fcaffdcd011689db1929af",
+  "working_tree_clean": true,
+  "same_target_identity_all_attempts": true,
+  "operation_timeout_seconds": 2,
+  "queries": [
+    {"provider": "formatted", "status": "error", "elapsed_ms": 2031},
+    {"provider": "raw", "status": "error", "elapsed_ms": 2012},
+    {"provider": "formatted", "status": "error", "elapsed_ms": 2011},
+    {"provider": "raw", "status": "observed", "elapsed_ms": 823}
+  ],
+  "timeout_details_each": {
+    "identifier": "HRESULT 0x40004",
+    "type": "CimException",
+    "hresult": -2146233088,
+    "native_error_code": "Failed",
+    "status_code": 1
+  },
+  "raw_snapshot": {
+    "instances": 1,
+    "matches_selected_pid": true,
+    "dedicated_bytes": 269930496,
+    "shared_bytes": 53088256,
+    "dedicated_plus_shared_bytes": 323018752,
+    "total_committed_bytes": 323084288
+  },
+  "scope": "One attached-process diagnostic, not binary provenance, peak usage, sampled-window coverage or budget acceptance",
+  "next": "Bounded direct PDH references before and after the unchanged CIM comparison",
+  "formal_observer_changed": false
+}

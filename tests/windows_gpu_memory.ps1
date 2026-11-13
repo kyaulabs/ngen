@@ -4,12 +4,13 @@ $source = Join-Path $PSScriptRoot '../tools/build-windows.ps1'
 $tokens = $null; $errors = $null
 $ast = [Management.Automation.Language.Parser]::ParseFile($source, [ref]$tokens, [ref]$errors)
 if ($errors.Count) { throw ($errors | Out-String) }
-$definition = $ast.Find({ param($node)
-    $node -is [Management.Automation.Language.FunctionDefinitionAst] -and
-        $node.Name -eq 'Get-NgenGpuMemoryDiagnostic'
-}, $true)
-if (-not $definition) { throw 'GPU diagnostic public boundary not found.' }
-. ([scriptblock]::Create($definition.Extent.Text))
+foreach ($name in @('Get-NgenGpuMemoryDiagnostic', 'Invoke-NgenPdhGpuMemoryDiagnostic')) {
+    $definition = $ast.Find({ param($node)
+        $node -is [Management.Automation.Language.FunctionDefinitionAst] -and $node.Name -eq $name
+    }, $true)
+    if (-not $definition) { throw "GPU diagnostic public boundary not found: $name" }
+    . ([scriptblock]::Create($definition.Extent.Text))
+}
 
 # Only local process/CIM APIs are substituted. No Windows provider behavior is claimed.
 $script:calls = [Collections.Generic.List[object]]::new()
@@ -19,6 +20,7 @@ $script:processReads = 0
 function Get-CimInstance {
     param([string]$Query, [int]$OperationTimeoutSec, [string]$ErrorAction)
     $script:calls.Add([pscustomobject]@{ Query = $Query; Timeout = $OperationTimeoutSec })
+    if ($script:orderFile) { [IO.File]::AppendAllText($script:orderFile, "cim`n") }
     if ($script:mode -eq 'first-error' -and $script:calls.Count -eq 1) {
         $record = [Management.Automation.ErrorRecord]::new(
             [Microsoft.Management.Infrastructure.CimException]::new('fixture provider failure'),
@@ -140,6 +142,88 @@ if (-not $IsWindows) {
         if ($LASTEXITCODE -eq 0 -or $LASTEXITCODE -eq 2) { throw 'Diagnostic mode accepted an invalid process ID.' }
     } finally {
         Remove-Item -LiteralPath $temporary -ErrorAction SilentlyContinue
+    }
+}
+if (-not $IsWindows) {
+    # A real child at the executable boundary, not a Windows PDH simulation claim.
+    $fixtureRoot = Join-Path ([IO.Path]::GetTempPath()) ('ngen pdh child ' + [guid]::NewGuid())
+    New-Item -ItemType Directory -Path $fixtureRoot | Out-Null
+    New-Item -ItemType Directory -Path (Join-Path $fixtureRoot 'System32') | Out-Null
+    $counterTool = Join-Path $fixtureRoot 'System32/typeperf.exe'
+    try {
+        [IO.File]::WriteAllText($counterTool, @'
+#!/usr/bin/env python3
+import sys
+assert sys.argv[1:7] == ['-sc', '1', '-si', '1', '-f', 'CSV']
+assert sys.argv[7:] == [r'\GPU Process Memory(pid_42_*)' + chr(92) + name for name in ('Dedicated Usage', 'Shared Usage', 'Total Committed')]
+print('"PDH-CSV 4.0","counter fixture"')
+print('"timestamp","128.000000"')
+'@)
+        & chmod +x $counterTool
+        if ($LASTEXITCODE) { throw 'Could not prepare the owned executable fixture.' }
+        $pdh = Invoke-NgenPdhGpuMemoryDiagnostic -FilePath $counterTool -ProcessId 42
+        if (-not $pdh.diagnostic_only -or $pdh.status -cne 'completed' -or $pdh.exit_code -ne 0 -or
+            $pdh.stdout -notmatch '128.000000' -or $pdh.stderr -or $pdh.timeout_ms -ne 2000) {
+            throw 'The direct PDH reference did not preserve arguments, output or its diagnostic-only deadline.'
+        }
+        [IO.File]::WriteAllText($counterTool, "#!/usr/bin/env python3`nimport os,time`nprint('helper_pid='+str(os.getpid()),flush=True)`ntime.sleep(10)`n")
+        $pdh = Invoke-NgenPdhGpuMemoryDiagnostic -FilePath $counterTool -ProcessId 42
+        if ($pdh.status -cne 'timed_out' -or $pdh.elapsed_ms -lt 1900 -or $pdh.elapsed_ms -gt 5000 -or $pdh.stdout -notmatch 'helper_pid=(\d+)') {
+            throw 'The PDH helper deadline did not stop its owned slow child.'
+        }
+        $helperId = [int]$Matches[1]
+        $remainingChild = Microsoft.PowerShell.Management\Get-Process -Id $helperId -ErrorAction SilentlyContinue
+        if ($remainingChild) { throw 'The timed-out PDH helper escaped its owner.' }
+        [IO.File]::WriteAllText($counterTool, "#!/usr/bin/env python3`nprint('x'*70000)`n")
+        $pdh = Invoke-NgenPdhGpuMemoryDiagnostic -FilePath $counterTool -ProcessId 42
+        if ($pdh.status -cne 'output_limit' -or $pdh.stdout.Length -ne 65536) {
+            throw 'PDH output was unbounded or an oversized result was accepted.'
+        }
+        [IO.File]::WriteAllText($counterTool, "#!/usr/bin/env python3`nimport sys`nprint('x'*5000,file=sys.stderr)`n")
+        $pdh = Invoke-NgenPdhGpuMemoryDiagnostic -FilePath $counterTool -ProcessId 42
+        if ($pdh.status -cne 'output_limit' -or $pdh.stderr.Length -ne 4096) {
+            throw 'PDH stderr exceeded its bound or an oversized diagnostic was accepted.'
+        }
+        [IO.File]::WriteAllText($counterTool, "#!/usr/bin/env python3`nimport sys`nprint('provider error',file=sys.stderr)`nsys.exit(7)`n")
+        $pdh = Invoke-NgenPdhGpuMemoryDiagnostic -FilePath $counterTool -ProcessId 42
+        if ($pdh.status -cne 'error' -or $pdh.exit_code -ne 7 -or $pdh.stderr -notmatch 'provider error') {
+            throw 'A failed direct PDH command was reported as successful.'
+        }
+        $pdh = Invoke-NgenPdhGpuMemoryDiagnostic -FilePath (Join-Path $fixtureRoot 'missing.exe') -ProcessId 42
+        if ($pdh.status -cne 'error' -or $pdh.stdout -or $pdh.exit_code -ne $null) {
+            throw 'An unavailable PDH executable was reported as a successful reference.'
+        }
+        $oldSystemRoot = [Environment]::GetEnvironmentVariable('SystemRoot', 'Process')
+        try {
+            $env:SystemRoot = $fixtureRoot
+            $script:orderFile = Join-Path $fixtureRoot 'order.txt'
+            $orderLiteral = $script:orderFile | ConvertTo-Json -Compress
+            [IO.File]::WriteAllText($counterTool, "#!/usr/bin/env python3`nfrom pathlib import Path`nwith Path($orderLiteral).open('a') as out: out.write('pdh\n')`nprint('counter reference')`n")
+            $script:mode = ''; $script:processReads = 0; $script:calls.Clear()
+            $result = Get-NgenGpuMemoryDiagnostic -ProcessId 42 -ComparePdh
+            $order = Get-Content -LiteralPath $script:orderFile
+            if (($order -join ',') -cne 'pdh,cim,cim,cim,cim,pdh' -or $result.schema -ne 2 -or
+                $result.pdh_before.status -cne 'completed' -or $result.pdh_after.status -cne 'completed' -or
+                $result.queries.Count -ne 4 -or $result.target_status -cne 'same_process') {
+                throw 'The direct PDH references did not bracket the unchanged CIM comparison.'
+            }
+            $script:mode = 'reused'; $script:processReads = 0; $script:calls.Clear()
+            $result = Get-NgenGpuMemoryDiagnostic -ProcessId 42 -ComparePdh
+            if ($result.target_status -cne 'unavailable_or_changed' -or $result.queries.Count -or
+                $result.pdh_before.status -cne 'target_unavailable_or_changed' -or
+                $result.pdh_before.stdout -or $result.pdh_before.stderr -or $result.pdh_after -or $script:calls.Count) {
+                throw 'The PDH comparison retained output or continued after target identity changed.'
+            }
+        } finally {
+            $script:orderFile = $null
+            if ($null -eq $oldSystemRoot) {
+                [Environment]::SetEnvironmentVariable('SystemRoot', [NullString]::Value, 'Process')
+            } else {
+                [Environment]::SetEnvironmentVariable('SystemRoot', $oldSystemRoot, 'Process')
+            }
+        }
+    } finally {
+        Remove-Item -LiteralPath $fixtureRoot -Recurse -Force
     }
 }
 Write-Host 'GPU provider comparison boundaries passed; native Windows confirmation remains required.'

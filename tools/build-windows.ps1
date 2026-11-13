@@ -67,8 +67,70 @@ function Get-NgenSceneIdentity {
     }
 }
 
+function Invoke-NgenPdhGpuMemoryDiagnostic {
+    param(
+        [Parameter(Mandatory)][string]$FilePath,
+        [Parameter(Mandatory)][ValidateRange(1, 2147483647)][int]$ProcessId
+    )
+    $result = [ordered]@{ diagnostic_only = $true; source = 'typeperf/PDH'; process_id = $ProcessId
+        status = 'not_run'; timeout_ms = 2000; elapsed_ms = 0L; exit_code = $null
+        stdout = ''; stderr = ''; error_type = ''; error_hresult = $null }
+    $process = [Diagnostics.Process]::new()
+    $process.StartInfo.FileName = $FilePath
+    $process.StartInfo.UseShellExecute = $false
+    $process.StartInfo.CreateNoWindow = $true
+    $process.StartInfo.RedirectStandardOutput = $true
+    $process.StartInfo.RedirectStandardError = $true
+    foreach ($argument in @('-sc', '1', '-si', '1', '-f', 'CSV')) {
+        $process.StartInfo.ArgumentList.Add($argument)
+    }
+    foreach ($counter in @('Dedicated Usage', 'Shared Usage', 'Total Committed')) {
+        $process.StartInfo.ArgumentList.Add("\GPU Process Memory(pid_$($ProcessId)_*)\$counter")
+    }
+    $clock = [Diagnostics.Stopwatch]::StartNew()
+    $started = $false
+    try {
+        $started = $process.Start()
+        if (-not $started) { throw 'Could not start the PDH reference tool.' }
+        $outBuffer = [char[]]::new(65537); $errorBuffer = [char[]]::new(4097)
+        $output = $process.StandardOutput.ReadBlockAsync($outBuffer, 0, $outBuffer.Length)
+        $errors = $process.StandardError.ReadBlockAsync($errorBuffer, 0, $errorBuffer.Length)
+        $remaining = [int][Math]::Max(0, 2000 - $clock.ElapsedMilliseconds)
+        $finished = $process.WaitForExit($remaining)
+        if (-not $finished) {
+            try { $process.Kill($true) } catch [InvalidOperationException] { }
+        }
+        $process.WaitForExit()
+        $count = $output.GetAwaiter().GetResult()
+        $errorCount = $errors.GetAwaiter().GetResult()
+        $result.exit_code = $process.ExitCode
+        $result.elapsed_ms = $clock.ElapsedMilliseconds
+        $result.stdout = [string]::new($outBuffer, 0, [Math]::Min($count, 65536))
+        $result.stderr = [string]::new($errorBuffer, 0, [Math]::Min($errorCount, 4096))
+        $result.status = if ($count -gt 65536 -or $errorCount -gt 4096) { 'output_limit' }
+            elseif (-not $finished -or $result.elapsed_ms -gt 2000) { 'timed_out' }
+            elseif ($process.ExitCode -ne 0 -or $errorCount) { 'error' }
+            else { 'completed' }
+    } catch {
+        $result.status = 'error'
+        $result.error_type = $_.Exception.GetType().Name
+        $result.error_hresult = $_.Exception.HResult
+        $result.elapsed_ms = $clock.ElapsedMilliseconds
+    } finally {
+        if ($started -and -not $process.HasExited) {
+            try { $process.Kill($true) } catch [InvalidOperationException] { }
+            $process.WaitForExit()
+        }
+        $process.Dispose()
+    }
+    return $result
+}
+
 function Get-NgenGpuMemoryDiagnostic {
-    param([Parameter(Mandatory)][ValidateRange(1, 2147483647)][int]$ProcessId)
+    param(
+        [Parameter(Mandatory)][ValidateRange(1, 2147483647)][int]$ProcessId,
+        [switch]$ComparePdh
+    )
     $target = Get-Process -Id $ProcessId -ErrorAction Stop
     try {
         if ($target.Id -ne $ProcessId -or $target.HasExited -or $target.ProcessName -ine 'flight_demo') {
@@ -95,9 +157,28 @@ function Get-NgenGpuMemoryDiagnostic {
         }
     }
     $targetStatus = 'same_process'
+    $pdhBefore = $null; $pdhAfter = $null
+    $readPdh = {
+        if (-not (& $sameTarget)) {
+            return [ordered]@{ diagnostic_only = $true; status = 'target_unavailable_or_changed'
+                target_valid_after = $false; stdout = ''; stderr = '' }
+        }
+        $tool = Join-Path (Join-Path $env:SystemRoot 'System32') 'typeperf.exe'
+        $reference = Invoke-NgenPdhGpuMemoryDiagnostic -FilePath $tool -ProcessId $ProcessId
+        $reference.target_valid_after = & $sameTarget
+        if (-not $reference.target_valid_after) {
+            $reference.status = 'target_unavailable_or_changed'
+            $reference.stdout = ''; $reference.stderr = ''
+        }
+        return $reference
+    }
+    if ($ComparePdh) {
+        $pdhBefore = & $readPdh
+        if (-not $pdhBefore.target_valid_after) { $targetStatus = 'unavailable_or_changed' }
+    }
     $attempts = [Collections.Generic.List[object]]::new()
     foreach ($provider in @($formatted, $raw, $formatted, $raw)) {
-        if (-not (& $sameTarget)) { $targetStatus = 'unavailable_or_changed'; break }
+        if ($targetStatus -ne 'same_process' -or -not (& $sameTarget)) { $targetStatus = 'unavailable_or_changed'; break }
         $clock = [Diagnostics.Stopwatch]::StartNew()
         $attempt = [ordered]@{ provider = $provider; status = 'no_own_instances'
             elapsed_ms = 0L; rows = @(); error_details = $null }
@@ -158,10 +239,15 @@ function Get-NgenGpuMemoryDiagnostic {
         $attempts.Add($attempt)
         if (-not $attempt.target_valid_after) { break }
     }
-    return [ordered]@{ schema = 1; diagnostic_only = $true; process_id = $ProcessId
-        target_status = $targetStatus
+    if ($ComparePdh -and $targetStatus -eq 'same_process') {
+        $pdhAfter = & $readPdh
+        if (-not $pdhAfter.target_valid_after) { $targetStatus = 'unavailable_or_changed' }
+    }
+    return [ordered]@{ schema = $(if ($ComparePdh) { 2 } else { 1 })
+        diagnostic_only = $true; process_id = $ProcessId; target_status = $targetStatus
         process_started_utc = $startedAt.ToString('O')
-        operation_timeout_seconds = 2; queries = $attempts.ToArray() }
+        operation_timeout_seconds = 2; queries = $attempts.ToArray()
+        pdh_before = $pdhBefore; pdh_after = $pdhAfter }
 }
 
 function Invoke-NgenWorkload {
@@ -718,9 +804,9 @@ try {
     Invoke-NgenNative -FilePath 'git' -Arguments @('rev-parse', 'HEAD') -LogPath (Join-Path $logs 'revision.txt')
     Invoke-NgenNative -FilePath 'git' -Arguments @('status', '--short') -LogPath (Join-Path $logs 'working-tree.txt')
     if ($DiagnoseGpuMemoryProcessId) {
-        Get-NgenGpuMemoryDiagnostic -ProcessId $DiagnoseGpuMemoryProcessId |
+        Get-NgenGpuMemoryDiagnostic -ProcessId $DiagnoseGpuMemoryProcessId -ComparePdh |
             ConvertTo-Json -Depth 6 | Set-Content -LiteralPath (Join-Path $logs 'gpu-memory-diagnostic.json')
-        Write-Host 'Read-only raw/formatted GPU provider comparison retained. The selected client was not started, stopped or reconfigured. This is not memory-budget acceptance.'
+        Write-Host 'Read-only PDH/CIM provider comparison retained. Only the owned typeperf helpers have a 2 s deadline; the selected demo is never stopped. This is not memory-budget acceptance.'
         exit 0
     }
     if ($GpuInfo) {

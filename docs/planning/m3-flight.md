@@ -254,7 +254,11 @@ allocations in clean/memory replays. ClangCl has complete sampled WDDM coverage
 and app-local startup. The later MSVC Release rerun again has no GPU-memory
 samples and reports 2 warm ImGui allocations. The [tooltip repair](../evidence/M3/tooltip/README.md)
 passes locally; native Windows confirmation and WMI cause isolation remain open.
-Do not request another unchanged full rerun or waive either finding.
+Do not request another unchanged full rerun or waive either finding. A subsequent
+[read-only provider comparison](../evidence/M3/windows/provider-comparison/README.md)
+times out on both formatted and raw queries before one raw read succeeds on the
+same live process. Direct PDH comparison is the next scoped diagnostic; neither
+coverage nor the underlying cause is established yet.
 
 The owner-requested [F12 performance overlay](m3-performance-overlay.md) is
 implemented before the broader UI pass. Native Linux verifies hidden startup,

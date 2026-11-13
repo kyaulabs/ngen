@@ -30,14 +30,25 @@ install anything, start/stop the client, alter services/counters or elevate. Clo
 the client yourself when finished. PID/start-time checks stop collection if the
 selected process exits or changes.
 
-The read-only sequence is formatted → raw → formatted → raw, with the same
-owned-PID filter, fields and 2 s CIM operation timeout. Each attempt retains its
-elapsed time, projected counter values and bounded typed error details; failures
-do not hide the other attempts. This tests whether the failure is shared by the
-raw provider or specific to formatted/cold queries. A pattern alone does not prove
-the underlying cause, and raw readings are not substituted for budget acceptance.
-The CIM timeout is not a hard OS wall-clock guarantee. Do not run the diagnostic
-alongside a clean timing or formal memory measurement.
+The [first native comparison](../evidence/M3/windows/provider-comparison/README.md)
+has three timeouts followed by a successful raw reading on the same live client.
+The failure is not confined to the first or formatted query; its cause remains
+unproven.
+
+The updated read-only sequence is direct PDH → formatted → raw → formatted → raw
+→ direct PDH. The four CIM calls keep the same PID filter, fields and 2 s operation
+timeout. The PDH references use Windows' existing `typeperf.exe`, bypassing CIM;
+each has a 2 s budget including helper startup. Only those owned helpers can be
+terminated, never the selected demo. Their output is bounded and retained for
+inspection. A tool's successful exit is not validated CSV data or budget acceptance;
+localized/unavailable counter names remain explicit failures, not zero readings.
+
+Each CIM attempt retains its elapsed time, projected counter values and bounded
+typed error details; failures do not hide other attempts. The sequence tests the
+shared counter backend versus the CIM route without assuming that a preceding
+read has no warmup effect. No result substitutes for complete formal observations.
+OS calls are not a hard real-time guarantee. Do not run the diagnostic alongside
+a clean timing or formal memory measurement.
 
 After diagnosis and any verified repair, the current-source Windows checks below
 remain necessary for the tooltip fix and F12 panel, including actual dedicated-VRAM
