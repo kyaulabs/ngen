@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720" role="img" aria-labelledby="title desc">
+<title id="title">NGEN immersive flight HUD direction</title>
+<desc id="desc">Design mockup only. No persistent panels: small NGEN mark, world-anchored target label and minimal bottom speed/mode/actuation readout. Target actions appear on hover or selection; detailed flight data, help and performance are on demand. Representative values; live ship scene omitted.</desc>
+<defs>
+ <radialGradient id="space"><stop stop-color="#18313c"/><stop offset="1" stop-color="#071319"/></radialGradient>
+ <style>text{font-family:system-ui,'Segoe UI',sans-serif;fill:#DDF3F8}.mono{font-family:ui-monospace,Consolas,'Liberation Mono',monospace}.quiet{fill:#A9C5D0}.label{font-size:10px;letter-spacing:1.8px}.cyan{fill:#63DDF8}</style>
+</defs>
+<rect width="1280" height="720" fill="url(#space)"/>
+<g fill="#A9C5D0" opacity=".4"><circle cx="76" cy="196" r=".8"/><circle cx="218" cy="264" r=".6"/><circle cx="317" cy="142" r=".8"/><circle cx="470" cy="279" r=".6"/><circle cx="698" cy="174" r=".7"/><circle cx="812" cy="285" r=".7"/><circle cx="946" cy="380" r=".6"/><circle cx="1101" cy="450" r=".8"/><circle cx="227" cy="547" r=".6"/><circle cx="715" cy="473" r=".8"/></g>
+<!-- Supplied standalone N artwork; transforms, geometry and colours preserved. -->
+<g transform="translate(20 20) scale(.4)"><g transform="translate(9.5 13.5368) scale(0.897059)"><path d="M0 59V5L5 0H13L35 21L31 25L34 28L27 37L14 25V59ZM40 25L54 38V0H68V59H55L31 41L39 33L35.5 29.5Z" fill="#63DDF8"/><path d="M40 25L54 38V58.25L31 41L39 33L35.5 29.5ZM20 38L42 58H35L20 45Z" fill="#B6A5FF"/><g transform="rotate(180 34 29.5)"><path d="M20 38L42 58H35L20 45Z" fill="#B6A5FF"/></g></g></g>
+<text x="1252" y="37" text-anchor="end" class="quiet label">F1 CONTROLS</text>
+<!-- The scene remains unobstructed; no private ship model/capture is embedded. -->
+<g stroke="#63DDF8" stroke-width="1" fill="none" opacity=".75"><path d="M633 359H638M650 359H655M644 348V353M644 365V370"/><path d="M802 302H794V310M836 302H844V310M794 337V345H802M836 345H844V337"/></g>
+<text x="856" y="319" font-size="11">Asteroid <tspan class="mono">000</tspan></text>
+<text x="856" y="336" class="mono quiet" font-size="11">618 m</text>
+<!-- Contextual shortcut strip, shown only while target actions are requested. -->
+<text x="856" y="358" class="quiet" font-size="10" opacity=".75">G approach · O orbit · F focus</text>
+<text x="640" y="458" text-anchor="middle" class="label quiet" opacity=".23">LIVE FLIGHT VIEW — UNCHANGED</text>
+<!-- A single floating readout; no window fill, border, command tray or module grid. -->
+<text x="640" y="603" text-anchor="middle" class="label cyan">TACTICAL · ORBIT ACTIVE</text>
+<text x="639" y="642" text-anchor="middle" class="mono" font-size="32">20.0<tspan dx="6" font-size="12" class="quiet">m/s</tspan></text>
+<g fill="none" stroke-width="1"><path d="M578 657H702" stroke="#315362"/><path d="M578 657H603" stroke="#63DDF8" stroke-width="2"/><path d="M578 654V660M609 655V659M640 655V659M671 655V659M702 654V660" stroke="#7899A6"/></g>
+<text x="640" y="683" text-anchor="middle" class="mono quiet" font-size="10">MAIN 0% · RCS 0/16</text>
+<text x="640" y="706" text-anchor="middle" class="quiet" font-size="10" opacity=".65">TAB view · SPACE brake</text>
+<text x="16" y="707" class="quiet label" opacity=".6">DESIGN MOCKUP</text>
+</svg>
