@@ -154,17 +154,42 @@ if (-not $IsWindows) {
         [IO.File]::WriteAllText($counterTool, @'
 #!/usr/bin/env python3
 import sys
+from pathlib import Path
 assert sys.argv[1:7] == ['-sc', '1', '-si', '1', '-f', 'CSV']
-assert sys.argv[7:] == [r'\GPU Process Memory(pid_42_*)' + chr(92) + name for name in ('Dedicated Usage', 'Shared Usage', 'Total Committed')]
-print('"PDH-CSV 4.0","counter fixture"')
-print('"timestamp","128.000000"')
+tail=sys.argv[7:]
+output=None
+if tail[:1] == ['-o']:
+    output=Path(tail[1]);tail=tail[2:]
+    assert not output.exists()
+assert tail == [r'\GPU Process Memory(pid_42_*)' + chr(92) + name for name in ('Dedicated Usage', 'Shared Usage', 'Total Committed')]
+if output:
+    output.write_text('"PDH-CSV 4.0","counter fixture"\n"timestamp","128.000000"\n',encoding='utf-16')
+print('The command completed successfully.')
+if output:
+    print('csv_path='+str(output))
 '@)
         & chmod +x $counterTool
         if ($LASTEXITCODE) { throw 'Could not prepare the owned executable fixture.' }
         $pdh = Invoke-NgenPdhGpuMemoryDiagnostic -FilePath $counterTool -ProcessId 42
         if (-not $pdh.diagnostic_only -or $pdh.status -cne 'completed' -or $pdh.exit_code -ne 0 -or
-            $pdh.stdout -notmatch '128.000000' -or $pdh.stderr -or $pdh.timeout_ms -ne 2000) {
-            throw 'The direct PDH reference did not preserve arguments, output or its diagnostic-only deadline.'
+            $pdh.stdout -notmatch 'command completed successfully' -or $pdh.csv -notmatch '128.000000' -or
+            $pdh.csv_status -cne 'captured' -or $pdh.csv_bytes -le 0 -or $pdh.stderr -or $pdh.timeout_ms -ne 2000) {
+            throw 'Successful typeperf status text did not include the required captured CSV values.'
+        }
+        if ($pdh.stdout -notmatch 'csv_path=([^\r\n]+)') { throw 'CSV cleanup fixture did not report its owned path.' }
+        $capturedPath = $Matches[1]
+        if ((Test-Path -LiteralPath $capturedPath) -or (Test-Path -LiteralPath (Split-Path -Parent $capturedPath))) {
+            throw 'The PDH helper left its private counter file or directory behind.'
+        }
+        [IO.File]::WriteAllText($counterTool, "#!/usr/bin/env python3`nprint('The command completed successfully.')`n")
+        $pdh = Invoke-NgenPdhGpuMemoryDiagnostic -FilePath $counterTool -ProcessId 42
+        if ($pdh.status -cne 'missing_or_invalid_csv' -or $pdh.csv -or $pdh.csv_status -cne 'missing') {
+            throw 'A zero exit and status message were accepted without captured counter data.'
+        }
+        [IO.File]::WriteAllText($counterTool, "#!/usr/bin/env python3`nimport sys`nfrom pathlib import Path`nPath(sys.argv[sys.argv.index('-o')+1]).write_bytes(b'x'*131073)`n")
+        $pdh = Invoke-NgenPdhGpuMemoryDiagnostic -FilePath $counterTool -ProcessId 42
+        if ($pdh.status -cne 'output_limit' -or $pdh.csv -or $pdh.csv_status -cne 'output_limit') {
+            throw 'An oversized counter file was read or accepted.'
         }
         [IO.File]::WriteAllText($counterTool, "#!/usr/bin/env python3`nimport os,time`nprint('helper_pid='+str(os.getpid()),flush=True)`ntime.sleep(10)`n")
         $pdh = Invoke-NgenPdhGpuMemoryDiagnostic -FilePath $counterTool -ProcessId 42
@@ -198,7 +223,7 @@ print('"timestamp","128.000000"')
             $env:SystemRoot = $fixtureRoot
             $script:orderFile = Join-Path $fixtureRoot 'order.txt'
             $orderLiteral = $script:orderFile | ConvertTo-Json -Compress
-            [IO.File]::WriteAllText($counterTool, "#!/usr/bin/env python3`nfrom pathlib import Path`nwith Path($orderLiteral).open('a') as out: out.write('pdh\n')`nprint('counter reference')`n")
+            [IO.File]::WriteAllText($counterTool, "#!/usr/bin/env python3`nimport sys`nfrom pathlib import Path`nwith Path($orderLiteral).open('a') as out: out.write('pdh\n')`nPath(sys.argv[sys.argv.index('-o')+1]).write_text('PDH-CSV 4.0,counter\ntimestamp,128\n',encoding='utf-16')`nprint('counter reference')`n")
             $script:mode = ''; $script:processReads = 0; $script:calls.Clear()
             $result = Get-NgenGpuMemoryDiagnostic -ProcessId 42 -ComparePdh
             $order = Get-Content -LiteralPath $script:orderFile
@@ -211,7 +236,8 @@ print('"timestamp","128.000000"')
             $result = Get-NgenGpuMemoryDiagnostic -ProcessId 42 -ComparePdh
             if ($result.target_status -cne 'unavailable_or_changed' -or $result.queries.Count -or
                 $result.pdh_before.status -cne 'target_unavailable_or_changed' -or
-                $result.pdh_before.stdout -or $result.pdh_before.stderr -or $result.pdh_after -or $script:calls.Count) {
+                $result.pdh_before.stdout -or $result.pdh_before.stderr -or $result.pdh_before.csv -or
+                $result.pdh_before.csv_bytes -ne 0 -or $result.pdh_after -or $script:calls.Count) {
                 throw 'The PDH comparison retained output or continued after target identity changed.'
             }
         } finally {

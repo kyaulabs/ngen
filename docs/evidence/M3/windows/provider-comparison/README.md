@@ -33,9 +33,14 @@ coverage or validate a budget. The diagnostic script revision does not identify
 the attached executable's source/compiler, and this does not verify the new
 Windows F12 panel or tooltip repair.
 
-The next comparison brackets the unchanged four CIM calls with direct PDH reads
+The [subsequent PDH return](pdh-return.md) repeats the CIM pattern but captures
+only native tool status text, not counter values. The capture is corrected to
+request an explicit bounded CSV file; native CSV contents remain unverified.
+
+The comparison brackets the unchanged four CIM calls with direct PDH reads
 through Windows' built-in `typeperf.exe`. Each helper gets the same 2 s budget,
-including its startup, and bounded stdout/stderr. Only the helper can be stopped;
+including its startup, bounded stdout/stderr and a separately admitted CSV file.
+Only the helper can be stopped;
 the owner-controlled demo is never terminated. Instance paths target the same
 PID. Start-time guards discard output and stop collection if that target changes.
 No tools are installed and no services, counter registrations or privileges change.

@@ -74,7 +74,11 @@ function Invoke-NgenPdhGpuMemoryDiagnostic {
     )
     $result = [ordered]@{ diagnostic_only = $true; source = 'typeperf/PDH'; process_id = $ProcessId
         status = 'not_run'; timeout_ms = 2000; elapsed_ms = 0L; exit_code = $null
-        stdout = ''; stderr = ''; error_type = ''; error_hresult = $null }
+        stdout = ''; stderr = ''; csv = ''; csv_bytes = 0L; csv_status = 'missing'
+        error_type = ''; error_hresult = $null }
+    $temporary = Join-Path ([IO.Path]::GetTempPath()) ('ngen-pdh-' + [guid]::NewGuid().ToString('N'))
+    $csvPath = Join-Path $temporary 'counter.csv'
+    $directoryCreated = $false
     $process = [Diagnostics.Process]::new()
     $process.StartInfo.FileName = $FilePath
     $process.StartInfo.UseShellExecute = $false
@@ -84,12 +88,16 @@ function Invoke-NgenPdhGpuMemoryDiagnostic {
     foreach ($argument in @('-sc', '1', '-si', '1', '-f', 'CSV')) {
         $process.StartInfo.ArgumentList.Add($argument)
     }
+    $process.StartInfo.ArgumentList.Add('-o')
+    $process.StartInfo.ArgumentList.Add($csvPath)
     foreach ($counter in @('Dedicated Usage', 'Shared Usage', 'Total Committed')) {
         $process.StartInfo.ArgumentList.Add("\GPU Process Memory(pid_$($ProcessId)_*)\$counter")
     }
     $clock = [Diagnostics.Stopwatch]::StartNew()
     $started = $false
     try {
+        New-Item -ItemType Directory -Path $temporary -ErrorAction Stop | Out-Null
+        $directoryCreated = $true
         $started = $process.Start()
         if (-not $started) { throw 'Could not start the PDH reference tool.' }
         $outBuffer = [char[]]::new(65537); $errorBuffer = [char[]]::new(4097)
@@ -104,12 +112,28 @@ function Invoke-NgenPdhGpuMemoryDiagnostic {
         $count = $output.GetAwaiter().GetResult()
         $errorCount = $errors.GetAwaiter().GetResult()
         $result.exit_code = $process.ExitCode
-        $result.elapsed_ms = $clock.ElapsedMilliseconds
         $result.stdout = [string]::new($outBuffer, 0, [Math]::Min($count, 65536))
         $result.stderr = [string]::new($errorBuffer, 0, [Math]::Min($errorCount, 4096))
-        $result.status = if ($count -gt 65536 -or $errorCount -gt 4096) { 'output_limit' }
+        if (Test-Path -LiteralPath $csvPath) {
+            $file = Get-Item -LiteralPath $csvPath -Force -ErrorAction Stop
+            if ($file -isnot [IO.FileInfo] -or ($file.Attributes -band [IO.FileAttributes]::ReparsePoint) -or $file.Length -lt 1) {
+                $result.csv_status = 'invalid'
+            } elseif ($file.Length -gt 131072) {
+                $result.csv_status = 'output_limit'
+            } else {
+                $text = [IO.File]::ReadAllText($csvPath)
+                if ($text.Length -gt 65536) {
+                    $result.csv_status = 'output_limit'
+                } else {
+                    $result.csv = $text; $result.csv_bytes = $file.Length; $result.csv_status = 'captured'
+                }
+            }
+        }
+        $result.elapsed_ms = $clock.ElapsedMilliseconds
+        $result.status = if ($count -gt 65536 -or $errorCount -gt 4096 -or $result.csv_status -eq 'output_limit') { 'output_limit' }
             elseif (-not $finished -or $result.elapsed_ms -gt 2000) { 'timed_out' }
             elseif ($process.ExitCode -ne 0 -or $errorCount) { 'error' }
+            elseif ($result.csv_status -ne 'captured') { 'missing_or_invalid_csv' }
             else { 'completed' }
     } catch {
         $result.status = 'error'
@@ -122,6 +146,10 @@ function Invoke-NgenPdhGpuMemoryDiagnostic {
             $process.WaitForExit()
         }
         $process.Dispose()
+        if ($directoryCreated) {
+            if (Test-Path -LiteralPath $csvPath) { Remove-Item -LiteralPath $csvPath -Force -ErrorAction Stop }
+            Remove-Item -LiteralPath $temporary -ErrorAction Stop
+        }
     }
     return $result
 }
@@ -168,7 +196,8 @@ function Get-NgenGpuMemoryDiagnostic {
         $reference.target_valid_after = & $sameTarget
         if (-not $reference.target_valid_after) {
             $reference.status = 'target_unavailable_or_changed'
-            $reference.stdout = ''; $reference.stderr = ''
+            $reference.stdout = ''; $reference.stderr = ''; $reference.csv = ''
+            $reference.csv_bytes = 0L; $reference.csv_status = 'discarded_target_changed'
         }
         return $reference
     }

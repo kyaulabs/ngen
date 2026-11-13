@@ -1,0 +1,42 @@
+{
+  "archive_sha256": "c21954c6997c66edc041afcb1e7da90d44b229331cb49c5740302210b9714c2b",
+  "compressed_bytes": 2038,
+  "entries": 4,
+  "uncompressed_bytes": 5118,
+  "selected_payload_bytes": 3205,
+  "session_read": false,
+  "returned_code_executed": false,
+  "script_revision": "e669b92f9f29c34176c199824197988267894cb6",
+  "working_tree_clean": true,
+  "same_target_identity_all_attempts": true,
+  "operation_timeout_seconds": 2,
+  "cim_queries": [
+    {"provider": "formatted", "status": "error", "elapsed_ms": 2024},
+    {"provider": "raw", "status": "error", "elapsed_ms": 1997},
+    {"provider": "formatted", "status": "error", "elapsed_ms": 2006},
+    {"provider": "raw", "status": "observed", "elapsed_ms": 759}
+  ],
+  "raw_snapshot": {
+    "instances": 1,
+    "matches_selected_pid": true,
+    "dedicated_bytes": 269930496,
+    "shared_bytes": 53088256,
+    "dedicated_plus_shared_bytes": 323018752,
+    "total_committed_bytes": 323084288
+  },
+  "pdh_before": {
+    "elapsed_ms": 1232,
+    "exit_code": 0,
+    "counter_values_captured": false,
+    "stdout_status_text_only": true
+  },
+  "pdh_after": {
+    "elapsed_ms": 1706,
+    "exit_code": 0,
+    "counter_values_captured": false,
+    "stdout_status_text_only": true
+  },
+  "direct_pdh_reading_validated": false,
+  "formal_observer_changed": false,
+  "scope": "CIM timeouts plus one raw snapshot; PDH tool completion without captured counter data. No peak, coverage, binary-provenance or budget acceptance."
+}

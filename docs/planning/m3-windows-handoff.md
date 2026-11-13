@@ -40,8 +40,13 @@ The updated read-only sequence is direct PDH → formatted → raw → formatted
 timeout. The PDH references use Windows' existing `typeperf.exe`, bypassing CIM;
 each has a 2 s budget including helper startup. Only those owned helpers can be
 terminated, never the selected demo. Their output is bounded and retained for
-inspection. A tool's successful exit is not validated CSV data or budget acceptance;
-localized/unavailable counter names remain explicit failures, not zero readings.
+inspection. The [first PDH return](../evidence/M3/windows/provider-comparison/pdh-return.md)
+contains only redirected status text, not counter values. The corrected probe
+requests an explicit CSV file, admits bounded regular-file content and copies it
+into the JSON before deleting its owned temporary file/directory. Missing CSV is
+an explicit failure even when the tool exits 0. A captured file is still not
+validated counter data or budget acceptance; localized/unavailable counter names
+remain explicit failures, not zero readings.
 
 Each CIM attempt retains its elapsed time, projected counter values and bounded
 typed error details; failures do not hide other attempts. The sequence tests the
