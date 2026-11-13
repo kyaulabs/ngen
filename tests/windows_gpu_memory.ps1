@@ -143,3 +143,5 @@ if (-not $IsWindows) {
     }
 }
 Write-Host 'GPU provider comparison boundaries passed; native Windows confirmation remains required.'
+# Expected rejected CLI children must not become the Actions shell's final exit code.
+exit 0
