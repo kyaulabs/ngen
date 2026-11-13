@@ -22,9 +22,11 @@ helper, preserving existing coverage and budgets. The
 [MSVC](../evidence/M3/windows/pdh-collector/msvc.md) returns at `7afeefe` now pass
 sampled memory coverage and native F12 readings. Both clean replays miss the
 unchanged 16.7 ms RTX P95 target (21.8084 / 21.8387 ms). Their completion cadence
-is near 60 Hz versus roughly 144 Hz historically. **Confirm display refresh and
-frame-cap state next; do not repeat the unchanged full build or probe.** Future
-affected builds must include `gpu_memory_observer.exe` beside `flight_demo.exe`.
+is near 60 Hz versus roughly 144 Hz historically. The owner reports running via
+Artemis Virtual Desktop, a plausible but unproved presentation confound.
+**Retain functional/memory results; defer final RTX timing to a direct desktop
+session after the UI pass. Do not repeat the unchanged full build or probe.**
+Future affected builds must include `gpu_memory_observer.exe` beside `flight_demo.exe`.
 
 For later read-only diagnosis only: start an **already built** native Windows
 flight demo normally, wait for the scene and leave it open. In a second
@@ -110,8 +112,9 @@ basis of the historical generic message.
 The Release private bundle is beside that run's build directories at
 `offline/ngen-flight`. The workflow checks headless admission and three rendered
 frames with Conan deactivated and SDK paths removed. It does **not** disconnect
-networking or change firewall/adapter settings. Disconnect networking yourself
-and launch `run.cmd` to confirm the interactive offline path. Do not publish or
+networking or change firewall/adapter settings. From a direct desktop session,
+disconnect networking yourself and launch `run.cmd` to confirm the interactive
+offline path; do not disconnect the Artemis connection while working remotely. Do not publish or
 send the bundle: it contains the private accepted asset.
 
 Try tactical orbit, TAB to the authored direct camera, thrust then coast, SPACE

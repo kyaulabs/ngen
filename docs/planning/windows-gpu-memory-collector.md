@@ -47,8 +47,11 @@ Evidence and check scope:
 `docs/evidence/M3/windows/pdh-collector/{clangcl,msvc}.md`.
 The two current clean CSVs complete near 60 Hz versus approximately 144 Hz in
 the historical ClangCl run. These are frame-completion rates, not queried monitor
-refresh rates. Confirm display refresh/frame-cap state next; do not request an
-unchanged full rebuild or modify presentation/limits to hide the timing miss.
+refresh rates. The owner subsequently reported an Artemis Virtual Desktop
+session, a plausible but unproved presentation confound. Preserve the functional/
+memory results; defer final RTX timing to a direct desktop session after the UI
+pass. Do not request an unchanged full rebuild or modify presentation/limits to
+hide the timing miss.
 
 Keep the existing GUI, physics, asset, audio and accepted handling unchanged.
 Final M3 UI refinement and reviewed integration follow the remaining technical

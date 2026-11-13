@@ -48,10 +48,13 @@ Existing CSV clocks show a useful next diagnostic, not a proven cause:
 | Historical ClangCl at `5ea9e3c` | 143.928031 Hz | 16.6737851 s |
 
 The renderer requires FIFO presentation. These are **observed frame-completion
-rates, not queried monitor refresh rates**. Confirm the current display refresh
-and any frame cap before attributing the difference to code. Do not change
-presentation mode, timing definitions, services or budgets to turn this into a
-pass. No unchanged full rebuild is requested.
+rates, not queried monitor refresh rates**. After both returns, the owner reported
+running through Artemis Virtual Desktop. This is a plausible presentation-cadence
+confound, not a demonstrated cause or a waiver of the recorded timing misses.
+Retain the functional/memory results with that session context. Final RTX timing
+must use a direct desktop session after the UI pass; no rendering change or
+unchanged full rebuild is justified by these remote-session timings alone.
+Do not change presentation mode, timing definitions, services or budgets.
 
 Both compiler returns now cover native PDH sampled memory and F12 functionality
 (88 CTests combined). Final three-run/post-UI timing, the required UI refinement,

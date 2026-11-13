@@ -264,16 +264,19 @@ PDH workload collector is implemented with unchanged coverage and budgets. The
 pass both configurations, sampled memory coverage and native F12 system/device
 readings (88 CTests combined). Both miss the unchanged 16.7 ms RTX P95 target:
 21.8084 / 21.8387 ms. CSV completion cadence is now near 60 Hz versus roughly
-144 Hz historically; confirm display refresh/frame-cap state before code changes.
-Do not request an unchanged full rebuild. Explicit live-panel hovered-tooltip
-and final acceptance remain open.
+144 Hz historically. The owner reports using Artemis Virtual Desktop, a plausible
+but unproved presentation confound. Retain functional/memory results and defer
+final RTX timing to a direct desktop session after the UI pass; do not patch
+rendering, relax limits or request an unchanged full rebuild on these timings.
+Explicit live-panel hovered-tooltip and final acceptance remain open.
 
 The owner-requested [F12 performance overlay](m3-performance-overlay.md) is
 implemented before the broader UI pass. Native Linux verifies hidden startup,
 visibility persistence, detailed rendering/allocator metrics, whole-system CPU/RAM,
 shared/UMA labelling and allocation-free live-panel replays. The selected-adapter
-Windows PDH source cross-compiles; native confirmation remains required. It is
-not a substitute for the per-process GPU-memory budget observer.
+Windows PDH source now also has scoped native MSVC/ClangCl confirmation. It is
+not a substitute for the per-process GPU-memory budget observer or final owner
+UI acceptance.
 
 M3 remains open until these gates and exact post-merge CI complete. No mandatory
 tracker workflow or per-command reapproval is introduced.

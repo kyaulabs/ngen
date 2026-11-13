@@ -52,5 +52,6 @@ At this ClangCl checkpoint the MSVC sibling had not been inspected. Its
 [subsequent verification](msvc.md) also passes scoped native memory/F12 checks
 but misses the RTX P95 target. The RTX timing miss, final three-run/post-UI checks,
 demonstration recording, explicit hovered-tooltip scope, independent review and
-owner final acceptance remain open. Confirm display refresh/frame-cap state next;
-no unchanged full rebuild is requested.
+owner final acceptance remain open. The owner subsequently reported Artemis
+Virtual Desktop use; final RTX timing awaits a direct desktop session after the
+UI pass. No unchanged full rebuild or rendering patch is requested.
