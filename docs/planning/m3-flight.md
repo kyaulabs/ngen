@@ -251,9 +251,17 @@ uses direct ALSA hardware. The owner also explicitly accepts v13's physical RCS
 handling and nozzle aim. The [current Windows return](../evidence/M3/windows/current-physical/README.md)
 passes both frontends/configurations, all physical walkthroughs and zero warm
 allocations in clean/memory replays. ClangCl has complete sampled WDDM coverage
-and app-local startup. MSVC still has a first-query WMI timeout and no GPU-memory
-samples; its unchanged Release rerun remains necessary. Diagnostic improvements
-do not waive this failed run or establish why the provider timed out.
+and app-local startup. The later MSVC Release rerun again has no GPU-memory
+samples and reports 2 warm ImGui allocations. The [tooltip repair](../evidence/M3/tooltip/README.md)
+passes locally; native Windows confirmation and WMI cause isolation remain open.
+Do not request another unchanged full rerun or waive either finding.
+
+The owner-requested [F12 performance overlay](m3-performance-overlay.md) is
+implemented before the broader UI pass. Native Linux verifies hidden startup,
+visibility persistence, detailed rendering/allocator metrics, whole-system CPU/RAM,
+shared/UMA labelling and allocation-free live-panel replays. The selected-adapter
+Windows PDH source cross-compiles; native confirmation remains required. It is
+not a substitute for the per-process GPU-memory budget observer.
 
 M3 remains open until these gates and exact post-merge CI complete. No mandatory
 tracker workflow or per-command reapproval is introduced.

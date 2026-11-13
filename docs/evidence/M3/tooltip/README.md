@@ -1,5 +1,8 @@
 # Force-plot tooltip allocation regression
 
+This records tooltip checkpoint `3fd093f`. The later [F12 overlay work](../performance/README.md)
+extends the hover fixture to cover the live panel and supersedes the F12 status below.
+
 The latest MSVC Release return is again from clean `5ea9e3c`, archive SHA-256
 `363c0dd6ad691573b6adb8ac69b30bd8b6d94d1137ca6066e084e6d2003e154f`.
 Its 20 CTests pass, but the clean replay reports 2 warm ImGui allocations and the

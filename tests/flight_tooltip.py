@@ -10,8 +10,8 @@ import unittest
 SCRIPT = """set pagination off
 set confirm off
 set debuginfod enabled off
+set breakpoint pending on
 set $motion = (SDL_Event*)0
-set $reads = 0
 break ngen::tools::Gui::begin
 commands 1
  silent
@@ -34,12 +34,12 @@ commands 1
  call (bool)SDL_PushEvent($motion)
  continue
 end
-break ngen::tools::Gui::allocation_count
+break exit
 commands 2
  silent
- set $reads = $reads + 1
- if $reads == 2
+ if $motion != 0
   call (void)free($motion)
+  set $motion = (SDL_Event*)0
  end
  continue
 end
@@ -51,10 +51,10 @@ quit
 @unittest.skipUnless(os.getenv("NGEN_FLIGHT_DEMO") and os.getenv("NGEN_FLIGHT_PACKAGE") and shutil.which("gdb"),
                      "Set native Debug NGEN_FLIGHT_DEMO/PACKAGE with GDB installed")
 class Tooltip(unittest.TestCase):
-    def test_force_plot_hover_does_not_allocate_after_warmup(self):
+    def replay(self, script_text):
         with tempfile.TemporaryDirectory(prefix="ngen-tooltip-") as temporary:
             script = Path(temporary) / "hover.gdb"
-            script.write_text(SCRIPT)
+            script.write_text(script_text)
             result = subprocess.run(
                 [shutil.which("gdb"), "--batch", "-x", str(script), "--args",
                  os.environ["NGEN_FLIGHT_DEMO"], os.environ["NGEN_FLIGHT_PACKAGE"],
@@ -67,6 +67,25 @@ class Tooltip(unittest.TestCase):
         self.assertIn("flight_hdr_finite=1", result.stdout)
         self.assertIn("allocation_probe=1", result.stdout)
         self.assertNotIn("Flight demo:", result.stderr)
+        return result
+
+    def test_force_plot_hover_does_not_allocate_after_warmup(self):
+        self.replay(SCRIPT)
+
+    def test_force_plot_hover_with_live_performance_overlay_stays_allocation_free(self):
+        key = """  set $motion->type = 768
+  set $motion->key.windowID = $id
+  set $motion->key.scancode = 69
+  set $motion->key.down = 1
+  set $motion->key.repeat = 0
+  call (bool)SDL_PushEvent($motion)
+  call (void*)memset($motion, 0, sizeof(SDL_Event))
+"""
+        script = SCRIPT.replace("  call (void)SDL_free($windows)\n",
+                                key + "  call (void)SDL_free($windows)\n")
+        result = self.replay(script)
+        self.assertIn("performance_visible=1 performance_toggles=1", result.stdout)
+        self.assertIn("system_ram_available=1", result.stdout)
 
 
 if __name__ == "__main__":

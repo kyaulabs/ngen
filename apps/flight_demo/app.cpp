@@ -3,6 +3,7 @@
 #include "audio/output.hpp"
 #include "flight/input.hpp"
 #include "flight_demo/app.hpp"
+#include "flight_demo/performance.hpp"
 #include "flight_demo/view.hpp"
 #include "probe/capture.hpp"
 #include "render/environment.hpp"
@@ -14,6 +15,7 @@
 #include <cmath>
 #include <cstdio>
 #include <imgui.h>
+#include <limits>
 #include <numbers>
 #include <optional>
 #include <sstream>
@@ -153,6 +155,39 @@ std::optional<std::size_t> pick(const Ray &ray, const Preset &preset) {
     }
     return selected;
 }
+GpuMemoryIdentity gpu_memory_identity(Context &context) {
+    VkPhysicalDeviceIDProperties id{};
+    id.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_ID_PROPERTIES;
+    VkPhysicalDeviceProperties2 properties{};
+    properties.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PROPERTIES_2;
+    properties.pNext = &id;
+    vkGetPhysicalDeviceProperties2(context.physical_device(), &properties);
+    GpuMemoryIdentity result;
+    if (properties.properties.deviceType == VK_PHYSICAL_DEVICE_TYPE_INTEGRATED_GPU)
+        result.kind = GpuMemoryKind::shared;
+    else if (properties.properties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU)
+        result.kind = GpuMemoryKind::dedicated;
+    result.luid_valid = id.deviceLUIDValid != 0;
+    result.node_mask = id.deviceNodeMask;
+    std::copy(std::begin(id.deviceLUID), std::end(id.deviceLUID), result.luid.begin());
+    VkPhysicalDeviceMemoryProperties memory{};
+    vkGetPhysicalDeviceMemoryProperties(context.physical_device(), &memory);
+    if (memory.memoryHeapCount > VK_MAX_MEMORY_HEAPS) {
+        result.kind = GpuMemoryKind::unavailable;
+        return result;
+    }
+    for (std::uint32_t i = 0; i < memory.memoryHeapCount && i < VK_MAX_MEMORY_HEAPS; ++i)
+        if ((memory.memoryHeaps[i].flags & VK_MEMORY_HEAP_DEVICE_LOCAL_BIT) != 0) {
+            if (memory.memoryHeaps[i].size >
+                std::numeric_limits<std::uint64_t>::max() - result.total_bytes) {
+                result.kind = GpuMemoryKind::unavailable;
+                result.total_bytes = 0;
+                break;
+            }
+            result.total_bytes += memory.memoryHeaps[i].size;
+        }
+    return result;
+}
 struct Sample {
     std::uint64_t frame_ns{}, host_ns{};
     flight::Snapshot state;
@@ -174,8 +209,82 @@ struct Hud {
     ResourceStatistics memory;
     audio::Statistics audio;
     const char *status{"Select an asteroid, or click the flight plane to travel"};
-    bool help{};
+    bool help{}, performance{}, gpu_ready{}, allocation_probe{};
+    GpuMemoryKind gpu_memory{GpuMemoryKind::unavailable};
+    SystemUsageSampler::Sample system;
+    std::uint64_t cpp_calls{}, gui_calls{}, performance_drawn_frames{};
 };
+bool performance_panel(const Hud &metrics) {
+    const auto size = ImGui::GetIO().DisplaySize;
+    ImGui::SetNextWindowPos({std::max(16.0F, size.x - 366), metrics.help ? 340.0F : 70.0F});
+    ImGui::SetNextWindowSize({350, 312});
+    constexpr auto flags =
+        static_cast<ImGuiWindowFlags>(static_cast<unsigned>(ImGuiWindowFlags_NoDecoration) |
+                                      static_cast<unsigned>(ImGuiWindowFlags_NoSavedSettings) |
+                                      static_cast<unsigned>(ImGuiWindowFlags_NoMove) |
+                                      static_cast<unsigned>(ImGuiWindowFlags_NoInputs));
+    const auto visible = ImGui::Begin("Flight performance", nullptr, flags);
+    auto *draw = ImGui::GetWindowDrawList();
+    draw->VtxBuffer.reserve(static_cast<int>(overlay_vertex_limit));
+    draw->IdxBuffer.reserve(static_cast<int>(overlay_index_limit));
+    if (visible) {
+        ImGui::TextUnformatted("PERFORMANCE / F12");
+        if (metrics.frame_ms > 0)
+            ImGui::Text("FPS %.1f  |  Frame %.2f ms", 1000 / metrics.frame_ms, metrics.frame_ms);
+        else
+            ImGui::TextUnformatted("FPS / Frame: pending");
+        if (metrics.gpu_ready) {
+            ImGui::Text("GPU shadow %.2f | PBR %.2f ms", metrics.gpu.shadow_ns / 1e6,
+                        metrics.gpu.pbr_ns / 1e6);
+            ImGui::Text("GPU post %.2f | UI %.2f ms", metrics.gpu.post_ns / 1e6,
+                        metrics.gpu.ui_ns / 1e6);
+        } else
+            ImGui::TextUnformatted("GPU pass timings: pending / N/A");
+        ImGui::Separator();
+        const auto age = Clock::now() - metrics.system.sampled_at;
+        const auto *usage = metrics.system.sequence && age >= Clock::duration::zero() &&
+                                    age <= std::chrono::seconds(3)
+                                ? &metrics.system.values
+                                : nullptr;
+        if (usage && usage->cpu_percent)
+            ImGui::Text("CPU system busy  %.1f %%", *usage->cpu_percent);
+        else
+            ImGui::TextUnformatted("CPU system busy: N/A / collecting");
+        constexpr auto gib = 1024.0 * 1024 * 1024;
+        constexpr auto mib = 1024.0 * 1024;
+        if (usage && usage->ram)
+            ImGui::Text("RAM system %.2f / %.2f GiB", static_cast<double>(usage->ram->used) / gib,
+                        static_cast<double>(usage->ram->total) / gib);
+        else
+            ImGui::TextUnformatted("RAM system: N/A / collecting");
+        if (metrics.gpu_memory == GpuMemoryKind::shared)
+            ImGui::TextUnformatted("VRAM: shared system memory (UMA)");
+        else if (usage && usage->vram)
+            ImGui::Text("VRAM device %.1f / %.1f MiB", static_cast<double>(usage->vram->used) / mib,
+                        static_cast<double>(usage->vram->total) / mib);
+        else
+            ImGui::TextUnformatted("VRAM device: N/A / collecting");
+        if (metrics.system.collection_failed)
+            ImGui::TextDisabled("OS collector unavailable | missing = N/A");
+        else
+            ImGui::TextDisabled("OS/device ~1 Hz | missing = N/A");
+        ImGui::Separator();
+        ImGui::Text("VMA allocated %.1f MiB",
+                    static_cast<double>(metrics.memory.allocation_bytes) / mib);
+        ImGui::Text("VMA reserved  %.1f MiB",
+                    static_cast<double>(metrics.memory.reserved_bytes) / mib);
+        if (metrics.allocation_probe)
+            ImGui::Text("C++ allocation calls %llu",
+                        static_cast<unsigned long long>(metrics.cpp_calls));
+        else
+            ImGui::TextUnformatted("C++ allocation calls: probe unavailable");
+        ImGui::Text("ImGui allocation calls %llu",
+                    static_cast<unsigned long long>(metrics.gui_calls));
+        ImGui::TextDisabled("VMA != VRAM | C/driver heaps excluded");
+    }
+    ImGui::End();
+    return visible;
+}
 struct Actions {
     bool mode{}, reset{}, approach{}, orbit{}, focus{}, mute{};
 };
@@ -247,7 +356,7 @@ Actions hud(tools::Gui &gui, const flight::Snapshot &state, const Preset &preset
     ImGui::SetNextWindowSize({std::max(320.0F, size.x - 32), 48});
     if (ImGui::Begin("Flight bindings", nullptr, flags)) {
         ImGui::TextUnformatted("WASD thrust | SHIFT/CTRL vertical | QE roll | SPACE brake | RMB "
-                               "steer/orbit | ALT+RMB look | F1 help");
+                               "steer/orbit | ALT+RMB look | F1 help | F12 performance");
         ImGui::TextDisabled("AUDIO %s / M | %s",
                             metrics.audio.state == audio::State::disconnected
                                 ? "OFFLINE (retrying)"
@@ -271,11 +380,14 @@ Actions hud(tools::Gui &gui, const flight::Snapshot &state, const Preset &preset
                 "W/S forward/back, A/D lateral, SHIFT/CTRL vertical. Release thrust to coast; hold "
                 "SPACE to brake. TAB changes mode without resetting motion. R resets the preset; "
                 "ESC releases controls. Closing the window exits.");
-            ImGui::TextWrapped("M toggles audio. Focus loss silences playback. Device loss retries "
-                               "without changing simulation; original cues use no media files.");
+            ImGui::TextWrapped(
+                "M audio; F12 performance. Focus loss silences playback. Device loss retries "
+                "without changing simulation; original cues use no media files.");
         }
         ImGui::End();
     }
+    if (metrics.performance && performance_panel(metrics))
+        ++metrics.performance_drawn_frames;
     auto *draw = ImGui::GetForegroundDrawList();
     const ImVec2 center{size.x * .5F, size.y * .5F};
     draw->AddLine({center.x - 7, center.y}, {center.x + 7, center.y}, IM_COL32(190, 225, 230, 180));
@@ -341,8 +453,17 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
     asteroids.indices = &indices;
     SceneRenderer renderer;
     auto gui = take(tools::Gui::create(*context));
-    // Prime the plot tooltip's bounded buffers before measuring or presenting it.
-    // Later numeric formats and first hover must not grow its draw storage.
+    const auto gpu_identity = gpu_memory_identity(*context);
+    auto system_usage = std::make_unique<SystemUsageSampler>(gpu_identity);
+    PerformanceControls performance{SDL_GetWindowID(context->window())};
+    std::uint64_t performance_toggles{};
+    audio::Output sound;
+    bool muted = options.mute;
+    (void)sound.mute(muted);
+    Hud metrics;
+    metrics.gpu_memory = gpu_identity.kind;
+    metrics.allocation_probe = workload::allocation_probe_enabled();
+    // Prepare both hidden UI paths in a cold frame that is never presented.
     gui->begin();
     if (ImGui::BeginTooltip()) {
         auto *tooltip = ImGui::GetWindowDrawList();
@@ -350,12 +471,9 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
         tooltip->IdxBuffer.reserve(static_cast<int>(overlay_index_limit));
         ImGui::EndTooltip();
     }
+    (void)performance_panel(metrics);
     gui->end();
-    audio::Output sound;
-    bool muted = options.mute;
-    (void)sound.mute(muted);
-    Hud metrics;
-    bool quit = false, captured = false, reset_requested = false;
+    bool quit = false, captured = false, reset_requested = false, sampling_paused = false;
     bool focused = (SDL_GetWindowFlags(context->window()) & SDL_WINDOW_INPUT_FOCUS) != 0;
     input.focus(focused);
     std::optional<std::size_t> selected, camera_target;
@@ -487,6 +605,10 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
             event.window.windowID = id;
             push(event);
         };
+        if (index == 10 || index == 200 || index == 260) {
+            key(SDL_SCANCODE_F12, true);
+            key(SDL_SCANCODE_F12, false);
+        }
         switch (index) {
         case 0:
             focus_event(true);
@@ -590,6 +712,12 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
         for (unsigned n = 0; n < 256 && SDL_PollEvent(&event); ++n) {
             gui->event(event);
             (void)sound.event(event);
+            if (performance.event(event)) {
+                ++performance_toggles;
+                metrics.performance = performance.visible();
+                system_usage->enabled(metrics.performance && !sampling_paused);
+                continue;
+            }
             if (event.type == SDL_EVENT_QUIT || event.type == SDL_EVENT_WINDOW_CLOSE_REQUESTED) {
                 quit = true;
                 continue;
@@ -779,6 +907,8 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
     std::vector<Sample> samples(options.frames);
     std::size_t measured = 0, collected = 0;
     Submission last;
+    std::array<std::pair<Submission, Submission>, 4> gpu_frames{};
+    std::size_t gpu_cursor{};
     const auto collect = [&] {
         while (collected < measured) {
             auto &sample = samples[collected];
@@ -790,6 +920,7 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
                 sample.gpu = {mesh->shadow_ns, mesh->pbr_ns, post->post_ns, post->ui_ns};
                 sample.gpu_ready = true;
                 metrics.gpu = sample.gpu;
+                metrics.gpu_ready = true;
             }
             ++collected;
         }
@@ -829,9 +960,15 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
             (SDL_GetWindowFlags(context->window()) & SDL_WINDOW_MINIMIZED) != 0) {
             input.release();
             (void)sound.mute(true);
+            system_usage->enabled(false);
+            sampling_paused = true;
             time = Clock::now();
             SDL_Delay(16);
             continue;
+        }
+        if (sampling_paused) {
+            sampling_paused = false;
+            system_usage->enabled(performance.visible());
         }
         if (fixed_tick) {
             if (options.replay && frame_index >= warmup)
@@ -867,6 +1004,11 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
                 "flight drawable unavailable");
         const VkExtent2D drawable{static_cast<unsigned>(width), static_cast<unsigned>(height)};
         auto view = take(present(preset, last_camera, drawable));
+        if (performance.visible()) {
+            metrics.cpp_calls = workload::allocation_count();
+            metrics.gui_calls = gui->allocation_count();
+            metrics.system = system_usage->snapshot();
+        }
         const auto action =
             hud(*gui, current, preset, metrics, selected, options.replay, muted, view);
         if (action.mute)
@@ -970,6 +1112,26 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
         }
         if (!presented)
             continue;
+        gpu_frames[gpu_cursor] = {mesh, last};
+        gpu_cursor = (gpu_cursor + 1) % gpu_frames.size();
+        if (performance.visible() && context->gpu_timings_available()) {
+            metrics.gpu_ready = false;
+            for (std::size_t age = 0; age < gpu_frames.size(); ++age) {
+                const auto &pending =
+                    gpu_frames[(gpu_cursor + gpu_frames.size() - 1 - age) % gpu_frames.size()];
+                if (!pending.second.serial())
+                    continue;
+                const auto post = take(context->submission_timings(pending.second));
+                if (!post)
+                    continue;
+                const auto scene = take(context->submission_timings(pending.first));
+                if (scene) {
+                    metrics.gpu = {scene->shadow_ns, scene->pbr_ns, post->post_ns, post->ui_ns};
+                    metrics.gpu_ready = true;
+                    break;
+                }
+            }
+        }
         metrics.memory = take(context->resource_statistics());
         metrics.audio = sound.statistics();
         if (options.frames && frame_index >= warmup) {
@@ -1110,8 +1272,29 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
         static_cast<unsigned long long>(audio_stats.generation),
         static_cast<unsigned long long>(audio_stats.losses), audio_stats.maximum_queued_frames,
         audio_stats.muted ? 1U : 0U);
+    const auto system_sample = system_usage->snapshot();
+    const auto system_ram = system_sample.values.ram.value_or(MemoryBytes{});
+    const auto system_vram = system_sample.values.vram.value_or(MemoryBytes{});
+    std::printf(
+        "performance_visible=%u performance_toggles=%llu performance_drawn_frames=%llu "
+        "scope=system_device os_samples=%llu system_ram_available=%u "
+        "system_ram_used_bytes=%llu system_ram_total_bytes=%llu "
+        "system_cpu_available=%u system_cpu_busy_percent=%.3f gpu_memory_kind=%u "
+        "device_vram_available=%u device_vram_used_bytes=%llu device_vram_total_bytes=%llu "
+        "performance_gpu_ready=%u os_collection_failed=%u\n",
+        performance.visible() ? 1U : 0U, static_cast<unsigned long long>(performance_toggles),
+        static_cast<unsigned long long>(metrics.performance_drawn_frames),
+        static_cast<unsigned long long>(system_sample.sequence), system_sample.values.ram ? 1U : 0U,
+        static_cast<unsigned long long>(system_ram.used),
+        static_cast<unsigned long long>(system_ram.total),
+        system_sample.values.cpu_percent ? 1U : 0U, system_sample.values.cpu_percent.value_or(0.0),
+        static_cast<unsigned>(gpu_identity.kind), system_sample.values.vram ? 1U : 0U,
+        static_cast<unsigned long long>(system_vram.used),
+        static_cast<unsigned long long>(system_vram.total), metrics.gpu_ready ? 1U : 0U,
+        system_sample.collection_failed ? 1U : 0U);
     (void)SDL_SetWindowRelativeMouseMode(context->window(), false);
     (void)sound.close();
+    system_usage.reset();
     gui.reset();
     require(context->close(), "flight context close failed");
     require(context->validation_errors() == 0, "flight Vulkan validation reported errors");
