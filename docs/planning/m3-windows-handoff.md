@@ -17,10 +17,12 @@ not current physical replay acceptance.
 The [explicit-CSV comparison](../evidence/M3/windows/provider-comparison/pdh-csv-return.md)
 now establishes matching direct-PDH and raw-CIM snapshots around three CIM
 timeouts. The observer transport has been replaced by a bounded native PDH
-helper, preserving existing coverage and budgets. Its Windows execution is still
-pending. **The next step is a current-source rebuild using the checks below**, not
-another unchanged attached-process probe. Each configuration must build
-`gpu_memory_observer.exe` beside `flight_demo.exe`.
+helper, preserving existing coverage and budgets. The
+[ClangCl return](../evidence/M3/windows/pdh-collector/clangcl.md) at `7afeefe` now
+passes sampled memory coverage and native F12 readings. **Inspect the existing
+MSVC sibling archive next; do not repeat the unchanged full build or probe.**
+ClangCl's clean P95 of 21.8084 ms misses the unchanged 16.7 ms RTX target. Future
+affected builds must include `gpu_memory_observer.exe` beside `flight_demo.exe`.
 
 For later read-only diagnosis only: start an **already built** native Windows
 flight demo normally, wait for the scene and leave it open. In a second
@@ -62,9 +64,9 @@ read has no warmup effect. No result substitutes for complete formal observation
 OS calls are not a hard real-time guarantee. Do not run the diagnostic alongside
 a clean timing or formal memory measurement.
 
-Run the current-source Windows checks below for the native collector, tooltip
-fix and F12 panel, including actual dedicated-VRAM readings. The collector's
-sampled-window acceptance remains open. Use the named splat; do not split
+The checks below are the recipe for future affected current-source runs, not a
+request to repeat the passing ClangCl memory check. MSVC sampled-window and
+explicit hovered-tooltip evidence remain open. Use the named splat; do not split
 `Start-Process` arguments or use positional `Select-String` examples.
 
 ```powershell

@@ -2,12 +2,13 @@
 
 Native direct-PDH snapshots now contain the same own-process dedicated/shared/
 committed values as raw CIM, before and after three CIM timeouts. The precise
-Windows CIM defect remains unknown; the measurement transport is not reliably
-meeting the existing limits. Do not repair services, registrations or privileges.
+Windows CIM defect remains unknown; that CIM transport did not reliably meet
+the existing limits. Do not repair services, registrations or privileges.
 An untracked owner `output.csv` in the latest return is not read or removed.
 
 The workload observer now uses that PDH counter family through a native helper;
-its own Windows execution remains pending. The transport change preserves
+ClangCl native execution now has complete sampled coverage, while MSVC evidence
+remains pending. The transport change preserves
 500 ms target sampling, the 1 s maximum measured-window gap, a 2 s read deadline,
 every query attempt, QPC/native-frame correlation, all-zero/missing/malformed/
 duplicate rejection, 1 GiB GPU and 6 GiB process limits. No fallback hides failed
@@ -36,16 +37,17 @@ Implementation used public-boundary TDD; native acceptance is still required:
    executable, strict real Win64 SDK compile/link, no fabricated declarations.
 3. Complete locally: owned process transport, timeout/EOF/output/error cleanup and
    existing observer policy regressions, including historical failure checks.
-4. Pending: native compiler/configuration checks, sampled-window memory acceptance
-   and affected F12/tooltip verification on Windows. Neither Linux fixtures nor
-   the two reference snapshots substitute for that execution.
+4. ClangCl Debug/Release compilation, 44 CTests, sampled-window memory and native
+   F12 system/device readings pass at `7afeefe`. MSVC and explicit live-panel
+   hovered-tooltip evidence remain pending. The clean ClangCl replay misses the
+   unchanged 16.7 ms RTX P95 target at 21.8084 ms; diagnose before final acceptance.
 
 Evidence and check scope:
-`docs/evidence/M3/windows/provider-comparison/pdh-csv-return.md`.
-The next Windows run must rebuild the current source, including
-`gpu_memory_observer.exe` beside each build's `flight_demo.exe`; attaching the
-old executable or repeating the unchanged CIM probe cannot validate this repair.
-Run MSVC then ClangCl sequentially, retaining both archives even if MSVC fails.
+`docs/evidence/M3/windows/provider-comparison/pdh-csv-return.md` and
+`docs/evidence/M3/windows/pdh-collector/clangcl.md`.
+Inspect the already-produced MSVC sibling archive next; do not request another
+unchanged full rebuild. The ClangCl return includes the current native helper
+beside `flight_demo.exe`. Old attached-process snapshots are not equivalent.
 
 Keep the existing GUI, physics, asset, audio and accepted handling unchanged.
 Final M3 UI refinement and reviewed integration follow the remaining technical

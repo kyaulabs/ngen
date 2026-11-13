@@ -1,0 +1,72 @@
+{
+  "archive_sha256": "c7758867531e1726a51c8feede6123567c1f4848ffcf4e68f75a224500ba7e00",
+  "source_revision": "7afeefe568110a042c41ff258d44da490e2f0112",
+  "compiler": "ClangCl 19.1.5",
+  "working_tree": "untracked owner output.csv only; not read or removed",
+  "walkthroughs": [
+    {
+      "configuration": "Debug",
+      "ctests": 22,
+      "native_reader_compiled_linked": true,
+      "physical_controls_audio_and_geometry": true,
+      "f12_toggles": 3,
+      "f12_drawn_frames": 260,
+      "os_samples": 6,
+      "system_ram_available": true,
+      "system_cpu_available": true,
+      "whole_device_dedicated_vram_used_bytes": 2953723904,
+      "whole_device_dedicated_vram_total_bytes": 12523143168,
+      "collection_failed": false
+    },
+    {
+      "configuration": "Release",
+      "ctests": 22,
+      "native_reader_compiled_linked": true,
+      "physical_controls_audio_and_geometry": true,
+      "f12_toggles": 3,
+      "f12_drawn_frames": 260,
+      "os_samples": 6,
+      "system_ram_available": true,
+      "system_cpu_available": true,
+      "whole_device_dedicated_vram_used_bytes": 2953465856,
+      "whole_device_dedicated_vram_total_bytes": 12523143168,
+      "collection_failed": false
+    }
+  ],
+  "clean_replay": {
+    "frames": 2400,
+    "median_ms": 14.6328,
+    "p95_ms": 21.8084,
+    "p99_ms": 22.2059,
+    "maximum_ms": 22.6696,
+    "rtx_p95_target_ms": 16.7,
+    "rtx_p95_target_met": false,
+    "scope": "One full-HD clean replay; all rows retained. Not three-run, post-UI or final acceptance. Cause of slower timing is not established."
+  },
+  "warm_cpp_imgui_calls": [
+    0,
+    0
+  ],
+  "clean_memory_27_physical_fields_identical": true,
+  "historical_physical_clang_27_fields_identical": true,
+  "capture_report_hashes_verified": 8,
+  "instrumented_memory": {
+    "samples": 76,
+    "query_attempts": 77,
+    "startup_empty_attempts": 1,
+    "measured_window_seconds": 39.9998336,
+    "coverage_complete": true,
+    "missing_measured_queries": 0,
+    "maximum_gap_ms": 570.669,
+    "maximum_query_ms": 196,
+    "maximum_measured_query_ms": 2,
+    "peak_dedicated_bytes": 309239808,
+    "peak_shared_bytes": 53088256,
+    "peak_dedicated_plus_shared_bytes": 362328064,
+    "separate_peak_total_committed_bytes": 362393600,
+    "working_set_high_water_bytes": 433553408,
+    "within_existing_budgets": true
+  },
+  "app_local_sdk_isolated_startup": true,
+  "scope": "One ClangCl return. MSVC absent, RTX timing target missed, explicit native hovered-tooltip replay and final UI/three-run/delivery/owner acceptance remain open. No native sanitizer or network-disconnection claim."
+}

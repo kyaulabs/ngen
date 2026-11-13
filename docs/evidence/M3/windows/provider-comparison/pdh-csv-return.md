@@ -50,8 +50,10 @@ blocked-reader deadline. Initial behavioral Reds and the enum-size lint finding
 were repaired without disabling checks. Same-session review is not independent
 review.
 
-The new native helper has **not yet executed on Windows**. MSVC/ClangCl sampled
-coverage, current-source F12/tooltip behavior and Windows packaging remain open.
+At this repair checkpoint the native helper had **not yet executed on Windows**.
+The subsequent [ClangCl return](../pdh-collector/clangcl.md) passes sampled memory
+coverage, native F12 readings and scoped app-local startup, but misses the RTX
+P95 target. MSVC and explicit hovered-tooltip evidence remain open.
 The required final M3 UI refinement and integration are not completed by this
 repair. See `docs/planning/windows-gpu-memory-collector.md`.
 

@@ -258,9 +258,12 @@ unchanged full rerun or waive either finding. The later
 [explicit PDH CSV comparison](../evidence/M3/windows/provider-comparison/pdh-csv-return.md)
 returns matching process-memory gauges before/after three CIM timeouts and a
 successful raw read. The precise Windows cause remains unknown. A bounded native
-PDH workload collector is implemented with unchanged coverage and budgets; its
-current-source MSVC/ClangCl execution is the next check. Neither two snapshots nor
-Linux transport fixtures establish native sampled-window acceptance.
+PDH workload collector is implemented with unchanged coverage and budgets. The
+[ClangCl native return](../evidence/M3/windows/pdh-collector/clangcl.md) at `7afeefe`
+passes both configurations, sampled memory coverage and native F12 system/device
+readings. Its clean P95 of 21.8084 ms misses the unchanged 16.7 ms RTX target.
+Inspect the existing MSVC sibling archive next; do not request an unchanged full
+rebuild. Explicit live-panel hovered-tooltip and final acceptance remain open.
 
 The owner-requested [F12 performance overlay](m3-performance-overlay.md) is
 implemented before the broader UI pass. Native Linux verifies hidden startup,
