@@ -21,7 +21,10 @@ param(
     [Parameter(Mandatory, ParameterSetName = 'Measurement')]
     [string]$MeasureWorkload,
     [Parameter(Mandatory, ParameterSetName = 'GPU')]
-    [switch]$GpuInfo
+    [switch]$GpuInfo,
+    [Parameter(Mandatory, ParameterSetName = 'GpuMemoryDiagnostic')]
+    [ValidateRange(1, 2147483647)]
+    [int]$DiagnoseGpuMemoryProcessId
 )
 
 function Invoke-NgenNative {
@@ -62,6 +65,103 @@ function Get-NgenSceneIdentity {
         bytes = $item.Length
         sha256 = (Get-FileHash -LiteralPath $item.FullName -Algorithm SHA256).Hash.ToLowerInvariant()
     }
+}
+
+function Get-NgenGpuMemoryDiagnostic {
+    param([Parameter(Mandatory)][ValidateRange(1, 2147483647)][int]$ProcessId)
+    $target = Get-Process -Id $ProcessId -ErrorAction Stop
+    try {
+        if ($target.Id -ne $ProcessId -or $target.HasExited -or $target.ProcessName -ine 'flight_demo') {
+            throw 'GPU diagnosis requires the selected live flight_demo process.'
+        }
+        $startedAt = $target.StartTime.ToUniversalTime()
+    } finally {
+        $target.Dispose()
+    }
+    $formatted = 'Win32_PerfFormattedData_GPUPerformanceCounters_GPUProcessMemory'
+    $raw = 'Win32_PerfRawData_GPUPerformanceCounters_GPUProcessMemory'
+    $sameTarget = {
+        try {
+            $current = Get-Process -Id $ProcessId -ErrorAction Stop
+            try {
+                return $current.Id -eq $ProcessId -and -not $current.HasExited -and
+                    $current.ProcessName -ieq 'flight_demo' -and
+                    $current.StartTime.ToUniversalTime().Ticks -eq $startedAt.Ticks
+            } finally {
+                $current.Dispose()
+            }
+        } catch {
+            return $false
+        }
+    }
+    $targetStatus = 'same_process'
+    $attempts = [Collections.Generic.List[object]]::new()
+    foreach ($provider in @($formatted, $raw, $formatted, $raw)) {
+        if (-not (& $sameTarget)) { $targetStatus = 'unavailable_or_changed'; break }
+        $clock = [Diagnostics.Stopwatch]::StartNew()
+        $attempt = [ordered]@{ provider = $provider; status = 'no_own_instances'
+            elapsed_ms = 0L; rows = @(); error_details = $null }
+        try {
+            $rows = @(Get-CimInstance -Query "SELECT Name,DedicatedUsage,SharedUsage,TotalCommitted FROM $provider WHERE Name LIKE 'pid_$($ProcessId)_%'" -OperationTimeoutSec 2 -ErrorAction Stop | Select-Object -First 65)
+            if ($rows.Count -gt 64) { throw 'GPU observation capacity exceeded.' }
+            $seen = [Collections.Generic.HashSet[string]]::new([StringComparer]::OrdinalIgnoreCase)
+            $owned = [Collections.Generic.List[object]]::new()
+            foreach ($row in $rows) {
+                if ($row.Name -isnot [string] -or $row.Name.Length -gt 128) { throw 'Invalid GPU instance name.' }
+                # WQL '_' is a wildcard; match the formal observer's exact PID post-filter.
+                if (-not $row.Name.StartsWith("pid_$($ProcessId)_", [StringComparison]::OrdinalIgnoreCase)) { continue }
+                if ($row.Name -notmatch "^pid_$($ProcessId)_luid_0x[0-9a-f]+_0x[0-9a-f]+_phys_[0-9]+$") {
+                    throw 'Unsupported own-process GPU instance.'
+                }
+                if (-not $seen.Add($row.Name)) { throw 'Duplicate process GPU instance.' }
+                foreach ($value in @($row.DedicatedUsage, $row.SharedUsage, $row.TotalCommitted)) {
+                    if (($value -isnot [long] -and $value -isnot [ulong] -and $value -isnot [int] -and $value -isnot [uint32]) -or
+                        $value -lt 0 -or $value -gt ([long]::MaxValue / 128)) { throw 'Invalid process GPU counter.' }
+                }
+                $owned.Add($row)
+            }
+            $rows = $owned.ToArray()
+            if ($rows.Count) {
+                $attempt.status = 'zero'
+                foreach ($row in $rows) {
+                    if ($row.DedicatedUsage -gt 0 -or $row.SharedUsage -gt 0 -or $row.TotalCommitted -gt 0) {
+                        $attempt.status = 'observed'
+                    }
+                }
+            }
+            $attempt.rows = @($rows | ForEach-Object {
+                [ordered]@{ name = [string]$_.Name; dedicated_bytes = $_.DedicatedUsage
+                    shared_bytes = $_.SharedUsage; total_committed_bytes = $_.TotalCommitted }
+            })
+        } catch {
+            $attempt.status = 'error'
+            $identifier = [string]$_.FullyQualifiedErrorId
+            $attempt.error_details = [ordered]@{
+                type = $_.Exception.GetType().Name
+                hresult = $_.Exception.HResult
+                fully_qualified_error_id = $identifier.Substring(0, [Math]::Min($identifier.Length, 512))
+                category = [string]$_.CategoryInfo.Category
+                native_error_code = $null; status_code = $null
+            }
+            if ($_.Exception -is [Microsoft.Management.Infrastructure.CimException]) {
+                $attempt.error_details.native_error_code = [string]$_.Exception.NativeErrorCode
+                $attempt.error_details.status_code = [uint32]$_.Exception.StatusCode
+            }
+        }
+        $attempt.elapsed_ms = $clock.ElapsedMilliseconds
+        $attempt.target_valid_after = & $sameTarget
+        if (-not $attempt.target_valid_after) {
+            $attempt.status = 'target_unavailable_or_changed'
+            $attempt.rows = @()
+            $targetStatus = 'unavailable_or_changed'
+        }
+        $attempts.Add($attempt)
+        if (-not $attempt.target_valid_after) { break }
+    }
+    return [ordered]@{ schema = 1; diagnostic_only = $true; process_id = $ProcessId
+        target_status = $targetStatus
+        process_started_utc = $startedAt.ToString('O')
+        operation_timeout_seconds = 2; queries = $attempts.ToArray() }
 }
 
 function Invoke-NgenWorkload {
@@ -600,7 +700,9 @@ if (-not $IsWindows) {
 
 $ErrorActionPreference = 'Stop'
 $root = Split-Path -Parent $PSScriptRoot
-$run = if ($MeasureWorkload) {
+$run = if ($DiagnoseGpuMemoryProcessId) {
+    Join-Path $root ('build/windows-gpu-diagnostic/' + (Get-Date -Format 'yyyyMMdd-HHmmss-fff') + '-' + [guid]::NewGuid().ToString('N'))
+} elseif ($MeasureWorkload) {
     Join-Path $root ('build/windows-measure/' + (Get-Date -Format 'yyyyMMdd-HHmmss-fff') + '-' + [guid]::NewGuid().ToString('N'))
 } else { Join-Path $root ('build/windows/' + (Get-Date -Format 'yyyyMMdd-HHmmss-fff')) }
 $logs = Join-Path $run 'logs'
@@ -615,6 +717,12 @@ try {
     Write-Host "Run directory: $run"
     Invoke-NgenNative -FilePath 'git' -Arguments @('rev-parse', 'HEAD') -LogPath (Join-Path $logs 'revision.txt')
     Invoke-NgenNative -FilePath 'git' -Arguments @('status', '--short') -LogPath (Join-Path $logs 'working-tree.txt')
+    if ($DiagnoseGpuMemoryProcessId) {
+        Get-NgenGpuMemoryDiagnostic -ProcessId $DiagnoseGpuMemoryProcessId |
+            ConvertTo-Json -Depth 6 | Set-Content -LiteralPath (Join-Path $logs 'gpu-memory-diagnostic.json')
+        Write-Host 'Read-only raw/formatted GPU provider comparison retained. The selected client was not started, stopped or reconfigured. This is not memory-budget acceptance.'
+        exit 0
+    }
     if ($GpuInfo) {
         $vulkan = Get-Command vulkaninfo.exe -CommandType Application -ErrorAction SilentlyContinue | Select-Object -First 1
         $vulkanPath = if ($vulkan) { $vulkan.Source } else { $null }

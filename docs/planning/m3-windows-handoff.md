@@ -4,8 +4,8 @@ Use a clean checkout of `feat/kyau-023ba5-m3-flight`. Set `$scene` to the new
 private RCS cooked derivative, not the GLB or original M2 package. Its SHA-256 is
 `99c996f33d3cc98dbd801e3aa302ee2a5894d0fa6bcfdd18f59b73e72e74d834`;
 its CRC compatibility marker is `6bbe6157`. Copy it to a new path and preserve the
-accepted M2 original. The owner-requested RCS addition needs visual review; the
-accepted rear exhaust/hull appearance is not reopened. See the
+accepted M2 original. The owner accepts the current physical RCS handling/nozzle
+aim; the accepted rear exhaust/hull appearance is not reopened. See the
 [directional 32-jet RCS checkpoint](../evidence/M3/rcs/directional/README.md).
 The current private input is `build/cooked-candidate/frigate-rcs-directional-v1/scene.ngas`;
 older all-bank firing candidates are not equivalent to this source/profile.
@@ -14,8 +14,35 @@ published bank firings to Jolt; rebuild the current source, including its change
 owning ship/snapshot layout. Earlier smooth-wrench trajectories are historical,
 not current physical replay acceptance.
 
-Run in PowerShell 7.2 or newer. Use the named splat; do not split `Start-Process`
-arguments or use positional `Select-String` examples.
+First isolate the recurring MSVC memory-observer timeout without another full
+build. Start an **already built** native Windows flight demo normally, wait for
+the scene to load, and leave it open. In a second PowerShell 7.2+ terminal, list
+only these clients and choose the ID of the window you want to inspect:
+
+```powershell
+Get-Process -Name flight_demo | Select-Object Id, StartTime, MainWindowTitle
+$probe = @{ DiagnoseGpuMemoryProcessId = 12345 } # Replace with that actual ID.
+& ./tools/build-windows.ps1 @probe
+```
+
+Send the small `evidence.zip` path printed by this diagnostic. It does not build,
+install anything, start/stop the client, alter services/counters or elevate. Close
+the client yourself when finished. PID/start-time checks stop collection if the
+selected process exits or changes.
+
+The read-only sequence is formatted → raw → formatted → raw, with the same
+owned-PID filter, fields and 2 s CIM operation timeout. Each attempt retains its
+elapsed time, projected counter values and bounded typed error details; failures
+do not hide the other attempts. This tests whether the failure is shared by the
+raw provider or specific to formatted/cold queries. A pattern alone does not prove
+the underlying cause, and raw readings are not substituted for budget acceptance.
+The CIM timeout is not a hard OS wall-clock guarantee. Do not run the diagnostic
+alongside a clean timing or formal memory measurement.
+
+After diagnosis and any verified repair, the current-source Windows checks below
+remain necessary for the tooltip fix and F12 panel, including actual dedicated-VRAM
+readings. Use the named splat; do not split `Start-Process` arguments or use
+positional `Select-String` examples.
 
 ```powershell
 $check = @{
@@ -67,5 +94,5 @@ cleanly. Listen to engine/thrust/brake/UI cues; try M, real focus loss and a rea
 playback-device removal/reconnection where available. Report control feel, sound
 comfort and any discontinuity. Synthetic SDL events are not substitutes for this.
 Keep a short original audio/video recording private; send its hash and feedback.
-M3 remains open until these checks, RCS owner review, the required deferred UI pass,
-laptop/RTX budgets and reviewed integration finish.
+M3 remains open until these Windows checks, the required deferred UI pass,
+final laptop/RTX budgets, owner acceptance and reviewed integration finish.
