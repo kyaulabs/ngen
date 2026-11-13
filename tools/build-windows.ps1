@@ -279,6 +279,92 @@ function Get-NgenGpuMemoryDiagnostic {
         pdh_before = $pdhBefore; pdh_after = $pdhAfter }
 }
 
+function Get-NgenPdhProcessMemory {
+    param(
+        [Parameter(Mandatory)][string]$FilePath,
+        [Parameter(Mandatory)][ValidateRange(1, 2147483647)][int]$ProcessId,
+        [Parameter(Mandatory)][ref]$Reader
+    )
+    $clock = [Diagnostics.Stopwatch]::StartNew()
+    $line = {
+        $remaining = [int][Math]::Max(0, 2000 - $clock.ElapsedMilliseconds)
+        $pending = $Reader.Value.StandardOutput.ReadLineAsync()
+        if (-not $pending.Wait($remaining)) { throw [TimeoutException]::new('PDH read exceeded its 2 s deadline.') }
+        $text = $pending.GetAwaiter().GetResult()
+        if ($null -eq $text -or $text.Length -gt 32768) { throw [IO.InvalidDataException]::new('Missing or oversized native PDH response.') }
+        $value = ConvertFrom-Json -InputObject $text -AsHashtable -Depth 6 -ErrorAction Stop
+        if ($value -isnot [Collections.IDictionary]) { throw [IO.InvalidDataException]::new('Invalid native PDH response.') }
+        if ($value.status -eq 'error') {
+            $failure = [IO.InvalidDataException]::new('Native PDH counter read failed.')
+            if ($value.pdh_status -is [int] -or $value.pdh_status -is [long]) {
+                if ($value.pdh_status -ge 0 -and $value.pdh_status -le [uint32]::MaxValue) {
+                    $failure.Data['PdhStatus'] = [uint32]$value.pdh_status
+                }
+            }
+            if ($value.kind -is [string] -and $value.kind.Length -le 64) { $failure.Data['PdhKind'] = $value.kind }
+            throw $failure
+        }
+        return $value
+    }
+    try {
+        if ($null -eq $Reader.Value) {
+            $item = Get-Item -LiteralPath $FilePath -Force -ErrorAction Stop
+            if ($item -isnot [IO.FileInfo] -or ($item.Attributes -band [IO.FileAttributes]::ReparsePoint)) {
+                throw 'Native PDH reader must be a regular executable.'
+            }
+            $process = [Diagnostics.Process]::new()
+            $process.StartInfo.FileName = $item.FullName
+            $process.StartInfo.UseShellExecute = $false
+            $process.StartInfo.CreateNoWindow = $true
+            $process.StartInfo.RedirectStandardInput = $true
+            $process.StartInfo.RedirectStandardOutput = $true
+            $process.StartInfo.RedirectStandardError = $true
+            $process.StartInfo.ArgumentList.Add([string]$ProcessId)
+            try {
+                if (-not $process.Start()) { throw 'Could not start the native PDH reader.' }
+            } catch {
+                $process.Dispose()
+                throw
+            }
+            $Reader.Value = $process
+            $ready = & $line
+            if ($ready.schema -ne 1 -or $ready.ready -ne $true) { throw 'Native PDH reader did not initialize.' }
+        }
+        $Reader.Value.StandardInput.WriteLine('read')
+        $Reader.Value.StandardInput.Flush()
+        $response = & $line
+        if ($clock.ElapsedMilliseconds -gt 2000) { throw [TimeoutException]::new('PDH read exceeded its 2 s deadline.') }
+        if ($response.status -notin @('observed', 'no_own_instances') -or $response.pdh_status -ne 0 -or
+            $response.rows -isnot [array] -or $response.rows.Count -gt 64 -or
+            ($response.status -eq 'no_own_instances' -and $response.rows.Count) -or
+            ($response.status -eq 'observed' -and -not $response.rows.Count)) {
+            throw [IO.InvalidDataException]::new('Invalid native PDH frame.')
+        }
+        foreach ($row in $response.rows) { [pscustomobject]$row }
+    } catch {
+        Close-NgenPdhProcessMemory -Reader $Reader -Abort
+        throw
+    }
+}
+
+function Close-NgenPdhProcessMemory {
+    param([Parameter(Mandatory)][ref]$Reader, [switch]$Abort)
+    $process = $Reader.Value
+    $Reader.Value = $null
+    if ($null -eq $process) { return }
+    try {
+        if (-not $process.HasExited) {
+            if (-not $Abort) { $process.StandardInput.Close() }
+            if ($Abort -or -not $process.WaitForExit(2000)) {
+                try { $process.Kill($true) } catch [InvalidOperationException] { }
+                $process.WaitForExit()
+            }
+        }
+    } finally {
+        $process.Dispose()
+    }
+}
+
 function Invoke-NgenWorkload {
     param(
         [Parameter(Mandatory)][string]$FilePath,
@@ -313,6 +399,7 @@ function Invoke-NgenWorkload {
     $gpuErrorHresult = $null
     $gpuErrorDetails = $null
     $nextGpuSample = 0L
+    $gpuReader = $null
     try {
         $started = $process.Start()
         if (-not $started) { throw 'Could not start workload process.' }
@@ -329,7 +416,8 @@ function Invoke-NgenWorkload {
                 $attempt = [ordered]@{ status = 'no_own_instances'; instances = 0
                     started_timestamp_ticks = [Diagnostics.Stopwatch]::GetTimestamp() }
                 try {
-                    $rows = @(Get-CimInstance -Query ("SELECT Name,DedicatedUsage,SharedUsage,TotalCommitted FROM Win32_PerfFormattedData_GPUPerformanceCounters_GPUProcessMemory WHERE Name LIKE 'pid_$($process.Id)_%'") -OperationTimeoutSec 2 -ErrorAction Stop)
+                    $readerPath = Join-Path (Split-Path -Parent ([IO.Path]::GetFullPath($FilePath))) 'gpu_memory_observer.exe'
+                    $rows = @(Get-NgenPdhProcessMemory -FilePath $readerPath -ProcessId $process.Id -Reader ([ref]$gpuReader))
                     if ($rows.Count -gt 64 -or $gpuQueries.Count -ge 1201) { throw 'GPU observation capacity exceeded.' }
                     $seen = [Collections.Generic.HashSet[string]]::new([StringComparer]::OrdinalIgnoreCase)
                     $dedicated = 0L; $shared = 0L; $committed = 0L
@@ -369,6 +457,8 @@ function Invoke-NgenWorkload {
                         category = [string]$_.CategoryInfo.Category
                         native_error_code = $null
                         status_code = $null
+                        pdh_status = if ($_.Exception.Data.Contains('PdhStatus')) { $_.Exception.Data['PdhStatus'] } else { $null }
+                        pdh_kind = if ($_.Exception.Data.Contains('PdhKind')) { $_.Exception.Data['PdhKind'] } else { $null }
                     }
                     if ($_.Exception -is [Microsoft.Management.Infrastructure.CimException]) {
                         $gpuErrorDetails.native_error_code = [string]$_.Exception.NativeErrorCode
@@ -474,12 +564,13 @@ function Invoke-NgenWorkload {
             scope = 'Observed OS process working set/high-water counter, including startup; not GPU memory or an exact continuous peak.'
         }
         if ($GpuMemory) {
-            $memory.schema = 3
+            $memory.schema = 4
             $memory.gpu_memory = [ordered]@{
                 status = $gpuStatus; error_type = $gpuError; within_1gib_budget = $gpuBudgetOk
                 error_message = $gpuErrorMessage; error_hresult = $gpuErrorHresult
                 error_details = $gpuErrorDetails
-                provider = 'Win32_PerfFormattedData_GPUPerformanceCounters_GPUProcessMemory'
+                provider = 'PDH/GPU Process Memory'
+                transport = 'owned_native_reader'
                 target_sample_period_ms = 500; operation_timeout_seconds = 2
                 parent_qpc_started_ticks = $clockStarted; parent_qpc_ended_ticks = $clockEnded
                 parent_qpc_frequency = [Diagnostics.Stopwatch]::Frequency
@@ -488,7 +579,7 @@ function Invoke-NgenWorkload {
                 peak_dedicated_plus_shared_bytes = if ($gpuSamples.Count) { ($gpuSamples.dedicated_plus_shared_bytes | Measure-Object -Maximum).Maximum } else { $null }
                 peak_total_committed_bytes = if ($gpuSamples.Count) { ($gpuSamples.total_committed_bytes | Measure-Object -Maximum).Maximum } else { $null }
                 samples = $gpuSamples.ToArray(); queries = $gpuQueries.ToArray(); coverage = $coverage
-                scope = 'Local WDDM per-process adapter counters, summed once per unique instance; dedicated+shared and total committed are separate measures. Sampled/provider-refreshed observations, not an exact continuous peak, global device usage or an uninstrumented timing run. CIM operation timeout is not a hard OS deadline.'
+                scope = 'Local WDDM per-process PDH adapter gauges, summed once per unique instance; dedicated+shared and total committed are separate measures. Sampled/provider-refreshed observations, not an exact continuous peak, global device usage or an uninstrumented timing run. The owned reader has a 2 s request deadline; OS scheduling/cleanup is not hard real-time.'
             }
         }
         $memory | ConvertTo-Json -Depth 6 | Set-Content -LiteralPath $MemoryPath
@@ -500,11 +591,15 @@ function Invoke-NgenWorkload {
         if ($GpuMemory -and $gpuStatus -ne 'observed') { throw 'Process GPU memory observations unavailable or incomplete; inspect retained metadata.' }
         if ($GpuMemory -and -not $gpuBudgetOk) { throw 'Observed process GPU memory exceeds the 1 GiB budget; inspect retained metadata.' }
     } finally {
-        if ($started -and -not $process.HasExited) {
-            try { $process.Kill($true) } catch [InvalidOperationException] { }
-            $process.WaitForExit()
+        try {
+            if ($null -ne $gpuReader) { Close-NgenPdhProcessMemory -Reader ([ref]$gpuReader) }
+        } finally {
+            if ($started -and -not $process.HasExited) {
+                try { $process.Kill($true) } catch [InvalidOperationException] { }
+                $process.WaitForExit()
+            }
+            $process.Dispose()
         }
-        $process.Dispose()
     }
 }
 

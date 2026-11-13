@@ -1,0 +1,39 @@
+{
+  "archive_sha256": "8524cb6cbda5263f3a1cd41c54948c1c355388e74b3a30b9ea7632758e78705a",
+  "script_revision": "34e6adf70139e3168bab6c18aeee2b66ec2cf31d",
+  "working_tree": "untracked owner output.csv; neither read nor removed",
+  "target_continuity": true,
+  "pdh_readings": [
+    {
+      "position": "pdh_before",
+      "elapsed_ms": 1244,
+      "csv_bytes": 375,
+      "owned_instance_count": 1,
+      "gauges_match_raw_cim": true
+    },
+    {
+      "position": "pdh_after",
+      "elapsed_ms": 1209,
+      "csv_bytes": 375,
+      "owned_instance_count": 1,
+      "gauges_match_raw_cim": true
+    }
+  ],
+  "cim_elapsed_ms": [
+    2048,
+    2014,
+    2021,
+    1223
+  ],
+  "cim_statuses": [
+    "error",
+    "error",
+    "error",
+    "observed"
+  ],
+  "dedicated_bytes": 269930496,
+  "shared_bytes": 53088256,
+  "dedicated_plus_shared_bytes": 323018752,
+  "separate_committed_bytes": 323084288,
+  "conclusion": "Two direct-PDH snapshots match raw CIM; CIM transport fails its existing limit. Precise Windows cause, current binary provenance, sampled-window coverage and budget acceptance remain unproved."
+}

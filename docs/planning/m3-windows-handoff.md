@@ -14,10 +14,17 @@ published bank firings to Jolt; rebuild the current source, including its change
 owning ship/snapshot layout. Earlier smooth-wrench trajectories are historical,
 not current physical replay acceptance.
 
-First isolate the recurring MSVC memory-observer timeout without another full
-build. Start an **already built** native Windows flight demo normally, wait for
-the scene to load, and leave it open. In a second PowerShell 7.2+ terminal, list
-only these clients and choose the ID of the window you want to inspect:
+The [explicit-CSV comparison](../evidence/M3/windows/provider-comparison/pdh-csv-return.md)
+now establishes matching direct-PDH and raw-CIM snapshots around three CIM
+timeouts. The observer transport has been replaced by a bounded native PDH
+helper, preserving existing coverage and budgets. Its Windows execution is still
+pending. **The next step is a current-source rebuild using the checks below**, not
+another unchanged attached-process probe. Each configuration must build
+`gpu_memory_observer.exe` beside `flight_demo.exe`.
+
+For later read-only diagnosis only: start an **already built** native Windows
+flight demo normally, wait for the scene and leave it open. In a second
+PowerShell 7.2+ terminal, list only these clients and choose the window's ID:
 
 ```powershell
 Get-Process -Name flight_demo | Select-Object Id, StartTime, MainWindowTitle
@@ -55,10 +62,10 @@ read has no warmup effect. No result substitutes for complete formal observation
 OS calls are not a hard real-time guarantee. Do not run the diagnostic alongside
 a clean timing or formal memory measurement.
 
-After diagnosis and any verified repair, the current-source Windows checks below
-remain necessary for the tooltip fix and F12 panel, including actual dedicated-VRAM
-readings. Use the named splat; do not split `Start-Process` arguments or use
-positional `Select-String` examples.
+Run the current-source Windows checks below for the native collector, tooltip
+fix and F12 panel, including actual dedicated-VRAM readings. The collector's
+sampled-window acceptance remains open. Use the named splat; do not split
+`Start-Process` arguments or use positional `Select-String` examples.
 
 ```powershell
 $check = @{

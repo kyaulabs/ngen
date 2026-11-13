@@ -34,6 +34,9 @@ jobs:
       - name: Test GPU provider diagnostic boundaries (no Windows provider)
         shell: pwsh
         run: ./tests/windows_gpu_memory.ps1
+      - name: Test native GPU reader transport (no Windows counters)
+        shell: pwsh
+        run: ./tests/windows_gpu_reader.ps1
       - name: Test Jolt CRT generator contract (no Windows compilation)
         run: python tests/jolt_recipe.py
       - name: Select reviewed revision range
@@ -131,6 +134,7 @@ jobs:
           ctest --preset "renderer-$PRESET"
           clang-tidy-18 -p "build/renderer-$PRESET" engine/render/context.cpp engine/render/surface.cpp engine/render/presentation.cpp engine/render/resources.cpp engine/render/post.cpp engine/render/mesh.cpp engine/render/overlay.cpp engine/render/environment.cpp tests/render_environment.cpp engine/render/vma.cpp apps/probe/presentation.cpp apps/render_probe/main.cpp apps/resource_probe/main.cpp tests/render_startup.cpp tests/render_surface.cpp tests/wayland_tablets.cpp tests/shader_layout.cpp tests/shader_gpu.cpp engine/render/scene.cpp engine/render/scene_draw.cpp apps/scene_probe/main.cpp apps/scene_probe/draw.cpp apps/asset_probe/main.cpp tests/assets.cpp engine/tools/inspector.cpp engine/tools/reload.cpp engine/tools/gui.cpp engine/tools/ui.cpp tests/inspector.cpp tests/reload.cpp apps/inspector_probe/main.cpp apps/scene_workload/fixture.cpp apps/scene_workload/main.cpp apps/scene_workload/allocations.cpp tests/workload.cpp apps/probe/capture.cpp
           clang-tidy-18 '--header-filter=.*/(engine|game|apps|tests)/.*' -p "build/renderer-$PRESET" apps/flight_demo/preset.cpp apps/flight_demo/view.cpp apps/flight_demo/main.cpp apps/flight_demo/app.cpp tests/flight_scene.cpp engine/audio/mixer.cpp engine/audio/output.cpp tests/audio_mixer.cpp tests/audio_output.cpp
+          clang-tidy-18 '--header-filter=.*/(tools/gpu_memory|tests)/.*' -p "build/renderer-$PRESET" tools/gpu_memory/counters.cpp tests/gpu_memory.cpp
       - name: Build and test bounded offline asset tools
         if: matrix.preset == 'debug' || matrix.preset == 'asan'
         env:
@@ -156,7 +160,7 @@ jobs:
         env:
           PRESET: ${{ matrix.preset }}
         run: |
-          clang-format-18 --dry-run --Werror engine/core/*pp engine/jobs/*pp engine/simulation/*pp engine/physics/*pp engine/audio/*pp engine/render/*pp engine/assets/*pp engine/tools/*pp tests/*.cpp tests/*.hpp apps/sim_harness/*.cpp apps/render_probe/*.cpp apps/resource_probe/*.cpp apps/probe/*pp apps/asset_probe/*.cpp apps/scene_probe/*.cpp apps/scene_workload/*pp apps/inspector_probe/*.cpp apps/flight_demo/*pp game/flight/*pp recipes/joltphysics/test_package/*.cpp tools/assetc/*pp
+          clang-format-18 --dry-run --Werror engine/core/*pp engine/jobs/*pp engine/simulation/*pp engine/physics/*pp engine/audio/*pp engine/render/*pp engine/assets/*pp engine/tools/*pp tests/*.cpp tests/*.hpp apps/sim_harness/*.cpp apps/render_probe/*.cpp apps/resource_probe/*.cpp apps/probe/*pp apps/asset_probe/*.cpp apps/scene_probe/*.cpp apps/scene_workload/*pp apps/inspector_probe/*.cpp apps/flight_demo/*pp game/flight/*pp recipes/joltphysics/test_package/*.cpp tools/assetc/*pp tools/gpu_memory/*pp
           clang-tidy-18 -p "build/$PRESET" engine/core/values.cpp engine/core/entities.cpp engine/jobs/jobs.cpp engine/simulation/simulation.cpp tests/core.cpp tests/jobs.cpp tests/simulation.cpp apps/sim_harness/main.cpp
           # Ubuntu restricts unprivileged user namespaces. Create only the
           # network namespace with sudo, then drop back to the runner identity.

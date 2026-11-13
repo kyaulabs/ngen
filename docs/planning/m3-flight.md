@@ -253,12 +253,14 @@ passes both frontends/configurations, all physical walkthroughs and zero warm
 allocations in clean/memory replays. ClangCl has complete sampled WDDM coverage
 and app-local startup. The later MSVC Release rerun again has no GPU-memory
 samples and reports 2 warm ImGui allocations. The [tooltip repair](../evidence/M3/tooltip/README.md)
-passes locally; native Windows confirmation and WMI cause isolation remain open.
-Do not request another unchanged full rerun or waive either finding. A subsequent
-[read-only provider comparison](../evidence/M3/windows/provider-comparison/README.md)
-times out on both formatted and raw queries before one raw read succeeds on the
-same live process. Direct PDH comparison is the next scoped diagnostic; neither
-coverage nor the underlying cause is established yet.
+passes locally; native Windows confirmation remains open. Do not request another
+unchanged full rerun or waive either finding. The later
+[explicit PDH CSV comparison](../evidence/M3/windows/provider-comparison/pdh-csv-return.md)
+returns matching process-memory gauges before/after three CIM timeouts and a
+successful raw read. The precise Windows cause remains unknown. A bounded native
+PDH workload collector is implemented with unchanged coverage and budgets; its
+current-source MSVC/ClangCl execution is the next check. Neither two snapshots nor
+Linux transport fixtures establish native sampled-window acceptance.
 
 The owner-requested [F12 performance overlay](m3-performance-overlay.md) is
 implemented before the broader UI pass. Native Linux verifies hidden startup,

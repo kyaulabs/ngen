@@ -347,15 +347,18 @@ exit 0
         $failed = $false
         try { Invoke-NgenWorkload -FilePath $pwsh -Arguments @('-NoProfile', '-Command', 'Start-Sleep -Seconds 3') -LogPath $timeoutLog -MemoryPath "$timeoutLog.json" -TimeoutMilliseconds 1000 } catch { $failed = $_.Exception.Message -match 'deadline' }
         if (-not $failed -or -not (Get-Content -Raw "$timeoutLog.json" | ConvertFrom-Json).timed_out) { throw 'Workload timeout was not retained as failure' }
-        # WDDM/CIM is the system boundary; the observed child is still real.
+        # Native PDH process-memory reads are the OS boundary; the observed child is real.
         $script:gpuFailure = ''
         $script:gpuReadCalls = 0
         $script:gpuFramePhasePath = ''
         $script:gpuMeasuredReads = 0
-        function Get-CimInstance {
-            param([string]$Query, [int]$OperationTimeoutSec)
-            if ($Query -notmatch "Name LIKE 'pid_(\d+)_%'") { throw 'GPU query is not scoped to its owned child' }
-            $target = $Matches[1]
+        function Get-CimInstance { throw 'The workload must use the direct PDH transport, not CIM.' }
+        function Get-NgenPdhProcessMemory {
+            param([string]$FilePath, [int]$ProcessId, [ref]$Reader)
+            if ($ProcessId -le 0 -or [IO.Path]::GetFileName($FilePath) -cne 'gpu_memory_observer.exe') {
+                throw 'GPU reader is not scoped to its owned child and declared native helper.'
+            }
+            $target = [string]$ProcessId
             if ($script:gpuFailure -eq 'unavailable') { throw 'fixture CIM class unavailable' }
             if ($script:gpuFailure -eq 'cim-error') {
                 $exception = [Microsoft.Management.Infrastructure.CimException]::new('fixture CIM provider failure')
@@ -625,7 +628,7 @@ Start-Sleep -Milliseconds 900
                 if (-not $failed -or (Test-Path (Join-Path $invalidLogs 'long-stream.input.json'))) { throw 'Measurement accepted Debug or a dirty declared build as clean Release' }
             }
         } finally {
-            Remove-Item Function:Get-CimInstance
+            Remove-Item Function:Get-NgenPdhProcessMemory, Function:Get-CimInstance
             Remove-Variable gpuFailure, gpuReadCalls, gpuFramePhasePath, gpuMeasuredReads -Scope Script
         }
         $emptyPackage = Join-Path $directory 'empty.ngas'
