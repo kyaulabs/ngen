@@ -106,13 +106,21 @@ std::uint64_t InspectorUi::allocation_count() const noexcept {
 void InspectorUi::frame(Inspector &inspector, const InspectorSnapshot &snapshot,
                         const render::SceneView &view, const InspectorMetrics &metrics) {
     impl_->gui->begin();
+    // Preserve the inspector's existing numeric/control sizing and layout.
+    impl_->gui->push_font(GuiFont::mono);
     const auto display = ImGui::GetIO().DisplaySize;
     const auto width = std::max(640.0F, display.x), height = std::max(360.0F, display.y);
     constexpr float gutter = 16;
     ImGui::SetNextWindowPos({gutter, 8});
-    ImGui::SetNextWindowSize({width - 2 * gutter, 40});
+    ImGui::SetNextWindowSize({width - 2 * gutter, 64});
     if (ImGui::Begin("NGEN header", nullptr, panel_flags)) {
-        ImGui::TextUnformatted("NGEN  /  SCENE INSPECTOR");
+        ImGui::GetWindowDrawList()->VtxBuffer.reserve(
+            static_cast<int>(render::overlay_vertex_limit));
+        ImGui::GetWindowDrawList()->IdxBuffer.reserve(
+            static_cast<int>(render::overlay_index_limit));
+        impl_->gui->wordmark();
+        ImGui::SameLine(210);
+        ImGui::TextUnformatted("SCENE INSPECTOR");
         ImGui::SameLine(360);
         ImGui::Text("LOD 2  |  %zu ship draws + 100 instances  |  frame %llu",
                     snapshot.package->instances.size(),
@@ -211,9 +219,11 @@ void InspectorUi::frame(Inspector &inspector, const InspectorSnapshot &snapshot,
             impl_->queue(inspector, Reload{snapshot.generation});
         ImGui::EndDisabled();
         if (metrics.reloading)
-            ImGui::TextColored({.88F, .71F, .49F, 1}, "Loading / preparing next version...");
+            ImGui::TextColored(ImGui::GetStyleColorVec4(ImGuiCol_PlotHistogram),
+                               "Loading / preparing next version...");
         if (impl_->issue)
-            ImGui::TextColored({.88F, .71F, .49F, 1}, "%s", impl_->issue);
+            ImGui::TextColored(ImGui::GetStyleColorVec4(ImGuiCol_PlotHistogram), "%s",
+                               impl_->issue);
         if (!metrics.status.empty()) {
             ImGui::PushTextWrapPos();
             const auto *first = metrics.status.data();
@@ -239,6 +249,7 @@ void InspectorUi::frame(Inspector &inspector, const InspectorSnapshot &snapshot,
         ImGui::IsKeyPressed(ImGuiKey_R, false))
         impl_->queue(inspector, Reload{snapshot.generation});
     impl_->bounds(snapshot, view);
+    impl_->gui->pop_font();
     impl_->gui->end();
 }
 std::variant<std::optional<render::Overlay>, render::Failure>

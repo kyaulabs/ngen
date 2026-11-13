@@ -16,7 +16,7 @@ SOURCE_PATHS = ["CMakeLists.txt", "CMakePresets.json", "conanfile.py", "conan.lo
                 "conan-demo.lock", "conan-physics.lock", "conan-render.lock", "conan-scene.lock",
                 "conan-inspector.lock", "conan-assets.lock", "conan-runtime-assets.lock", "LICENSE",
                 "README.md", "engine", "game", "apps", "shaders", "tools", "recipes", "profiles",
-                "licenses", "tests"]
+                "licenses", "tests", "brand"]
 MIB = 1024 * 1024
 SYSTEM_LINUX = {"libc.so.6", "libm.so.6", "libdl.so.2", "librt.so.1", "libpthread.so.0",
                 "libstdc++.so.6", "libgcc_s.so.1", "libEGL.so.1", "libvulkan.so.1",

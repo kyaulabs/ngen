@@ -3,6 +3,7 @@
 #include "audio/output.hpp"
 #include "flight/input.hpp"
 #include "flight_demo/app.hpp"
+#include "flight_demo/hud_layout.hpp"
 #include "flight_demo/performance.hpp"
 #include "flight_demo/view.hpp"
 #include "probe/capture.hpp"
@@ -209,15 +210,19 @@ struct Hud {
     ResourceStatistics memory;
     audio::Statistics audio;
     const char *status{"Select an asteroid, or click the flight plane to travel"};
-    bool help{}, performance{}, gpu_ready{}, allocation_probe{};
+    bool help{}, data{}, preparing{}, alert{}, performance{}, gpu_ready{}, allocation_probe{};
+    std::uint64_t controls_drawn_frames{}, data_drawn_frames{}, target_actions_drawn_frames{};
     GpuMemoryKind gpu_memory{GpuMemoryKind::unavailable};
     SystemUsageSampler::Sample system;
     std::uint64_t cpp_calls{}, gui_calls{}, performance_drawn_frames{};
 };
-bool performance_panel(const Hud &metrics) {
+bool performance_panel(tools::Gui &gui, const Hud &metrics) {
     const auto size = ImGui::GetIO().DisplaySize;
-    ImGui::SetNextWindowPos({std::max(16.0F, size.x - 366), metrics.help ? 340.0F : 70.0F});
-    ImGui::SetNextWindowSize({350, 312});
+    const auto panel = hud_layout(size.x, size.y, metrics.help, true).performance;
+    ImGui::SetNextWindowPos({panel.x, panel.y});
+    ImGui::SetNextWindowSize({panel.width, panel.height});
+    gui.push_font(tools::GuiFont::mono);
+    ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, {6, 2});
     constexpr auto flags =
         static_cast<ImGuiWindowFlags>(static_cast<unsigned>(ImGuiWindowFlags_NoDecoration) |
                                       static_cast<unsigned>(ImGuiWindowFlags_NoSavedSettings) |
@@ -227,7 +232,13 @@ bool performance_panel(const Hud &metrics) {
     auto *draw = ImGui::GetWindowDrawList();
     draw->VtxBuffer.reserve(static_cast<int>(overlay_vertex_limit));
     draw->IdxBuffer.reserve(static_cast<int>(overlay_index_limit));
-    if (visible) {
+    if (visible && panel.height < 240) {
+        if (metrics.frame_ms > 0)
+            ImGui::Text("F12: %.1f FPS / %.2f ms", 1000 / metrics.frame_ms, metrics.frame_ms);
+        else
+            ImGui::TextUnformatted("PERFORMANCE / F12");
+        ImGui::TextWrapped("Enlarge window for full OS/device counters");
+    } else if (visible) {
         ImGui::TextUnformatted("PERFORMANCE / F12");
         if (metrics.frame_ms > 0)
             ImGui::Text("FPS %.1f  |  Frame %.2f ms", 1000 / metrics.frame_ms, metrics.frame_ms);
@@ -283,120 +294,265 @@ bool performance_panel(const Hud &metrics) {
         ImGui::TextDisabled("VMA != VRAM | C/driver heaps excluded");
     }
     ImGui::End();
+    ImGui::PopStyleVar();
+    gui.pop_font();
     return visible;
 }
 struct Actions {
     bool mode{}, reset{}, approach{}, orbit{}, focus{}, mute{};
 };
+void reserve_ui() {
+    auto *draw = ImGui::GetWindowDrawList();
+    draw->VtxBuffer.reserve(static_cast<int>(overlay_vertex_limit));
+    draw->IdxBuffer.reserve(static_cast<int>(overlay_index_limit));
+}
+void centred_text(const char *text) {
+    const auto width = ImGui::CalcTextSize(text).x;
+    ImGui::SetCursorPosX(std::max(0.0F, (ImGui::GetWindowWidth() - width) * .5F));
+    ImGui::TextUnformatted(text);
+}
 Actions hud(tools::Gui &gui, const flight::Snapshot &state, const Preset &preset, Hud &metrics,
             std::optional<std::size_t> selected, bool replay, bool mute, const FrameView &view) {
     gui.begin();
     Actions action;
     const auto size = ImGui::GetIO().DisplaySize;
+    const auto layout = hud_layout(size.x, size.y, metrics.help, metrics.performance);
     constexpr auto flags =
         static_cast<ImGuiWindowFlags>(static_cast<unsigned>(ImGuiWindowFlags_NoDecoration) |
                                       static_cast<unsigned>(ImGuiWindowFlags_NoSavedSettings) |
                                       static_cast<unsigned>(ImGuiWindowFlags_NoMove) |
                                       static_cast<unsigned>(ImGuiWindowFlags_NoNav));
-    ImGui::SetNextWindowPos({16, 12});
-    ImGui::SetNextWindowSize({std::max(320.0F, size.x - 32), 42});
-    if (ImGui::Begin("Flight header", nullptr, flags)) {
-        // Mode labels must not grow the warmed header beyond its reserved index storage.
-        ImGui::GetWindowDrawList()->IdxBuffer.reserve(static_cast<int>(overlay_index_limit));
-        ImGui::TextUnformatted("NGEN  /  OFFLINE FLIGHT");
-        ImGui::SameLine(285);
-        ImGui::TextUnformatted(state.mode == flight::Mode::tactical
-                                   ? "TACTICAL / ORBIT VIEW"
-                                   : "DIRECT / AUTHORED BOW SENSOR");
-        ImGui::SameLine(std::max(650.0F, size.x - 425));
-        ImGui::Text("%s  |  60 Hz", replay ? "FIXED-TICK REPLAY" : "LOCAL AUTHORITY");
-        ImGui::SameLine(std::max(900.0F, size.x - 160));
-        action.mute = ImGui::Button(mute ? "Unmute [M]" : "Mute [M]", {112, 25});
+    constexpr auto transparent = static_cast<ImGuiWindowFlags>(
+        static_cast<unsigned>(flags) | static_cast<unsigned>(ImGuiWindowFlags_NoBackground));
+    constexpr auto floating = static_cast<ImGuiWindowFlags>(
+        static_cast<unsigned>(transparent) | static_cast<unsigned>(ImGuiWindowFlags_NoInputs));
+    ImGui::SetNextWindowPos({8, 6});
+    ImGui::SetNextWindowSize({60, 62});
+    if (ImGui::Begin("Flight brand", nullptr, floating)) {
+        reserve_ui();
+        gui.mark();
     }
     ImGui::End();
-    ImGui::SetNextWindowPos({16, 70});
-    ImGui::SetNextWindowSize({252, std::min(550.0F, std::max(300.0F, size.y - 150))});
-    if (ImGui::Begin("Flight telemetry", nullptr, flags)) {
-        const auto &v = state.body.velocity_mps;
-        const auto speed = std::sqrt(v[0] * v[0] + v[1] * v[1] + v[2] * v[2]);
-        ImGui::TextUnformatted("LIGHT FRIGATE / LOCAL CONTACTS");
-        ImGui::Separator();
-        ImGui::Text("SPEED     %6.2f m/s", speed);
-        ImGui::Text("MASS      %6.1f kt", state.body.mass_kg / 1e6);
-        ImGui::Text("X %8.1f  Y %8.1f\nZ %8.1f m", state.body.position_metres[0],
-                    state.body.position_metres[1], state.body.position_metres[2]);
-        ImGui::TextDisabled("100 asteroid proxies / 101 bodies");
-        ImGui::BeginDisabled(replay);
-        action.mode = ImGui::Button("Switch view [TAB]", {-1, 26});
-        action.reset = ImGui::Button("Reset scene [R]", {-1, 26});
-        if (selected) {
-            ImGui::Text("TARGET / ASTEROID %03u", static_cast<unsigned>(*selected));
-            action.approach = ImGui::Button("Approach [G]", {112, 25});
+    ImGui::SetNextWindowPos({size.x - 134, 10});
+    ImGui::SetNextWindowSize({126, 38});
+    if (ImGui::Begin("Flight controls hint", nullptr, transparent)) {
+        reserve_ui();
+        ImGui::PushStyleColor(ImGuiCol_Button, {0, 0, 0, 0});
+        ImGui::PushStyleVar(ImGuiStyleVar_FrameBorderSize, 0);
+        if (ImGui::Button("Controls [F1]")) {
+            metrics.help = metrics.data || !metrics.help;
+            metrics.data = false;
+        }
+        ImGui::PopStyleVar();
+        ImGui::PopStyleColor();
+    }
+    ImGui::End();
+    const auto &v = state.body.velocity_mps;
+    const auto speed = std::sqrt(v[0] * v[0] + v[1] * v[1] + v[2] * v[2]);
+    const auto active = std::count_if(state.rcs_firing.begin(), state.rcs_firing.end(),
+                                      [](float value) { return value > 0; });
+    ImGui::SetNextWindowPos({layout.readout.x, layout.readout.y});
+    ImGui::SetNextWindowSize({layout.readout.width, layout.readout.height});
+    ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, {4, 2});
+    ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, {4, 2});
+    if (ImGui::Begin("Flight readout", nullptr, floating)) {
+        reserve_ui();
+        gui.push_font(tools::GuiFont::mono);
+        const char *mode =
+            state.mode == flight::Mode::direct                   ? "DIRECT / BOW SENSOR"
+            : state.navigation.goal == flight::Goal::orbit       ? "TACTICAL / ORBIT ACTIVE"
+            : state.navigation.goal == flight::Goal::destination ? "TACTICAL / APPROACH"
+                                                                 : "TACTICAL / COAST";
+        ImGui::PushStyleColor(ImGuiCol_Text, ImGui::GetStyleColorVec4(ImGuiCol_CheckMark));
+        centred_text(mode);
+        ImGui::PopStyleColor();
+        gui.pop_font();
+        char text[96]{};
+        std::snprintf(text, sizeof(text), "%.1f m/s", static_cast<double>(speed));
+        gui.push_font(tools::GuiFont::readout);
+        centred_text(text);
+        gui.pop_font();
+        const auto cursor = ImGui::GetCursorScreenPos();
+        const float bar_width = 124;
+        const ImVec2 start{size.x * .5F - bar_width * .5F, cursor.y + 3};
+        auto *draw = ImGui::GetWindowDrawList();
+        draw->AddLine(start, {start.x + bar_width, start.y},
+                      ImGui::GetColorU32(ImGuiCol_Separator));
+        draw->AddLine(
+            start,
+            {start.x +
+                 bar_width * std::clamp(speed / preset.ship.flight.maximum_speed_mps, 0.0F, 1.0F),
+             start.y},
+            ImGui::GetColorU32(ImGuiCol_CheckMark), 2);
+        for (unsigned tick = 0; tick <= 4; ++tick) {
+            const auto x = start.x + static_cast<float>(tick) * bar_width / 4;
+            draw->AddLine({x, start.y - 2}, {x, start.y + 3},
+                          ImGui::GetColorU32(ImGuiCol_TextDisabled));
+        }
+        ImGui::Dummy({1, 9});
+        gui.push_font(tools::GuiFont::mono);
+        const char *audio_status = metrics.audio.state == audio::State::disconnected
+                                       ? " / AUDIO OFFLINE"
+                                   : metrics.audio.muted ? " / MUTED"
+                                                         : "";
+        std::snprintf(text, sizeof(text), "MAIN %.0f%% / RCS %u/16%s",
+                      static_cast<double>(state.main_drive_level * 100),
+                      static_cast<unsigned>(active), audio_status);
+        centred_text(text);
+        if (!layout.compact)
+            centred_text("TAB view / SPACE brake");
+        gui.pop_font();
+    }
+    ImGui::End();
+    ImGui::PopStyleVar(2);
+    if (metrics.help || metrics.preparing) {
+        const auto panel = layout.controls;
+        ImGui::SetNextWindowPos({panel.x, panel.y});
+        ImGui::SetNextWindowSize({panel.width, panel.height});
+        if (ImGui::Begin("Flight utility", nullptr, flags)) {
+            reserve_ui();
+            gui.wordmark();
             ImGui::SameLine();
-            action.orbit = ImGui::Button("Orbit [O]", {112, 25});
-            action.focus = ImGui::Button("Focus / ship [F]", {-1, 25});
-        } else
-            ImGui::TextDisabled("Left-click a rock to select");
-        ImGui::EndDisabled();
-        ImGui::Separator();
-        ImGui::PlotLines("##speed", metrics.speed.data(), static_cast<int>(metrics.speed.size()),
-                         static_cast<int>(metrics.cursor), "SPEED / m/s", 0, 100, {228, 68});
-        ImGui::PlotLines("##force", metrics.force.data(), static_cast<int>(metrics.force.size()),
-                         static_cast<int>(metrics.cursor), "FORCE / MN", 0,
-                         preset.ship.flight.maximum_force_newtons[2] / 1e6F, {228, 68});
-        ImGui::Text(
-            "CPU %.2f | GPU passes %.2f ms", metrics.frame_ms,
-            (metrics.gpu.shadow_ns + metrics.gpu.pbr_ns + metrics.gpu.post_ns + metrics.gpu.ui_ns) /
-                1e6);
-        ImGui::TextDisabled("VMA %.1f MiB (not whole GPU)",
-                            static_cast<double>(metrics.memory.allocation_bytes) / (1024 * 1024));
-    }
-    ImGui::End();
-    ImGui::SetNextWindowPos({16, std::max(360.0F, size.y) - 62});
-    ImGui::SetNextWindowSize({std::max(320.0F, size.x - 32), 48});
-    if (ImGui::Begin("Flight bindings", nullptr, flags)) {
-        ImGui::TextUnformatted("WASD thrust | SHIFT/CTRL vertical | QE roll | SPACE brake | RMB "
-                               "steer/orbit | ALT+RMB look | F1 help | F12 performance");
-        ImGui::TextDisabled("AUDIO %s / M | %s",
-                            metrics.audio.state == audio::State::disconnected
-                                ? "OFFLINE (retrying)"
-                                : (metrics.audio.muted ? "MUTED" : "ACTIVE"),
-                            metrics.status);
-    }
-    ImGui::End();
-    if (metrics.help) {
-        ImGui::SetNextWindowPos({std::max(280.0F, size.x - 430), 80});
-        ImGui::SetNextWindowSize({410, 260});
-        if (ImGui::Begin("Flight help", &metrics.help, ImGuiWindowFlags_NoSavedSettings)) {
-            ImGui::TextWrapped(
-                "TACTICAL: right-drag orbits; wheel zooms. Left-click a rock to select, or empty "
-                "flight plane to travel. G approaches; O orbits the selected rock; F focuses it.");
+            if (ImGui::SmallButton("Close"))
+                metrics.help = false;
+            ImGui::BeginDisabled(replay);
+            ImGui::SetCursorPos({12, 80});
+            action.mode = ImGui::Button("Switch view [TAB]", {panel.width * .5F - 16, 28});
+            ImGui::SetCursorPos({layout.reset.x - panel.x, layout.reset.y - panel.y});
+            action.reset = ImGui::Button("Reset [R]", {layout.reset.width, layout.reset.height});
+            ImGui::EndDisabled();
+            action.mute = ImGui::Button(mute ? "Unmute [M]" : "Mute [M]", {110, 26});
+            ImGui::SameLine();
+            if (ImGui::Button(metrics.data ? "Controls [F1]" : "Flight data [F2]"))
+                metrics.data = !metrics.data;
             ImGui::Separator();
-            ImGui::TextWrapped("DIRECT: hold right mouse to capture a virtual steering stick. Move "
-                               "back to center or release to stabilize. Hold LEFT ALT for "
-                               "camera-only free look. Arrow keys also steer; Q/E roll.");
+            if (metrics.data) {
+                if (!metrics.preparing)
+                    ++metrics.data_drawn_frames;
+                gui.push_font(tools::GuiFont::mono);
+                ImGui::Text("MASS %.1f kt  /  SPEED %.2f m/s", state.body.mass_kg / 1e6, speed);
+                ImGui::Text("X %.1f  Y %.1f\nZ %.1f m", state.body.position_metres[0],
+                            state.body.position_metres[1], state.body.position_metres[2]);
+                const auto plot_width = std::max(1.0F, ImGui::GetContentRegionAvail().x);
+                ImGui::PlotLines("##speed", metrics.speed.data(),
+                                 static_cast<int>(metrics.speed.size()),
+                                 static_cast<int>(metrics.cursor), "SPEED / m/s", 0,
+                                 preset.ship.flight.maximum_speed_mps, {plot_width, 68});
+                ImGui::PlotLines(
+                    "##force", metrics.force.data(), static_cast<int>(metrics.force.size()),
+                    static_cast<int>(metrics.cursor), "FORCE / MN", 0,
+                    preset.ship.flight.maximum_force_newtons[2] / 1e6F, {plot_width, 68});
+                ImGui::TextDisabled("Actual snapshot / 100 contacts / 60 Hz");
+                gui.pop_font();
+            } else {
+                if (!metrics.preparing)
+                    ++metrics.controls_drawn_frames;
+                ImGui::TextWrapped(
+                    "TACTICAL: RMB orbits; wheel zooms. Click a rock to select or the empty flight "
+                    "plane to travel. G approaches; O orbits; F changes camera focus.");
+                ImGui::Separator();
+                ImGui::TextWrapped(
+                    "DIRECT: hold RMB for virtual-stick steering. Release to stabilize. ALT+RMB is "
+                    "camera-only free look. Arrows steer; Q/E roll.");
+                ImGui::Separator();
+                ImGui::TextWrapped(
+                    "W/S forward/back, A/D lateral, SHIFT/CTRL vertical. Release thrust to coast; "
+                    "hold SPACE to brake. TAB changes mode without resetting motion. R resets. ESC "
+                    "releases controls and closes this card.");
+                ImGui::TextWrapped(
+                    "F1 controls / F2 flight data / F12 system-device performance. M audio; focus "
+                    "loss silences playback and device loss retries without changing simulation.");
+            }
             ImGui::Separator();
-            ImGui::TextWrapped(
-                "W/S forward/back, A/D lateral, SHIFT/CTRL vertical. Release thrust to coast; hold "
-                "SPACE to brake. TAB changes mode without resetting motion. R resets the preset; "
-                "ESC releases controls. Closing the window exits.");
-            ImGui::TextWrapped(
-                "M audio; F12 performance. Focus loss silences playback. Device loss retries "
-                "without changing simulation; original cues use no media files.");
+            if (selected) {
+                ImGui::Text("SELECTED / ASTEROID %03u", static_cast<unsigned>(*selected));
+                ImGui::BeginDisabled(replay);
+                action.approach = ImGui::Button("Approach [G]");
+                ImGui::SameLine();
+                action.orbit = ImGui::Button("Orbit [O]");
+                ImGui::SameLine();
+                action.focus = ImGui::Button("Focus [F]");
+                ImGui::EndDisabled();
+            }
+            ImGui::TextWrapped("%s", metrics.status);
+            ImGui::TextDisabled("AUDIO %s", metrics.audio.state == audio::State::disconnected
+                                                ? "OFFLINE / retrying"
+                                                : (metrics.audio.muted ? "MUTED" : "ACTIVE"));
         }
         ImGui::End();
     }
-    if (metrics.performance && performance_panel(metrics))
+    if (metrics.performance && performance_panel(gui, metrics) && !metrics.preparing)
         ++metrics.performance_drawn_frames;
     auto *draw = ImGui::GetForegroundDrawList();
     const ImVec2 center{size.x * .5F, size.y * .5F};
-    draw->AddLine({center.x - 7, center.y}, {center.x + 7, center.y}, IM_COL32(190, 225, 230, 180));
-    draw->AddLine({center.x, center.y - 7}, {center.x, center.y + 7}, IM_COL32(190, 225, 230, 180));
+    const auto signal = ImGui::GetColorU32(ImGuiCol_CheckMark, .7F);
+    draw->AddLine({center.x - 7, center.y}, {center.x - 2, center.y}, signal);
+    draw->AddLine({center.x + 2, center.y}, {center.x + 7, center.y}, signal);
+    draw->AddLine({center.x, center.y - 7}, {center.x, center.y - 2}, signal);
+    draw->AddLine({center.x, center.y + 2}, {center.x, center.y + 7}, signal);
     if (selected) {
         const auto &point = preset.camera_obstacles[*selected].centre_metres;
-        if (const auto screen = project_target(view, point, {size.x, size.y}))
-            draw->AddCircle({(*screen)[0], (*screen)[1]}, 12, IM_COL32(110, 215, 230, 230), 24,
-                            1.5F);
+        const auto screen = metrics.preparing
+                                ? std::optional{std::array<float, 2>{size.x * .6F, size.y * .4F}}
+                                : project_target(view, point, {size.x, size.y});
+        if (screen) {
+            const ImVec2 at{(*screen)[0], (*screen)[1]};
+            if (at.x >= 0 && at.x <= size.x && at.y >= 0 && at.y <= size.y) {
+                draw->AddLine({at.x - 14, at.y - 7}, {at.x - 14, at.y - 14}, signal);
+                draw->AddLine({at.x - 14, at.y - 14}, {at.x - 7, at.y - 14}, signal);
+                draw->AddLine({at.x + 14, at.y + 7}, {at.x + 14, at.y + 14}, signal);
+                draw->AddLine({at.x + 14, at.y + 14}, {at.x + 7, at.y + 14}, signal);
+                const auto x = std::clamp(at.x + 18, 4.0F, std::max(4.0F, size.x - 272));
+                const auto y = std::clamp(at.y - 20, 48.0F, std::max(48.0F, size.y - 88));
+                const auto over = [](HudRect rect) {
+                    return ImGui::IsMouseHoveringRect(
+                        {rect.x, rect.y}, {rect.x + rect.width, rect.y + rect.height}, false);
+                };
+                const bool obscured = (metrics.help && over(layout.controls)) ||
+                                      (metrics.performance && over(layout.performance));
+                const bool actions =
+                    metrics.preparing ||
+                    (!obscured && !ImGui::IsMouseDown(ImGuiMouseButton_Right) &&
+                     // This is a world-space anchor, outside any active UI window.
+                     (ImGui::IsMouseHoveringRect({at.x - 22, at.y - 22}, {at.x + 22, at.y + 22},
+                                                 false) ||
+                      ImGui::IsMouseHoveringRect({x, y}, {x + 268, y + 82}, false)));
+                ImGui::SetNextWindowPos({x, y});
+                ImGui::SetNextWindowSize({268, actions ? 82.0F : 52.0F});
+                if (ImGui::Begin("Flight target", nullptr, actions ? transparent : floating)) {
+                    reserve_ui();
+                    const auto &origin = state.body.position_metres;
+                    const auto dx = point[0] - origin[0], dy = point[1] - origin[1],
+                               dz = point[2] - origin[2];
+                    ImGui::Text("Asteroid %03u", static_cast<unsigned>(*selected));
+                    gui.push_font(tools::GuiFont::mono);
+                    ImGui::TextDisabled("%.0f m", std::sqrt(dx * dx + dy * dy + dz * dz));
+                    gui.pop_font();
+                    if (actions) {
+                        if (!metrics.preparing)
+                            ++metrics.target_actions_drawn_frames;
+                        ImGui::BeginDisabled(replay);
+                        action.approach = ImGui::SmallButton("Approach G") || action.approach;
+                        ImGui::SameLine();
+                        action.orbit = ImGui::SmallButton("Orbit O") || action.orbit;
+                        ImGui::SameLine();
+                        action.focus = ImGui::SmallButton("Focus F") || action.focus;
+                        ImGui::EndDisabled();
+                    }
+                }
+                ImGui::End();
+            }
+        }
+    }
+    if (metrics.alert) {
+        ImGui::SetNextWindowPos({8, std::max(64.0F, layout.readout.y - 36)});
+        ImGui::SetNextWindowSize({size.x - 16, 36});
+        if (ImGui::Begin("Flight notice", nullptr, floating)) {
+            reserve_ui();
+            ImGui::TextColored(ImGui::GetStyleColorVec4(ImGuiCol_PlotHistogram), "%s",
+                               metrics.status);
+        }
+        ImGui::End();
     }
     gui.end();
     return action;
@@ -409,6 +565,7 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
     auto rig = game_value(flight::CameraRig::create(preset.ship_radius));
     flight::FlightInput input;
     auto context = take(Context::create({options.validation, true, true, true}));
+    require(SDL_SetWindowMinimumSize(context->window(), 320, 180), "flight minimum size failed");
     require(SDL_SetWindowTitle(context->window(), "NGEN / Offline Flight"),
             "flight title update failed");
     require(SDL_SetWindowSize(context->window(), static_cast<int>(options.extent.width),
@@ -463,16 +620,22 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
     Hud metrics;
     metrics.gpu_memory = gpu_identity.kind;
     metrics.allocation_probe = workload::allocation_probe_enabled();
-    // Prepare both hidden UI paths in a cold frame that is never presented.
-    gui->begin();
-    if (ImGui::BeginTooltip()) {
-        auto *tooltip = ImGui::GetWindowDrawList();
-        tooltip->VtxBuffer.reserve(static_cast<int>(overlay_vertex_limit));
-        tooltip->IdxBuffer.reserve(static_cast<int>(overlay_index_limit));
-        ImGui::EndTooltip();
+    // Auto-sized tooltip windows skip their first frame. Two unsubmitted cold
+    // frames prepare both the geometry and its rendered draw-data layer, even
+    // when the desktop has not supplied a valid mouse position yet.
+    for (unsigned pass = 0; pass < 2; ++pass) {
+        gui->begin();
+        ImGui::SetNextWindowPos({32, 32});
+        if (ImGui::BeginTooltip()) {
+            auto *tooltip = ImGui::GetWindowDrawList();
+            tooltip->VtxBuffer.reserve(static_cast<int>(overlay_vertex_limit));
+            tooltip->IdxBuffer.reserve(static_cast<int>(overlay_index_limit));
+            ImGui::TextUnformatted("0: 0.000\n1: 0.000");
+            ImGui::EndTooltip();
+        }
+        (void)performance_panel(*gui, metrics);
+        gui->end();
     }
-    (void)performance_panel(metrics);
-    gui->end();
     bool quit = false, captured = false, reset_requested = false, sampling_paused = false;
     bool focused = (SDL_GetWindowFlags(context->window()) & SDL_WINDOW_INPUT_FOCUS) != 0;
     input.focus(focused);
@@ -494,6 +657,7 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
             game->submit({std::get<Tick>(target), ++sequence, game->snapshot().entity, intent});
         if (std::holds_alternative<Error>(result)) {
             metrics.status = "Intent rejected: envelope, generation or queue limit";
+            metrics.alert = true;
             return false;
         }
         return true;
@@ -503,13 +667,24 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
         require(send(flight::Orbit{preset.camera_obstacles[0].centre_metres, 600, 20, false}),
                 "authored default orbit was rejected");
         metrics.status = "Tactical orbit autopilot / 20 m/s; TAB takes direct control";
+        metrics.alert = false;
     };
     default_orbit();
+    {
+        const auto initial_view = take(present(preset, last_camera, options.extent));
+        metrics.preparing = metrics.help = metrics.performance = metrics.alert = true;
+        (void)hud(*gui, current, preset, metrics, selected, options.replay, muted, initial_view);
+        metrics.data = true;
+        (void)hud(*gui, current, preset, metrics, selected, options.replay, muted, initial_view);
+        metrics.preparing = metrics.help = metrics.data = metrics.performance = metrics.alert =
+            false;
+    }
     const auto change_mode = [&] {
         const auto wanted =
             pending_mode == flight::Mode::tactical ? flight::Mode::direct : flight::Mode::tactical;
         if (send(flight::SetMode{wanted})) {
             pending_mode = wanted;
+            metrics.alert = false;
             (void)input.mode(wanted);
             (void)sound.cue(audio::Cue::confirm);
             metrics.status = wanted == flight::Mode::direct
@@ -536,6 +711,7 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
         metrics.status = "Preset reset: pose and controls restored; GPU asset remains immutable";
     };
     const auto focus = [&] {
+        metrics.alert = false;
         if (selected && camera_target != selected) {
             (void)game_value(rig.focus(preset.camera_obstacles[*selected]));
             camera_target = selected;
@@ -595,8 +771,15 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
             event.button.windowID = id;
             event.button.button = which;
             event.button.down = down;
-            event.button.x = 142;
-            event.button.y = 239;
+            int width = 0, height = 0;
+            require(SDL_GetWindowSize(context->window(), &width, &height),
+                    "walkthrough button window unavailable");
+            const auto reset_button =
+                hud_layout(static_cast<float>(width), static_cast<float>(height), true,
+                           metrics.performance)
+                    .reset;
+            event.button.x = reset_button.x + reset_button.width * .5F;
+            event.button.y = reset_button.y + reset_button.height * .5F;
             push(event);
         };
         const auto focus_event = [&](bool focused) {
@@ -683,12 +866,28 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
             key(SDL_SCANCODE_R, true);
             key(SDL_SCANCODE_R, false);
             break;
+        case 280:
+        case 290:
+            key(SDL_SCANCODE_F2, true);
+            key(SDL_SCANCODE_F2, false);
+            break;
+        case 296:
+            key(SDL_SCANCODE_F1, true);
+            key(SDL_SCANCODE_F1, false);
+            break;
         case 299: {
+            int width = 0, height = 0;
+            require(SDL_GetWindowSize(context->window(), &width, &height),
+                    "walkthrough window unavailable");
+            const auto reset_button =
+                hud_layout(static_cast<float>(width), static_cast<float>(height), true,
+                           metrics.performance)
+                    .reset;
             SDL_Event event{};
             event.type = SDL_EVENT_MOUSE_MOTION;
             event.motion.windowID = id;
-            event.motion.x = 142;
-            event.motion.y = 239;
+            event.motion.x = reset_button.x + reset_button.width * .5F;
+            event.motion.y = reset_button.y + reset_button.height * .5F;
             push(event);
             break;
         }
@@ -741,12 +940,19 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
                     continue;
                 }
                 if (event.key.scancode == SDL_SCANCODE_ESCAPE) {
+                    metrics.help = false;
                     input.release();
                     ImGui::SetWindowFocus(nullptr);
                     continue;
                 }
                 if (event.key.scancode == SDL_SCANCODE_F1 && !event.key.repeat) {
-                    metrics.help = !metrics.help;
+                    metrics.help = metrics.data || !metrics.help;
+                    metrics.data = false;
+                    continue;
+                }
+                if (event.key.scancode == SDL_SCANCODE_F2 && !event.key.repeat) {
+                    metrics.help = !metrics.data || !metrics.help;
+                    metrics.data = true;
                     continue;
                 }
                 if (event.key.scancode == SDL_SCANCODE_M && !event.key.repeat) {
@@ -995,6 +1201,7 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
             (void)rig.focus(std::nullopt);
             camera_target.reset();
             metrics.status = "Camera clearance: following the ship";
+            metrics.alert = true;
             camera = rig.sample({previous, current}, 1, preset.camera_obstacles);
         }
         last_camera = game_value(camera);
@@ -1275,6 +1482,14 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
     const auto system_sample = system_usage->snapshot();
     const auto system_ram = system_sample.values.ram.value_or(MemoryBytes{});
     const auto system_vram = system_sample.values.vram.value_or(MemoryBytes{});
+    std::printf(
+        "hud_controls_visible=%u hud_data_visible=%u hud_controls_drawn_frames=%llu "
+        "hud_data_drawn_frames=%llu hud_target_actions_drawn_frames=%llu brand_window_icon=%u\n",
+        metrics.help && !metrics.data ? 1U : 0U, metrics.help && metrics.data ? 1U : 0U,
+        static_cast<unsigned long long>(metrics.controls_drawn_frames),
+        static_cast<unsigned long long>(metrics.data_drawn_frames),
+        static_cast<unsigned long long>(metrics.target_actions_drawn_frames),
+        gui->window_icon_applied() ? 1U : 0U);
     std::printf(
         "performance_visible=%u performance_toggles=%llu performance_drawn_frames=%llu "
         "scope=system_device os_samples=%llu system_ram_available=%u "

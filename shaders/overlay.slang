@@ -35,5 +35,7 @@ OverlayVarying overlayVertex(OverlayInput input)
 [shader("fragment")]
 float4 overlayFragment(OverlayVarying input) : SV_Target0
 {
-    return float4(input.color.rgb, input.color.a * fontAtlas.Sample(fontSampler, input.uv).a);
+    float4 texel = fontAtlas.Sample(fontSampler, input.uv);
+    float3 image = float3(decodeColor(texel.r), decodeColor(texel.g), decodeColor(texel.b));
+    return float4(input.color.rgb * image, input.color.a * texel.a);
 }

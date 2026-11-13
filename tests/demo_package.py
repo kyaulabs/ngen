@@ -2,6 +2,8 @@
 import hashlib
 import importlib.util
 import json
+import io
+import tarfile
 from pathlib import Path
 import subprocess
 import sys
@@ -134,6 +136,24 @@ class PackageDemo(unittest.TestCase):
         self.assertEqual((bundle / runtime.name).read_bytes(), runtime.read_bytes())
         self.assertIn(b"flight_demo.exe", (bundle / "run.cmd").read_bytes())
         self.assertFalse(any(call.args[0][0] == "patchelf" for call in system.call_args_list))
+
+    def test_corresponding_source_retains_the_brand_inputs_needed_to_rebuild(self):
+        def archive(arguments, **kwargs):
+            if arguments[0] == "git" and "archive" in arguments:
+                destination = next(x.split("=", 1)[1] for x in arguments if x.startswith("--output="))
+                with tarfile.open(destination, "w:gz") as output:
+                    if "brand" in arguments:
+                        data = b"approved artwork fixture"
+                        item = tarfile.TarInfo("brand/icons/png/ngen-mark-dark-64.png")
+                        item.size = len(data)
+                        output.addfile(item, io.BytesIO(data))
+                return subprocess.CompletedProcess(arguments, 0, stdout="", stderr="")
+            return self.external_tool(arguments, **kwargs)
+        with patch.object(PACKAGE.subprocess, "run", side_effect=archive):
+            bundle = PACKAGE.create_bundle(self.build, self.asset, self.output)
+        with tarfile.open(bundle / "source.tar.gz") as source:
+            self.assertIn("brand/icons/png/ngen-mark-dark-64.png", source.getnames(),
+                          "A delivered binary must include its corresponding brand sources")
 
     def test_bundle_contains_local_asset_runtime_notices_and_integrity_without_sdk_paths(self):
         with patch.object(PACKAGE.subprocess, "run", side_effect=self.external_tool):

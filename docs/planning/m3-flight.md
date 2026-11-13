@@ -278,6 +278,14 @@ Windows PDH source now also has scoped native MSVC/ClangCl confirmation. It is
 not a substitute for the per-process GPU-memory budget observer or final owner
 UI acceptance.
 
+The owner subsequently prioritized the [immersive UI pass](m3-ui.md) while
+remote timing is deferred, superseding the earlier technical-checks-first queue.
+The first runtime pass is implemented and locally verified: no persistent flight
+panels, on-demand controls/data/performance, contextual target actions and shared
+supplied branding. [UI verification](../evidence/M3/ui/checks.md) records four
+native configurations, real hover/tooltip tests and unchanged physical replay.
+This is a starting point for owner refinement, not final UI or M3 acceptance.
+
 M3 remains open until these gates and exact post-merge CI complete. No mandatory
 tracker workflow or per-command reapproval is introduced.
 

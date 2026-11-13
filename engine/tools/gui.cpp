@@ -1,8 +1,11 @@
 #include "tools/gui.hpp"
+#include "brand_data.hpp"
 #include <algorithm>
 #include <array>
 #include <cmath>
 #include <cstdlib>
+#include <cstring>
+#include <filesystem>
 #include <imgui.h>
 #include <imgui_impl_sdl3.h>
 #include <stdexcept>
@@ -27,6 +30,26 @@ void wait(render::Context &context, const render::Submission &submission) {
         SDL_Delay(1);
     }
 }
+std::string system_font() {
+    std::array<std::filesystem::path, 4> candidates{};
+#ifdef _WIN32
+    if (const auto *root = SDL_GetEnvironmentVariable(SDL_GetEnvironment(), "SystemRoot"))
+        candidates[0] = std::filesystem::path(root) / "Fonts/segoeui.ttf";
+#else
+    candidates = {"/usr/share/fonts/TTF/DejaVuSans.ttf",
+                  "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",
+                  "/usr/share/fonts/noto/NotoSans-Regular.ttf",
+                  "/usr/share/fonts/truetype/liberation2/LiberationSans-Regular.ttf"};
+#endif
+    for (const auto &path : candidates) {
+        std::error_code error;
+        if (!path.empty() && path.is_absolute() && !std::filesystem::is_symlink(path, error) &&
+            std::filesystem::is_regular_file(path, error) &&
+            std::filesystem::file_size(path, error) <= std::uintmax_t{8} * 1024 * 1024 && !error)
+            return path.string();
+    }
+    return {};
+}
 } // namespace
 struct Gui::Impl {
     ImGuiContext *context{};
@@ -35,6 +58,10 @@ struct Gui::Impl {
     void *previous_user{};
     bool allocators_set{}, platform{};
     std::uint64_t allocations{};
+    bool icon_applied{};
+    ImFont *body{}, *mono{}, *readout{};
+    ImFontAtlasRectId mark_rect{ImFontAtlasRectId_Invalid},
+        wordmark_rect{ImFontAtlasRectId_Invalid};
     render::Image font;
     std::array<render::shader::OverlayVertex, render::overlay_vertex_limit> vertices{};
     std::array<std::uint32_t, render::overlay_index_limit> indices{};
@@ -68,43 +95,89 @@ struct Gui::Impl {
             static_cast<unsigned>(io.ConfigFlags) |
             static_cast<unsigned>(ImGuiConfigFlags_NavEnableKeyboard));
         io.BackendRendererName = "ngen-bounded-overlay";
-        io.Fonts->AddFontDefaultBitmap();
+        const auto font_path = system_font();
+        const auto sans = [&](float size) {
+            ImFontConfig config;
+            config.SizePixels = size;
+            return font_path.empty()
+                       ? io.Fonts->AddFontDefaultVector(&config)
+                       : io.Fonts->AddFontFromFileTTF(font_path.c_str(), size, &config);
+        };
+        body = sans(15);
+        mono = io.Fonts->AddFontDefaultBitmap();
+        readout = sans(28);
+        require(body && mono && readout, "GUI fonts could not be prepared");
+        io.FontDefault = body;
+        wordmark_rect = io.Fonts->AddCustomRect(static_cast<int>(brand::wordmark_width),
+                                                static_cast<int>(brand::wordmark_height));
+        mark_rect = io.Fonts->AddCustomRect(static_cast<int>(brand::mark_width),
+                                            static_cast<int>(brand::mark_height));
+        require(wordmark_rect != ImFontAtlasRectId_Invalid &&
+                    mark_rect != ImFontAtlasRectId_Invalid,
+                "GUI brand artwork could not be packed");
+        io.Fonts->TexPixelsUseColors = true;
+        auto icon_pixels = brand::icon_pixels;
+        const auto surface = std::unique_ptr<SDL_Surface, decltype(&SDL_DestroySurface)>(
+            SDL_CreateSurfaceFrom(static_cast<int>(brand::icon_width),
+                                  static_cast<int>(brand::icon_height), SDL_PIXELFORMAT_RGBA32,
+                                  icon_pixels.data(), static_cast<int>(brand::icon_width * 4)),
+            SDL_DestroySurface);
+        require(surface != nullptr, "GUI icon surface could not be prepared");
+        icon_applied = SDL_SetWindowIcon(owner.window(), surface.get());
+        if (!icon_applied)
+            SDL_ClearError(); // Some Wayland compositors do not expose window-icon support.
         platform = ImGui_ImplSDL3_InitForVulkan(owner.window());
         require(platform, "GUI SDL platform initialization failed");
         ImGui_ImplSDL3_SetGamepadMode(ImGui_ImplSDL3_GamepadMode_Manual, nullptr, 0);
         ImGui::StyleColorsDark();
         auto &style = ImGui::GetStyle();
-        style.WindowRounding = style.FrameRounding = 2;
-        style.WindowBorderSize = 1;
+        style.WindowRounding = 2;
+        style.FrameRounding = 1;
+        style.WindowBorderSize = style.FrameBorderSize = 1;
         style.WindowPadding = {12, 10};
         style.FramePadding = {6, 4};
         style.ItemSpacing = {6, 6};
-        style.Colors[ImGuiCol_Text] = {.80F, .85F, .89F, 1};
-        style.Colors[ImGuiCol_TextDisabled] = {.58F, .65F, .70F, 1};
-        style.Colors[ImGuiCol_WindowBg] = {.067F, .098F, .137F, .97F};
-        style.Colors[ImGuiCol_Border] = {.20F, .26F, .31F, 1};
-        style.Colors[ImGuiCol_FrameBg] = {.11F, .16F, .20F, 1};
-        style.Colors[ImGuiCol_Header] = {.13F, .21F, .25F, 1};
-        style.Colors[ImGuiCol_HeaderHovered] = {.18F, .29F, .33F, 1};
-        style.Colors[ImGuiCol_HeaderActive] = {.22F, .34F, .39F, 1};
-        style.Colors[ImGuiCol_Tab] = {.09F, .14F, .18F, 1};
-        style.Colors[ImGuiCol_TabSelected] = {.13F, .21F, .25F, 1};
-        style.Colors[ImGuiCol_TabHovered] = {.20F, .32F, .37F, 1};
-        style.Colors[ImGuiCol_TabSelectedOverline] = {.50F, .75F, .79F, 1};
-        style.Colors[ImGuiCol_FrameBgHovered] = {.16F, .25F, .29F, 1};
-        style.Colors[ImGuiCol_FrameBgActive] = {.22F, .34F, .39F, 1};
-        style.Colors[ImGuiCol_Button] = {.12F, .19F, .23F, 1};
-        style.Colors[ImGuiCol_ButtonHovered] = {.20F, .32F, .37F, 1};
-        style.Colors[ImGuiCol_ButtonActive] = {.26F, .40F, .44F, 1};
-        style.Colors[ImGuiCol_CheckMark] =
-            style.Colors[ImGuiCol_SliderGrab] = {.50F, .75F, .79F, 1};
-        style.Colors[ImGuiCol_NavCursor] = {.65F, .90F, .94F, 1};
+        const auto colour = [](std::uint32_t value) {
+            return ImGui::ColorConvertU32ToFloat4(value);
+        };
+        style.Colors[ImGuiCol_Text] = colour(brand::text);
+        style.Colors[ImGuiCol_TextDisabled] = colour(brand::muted);
+        style.Colors[ImGuiCol_WindowBg] = colour(brand::bg);
+        style.Colors[ImGuiCol_PopupBg] = colour(brand::surface);
+        style.Colors[ImGuiCol_Border] = colour(brand::control_border);
+        style.Colors[ImGuiCol_Separator] = colour(brand::border);
+        for (const auto slot : {ImGuiCol_FrameBg, ImGuiCol_Header, ImGuiCol_Tab, ImGuiCol_Button})
+            style.Colors[slot] = colour(brand::surface);
+        for (const auto slot : {ImGuiCol_FrameBgHovered, ImGuiCol_FrameBgActive,
+                                ImGuiCol_HeaderHovered, ImGuiCol_HeaderActive, ImGuiCol_TabSelected,
+                                ImGuiCol_TabHovered, ImGuiCol_ButtonHovered, ImGuiCol_ButtonActive})
+            style.Colors[slot] = colour(brand::surface_alt);
+        for (const auto slot : {ImGuiCol_CheckMark, ImGuiCol_SliderGrab,
+                                ImGuiCol_TabSelectedOverline, ImGuiCol_PlotLines})
+            style.Colors[slot] = colour(brand::accent);
+        style.Colors[ImGuiCol_NavCursor] = colour(brand::focus);
+        style.Colors[ImGuiCol_PlotLinesHovered] = colour(brand::secondary);
+        style.Colors[ImGuiCol_PlotHistogram] = colour(brand::warning);
         unsigned char *pixels{};
         int width = 0, height = 0, channels = 0;
         io.Fonts->GetTexDataAsRGBA32(&pixels, &width, &height, &channels);
         require(pixels && width > 0 && height > 0 && width <= 2048 && height <= 2048 &&
                     channels == 4,
                 "GUI atlas exceeds bounded RGBA8 profile");
+        const auto copy_art = [&](ImFontAtlasRectId id, std::span<const unsigned char> data) {
+            ImFontAtlasRect rect;
+            require(io.Fonts->GetCustomRect(id, &rect), "GUI brand atlas rect unavailable");
+            require(data.size() == std::size_t{rect.w} * rect.h * 4 &&
+                        unsigned{rect.x} + rect.w <= static_cast<unsigned>(width) &&
+                        unsigned{rect.y} + rect.h <= static_cast<unsigned>(height),
+                    "GUI brand atlas rect exceeds storage");
+            for (unsigned y = 0; y < rect.h; ++y)
+                std::memcpy(
+                    pixels + (std::size_t{rect.y + y} * static_cast<unsigned>(width) + rect.x) * 4,
+                    data.data() + std::size_t{y} * rect.w * 4, std::size_t{rect.w} * 4);
+        };
+        copy_art(wordmark_rect, brand::wordmark_pixels);
+        copy_art(mark_rect, brand::mark_pixels);
         const auto length =
             std::size_t{static_cast<unsigned>(width)} * static_cast<unsigned>(height) * 4;
         font =
@@ -141,6 +214,39 @@ void Gui::end() {
     ImGui::SetCurrentContext(impl_->context);
     ImGui::Render();
 }
+void Gui::mark(float size) {
+    ImGui::SetCurrentContext(impl_->context);
+    ImFontAtlasRect rect;
+    require(size >= 24 && size <= 256 &&
+                ImGui::GetIO().Fonts->GetCustomRect(impl_->mark_rect, &rect),
+            "GUI mark size or atlas rect invalid");
+    ImGui::Image(ImTextureID{1}, {size, size}, rect.uv0, rect.uv1);
+}
+void Gui::wordmark(float width) {
+    ImGui::SetCurrentContext(impl_->context);
+    ImFontAtlasRect rect;
+    require(width >= 160 && width <= 640 &&
+                ImGui::GetIO().Fonts->GetCustomRect(impl_->wordmark_rect, &rect),
+            "GUI wordmark size or atlas rect invalid");
+    ImGui::Image(ImTextureID{1},
+                 {width, width * static_cast<float>(brand::wordmark_height) /
+                             static_cast<float>(brand::wordmark_width)},
+                 rect.uv0, rect.uv1);
+}
+void Gui::push_font(GuiFont role) {
+    ImGui::SetCurrentContext(impl_->context);
+    ImGui::PushFont(role == GuiFont::readout ? impl_->readout
+                    : role == GuiFont::mono  ? impl_->mono
+                                             : impl_->body,
+                    role == GuiFont::readout ? 28.0F
+                    : role == GuiFont::mono  ? 13.0F
+                                             : 15.0F);
+}
+void Gui::pop_font() {
+    ImGui::SetCurrentContext(impl_->context);
+    ImGui::PopFont();
+}
+bool Gui::window_icon_applied() const noexcept { return impl_->icon_applied; }
 bool Gui::wants_mouse() const {
     ImGui::SetCurrentContext(impl_->context);
     return ImGui::GetIO().WantCaptureMouse;

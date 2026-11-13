@@ -583,6 +583,19 @@ int main() try {
     pixels(white, half_font);
     check_blend(128.0F / 255);
     pixels(white, white_pixel);
+    for (auto &vertex : quad)
+        vertex.color = 0xffffffffU;
+    const std::array<std::byte, 4> branded_pixel{std::byte{99}, std::byte{221}, std::byte{248},
+                                                 std::byte{255}};
+    pixels(white, branded_pixel);
+    const auto branded = composite(&overlay);
+    require(std::abs(int{branded[left]} - 99) <= 1 && std::abs(int{branded[left + 1]} - 221) <= 1 &&
+                std::abs(int{branded[left + 2]} - 248) <= 1,
+            "coloured GUI atlas texels were discarded or encoded twice");
+    pixels(white, white_pixel);
+    std::puts("overlay_coloured_atlas=1");
+    for (auto &vertex : quad)
+        vertex.color = 0x8000ff00U;
     auto bad_indices = quad_indices;
     bad_indices[0] = 99;
     const Overlay invalid_indices{white, quad, bad_indices, clips};
