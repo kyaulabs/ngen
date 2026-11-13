@@ -80,3 +80,12 @@ same-session review. Owner refinement, independent final review, native Windows
 post-UI/hovered-panel checks, direct-desktop RTX timing, final three-run budgets
 and final delivery/recording acceptance remain open. Artemis timing misses are
 retained; no threshold, rendering/presentation setting or audio gain was changed.
+
+The private Linux v15 UI preview is built from signed source `754c72d` at
+`build/m3-offline-linux-v15/ngen-flight/run.sh`. Its 25 manifest hashes and all
+414 corresponding-source archive members are verified, including original brand
+inputs. App-local geometry verification and a 310-frame F1/F2/F12 walkthrough
+pass with networking unshared, Conan hidden and SDK environment removed. The
+muted desktop Pulse client leaves card profiles, sinks and default routing
+unchanged. See the [bounded metadata](offline-preview.json); this establishes
+scoped offline startup, not final budgets, listening or owner acceptance.

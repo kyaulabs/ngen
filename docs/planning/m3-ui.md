@@ -73,5 +73,6 @@ atlas. The inspector keeps its control arrangement and technical font sizing;
 its header grows to fit the supplied wordmark. See the
 [verification record](../evidence/M3/ui/checks.md) for actual tests and review
 repairs. Private default/data/inspector captures have been visually reviewed.
-The offline Linux preview follows the source commit. Owner verdict, final native
-Windows/direct-desktop timing and M3 acceptance remain open.
+The private offline Linux v15 preview is available from source `754c72d`; its
+manifest/source correspondence and isolated startup are verified. Owner verdict,
+final native Windows/direct-desktop timing and M3 acceptance remain open.
