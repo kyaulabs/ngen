@@ -89,3 +89,13 @@ pass with networking unshared, Conan hidden and SDK environment removed. The
 muted desktop Pulse client leaves card profiles, sinks and default routing
 unchanged. See the [bounded metadata](offline-preview.json); this establishes
 scoped offline startup, not final budgets, listening or owner acceptance.
+
+The subsequent owner refinement removes the F1/F2 wordmarks, retaining only the
+upper-left flight mark and the existing inspector branding. F1/F2/F12 now fit
+content vertically at fixed readable widths, with viewport height caps. Actual
+window rectangles govern target-action occlusion. A native public-geometry Red
+showed 155 px of unused F1 space; the new test checks all three panels and
+shrinking back from F2 to F1. Eight scoped CTests, six actual-command Clang
+analyses, eight native UI contracts, strict sanitizer rendered checks and the
+validated GUI reset pass. Both 2,400-frame actual plot-hover paths remain free
+of warm C++/ImGui allocations. Final timing and Windows gates remain deferred.

@@ -214,21 +214,29 @@ struct Hud {
     std::uint64_t controls_drawn_frames{}, data_drawn_frames{}, target_actions_drawn_frames{};
     GpuMemoryKind gpu_memory{GpuMemoryKind::unavailable};
     SystemUsageSampler::Sample system;
+    HudRect controls_rect{}, performance_rect{};
     std::uint64_t cpp_calls{}, gui_calls{}, performance_drawn_frames{};
 };
-bool performance_panel(tools::Gui &gui, const Hud &metrics) {
+HudRect window_rect() {
+    const auto position = ImGui::GetWindowPos(), size = ImGui::GetWindowSize();
+    return {position.x, position.y, size.x, size.y};
+}
+bool performance_panel(tools::Gui &gui, Hud &metrics) {
     const auto size = ImGui::GetIO().DisplaySize;
     const auto panel = hud_layout(size.x, size.y, metrics.help, true).performance;
     ImGui::SetNextWindowPos({panel.x, panel.y});
-    ImGui::SetNextWindowSize({panel.width, panel.height});
+    ImGui::SetNextWindowSize({panel.width, 0});
+    ImGui::SetNextWindowSizeConstraints({panel.width, 0}, {panel.width, panel.height});
     gui.push_font(tools::GuiFont::mono);
     ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, {6, 2});
     constexpr auto flags =
         static_cast<ImGuiWindowFlags>(static_cast<unsigned>(ImGuiWindowFlags_NoDecoration) |
                                       static_cast<unsigned>(ImGuiWindowFlags_NoSavedSettings) |
                                       static_cast<unsigned>(ImGuiWindowFlags_NoMove) |
-                                      static_cast<unsigned>(ImGuiWindowFlags_NoInputs));
+                                      static_cast<unsigned>(ImGuiWindowFlags_NoInputs) |
+                                      static_cast<unsigned>(ImGuiWindowFlags_AlwaysAutoResize));
     const auto visible = ImGui::Begin("Flight performance", nullptr, flags);
+    metrics.performance_rect = window_rect();
     auto *draw = ImGui::GetWindowDrawList();
     draw->VtxBuffer.reserve(static_cast<int>(overlay_vertex_limit));
     draw->IdxBuffer.reserve(static_cast<int>(overlay_index_limit));
@@ -322,6 +330,8 @@ Actions hud(tools::Gui &gui, const flight::Snapshot &state, const Preset &preset
                                       static_cast<unsigned>(ImGuiWindowFlags_NoSavedSettings) |
                                       static_cast<unsigned>(ImGuiWindowFlags_NoMove) |
                                       static_cast<unsigned>(ImGuiWindowFlags_NoNav));
+    constexpr auto utility_flags = static_cast<ImGuiWindowFlags>(
+        static_cast<unsigned>(flags) | static_cast<unsigned>(ImGuiWindowFlags_AlwaysAutoResize));
     constexpr auto transparent = static_cast<ImGuiWindowFlags>(
         static_cast<unsigned>(flags) | static_cast<unsigned>(ImGuiWindowFlags_NoBackground));
     constexpr auto floating = static_cast<ImGuiWindowFlags>(
@@ -408,15 +418,18 @@ Actions hud(tools::Gui &gui, const flight::Snapshot &state, const Preset &preset
     if (metrics.help || metrics.preparing) {
         const auto panel = layout.controls;
         ImGui::SetNextWindowPos({panel.x, panel.y});
-        ImGui::SetNextWindowSize({panel.width, panel.height});
-        if (ImGui::Begin("Flight utility", nullptr, flags)) {
+        ImGui::SetNextWindowSize({panel.width, 0});
+        ImGui::SetNextWindowSizeConstraints({panel.width, 0}, {panel.width, panel.height});
+        const auto visible = ImGui::Begin("Flight utility", nullptr, utility_flags);
+        metrics.controls_rect = window_rect();
+        if (visible) {
             reserve_ui();
-            gui.wordmark();
+            ImGui::TextUnformatted(metrics.data ? "FLIGHT DATA / F2" : "CONTROLS / F1");
             ImGui::SameLine();
             if (ImGui::SmallButton("Close"))
                 metrics.help = false;
             ImGui::BeginDisabled(replay);
-            ImGui::SetCursorPos({12, 80});
+            ImGui::SetCursorPos({12, 40});
             action.mode = ImGui::Button("Switch view [TAB]", {panel.width * .5F - 16, 28});
             ImGui::SetCursorPos({layout.reset.x - panel.x, layout.reset.y - panel.y});
             action.reset = ImGui::Button("Reset [R]", {layout.reset.width, layout.reset.height});
@@ -508,8 +521,8 @@ Actions hud(tools::Gui &gui, const flight::Snapshot &state, const Preset &preset
                     return ImGui::IsMouseHoveringRect(
                         {rect.x, rect.y}, {rect.x + rect.width, rect.y + rect.height}, false);
                 };
-                const bool obscured = (metrics.help && over(layout.controls)) ||
-                                      (metrics.performance && over(layout.performance));
+                const bool obscured = (metrics.help && over(metrics.controls_rect)) ||
+                                      (metrics.performance && over(metrics.performance_rect));
                 const bool actions =
                     metrics.preparing ||
                     (!obscured && !ImGui::IsMouseDown(ImGuiMouseButton_Right) &&

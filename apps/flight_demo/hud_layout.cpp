@@ -19,7 +19,7 @@ HudLayout hud_layout(float width, float height, bool controls_open,
     const auto readout_width = std::min(280.0F, width - 16);
     result.readout = {(width - readout_width) * .5F, height - readout_height - 8, readout_width,
                       readout_height};
-    result.reset = {result.controls.x + result.controls.width * .5F + 4, result.controls.y + 80,
+    result.reset = {result.controls.x + result.controls.width * .5F + 4, result.controls.y + 40,
                     result.controls.width * .5F - 16, 28};
     return result;
 }

@@ -198,6 +198,94 @@ quit
         self.assertIn("performance_visible=1 performance_toggles=1", result.stdout)
         self.assertIn("hud_controls_drawn_frames=10", result.stdout)
 
+    @unittest.skipUnless(shutil.which("gdb"), "Native panel geometry fixture needs GDB")
+    def test_optional_panels_fit_content_including_return_from_data_to_controls(self):
+        # Geometry only: sample settled walkthrough phases after two warmup frames
+        # plus cold GUI preparation. Allocation tests retain 60-frame warmup.
+        script = """set pagination off
+set confirm off
+set debuginfod enabled off
+set $frames = 0
+set $controls = -1.0
+set $data = -1.0
+set $performance = -1.0
+set $returned = -1.0
+break ngen::tools::Gui::begin
+commands 1
+ silent
+ set $frames = $frames + 1
+ continue
+end
+break ImGui::End
+commands 2
+ silent
+ if ($frames > 13 && $frames < 20) || ($frames > 286 && $frames < 293) || $frames > 325
+  set $position = ImGui::GetWindowPos()
+  if ($position.x == 8 && $position.y == 64) || ($position.x == 922 && $position.y == 64)
+   set $size = ImGui::GetWindowSize()
+   set $gap = $size.y - ImGui::GetCursorPosY()
+   if $position.x == 922
+    set $performance = $gap
+   else
+    if $frames < 20
+     set $controls = $gap
+    else
+     if $frames < 293
+      set $data = $gap
+     else
+      set $returned = $gap
+     end
+    end
+   end
+  end
+ end
+ continue
+end
+run
+printf "panel_bottom_gaps=%.2f,%.2f,%.2f,%.2f\\n", $controls, $data, $performance, $returned
+quit
+"""
+        with tempfile.TemporaryDirectory(prefix="ngen-panel-fit-") as directory:
+            commands = Path(directory) / "geometry.gdb"
+            commands.write_text(script)
+            result = subprocess.run(
+                [shutil.which("gdb"), "--batch", "-x", str(commands), "--args",
+                 os.environ["NGEN_FLIGHT_DEMO"], os.environ["NGEN_FLIGHT_PACKAGE"],
+                 "--walkthrough", "--frames=330", "--warmup=2", "--mute", "--width=1280", "--height=720"],
+                capture_output=True, text=True, timeout=180)
+        self.assertEqual(result.returncode, 0, result.stdout[-4000:] + result.stderr[-4000:])
+        match = re.search(r"panel_bottom_gaps=([-\d.]+),([-\d.]+),([-\d.]+),([-\d.]+)", result.stdout)
+        self.assertIsNotNone(match, result.stdout[-4000:])
+        for name, gap in zip(("F1", "F2", "F12", "F1 after F2"), map(float, match.groups()), strict=True):
+            self.assertGreaterEqual(gap, 0, f"{name} content was not fully visible/measured")
+            self.assertLessEqual(gap, 24, f"{name} retains excessive empty space below its content")
+
+    def test_flight_menus_keep_branding_only_in_the_upper_left_icon(self):
+        for frames, visible in ((10, "hud_controls_visible=1 hud_data_visible=0"),
+                                (285, "hud_controls_visible=0 hud_data_visible=1")):
+            with self.subTest(frames=frames), tempfile.TemporaryDirectory(prefix="ngen-menu-brand-") as directory:
+                capture = Path(directory) / "menu.bmp"
+                result = subprocess.run(
+                    [os.environ["NGEN_FLIGHT_DEMO"], os.environ["NGEN_FLIGHT_PACKAGE"],
+                     "--walkthrough", f"--frames={frames}", "--warmup=2", "--mute", f"--capture={capture}"],
+                    capture_output=True, text=True, timeout=180)
+                self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+                self.assertEqual(result.stderr, "")
+                self.assertIn(visible, result.stdout)
+                data = capture.read_bytes()
+            width, height = struct.unpack_from("<ii", data, 18)
+            offset = struct.unpack_from("<I", data, 10)[0]
+            def violet_pixels(left, top, right, bottom):
+                total = 0
+                for y in range(top, bottom):
+                    for x in range(left, right):
+                        at = offset + ((height - 1 - y) * width + x) * 4
+                        b, g, r = data[at:at + 3]
+                        total += r > 120 and b > 180 and b > g + 25
+                return total
+            self.assertGreater(violet_pixels(16, 12, 76, 64), 40, "The upper-left icon must remain")
+            self.assertEqual(violet_pixels(16, 76, 420, 140), 0, "F1/F2 must not repeat the logo")
+
     def test_header_renders_supplied_cyan_and_violet_identity(self):
         with tempfile.TemporaryDirectory(prefix="ngen-ui-") as directory:
             capture = Path(directory) / "brand.bmp"

@@ -27,9 +27,10 @@ for image coverage, observations and concrete design consequences.
 Use the supplied NGEN Visual Identity 1.0 guide and dark semantic tokens in
 `brand/web/ngen-tokens.json`: quiet blue-black fields, cyan primary actions/focus,
 violet secondary accents, labelled warning/error states. Preserve original brand
-files. Render the supplied wordmark proportionally with its clear space and at
-least 144 px visible width in help/details. During flight use only the small
-supplied standalone mark; the owned window also uses the supplied icon. No
+files. Following the first preview, the owner requested no logos in F1 or F2;
+keep only the small upper-left standalone mark during flight. Utility headings
+are text-only. The inspector retains the proportional wordmark, its clear space
+and at least 144 px visible width; the owned window retains its supplied icon. No
 redrawn logo, animated noise, splash/menu system, new font/renderer dependency or
 global desktop installation.
 
@@ -38,8 +39,11 @@ binding banner. Speed/mode and actual main-drive/RCS values float near the botto
 target identity/range follow the selected object's screen position. Existing
 approach/orbit/focus actions are contextual, not another persistent panel.
 View/reset/audio controls and optional flight plots remain accessible on demand;
-F12 stays the separate system/device performance panel. F1 keeps controls
-discoverable. The [immersive mockup](../mockups/m3-flight-immersive.svg) supersedes
+F12 stays the separate system/device performance panel. F1, F2 and F12 fit their
+contents vertically at stable readable widths, capped to the available screen
+space; switching back from data to controls must shrink the window again.
+Context actions use the windows' actual bounds, not their maximum layout slots.
+F1 keeps controls discoverable. The [immersive mockup](../mockups/m3-flight-immersive.svg) supersedes
 the earlier panel-heavy [mockup](../mockups/m3-flight-deck.svg). Preserve every
 accepted shortcut, capture/focus/reset rule, motion and audio contract. No speed
 setter, synthetic health gauge or new navigation authority.
