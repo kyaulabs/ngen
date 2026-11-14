@@ -40,7 +40,8 @@ binding banner. Speed/mode and actual main-drive/RCS values float near the botto
 target identity/range follow the selected object's screen position. Existing
 approach/orbit/focus actions appear only in a right-click menu for the selected
 target, not on hover or in the controls/data panels. A brief RMB click opens it;
-RMB dragging/holding retains camera orbit and direct steering. The popup closes
+RMB dragging/holding retains camera orbit and direct steering; Alt+RMB remains
+camera-only, including a short click. The popup closes
 on action, dismissal or input/reset handoff, and keeps the selected target
 identity with its commands.
 View/reset/audio controls and optional flight plots remain accessible on demand;

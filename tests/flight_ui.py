@@ -182,7 +182,16 @@ quit
             self.skipTest("GDB is required for owned-window context input")
         release = 110 if gesture == "hold" else 82
         drag = 1 if gesture == "drag" else 0
-        events = f""" if $frames == 80 || $frames == {release}
+        events = f""" if ($frames == 70 || $frames == 120) && {int(gesture == 'free_look')}
+  call (void*)memset($motion, 0, sizeof(SDL_Event))
+  set $motion->type = $frames == 70 ? 768 : 769
+  set $motion->key.windowID = $id
+  set $motion->key.scancode = 226
+  set $motion->key.mod = $frames == 70 ? 256 : 0
+  set $motion->key.down = $frames == 70
+  call (bool)SDL_PushEvent($motion)
+ end
+ if $frames == 80 || $frames == {release}
   call (void*)memset($motion, 0, sizeof(SDL_Event))
   set $motion->type = $frames == 80 ? 1025 : 1026
   set $motion->button.windowID = $id
@@ -339,6 +348,10 @@ end
                 self.assertEqual((approach, orbit, focus), (0, 0, 0))
                 if gesture == "drag":
                     self.assertGreater(camera_drag, 0, "RMB dragging must still orbit the camera")
+
+    def test_free_look_click_does_not_open_context_menu(self):
+        approach, orbit, focus, *_ = self.target_context("free_look")
+        self.assertEqual((approach, orbit, focus), (0, 0, 0), "Alt+RMB remains camera-only")
 
     def test_context_menu_dismisses_and_dispatches_focus(self):
         approach, _, _, late, _, _ = self.target_context(dismiss=True)

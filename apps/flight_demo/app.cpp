@@ -651,6 +651,10 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
         metrics.context_target.reset();
         metrics.context_request.reset();
     };
+    const auto camera_only = [] {
+        return ImGui::GetIO().KeyAlt || (static_cast<unsigned>(SDL_GetModState()) &
+                                         static_cast<unsigned>(SDL_KMOD_ALT)) != 0;
+    };
     std::uint64_t sequence = 0, impact_after_tick = 0;
     auto pending_mode = flight::Mode::tactical;
     auto last_camera = game_value(rig.sample({previous, current}, 1, preset.camera_obstacles));
@@ -1032,7 +1036,7 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
                        event.button.button == SDL_BUTTON_RIGHT &&
                        event.button.windowID == SDL_GetWindowID(context->window())) {
                 input.pointer(false);
-                if (context_press && selected && focused && !options.replay &&
+                if (context_press && selected && focused && !options.replay && !camera_only() &&
                     Clock::now() - context_pressed_at <= std::chrono::milliseconds(250)) {
                     metrics.context_target = selected;
                     metrics.context_request = context_press;
@@ -1049,9 +1053,10 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
                         metrics.performance && event.button.x >= panel.x &&
                         event.button.x < panel.x + panel.width && event.button.y >= panel.y &&
                         event.button.y < panel.y + panel.height;
-                    if (!over_performance && selected && focused && std::isfinite(event.button.x) &&
-                        std::isfinite(event.button.y) && event.button.x >= 0 &&
-                        event.button.x < size.x && event.button.y >= 0 && event.button.y < size.y) {
+                    if (!over_performance && selected && focused && !camera_only() &&
+                        std::isfinite(event.button.x) && std::isfinite(event.button.y) &&
+                        event.button.x >= 0 && event.button.x < size.x && event.button.y >= 0 &&
+                        event.button.y < size.y) {
                         context_press = std::array<float, 2>{event.button.x, event.button.y};
                         context_pressed_at = Clock::now();
                         context_travel = 0;

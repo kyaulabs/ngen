@@ -145,3 +145,9 @@ This warms the library's default storage without changing capacities or the
 60-frame measurement warmup. The short traced reproduction and both full
 2,400-frame actual-hover fixtures now report zero warm C++/ImGui calls. Earlier
 untraced reports are retained rather than individually attributed from this stack.
+
+Follow-up review caught a short Alt+RMB click also opening the popup. A native
+modifier-event Red reproduces that conflict; checking GUI/native modifier state
+at gesture admission and release preserves camera-only free look. All 15 native
+UI cases and affected input/camera/CLI consumers pass after the fix, with the
+three configuration-specific Clang checks repeated. No binding was remapped.
