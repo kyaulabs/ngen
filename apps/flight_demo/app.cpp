@@ -211,10 +211,12 @@ struct Hud {
     audio::Statistics audio;
     const char *status{"Flight ready"};
     bool help{}, data{}, preparing{}, alert{}, performance{}, gpu_ready{}, allocation_probe{};
-    std::uint64_t controls_drawn_frames{}, data_drawn_frames{}, target_actions_drawn_frames{};
+    std::uint64_t controls_drawn_frames{}, data_drawn_frames{}, context_menu_drawn_frames{};
+    std::optional<std::size_t> context_target;
+    std::optional<std::array<float, 2>> context_request;
     GpuMemoryKind gpu_memory{GpuMemoryKind::unavailable};
     SystemUsageSampler::Sample system;
-    HudRect controls_rect{}, performance_rect{};
+    HudRect performance_rect{};
     std::uint64_t cpp_calls{}, gui_calls{}, performance_drawn_frames{};
 };
 HudRect window_rect() {
@@ -308,6 +310,7 @@ bool performance_panel(tools::Gui &gui, Hud &metrics) {
 }
 struct Actions {
     bool mode{}, reset{}, approach{}, orbit{}, focus{}, mute{};
+    std::optional<std::size_t> target;
 };
 void reserve_ui() {
     auto *draw = ImGui::GetWindowDrawList();
@@ -419,7 +422,6 @@ Actions hud(tools::Gui &gui, const flight::Snapshot &state, const Preset &preset
         ImGui::SetNextWindowSize({panel.width, 0});
         ImGui::SetNextWindowSizeConstraints({panel.width, 0}, {panel.width, panel.height});
         const auto visible = ImGui::Begin("Flight utility", nullptr, utility_flags);
-        metrics.controls_rect = window_rect();
         if (visible) {
             reserve_ui();
             ImGui::TextUnformatted(metrics.data ? "FLIGHT DATA" : "CONTROLS");
@@ -461,13 +463,6 @@ Actions hud(tools::Gui &gui, const flight::Snapshot &state, const Preset &preset
             ImGui::Separator();
             if (selected) {
                 ImGui::Text("SELECTED / ASTEROID %03u", static_cast<unsigned>(*selected));
-                ImGui::BeginDisabled(replay);
-                action.approach = ImGui::Button("Approach");
-                ImGui::SameLine();
-                action.orbit = ImGui::Button("Orbit");
-                ImGui::SameLine();
-                action.focus = ImGui::Button("Focus");
-                ImGui::EndDisabled();
             }
             ImGui::TextWrapped("%s", metrics.status);
             ImGui::TextDisabled("AUDIO %s", metrics.audio.state == audio::State::disconnected
@@ -499,22 +494,9 @@ Actions hud(tools::Gui &gui, const flight::Snapshot &state, const Preset &preset
                 draw->AddLine({at.x + 14, at.y + 14}, {at.x + 7, at.y + 14}, signal);
                 const auto x = std::clamp(at.x + 18, 4.0F, std::max(4.0F, size.x - 272));
                 const auto y = std::clamp(at.y - 20, 48.0F, std::max(48.0F, size.y - 88));
-                const auto over = [](HudRect rect) {
-                    return ImGui::IsMouseHoveringRect(
-                        {rect.x, rect.y}, {rect.x + rect.width, rect.y + rect.height}, false);
-                };
-                const bool obscured = (metrics.help && over(metrics.controls_rect)) ||
-                                      (metrics.performance && over(metrics.performance_rect));
-                const bool actions =
-                    metrics.preparing ||
-                    (!obscured && !ImGui::IsMouseDown(ImGuiMouseButton_Right) &&
-                     // This is a world-space anchor, outside any active UI window.
-                     (ImGui::IsMouseHoveringRect({at.x - 22, at.y - 22}, {at.x + 22, at.y + 22},
-                                                 false) ||
-                      ImGui::IsMouseHoveringRect({x, y}, {x + 268, y + 82}, false)));
                 ImGui::SetNextWindowPos({x, y});
-                ImGui::SetNextWindowSize({268, actions ? 82.0F : 52.0F});
-                if (ImGui::Begin("Flight target", nullptr, actions ? transparent : floating)) {
+                ImGui::SetNextWindowSize({268, 52});
+                if (ImGui::Begin("Flight target", nullptr, floating)) {
                     reserve_ui();
                     const auto &origin = state.body.position_metres;
                     const auto dx = point[0] - origin[0], dy = point[1] - origin[1],
@@ -523,21 +505,41 @@ Actions hud(tools::Gui &gui, const flight::Snapshot &state, const Preset &preset
                     gui.push_font(tools::GuiFont::mono);
                     ImGui::TextDisabled("%.0f m", std::sqrt(dx * dx + dy * dy + dz * dz));
                     gui.pop_font();
-                    if (actions) {
-                        if (!metrics.preparing)
-                            ++metrics.target_actions_drawn_frames;
-                        ImGui::BeginDisabled(replay);
-                        action.approach = ImGui::SmallButton("Approach") || action.approach;
-                        ImGui::SameLine();
-                        action.orbit = ImGui::SmallButton("Orbit") || action.orbit;
-                        ImGui::SameLine();
-                        action.focus = ImGui::SmallButton("Focus") || action.focus;
-                        ImGui::EndDisabled();
-                    }
                 }
                 ImGui::End();
             }
         }
+    }
+    if (metrics.preparing && selected) {
+        metrics.context_target = selected;
+        metrics.context_request = std::array<float, 2>{size.x * .6F, size.y * .4F};
+    }
+    if (metrics.context_request) {
+        const auto position = *metrics.context_request;
+        ImGui::SetNextWindowPos({position[0], position[1]});
+        ImGui::OpenPopup("Flight target actions");
+        metrics.context_request.reset();
+    }
+    if (ImGui::BeginPopup("Flight target actions")) {
+        reserve_ui();
+        if (metrics.context_target && *metrics.context_target < preset.camera_obstacles.size()) {
+            if (!metrics.preparing)
+                ++metrics.context_menu_drawn_frames;
+            ImGui::Text("SELECTED / ASTEROID %03u", static_cast<unsigned>(*metrics.context_target));
+            ImGui::Separator();
+            ImGui::BeginDisabled(replay || metrics.preparing);
+            action.approach = ImGui::MenuItem("Approach");
+            action.orbit = ImGui::MenuItem("Orbit");
+            action.focus = ImGui::MenuItem("Focus");
+            ImGui::EndDisabled();
+            if (action.approach || action.orbit || action.focus)
+                action.target = metrics.context_target;
+        } else {
+            ImGui::CloseCurrentPopup();
+        }
+        if (metrics.preparing)
+            ImGui::CloseCurrentPopup();
+        ImGui::EndPopup();
     }
     if (metrics.alert) {
         ImGui::SetNextWindowPos({8, std::max(64.0F, layout.readout.y - 36)});
@@ -618,7 +620,13 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
     // Auto-sized tooltip windows skip their first frame. Two unsubmitted cold
     // frames prepare both the geometry and its rendered draw-data layer, even
     // when the desktop has not supplied a valid mouse position yet.
+    const auto initial_mouse = ImGui::GetIO().MousePos;
     for (unsigned pass = 0; pass < 2; ++pass) {
+        // Exercise ImGui's default input queue/trail storage even when no real
+        // mouse event arrives during warmup. These unsubmitted events stay local
+        // to this UI context; no SDL input, flight intent or OS pointer is changed.
+        ImGui::GetIO().AddMousePosEvent(pass == 0 ? 0 : initial_mouse.x,
+                                        pass == 0 ? 0 : initial_mouse.y);
         gui->begin();
         ImGui::SetNextWindowPos({32, 32});
         if (ImGui::BeginTooltip()) {
@@ -635,6 +643,14 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
     bool focused = (SDL_GetWindowFlags(context->window()) & SDL_WINDOW_INPUT_FOCUS) != 0;
     input.focus(focused);
     std::optional<std::size_t> selected, camera_target;
+    std::optional<std::array<float, 2>> context_press;
+    Clock::time_point context_pressed_at{};
+    float context_travel{};
+    const auto cancel_context = [&] {
+        context_press.reset();
+        metrics.context_target.reset();
+        metrics.context_request.reset();
+    };
     std::uint64_t sequence = 0, impact_after_tick = 0;
     auto pending_mode = flight::Mode::tactical;
     auto last_camera = game_value(rig.sample({previous, current}, 1, preset.camera_obstacles));
@@ -673,8 +689,10 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
         (void)hud(*gui, current, preset, metrics, selected, options.replay, muted, initial_view);
         metrics.preparing = metrics.help = metrics.data = metrics.performance = metrics.alert =
             false;
+        cancel_context();
     }
     const auto change_mode = [&] {
+        cancel_context();
         const auto wanted =
             pending_mode == flight::Mode::tactical ? flight::Mode::direct : flight::Mode::tactical;
         if (send(flight::SetMode{wanted})) {
@@ -688,6 +706,7 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
         }
     };
     const auto reset = [&] {
+        cancel_context();
         current = game_value(game->reset());
         previous = current;
         sequence = 0;
@@ -861,6 +880,31 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
             key(SDL_SCANCODE_R, true);
             key(SDL_SCANCODE_R, false);
             break;
+        case 275:
+        case 276: {
+            int width = 0, height = 0;
+            require(SDL_GetWindowSize(context->window(), &width, &height),
+                    "walkthrough context window unavailable");
+            SDL_Event event{};
+            event.type = SDL_EVENT_MOUSE_MOTION;
+            event.motion.windowID = id;
+            event.motion.x = static_cast<float>(width) * .5F;
+            event.motion.y = static_cast<float>(height) * .4F;
+            push(event);
+            event = {};
+            event.type = index == 275 ? SDL_EVENT_MOUSE_BUTTON_DOWN : SDL_EVENT_MOUSE_BUTTON_UP;
+            event.button.windowID = id;
+            event.button.button = SDL_BUTTON_RIGHT;
+            event.button.down = index == 275;
+            event.button.x = static_cast<float>(width) * .5F;
+            event.button.y = static_cast<float>(height) * .4F;
+            push(event);
+            break;
+        }
+        case 279:
+            key(SDL_SCANCODE_ESCAPE, true);
+            key(SDL_SCANCODE_ESCAPE, false);
+            break;
         case 280:
         case 290:
             key(SDL_SCANCODE_F2, true);
@@ -917,6 +961,7 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
                 continue;
             }
             if (event.type == SDL_EVENT_WINDOW_FOCUS_LOST) {
+                cancel_context();
                 focused = false;
                 input.focus(false);
                 (void)sound.mute(true);
@@ -935,17 +980,20 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
                     continue;
                 }
                 if (event.key.scancode == SDL_SCANCODE_ESCAPE) {
+                    cancel_context();
                     metrics.help = false;
                     input.release();
                     ImGui::SetWindowFocus(nullptr);
                     continue;
                 }
                 if (event.key.scancode == SDL_SCANCODE_F1 && !event.key.repeat) {
+                    cancel_context();
                     metrics.help = metrics.data || !metrics.help;
                     metrics.data = false;
                     continue;
                 }
                 if (event.key.scancode == SDL_SCANCODE_F2 && !event.key.repeat) {
+                    cancel_context();
                     metrics.help = !metrics.data || !metrics.help;
                     metrics.data = true;
                     continue;
@@ -981,14 +1029,36 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
                         (void)input.key(*key, true);
                 }
             } else if (event.type == SDL_EVENT_MOUSE_BUTTON_UP &&
-                       event.button.button == SDL_BUTTON_RIGHT)
+                       event.button.button == SDL_BUTTON_RIGHT &&
+                       event.button.windowID == SDL_GetWindowID(context->window())) {
                 input.pointer(false);
-            else if (event.type == SDL_EVENT_MOUSE_BUTTON_DOWN && !options.replay &&
-                     !gui->wants_mouse()) {
-                if (event.button.button == SDL_BUTTON_RIGHT)
+                if (context_press && selected && focused && !options.replay &&
+                    Clock::now() - context_pressed_at <= std::chrono::milliseconds(250)) {
+                    metrics.context_target = selected;
+                    metrics.context_request = context_press;
+                }
+                context_press.reset();
+            } else if (event.type == SDL_EVENT_MOUSE_BUTTON_DOWN && !options.replay &&
+                       event.button.windowID == SDL_GetWindowID(context->window()) &&
+                       !gui->wants_mouse()) {
+                if (event.button.button == SDL_BUTTON_RIGHT) {
+                    context_press.reset();
+                    const auto size = ImGui::GetIO().DisplaySize;
+                    const auto &panel = metrics.performance_rect;
+                    const bool over_performance =
+                        metrics.performance && event.button.x >= panel.x &&
+                        event.button.x < panel.x + panel.width && event.button.y >= panel.y &&
+                        event.button.y < panel.y + panel.height;
+                    if (!over_performance && selected && focused && std::isfinite(event.button.x) &&
+                        std::isfinite(event.button.y) && event.button.x >= 0 &&
+                        event.button.x < size.x && event.button.y >= 0 && event.button.y < size.y) {
+                        context_press = std::array<float, 2>{event.button.x, event.button.y};
+                        context_pressed_at = Clock::now();
+                        context_travel = 0;
+                    }
                     input.pointer(true);
-                else if (event.button.button == SDL_BUTTON_LEFT &&
-                         pending_mode == flight::Mode::tactical) {
+                } else if (event.button.button == SDL_BUTTON_LEFT &&
+                           pending_mode == flight::Mode::tactical) {
                     int w = 0, h = 0;
                     if (SDL_GetWindowSize(context->window(), &w, &h) && w > 0 && h > 0) {
                         const auto direction =
@@ -1008,9 +1078,16 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
                         }
                     }
                 }
-            } else if (event.type == SDL_EVENT_MOUSE_MOTION && !options.replay)
+            } else if (event.type == SDL_EVENT_MOUSE_MOTION && !options.replay) {
+                if (context_press) {
+                    context_travel += std::abs(event.motion.xrel) + std::abs(event.motion.yrel);
+                    if (!std::isfinite(context_travel) ||
+                        context_travel > ImGui::GetIO().MouseDragThreshold)
+                        context_press.reset();
+                }
                 (void)input.motion({event.motion.xrel, event.motion.yrel});
-            else if (event.type == SDL_EVENT_MOUSE_WHEEL && !options.replay && !gui->wants_mouse())
+            } else if (event.type == SDL_EVENT_MOUSE_WHEEL && !options.replay &&
+                       !gui->wants_mouse())
                 (void)input.wheel(std::clamp(event.wheel.direction == SDL_MOUSEWHEEL_FLIPPED
                                                  ? -event.wheel.y
                                                  : event.wheel.y,
@@ -1216,6 +1293,8 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
         if (action.mute)
             muted = !muted;
         if (!options.replay) {
+            if (action.target)
+                selected = action.target;
             if (action.mode)
                 change_mode();
             if (action.reset)
@@ -1479,11 +1558,11 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
     const auto system_vram = system_sample.values.vram.value_or(MemoryBytes{});
     std::printf(
         "hud_controls_visible=%u hud_data_visible=%u hud_controls_drawn_frames=%llu "
-        "hud_data_drawn_frames=%llu hud_target_actions_drawn_frames=%llu brand_window_icon=%u\n",
+        "hud_data_drawn_frames=%llu hud_context_menu_drawn_frames=%llu brand_window_icon=%u\n",
         metrics.help && !metrics.data ? 1U : 0U, metrics.help && metrics.data ? 1U : 0U,
         static_cast<unsigned long long>(metrics.controls_drawn_frames),
         static_cast<unsigned long long>(metrics.data_drawn_frames),
-        static_cast<unsigned long long>(metrics.target_actions_drawn_frames),
+        static_cast<unsigned long long>(metrics.context_menu_drawn_frames),
         gui->window_icon_applied() ? 1U : 0U);
     std::printf(
         "performance_visible=%u performance_toggles=%llu performance_drawn_frames=%llu "

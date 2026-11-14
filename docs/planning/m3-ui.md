@@ -32,13 +32,17 @@ files. Following the first preview, the owner requested no logos in F1 or F2;
 keep only the small upper-left standalone mark during flight. Utility headings
 are text-only. The inspector retains the proportional wordmark, its clear space
 and at least 144 px visible width; the owned window retains its supplied icon. No
-redrawn logo, animated noise, splash/menu system, new font/renderer dependency or
-global desktop installation.
+redrawn logo, animated noise, splash/front-end menu system, new font/renderer
+dependency or global desktop installation.
 
 The default HUD has no opaque deck, target card, module grid, top bar or boxed
 binding banner. Speed/mode and actual main-drive/RCS values float near the bottom;
 target identity/range follow the selected object's screen position. Existing
-approach/orbit/focus actions are contextual, not another persistent panel.
+approach/orbit/focus actions appear only in a right-click menu for the selected
+target, not on hover or in the controls/data panels. A brief RMB click opens it;
+RMB dragging/holding retains camera orbit and direct steering. The popup closes
+on action, dismissal or input/reset handoff, and keeps the selected target
+identity with its commands.
 View/reset/audio controls and optional flight plots remain accessible on demand;
 F12 stays the separate system/device performance panel. F1, F2 and F12 fit their
 contents vertically at stable readable widths, capped to the available screen

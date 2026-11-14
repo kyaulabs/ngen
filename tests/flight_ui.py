@@ -177,16 +177,188 @@ quit
         self.assertIsNotNone(match, result.stdout[-4000:])
         return tuple(map(int, match.groups()))
 
-    def test_target_actions_reveal_on_actual_label_hover(self):
-        before, after, _ = self.target_hover(False)
-        self.assertGreater(before, 0, "World-anchored actions never appeared at the actual label position")
-        self.assertGreater(after, 0)
+    def target_context(self, gesture="tap", dismiss=False, choose_focus=False, performance=False, edge=False):
+        if not shutil.which("gdb"):
+            self.skipTest("GDB is required for owned-window context input")
+        release = 110 if gesture == "hold" else 82
+        drag = 1 if gesture == "drag" else 0
+        events = f""" if $frames == 80 || $frames == {release}
+  call (void*)memset($motion, 0, sizeof(SDL_Event))
+  set $motion->type = $frames == 80 ? 1025 : 1026
+  set $motion->button.windowID = $id
+  set $motion->button.button = 3
+  set $motion->button.down = $frames == 80
+  set $motion->button.x = $x
+  set $motion->button.y = $y
+  call (bool)SDL_PushEvent($motion)
+ end
+ if $frames == 81 && {drag}
+  call (void*)memset($motion, 0, sizeof(SDL_Event))
+  set $motion->type = 1024
+  set $motion->motion.windowID = $id
+  set $motion->motion.xrel = 30
+  call (bool)SDL_PushEvent($motion)
+ end
+ if ($frames == 98 || $frames == 99) && {int(choose_focus)}
+  call (void*)memset($motion, 0, sizeof(SDL_Event))
+  set $motion->type = 1024
+  set $motion->motion.windowID = $id
+  set $motion->motion.x = $x
+  set $motion->motion.y = $y
+  call (bool)SDL_PushEvent($motion)
+  call (void*)memset($motion, 0, sizeof(SDL_Event))
+  set $motion->type = $frames == 98 ? 1025 : 1026
+  set $motion->button.windowID = $id
+  set $motion->button.button = 1
+  set $motion->button.down = $frames == 98
+  set $motion->button.x = $x
+  set $motion->button.y = $y
+  call (bool)SDL_PushEvent($motion)
+ end
+ if $frames == 110 && {int(dismiss)}
+  call (void*)memset($motion, 0, sizeof(SDL_Event))
+  set $motion->type = 768
+  set $motion->key.windowID = $id
+  set $motion->key.scancode = 41
+  set $motion->key.down = 1
+  call (bool)SDL_PushEvent($motion)
+  set $motion->type = 769
+  set $motion->key.down = 0
+  call (bool)SDL_PushEvent($motion)
+ end
+ continue
+end"""
+        script = re.sub(r" if \$frames == 80\n.*?\n end\n continue\nend", lambda _: events,
+                        HOVER_SCRIPT, count=1, flags=re.DOTALL)
+        script = script.replace("break ImGui::SmallButton", "break ImGui::MenuItem")
+        script = script.replace("set $overlap = 0", "set $overlap = 0\nset $orbit = 0\nset $focus = 0\nset $late = 0\nset $camera_drag = 0\nset $focused = 0")
+        if edge:
+            script = script.replace("$position.x + 120", "1274").replace("$position.y + 65", "714")
+            script = script.replace(" if $frames > 85\n  if label[0]", """ if $frames > 85
+  set $popup_pos = ImGui::GetWindowPos()
+  set $popup_size = ImGui::GetWindowSize()
+  if $popup_pos.x < 0 || $popup_pos.y < 0 || $popup_pos.x + $popup_size.x > 1280 || $popup_pos.y + $popup_size.y > 720
+   printf "popup_outside_viewport\\n"
+   quit 2
+  end
+  if label[0]""")
+        if choose_focus:
+            script = script.replace(" if fmt[0] == 'A'",  " if $frames < 90 && fmt[0] == 'A'")
+        if performance:
+            script = script.replace("  call (void)SDL_free($windows)", """  call (void*)memset($motion, 0, sizeof(SDL_Event))
+  set $motion->type = 768
+  set $motion->key.windowID = $id
+  set $motion->key.scancode = 69
+  set $motion->key.down = 1
+  call (bool)SDL_PushEvent($motion)
+  set $motion->type = 769
+  set $motion->key.down = 0
+  call (bool)SDL_PushEvent($motion)
+  call (void)SDL_free($windows)""")
+        script = script.replace(" if label[0] == 'A' && label[1] == 'p'", """ if $frames > 85
+  if label[0] == 'O'
+   set $orbit = $orbit + 1
+  end
+  if label[0] == 'F'
+   set $focus = $focus + 1
+  end
+  if $frames > 120
+   set $late = $late + 1
+  end
+ end
+ if label[0] == 'A' && label[1] == 'p'""")
+        if choose_focus:
+            script = script.replace("  if label[0] == 'F'\n", """  if label[0] == 'F' && $frames == 96
+   set $position = ImGui::GetCursorScreenPos()
+   set $x = $position.x + 12
+   set $y = $position.y + 6
+  end
+  if label[0] == 'F'
+""")
+        effects = """break ngen::flight::CameraRig::orbit
+commands 5
+ silent
+ if $frames > 79 && (motion.yaw_radians != 0 || motion.pitch_radians != 0)
+  set $camera_drag = $camera_drag + 1
+ end
+ continue
+end
+break ngen::flight::CameraRig::focus
+commands 6
+ silent
+ if $frames > 79
+  set $focused = $focused + 1
+ end
+ continue
+end
+"""
+        script = script.replace("run\n", effects + "run\n", 1)
+        script = script.removesuffix("quit\n") + 'printf "context_items=%d,%d,%d,%d,%d,%d\\n", $after, $orbit, $focus, $late, $camera_drag, $focused\nquit\n'
+        with tempfile.TemporaryDirectory(prefix="ngen-context-ui-") as directory:
+            commands = Path(directory) / "context.gdb"
+            commands.write_text(script)
+            result = subprocess.run(
+                [shutil.which("gdb"), "--batch", "-x", str(commands), "--args",
+                 os.environ["NGEN_FLIGHT_DEMO"], os.environ["NGEN_FLIGHT_PACKAGE"],
+                 "--frames=150", "--warmup=60", "--mute"],
+                capture_output=True, text=True, timeout=180)
+        self.assertEqual(result.returncode, 0, result.stdout[-4000:] + result.stderr[-4000:])
+        self.assertIn("allocation_probe=1", result.stdout)
+        self.assertIn("cpp_new_calls=0 imgui_calls=0", result.stdout, result.stdout[-4000:])
+        match = re.search(r"context_items=(\d+),(\d+),(\d+),(\d+),(\d+),(\d+)", result.stdout)
+        self.assertIsNotNone(match, result.stdout[-4000:])
+        return tuple(map(int, match.groups()))
 
-    def test_performance_panel_does_not_expose_invisible_target_buttons(self):
-        before, after, overlap = self.target_hover(True)
-        self.assertGreater(before, 0, "The fixture must first reveal the actual target buttons")
-        self.assertEqual(overlap, 1, "The owned pointer must actually overlap target and F12 bounds")
-        self.assertEqual(after, 0, "Opaque diagnostics must not mask still-clickable target buttons")
+    def test_right_click_opens_selected_target_actions(self):
+        approach, orbit, focus, *_ = self.target_context()
+        self.assertGreater(approach, 0, "A right-click must open the target menu")
+        self.assertGreater(orbit, 0)
+        self.assertGreater(focus, 0)
+
+    def test_walkthrough_exercises_context_menu_without_a_debugger(self):
+        result = subprocess.run(
+            [os.environ["NGEN_FLIGHT_DEMO"], os.environ["NGEN_FLIGHT_PACKAGE"],
+             "--walkthrough", "--frames=278", "--warmup=2", "--mute"],
+            capture_output=True, text=True, timeout=180)
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertEqual(result.stderr, "")
+        count = re.search(r"hud_context_menu_drawn_frames=(\d+)", result.stdout)
+        self.assertIsNotNone(count, result.stdout)
+        self.assertGreater(int(count.group(1)), 0, "The native walkthrough must exercise the popup")
+
+    def test_context_menu_fits_near_the_viewport_edge(self):
+        approach, orbit, focus, *_ = self.target_context(edge=True)
+        self.assertGreater(approach, 0)
+        self.assertGreater(orbit, 0)
+        self.assertGreater(focus, 0)
+
+    def test_right_drag_and_hold_do_not_open_context_menu(self):
+        for gesture in ("drag", "hold"):
+            with self.subTest(gesture=gesture):
+                approach, orbit, focus, _, camera_drag, _ = self.target_context(gesture)
+                self.assertEqual((approach, orbit, focus), (0, 0, 0))
+                if gesture == "drag":
+                    self.assertGreater(camera_drag, 0, "RMB dragging must still orbit the camera")
+
+    def test_context_menu_dismisses_and_dispatches_focus(self):
+        approach, _, _, late, _, _ = self.target_context(dismiss=True)
+        self.assertGreater(approach, 0)
+        self.assertEqual(late, 0, "Escape must close the context menu")
+        approach, _, _, late, _, focused = self.target_context(choose_focus=True)
+        self.assertGreater(approach, 0)
+        self.assertEqual(focused, 1, "The Focus menu item must invoke the existing camera action")
+        self.assertEqual(late, 0, "Choosing an action must close the context menu")
+
+    def test_right_click_over_performance_panel_does_not_open_world_menu(self):
+        approach, orbit, focus, *_ = self.target_context(performance=True)
+        self.assertEqual((approach, orbit, focus), (0, 0, 0))
+
+    def test_selected_target_hover_does_not_reveal_action_buttons(self):
+        for performance in (False, True):
+            with self.subTest(performance=performance):
+                before, after, _ = self.target_hover(performance)
+                self.assertEqual(before, 0, "Selection/hover must not expose target actions")
+                self.assertEqual(after, 0, "Target actions belong only in the context menu")
 
     def test_small_admitted_viewport_keeps_controls_and_performance_bounded(self):
         result = subprocess.run(
@@ -210,20 +382,46 @@ set debuginfod enabled off
 python
 import gdb, json
 labels = set()
+ordinary = set()
+frames = 0
+in_menu = False
+class Menu(gdb.Breakpoint):
+ def stop(self):
+  global in_menu
+  in_menu = True
+  return False
+class EndMenu(gdb.Breakpoint):
+ def stop(self):
+  global in_menu
+  in_menu = False
+  return False
+class Frame(gdb.Breakpoint):
+ def stop(self):
+  global frames
+  frames += 1
+  return False
 class RenderedText(gdb.Breakpoint):
  def stop(self):
+  if frames < 9:
+   return False
   begin = gdb.parse_and_eval('text_begin')
   end = gdb.parse_and_eval('text_end')
   length = int(end) - int(begin)
   if int(begin) and int(end) and 0 < length <= 1024 and len(labels) < 8192:
-   labels.add(begin.string(encoding='utf-8', errors='strict', length=length))
+   text = begin.string(encoding='utf-8', errors='strict', length=length)
+   labels.add(text)
+   if not in_menu:
+    ordinary.add(text)
   return False
+Frame('ngen::tools::Gui::begin', internal=True)
+Menu('ImGui::MenuItem', internal=True)
+EndMenu('ImGui::EndPopup', internal=True)
 RenderedText('ImFont::RenderText', internal=True)
 end
 run
 python
 with open({str(output)!r}, 'w') as stream:
- json.dump(sorted(labels), stream)
+ json.dump(dict(all=sorted(labels), ordinary=sorted(ordinary)), stream)
 end
 quit
 """)
@@ -234,7 +432,8 @@ quit
                 capture_output=True, text=True, timeout=180)
             self.assertEqual(result.returncode, 0, result.stdout[-4000:] + result.stderr[-4000:])
             self.assertNotIn("Python Exception", result.stderr)
-            labels = json.loads(output.read_text())
+            observed = json.loads(output.read_text())
+            labels, ordinary = observed["all"], observed["ordinary"]
         self.assertLess(len(labels), 8192, "The rendered-text capture must not truncate its observations")
         self.assertIn("hud_data_drawn_frames=10", result.stdout)
         self.assertIn("performance_visible=1 performance_toggles=3", result.stdout)
@@ -245,6 +444,8 @@ quit
                          "Flight UI still renders shortcut hints or input instructions")
         for action in ("Controls", "Flight data", "Switch view", "Reset", "Approach", "Orbit", "Focus"):
             self.assertIn(action, labels, "Removing binding hints must preserve usable actions")
+        self.assertFalse(set(ordinary) & {"Approach", "Orbit", "Focus"},
+                         "Target actions must not appear in ordinary controls/data panels")
         for heading in ("CONTROLS", "FLIGHT DATA", "PERFORMANCE"):
             self.assertIn(heading, labels)
         self.assertTrue(any("m/s" in label for label in labels), "Speed telemetry must remain")

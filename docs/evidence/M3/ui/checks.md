@@ -115,3 +115,33 @@ normal GDB-controlled 2,400-frame fixture report zero; the latter still proves
 the actual hover. The first result is retained under `build/m3-flight/`; its cause is not
 established and no allocation repair is claimed by this text-only refinement.
 Intermittent allocation confirmation remains part of final M3 verification.
+
+The next refinement moves Approach, Orbit and Focus exclusively to the selected
+target's right-click popup. Selection/hover and ordinary controls/data panels no
+longer expose those buttons. A brief click opens the popup; movement beyond the
+existing ImGui drag threshold or a hold beyond 250 ms retains RMB camera/steering
+without opening it. Actions use the captured target, and dismissal, focus loss,
+mode/reset and panel handoffs clear stale requests. Popup edge placement and
+blocking over the read-only performance overlay are exercised through owned SDL
+input and public GUI geometry. No shortcut annotations are added.
+
+Fourteen native UI cases pass, including actual menu-item Focus dispatch,
+Escape/selection closure, retained camera dragging, bounds and zero warm
+allocation calls in the exercised context-menu paths. Four sanitizer-rendered
+cases exercise the popup without a debugger. Twenty-four selected CTests across
+four graphs, three configuration-specific Clang checks, validated control/audio
+walkthroughs and unchanged 27-field physical traces pass. Private popup imagery
+was opened for visual review; no pass, GPU owner, resource capacity or dependency
+was added. This is same-session review, not final independent/M3 acceptance.
+
+The recurring two-call hover result was reproduced with allocation tracing
+**disabled during cold startup**, then enabled before the measured window.
+Both 224-byte allocations occur in ImGui's input-event queue/trail on the first
+post-warmup mouse input, not in tooltip geometry. Tracing cold allocations had
+changed startup timing and obscured this reproduction. The existing unsubmitted
+preparation frames now exercise the public mouse-position event API and restore
+the initial GUI position; no SDL event, flight intent or OS pointer is injected.
+This warms the library's default storage without changing capacities or the
+60-frame measurement warmup. The short traced reproduction and both full
+2,400-frame actual-hover fixtures now report zero warm C++/ImGui calls. Earlier
+untraced reports are retained rather than individually attributed from this stack.
