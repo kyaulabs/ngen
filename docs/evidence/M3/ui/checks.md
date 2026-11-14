@@ -151,3 +151,22 @@ modifier-event Red reproduces that conflict; checking GUI/native modifier state
 at gesture admission and release preserves camera-only free look. All 15 native
 UI cases and affected input/camera/CLI consumers pass after the fix, with the
 three configuration-specific Clang checks repeated. No binding was remapped.
+
+The owner then reported cursor restoration to the first context-click location
+when reopening at another target. A native two-position regression confirms that
+ordinary menu clicks were entering SDL relative mode twice even though both
+popups used the correct locations. SDL's relative-mode exit restores the pointer;
+context clicks now avoid that cycle entirely. Logical input still responds
+immediately, while OS relative capture starts on drag/hold or camera-only input.
+The CSV request flag now records that actual relative-mode intent, independently
+of the logical button state; failed requested capture is not hidden.
+
+The reopened-menu regression checks the new popup position, absolute cursor mode
+and absence of explicit warp requests. Seventeen native UI cases, four strict
+sanitizer-rendered cases, 24 selected CTests, three Clang checks and validated
+control/audio walkthroughs pass; all 27 physical fields remain unchanged.
+Flight controls/data, performance and context-menu background draws use alpha
+166/255 (about 65%), while heading text remains 255/255. The alpha regression
+observes actual public draw/font calls, not source text or a global style value.
+A fresh private context-menu capture was visually reviewed and the 2,400-frame
+live-performance plot-hover check retains zero warm C++/ImGui allocation calls.

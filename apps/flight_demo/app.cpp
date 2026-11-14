@@ -27,6 +27,7 @@ namespace ngen::demo {
 namespace {
 using namespace render;
 using Clock = std::chrono::steady_clock;
+constexpr float menu_background_alpha = .65F;
 constexpr shader::Matrix identity{{1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1}};
 void require(bool value, const char *message) {
     if (!value)
@@ -237,6 +238,7 @@ bool performance_panel(tools::Gui &gui, Hud &metrics) {
                                       static_cast<unsigned>(ImGuiWindowFlags_NoMove) |
                                       static_cast<unsigned>(ImGuiWindowFlags_NoInputs) |
                                       static_cast<unsigned>(ImGuiWindowFlags_AlwaysAutoResize));
+    ImGui::SetNextWindowBgAlpha(menu_background_alpha);
     const auto visible = ImGui::Begin("Flight performance", nullptr, flags);
     metrics.performance_rect = window_rect();
     auto *draw = ImGui::GetWindowDrawList();
@@ -421,6 +423,7 @@ Actions hud(tools::Gui &gui, const flight::Snapshot &state, const Preset &preset
         ImGui::SetNextWindowPos({panel.x, panel.y});
         ImGui::SetNextWindowSize({panel.width, 0});
         ImGui::SetNextWindowSizeConstraints({panel.width, 0}, {panel.width, panel.height});
+        ImGui::SetNextWindowBgAlpha(menu_background_alpha);
         const auto visible = ImGui::Begin("Flight utility", nullptr, utility_flags);
         if (visible) {
             reserve_ui();
@@ -520,6 +523,7 @@ Actions hud(tools::Gui &gui, const flight::Snapshot &state, const Preset &preset
         ImGui::OpenPopup("Flight target actions");
         metrics.context_request.reset();
     }
+    ImGui::SetNextWindowBgAlpha(menu_background_alpha);
     if (ImGui::BeginPopup("Flight target actions")) {
         reserve_ui();
         if (metrics.context_target && *metrics.context_target < preset.camera_obstacles.size()) {
@@ -639,7 +643,8 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
         (void)performance_panel(*gui, metrics);
         gui->end();
     }
-    bool quit = false, captured = false, reset_requested = false, sampling_paused = false;
+    bool quit = false, captured = false, capture_requested = false, reset_requested = false,
+         sampling_paused = false;
     bool focused = (SDL_GetWindowFlags(context->window()) & SDL_WINDOW_INPUT_FOCUS) != 0;
     input.focus(focused);
     std::optional<std::size_t> selected, camera_target;
@@ -1098,9 +1103,15 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
                                                  : event.wheel.y,
                                              -16.0F, 16.0F));
         }
-        if (input.capture() != captured) {
-            if (SDL_SetWindowRelativeMouseMode(context->window(), input.capture()))
-                captured = input.capture();
+        // A context click needs an absolute cursor, not SDL's restore-on-exit
+        // relative mode. Logical pointer input remains immediate; actual capture
+        // begins as soon as this becomes a drag or hold (or camera-only gesture).
+        capture_requested =
+            input.capture() &&
+            (!context_press || Clock::now() - context_pressed_at > std::chrono::milliseconds(250));
+        if (capture_requested != captured) {
+            if (SDL_SetWindowRelativeMouseMode(context->window(), capture_requested))
+                captured = capture_requested;
             else {
                 input.pointer(false);
                 captured = false;
@@ -1426,7 +1437,7 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
             sample.camera = last_camera;
             sample.audio = metrics.audio;
             sample.focused = focused;
-            sample.capture_requested = input.capture();
+            sample.capture_requested = capture_requested;
             sample.capture_accepted = captured;
             sample.mesh = mesh;
             sample.post = last;

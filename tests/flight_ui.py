@@ -177,7 +177,7 @@ quit
         self.assertIsNotNone(match, result.stdout[-4000:])
         return tuple(map(int, match.groups()))
 
-    def target_context(self, gesture="tap", dismiss=False, choose_focus=False, performance=False, edge=False):
+    def target_context(self, gesture="tap", dismiss=False, choose_focus=False, performance=False, edge=False, reopen=False):
         if not shutil.which("gdb"):
             self.skipTest("GDB is required for owned-window context input")
         release = 110 if gesture == "hold" else 82
@@ -191,12 +191,12 @@ quit
   set $motion->key.down = $frames == 70
   call (bool)SDL_PushEvent($motion)
  end
- if $frames == 80 || $frames == {release}
+ if $frames == 80 || $frames == {release} || ({int(reopen)} && ($frames == 140 || $frames == 142))
   call (void*)memset($motion, 0, sizeof(SDL_Event))
-  set $motion->type = $frames == 80 ? 1025 : 1026
+  set $motion->type = ($frames == 80 || $frames == 140) ? 1025 : 1026
   set $motion->button.windowID = $id
   set $motion->button.button = 3
-  set $motion->button.down = $frames == 80
+  set $motion->button.down = $frames == 80 || $frames == 140
   set $motion->button.x = $x
   set $motion->button.y = $y
   call (bool)SDL_PushEvent($motion)
@@ -224,7 +224,7 @@ quit
   set $motion->button.y = $y
   call (bool)SDL_PushEvent($motion)
  end
- if $frames == 110 && {int(dismiss)}
+ if $frames == 110 && {int(dismiss or reopen)}
   call (void*)memset($motion, 0, sizeof(SDL_Event))
   set $motion->type = 768
   set $motion->key.windowID = $id
@@ -240,7 +240,10 @@ end"""
         script = re.sub(r" if \$frames == 80\n.*?\n end\n continue\nend", lambda _: events,
                         HOVER_SCRIPT, count=1, flags=re.DOTALL)
         script = script.replace("break ImGui::SmallButton", "break ImGui::MenuItem")
-        script = script.replace("set $overlap = 0", "set $overlap = 0\nset $orbit = 0\nset $focus = 0\nset $late = 0\nset $camera_drag = 0\nset $focused = 0")
+        script = script.replace("set $overlap = 0", "set $overlap = 0\nset $orbit = 0\nset $focus = 0\nset $late = 0\nset $camera_drag = 0\nset $focused = 0\nset $relative = 0\nset $warps = 0\nset $second_origin = 0")
+        if reopen:
+            script = script.replace("  set $x = $position.x + 120\n  set $y = $position.y + 65", """  set $x = $frames < 130 ? $position.x + 120 : 640
+  set $y = $frames < 130 ? $position.y + 65 : 420""")
         if edge:
             script = script.replace("$position.x + 120", "1274").replace("$position.y + 65", "714")
             script = script.replace(" if $frames > 85\n  if label[0]", """ if $frames > 85
@@ -300,9 +303,33 @@ commands 6
  end
  continue
 end
+break SDL_WarpMouseInWindow
+commands 7
+ silent
+ if $frames > 79
+  set $warps = $warps + 1
+ end
+ continue
+end
 """
+        if reopen:
+            script = script.replace(" set $frames = $frames + 1", """ set $frames = $frames + 1
+ if $frames == 81 || $frames == 141
+  set $window = (SDL_Window*)SDL_GetWindowFromID($id)
+  if (bool)SDL_GetWindowRelativeMouseMode($window)
+   set $relative = $relative + 1
+  end
+ end""")
+            script = script.replace(" if $frames > 85\n  if label[0]",  """ if $frames > 145
+  set $popup_pos = ImGui::GetWindowPos()
+  if $popup_pos.x == 640 && $popup_pos.y == 420
+   set $second_origin = 1
+  end
+ end
+ if $frames > 85
+  if label[0]""")
         script = script.replace("run\n", effects + "run\n", 1)
-        script = script.removesuffix("quit\n") + 'printf "context_items=%d,%d,%d,%d,%d,%d\\n", $after, $orbit, $focus, $late, $camera_drag, $focused\nquit\n'
+        script = script.removesuffix("quit\n") + 'printf "context_items=%d,%d,%d,%d,%d,%d\\n", $after, $orbit, $focus, $late, $camera_drag, $focused\nprintf "context_cursor=%d,%d,%d\\n", $relative, $warps, $second_origin\nquit\n'
         with tempfile.TemporaryDirectory(prefix="ngen-context-ui-") as directory:
             commands = Path(directory) / "context.gdb"
             commands.write_text(script)
@@ -316,7 +343,19 @@ end
         self.assertIn("cpp_new_calls=0 imgui_calls=0", result.stdout, result.stdout[-4000:])
         match = re.search(r"context_items=(\d+),(\d+),(\d+),(\d+),(\d+),(\d+)", result.stdout)
         self.assertIsNotNone(match, result.stdout[-4000:])
+        if reopen:
+            cursor = re.search(r"context_cursor=(\d+),(\d+),(\d+)", result.stdout)
+            self.assertIsNotNone(cursor, result.stdout[-4000:])
+            self.assertEqual(int(cursor[3]), 1, "The reopened menu must use the new click location")
+            self.assertEqual(int(cursor[1]), 0, "Menu clicks must not enter cursor-restoring relative mode")
+            self.assertEqual(int(cursor[2]), 0, "Menu clicks must not request a cursor warp")
         return tuple(map(int, match.groups()))
+
+    def test_reopened_context_menu_keeps_cursor_at_the_new_click(self):
+        approach, orbit, focus, *_ = self.target_context(reopen=True)
+        self.assertGreater(approach, 0)
+        self.assertGreater(orbit, 0)
+        self.assertGreater(focus, 0)
 
     def test_right_click_opens_selected_target_actions(self):
         approach, orbit, focus, *_ = self.target_context()
@@ -462,6 +501,60 @@ quit
         for heading in ("CONTROLS", "FLIGHT DATA", "PERFORMANCE"):
             self.assertIn(heading, labels)
         self.assertTrue(any("m/s" in label for label in labels), "Speed telemetry must remain")
+
+    @unittest.skipUnless(shutil.which("gdb"), "Native menu opacity fixture needs GDB")
+    def test_flight_menu_backgrounds_are_about_65_percent_opaque(self):
+        with tempfile.TemporaryDirectory(prefix="ngen-menu-alpha-") as directory:
+            output = Path(directory) / "alpha.json"
+            script = Path(directory) / "alpha.gdb"
+            script.write_text(f"""set pagination off
+set confirm off
+set debuginfod enabled off
+python
+import gdb, json
+alphas = dict(utility=set(), performance=set(), context=set())
+text_alphas = set()
+class Foreground(gdb.Breakpoint):
+ def stop(self):
+  begin, end = gdb.parse_and_eval('text_begin'), gdb.parse_and_eval('text_end')
+  length = int(end) - int(begin)
+  if int(begin) and int(end) and 0 < length < 128:
+   text = begin.string(encoding='utf-8', errors='strict', length=length)
+   if text in ('CONTROLS', 'FLIGHT DATA', 'PERFORMANCE') or text.startswith('SELECTED / ASTEROID'):
+    text_alphas.add((int(gdb.parse_and_eval('col')) >> 24) & 255)
+  return False
+class Background(gdb.Breakpoint):
+ def stop(self):
+  lo, hi = gdb.parse_and_eval('p_min'), gdb.parse_and_eval('p_max')
+  x, y = float(lo['x']), float(lo['y'])
+  if float(hi['x']) - x > 100 and float(hi['y']) - y > 60:
+   for name, origin in [('utility', (8, 64)), ('performance', (922, 64)), ('context', (640, 288))]:
+    if abs(x - origin[0]) < 1 and abs(y - origin[1]) < 1:
+     alphas[name].add((int(gdb.parse_and_eval('col')) >> 24) & 255)
+  return False
+Foreground('ImFont::RenderText', internal=True)
+Background('ImDrawList::AddRectFilled', internal=True)
+end
+run
+python
+with open({str(output)!r}, 'w') as stream:
+ json.dump(dict(backgrounds=dict((name, sorted(values)) for name, values in alphas.items()), text=sorted(text_alphas)), stream)
+end
+quit
+""")
+            result = subprocess.run(
+                [shutil.which("gdb"), "--batch", "-x", str(script), "--args",
+                 os.environ["NGEN_FLIGHT_DEMO"], os.environ["NGEN_FLIGHT_PACKAGE"],
+                 "--walkthrough", "--frames=330", "--warmup=2", "--mute"],
+                capture_output=True, text=True, timeout=180)
+            self.assertEqual(result.returncode, 0, result.stdout[-4000:] + result.stderr[-4000:])
+            self.assertNotIn("Python Exception", result.stderr)
+            observed = json.loads(output.read_text())
+        self.assertEqual(observed["text"], [255], "Menu text must remain fully opaque")
+        for menu, values in observed["backgrounds"].items():
+            self.assertTrue(values, f"The {menu} background was not actually drawn")
+            self.assertTrue(all(165 <= alpha <= 167 for alpha in values),
+                            f"{menu} background must be about 65% opaque, got {values}")
 
     @unittest.skipUnless(shutil.which("gdb"), "Native panel geometry fixture needs GDB")
     def test_optional_panels_fit_content_including_return_from_data_to_controls(self):

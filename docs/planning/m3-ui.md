@@ -41,9 +41,12 @@ target identity/range follow the selected object's screen position. Existing
 approach/orbit/focus actions appear only in a right-click menu for the selected
 target, not on hover or in the controls/data panels. A brief RMB click opens it;
 RMB dragging/holding retains camera orbit and direct steering; Alt+RMB remains
-camera-only, including a short click. The popup closes
-on action, dismissal or input/reset handoff, and keeps the selected target
-identity with its commands.
+camera-only, including a short click. Context clicks keep an absolute cursor;
+relative mouse mode begins only once the gesture becomes a drag/hold or is
+camera-only, avoiding SDL's cursor restoration when a popup opens. The popup
+closes on action, dismissal or input/reset handoff, and keeps the selected target
+identity with its commands. Flight controls, data, performance and context-menu
+backgrounds use 65% opacity; text remains fully opaque.
 View/reset/audio controls and optional flight plots remain accessible on demand;
 F12 stays the separate system/device performance panel. F1, F2 and F12 fit their
 contents vertically at stable readable widths, capped to the available screen
