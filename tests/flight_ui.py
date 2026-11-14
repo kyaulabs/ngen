@@ -1,4 +1,5 @@
 """Opt-in rendered HUD/brand contracts through owned native demo clients."""
+import json
 import os
 import re
 import shutil
@@ -197,6 +198,56 @@ quit
         self.assertIn("gpu_timing_rows=30", result.stdout)
         self.assertIn("performance_visible=1 performance_toggles=1", result.stdout)
         self.assertIn("hud_controls_drawn_frames=10", result.stdout)
+
+    @unittest.skipUnless(shutil.which("gdb"), "Native rendered-text fixture needs GDB")
+    def test_rendered_actions_and_telemetry_have_no_hotkey_hints(self):
+        with tempfile.TemporaryDirectory(prefix="ngen-ui-text-") as directory:
+            output = Path(directory) / "labels.json"
+            script = Path(directory) / "text.gdb"
+            script.write_text(f"""set pagination off
+set confirm off
+set debuginfod enabled off
+python
+import gdb, json
+labels = set()
+class RenderedText(gdb.Breakpoint):
+ def stop(self):
+  begin = gdb.parse_and_eval('text_begin')
+  end = gdb.parse_and_eval('text_end')
+  length = int(end) - int(begin)
+  if int(begin) and int(end) and 0 < length <= 1024 and len(labels) < 8192:
+   labels.add(begin.string(encoding='utf-8', errors='strict', length=length))
+  return False
+RenderedText('ImFont::RenderText', internal=True)
+end
+run
+python
+with open({str(output)!r}, 'w') as stream:
+ json.dump(sorted(labels), stream)
+end
+quit
+""")
+            result = subprocess.run(
+                [shutil.which("gdb"), "--batch", "-x", str(script), "--args",
+                 os.environ["NGEN_FLIGHT_DEMO"], os.environ["NGEN_FLIGHT_PACKAGE"],
+                 "--walkthrough", "--frames=330", "--warmup=2", "--mute"],
+                capture_output=True, text=True, timeout=180)
+            self.assertEqual(result.returncode, 0, result.stdout[-4000:] + result.stderr[-4000:])
+            self.assertNotIn("Python Exception", result.stderr)
+            labels = json.loads(output.read_text())
+        self.assertLess(len(labels), 8192, "The rendered-text capture must not truncate its observations")
+        self.assertIn("hud_data_drawn_frames=10", result.stdout)
+        self.assertIn("performance_visible=1 performance_toggles=3", result.stdout)
+        hints = re.compile(r"\b(?:F(?:[1-9]|1[0-2])|TAB|SPACE|SHIFT|CTRL|ALT|RMB|LMB|ESC)\b|"
+                           r"\[[A-Z]\]|\b(?:Approach|Orbit|Focus) [A-Z]\b|W/S|A/D|Q/E|"
+                           r"\b(?:click|arrows|wheel|keyboard)\b", re.IGNORECASE)
+        self.assertFalse([label for label in labels if hints.search(label)],
+                         "Flight UI still renders shortcut hints or input instructions")
+        for action in ("Controls", "Flight data", "Switch view", "Reset", "Approach", "Orbit", "Focus"):
+            self.assertIn(action, labels, "Removing binding hints must preserve usable actions")
+        for heading in ("CONTROLS", "FLIGHT DATA", "PERFORMANCE"):
+            self.assertIn(heading, labels)
+        self.assertTrue(any("m/s" in label for label in labels), "Speed telemetry must remain")
 
     @unittest.skipUnless(shutil.which("gdb"), "Native panel geometry fixture needs GDB")
     def test_optional_panels_fit_content_including_return_from_data_to_controls(self):

@@ -99,3 +99,19 @@ shrinking back from F2 to F1. Eight scoped CTests, six actual-command Clang
 analyses, eight native UI contracts, strict sanitizer rendered checks and the
 validated GUI reset pass. Both 2,400-frame actual plot-hover paths remain free
 of warm C++/ImGui allocations. Final timing and Windows gates remain deferred.
+
+The next owner refinement removes runtime shortcut annotations, the floating
+binding reminder and keyboard/mouse tutorial prose, including binding references
+in status messages and the inspector reload label. Action names, telemetry and
+all existing bindings remain. No settings page is added. A native public font
+rendering capture first observed the old hints, then verifies their absence and
+retained action labels across the walkthrough. Twelve selected CTests in four
+graphs, six Clang analyses, nine native UI cases, sanitizer rendering, inspector
+probes and the retained SDL input/reset walkthrough pass.
+
+One initial live-performance plot-hover replay reported two warm ImGui calls.
+A 180-frame trace, two complete 2,400-frame allocation traces and a subsequent
+normal GDB-controlled 2,400-frame fixture report zero; the latter still proves
+the actual hover. The first result is retained under `build/m3-flight/`; its cause is not
+established and no allocation repair is claimed by this text-only refinement.
+Intermittent allocation confirmation remains part of final M3 verification.

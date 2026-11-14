@@ -215,7 +215,7 @@ void InspectorUi::frame(Inspector &inspector, const InspectorSnapshot &snapshot,
         }
         ImGui::Separator();
         ImGui::BeginDisabled(metrics.reloading);
-        if (ImGui::Button("Reload asset [R]", {-1, 30}))
+        if (ImGui::Button("Reload asset", {-1, 30}))
             impl_->queue(inspector, Reload{snapshot.generation});
         ImGui::EndDisabled();
         if (metrics.reloading)

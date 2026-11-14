@@ -209,7 +209,7 @@ struct Hud {
     GpuTimings gpu;
     ResourceStatistics memory;
     audio::Statistics audio;
-    const char *status{"Select an asteroid, or click the flight plane to travel"};
+    const char *status{"Flight ready"};
     bool help{}, data{}, preparing{}, alert{}, performance{}, gpu_ready{}, allocation_probe{};
     std::uint64_t controls_drawn_frames{}, data_drawn_frames{}, target_actions_drawn_frames{};
     GpuMemoryKind gpu_memory{GpuMemoryKind::unavailable};
@@ -242,12 +242,12 @@ bool performance_panel(tools::Gui &gui, Hud &metrics) {
     draw->IdxBuffer.reserve(static_cast<int>(overlay_index_limit));
     if (visible && panel.height < 240) {
         if (metrics.frame_ms > 0)
-            ImGui::Text("F12: %.1f FPS / %.2f ms", 1000 / metrics.frame_ms, metrics.frame_ms);
+            ImGui::Text("%.1f FPS / %.2f ms", 1000 / metrics.frame_ms, metrics.frame_ms);
         else
-            ImGui::TextUnformatted("PERFORMANCE / F12");
+            ImGui::TextUnformatted("PERFORMANCE");
         ImGui::TextWrapped("Enlarge window for full OS/device counters");
     } else if (visible) {
-        ImGui::TextUnformatted("PERFORMANCE / F12");
+        ImGui::TextUnformatted("PERFORMANCE");
         if (metrics.frame_ms > 0)
             ImGui::Text("FPS %.1f  |  Frame %.2f ms", 1000 / metrics.frame_ms, metrics.frame_ms);
         else
@@ -349,7 +349,7 @@ Actions hud(tools::Gui &gui, const flight::Snapshot &state, const Preset &preset
         reserve_ui();
         ImGui::PushStyleColor(ImGuiCol_Button, {0, 0, 0, 0});
         ImGui::PushStyleVar(ImGuiStyleVar_FrameBorderSize, 0);
-        if (ImGui::Button("Controls [F1]")) {
+        if (ImGui::Button("Controls")) {
             metrics.help = metrics.data || !metrics.help;
             metrics.data = false;
         }
@@ -409,8 +409,6 @@ Actions hud(tools::Gui &gui, const flight::Snapshot &state, const Preset &preset
                       static_cast<double>(state.main_drive_level * 100),
                       static_cast<unsigned>(active), audio_status);
         centred_text(text);
-        if (!layout.compact)
-            centred_text("TAB view / SPACE brake");
         gui.pop_font();
     }
     ImGui::End();
@@ -424,22 +422,22 @@ Actions hud(tools::Gui &gui, const flight::Snapshot &state, const Preset &preset
         metrics.controls_rect = window_rect();
         if (visible) {
             reserve_ui();
-            ImGui::TextUnformatted(metrics.data ? "FLIGHT DATA / F2" : "CONTROLS / F1");
+            ImGui::TextUnformatted(metrics.data ? "FLIGHT DATA" : "CONTROLS");
             ImGui::SameLine();
             if (ImGui::SmallButton("Close"))
                 metrics.help = false;
             ImGui::BeginDisabled(replay);
             ImGui::SetCursorPos({12, 40});
-            action.mode = ImGui::Button("Switch view [TAB]", {panel.width * .5F - 16, 28});
+            action.mode = ImGui::Button("Switch view", {panel.width * .5F - 16, 28});
             ImGui::SetCursorPos({layout.reset.x - panel.x, layout.reset.y - panel.y});
-            action.reset = ImGui::Button("Reset [R]", {layout.reset.width, layout.reset.height});
+            action.reset = ImGui::Button("Reset", {layout.reset.width, layout.reset.height});
             ImGui::EndDisabled();
-            action.mute = ImGui::Button(mute ? "Unmute [M]" : "Mute [M]", {110, 26});
+            action.mute = ImGui::Button(mute ? "Unmute" : "Mute", {110, 26});
             ImGui::SameLine();
-            if (ImGui::Button(metrics.data ? "Controls [F1]" : "Flight data [F2]"))
+            if (ImGui::Button(metrics.data ? "Controls" : "Flight data"))
                 metrics.data = !metrics.data;
-            ImGui::Separator();
             if (metrics.data) {
+                ImGui::Separator();
                 if (!metrics.preparing)
                     ++metrics.data_drawn_frames;
                 gui.push_font(tools::GuiFont::mono);
@@ -457,34 +455,18 @@ Actions hud(tools::Gui &gui, const flight::Snapshot &state, const Preset &preset
                     preset.ship.flight.maximum_force_newtons[2] / 1e6F, {plot_width, 68});
                 ImGui::TextDisabled("Actual snapshot / 100 contacts / 60 Hz");
                 gui.pop_font();
-            } else {
-                if (!metrics.preparing)
-                    ++metrics.controls_drawn_frames;
-                ImGui::TextWrapped(
-                    "TACTICAL: RMB orbits; wheel zooms. Click a rock to select or the empty flight "
-                    "plane to travel. G approaches; O orbits; F changes camera focus.");
-                ImGui::Separator();
-                ImGui::TextWrapped(
-                    "DIRECT: hold RMB for virtual-stick steering. Release to stabilize. ALT+RMB is "
-                    "camera-only free look. Arrows steer; Q/E roll.");
-                ImGui::Separator();
-                ImGui::TextWrapped(
-                    "W/S forward/back, A/D lateral, SHIFT/CTRL vertical. Release thrust to coast; "
-                    "hold SPACE to brake. TAB changes mode without resetting motion. R resets. ESC "
-                    "releases controls and closes this card.");
-                ImGui::TextWrapped(
-                    "F1 controls / F2 flight data / F12 system-device performance. M audio; focus "
-                    "loss silences playback and device loss retries without changing simulation.");
+            } else if (!metrics.preparing) {
+                ++metrics.controls_drawn_frames;
             }
             ImGui::Separator();
             if (selected) {
                 ImGui::Text("SELECTED / ASTEROID %03u", static_cast<unsigned>(*selected));
                 ImGui::BeginDisabled(replay);
-                action.approach = ImGui::Button("Approach [G]");
+                action.approach = ImGui::Button("Approach");
                 ImGui::SameLine();
-                action.orbit = ImGui::Button("Orbit [O]");
+                action.orbit = ImGui::Button("Orbit");
                 ImGui::SameLine();
-                action.focus = ImGui::Button("Focus [F]");
+                action.focus = ImGui::Button("Focus");
                 ImGui::EndDisabled();
             }
             ImGui::TextWrapped("%s", metrics.status);
@@ -545,11 +527,11 @@ Actions hud(tools::Gui &gui, const flight::Snapshot &state, const Preset &preset
                         if (!metrics.preparing)
                             ++metrics.target_actions_drawn_frames;
                         ImGui::BeginDisabled(replay);
-                        action.approach = ImGui::SmallButton("Approach G") || action.approach;
+                        action.approach = ImGui::SmallButton("Approach") || action.approach;
                         ImGui::SameLine();
-                        action.orbit = ImGui::SmallButton("Orbit O") || action.orbit;
+                        action.orbit = ImGui::SmallButton("Orbit") || action.orbit;
                         ImGui::SameLine();
-                        action.focus = ImGui::SmallButton("Focus F") || action.focus;
+                        action.focus = ImGui::SmallButton("Focus") || action.focus;
                         ImGui::EndDisabled();
                     }
                 }
@@ -679,7 +661,7 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
         selected = 0;
         require(send(flight::Orbit{preset.camera_obstacles[0].centre_metres, 600, 20, false}),
                 "authored default orbit was rejected");
-        metrics.status = "Tactical orbit autopilot / 20 m/s; TAB takes direct control";
+        metrics.status = "Tactical orbit autopilot / 20 m/s";
         metrics.alert = false;
     };
     default_orbit();
@@ -701,8 +683,8 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
             (void)input.mode(wanted);
             (void)sound.cue(audio::Cue::confirm);
             metrics.status = wanted == flight::Mode::direct
-                                 ? "Direct bow sensor / hold RMB for virtual-stick steering"
-                                 : "Tactical coast / G or O starts fresh navigation";
+                                 ? "Direct bow sensor"
+                                 : "Tactical coast / navigation inactive";
         }
     };
     const auto reset = [&] {
@@ -728,7 +710,7 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
         if (selected && camera_target != selected) {
             (void)game_value(rig.focus(preset.camera_obstacles[*selected]));
             camera_target = selected;
-            metrics.status = "Camera focused on the selected asteroid; F returns to the ship";
+            metrics.status = "Camera focused on the selected asteroid";
         } else {
             (void)game_value(rig.focus(std::nullopt));
             camera_target.reset();
@@ -1040,7 +1022,7 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
             else {
                 input.pointer(false);
                 captured = false;
-                metrics.status = "Pointer capture unavailable; keyboard controls remain active";
+                metrics.status = "Pointer capture unavailable";
             }
         }
     };

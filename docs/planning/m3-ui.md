@@ -21,8 +21,9 @@ for image coverage, observations and concrete design consequences.
   legibility, discoverable actions and truthful state without changing gameplay.
 - [Evolution, not revolution](https://www.eveonline.com/news/view/evolution-not-revolution):
   group related information/actions, separate speed from unrelated systems,
-  expose shortcuts and protect screen space. Do not copy EVE artwork/branding or
-  add its health, capacitor, modules, minimap or other unimplemented gameplay.
+  make actions discoverable and protect screen space. Do not copy EVE artwork or
+  branding, or add its health, capacitor, modules, minimap or other unimplemented
+  gameplay.
 
 Use the supplied NGEN Visual Identity 1.0 guide and dark semantic tokens in
 `brand/web/ngen-tokens.json`: quiet blue-black fields, cyan primary actions/focus,
@@ -43,7 +44,10 @@ F12 stays the separate system/device performance panel. F1, F2 and F12 fit their
 contents vertically at stable readable widths, capped to the available screen
 space; switching back from data to controls must shrink the window again.
 Context actions use the windows' actual bounds, not their maximum layout slots.
-F1 keeps controls discoverable. The [immersive mockup](../mockups/m3-flight-immersive.svg) supersedes
+The controls action remains discoverable, but the runtime UI has no key labels,
+shortcut annotations or keyboard/mouse tutorial prose. Existing bindings remain
+active; a future settings key-bindings section is deferred, not implemented here.
+The [immersive mockup](../mockups/m3-flight-immersive.svg) supersedes
 the earlier panel-heavy [mockup](../mockups/m3-flight-deck.svg). Preserve every
 accepted shortcut, capture/focus/reset rule, motion and audio contract. No speed
 setter, synthetic health gauge or new navigation authority.
