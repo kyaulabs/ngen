@@ -1,5 +1,14 @@
 # M3 Windows flight check
 
+Latest [post-UI return](../evidence/M3/windows/post-ui/checks.md), source `21e616c`:
+MSVC Debug/Release and ClangCl Debug pass 72 CTests in total. MSVC sampled memory,
+app-local startup and F2 plot hover with numeric F12 live pass; one fully focused
+RTX replay has P95 7.804 ms. Two additional replays lost focus and require only
+clean timing repeats, not an MSVC rebuild. ClangCl Release fails SDK-library
+linking; diagnose its native library-search environment before retrying that
+failed stage. Do not discard the successful configurations or infer a renderer
+fix from this setup failure. The exact SDK-environment cause remains unproved.
+
 Use a clean checkout of `feat/kyau-023ba5-m3-flight`. Set `$scene` to the new
 private RCS cooked derivative, not the GLB or original M2 package. Its SHA-256 is
 `99c996f33d3cc98dbd801e3aa302ee2a5894d0fa6bcfdd18f59b73e72e74d834`;
@@ -100,9 +109,10 @@ instrumented memory evidence, not clean timing or a continuous global-memory bou
 No GTX VM result is implied.
 
 The historical ClangCl return reported 2 warm ImGui allocations in the clean
-replay and a first-query CIM failure with no GPU-memory samples. Both current
-compiler returns now have zero warm replay allocations and complete PDH coverage;
-explicit live-panel hovered-tooltip scope remains open. The observer retains
+replay and a first-query CIM failure with no GPU-memory samples. Both pre-UI
+compiler returns at `7afeefe` have zero warm replay allocations and complete PDH
+coverage. Current post-UI native scope is recorded above; the MSVC live-panel
+hover check passes, while ClangCl Release has not run. The observer retains
 `error_details` in `Release-flight.memory.working-set.json`, including native PDH
 status/kind on failure. The 2 s operation timeout, sampling/coverage rules
 and budgets are unchanged. A failed query still fails memory acceptance; do not
@@ -124,5 +134,6 @@ cleanly. Listen to engine/thrust/brake/UI cues; try M, real focus loss and a rea
 playback-device removal/reconnection where available. Report control feel, sound
 comfort and any discontinuity. Synthetic SDL events are not substitutes for this.
 Keep a short original audio/video recording private; send its hash and feedback.
-M3 remains open until these Windows checks, the required deferred UI pass,
-final laptop/RTX budgets, owner acceptance and reviewed integration finish.
+The owner accepts the current UI starting point and defers polish. M3 remains
+open until the remaining native checks and valid RTX timing repeats, final
+recording/offline-delivery and owner acceptance, and reviewed integration finish.
