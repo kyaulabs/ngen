@@ -676,7 +676,8 @@ function Invoke-NgenFlight {
         [Parameter(Mandatory)][ValidateSet('Debug', 'Release')][string]$Configuration,
         [Parameter(Mandatory)][string]$ScenePackage,
         [Parameter(Mandatory)][string]$Python,
-        [Parameter(Mandatory)][string]$SourceRoot
+        [Parameter(Mandatory)][string]$SourceRoot,
+        [string]$BundleOutput = ''
     )
     $identity = Get-NgenSceneIdentity -Path $ScenePackage | ConvertTo-Json
     $prefix = Join-Path $LogDirectory "$Configuration-flight"
@@ -724,7 +725,7 @@ function Invoke-NgenFlight {
         [ordered]@{ schema = 1; package = $identity | ConvertFrom-Json; files = @($artifacts) } |
             ConvertTo-Json -Depth 5 | Set-Content -LiteralPath "$prefix.artifacts.json"
         if ($Configuration -eq 'Release') {
-            $output = Join-Path (Split-Path -Parent $BuildDirectory) 'offline'
+            $output = if ($BundleOutput) { $BundleOutput } else { Join-Path (Split-Path -Parent $BuildDirectory) 'offline' }
             Invoke-NgenNative -FilePath $Python -Arguments @((Join-Path $SourceRoot 'tools/package_demo.py'),
                 '--build', $BuildDirectory, '--asset', $ScenePackage, '--output', $output) -LogPath "$prefix.package.txt"
             $bundle = Join-Path $output 'ngen-flight'
@@ -897,6 +898,105 @@ function Invoke-NgenGpuInfo {
     Write-Host 'GPU capability capture completed. This is not a rendering or presentation test.'
 }
 
+function Enter-NgenDeveloperShell {
+    $installer = Join-Path ${env:ProgramFiles(x86)} 'Microsoft Visual Studio'
+    $vswhere = Join-Path $installer 'Installer/vswhere.exe'
+    if (-not (Test-Path -LiteralPath $vswhere -PathType Leaf)) {
+        throw 'Install Visual Studio Build Tools with Desktop development with C++, then rerun.'
+    }
+    [string[]]$arguments = @(
+        '-latest', '-products', '*', '-requires',
+        'Microsoft.VisualStudio.Component.VC.Tools.x86.x64',
+        '-property', 'installationPath'
+    )
+    $installations = @(& $vswhere @arguments)
+    if ($LASTEXITCODE -ne 0 -or $installations.Count -ne 1 -or -not $installations[0]) {
+        throw 'MSVC x64/x86 tools were not found. Add Desktop development with C++ in Visual Studio Installer.'
+    }
+    [string]$installation = $installations[0]
+    $module = Join-Path $installation 'Common7/Tools/Microsoft.VisualStudio.DevShell.dll'
+    Import-Module $module
+    $parameters = @{ VsInstallPath = $installation; SkipAutomaticLocation = $true
+        DevCmdArguments = '-arch=x64 -host_arch=x64' }
+    Enter-VsDevShell @parameters
+}
+
+function Get-NgenWindowsFlightRun {
+    param(
+        [Parameter(Mandatory)][string]$SourceRoot,
+        [Parameter(Mandatory)][ValidateSet('MSVC', 'ClangCl')][string]$Compiler,
+        [string]$RunDirectory = '',
+        [switch]$RequireBundle
+    )
+    $buildRoot = Join-Path $SourceRoot 'build'
+    $base = Join-Path $buildRoot 'windows'
+    foreach ($path in @($buildRoot, $base)) {
+        $item = Get-Item -LiteralPath $path -Force -ErrorAction Stop
+        if ($item -isnot [IO.DirectoryInfo] -or ($item.Attributes -band [IO.FileAttributes]::ReparsePoint)) {
+            throw 'Flight batches require regular build/windows directories.'
+        }
+    }
+    if ($RunDirectory) {
+        $path = if ([IO.Path]::IsPathRooted($RunDirectory)) { $RunDirectory } else { Join-Path $SourceRoot $RunDirectory }
+        $candidates = @(Get-Item -LiteralPath $path -Force -ErrorAction Stop)
+    } else {
+        $candidates = @(Get-ChildItem -LiteralPath $base -Directory | Sort-Object Name -Descending)
+    }
+    $wanted = if ($Compiler -eq 'ClangCl') { 'clang' } else { 'msvc' }
+    :candidate foreach ($run in $candidates) {
+        if ($run.Name -notmatch '^\d{8}-\d{6}-\d{3}$') { continue }
+        if ($run -isnot [IO.DirectoryInfo] -or ($run.Attributes -band [IO.FileAttributes]::ReparsePoint) -or
+            $run.Parent.FullName -ine ([IO.Path]::GetFullPath($base))) { continue }
+        foreach ($name in @('logs', 'Release')) {
+            $item = Get-Item -LiteralPath (Join-Path $run.FullName $name) -Force -ErrorAction Ignore
+            if ($item -isnot [IO.DirectoryInfo] -or ($item.Attributes -band [IO.FileAttributes]::ReparsePoint)) { continue candidate }
+        }
+        $metadata = @('logs/host-profile.txt', 'logs/build-profile.txt', 'logs/Release-configure.txt',
+            'Release/CMakeCache.txt', 'Release/demo-runtime.json', 'Release/conanrun.ps1', 'Release/deactivate_conanrun.ps1')
+        if ($Compiler -eq 'ClangCl') { $metadata += 'logs/clang-cl-version.txt' }
+        foreach ($name in $metadata) {
+            $item = Get-Item -LiteralPath (Join-Path $run.FullName $name) -Force -ErrorAction Ignore
+            $limit = if ($name -eq 'logs/host-profile.txt') { 65536 } else { 2097152 }
+            if ($item -isnot [IO.FileInfo] -or ($item.Attributes -band [IO.FileAttributes]::ReparsePoint) -or
+                $item.Length -lt 1 -or $item.Length -gt $limit) { continue candidate }
+        }
+        $profile = Get-Content -LiteralPath (Join-Path $run.FullName 'logs/host-profile.txt') -Raw
+        if ($profile -notmatch "(?m)^compiler=$wanted\r?$" -or $profile -notmatch '(?m)^os=Windows\r?$' -or
+            $profile -notmatch '(?m)^arch=x86_64\r?$' -or
+            $profile -notmatch '(?m)^compiler\.runtime=dynamic\r?$') { continue }
+        $cache = Get-Content -LiteralPath (Join-Path $run.FullName 'Release/CMakeCache.txt') -Raw
+        if ($cache -notmatch '(?m)^CMAKE_BUILD_TYPE:STRING=Release\r?$' -or
+            $cache -notmatch '(?m)^NGEN_BUILD_FLIGHT_DEMO:BOOL=(ON|TRUE|1|YES|Y)\r?$') { continue }
+        $sourceMatches = [regex]::Matches($cache, '(?m)^CMAKE_HOME_DIRECTORY:INTERNAL=([^\r\n]+)\r?$')
+        if ($sourceMatches.Count -ne 1) { continue }
+        try { $sourcePath = [IO.Path]::GetFullPath($sourceMatches[0].Groups[1].Value) } catch { continue }
+        if ($sourcePath -ine [IO.Path]::GetFullPath($SourceRoot)) { continue }
+        try {
+            $runtime = Get-Content -LiteralPath (Join-Path $run.FullName 'Release/demo-runtime.json') -Raw |
+                ConvertFrom-Json -AsHashtable -Depth 8 -ErrorAction Stop
+        } catch { continue }
+        if ($runtime -isnot [Collections.IDictionary] -or
+            ($runtime.schema -isnot [int] -and $runtime.schema -isnot [long]) -or
+            $runtime.schema -ne 1 -or $runtime.os -cne 'Windows' -or
+            $runtime.configuration -cne 'Release' -or
+            ($runtime.Contains('sanitizer') -and $runtime.sanitizer -cne '')) { continue }
+        if ($RequireBundle) {
+            foreach ($name in @('offline', 'offline/ngen-flight')) {
+                $item = Get-Item -LiteralPath (Join-Path $run.FullName $name) -Force -ErrorAction Ignore
+                if ($item -isnot [IO.DirectoryInfo] -or ($item.Attributes -band [IO.FileAttributes]::ReparsePoint)) { continue candidate }
+            }
+            $item = Get-Item -LiteralPath (Join-Path $run.FullName 'offline/ngen-flight/manifest.json') -Force -ErrorAction Ignore
+            if ($item -isnot [IO.FileInfo] -or ($item.Attributes -band [IO.FileAttributes]::ReparsePoint) -or
+                $item.Length -lt 1 -or $item.Length -gt 2097152) { continue }
+        }
+        return $run.FullName
+    }
+    throw "No matching $Compiler Release flight batch found; use -RunDirectory under build/windows."
+}
+
+# Importing helpers must not bootstrap tools or run a build.
+if ($MyInvocation.InvocationName -eq '.') { return }
+
 # Flight adds physics/audio to the same GUI, renderer and checked scene graph.
 if ($FlightDemo) { $Inspector = $true }
 if ($Inspector) { $Scene = $true }
@@ -962,16 +1062,7 @@ try {
         exit 0
     }
     if (-not (Get-Command cl -ErrorAction SilentlyContinue) -or $env:VSCMD_ARG_TGT_ARCH -ne 'x64') {
-        $vswhere = Join-Path ${env:ProgramFiles(x86)} 'Microsoft Visual Studio/Installer/vswhere.exe'
-        if (-not (Test-Path -LiteralPath $vswhere)) {
-            throw 'Install Visual Studio Build Tools with Desktop development with C++, then rerun.'
-        }
-        $installation = & $vswhere -latest -products '*' -requires Microsoft.VisualStudio.Component.VC.Tools.x86.x64 -property installationPath
-        if ($LASTEXITCODE -ne 0 -or -not $installation) {
-            throw 'MSVC x64/x86 tools were not found. Add Desktop development with C++ in Visual Studio Installer.'
-        }
-        Import-Module (Join-Path $installation 'Common7/Tools/Microsoft.VisualStudio.DevShell.dll')
-        Enter-VsDevShell -VsInstallPath $installation -SkipAutomaticLocation -DevCmdArguments '-arch=x64 -host_arch=x64'
+        Enter-NgenDeveloperShell
     }
     $msvc = Get-Command cl -CommandType Application -ErrorAction Stop | Select-Object -First 1
     (Get-Item $msvc.Source).VersionInfo | Format-List FileName, FileVersion, ProductVersion | Out-Host

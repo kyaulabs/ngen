@@ -4,10 +4,46 @@ Latest [post-UI return](../evidence/M3/windows/post-ui/checks.md), source `21e61
 MSVC Debug/Release and ClangCl Debug pass 72 CTests in total. MSVC sampled memory,
 app-local startup and F2 plot hover with numeric F12 live pass; one fully focused
 RTX replay has P95 7.804 ms. Two additional replays lost focus and require only
-clean timing repeats, not an MSVC rebuild. ClangCl Release fails SDK-library
-linking; diagnose its native library-search environment before retrying that
-failed stage. Do not discard the successful configurations or infer a renderer
-fix from this setup failure. The exact SDK-environment cause remains unproved.
+clean timing repeats, not an MSVC rebuild. The subsequent native SDK audit
+resolves all six checked imports after developer-shell setup, preserves their
+paths across Conan activation/deactivation, and successfully compiles/links
+`sim_harness`. The original failed-session cause remains unproved; finish the
+cached ClangCl Release stage without repeating MSVC or ClangCl Debug.
+
+Use normal PowerShell 7.2+ in the repository; no pasted script bodies are needed:
+
+```powershell
+git pull --ff-only
+.\tools\resume-windows-flight.ps1
+```
+
+The continuation initializes the installed x64 developer shell, selects the
+latest matching ClangCl flight batch, finishes its cached Release build and
+runs the existing CTest, renderer, flight, clean replay, sampled-memory,
+source-bound packaging and SDK-isolated startup checks. It then prompts for a
+bounded 3,600-frame F2 plot-hover diagnostic with numeric F12 live. Keep timed
+windows foreground, do not record concurrently, and let diagnostic windows close
+themselves. This is not an interactive owner preview. Send the printed ZIP;
+admitted runs retain their archive on check failures and return a nonzero exit
+code. Every continuation uses a fresh private bundle outside its evidence ZIP,
+so retrying after a later failure preserves earlier bundles.
+
+Run these separately only when their corresponding check is still needed:
+
+```powershell
+.\tools\repeat-windows-flight-timing.ps1
+.\tools\windows-sdk-audit.ps1
+```
+
+The timing script selects the latest delivered MSVC flight bundle, verifies its
+executable and accepted asset, and collects just two clean focused replays—no
+rebuild, memory observer or recording. The SDK script records library search
+before/after developer-shell setup and Conan activation/deactivation, then
+forces one CPU link. Neither changes services, counters, privileges or global
+SDK settings. All three scripts infer the repository root, keep old results and
+create a fresh evidence directory. To select another existing batch explicitly,
+pass `-RunDirectory 'build\windows\<batch>'`; discovery rejects foreign-source,
+wrong-compiler/runtime and linked batches. Scripts operate sequentially.
 
 Use a clean checkout of `feat/kyau-023ba5-m3-flight`. Set `$scene` to the new
 private RCS cooked derivative, not the GLB or original M2 package. Its SHA-256 is
@@ -119,8 +155,10 @@ and budgets are unchanged. A failed query still fails memory acceptance; do not
 restart services, rebuild counters, elevate permissions or relax checks on the
 basis of the historical generic message.
 
-The Release private bundle is beside that run's build directories at
-`offline/ngen-flight`. The workflow checks headless admission and three rendered
+The standard build's Release private bundle is beside its build directories at
+`offline/ngen-flight`. A continuation instead uses
+`build/clang-release-resume-<id>-offline/ngen-flight`, outside its evidence ZIP.
+The workflow checks headless admission and three rendered
 frames with Conan deactivated and SDK paths removed. It does **not** disconnect
 networking or change firewall/adapter settings. From a direct desktop session,
 disconnect networking yourself and launch `run.cmd` to confirm the interactive

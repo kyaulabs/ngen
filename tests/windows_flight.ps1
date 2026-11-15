@@ -123,6 +123,16 @@ try {
     }
     if ($env:PATH -cne $beforePath -or $env:VULKAN_SDK -cne 'fixture-sdk' -or
         $env:NGEN_FLIGHT_ENV -cne 'before') { throw 'Offline verification did not restore the owner environment' }
+    $originalBundleHash = (Get-FileHash -LiteralPath (Join-Path $bundle 'flight_demo.exe')).Hash
+    $repeatLogs = Join-Path $temporary 'repeat Release logs'
+    New-Item -ItemType Directory -Path $repeatLogs | Out-Null
+    $repeat = $parameters.Clone(); $repeat.LogDirectory = $repeatLogs
+    $repeat['BundleOutput'] = Join-Path $temporary 'second private offline output'
+    Invoke-NgenFlight @repeat
+    if (-not (Test-Path -LiteralPath (Join-Path $repeat.BundleOutput 'ngen-flight/flight_demo.exe')) -or
+        (Get-FileHash -LiteralPath (Join-Path $bundle 'flight_demo.exe')).Hash -cne $originalBundleHash) {
+        throw 'A repeated Release verification did not use a fresh bundle output or changed its earlier bundle.'
+    }
     $failureRoot = Join-Path $temporary 'offline failure'
     $failureBuild = Join-Path $failureRoot 'Release'; $failureLogs = Join-Path $failureRoot 'logs'
     New-Item -ItemType Directory -Path $failureBuild, $failureLogs | Out-Null

@@ -31,6 +31,9 @@ jobs:
       - name: Test flight handoff boundaries (no Windows build)
         shell: pwsh
         run: ./tests/windows_flight.ps1
+      - name: Test runnable Windows flight commands (no Windows build)
+        shell: pwsh
+        run: ./tests/windows_commands.ps1
       - name: Test GPU provider diagnostic boundaries (no Windows provider)
         shell: pwsh
         run: ./tests/windows_gpu_memory.ps1

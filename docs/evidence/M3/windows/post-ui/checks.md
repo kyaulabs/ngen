@@ -26,6 +26,15 @@ SDK installations or global library settings from this evidence. Diagnose the
 native search environment and retry the failed Release stage, not the successful
 MSVC matrix.
 
+The later native SDK audit, archive SHA-256
+`5b8ec57c7a5d57def2f284052d34e53d81ed08766ed18500c624bb2dfbaf228b`,
+starts in a fresh, uninitialized terminal. Developer-shell setup resolves all
+six checked imports; native Conan activation/deactivation preserves their
+library paths. The real `sim_harness` compile/link succeeds with exit code 0
+and empty stderr. This establishes a working SDK context for cached Release
+continuation, not the cause of the earlier failed session or completion of the
+ClangCl Release runtime gates. See `sdk-audit.json`.
+
 All MSVC timing rows are retained, including focus transitions and the long tail:
 
 | Replay | Median ms | P95 ms | P99 ms | Maximum ms | Unfocused frames | Valid active profile |
