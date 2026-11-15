@@ -170,3 +170,9 @@ Flight controls/data, performance and context-menu background draws use alpha
 observes actual public draw/font calls, not source text or a global style value.
 A fresh private context-menu capture was visually reviewed and the 2,400-frame
 live-performance plot-hover check retains zero warm C++/ImGui allocation calls.
+
+The owner requested another 10–20 percentage points of transparency. Current
+flight menu/panel backgrounds use 50% opacity (128/255), 15 points below the prior
+65%; headings remain fully opaque. The focused native draw-alpha regression
+passes for controls/data, performance and the context popup, and all four native
+flight consumers rebuild successfully. No input or renderer contract changed.

@@ -503,7 +503,7 @@ quit
         self.assertTrue(any("m/s" in label for label in labels), "Speed telemetry must remain")
 
     @unittest.skipUnless(shutil.which("gdb"), "Native menu opacity fixture needs GDB")
-    def test_flight_menu_backgrounds_are_about_65_percent_opaque(self):
+    def test_flight_menu_backgrounds_are_about_50_percent_opaque(self):
         with tempfile.TemporaryDirectory(prefix="ngen-menu-alpha-") as directory:
             output = Path(directory) / "alpha.json"
             script = Path(directory) / "alpha.gdb"
@@ -553,8 +553,8 @@ quit
         self.assertEqual(observed["text"], [255], "Menu text must remain fully opaque")
         for menu, values in observed["backgrounds"].items():
             self.assertTrue(values, f"The {menu} background was not actually drawn")
-            self.assertTrue(all(165 <= alpha <= 167 for alpha in values),
-                            f"{menu} background must be about 65% opaque, got {values}")
+            self.assertTrue(all(127 <= alpha <= 129 for alpha in values),
+                            f"{menu} background must be about 50% opaque, got {values}")
 
     @unittest.skipUnless(shutil.which("gdb"), "Native panel geometry fixture needs GDB")
     def test_optional_panels_fit_content_including_return_from_data_to_controls(self):

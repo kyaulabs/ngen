@@ -46,7 +46,7 @@ relative mouse mode begins only once the gesture becomes a drag/hold or is
 camera-only, avoiding SDL's cursor restoration when a popup opens. The popup
 closes on action, dismissal or input/reset handoff, and keeps the selected target
 identity with its commands. Flight controls, data, performance and context-menu
-backgrounds use 65% opacity; text remains fully opaque.
+backgrounds use 50% opacity; text remains fully opaque.
 View/reset/audio controls and optional flight plots remain accessible on demand;
 F12 stays the separate system/device performance panel. F1, F2 and F12 fit their
 contents vertically at stable readable widths, capped to the available screen
@@ -82,13 +82,15 @@ native GUI captures. Same-session review does not replace final independent/owne
 review. Supply an offline Linux UI preview; do not claim fresh native Windows,
 local RTX timing, final three-run budgets or M3 completion from local checks.
 
-The owner authorized this direction as a starting point for later refinement.
-The first runtime pass is now implemented: F1 controls, F2 data/plots, F12
-performance, hover-only target actions and shared branding through the existing
-atlas. The inspector keeps its control arrangement and technical font sizing;
+The owner accepts the current UI as a decent starting point; further UI polish
+is deferred. The runtime implements controls, data/plots, performance,
+right-click target actions and shared branding through the existing atlas. The inspector keeps its control arrangement and technical font sizing;
 its header grows to fit the supplied wordmark. See the
 [verification record](../evidence/M3/ui/checks.md) for actual tests and review
 repairs. Private default/data/inspector captures have been visually reviewed.
-The private offline Linux v15 preview is available from source `754c72d`; its
-manifest/source correspondence and isolated startup are verified. Owner verdict,
-final native Windows/direct-desktop timing and M3 acceptance remain open.
+The earlier private offline Linux v15 preview is recorded at source `754c72d`,
+with verified manifest/source correspondence and isolated startup. The current
+50%-opacity working-build preview launches through
+`build/m3-flight/current-ui/run.sh`; its changes remain staged after a signing
+timeout. UI-baseline acceptance does not complete native Windows/direct-desktop
+timing, final delivery/recording, independent review or overall M3 acceptance.

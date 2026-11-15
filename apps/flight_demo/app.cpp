@@ -27,7 +27,7 @@ namespace ngen::demo {
 namespace {
 using namespace render;
 using Clock = std::chrono::steady_clock;
-constexpr float menu_background_alpha = .65F;
+constexpr float menu_background_alpha = .50F;
 constexpr shader::Matrix identity{{1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1}};
 void require(bool value, const char *message) {
     if (!value)
