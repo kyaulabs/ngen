@@ -57,6 +57,8 @@ struct Gui::Impl {
     ImGuiMemFreeFunc previous_free{};
     void *previous_user{};
     bool allocators_set{}, platform{};
+    SDL_Event motion{};
+    bool motion_pending{}, motion_displaced{};
     std::uint64_t allocations{};
     bool icon_applied{};
     ImFont *body{}, *mono{}, *readout{};
@@ -72,6 +74,12 @@ struct Gui::Impl {
         return std::malloc(size);
     }
     static void free(void *pointer, void *) { std::free(pointer); }
+    void flush_motion() {
+        if (motion_pending) {
+            (void)ImGui_ImplSDL3_ProcessEvent(&motion);
+            motion_pending = motion_displaced = false;
+        }
+    }
     ~Impl() {
         if (context) {
             ImGui::SetCurrentContext(context);
@@ -203,10 +211,31 @@ std::variant<std::unique_ptr<Gui>, render::Failure> Gui::create(render::Context 
 }
 void Gui::event(const SDL_Event &event) {
     ImGui::SetCurrentContext(impl_->context);
-    (void)ImGui_ImplSDL3_ProcessEvent(&event);
+    // Keep the first event, first distinct pixel and final position of each
+    // motion run. The distinct pixel preserves a mouse-source transition even
+    // when the run returns to its starting position (ImGui filters duplicates).
+    // Flush at event/device/window boundaries; flight still receives every event.
+    if (event.type == SDL_EVENT_MOUSE_MOTION) {
+        if (!impl_->motion_pending || event.motion.windowID != impl_->motion.motion.windowID ||
+            event.motion.which != impl_->motion.motion.which) {
+            impl_->flush_motion();
+            (void)ImGui_ImplSDL3_ProcessEvent(&event);
+        } else if (!impl_->motion_displaced &&
+                   (std::floor(event.motion.x) != std::floor(impl_->motion.motion.x) ||
+                    std::floor(event.motion.y) != std::floor(impl_->motion.motion.y))) {
+            (void)ImGui_ImplSDL3_ProcessEvent(&event);
+            impl_->motion_displaced = true;
+        }
+        impl_->motion = event;
+        impl_->motion_pending = true;
+    } else {
+        impl_->flush_motion();
+        (void)ImGui_ImplSDL3_ProcessEvent(&event);
+    }
 }
 void Gui::begin() {
     ImGui::SetCurrentContext(impl_->context);
+    impl_->flush_motion();
     ImGui_ImplSDL3_NewFrame();
     ImGui::NewFrame();
 }

@@ -106,6 +106,102 @@ class Tooltip(unittest.TestCase):
     def test_force_plot_hover_does_not_allocate_after_warmup(self):
         self.replay(SCRIPT)
 
+    def test_batched_mouse_motion_during_plot_hover_stays_allocation_free(self):
+        burst = """ if $frames == 90
+  call (void*)memset($motion, 0, sizeof(SDL_Event))
+  set $motion->type = 1024
+  set $motion->motion.windowID = $id
+  set $burst = 0
+  while $burst < 32
+   set $motion->motion.x = 100 + $burst
+   set $motion->motion.y = 100
+   call (bool)SDL_PushEvent($motion)
+   set $burst = $burst + 1
+  end
+ end
+"""
+        self.replay(SCRIPT.replace(" if $frames == 80\n", burst + " if $frames == 80\n"))
+
+    def test_mouse_motion_on_each_side_of_a_button_keeps_its_order(self):
+        events = """ if $frames == 90
+  call (void*)memset($motion, 0, sizeof(SDL_Event))
+  set $motion->type = 1024
+  set $motion->motion.windowID = $id
+  set $motion->motion.x = 300
+  set $motion->motion.y = 300
+  call (bool)SDL_PushEvent($motion)
+  set $motion->type = 1025
+  set $motion->button.windowID = $id
+  set $motion->button.button = 1
+  set $motion->button.down = 1
+  set $motion->button.x = 300
+  set $motion->button.y = 300
+  call (bool)SDL_PushEvent($motion)
+  call (void*)memset($motion, 0, sizeof(SDL_Event))
+  set $motion->type = 1024
+  set $motion->motion.windowID = $id
+  set $motion->motion.x = 900
+  set $motion->motion.y = 500
+  call (bool)SDL_PushEvent($motion)
+  set $motion->type = 1026
+  set $motion->button.windowID = $id
+  set $motion->button.button = 1
+  set $motion->button.down = 0
+  set $motion->button.x = 900
+  set $motion->button.y = 500
+  call (bool)SDL_PushEvent($motion)
+ end
+"""
+        observe = """break ngen::tools::Gui::end
+commands 5
+ silent
+ if $frames == 91 || $frames == 92
+  set $io = &ImGui::GetIO()
+  printf "ngen_ordered_mouse=%.0f,%.0f,%d\\n", $io->MousePos.x, $io->MousePos.y, $io->MouseDown[0]
+ end
+ continue
+end
+"""
+        script = SCRIPT.replace(" if $frames == 80\n", events + " if $frames == 80\n")
+        result = self.replay(script.replace("run\nquit\n", observe + "run\nquit\n"))
+        positions = re.findall(r"ngen_ordered_mouse=([\d,]+)", result.stdout)
+        self.assertEqual(positions, ["300,300,1", "900,500,0"])
+
+    def test_returning_fractional_motion_preserves_mouse_source_transition(self):
+        events = """ if $frames == 85 || $frames == 90
+  call (void*)memset($motion, 0, sizeof(SDL_Event))
+  set $motion->type = 1024
+  set $motion->motion.windowID = $id
+  set $motion->motion.which = $frames == 85 ? (SDL_MouseID)-1 : (SDL_MouseID)0
+  set $motion->motion.x = 300.25
+  set $motion->motion.y = 300.25
+  call (bool)SDL_PushEvent($motion)
+  if $frames == 90
+   set $motion->motion.x = 300.5
+   call (bool)SDL_PushEvent($motion)
+   set $motion->motion.x = 301.25
+   call (bool)SDL_PushEvent($motion)
+   set $motion->motion.x = 300.75
+   call (bool)SDL_PushEvent($motion)
+  end
+ end
+"""
+        observe = """break ngen::tools::Gui::end
+commands 5
+ silent
+ if $frames == 86 || $frames == 91
+  set $io = &ImGui::GetIO()
+  printf "ngen_mouse_source=%d,%.0f,%.0f,%d\\n", $frames, $io->MousePos.x, $io->MousePos.y, $io->MouseSource
+ end
+ continue
+end
+"""
+        script = SCRIPT.replace(" if $frames == 80\n", events + " if $frames == 80\n")
+        script = script.replace("if $frames > 80 &&", "if $frames > 110 &&")
+        result = self.replay(script.replace("run\nquit\n", observe + "run\nquit\n"))
+        sources = re.findall(r"ngen_mouse_source=([\d,]+)", result.stdout)
+        self.assertEqual(sources, ["86,300,300,1", "91,300,300,0"])
+
     def test_force_plot_hover_with_live_performance_overlay_stays_allocation_free(self):
         key = """  call (void*)memset($motion, 0, sizeof(SDL_Event))
   set $motion->type = 768

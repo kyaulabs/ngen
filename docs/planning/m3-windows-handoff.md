@@ -1,14 +1,19 @@
 # M3 Windows flight check
 
-Latest [post-UI return](../evidence/M3/windows/post-ui/checks.md), source `21e616c`:
-MSVC Debug/Release and ClangCl Debug pass 72 CTests in total. MSVC sampled memory,
-app-local startup and F2 plot hover with numeric F12 live pass; one fully focused
-RTX replay has P95 7.804 ms. Two additional replays lost focus and require only
-clean timing repeats, not an MSVC rebuild. The subsequent native SDK audit
-resolves all six checked imports after developer-shell setup, preserves their
-paths across Conan activation/deactivation, and successfully compiles/links
-`sim_harness`. The original failed-session cause remains unproved; finish the
-cached ClangCl Release stage without repeating MSVC or ClangCl Debug.
+The [post-UI returns](../evidence/M3/windows/post-ui/checks.md) now include a
+successful ClangCl Release continuation at `a4ebfc6`: 24 CTests, validated flight,
+app-local startup, complete sampled-memory coverage and a focused RTX replay with
+P95 8.3083 ms. The original SDK failure's cause remains unproved. Its separate
+live F2/F12 diagnostic records one warm ImGui allocation, so that gate fails.
+A local mouse-burst regression is repaired without changing flight input or
+capacities; pull and rerun the continuation below to verify native live hover
+after that repair. Do not repeat MSVC, ClangCl Debug or the successful SDK audit.
+
+Earlier MSVC Debug/Release and ClangCl Debug at `21e616c` passed 72 CTests. MSVC
+sampled memory and live hover pass; one focused RTX replay has P95 7.804 ms.
+Two additional replays lost focus and still require only clean timing repeats
+using the existing MSVC bundle, not a rebuild. Results retain their actual source
+revisions; do not relabel the old bundle as the current checkout.
 
 Use normal PowerShell 7.2+ in the repository; no pasted script bodies are needed:
 

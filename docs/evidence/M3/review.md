@@ -43,5 +43,19 @@ Raw review reports and commands remain in ignored `build/m3-flight/` under
 sessions performed source/compile checks, not native runtime or hardware tests.
 This review does not establish fresh Windows execution, final laptop/RTX timing,
 recording/listening/delivery acceptance or completed M3 integration. The owner has
-accepted the UI starting point and deferred polish; direct-desktop Windows
-verification is now available and remains the next hardware gate.
+accepted the UI starting point and deferred polish. Subsequent native results
+and remaining hardware gates are recorded in [the post-UI evidence](windows/post-ui/checks.md).
+
+A later fresh read-only review covers the GUI motion-burst repair prompted by
+one native warm ImGui allocation. Local stack tracing reproduces queue/trail
+growth from consecutive motion events; public regressions require zero warm
+calls without increasing capacity or warmup. Review identifies a P2 source-state
+loss when a physical mouse run returns to a touchscreen's last position. The
+fractional-position regression reproduces it; retaining the first distinct pixel
+repairs it. A fresh follow-up finds no remaining concrete defect in this scope.
+Button ordering is checked in sequence, including release. Key/device/window
+boundaries receive source review; native Windows execution after this repair is
+still pending. Reports are `build/m3-flight/clang-return-motion-{review,followup}.md`.
+The local repair does not conclusively attribute the native allocation or waive
+its failed gate. No independent runtime or hardware verification is claimed from
+the read-only reviews.
