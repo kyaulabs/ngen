@@ -7,8 +7,8 @@ readout, world-anchored selected-target information, and contextual actions.
 Flight data, controls/help and F12 appear only on demand. Shared NGEN identity
 remains approved. The inspector keeps its layout and behaviour; shared colours
 and header artwork adopt the brand.
-Local RTX acceptance remains deferred until the owner can use a direct desktop
-session after this pass. Artemis timings remain recorded, not waived.
+The owner now has a direct desktop session for post-UI Windows verification.
+RTX timing remains unverified; the earlier Artemis misses are retained, not waived.
 
 The three requested references were read in full. The initial proposal had not
 opened their images; after the owner called out that gap, all 27 relevant UI
@@ -88,9 +88,13 @@ right-click target actions and shared branding through the existing atlas. The i
 its header grows to fit the supplied wordmark. See the
 [verification record](../evidence/M3/ui/checks.md) for actual tests and review
 repairs. Private default/data/inspector captures have been visually reviewed.
-The earlier private offline Linux v15 preview is recorded at source `754c72d`,
-with verified manifest/source correspondence and isolated startup. The current
-50%-opacity working-build preview launches through
-`build/m3-flight/current-ui/run.sh`; its changes remain staged after a signing
-timeout. UI-baseline acceptance does not complete native Windows/direct-desktop
+The signed 50%-opacity baseline is committed and pushed at `8d4d89c`.
+Private offline Linux v21 launches through
+`build/m3-offline-linux-v21/ngen-flight/run.sh`; all 25 manifest hashes and
+corresponding source files verify, and isolated startup exercises controls,
+data, performance and the context popup. It predates the later link-bound build
+identity gate and is not the final post-review bundle. Historical v15 metadata
+is retained.
+`build/m3-flight/current-ui/run.sh` still follows the working build, not a frozen
+bundle. UI-baseline acceptance does not complete native Windows/direct-desktop
 timing, final delivery/recording, independent review or overall M3 acceptance.

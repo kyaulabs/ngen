@@ -181,14 +181,38 @@ quit
         if not shutil.which("gdb"):
             self.skipTest("GDB is required for owned-window context input")
         release = 110 if gesture == "hold" else 82
-        drag = 1 if gesture == "drag" else 0
-        events = f""" if ($frames == 70 || $frames == 120) && {int(gesture == 'free_look')}
+        free_look = gesture in ("free_look", "right_free_look", "left_alt_overlap", "right_alt_overlap")
+        direct_look = free_look and gesture != "free_look"
+        right_alt = gesture in ("right_free_look", "right_alt_overlap")
+        overlap = gesture.endswith("alt_overlap")
+        drag = int(gesture == "drag" or direct_look)
+        events = f""" if $frames == 65 && {int(direct_look)}
+  call (void*)memset($motion, 0, sizeof(SDL_Event))
+  set $motion->type = 768
+  set $motion->key.windowID = $id
+  set $motion->key.scancode = 43
+  set $motion->key.down = 1
+  call (bool)SDL_PushEvent($motion)
+  set $motion->type = 769
+  set $motion->key.down = 0
+  call (bool)SDL_PushEvent($motion)
+ end
+ if ($frames == 70 || $frames == 120) && {int(free_look)}
   call (void*)memset($motion, 0, sizeof(SDL_Event))
   set $motion->type = $frames == 70 ? 768 : 769
   set $motion->key.windowID = $id
-  set $motion->key.scancode = 226
-  set $motion->key.mod = $frames == 70 ? 256 : 0
+  set $motion->key.scancode = $frames == 70 ? {230 if right_alt else 226} : {226 if right_alt and overlap else 230 if overlap or right_alt else 226}
+  set $motion->key.mod = $frames == 70 ? {512 if right_alt else 256} : 0
   set $motion->key.down = $frames == 70
+  call (bool)SDL_PushEvent($motion)
+ end
+ if ($frames == 74 || $frames == 75) && {int(overlap)}
+  call (void*)memset($motion, 0, sizeof(SDL_Event))
+  set $motion->type = $frames == 74 ? 768 : 769
+  set $motion->key.windowID = $id
+  set $motion->key.scancode = $frames == 74 ? {226 if right_alt else 230} : {230 if right_alt else 226}
+  set $motion->key.mod = $frames == 74 ? 768 : {256 if right_alt else 512}
+  set $motion->key.down = $frames == 74
   call (bool)SDL_PushEvent($motion)
  end
  if $frames == 80 || $frames == {release} || ({int(reopen)} && ($frames == 140 || $frames == 142))
@@ -303,8 +327,16 @@ commands 6
  end
  continue
 end
+break ngen::flight::CameraRig::look
+commands
+ silent
+ if $frames > 79 && (motion.yaw_radians != 0 || motion.pitch_radians != 0)
+  set $camera_drag = $camera_drag + 1
+ end
+ continue
+end
 break SDL_WarpMouseInWindow
-commands 7
+commands
  silent
  if $frames > 79
   set $warps = $warps + 1
@@ -387,6 +419,18 @@ end
                 self.assertEqual((approach, orbit, focus), (0, 0, 0))
                 if gesture == "drag":
                     self.assertGreater(camera_drag, 0, "RMB dragging must still orbit the camera")
+
+    def test_right_alt_drag_in_direct_mode_moves_only_the_camera(self):
+        approach, orbit, focus, _, camera_drag, _ = self.target_context("right_free_look")
+        self.assertEqual((approach, orbit, focus), (0, 0, 0))
+        self.assertGreater(camera_drag, 0, "Right Alt must route direct-mode motion to free look")
+
+    def test_releasing_one_alt_keeps_the_other_alt_in_camera_only_mode(self):
+        for gesture in ("left_alt_overlap", "right_alt_overlap"):
+            with self.subTest(gesture=gesture):
+                approach, orbit, focus, _, camera_drag, _ = self.target_context(gesture)
+                self.assertEqual((approach, orbit, focus), (0, 0, 0))
+                self.assertGreater(camera_drag, 0, "The remaining Alt must keep free look active")
 
     def test_free_look_click_does_not_open_context_menu(self):
         approach, orbit, focus, *_ = self.target_context("free_look")

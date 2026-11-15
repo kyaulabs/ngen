@@ -290,6 +290,20 @@ if(NGEN_BUILD_FLIGHT_DEMO)
   target_link_libraries(ngen_flight_demo_scene PUBLIC ngen_flight scene_workload_fixture PRIVATE Jolt::Jolt)
   add_executable(flight_demo apps/flight_demo/main.cpp apps/flight_demo/app.cpp apps/scene_workload/allocations.cpp)
   target_link_libraries(flight_demo PRIVATE ngen_flight_demo_scene ngen_flight_demo_layout ngen_flight_demo_performance ngen_gui ngen_audio_output ngen_probe_support imgui::imgui Jolt::Jolt)
+  if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/.git")
+    # Bind successful links to the source snapshot, even after a clean branch switch.
+    # An extracted corresponding-source archive remains buildable without Git metadata.
+    add_custom_target(ngen_demo_source_identity
+      COMMAND ${Python3_EXECUTABLE} "${CMAKE_CURRENT_SOURCE_DIR}/tools/package_demo.py"
+        --build "${CMAKE_CURRENT_BINARY_DIR}" --capture-source
+      BYPRODUCTS "${CMAKE_CURRENT_BINARY_DIR}/demo-source.json" VERBATIM)
+    add_dependencies(flight_demo ngen_demo_source_identity)
+    set_property(TARGET flight_demo APPEND PROPERTY LINK_DEPENDS "${CMAKE_CURRENT_BINARY_DIR}/demo-source.json")
+    add_custom_command(TARGET flight_demo POST_BUILD
+      COMMAND ${Python3_EXECUTABLE} "${CMAKE_CURRENT_SOURCE_DIR}/tools/package_demo.py"
+        --build "${CMAKE_CURRENT_BINARY_DIR}" --record-build "$<TARGET_FILE:flight_demo>"
+      BYPRODUCTS "${CMAKE_CURRENT_BINARY_DIR}/demo-build.json" VERBATIM)
+  endif()
   if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
     # SDL opens its desktop audio client dynamically; do not import private SDK DSOs.
     target_link_options(flight_demo PRIVATE "LINKER:--as-needed")

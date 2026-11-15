@@ -118,6 +118,7 @@ std::optional<flight::FlightKey> mapped(SDL_Scancode key) {
     case SDL_SCANCODE_SPACE:
         return K::brake;
     case SDL_SCANCODE_LALT:
+    case SDL_SCANCODE_RALT:
         return K::free_look;
     default:
         return {};
@@ -985,7 +986,8 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
                 const bool down = event.type == SDL_EVENT_KEY_DOWN;
                 if (!down) {
                     if (const auto key = mapped(event.key.scancode))
-                        (void)input.key(*key, false);
+                        (void)input.key(*key, *key == flight::FlightKey::free_look &&
+                                                  (event.key.mod & SDL_KMOD_ALT) != 0);
                     continue;
                 }
                 if (event.key.scancode == SDL_SCANCODE_ESCAPE) {

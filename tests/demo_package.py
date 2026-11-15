@@ -38,6 +38,9 @@ class PackageDemo(unittest.TestCase):
              "libdirs": ["lib"], "bindirs": ["bin"]}]}
         (self.build / "demo-runtime.json").write_text(json.dumps(metadata))
         self.output = self.root / "delivery"
+        with patch.object(PACKAGE.subprocess, "run", side_effect=self.external_tool):
+            PACKAGE.capture_source(self.build)
+            PACKAGE.record_build(self.build, self.build / "flight_demo")
 
     @staticmethod
     def external_tool(arguments, **_kwargs):
@@ -45,6 +48,8 @@ class PackageDemo(unittest.TestCase):
         if arguments[0] == "git":
             if "rev-parse" in arguments:
                 result = "a" * 40 + "\n"
+            elif "ls-files" in arguments:
+                result = "CMakeLists.txt\0LICENSE\0"
             elif "ls-tree" in arguments:
                 result = "100644 blob " + "b" * 40 + "\tCMakeLists.txt\0"
             elif "archive" in arguments:
@@ -81,6 +86,39 @@ class PackageDemo(unittest.TestCase):
                 PACKAGE.create_bundle(self.build, self.asset, self.output)
         self.assertFalse(self.output.exists())
 
+    def test_stale_executable_cannot_be_claimed_as_another_clean_source_revision(self):
+        (self.build / "demo-build.json").write_text(json.dumps({
+            "schema": 1, "source_revision": "a" * 40, "source_sha256": "c" * 64,
+            "executable_sha256": hashlib.sha256((self.build / "flight_demo").read_bytes()).hexdigest()}))
+        def newer_source(arguments, **kwargs):
+            if arguments[0] == "git" and "rev-parse" in arguments:
+                return subprocess.CompletedProcess(arguments, 0, stdout="b" * 40 + "\n", stderr="")
+            return self.external_tool(arguments, **kwargs)
+        with patch.object(PACKAGE.subprocess, "run", side_effect=newer_source):
+            with self.assertRaisesRegex(ValueError, "built source"):
+                PACKAGE.create_bundle(self.build, self.asset, self.output)
+        self.assertFalse(self.output.exists())
+
+    def test_changed_binary_is_rejected_even_when_the_recorded_source_matches(self):
+        (self.build / "flight_demo").write_bytes(b"different executable from another build")
+        with patch.object(PACKAGE.subprocess, "run", side_effect=self.external_tool):
+            with self.assertRaisesRegex(ValueError, "built source"):
+                PACKAGE.create_bundle(self.build, self.asset, self.output)
+        self.assertFalse(self.output.exists())
+
+    def test_changed_source_bytes_cannot_reuse_a_same_revision_build_record(self):
+        (self.root / "CMakeLists.txt").write_text("project(original_fixture)\n")
+        (self.root / "LICENSE").write_text("fixture source license\n")
+        with patch.object(PACKAGE, "ROOT", self.root), patch.object(PACKAGE.subprocess, "run", side_effect=self.external_tool):
+            PACKAGE.capture_source(self.build)
+            PACKAGE.record_build(self.build, self.build / "flight_demo")
+            (self.root / "CMakeLists.txt").write_text("project(changed_fixture)\n")
+            with self.assertRaisesRegex(ValueError, "built source"):
+                PACKAGE.create_bundle(self.build, self.asset, self.output)
+            with self.assertRaisesRegex(ValueError, "source changed while building"):
+                PACKAGE.record_build(self.build, self.build / "flight_demo")
+        self.assertFalse(self.output.exists())
+
     def test_dirty_source_cannot_be_claimed_as_the_archived_head(self):
         def dirty(arguments, **kwargs):
             if arguments[0] == "git" and "status" in arguments:
@@ -93,13 +131,15 @@ class PackageDemo(unittest.TestCase):
 
     def test_existing_owner_file_or_directory_is_never_replaced(self):
         self.output.write_bytes(b"owner bytes")
-        with self.assertRaises(FileExistsError):
-            PACKAGE.create_bundle(self.build, self.asset, self.output)
+        with patch.object(PACKAGE.subprocess, "run", side_effect=self.external_tool):
+            with self.assertRaises(FileExistsError):
+                PACKAGE.create_bundle(self.build, self.asset, self.output)
         self.assertEqual(self.output.read_bytes(), b"owner bytes")
         self.output.unlink()
         self.output.mkdir()
-        with self.assertRaises(FileExistsError):
-            PACKAGE.create_bundle(self.build, self.asset, self.output)
+        with patch.object(PACKAGE.subprocess, "run", side_effect=self.external_tool):
+            with self.assertRaises(FileExistsError):
+                PACKAGE.create_bundle(self.build, self.asset, self.output)
         self.assertTrue(self.output.is_dir())
         self.assertEqual(list(self.output.iterdir()), [])
 
@@ -107,14 +147,21 @@ class PackageDemo(unittest.TestCase):
         metadata = json.loads((self.build / "demo-runtime.json").read_text())
         metadata["packages"][0]["libdirs"] = [str(self.root)]
         (self.build / "demo-runtime.json").write_text(json.dumps(metadata))
-        with self.assertRaises(ValueError):
-            PACKAGE.create_bundle(self.build, self.asset, self.output)
+        with patch.object(PACKAGE.subprocess, "run", side_effect=self.external_tool):
+            with self.assertRaisesRegex(ValueError, "dependency directory escapes"):
+                PACKAGE.create_bundle(self.build, self.asset, self.output)
         self.assertFalse(self.output.exists())
         metadata["packages"][0]["libdirs"] = ["lib"]
         (self.build / "demo-runtime.json").write_text(json.dumps(metadata))
-        with patch.object(PACKAGE.subprocess, "run", side_effect=subprocess.CalledProcessError(17, ["patchelf"])):
-            with self.assertRaises(subprocess.CalledProcessError):
+        def fail_patch(arguments, **kwargs):
+            if arguments[0] == "patchelf":
+                raise subprocess.CalledProcessError(17, arguments)
+            return self.external_tool(arguments, **kwargs)
+        with patch.object(PACKAGE.subprocess, "run", side_effect=fail_patch) as system:
+            with self.assertRaises(subprocess.CalledProcessError) as failure:
                 PACKAGE.create_bundle(self.build, self.asset, self.output)
+            self.assertEqual(failure.exception.cmd[0], "patchelf")
+            self.assertTrue(any(call.args[0][:2] == ["patchelf", "--set-rpath"] for call in system.call_args_list))
         self.assertFalse(self.output.exists())
         self.assertEqual(self.asset.read_bytes(), b"local cooked asset fixture")
         self.assertEqual((self.sdk / "lib/libSDL3.so.0").read_bytes(), b"shared native SDL")
@@ -131,6 +178,7 @@ class PackageDemo(unittest.TestCase):
         runtime.write_bytes(b"compiler runtime fixture")
         (self.build / "demo-msvc-runtime.txt").write_text(str(runtime) + "\n")
         with patch.object(PACKAGE.subprocess, "run", side_effect=self.external_tool) as system:
+            PACKAGE.record_build(self.build, self.build / "flight_demo.exe")
             bundle = PACKAGE.create_bundle(self.build, self.asset, self.output)
         self.assertEqual((bundle / "SDL3.dll").read_bytes(), b"SDL DLL fixture")
         self.assertEqual((bundle / runtime.name).read_bytes(), runtime.read_bytes())

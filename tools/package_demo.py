@@ -57,6 +57,53 @@ def sha256(path):
     return value.hexdigest()
 
 
+def source_identity():
+    revision = external(["git", "-C", str(ROOT), "rev-parse", "HEAD"]).strip()
+    if not re.fullmatch(r"[0-9a-f]{40}", revision):
+        raise ValueError("invalid source revision")
+    names = external(["git", "-C", str(ROOT), "ls-files", "-z", "--cached", "--others",
+                      "--exclude-standard", "--", *SOURCE_PATHS]).split("\0")
+    names = sorted(set(name for name in names if name))
+    if not 1 <= len(names) <= 4096:
+        raise ValueError("source input collection exceeds its bound")
+    digest = hashlib.sha256()
+    total = 0
+    for name in names:
+        path = PurePosixPath(name)
+        if path.is_absolute() or ".." in path.parts or private_path(path):
+            raise ValueError("unsafe source input path")
+        source = ROOT / path
+        if not source.exists() and not source.is_symlink():
+            continue  # An unstaged deletion is still rejected by delivery's clean-source check.
+        source = regular(source, 128 * MIB, root=ROOT)
+        total += source.stat().st_size
+        if total > 128 * MIB:
+            raise ValueError("source inputs exceed their byte bound")
+        digest.update(name.encode("utf-8") + b"\0" + bytes.fromhex(sha256(source)))
+    return {"schema": 1, "source_revision": revision, "source_sha256": digest.hexdigest()}
+
+
+def write_identity(path, identity):
+    text = json.dumps(identity, sort_keys=True, indent=2) + "\n"
+    if path.exists() or path.is_symlink():
+        if regular(path, 65536).read_text() == text:
+            return
+    path.write_text(text)
+
+
+def capture_source(build):
+    write_identity(Path(build) / "demo-source.json", source_identity())
+
+
+def record_build(build, executable):
+    build = Path(build).resolve(strict=True)
+    identity = json.loads(regular(build / "demo-source.json", 65536).read_text())
+    if identity != source_identity():
+        raise ValueError("source changed while building the flight executable")
+    executable = regular(executable, 128 * MIB, root=build)
+    write_identity(build / "demo-build.json", dict(identity, executable_sha256=sha256(executable)))
+
+
 def dependency_directory(package, directory):
     root = Path(package["root"]).resolve(strict=True)
     path = Path(directory)
@@ -75,7 +122,7 @@ def corresponding_source(destination):
     revision = external(["git", "-C", str(ROOT), "rev-parse", "HEAD"]).strip()
     if not re.fullmatch(r"[0-9a-f]{40}", revision):
         raise ValueError("invalid source revision")
-    entries = external(["git", "-C", str(ROOT), "ls-tree", "-r", "-z", "HEAD", "--", *SOURCE_PATHS])
+    entries = external(["git", "-C", str(ROOT), "ls-tree", "-r", "-z", revision, "--", *SOURCE_PATHS])
     for entry in entries.split("\0"):
         if not entry:
             continue
@@ -86,7 +133,7 @@ def corresponding_source(destination):
         if path.is_absolute() or ".." in path.parts or private_path(path):
             raise ValueError("unsafe source archive path")
     external(["git", "-C", str(ROOT), "archive", "--format=tar.gz",
-              "--output=" + str(destination), "HEAD", "--", *SOURCE_PATHS])
+              "--output=" + str(destination), revision, "--", *SOURCE_PATHS])
     regular(destination, 128 * MIB)
     return revision
 
@@ -121,6 +168,9 @@ def create_bundle(build: Path, asset: Path, output: Path) -> Path:
     if not sdl or not re.match(r"sdl/3\.4\.16(?:[@#]|$)", sdl["reference"]):
         raise ValueError("the pinned SDL runtime is missing")
     executable = regular(build / ("flight_demo.exe" if platform == "Windows" else "flight_demo"), 128 * MIB)
+    built = json.loads(regular(build / "demo-build.json", 65536).read_text())
+    if built != dict(source_identity(), executable_sha256=sha256(executable)):
+        raise ValueError("executable does not match its built source; rebuild flight_demo")
     output = Path(output).absolute()
     output.mkdir(mode=0o755, exist_ok=False)  # Exclusive reservation, including empty owner dirs.
     try:
@@ -129,6 +179,8 @@ def create_bundle(build: Path, asset: Path, output: Path) -> Path:
             payload.mkdir()
             (payload / "assets").mkdir()
             shutil.copyfile(executable, payload / executable.name)
+            if sha256(payload / executable.name) != built["executable_sha256"]:
+                raise ValueError("executable changed since its built source was verified")
             shutil.copyfile(asset, payload / "assets/ship.ngas")
             runtimes = []
             if platform == "Linux":
@@ -200,6 +252,8 @@ def create_bundle(build: Path, asset: Path, output: Path) -> Path:
                 raise ValueError("the bundled SDL license notice is missing")
             shutil.copyfile(regular(ROOT / "LICENSE", MIB), payload / "LICENSE")
             revision = corresponding_source(payload / "source.tar.gz")
+            if revision != built["source_revision"] or built != dict(source_identity(), executable_sha256=sha256(executable)):
+                raise ValueError("built source changed during offline delivery")
             (payload / "README.txt").write_text(
                 "NGEN / offline flight demonstration\n\n"
                 "Launch run.sh (Linux) or run.cmd (Windows). No SDK, Conan, shader compiler,\n"
@@ -240,11 +294,21 @@ def create_bundle(build: Path, asset: Path, output: Path) -> Path:
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--build", type=Path, required=True)
-    parser.add_argument("--asset", type=Path, required=True)
-    parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--asset", type=Path)
+    parser.add_argument("--output", type=Path)
+    mode = parser.add_mutually_exclusive_group()
+    mode.add_argument("--capture-source", action="store_true")
+    mode.add_argument("--record-build", type=Path)
     args = parser.parse_args()
+    if not args.capture_source and args.record_build is None and (args.asset is None or args.output is None):
+        parser.error("delivery requires --asset and --output")
     try:
-        print(create_bundle(args.build, args.asset, args.output))
+        if args.capture_source:
+            capture_source(args.build)
+        elif args.record_build is not None:
+            record_build(args.build, args.record_build)
+        else:
+            print(create_bundle(args.build, args.asset, args.output))
         return 0
     except (OSError, ValueError, RuntimeError, subprocess.SubprocessError) as error:
         print(f"Package failed: {error}", file=sys.stderr)
