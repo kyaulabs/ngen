@@ -1,6 +1,35 @@
 # M3 final delivery candidates
 
-The current Graphite 1.2 candidate is private Linux v24, bound to signed source
+The current Visual Identity 1.4 preview is private Linux v25, bound to signed
+source `e45ba673040a348959cda48f95e9380a2e9f980e`. Launch
+`build/m3-offline-linux-v25/ngen-flight/run.sh` without frame arguments for an
+unlimited owner-closed preview. All 25 manifest hashes and 452 corresponding-
+source members verify, including the supplied fonts/embedded notices and the
+separate typeface notice. Both regular faces are embedded through the existing
+ImGui atlas; no host font files or new runtime font/recording library is required.
+
+The committed recorder was run with the v25 bundle, a fresh private output
+`build/m3-identity14-recording-v25`, and `--seconds 20`. Its `recording.mkv` contains
+19.498 s / 291 own-window frames, all retained in the mux, plus only NGEN's
+48 kHz stereo application audio. No microphone/system mix; two owned playback
+stream generations, nonzero unsaturated retained PCM and unchanged desktop audio
+routing. Network isolation, hidden Conan and absent SDK environment are explicit.
+A decoded frame was opened visually. Recording SHA-256:
+`8233792025cfc5dc0e54c88839bddd6710d24e76855364bdf4822f7ccf0b81f6`.
+
+This preview is **not fully verified for M3 acceptance**. The first instrumented
+3,600-frame run reported 3,854 warm C++ calls / zero ImGui calls. Two debugger
+recording comparisons reported eight; sampled stacks include planned reset and
+post-loop driver/HDR-readback allocation paths but do not explain the original
+increase. Counters were not suppressed; do not relabel that run as a clean budget
+pass or attribute the difference to fonts. The full GUI-suite gesture failures
+in [1.4 checks](../ui/brand14.md) also remain untraced despite focused passes.
+[brand14-linux.json](brand14-linux.json) records these limits and exact identities.
+Keep the PR draft; source/media correspondence does not supply final UI acceptance,
+clean timing/memory proof, cross-distribution support, AV certification or legal
+approval. Earlier hardware gates are not rerun for this theme revision.
+
+The preceding Graphite 1.2 candidate is private Linux v24, bound to signed source
 `27ba93914246bfa5f4fd13835a172c2f9482dc2e`. Launch
 `build/m3-offline-linux-v24/ngen-flight/run.sh` for an unlimited owner-closed
 preview. All 25 manifest hashes and 430 corresponding-source members verify,

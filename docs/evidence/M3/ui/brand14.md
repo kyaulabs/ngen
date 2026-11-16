@@ -55,6 +55,14 @@ The changed material/font contracts pass. An attempted debugger function-call
 origin fixture timed out; it was replaced by observing public clip-rectangle
 arguments for actual popup placement, not treated as a product Red.
 
-The updated private source-bound preview/recording follows in the delivery record.
-No old SDK, hardware budget, audio/handling or memory gate is reopened. Overall
-owner acceptance and normal reviewed integration remain pending.
+The v25 preview and private 19.498 s / 291-frame recording are bound to signed
+source `e45ba673`; 25 hashes and 452 source members verify. The first instrumented
+3,600-frame run reported 3,854 warm C++ calls / zero ImGui calls. Two later
+recording comparisons under the debugger reported eight. Sampled stacks include
+planned reset allocation and post-loop Intel driver/HDR readback, not a causal
+explanation for the first increase. Preserve all observations; no detector or
+budget was relaxed, and no clean allocation pass is claimed for the media run.
+See the [delivery record](../package/final-delivery.md) for exact clip identity
+and verification limits. No old SDK, hardware budget, audio/handling or memory
+gate is reopened. The allocation observation, GUI-suite reliability and owner
+acceptance remain unresolved; normal integration stays draft.

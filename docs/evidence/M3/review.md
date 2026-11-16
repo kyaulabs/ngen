@@ -1,5 +1,15 @@
 # M3 independent pre-integration review
 
+The subsequent Visual Identity 1.4 update is signed at `e45ba673`. Fresh read-only
+source review found no actionable defect in material compilation, borrowed
+program-lifetime typeface buffers, error cleanup, bounds or style restoration;
+15 actual-command header-consumer analyses pass. This is not a full runtime pass:
+two GUI-suite attempts had intermittent gesture failures, and the initial private
+recording reported 3,854 warm C++ allocations versus eight in later debugger
+comparisons. Both causes remain untraced. [1.4 checks](ui/brand14.md) and the
+[delivery record](package/final-delivery.md) retain scope and identities. The PR
+stays draft pending those concerns and revised-UI/owner acceptance.
+
 The later owner-requested Graphite/recorder revision is signed at `27ba939`.
 Fresh read-only reviews identified launcher-digest admission, translucent border
 alignment, cancellation teardown/final-validation publication and exact-window

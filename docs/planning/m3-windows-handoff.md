@@ -18,10 +18,11 @@ Results retain their actual source revisions, not the current checkout label.
 **No further build, timing, memory, hover or SDK rerun is needed for these gates.**
 
 The owner now reports that real disconnected startup and listening passed.
-M3 acceptance is withheld only pending the requested Graphite 1.2 UI preview.
-Use the source-bound Linux v24 preview and private local clip in the
-[current delivery record](../evidence/M3/package/final-delivery.md); these older
-Windows binaries are not relabelled as Graphite. No new Windows gate run is requested.
+M3 acceptance remains withheld for the requested Visual Identity 1.4 preview
+and its explicitly retained GUI-suite/allocation observations. Use source-bound
+Linux v25 and its private local clip in the
+[current delivery record](../evidence/M3/package/final-delivery.md). Older Windows
+binaries are not relabelled as 1.4; no new Windows gate run is requested.
 
 The retained Windows startup procedure below is historical, not a new test plan.
 On the direct desktop, safely disconnect networking yourself if repeating it; do
