@@ -1,5 +1,16 @@
 # M3 independent pre-integration review
 
+The later owner-requested Graphite/recorder revision is signed at `27ba939`.
+Fresh read-only reviews identified launcher-digest admission, translucent border
+alignment, cancellation teardown/final-validation publication and exact-window
+PCM/saturation defects. Public/native regressions reproduced them; the repairs,
+108 CTests, 19 UI cases, seven actual-command C++ analyses, strict sanitizer
+consumers and eight recorder cases are recorded in [Graphite checks](ui/graphite.md).
+Current-session review checked the final pending-signal gate after desktop
+validation and before success metadata. The local v24 clip is private and source-
+bound; no source review substitutes for native execution, listening comfort or
+owner UI/M3 acceptance. PR #10 remains draft. Earlier review scope follows.
+
 A separate, fresh read-only `gpt-6.1-sol` session reviewed source `8d4d89c`
 against accepted M2 integration `4b554cc`. Coverage included physics/flight/RCS,
 cameras/input, GUI/renderer integration, telemetry, audio and dependency patches,

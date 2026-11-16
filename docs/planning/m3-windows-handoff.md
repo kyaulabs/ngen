@@ -17,9 +17,15 @@ these are three independent budget passes, not controlled same-driver variance.
 Results retain their actual source revisions, not the current checkout label.
 **No further build, timing, memory, hover or SDK rerun is needed for these gates.**
 
-Next is final interactive offline delivery, recording/listening and owner
-acceptance. On the direct desktop, safely disconnect networking yourself; do not
-disconnect a remote session. From the repository, launch the verified repaired
+The owner now reports that real disconnected startup and listening passed.
+M3 acceptance is withheld only pending the requested Graphite 1.2 UI preview.
+Use the source-bound Linux v24 preview and private local clip in the
+[current delivery record](../evidence/M3/package/final-delivery.md); these older
+Windows binaries are not relabelled as Graphite. No new Windows gate run is requested.
+
+The retained Windows startup procedure below is historical, not a new test plan.
+On the direct desktop, safely disconnect networking yourself if repeating it; do
+not disconnect a remote session. From the repository, launch the verified repaired
 ClangCl bundle without frame limits:
 
 ```powershell

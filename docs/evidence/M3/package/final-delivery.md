@@ -1,5 +1,41 @@
 # M3 final delivery candidates
 
+The current Graphite 1.2 candidate is private Linux v24, bound to signed source
+`27ba93914246bfa5f4fd13835a172c2f9482dc2e`. Launch
+`build/m3-offline-linux-v24/ngen-flight/run.sh` for an unlimited owner-closed
+preview. All 25 manifest hashes and 430 corresponding-source members verify,
+including the replacement brand, recorder sources and protocol notice/license.
+No Qt/KPipeWire recording SDK is linked into the NGEN executable.
+
+The committed recording command was run locally:
+
+```sh
+python tools/record_flight.py --bundle build/m3-offline-linux-v24/ngen-flight \
+  --output build/m3-graphite-recording-v24 --seconds 20
+```
+
+The private `build/m3-graphite-recording-v24/recording.mkv` contains 19.931 s /
+266 frames of only the owned NGEN window, plus only its application audio.
+All captured video frames survive muxing; the 48 kHz stereo FLAC input is
+nonzero and unsaturated in the actual retained interval. Native playback monitor
+selection follows two NGEN stream generations without a microphone, unrelated
+application or whole-system mix. Networking is unshared, Conan hidden and SDK
+environment absent; desktop audio routing/profiles remain unchanged. The bounded
+3,600-frame instrumented walkthrough completes with all GPU rows and finite HDR.
+A decoded recording frame was opened and visually inspected. No private media
+is uploaded or committed.
+
+Recording SHA-256:
+`0bf4c024bb0e67705bf28d57f1310160a30c4c01976082d47c3a0e67372bd2ba`.
+See [graphite-linux.json](graphite-linux.json) for manifest/executable identity
+and scope. The recording walkthrough reports eight warm C++ calls and zero ImGui
+calls, as did the old v23 pilot; the C++ call sites are untraced. Do not call this
+allocation-free or clean timing/memory evidence. Audio/video alignment is
+monotonic-time estimated, not sample-accurate certification. Earlier accepted
+performance records remain at their actual revisions and are not rerun/relabelled.
+The owner still needs to accept this revised UI; overall M3 acceptance and merge
+remain blocked on that verdict, not another SDK/timing/memory rerun.
+
 This v23 candidate predates the owner's replacement Graphite pack and remains
 historical, not the revised-UI acceptance candidate. See
 [Graphite verification](../ui/graphite.md).

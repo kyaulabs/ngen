@@ -75,8 +75,11 @@ warm C++ calls and zero ImGui calls; the cause is untraced. This is not allocati
 or clean-budget evidence and does not replace accepted measurements. The private
 pilot hash is `49e6788b44388b54a231eb6c790d6e3430771b37ffd356a6c228e6c2d40c6727`.
 
-The final Graphite source-bound bundle/clip identity follows in the delivery
-record. Private media/assets stay outside Git/public uploads. Monotonic audio
+The Graphite v24 candidate and local 19.931 s recording are bound to signed
+source `27ba939`; 25 manifest hashes and 430 source members verify. The
+[delivery record](../package/final-delivery.md) retains the clip hash, exact
+window/audio scope and instrumented eight-C++/zero-ImGui allocation counts; it is
+not a new clean budget run. Private media/assets stay outside Git/public uploads. Monotonic audio
 alignment is approximate, not sample-accurate AV certification; source review,
 nonzero/unclipped PCM and automated recording cannot supply listening comfort or
 final owner acceptance.
