@@ -1,0 +1,5 @@
+Vulkan validation: vkDestroyDevice(): VkDevice 0x1a025a3c740 has 1 leaked objects that have not been destroyed.
+VkSemaphore 0x4380000000438
+The Vulkan spec states: All child objects created on device that can be destroyed or freed must have been destroyed or freed prior to destroying device (https://docs.vulkan.org/spec/latest/chapters/devsandqueues.html#VUID-vkDestroyDevice-device-05137)
+[Vulkan Loader] ERROR:          vkDestroySemaphore: Invalid device [VUID-vkDestroySemaphore-device-parameter]
+timeout: the monitored command dumped core

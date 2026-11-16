@@ -1,0 +1,43 @@
+Test project D:/Git/kyaulabs/ngen/build/windows/20261111-135257-686/Debug
+      Start  1: audio_mixer
+ 1/19 Test  #1: audio_mixer ......................   Passed    0.05 sec
+      Start  2: audio_output
+ 2/19 Test  #2: audio_output .....................   Passed    0.43 sec
+      Start  3: physics
+ 3/19 Test  #3: physics ..........................   Passed    0.15 sec
+      Start  4: flight
+ 4/19 Test  #4: flight ...........................   Passed    1.40 sec
+      Start  5: flight_camera
+ 5/19 Test  #5: flight_camera ....................   Passed    0.04 sec
+      Start  6: flight_input
+ 6/19 Test  #6: flight_input .....................   Passed    0.04 sec
+      Start  7: shader_offline
+ 7/19 Test  #7: shader_offline ...................   Passed   16.38 sec
+      Start  8: flight_scene
+ 8/19 Test  #8: flight_scene .....................   Passed    0.10 sec
+      Start  9: flight_demo_cli
+ 9/19 Test  #9: flight_demo_cli ..................   Passed    0.37 sec
+      Start 10: demo_package
+10/19 Test #10: demo_package .....................   Passed    0.40 sec
+      Start 11: ngen_tests
+11/19 Test #11: ngen_tests .......................   Passed    0.04 sec
+      Start 12: render_contract_tests
+12/19 Test #12: render_contract_tests ............   Passed    0.03 sec
+      Start 13: render_environment_tests
+13/19 Test #13: render_environment_tests .........   Passed    1.63 sec
+      Start 14: scene_workload_tests
+14/19 Test #14: scene_workload_tests .............   Passed    0.04 sec
+      Start 15: asset_package_tests
+15/19 Test #15: asset_package_tests ..............   Passed    0.27 sec
+      Start 16: inspector_tests
+16/19 Test #16: inspector_tests ..................   Passed    0.04 sec
+      Start 17: render_startup_tests
+17/19 Test #17: render_startup_tests .............   Passed    0.05 sec
+      Start 18: replay_serial
+18/19 Test #18: replay_serial ....................   Passed    0.04 sec
+      Start 19: replay_workers
+19/19 Test #19: replay_workers ...................   Passed    0.02 sec
+
+100% tests passed out of 19
+
+Total Test time (real) =  21.52 sec

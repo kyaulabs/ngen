@@ -2,8 +2,9 @@
 <html lang="en">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>NGEN website palette</title>
+<title>NGEN 1.4 website palette</title>
 <link rel="stylesheet" href="ngen-theme.css">
+<script src="palette-preview.js" defer></script>
 <style>
 *{box-sizing:border-box}body{margin:0;background:var(--ngen-bg);color:var(--ngen-text);font:1rem/1.55 var(--ngen-font-sans)}
 main{max-width:68rem;margin:auto;padding:clamp(1rem,4vw,3rem)}
@@ -11,13 +12,16 @@ header,.example{display:flex;align-items:center;justify-content:space-between;ga
 header{margin-bottom:2rem}#wordmark{width:min(14rem,60vw);height:auto}
 h1{font-size:clamp(2rem,5vw,3.5rem);line-height:1.1;margin:0 0 1rem}
 h2{margin-top:2.5rem}.muted{color:var(--ngen-muted)}
-.example,.chip{background:var(--ngen-surface);border:1px solid var(--ngen-border);border-radius:.7rem;padding:1rem}
+.panel,.chip{background:var(--panel);border:1px solid var(--line);border-radius:.7rem}
+.panel{position:relative;transition:border-color .28s}.panel:before{content:'';position:absolute;inset:0 0 auto;height:1px;background:linear-gradient(90deg,transparent,var(--ngen-accent),transparent);opacity:0;transition:opacity .28s}.panel:hover{border-color:var(--line-strong)}.panel:hover:before{opacity:.85}
+.panel-title{background:var(--panel-2);border-radius:calc(.7rem - 1px) calc(.7rem - 1px) 0 0;margin:0;padding:.8rem 1rem;font-size:1rem}
+.example,.chip{padding:1rem}
 .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(10rem,1fr));gap:.8rem}
 .chip{display:grid;gap:.45rem}.chip i{height:3rem;border:1px solid var(--ngen-border);border-radius:.35rem}
-code,.chip span{font-family:var(--ngen-font-mono);font-size:.82rem}
+code,.chip span{font-family:var(--ngen-font-mono);font-size:.82rem;overflow-wrap:anywhere}
 label{display:inline-flex;gap:.5rem;align-items:center}
 select,.action{font:inherit;border-radius:.4rem;padding:.4rem .75rem}
-select{background:var(--ngen-surface);color:var(--ngen-text);border:1px solid var(--ngen-control-border)}
+select{background:var(--panel);color:var(--ngen-text);border:1px solid var(--line-strong)}
 .action{display:inline-block;background:var(--ngen-accent);color:var(--ngen-on-accent);text-decoration:none;font-weight:700}
 .action:hover{background:var(--ngen-accent-hover)}
 :focus-visible{outline:2px solid var(--ngen-focus);outline-offset:4px}
@@ -30,29 +34,23 @@ select{background:var(--ngen-surface);color:var(--ngen-text);border:1px solid va
 </header>
 <h1>Website palette</h1>
 <p class="muted">NGEN is a C++20 game engine for space simulators, with a focus on space MMOs.</p>
+<section class="panel">
+<h2 class="panel-title">Engine documentation</h2>
 <div class="example">
 <a class="action" href="#tokens">View theme tokens</a>
 <p class="status"><span style="color:var(--ngen-success)">Success</span><span style="color:var(--ngen-warning)">Warning</span><span style="color:var(--ngen-danger)">Error</span></p>
 </div>
-<h2 id="tokens">Theme tokens</h2>
-<div class="grid"><div class="chip"><i style="background:var(--ngen-bg)"></i><code>bg</code><span data-token="bg"></span></div><div class="chip"><i style="background:var(--ngen-surface)"></i><code>surface</code><span data-token="surface"></span></div><div class="chip"><i style="background:var(--ngen-surface-alt)"></i><code>surface-alt</code><span data-token="surface-alt"></span></div><div class="chip"><i style="background:var(--ngen-text)"></i><code>text</code><span data-token="text"></span></div><div class="chip"><i style="background:var(--ngen-muted)"></i><code>muted</code><span data-token="muted"></span></div><div class="chip"><i style="background:var(--ngen-border)"></i><code>border</code><span data-token="border"></span></div><div class="chip"><i style="background:var(--ngen-control-border)"></i><code>control-border</code><span data-token="control-border"></span></div><div class="chip"><i style="background:var(--ngen-accent)"></i><code>accent</code><span data-token="accent"></span></div><div class="chip"><i style="background:var(--ngen-accent-hover)"></i><code>accent-hover</code><span data-token="accent-hover"></span></div><div class="chip"><i style="background:var(--ngen-on-accent)"></i><code>on-accent</code><span data-token="on-accent"></span></div><div class="chip"><i style="background:var(--ngen-secondary)"></i><code>secondary</code><span data-token="secondary"></span></div><div class="chip"><i style="background:var(--ngen-on-secondary)"></i><code>on-secondary</code><span data-token="on-secondary"></span></div><div class="chip"><i style="background:var(--ngen-focus)"></i><code>focus</code><span data-token="focus"></span></div><div class="chip"><i style="background:var(--ngen-success)"></i><code>success</code><span data-token="success"></span></div><div class="chip"><i style="background:var(--ngen-warning)"></i><code>warning</code><span data-token="warning"></span></div><div class="chip"><i style="background:var(--ngen-danger)"></i><code>danger</code><span data-token="danger"></span></div></div>
+</section>
+<h2>Surface materials</h2>
+<p class="muted">Both palettes follow Prism. Dark panels use 66% #0A101D and headers 55% #10182A; #7D9BD2 borders rise from 14% to 30% on hover. Light panels use 78% white and headers 85% #F4F7FD, with 12% / 26% #102A54 borders. Alpha affects surfaces, not content. Small labels use readable muted ink; light cyan actions use dark ink for contrast.</p>
+<div class="grid">
+<div class="chip"><i style="background:var(--bg-0)"></i><code>bg-0</code><span data-component="bg-0"></span></div>
+<div class="chip"><i style="background:var(--panel)"></i><code>panel</code><span data-component="panel"></span></div>
+<div class="chip"><i style="background:var(--panel-2)"></i><code>panel-2</code><span data-component="panel-2"></span></div>
+<div class="chip"><i style="background:var(--line)"></i><code>line</code><span data-component="line"></span></div>
+<div class="chip"><i style="background:var(--line-strong)"></i><code>line-strong</code><span data-component="line-strong"></span></div>
+</div>
+<h2 id="tokens">Base theme tokens</h2>
+<div class="grid"><div class="chip"><i style="background:var(--ngen-bg)"></i><code>bg</code><span data-token="bg"></span></div><div class="chip"><i style="background:var(--ngen-surface)"></i><code>surface</code><span data-token="surface"></span></div><div class="chip"><i style="background:var(--ngen-panel-header)"></i><code>panel-header</code><span data-token="panel-header"></span></div><div class="chip"><i style="background:var(--ngen-text)"></i><code>text</code><span data-token="text"></span></div><div class="chip"><i style="background:var(--ngen-muted)"></i><code>muted</code><span data-token="muted"></span></div><div class="chip"><i style="background:var(--ngen-subtle)"></i><code>subtle / decorative</code><span data-token="subtle"></span></div><div class="chip"><i style="background:var(--ngen-border)"></i><code>border</code><span data-token="border"></span></div><div class="chip"><i style="background:var(--ngen-control-border)"></i><code>control-border</code><span data-token="control-border"></span></div><div class="chip"><i style="background:var(--ngen-accent)"></i><code>accent</code><span data-token="accent"></span></div><div class="chip"><i style="background:var(--ngen-accent-hover)"></i><code>accent-hover</code><span data-token="accent-hover"></span></div><div class="chip"><i style="background:var(--ngen-on-accent)"></i><code>on-accent</code><span data-token="on-accent"></span></div><div class="chip"><i style="background:var(--ngen-secondary)"></i><code>secondary</code><span data-token="secondary"></span></div><div class="chip"><i style="background:var(--ngen-tertiary)"></i><code>tertiary</code><span data-token="tertiary"></span></div><div class="chip"><i style="background:var(--ngen-on-secondary)"></i><code>on-secondary</code><span data-token="on-secondary"></span></div><div class="chip"><i style="background:var(--ngen-focus)"></i><code>focus</code><span data-token="focus"></span></div><div class="chip"><i style="background:var(--ngen-success)"></i><code>success</code><span data-token="success"></span></div><div class="chip"><i style="background:var(--ngen-warning)"></i><code>warning</code><span data-token="warning"></span></div><div class="chip"><i style="background:var(--ngen-danger)"></i><code>danger</code><span data-token="danger"></span></div><div class="chip"><i style="background:var(--ngen-surface-alt)"></i><code>surface-alt</code><span data-token="surface-alt"></span></div></div>
 </main>
-<script>
-const root = document.documentElement;
-const select = document.querySelector('#theme');
-const system = matchMedia('(prefers-color-scheme: dark)');
-function syncTheme() {
-  if (select.value === 'system') root.removeAttribute('data-theme');
-  else root.dataset.theme = select.value;
-  const mode = root.dataset.theme || (system.matches ? 'dark' : 'light');
-  document.querySelector('#wordmark').src = '../logos/svg/ngen-wordmark-' + mode + '.svg';
-  const style = getComputedStyle(root);
-  document.querySelectorAll('[data-token]').forEach(el => {
-    el.textContent = style.getPropertyValue('--ngen-' + el.dataset.token).trim();
-  });
-}
-select.addEventListener('change', syncTheme);
-system.addEventListener('change', syncTheme);
-syncTheme();
-</script>
 </html>

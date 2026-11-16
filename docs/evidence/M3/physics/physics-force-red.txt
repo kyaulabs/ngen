@@ -1,0 +1,33 @@
+Test project /home/kyau/projects/kyaulabs/ngen/build/flight-debug
+    Start 1: physics
+1/1 Test #1: physics ..........................***Failed    0.02 sec
+Randomness seeded to: 4005788290
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+physics_tests is a Catch2 v3.16.0 host application.
+Run with -? for options
+
+-------------------------------------------------------------------------------
+a fixed-step local hull accelerates from force divided by its declared mass
+-------------------------------------------------------------------------------
+/home/kyau/projects/kyaulabs/ngen/tests/physics.cpp:7
+...............................................................................
+
+/home/kyau/projects/kyaulabs/ngen/tests/physics.cpp:21: FAILED:
+  REQUIRE( after.velocity_mps[0] == Catch::Approx(6).margin(1e-4) )
+with expansion:
+  0.0f == Approx( 6.0 )
+
+===============================================================================
+test cases:   1 |   0 passed | 1 failed
+assertions: 124 | 123 passed | 1 failed
+
+
+
+0% tests passed, 1 tests failed out of 1
+
+Total Test time (real) =   0.02 sec
+
+The following tests FAILED:
+	  1 - physics (Failed)
+Errors while running CTest

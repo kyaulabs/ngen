@@ -1,0 +1,111 @@
+{
+  "schema": 1,
+  "scope": "32-jet aft-visibility implementation on parent bc65a1b; not M3 completion.",
+  "package": {
+    "sha256": "90e55636228021f6bd04e800d2884883d6a3418eef716b396a28640e2e5270d2",
+    "checksum": "65ddab97",
+    "bytes": 194234683,
+    "banks": 16,
+    "forward_jets": 16,
+    "aft_jets": 16,
+    "instances": 247,
+    "materials": 33,
+    "workload_triangles": 249942
+  },
+  "preservation": {
+    "original_m2_prefixes_images_lights": true,
+    "v1_vertex_index_primitive_material_string_prefixes": true,
+    "all_eight_forward_bank_transforms_exact": true,
+    "v1_instance_records_changed_only_for_four_aft_banks": [
+      212,
+      215,
+      224,
+      225,
+      226,
+      227,
+      236,
+      237,
+      238,
+      239
+    ],
+    "main_rear_power_and_all_physical_trace_fields_exact": [
+      "tick",
+      "mode",
+      "x_m",
+      "y_m",
+      "z_m",
+      "vx_mps",
+      "vy_mps",
+      "vz_mps",
+      "fx_N",
+      "fy_N",
+      "fz_N",
+      "tx_Nm",
+      "ty_Nm",
+      "tz_Nm",
+      "mass_kg",
+      "nav_goal",
+      "qx",
+      "qy",
+      "qz",
+      "qw",
+      "wx_radps",
+      "wy_radps",
+      "wz_radps",
+      "drive_power"
+    ]
+  },
+  "clearance": {
+    "geometry": "Exact rendered opaque LOD 2 triangles; each socket centerline through the 6 m exhaust.",
+    "old_blocked_sockets": 8,
+    "old_first_blockage_metres": [
+      0.6820028519455368,
+      1.5038766194952873
+    ],
+    "new_socket_paths_checked": 32,
+    "new_obstructed_paths": 0,
+    "scope_limit": "Not a guarantee of visibility from every camera angle or full plume-volume clearance."
+  },
+  "verification": {
+    "native_configs": [
+      "demo-debug",
+      "demo-release",
+      "demo-asan",
+      "demo-gcc"
+    ],
+    "ctests_per_config": 21,
+    "scene_cases": 17,
+    "actual_clang_commands": 15,
+    "native_rcs_cases": 12,
+    "authoring_boundary_cases": 4,
+    "release_frames": 2400,
+    "warmup": 60,
+    "extent": [
+      1920,
+      1080
+    ],
+    "cpp_new_calls": 0,
+    "imgui_calls": 0,
+    "gpu_ready_rows": 2400,
+    "performance_acceptance": false,
+    "audio": "Muted dummy backend; no listening claim.",
+    "gcc_ast": "Unavailable; unsupported GCC flags are not removed."
+  },
+  "review": "Same-session source/ownership/baking/normal-transform/calibration/budget/publication review; not independent review.",
+  "pending": [
+    "Owner 32-jet appearance approval",
+    "Current Windows/RTX and CIM/ImGui findings",
+    "Deferred UI pass",
+    "Final affected delivery/budgets/review/integration"
+  ],
+  "source_sha256": {
+    "apps/flight_demo/author_rcs.py": "6929996237ae4e5102d631654e2758d6a1d8ae7b03861c38812715320ec41100",
+    "apps/flight_demo/frigate_rcs.hpp": "5d98b34e41907e018a8379d253c1c3757623d99b28bda17b7378c80dbdff9299",
+    "apps/flight_demo/preset.cpp": "34469d1794f89b9951361f06cdf0c54941b7b620d6a6d028df1536b4101e497c",
+    "apps/flight_demo/preset.hpp": "46722d28c73de866d811a6262b46665f060caa6d601603664f7aa797112384f2",
+    "tests/flight_rcs.py": "e5b1b67238fe417f318ffe4111715039217a17b8ed10ebbe458f7c363817e1bc",
+    "tests/flight_scene.cpp": "983d1de855e340552b8808b409c9ec0145cc6df6cba6c99684b5d5d469a98f9a",
+    "tests/rcs_author.py": "7ca97a6d3c0b8cd4343a501d64716553c55b601e968fe789793bb6e0e19f34ae",
+    "tests/rcs_visibility.py": "ae2dc3c0d99ff705576dc84a5705744888c4c3d95664eb59e4095de2f4eb2ce3"
+  }
+}

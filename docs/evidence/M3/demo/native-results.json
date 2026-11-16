@@ -1,0 +1,34 @@
+[
+  {
+    "configuration": "demo-debug",
+    "status": 0,
+    "stderr_bytes": 0,
+    "scope": "synthetic SDL events; real renderer and SDL relative-mode API acceptance; not OS focus/personal feel proof",
+    "assertions": 0,
+    "markers": true
+  },
+  {
+    "configuration": "demo-release",
+    "status": 0,
+    "stderr_bytes": 0,
+    "scope": "synthetic SDL events; real renderer and SDL relative-mode API acceptance; not OS focus/personal feel proof",
+    "assertions": 0,
+    "markers": true
+  },
+  {
+    "configuration": "demo-asan",
+    "status": 0,
+    "stderr_bytes": 0,
+    "scope": "synthetic SDL events; real renderer and SDL relative-mode API acceptance; not OS focus/personal feel proof",
+    "assertions": 0,
+    "markers": true
+  },
+  {
+    "configuration": "demo-gcc",
+    "status": 0,
+    "stderr_bytes": 0,
+    "scope": "synthetic SDL events; real renderer and SDL relative-mode API acceptance; not OS focus/personal feel proof",
+    "assertions": 0,
+    "markers": true
+  }
+]

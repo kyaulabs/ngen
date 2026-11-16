@@ -1,0 +1,16 @@
+F
+======================================================================
+FAIL: test_full_hd_capture_and_report_fit_the_bounded_evidence_budget (__main__.FlightCapture.test_full_hd_capture_and_report_fit_the_bounded_evidence_budget)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/kyau/projects/kyaulabs/ngen/tests/flight_capture.py", line 32, in test_full_hd_capture_and_report_fit_the_bounded_evidence_budget
+    self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != 0 : device=Intel(R) Iris(R) Xe Graphics (TGL GT2) api=1.4 driver=109060102 queue=0 display=wayland
+Flight demo: scene capture extent exceeds bounded encoding storage
+
+
+----------------------------------------------------------------------
+Ran 1 test in 1.012s
+
+FAILED (failures=1)

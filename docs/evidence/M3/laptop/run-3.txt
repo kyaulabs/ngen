@@ -1,0 +1,4 @@
+device=Intel(R) Iris(R) Xe Graphics (TGL GT2) api=1.4 driver=109060102 queue=0 display=wayland
+flight_hdr_finite=1 flight_lit_pixels=10107
+flight_frames=2400 warmup=600 replay=1 walkthrough=0 validation=0 allocation_probe=1 triangles=247542 contacts=101 camera_mount=bow_sensor cpp_new_calls=0 imgui_calls=0 gpu_timing_rows=2400 live=27 retiring=0 allocation_bytes=232000808 reserved_bytes=234698712 audio_pending=0
+audio_state=playing audio_gen=1 audio_losses=0 audio_queue_max=4096 audio_muted=0

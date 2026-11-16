@@ -347,16 +347,25 @@ exit 0
         $failed = $false
         try { Invoke-NgenWorkload -FilePath $pwsh -Arguments @('-NoProfile', '-Command', 'Start-Sleep -Seconds 3') -LogPath $timeoutLog -MemoryPath "$timeoutLog.json" -TimeoutMilliseconds 1000 } catch { $failed = $_.Exception.Message -match 'deadline' }
         if (-not $failed -or -not (Get-Content -Raw "$timeoutLog.json" | ConvertFrom-Json).timed_out) { throw 'Workload timeout was not retained as failure' }
-        # WDDM/CIM is the system boundary; the observed child is still real.
+        # Native PDH process-memory reads are the OS boundary; the observed child is real.
         $script:gpuFailure = ''
         $script:gpuReadCalls = 0
         $script:gpuFramePhasePath = ''
         $script:gpuMeasuredReads = 0
-        function Get-CimInstance {
-            param([string]$Query, [int]$OperationTimeoutSec)
-            if ($Query -notmatch "Name LIKE 'pid_(\d+)_%'") { throw 'GPU query is not scoped to its owned child' }
-            $target = $Matches[1]
+        function Get-CimInstance { throw 'The workload must use the direct PDH transport, not CIM.' }
+        function Get-NgenPdhProcessMemory {
+            param([string]$FilePath, [int]$ProcessId, [ref]$Reader)
+            if ($ProcessId -le 0 -or [IO.Path]::GetFileName($FilePath) -cne 'gpu_memory_observer.exe') {
+                throw 'GPU reader is not scoped to its owned child and declared native helper.'
+            }
+            $target = [string]$ProcessId
             if ($script:gpuFailure -eq 'unavailable') { throw 'fixture CIM class unavailable' }
+            if ($script:gpuFailure -eq 'cim-error') {
+                $exception = [Microsoft.Management.Infrastructure.CimException]::new('fixture CIM provider failure')
+                $record = [Management.Automation.ErrorRecord]::new($exception, ('NgenFixtureCimFailure' + ('x' * 600)),
+                    [Management.Automation.ErrorCategory]::ResourceUnavailable, $null)
+                Write-Error -ErrorRecord $record -ErrorAction Stop
+            }
             if ($script:gpuFailure -eq 'late-query') {
                 if (++$script:gpuReadCalls -eq 1) { Start-Sleep -Milliseconds 1300 }
             }
@@ -424,8 +433,25 @@ exit 0
             if (-not $failed -or $missing.gpu_memory.status -cne 'unavailable' -or
                 $missing.gpu_memory.error_message -cne 'fixture CIM class unavailable' -or
                 $null -eq $missing.gpu_memory.error_hresult -or
+                $null -ne $missing.gpu_memory.error_details.native_error_code -or
+                $null -ne $missing.gpu_memory.error_details.status_code -or
                 $null -ne $missing.gpu_memory.peak_dedicated_plus_shared_bytes -or
                 $missing.gpu_memory.samples.Count -ne 0 -or $missing.exit_code -ne 0) { throw 'Unavailable GPU counters were accepted as measured zero, or diagnostics/actual child result were lost' }
+            $script:gpuFailure = 'cim-error'
+            $cimLog = Join-Path $directory 'structured CIM failure.txt'
+            $failed = $false
+            try {
+                Invoke-NgenWorkload -FilePath $pwsh -Arguments @('-NoProfile', '-Command', 'Start-Sleep -Milliseconds 600') -LogPath $cimLog -MemoryPath "$cimLog.json" -GpuMemory
+            } catch { $failed = $_.Exception.Message -match 'GPU memory' }
+            $cimFailure = Get-Content -Raw "$cimLog.json" | ConvertFrom-Json
+            $detail = $cimFailure.gpu_memory.error_details
+            if (-not $failed -or $cimFailure.gpu_memory.status -cne 'unavailable' -or
+                $null -ne $cimFailure.gpu_memory.within_1gib_budget -or
+                $cimFailure.gpu_memory.samples.Count -ne 0 -or $cimFailure.exit_code -ne 0 -or
+                $null -eq $detail -or $detail.fully_qualified_error_id -notlike 'NgenFixtureCimFailure*' -or
+                $detail.fully_qualified_error_id.Length -ne 512 -or
+                $detail.category -cne 'ResourceUnavailable' -or $detail.native_error_code -cne 'Ok' -or
+                $detail.status_code -ne 0) { throw 'Structured CIM failure diagnostics were lost or accepted as GPU memory proof' }
             foreach ($budgetCase in @('over-budget-shared', 'over-budget-committed')) {
                 $script:gpuFailure = $budgetCase
                 $gpuBudget = Join-Path $directory "$budgetCase.txt"
@@ -477,7 +503,10 @@ $begin = TickNs
 Start-Sleep -Milliseconds 1700
 $end = TickNs
 Set-Content -LiteralPath $phase 'shutdown'
-"frame,frame_ns,host_ns`n0,0,$begin`n1,0,$end" | Set-Content -LiteralPath $report
+# Flight adds bounded control/camera/audio diagnostics to the same frame clock.
+$columns = (0..56 | ForEach-Object { "diagnostic$_" }) -join ','
+$values = (0..56 | ForEach-Object { '0' }) -join ','
+"frame,frame_ns,host_ns,$columns`n0,0,$begin,$values`n1,0,$end,$values" | Set-Content -LiteralPath $report
 Start-Sleep -Milliseconds 900
 '@
             $script:gpuFailure = 'scoped-window'
@@ -485,7 +514,15 @@ Start-Sleep -Milliseconds 900
             $script:gpuFramePhasePath = Join-Path $directory 'GPU child phase.txt'
             $scopedReport = Join-Path $directory 'native frame window.csv'
             $scopedLog = Join-Path $directory 'GPU measured window.txt'
-            Invoke-NgenWorkload -FilePath $pwsh -Arguments @('-NoProfile', '-File', $frameChild, $scopedReport, $script:gpuFramePhasePath) -LogPath $scopedLog -MemoryPath "$scopedLog.json" -GpuMemory -FrameReport $scopedReport
+            try {
+                Invoke-NgenWorkload -FilePath $pwsh -Arguments @('-NoProfile', '-File', $frameChild, $scopedReport, $script:gpuFramePhasePath) -LogPath $scopedLog -MemoryPath "$scopedLog.json" -GpuMemory -FrameReport $scopedReport
+            } catch {
+                $rejected = Get-Content -Raw "$scopedLog.json" | ConvertFrom-Json
+                if ($rejected.gpu_memory.coverage.error -ceq 'InvalidOrUncorrelatedNativeFrameReport') {
+                    throw 'The bounded flight-width native clock report was rejected.'
+                }
+                throw
+            }
             $scoped = Get-Content -Raw "$scopedLog.json" | ConvertFrom-Json
             if ($scoped.gpu_memory.status -cne 'observed' -or -not $scoped.gpu_memory.coverage.complete -or
                 $scoped.gpu_memory.coverage.scope -cne 'native_measured_frames' -or
@@ -591,7 +628,7 @@ Start-Sleep -Milliseconds 900
                 if (-not $failed -or (Test-Path (Join-Path $invalidLogs 'long-stream.input.json'))) { throw 'Measurement accepted Debug or a dirty declared build as clean Release' }
             }
         } finally {
-            Remove-Item Function:Get-CimInstance
+            Remove-Item Function:Get-NgenPdhProcessMemory, Function:Get-CimInstance
             Remove-Variable gpuFailure, gpuReadCalls, gpuFramePhasePath, gpuMeasuredReads -Scope Script
         }
         $emptyPackage = Join-Path $directory 'empty.ngas'

@@ -1,0 +1,191 @@
+{
+  "source_revision": "21e616c13c8a9344a84908a9b00bd53f1d35a8b8",
+  "archive_preflight": {
+    "max_archive_bytes": 67108864,
+    "max_entries": 256,
+    "max_member_bytes": 8388608,
+    "max_expanded_bytes": 67108864,
+    "max_compression_ratio": 500,
+    "paths_types_encryption_casefold_duplicates_checked": true,
+    "selected_text_passed_redacted_secret_scan": true,
+    "returned_code_executed": false,
+    "sessions_bootstrap_and_dependency_payloads_read": false,
+    "original_archives_preserved": true
+  },
+  "archives": [
+    {
+      "name": "evidence.zip",
+      "sha256": "efd2f4b1a9def3e5c004b9e69a5fd30a6582a7e8c68cba46df2323d9c9bf6d3c",
+      "bytes": 1162153,
+      "entries": 84,
+      "expanded_bytes": 28142205,
+      "role": "MSVC base batch"
+    },
+    {
+      "name": "evidence-clang.zip",
+      "sha256": "34e22f51cf3eaee574f94a1f96189312a67a1478f09fcab55d6a73605e9fc312",
+      "bytes": 199850,
+      "entries": 48,
+      "expanded_bytes": 4692460,
+      "role": "ClangCl base batch, Release link failure"
+    },
+    {
+      "name": "evidence-post-ui.zip",
+      "sha256": "efbc537a6b3a5f3b986448918efe62e70753e789404c9fea254e0b94d28d19b4",
+      "bytes": 2369888,
+      "entries": 96,
+      "expanded_bytes": 41221145,
+      "role": "Same MSVC batch plus timing/hover supplement"
+    },
+    {
+      "name": "evidence-post-ui-clang.zip",
+      "sha256": "f518ed6bbfb8a89426bf607a283c3af54d65c5bd2b73fb1b4b0e76e0a2683ddb",
+      "bytes": 200332,
+      "entries": 50,
+      "expanded_bytes": 4692837,
+      "role": "Same ClangCl batch plus failure supplement"
+    }
+  ],
+  "native_configurations": [
+    {
+      "compiler": "MSVC",
+      "configuration": "Debug",
+      "ctests": 24,
+      "validated_sdl_audio_geometry_context": true,
+      "system_ram_available": true,
+      "device_vram_available": true,
+      "system_cpu_available": true
+    },
+    {
+      "compiler": "MSVC",
+      "configuration": "Release",
+      "ctests": 24,
+      "validated_sdl_audio_geometry_context": true,
+      "system_ram_available": true,
+      "device_vram_available": true,
+      "system_cpu_available": false
+    },
+    {
+      "compiler": "ClangCl",
+      "configuration": "Debug",
+      "ctests": 24,
+      "validated_sdl_audio_geometry_context": true,
+      "system_ram_available": true,
+      "device_vram_available": true,
+      "system_cpu_available": true
+    }
+  ],
+  "ctests_passed": 72,
+  "validated_27_field_walkthroughs_equal": true,
+  "msvc_clean_replays": [
+    {
+      "run": "replay",
+      "frames": 2400,
+      "median_ms": 7.12535,
+      "p95_ms": 7.804,
+      "p99_ms": 8.3627,
+      "max_ms": 9.6179,
+      "p95_target_ms": 16.7,
+      "p95_target_met": true,
+      "unfocused_frames": 0,
+      "active_focus_audio_profile_valid": true,
+      "accepted_clean_run": true
+    },
+    {
+      "run": "clean-2",
+      "frames": 2400,
+      "median_ms": 7.144,
+      "p95_ms": 7.9814,
+      "p99_ms": 9.1673,
+      "max_ms": 579.3141,
+      "p95_target_ms": 16.7,
+      "p95_target_met": true,
+      "unfocused_frames": 1448,
+      "active_focus_audio_profile_valid": false,
+      "accepted_clean_run": false
+    },
+    {
+      "run": "clean-3",
+      "frames": 2400,
+      "median_ms": 7.12975,
+      "p95_ms": 7.9599,
+      "p99_ms": 8.739,
+      "max_ms": 23.8833,
+      "p95_target_ms": 16.7,
+      "p95_target_met": true,
+      "unfocused_frames": 755,
+      "active_focus_audio_profile_valid": false,
+      "accepted_clean_run": false
+    }
+  ],
+  "msvc_valid_clean_runs": 1,
+  "three_run_acceptance": false,
+  "clean_memory_27_physical_fields_identical": true,
+  "artifact_hashes_verified": 18,
+  "instrumented_memory": {
+    "samples": 33,
+    "query_attempts": 34,
+    "startup_empty_attempts": 1,
+    "measured_window_seconds": 16.6750195,
+    "coverage_complete": true,
+    "missing_measured_queries": 0,
+    "maximum_gap_ms": 601.1633,
+    "maximum_query_ms": 253,
+    "maximum_measured_query_ms": 3,
+    "peak_dedicated_bytes": 313434112.0,
+    "peak_shared_bytes": 53088256.0,
+    "peak_dedicated_plus_shared_bytes": 366522368.0,
+    "separate_peak_total_committed_bytes": 366587904.0,
+    "peak_working_set_bytes": 439074816,
+    "within_existing_budgets": true
+  },
+  "msvc_hovered_live": {
+    "frames": 3600,
+    "focused_playing_all_rows": true,
+    "warm_cpp_calls": 0,
+    "warm_imgui_calls": 0,
+    "data_drawn_frames": 3391,
+    "performance_drawn_frames": 3301,
+    "os_samples": 23,
+    "owner_confirmed_f2_tooltips": true,
+    "f12_is_numeric_not_a_plot_panel": true
+  },
+  "msvc_app_local_sdk_isolated_startup": true,
+  "clang_release": {
+    "status": "link_failed",
+    "missing_libraries": [
+      "comdlg32.lib",
+      "gdi32.lib",
+      "imm32.lib",
+      "pdh.lib",
+      "setupapi.lib",
+      "shell32.lib",
+      "winspool.lib"
+    ],
+    "cause": "SDK library search failure observed; exact environment cause not yet established",
+    "release_runtime_and_timing": "not run"
+  },
+  "linux_b1": {
+    "bundle": "build/m3-offline-linux-v22/ngen-flight",
+    "manifest_sha256": "ce0dd77a0760e8abaee7ed30ba475dac9773efa15cee966f23c86db54c009881",
+    "executable_sha256": "65ab6f19e63d90ec803f35322f23750e545a98f1476a3557634ede49f7ef80e0",
+    "source_revision": "21e616c13c8a9344a84908a9b00bd53f1d35a8b8",
+    "manifest_hashes_verified": 25,
+    "source_archive_members": 414,
+    "all_source_files_correspond": true,
+    "network_unshared_startup": true,
+    "conan_hidden_and_sdk_environment_absent": true,
+    "desktop_pulse_graph_unchanged": true,
+    "timing_frames_per_run": 2400,
+    "warmup_frames": 600,
+    "extent": [1280, 720],
+    "all_three_runs_focused_playing_and_within_b1_budgets": true,
+    "warm_cpp_imgui_calls": [0, 0],
+    "p95_ms": [17.274232, 17.138843, 17.245040],
+    "peak_rss_bytes": [395866112, 396156928, 395042816],
+    "vma_allocation_max_bytes": 233062040,
+    "vma_reserved_max_bytes": 239164744,
+    "scope": "Optimized clean timing, wait4 kernel process RSS high water and separate VMA-owned totals; not process GPU or whole-device memory proof. Earlier focus-invalid trials remain retained outside this accepted set."
+  },
+  "scope": "Source-current post-UI return. Keep all frames, including two focus-invalid MSVC clean runs. No ClangCl Release, three-valid-run RTX acceptance, recording or overall M3 completion claim."
+}

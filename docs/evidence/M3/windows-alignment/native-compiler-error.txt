@@ -1,0 +1,5 @@
+FAILED: [code=2] CMakeFiles/ngen_scene.dir/engine/render/scene_draw.cpp.obj
+"C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\bin\Hostx64\x64\cl.exe"  /nologo /TP  -ID:\Git\kyaulabs\ngen\engine -external:IC:\Users\SeanBruen\.conan2\p\b\sdle9648024e5f74\p\include -external:IC:\Users\SeanBruen\.conan2\p\vulkabd7575518f65a\p\include -external:W0 /DWIN32 /D_WINDOWS /EHsc /Ob0 /Od /RTC1 -std:c++20 -MDd -Zi /W4 /WX /permissive- /showIncludes @CMakeFiles\ngen_scene.dir\engine\render\scene_draw.cpp.obj.modmap /FoCMakeFiles\ngen_scene.dir\engine\render\scene_draw.cpp.obj /FdCMakeFiles\ngen_scene.dir\ngen_scene.pdb /FS -c D:\Git\kyaulabs\ngen\engine\render\scene_draw.cpp
+D:\Git\kyaulabs\ngen\engine\render/scene_draw.hpp(27): error C2220: the following warning is treated as an error
+D:\Git\kyaulabs\ngen\engine\render/scene_draw.hpp(27): warning C4324: 'ngen::render::SceneView': structure was padded due to alignment specifier
+[68/220] Scanning D:\Git\kyaulabs\ngen\engine\tools\ui.cpp for CXX dependencies

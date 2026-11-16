@@ -1,0 +1,294 @@
+{
+  "recorded_windows_revision": "02ce967c804095010be3c0128d3f074d162b8463",
+  "native_build_log_sha256": "56fc706aa6f57a52db360bdc82803680a79a98e570bd67c47d4c759b062bc1bf",
+  "graphs": [
+    {
+      "configuration": "demo-debug",
+      "ctests": 21,
+      "build": "passed",
+      "ctest": "passed"
+    },
+    {
+      "configuration": "demo-release",
+      "ctests": 21,
+      "build": "passed",
+      "ctest": "passed"
+    },
+    {
+      "configuration": "demo-asan",
+      "ctests": 21,
+      "build": "passed",
+      "ctest": "passed"
+    },
+    {
+      "configuration": "demo-gcc",
+      "ctests": 21,
+      "build": "passed",
+      "ctest": "passed"
+    },
+    {
+      "configuration": "flight-debug",
+      "ctests": 8,
+      "build": "passed",
+      "ctest": "passed"
+    },
+    {
+      "configuration": "flight-release",
+      "ctests": 8,
+      "build": "passed",
+      "ctest": "passed"
+    },
+    {
+      "configuration": "flight-asan",
+      "ctests": 8,
+      "build": "passed",
+      "ctest": "passed"
+    },
+    {
+      "configuration": "flight-gcc",
+      "ctests": 8,
+      "build": "passed",
+      "ctest": "passed"
+    }
+  ],
+  "ast": [
+    {
+      "configuration": "demo-debug",
+      "source": "engine/audio/mixer.cpp",
+      "status": 0,
+      "scope": "complete actual native invocation; owned headers visible; no flags removed"
+    },
+    {
+      "configuration": "demo-debug",
+      "source": "game/flight/flight.cpp",
+      "status": 0,
+      "scope": "complete actual native invocation; owned headers visible; no flags removed"
+    },
+    {
+      "configuration": "demo-debug",
+      "source": "apps/flight_demo/preset.cpp",
+      "status": 0,
+      "scope": "complete actual native invocation; owned headers visible; no flags removed"
+    },
+    {
+      "configuration": "demo-debug",
+      "source": "apps/flight_demo/view.cpp",
+      "status": 0,
+      "scope": "complete actual native invocation; owned headers visible; no flags removed"
+    },
+    {
+      "configuration": "demo-debug",
+      "source": "apps/flight_demo/main.cpp",
+      "status": 0,
+      "scope": "complete actual native invocation; owned headers visible; no flags removed"
+    },
+    {
+      "configuration": "demo-debug",
+      "source": "apps/flight_demo/app.cpp",
+      "status": 0,
+      "scope": "complete actual native invocation; owned headers visible; no flags removed"
+    },
+    {
+      "configuration": "demo-debug",
+      "source": "tests/flight_scene.cpp",
+      "status": 0,
+      "scope": "complete actual native invocation; owned headers visible; no flags removed"
+    },
+    {
+      "configuration": "demo-release",
+      "source": "engine/audio/mixer.cpp",
+      "status": 0,
+      "scope": "complete actual native invocation; owned headers visible; no flags removed"
+    },
+    {
+      "configuration": "demo-release",
+      "source": "game/flight/flight.cpp",
+      "status": 0,
+      "scope": "complete actual native invocation; owned headers visible; no flags removed"
+    },
+    {
+      "configuration": "demo-release",
+      "source": "apps/flight_demo/preset.cpp",
+      "status": 0,
+      "scope": "complete actual native invocation; owned headers visible; no flags removed"
+    },
+    {
+      "configuration": "demo-release",
+      "source": "apps/flight_demo/view.cpp",
+      "status": 0,
+      "scope": "complete actual native invocation; owned headers visible; no flags removed"
+    },
+    {
+      "configuration": "demo-release",
+      "source": "apps/flight_demo/main.cpp",
+      "status": 0,
+      "scope": "complete actual native invocation; owned headers visible; no flags removed"
+    },
+    {
+      "configuration": "demo-release",
+      "source": "apps/flight_demo/app.cpp",
+      "status": 0,
+      "scope": "complete actual native invocation; owned headers visible; no flags removed"
+    },
+    {
+      "configuration": "demo-release",
+      "source": "tests/flight_scene.cpp",
+      "status": 0,
+      "scope": "complete actual native invocation; owned headers visible; no flags removed"
+    },
+    {
+      "configuration": "demo-asan",
+      "source": "engine/audio/mixer.cpp",
+      "status": 0,
+      "scope": "complete actual native invocation; owned headers visible; no flags removed"
+    },
+    {
+      "configuration": "demo-asan",
+      "source": "game/flight/flight.cpp",
+      "status": 0,
+      "scope": "complete actual native invocation; owned headers visible; no flags removed"
+    },
+    {
+      "configuration": "demo-asan",
+      "source": "apps/flight_demo/preset.cpp",
+      "status": 0,
+      "scope": "complete actual native invocation; owned headers visible; no flags removed"
+    },
+    {
+      "configuration": "demo-asan",
+      "source": "apps/flight_demo/view.cpp",
+      "status": 0,
+      "scope": "complete actual native invocation; owned headers visible; no flags removed"
+    },
+    {
+      "configuration": "demo-asan",
+      "source": "apps/flight_demo/main.cpp",
+      "status": 0,
+      "scope": "complete actual native invocation; owned headers visible; no flags removed"
+    },
+    {
+      "configuration": "demo-asan",
+      "source": "apps/flight_demo/app.cpp",
+      "status": 0,
+      "scope": "complete actual native invocation; owned headers visible; no flags removed"
+    },
+    {
+      "configuration": "demo-asan",
+      "source": "tests/flight_scene.cpp",
+      "status": 0,
+      "scope": "complete actual native invocation; owned headers visible; no flags removed"
+    },
+    {
+      "configuration": "flight-debug",
+      "source": "game/flight/flight.cpp",
+      "status": 0,
+      "scope": "complete actual native invocation; owned headers visible; no flags removed"
+    },
+    {
+      "configuration": "flight-release",
+      "source": "game/flight/flight.cpp",
+      "status": 0,
+      "scope": "complete actual native invocation; owned headers visible; no flags removed"
+    },
+    {
+      "configuration": "flight-asan",
+      "source": "game/flight/flight.cpp",
+      "status": 0,
+      "scope": "complete actual native invocation; owned headers visible; no flags removed"
+    }
+  ],
+  "header_consumers": [
+    {
+      "configuration": "demo-debug",
+      "header": "apps/flight_demo/preset.hpp",
+      "consumers": [
+        "engine/audio/mixer.cpp",
+        "game/flight/flight.cpp",
+        "apps/flight_demo/preset.cpp",
+        "apps/flight_demo/view.cpp",
+        "apps/flight_demo/main.cpp",
+        "apps/flight_demo/app.cpp",
+        "tests/flight_scene.cpp"
+      ]
+    },
+    {
+      "configuration": "demo-release",
+      "header": "apps/flight_demo/preset.hpp",
+      "consumers": [
+        "engine/audio/mixer.cpp",
+        "game/flight/flight.cpp",
+        "apps/flight_demo/preset.cpp",
+        "apps/flight_demo/view.cpp",
+        "apps/flight_demo/main.cpp",
+        "apps/flight_demo/app.cpp",
+        "tests/flight_scene.cpp"
+      ]
+    },
+    {
+      "configuration": "demo-asan",
+      "header": "apps/flight_demo/preset.hpp",
+      "consumers": [
+        "engine/audio/mixer.cpp",
+        "game/flight/flight.cpp",
+        "apps/flight_demo/preset.cpp",
+        "apps/flight_demo/view.cpp",
+        "apps/flight_demo/main.cpp",
+        "apps/flight_demo/app.cpp",
+        "tests/flight_scene.cpp"
+      ]
+    },
+    {
+      "configuration": "flight-debug",
+      "header": "apps/flight_demo/preset.hpp",
+      "consumers": [
+        "game/flight/flight.cpp"
+      ]
+    },
+    {
+      "configuration": "flight-release",
+      "header": "apps/flight_demo/preset.hpp",
+      "consumers": [
+        "game/flight/flight.cpp"
+      ]
+    },
+    {
+      "configuration": "flight-asan",
+      "header": "apps/flight_demo/preset.hpp",
+      "consumers": [
+        "game/flight/flight.cpp"
+      ]
+    }
+  ],
+  "native": [
+    {
+      "configuration": "demo-debug",
+      "status": 0,
+      "stderr_bytes": 0,
+      "checks": true,
+      "markers": true
+    },
+    {
+      "configuration": "demo-release",
+      "status": 0,
+      "stderr_bytes": 0,
+      "checks": true,
+      "markers": true
+    },
+    {
+      "configuration": "demo-asan",
+      "status": 0,
+      "stderr_bytes": 0,
+      "checks": true,
+      "markers": true
+    },
+    {
+      "configuration": "demo-gcc",
+      "status": 0,
+      "stderr_bytes": 0,
+      "checks": true,
+      "markers": true
+    }
+  ],
+  "msvc_clangcl_rerun": "required",
+  "review": "Same-session only; source preserves existing values, matrix columns, layout offsets and staged command semantics. No further actionable defect identified."
+}

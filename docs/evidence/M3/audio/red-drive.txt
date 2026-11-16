@@ -1,0 +1,34 @@
+Test project /home/kyau/projects/kyaulabs/ngen/build/demo-release
+    Start 1: audio_mixer
+1/1 Test #1: audio_mixer ......................***Failed    0.00 sec
+Randomness seeded to: 2625486575
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+audio_mixer_tests is a Catch2 v3.16.0 host application.
+Run with -? for options
+
+-------------------------------------------------------------------------------
+an admitted running drive produces bounded original stereo PCM instead of
+silence
+-------------------------------------------------------------------------------
+/home/kyau/projects/kyaulabs/ngen/tests/audio_mixer.cpp:8
+...............................................................................
+
+/home/kyau/projects/kyaulabs/ngen/tests/audio_mixer.cpp:20: FAILED:
+  REQUIRE( energy > 1 )
+with expansion:
+  0.0 > 1
+
+===============================================================================
+test cases: 1 | 1 failed
+assertions: 6 | 5 passed | 1 failed
+
+
+
+0% tests passed, 1 tests failed out of 1
+
+Total Test time (real) =   0.00 sec
+
+The following tests FAILED:
+	  1 - audio_mixer (Failed)
+Errors while running CTest

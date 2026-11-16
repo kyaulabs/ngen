@@ -1,0 +1,34 @@
+Test project /home/kyau/projects/kyaulabs/ngen/build/flight-debug
+    Start 2: flight
+1/1 Test #2: flight ...........................***Failed    0.67 sec
+Randomness seeded to: 556013054
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+flight_tests is a Catch2 v3.16.0 host application.
+Run with -? for options
+
+-------------------------------------------------------------------------------
+declared static obstacles share the physical flight domain and survive an
+owning reset
+-------------------------------------------------------------------------------
+/home/kyau/projects/kyaulabs/ngen/tests/flight.cpp:467
+...............................................................................
+
+/home/kyau/projects/kyaulabs/ngen/tests/flight.cpp:480: FAILED:
+  REQUIRE( stopped.body.position_metres[0] <= 5.25 )
+with expansion:
+  27.15002146724145859 <= 5.25
+
+===============================================================================
+test cases:    17 |    16 passed | 1 failed
+assertions: 93519 | 93518 passed | 1 failed
+
+
+
+0% tests passed, 1 tests failed out of 1
+
+Total Test time (real) =   0.68 sec
+
+The following tests FAILED:
+	  2 - flight (Failed)
+Errors while running CTest

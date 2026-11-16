@@ -14,12 +14,17 @@ param(
     [Parameter(ParameterSetName = 'CPU')]
     [switch]$Inspector,
     [Parameter(ParameterSetName = 'CPU')]
+    [switch]$FlightDemo,
+    [Parameter(ParameterSetName = 'CPU')]
     [Parameter(Mandatory, ParameterSetName = 'Measurement')]
     [string]$ScenePackage = '',
     [Parameter(Mandatory, ParameterSetName = 'Measurement')]
     [string]$MeasureWorkload,
     [Parameter(Mandatory, ParameterSetName = 'GPU')]
-    [switch]$GpuInfo
+    [switch]$GpuInfo,
+    [Parameter(Mandatory, ParameterSetName = 'GpuMemoryDiagnostic')]
+    [ValidateRange(1, 2147483647)]
+    [int]$DiagnoseGpuMemoryProcessId
 )
 
 function Invoke-NgenNative {
@@ -62,6 +67,304 @@ function Get-NgenSceneIdentity {
     }
 }
 
+function Invoke-NgenPdhGpuMemoryDiagnostic {
+    param(
+        [Parameter(Mandatory)][string]$FilePath,
+        [Parameter(Mandatory)][ValidateRange(1, 2147483647)][int]$ProcessId
+    )
+    $result = [ordered]@{ diagnostic_only = $true; source = 'typeperf/PDH'; process_id = $ProcessId
+        status = 'not_run'; timeout_ms = 2000; elapsed_ms = 0L; exit_code = $null
+        stdout = ''; stderr = ''; csv = ''; csv_bytes = 0L; csv_status = 'missing'
+        error_type = ''; error_hresult = $null }
+    $temporary = Join-Path ([IO.Path]::GetTempPath()) ('ngen-pdh-' + [guid]::NewGuid().ToString('N'))
+    $csvPath = Join-Path $temporary 'counter.csv'
+    $directoryCreated = $false
+    $process = [Diagnostics.Process]::new()
+    $process.StartInfo.FileName = $FilePath
+    $process.StartInfo.UseShellExecute = $false
+    $process.StartInfo.CreateNoWindow = $true
+    $process.StartInfo.RedirectStandardOutput = $true
+    $process.StartInfo.RedirectStandardError = $true
+    foreach ($argument in @('-sc', '1', '-si', '1', '-f', 'CSV')) {
+        $process.StartInfo.ArgumentList.Add($argument)
+    }
+    $process.StartInfo.ArgumentList.Add('-o')
+    $process.StartInfo.ArgumentList.Add($csvPath)
+    foreach ($counter in @('Dedicated Usage', 'Shared Usage', 'Total Committed')) {
+        $process.StartInfo.ArgumentList.Add("\GPU Process Memory(pid_$($ProcessId)_*)\$counter")
+    }
+    $clock = [Diagnostics.Stopwatch]::StartNew()
+    $started = $false
+    try {
+        New-Item -ItemType Directory -Path $temporary -ErrorAction Stop | Out-Null
+        $directoryCreated = $true
+        $started = $process.Start()
+        if (-not $started) { throw 'Could not start the PDH reference tool.' }
+        $outBuffer = [char[]]::new(65537); $errorBuffer = [char[]]::new(4097)
+        $output = $process.StandardOutput.ReadBlockAsync($outBuffer, 0, $outBuffer.Length)
+        $errors = $process.StandardError.ReadBlockAsync($errorBuffer, 0, $errorBuffer.Length)
+        $remaining = [int][Math]::Max(0, 2000 - $clock.ElapsedMilliseconds)
+        $finished = $process.WaitForExit($remaining)
+        if (-not $finished) {
+            try { $process.Kill($true) } catch [InvalidOperationException] { }
+        }
+        $process.WaitForExit()
+        $count = $output.GetAwaiter().GetResult()
+        $errorCount = $errors.GetAwaiter().GetResult()
+        $result.exit_code = $process.ExitCode
+        $result.stdout = [string]::new($outBuffer, 0, [Math]::Min($count, 65536))
+        $result.stderr = [string]::new($errorBuffer, 0, [Math]::Min($errorCount, 4096))
+        if (Test-Path -LiteralPath $csvPath) {
+            $file = Get-Item -LiteralPath $csvPath -Force -ErrorAction Stop
+            if ($file -isnot [IO.FileInfo] -or ($file.Attributes -band [IO.FileAttributes]::ReparsePoint) -or $file.Length -lt 1) {
+                $result.csv_status = 'invalid'
+            } elseif ($file.Length -gt 131072) {
+                $result.csv_status = 'output_limit'
+            } else {
+                $text = [IO.File]::ReadAllText($csvPath)
+                if ($text.Length -gt 65536) {
+                    $result.csv_status = 'output_limit'
+                } else {
+                    $result.csv = $text; $result.csv_bytes = $file.Length; $result.csv_status = 'captured'
+                }
+            }
+        }
+        $result.elapsed_ms = $clock.ElapsedMilliseconds
+        $result.status = if ($count -gt 65536 -or $errorCount -gt 4096 -or $result.csv_status -eq 'output_limit') { 'output_limit' }
+            elseif (-not $finished -or $result.elapsed_ms -gt 2000) { 'timed_out' }
+            elseif ($process.ExitCode -ne 0 -or $errorCount) { 'error' }
+            elseif ($result.csv_status -ne 'captured') { 'missing_or_invalid_csv' }
+            else { 'completed' }
+    } catch {
+        $result.status = 'error'
+        $result.error_type = $_.Exception.GetType().Name
+        $result.error_hresult = $_.Exception.HResult
+        $result.elapsed_ms = $clock.ElapsedMilliseconds
+    } finally {
+        if ($started -and -not $process.HasExited) {
+            try { $process.Kill($true) } catch [InvalidOperationException] { }
+            $process.WaitForExit()
+        }
+        $process.Dispose()
+        if ($directoryCreated) {
+            if (Test-Path -LiteralPath $csvPath) { Remove-Item -LiteralPath $csvPath -Force -ErrorAction Stop }
+            Remove-Item -LiteralPath $temporary -ErrorAction Stop
+        }
+    }
+    return $result
+}
+
+function Get-NgenGpuMemoryDiagnostic {
+    param(
+        [Parameter(Mandatory)][ValidateRange(1, 2147483647)][int]$ProcessId,
+        [switch]$ComparePdh
+    )
+    $target = Get-Process -Id $ProcessId -ErrorAction Stop
+    try {
+        if ($target.Id -ne $ProcessId -or $target.HasExited -or $target.ProcessName -ine 'flight_demo') {
+            throw 'GPU diagnosis requires the selected live flight_demo process.'
+        }
+        $startedAt = $target.StartTime.ToUniversalTime()
+    } finally {
+        $target.Dispose()
+    }
+    $formatted = 'Win32_PerfFormattedData_GPUPerformanceCounters_GPUProcessMemory'
+    $raw = 'Win32_PerfRawData_GPUPerformanceCounters_GPUProcessMemory'
+    $sameTarget = {
+        try {
+            $current = Get-Process -Id $ProcessId -ErrorAction Stop
+            try {
+                return $current.Id -eq $ProcessId -and -not $current.HasExited -and
+                    $current.ProcessName -ieq 'flight_demo' -and
+                    $current.StartTime.ToUniversalTime().Ticks -eq $startedAt.Ticks
+            } finally {
+                $current.Dispose()
+            }
+        } catch {
+            return $false
+        }
+    }
+    $targetStatus = 'same_process'
+    $pdhBefore = $null; $pdhAfter = $null
+    $readPdh = {
+        if (-not (& $sameTarget)) {
+            return [ordered]@{ diagnostic_only = $true; status = 'target_unavailable_or_changed'
+                target_valid_after = $false; stdout = ''; stderr = '' }
+        }
+        $tool = Join-Path (Join-Path $env:SystemRoot 'System32') 'typeperf.exe'
+        $reference = Invoke-NgenPdhGpuMemoryDiagnostic -FilePath $tool -ProcessId $ProcessId
+        $reference.target_valid_after = & $sameTarget
+        if (-not $reference.target_valid_after) {
+            $reference.status = 'target_unavailable_or_changed'
+            $reference.stdout = ''; $reference.stderr = ''; $reference.csv = ''
+            $reference.csv_bytes = 0L; $reference.csv_status = 'discarded_target_changed'
+        }
+        return $reference
+    }
+    if ($ComparePdh) {
+        $pdhBefore = & $readPdh
+        if (-not $pdhBefore.target_valid_after) { $targetStatus = 'unavailable_or_changed' }
+    }
+    $attempts = [Collections.Generic.List[object]]::new()
+    foreach ($provider in @($formatted, $raw, $formatted, $raw)) {
+        if ($targetStatus -ne 'same_process' -or -not (& $sameTarget)) { $targetStatus = 'unavailable_or_changed'; break }
+        $clock = [Diagnostics.Stopwatch]::StartNew()
+        $attempt = [ordered]@{ provider = $provider; status = 'no_own_instances'
+            elapsed_ms = 0L; rows = @(); error_details = $null }
+        try {
+            $rows = @(Get-CimInstance -Query "SELECT Name,DedicatedUsage,SharedUsage,TotalCommitted FROM $provider WHERE Name LIKE 'pid_$($ProcessId)_%'" -OperationTimeoutSec 2 -ErrorAction Stop | Select-Object -First 65)
+            if ($rows.Count -gt 64) { throw 'GPU observation capacity exceeded.' }
+            $seen = [Collections.Generic.HashSet[string]]::new([StringComparer]::OrdinalIgnoreCase)
+            $owned = [Collections.Generic.List[object]]::new()
+            foreach ($row in $rows) {
+                if ($row.Name -isnot [string] -or $row.Name.Length -gt 128) { throw 'Invalid GPU instance name.' }
+                # WQL '_' is a wildcard; match the formal observer's exact PID post-filter.
+                if (-not $row.Name.StartsWith("pid_$($ProcessId)_", [StringComparison]::OrdinalIgnoreCase)) { continue }
+                if ($row.Name -notmatch "^pid_$($ProcessId)_luid_0x[0-9a-f]+_0x[0-9a-f]+_phys_[0-9]+$") {
+                    throw 'Unsupported own-process GPU instance.'
+                }
+                if (-not $seen.Add($row.Name)) { throw 'Duplicate process GPU instance.' }
+                foreach ($value in @($row.DedicatedUsage, $row.SharedUsage, $row.TotalCommitted)) {
+                    if (($value -isnot [long] -and $value -isnot [ulong] -and $value -isnot [int] -and $value -isnot [uint32]) -or
+                        $value -lt 0 -or $value -gt ([long]::MaxValue / 128)) { throw 'Invalid process GPU counter.' }
+                }
+                $owned.Add($row)
+            }
+            $rows = $owned.ToArray()
+            if ($rows.Count) {
+                $attempt.status = 'zero'
+                foreach ($row in $rows) {
+                    if ($row.DedicatedUsage -gt 0 -or $row.SharedUsage -gt 0 -or $row.TotalCommitted -gt 0) {
+                        $attempt.status = 'observed'
+                    }
+                }
+            }
+            $attempt.rows = @($rows | ForEach-Object {
+                [ordered]@{ name = [string]$_.Name; dedicated_bytes = $_.DedicatedUsage
+                    shared_bytes = $_.SharedUsage; total_committed_bytes = $_.TotalCommitted }
+            })
+        } catch {
+            $attempt.status = 'error'
+            $identifier = [string]$_.FullyQualifiedErrorId
+            $attempt.error_details = [ordered]@{
+                type = $_.Exception.GetType().Name
+                hresult = $_.Exception.HResult
+                fully_qualified_error_id = $identifier.Substring(0, [Math]::Min($identifier.Length, 512))
+                category = [string]$_.CategoryInfo.Category
+                native_error_code = $null; status_code = $null
+            }
+            if ($_.Exception -is [Microsoft.Management.Infrastructure.CimException]) {
+                $attempt.error_details.native_error_code = [string]$_.Exception.NativeErrorCode
+                $attempt.error_details.status_code = [uint32]$_.Exception.StatusCode
+            }
+        }
+        $attempt.elapsed_ms = $clock.ElapsedMilliseconds
+        $attempt.target_valid_after = & $sameTarget
+        if (-not $attempt.target_valid_after) {
+            $attempt.status = 'target_unavailable_or_changed'
+            $attempt.rows = @()
+            $targetStatus = 'unavailable_or_changed'
+        }
+        $attempts.Add($attempt)
+        if (-not $attempt.target_valid_after) { break }
+    }
+    if ($ComparePdh -and $targetStatus -eq 'same_process') {
+        $pdhAfter = & $readPdh
+        if (-not $pdhAfter.target_valid_after) { $targetStatus = 'unavailable_or_changed' }
+    }
+    return [ordered]@{ schema = $(if ($ComparePdh) { 2 } else { 1 })
+        diagnostic_only = $true; process_id = $ProcessId; target_status = $targetStatus
+        process_started_utc = $startedAt.ToString('O')
+        operation_timeout_seconds = 2; queries = $attempts.ToArray()
+        pdh_before = $pdhBefore; pdh_after = $pdhAfter }
+}
+
+function Get-NgenPdhProcessMemory {
+    param(
+        [Parameter(Mandatory)][string]$FilePath,
+        [Parameter(Mandatory)][ValidateRange(1, 2147483647)][int]$ProcessId,
+        [Parameter(Mandatory)][ref]$Reader
+    )
+    $clock = [Diagnostics.Stopwatch]::StartNew()
+    $line = {
+        $remaining = [int][Math]::Max(0, 2000 - $clock.ElapsedMilliseconds)
+        $pending = $Reader.Value.StandardOutput.ReadLineAsync()
+        if (-not $pending.Wait($remaining)) { throw [TimeoutException]::new('PDH read exceeded its 2 s deadline.') }
+        $text = $pending.GetAwaiter().GetResult()
+        if ($null -eq $text -or $text.Length -gt 32768) { throw [IO.InvalidDataException]::new('Missing or oversized native PDH response.') }
+        $value = ConvertFrom-Json -InputObject $text -AsHashtable -Depth 6 -ErrorAction Stop
+        if ($value -isnot [Collections.IDictionary]) { throw [IO.InvalidDataException]::new('Invalid native PDH response.') }
+        if ($value.status -eq 'error') {
+            $failure = [IO.InvalidDataException]::new('Native PDH counter read failed.')
+            if ($value.pdh_status -is [int] -or $value.pdh_status -is [long]) {
+                if ($value.pdh_status -ge 0 -and $value.pdh_status -le [uint32]::MaxValue) {
+                    $failure.Data['PdhStatus'] = [uint32]$value.pdh_status
+                }
+            }
+            if ($value.kind -is [string] -and $value.kind.Length -le 64) { $failure.Data['PdhKind'] = $value.kind }
+            throw $failure
+        }
+        return $value
+    }
+    try {
+        if ($null -eq $Reader.Value) {
+            $item = Get-Item -LiteralPath $FilePath -Force -ErrorAction Stop
+            if ($item -isnot [IO.FileInfo] -or ($item.Attributes -band [IO.FileAttributes]::ReparsePoint)) {
+                throw 'Native PDH reader must be a regular executable.'
+            }
+            $process = [Diagnostics.Process]::new()
+            $process.StartInfo.FileName = $item.FullName
+            $process.StartInfo.UseShellExecute = $false
+            $process.StartInfo.CreateNoWindow = $true
+            $process.StartInfo.RedirectStandardInput = $true
+            $process.StartInfo.RedirectStandardOutput = $true
+            $process.StartInfo.RedirectStandardError = $true
+            $process.StartInfo.ArgumentList.Add([string]$ProcessId)
+            try {
+                if (-not $process.Start()) { throw 'Could not start the native PDH reader.' }
+            } catch {
+                $process.Dispose()
+                throw
+            }
+            $Reader.Value = $process
+            $ready = & $line
+            if ($ready.schema -ne 1 -or $ready.ready -ne $true) { throw 'Native PDH reader did not initialize.' }
+        }
+        $Reader.Value.StandardInput.WriteLine('read')
+        $Reader.Value.StandardInput.Flush()
+        $response = & $line
+        if ($clock.ElapsedMilliseconds -gt 2000) { throw [TimeoutException]::new('PDH read exceeded its 2 s deadline.') }
+        if ($response.status -notin @('observed', 'no_own_instances') -or $response.pdh_status -ne 0 -or
+            $response.rows -isnot [array] -or $response.rows.Count -gt 64 -or
+            ($response.status -eq 'no_own_instances' -and $response.rows.Count) -or
+            ($response.status -eq 'observed' -and -not $response.rows.Count)) {
+            throw [IO.InvalidDataException]::new('Invalid native PDH frame.')
+        }
+        foreach ($row in $response.rows) { [pscustomobject]$row }
+    } catch {
+        Close-NgenPdhProcessMemory -Reader $Reader -Abort
+        throw
+    }
+}
+
+function Close-NgenPdhProcessMemory {
+    param([Parameter(Mandatory)][ref]$Reader, [switch]$Abort)
+    $process = $Reader.Value
+    $Reader.Value = $null
+    if ($null -eq $process) { return }
+    try {
+        if (-not $process.HasExited) {
+            if (-not $Abort) { $process.StandardInput.Close() }
+            if ($Abort -or -not $process.WaitForExit(2000)) {
+                try { $process.Kill($true) } catch [InvalidOperationException] { }
+                $process.WaitForExit()
+            }
+        }
+    } finally {
+        $process.Dispose()
+    }
+}
+
 function Invoke-NgenWorkload {
     param(
         [Parameter(Mandatory)][string]$FilePath,
@@ -94,7 +397,9 @@ function Invoke-NgenWorkload {
     $gpuError = ''
     $gpuErrorMessage = ''
     $gpuErrorHresult = $null
+    $gpuErrorDetails = $null
     $nextGpuSample = 0L
+    $gpuReader = $null
     try {
         $started = $process.Start()
         if (-not $started) { throw 'Could not start workload process.' }
@@ -111,7 +416,8 @@ function Invoke-NgenWorkload {
                 $attempt = [ordered]@{ status = 'no_own_instances'; instances = 0
                     started_timestamp_ticks = [Diagnostics.Stopwatch]::GetTimestamp() }
                 try {
-                    $rows = @(Get-CimInstance -Query ("SELECT Name,DedicatedUsage,SharedUsage,TotalCommitted FROM Win32_PerfFormattedData_GPUPerformanceCounters_GPUProcessMemory WHERE Name LIKE 'pid_$($process.Id)_%'") -OperationTimeoutSec 2 -ErrorAction Stop)
+                    $readerPath = Join-Path (Split-Path -Parent ([IO.Path]::GetFullPath($FilePath))) 'gpu_memory_observer.exe'
+                    $rows = @(Get-NgenPdhProcessMemory -FilePath $readerPath -ProcessId $process.Id -Reader ([ref]$gpuReader))
                     if ($rows.Count -gt 64 -or $gpuQueries.Count -ge 1201) { throw 'GPU observation capacity exceeded.' }
                     $seen = [Collections.Generic.HashSet[string]]::new([StringComparer]::OrdinalIgnoreCase)
                     $dedicated = 0L; $shared = 0L; $committed = 0L
@@ -145,6 +451,19 @@ function Invoke-NgenWorkload {
                     $detail = [string]$_.Exception.Message
                     $gpuErrorMessage = $detail.Substring(0, [Math]::Min($detail.Length, 512))
                     $gpuErrorHresult = $_.Exception.HResult
+                    $identifier = [string]$_.FullyQualifiedErrorId
+                    $gpuErrorDetails = [ordered]@{
+                        fully_qualified_error_id = $identifier.Substring(0, [Math]::Min($identifier.Length, 512))
+                        category = [string]$_.CategoryInfo.Category
+                        native_error_code = $null
+                        status_code = $null
+                        pdh_status = if ($_.Exception.Data.Contains('PdhStatus')) { $_.Exception.Data['PdhStatus'] } else { $null }
+                        pdh_kind = if ($_.Exception.Data.Contains('PdhKind')) { $_.Exception.Data['PdhKind'] } else { $null }
+                    }
+                    if ($_.Exception -is [Microsoft.Management.Infrastructure.CimException]) {
+                        $gpuErrorDetails.native_error_code = [string]$_.Exception.NativeErrorCode
+                        $gpuErrorDetails.status_code = [uint32]$_.Exception.StatusCode
+                    }
                 } finally {
                     $attempt.timestamp_ticks = [Diagnostics.Stopwatch]::GetTimestamp()
                     $attempt.elapsed_ms = $clock.ElapsedMilliseconds
@@ -188,7 +507,7 @@ function Invoke-NgenWorkload {
                     if ($report -isnot [IO.FileInfo] -or ($report.Attributes -band [IO.FileAttributes]::ReparsePoint) -or
                         $report.Extension -ine '.csv' -or $report.Length -lt 1 -or $report.Length -gt 8388608) { throw 'Invalid native frame report.' }
                     $header = Get-Content -LiteralPath $FrameReport -TotalCount 1
-                    if ($header.Length -gt 2048 -or $header.Split(',').Count -gt 32) { throw 'Native frame header exceeds admission.' }
+                    if ($header.Length -gt 2048 -or $header.Split(',').Count -gt 64) { throw 'Native frame header exceeds admission.' }
                     # Stop enumeration at the admitted row bound, not after materializing an arbitrary CSV.
                     $frames = @(Import-Csv -LiteralPath $FrameReport | Select-Object -First 3601)
                     if ($frames.Count -lt 1 -or $frames.Count -gt 3600) { throw 'Invalid native frame count.' }
@@ -245,11 +564,13 @@ function Invoke-NgenWorkload {
             scope = 'Observed OS process working set/high-water counter, including startup; not GPU memory or an exact continuous peak.'
         }
         if ($GpuMemory) {
-            $memory.schema = 3
+            $memory.schema = 4
             $memory.gpu_memory = [ordered]@{
                 status = $gpuStatus; error_type = $gpuError; within_1gib_budget = $gpuBudgetOk
                 error_message = $gpuErrorMessage; error_hresult = $gpuErrorHresult
-                provider = 'Win32_PerfFormattedData_GPUPerformanceCounters_GPUProcessMemory'
+                error_details = $gpuErrorDetails
+                provider = 'PDH/GPU Process Memory'
+                transport = 'owned_native_reader'
                 target_sample_period_ms = 500; operation_timeout_seconds = 2
                 parent_qpc_started_ticks = $clockStarted; parent_qpc_ended_ticks = $clockEnded
                 parent_qpc_frequency = [Diagnostics.Stopwatch]::Frequency
@@ -258,7 +579,7 @@ function Invoke-NgenWorkload {
                 peak_dedicated_plus_shared_bytes = if ($gpuSamples.Count) { ($gpuSamples.dedicated_plus_shared_bytes | Measure-Object -Maximum).Maximum } else { $null }
                 peak_total_committed_bytes = if ($gpuSamples.Count) { ($gpuSamples.total_committed_bytes | Measure-Object -Maximum).Maximum } else { $null }
                 samples = $gpuSamples.ToArray(); queries = $gpuQueries.ToArray(); coverage = $coverage
-                scope = 'Local WDDM per-process adapter counters, summed once per unique instance; dedicated+shared and total committed are separate measures. Sampled/provider-refreshed observations, not an exact continuous peak, global device usage or an uninstrumented timing run. CIM operation timeout is not a hard OS deadline.'
+                scope = 'Local WDDM per-process PDH adapter gauges, summed once per unique instance; dedicated+shared and total committed are separate measures. Sampled/provider-refreshed observations, not an exact continuous peak, global device usage or an uninstrumented timing run. The owned reader has a 2 s request deadline; OS scheduling/cleanup is not hard real-time.'
             }
         }
         $memory | ConvertTo-Json -Depth 6 | Set-Content -LiteralPath $MemoryPath
@@ -270,11 +591,15 @@ function Invoke-NgenWorkload {
         if ($GpuMemory -and $gpuStatus -ne 'observed') { throw 'Process GPU memory observations unavailable or incomplete; inspect retained metadata.' }
         if ($GpuMemory -and -not $gpuBudgetOk) { throw 'Observed process GPU memory exceeds the 1 GiB budget; inspect retained metadata.' }
     } finally {
-        if ($started -and -not $process.HasExited) {
-            try { $process.Kill($true) } catch [InvalidOperationException] { }
-            $process.WaitForExit()
+        try {
+            if ($null -ne $gpuReader) { Close-NgenPdhProcessMemory -Reader ([ref]$gpuReader) }
+        } finally {
+            if ($started -and -not $process.HasExited) {
+                try { $process.Kill($true) } catch [InvalidOperationException] { }
+                $process.WaitForExit()
+            }
+            $process.Dispose()
         }
-        $process.Dispose()
     }
 }
 
@@ -341,6 +666,100 @@ function Invoke-NgenMeasurement {
         $artifacts | ConvertTo-Json | Set-Content -LiteralPath "$prefix.artifacts.json"
     } finally {
         . $deactivate
+    }
+}
+
+function Invoke-NgenFlight {
+    param(
+        [Parameter(Mandatory)][string]$BuildDirectory,
+        [Parameter(Mandatory)][string]$LogDirectory,
+        [Parameter(Mandatory)][ValidateSet('Debug', 'Release')][string]$Configuration,
+        [Parameter(Mandatory)][string]$ScenePackage,
+        [Parameter(Mandatory)][string]$Python,
+        [Parameter(Mandatory)][string]$SourceRoot,
+        [string]$BundleOutput = ''
+    )
+    $identity = Get-NgenSceneIdentity -Path $ScenePackage | ConvertTo-Json
+    $prefix = Join-Path $LogDirectory "$Configuration-flight"
+    $bundle = $null
+    foreach ($extension in @('verify.txt', 'verify.txt.stderr.txt', 'txt', 'txt.stderr.txt', 'bmp', 'csv', 'working-set.json', 'artifacts.json',
+        'replay.txt', 'replay.txt.stderr.txt', 'replay.csv', 'replay.bmp',
+        'memory.txt', 'memory.txt.stderr.txt', 'memory.csv', 'memory.bmp', 'memory.working-set.json',
+        'package.txt', 'package.txt.stderr.txt', 'offline-verify.txt', 'offline-verify.txt.stderr.txt',
+        'offline.txt', 'offline.txt.stderr.txt', 'offline.csv')) {
+        if (Test-Path -LiteralPath "$prefix.$extension") { throw 'Flight evidence path is not fresh.' }
+    }
+    try {
+        . (Join-Path $BuildDirectory 'conanrun.ps1')
+        $binary = Join-Path $BuildDirectory 'flight_demo.exe'
+        Invoke-NgenNative -FilePath $binary -Arguments @($ScenePackage, '--verify') -LogPath "$prefix.verify.txt"
+        $arguments = @($ScenePackage, '--walkthrough', '--frames=330', '--warmup=60', '--validation', '--mute',
+            "--capture=$prefix.bmp", "--report=$prefix.csv")
+        Invoke-NgenWorkload -FilePath $binary -Arguments $arguments -LogPath "$prefix.txt" -MemoryPath "$prefix.working-set.json"
+        if ((Get-NgenSceneIdentity -Path $ScenePackage | ConvertTo-Json) -cne $identity) {
+            throw 'ScenePackage changed during flight verification.'
+        }
+        $artifactPaths = @("$prefix.bmp", "$prefix.csv")
+        if ($Configuration -eq 'Release') {
+            foreach ($mode in @('replay', 'memory')) {
+                $report = "$prefix.$mode.csv"; $capture = "$prefix.$mode.bmp"
+                $arguments = @($ScenePackage, '--replay', '--frames=2400', '--warmup=60', '--width=1920', '--height=1080',
+                    "--capture=$capture", "--report=$report")
+                if ($mode -eq 'replay') {
+                    # No CIM or per-process observation in the clean timing run.
+                    Invoke-NgenNative -FilePath $binary -Arguments $arguments -LogPath "$prefix.$mode.txt"
+                } else {
+                    Invoke-NgenWorkload -FilePath $binary -Arguments $arguments -LogPath "$prefix.$mode.txt" -MemoryPath "$prefix.$mode.working-set.json" -GpuMemory -FrameReport $report
+                }
+                $artifactPaths += @($capture, $report)
+                if ((Get-NgenSceneIdentity -Path $ScenePackage | ConvertTo-Json) -cne $identity) { throw 'ScenePackage changed during replay.' }
+            }
+        }
+        $artifacts = foreach ($path in $artifactPaths) {
+            $item = Get-Item -LiteralPath $path -Force -ErrorAction Stop
+            if ($item -isnot [IO.FileInfo] -or ($item.Attributes -band [IO.FileAttributes]::ReparsePoint) -or $item.Length -lt 1 -or $item.Length -gt 8388608) {
+                throw 'Flight capture/report is missing, linked, empty or oversized.'
+            }
+            [ordered]@{ name = $item.Name; bytes = $item.Length; sha256 = (Get-FileHash -LiteralPath $path -Algorithm SHA256).Hash.ToLowerInvariant() }
+        }
+        [ordered]@{ schema = 1; package = $identity | ConvertFrom-Json; files = @($artifacts) } |
+            ConvertTo-Json -Depth 5 | Set-Content -LiteralPath "$prefix.artifacts.json"
+        if ($Configuration -eq 'Release') {
+            $output = if ($BundleOutput) { $BundleOutput } else { Join-Path (Split-Path -Parent $BuildDirectory) 'offline' }
+            Invoke-NgenNative -FilePath $Python -Arguments @((Join-Path $SourceRoot 'tools/package_demo.py'),
+                '--build', $BuildDirectory, '--asset', $ScenePackage, '--output', $output) -LogPath "$prefix.package.txt"
+            $bundle = Join-Path $output 'ngen-flight'
+        }
+    } finally {
+        . (Join-Path $BuildDirectory 'deactivate_conanrun.ps1')
+    }
+    if ($bundle) {
+        $saved = @{}
+        foreach ($name in @('PATH', 'VULKAN_SDK', 'VK_LAYER_PATH', 'VK_INSTANCE_LAYERS')) {
+            $saved[$name] = [Environment]::GetEnvironmentVariable($name, 'Process')
+        }
+        Push-Location -LiteralPath $bundle
+        try {
+            $env:PATH = (Join-Path $env:SystemRoot 'System32') + [IO.Path]::PathSeparator + $env:SystemRoot
+            $env:VULKAN_SDK = $null; $env:VK_LAYER_PATH = $null; $env:VK_INSTANCE_LAYERS = $null
+            # Native DLL discovery now has only the application directory and Windows.
+            # This does not change adapters/firewall or claim the network was disconnected.
+            Invoke-NgenNative -FilePath (Join-Path $bundle 'flight_demo.exe') -Arguments @(
+                (Join-Path $bundle 'assets/ship.ngas'), '--verify') -LogPath "$prefix.offline-verify.txt"
+            Invoke-NgenNative -FilePath (Join-Path $bundle 'flight_demo.exe') -Arguments @(
+                (Join-Path $bundle 'assets/ship.ngas'), '--replay', '--frames=3', '--warmup=2', '--mute',
+                "--report=$prefix.offline.csv") -LogPath "$prefix.offline.txt"
+        } finally {
+            Pop-Location
+            foreach ($name in $saved.Keys) {
+                if ($null -eq $saved[$name]) {
+                    # A plain $null binds to an empty string on current PowerShell/.NET.
+                    [Environment]::SetEnvironmentVariable($name, [NullString]::Value, 'Process')
+                } else {
+                    [Environment]::SetEnvironmentVariable($name, $saved[$name], 'Process')
+                }
+            }
+        }
     }
 }
 
@@ -479,7 +898,107 @@ function Invoke-NgenGpuInfo {
     Write-Host 'GPU capability capture completed. This is not a rendering or presentation test.'
 }
 
-# Inspector selects the optional GUI graph over the combined checked scene.
+function Enter-NgenDeveloperShell {
+    $installer = Join-Path ${env:ProgramFiles(x86)} 'Microsoft Visual Studio'
+    $vswhere = Join-Path $installer 'Installer/vswhere.exe'
+    if (-not (Test-Path -LiteralPath $vswhere -PathType Leaf)) {
+        throw 'Install Visual Studio Build Tools with Desktop development with C++, then rerun.'
+    }
+    [string[]]$arguments = @(
+        '-latest', '-products', '*', '-requires',
+        'Microsoft.VisualStudio.Component.VC.Tools.x86.x64',
+        '-property', 'installationPath'
+    )
+    $installations = @(& $vswhere @arguments)
+    if ($LASTEXITCODE -ne 0 -or $installations.Count -ne 1 -or -not $installations[0]) {
+        throw 'MSVC x64/x86 tools were not found. Add Desktop development with C++ in Visual Studio Installer.'
+    }
+    [string]$installation = $installations[0]
+    $module = Join-Path $installation 'Common7/Tools/Microsoft.VisualStudio.DevShell.dll'
+    Import-Module $module
+    $parameters = @{ VsInstallPath = $installation; SkipAutomaticLocation = $true
+        DevCmdArguments = '-arch=x64 -host_arch=x64' }
+    Enter-VsDevShell @parameters
+}
+
+function Get-NgenWindowsFlightRun {
+    param(
+        [Parameter(Mandatory)][string]$SourceRoot,
+        [Parameter(Mandatory)][ValidateSet('MSVC', 'ClangCl')][string]$Compiler,
+        [string]$RunDirectory = '',
+        [switch]$RequireBundle
+    )
+    $buildRoot = Join-Path $SourceRoot 'build'
+    $base = Join-Path $buildRoot 'windows'
+    foreach ($path in @($buildRoot, $base)) {
+        $item = Get-Item -LiteralPath $path -Force -ErrorAction Stop
+        if ($item -isnot [IO.DirectoryInfo] -or ($item.Attributes -band [IO.FileAttributes]::ReparsePoint)) {
+            throw 'Flight batches require regular build/windows directories.'
+        }
+    }
+    if ($RunDirectory) {
+        $path = if ([IO.Path]::IsPathRooted($RunDirectory)) { $RunDirectory } else { Join-Path $SourceRoot $RunDirectory }
+        $candidates = @(Get-Item -LiteralPath $path -Force -ErrorAction Stop)
+    } else {
+        $candidates = @(Get-ChildItem -LiteralPath $base -Directory | Sort-Object Name -Descending)
+    }
+    $wanted = if ($Compiler -eq 'ClangCl') { 'clang' } else { 'msvc' }
+    :candidate foreach ($run in $candidates) {
+        if ($run.Name -notmatch '^\d{8}-\d{6}-\d{3}$') { continue }
+        if ($run -isnot [IO.DirectoryInfo] -or ($run.Attributes -band [IO.FileAttributes]::ReparsePoint) -or
+            $run.Parent.FullName -ine ([IO.Path]::GetFullPath($base))) { continue }
+        foreach ($name in @('logs', 'Release')) {
+            $item = Get-Item -LiteralPath (Join-Path $run.FullName $name) -Force -ErrorAction Ignore
+            if ($item -isnot [IO.DirectoryInfo] -or ($item.Attributes -band [IO.FileAttributes]::ReparsePoint)) { continue candidate }
+        }
+        $metadata = @('logs/host-profile.txt', 'logs/build-profile.txt', 'logs/Release-configure.txt',
+            'Release/CMakeCache.txt', 'Release/demo-runtime.json', 'Release/conanrun.ps1', 'Release/deactivate_conanrun.ps1')
+        if ($Compiler -eq 'ClangCl') { $metadata += 'logs/clang-cl-version.txt' }
+        foreach ($name in $metadata) {
+            $item = Get-Item -LiteralPath (Join-Path $run.FullName $name) -Force -ErrorAction Ignore
+            $limit = if ($name -eq 'logs/host-profile.txt') { 65536 } else { 2097152 }
+            if ($item -isnot [IO.FileInfo] -or ($item.Attributes -band [IO.FileAttributes]::ReparsePoint) -or
+                $item.Length -lt 1 -or $item.Length -gt $limit) { continue candidate }
+        }
+        $profile = Get-Content -LiteralPath (Join-Path $run.FullName 'logs/host-profile.txt') -Raw
+        if ($profile -notmatch "(?m)^compiler=$wanted\r?$" -or $profile -notmatch '(?m)^os=Windows\r?$' -or
+            $profile -notmatch '(?m)^arch=x86_64\r?$' -or
+            $profile -notmatch '(?m)^compiler\.runtime=dynamic\r?$') { continue }
+        $cache = Get-Content -LiteralPath (Join-Path $run.FullName 'Release/CMakeCache.txt') -Raw
+        if ($cache -notmatch '(?m)^CMAKE_BUILD_TYPE:STRING=Release\r?$' -or
+            $cache -notmatch '(?m)^NGEN_BUILD_FLIGHT_DEMO:BOOL=(ON|TRUE|1|YES|Y)\r?$') { continue }
+        $sourceMatches = [regex]::Matches($cache, '(?m)^CMAKE_HOME_DIRECTORY:INTERNAL=([^\r\n]+)\r?$')
+        if ($sourceMatches.Count -ne 1) { continue }
+        try { $sourcePath = [IO.Path]::GetFullPath($sourceMatches[0].Groups[1].Value) } catch { continue }
+        if ($sourcePath -ine [IO.Path]::GetFullPath($SourceRoot)) { continue }
+        try {
+            $runtime = Get-Content -LiteralPath (Join-Path $run.FullName 'Release/demo-runtime.json') -Raw |
+                ConvertFrom-Json -AsHashtable -Depth 8 -ErrorAction Stop
+        } catch { continue }
+        if ($runtime -isnot [Collections.IDictionary] -or
+            ($runtime.schema -isnot [int] -and $runtime.schema -isnot [long]) -or
+            $runtime.schema -ne 1 -or $runtime.os -cne 'Windows' -or
+            $runtime.configuration -cne 'Release' -or
+            ($runtime.Contains('sanitizer') -and $runtime.sanitizer -cne '')) { continue }
+        if ($RequireBundle) {
+            foreach ($name in @('offline', 'offline/ngen-flight')) {
+                $item = Get-Item -LiteralPath (Join-Path $run.FullName $name) -Force -ErrorAction Ignore
+                if ($item -isnot [IO.DirectoryInfo] -or ($item.Attributes -band [IO.FileAttributes]::ReparsePoint)) { continue candidate }
+            }
+            $item = Get-Item -LiteralPath (Join-Path $run.FullName 'offline/ngen-flight/manifest.json') -Force -ErrorAction Ignore
+            if ($item -isnot [IO.FileInfo] -or ($item.Attributes -band [IO.FileAttributes]::ReparsePoint) -or
+                $item.Length -lt 1 -or $item.Length -gt 2097152) { continue }
+        }
+        return $run.FullName
+    }
+    throw "No matching $Compiler Release flight batch found; use -RunDirectory under build/windows."
+}
+
+# Importing helpers must not bootstrap tools or run a build.
+if ($MyInvocation.InvocationName -eq '.') { return }
+
+# Flight adds physics/audio to the same GUI, renderer and checked scene graph.
+if ($FlightDemo) { $Inspector = $true }
 if ($Inspector) { $Scene = $true }
 if ($ScenePackage) { $Scene = $true }
 if ($Scene) { $Renderer = $true }
@@ -491,7 +1010,9 @@ if (-not $IsWindows) {
 
 $ErrorActionPreference = 'Stop'
 $root = Split-Path -Parent $PSScriptRoot
-$run = if ($MeasureWorkload) {
+$run = if ($DiagnoseGpuMemoryProcessId) {
+    Join-Path $root ('build/windows-gpu-diagnostic/' + (Get-Date -Format 'yyyyMMdd-HHmmss-fff') + '-' + [guid]::NewGuid().ToString('N'))
+} elseif ($MeasureWorkload) {
     Join-Path $root ('build/windows-measure/' + (Get-Date -Format 'yyyyMMdd-HHmmss-fff') + '-' + [guid]::NewGuid().ToString('N'))
 } else { Join-Path $root ('build/windows/' + (Get-Date -Format 'yyyyMMdd-HHmmss-fff')) }
 $logs = Join-Path $run 'logs'
@@ -506,6 +1027,12 @@ try {
     Write-Host "Run directory: $run"
     Invoke-NgenNative -FilePath 'git' -Arguments @('rev-parse', 'HEAD') -LogPath (Join-Path $logs 'revision.txt')
     Invoke-NgenNative -FilePath 'git' -Arguments @('status', '--short') -LogPath (Join-Path $logs 'working-tree.txt')
+    if ($DiagnoseGpuMemoryProcessId) {
+        Get-NgenGpuMemoryDiagnostic -ProcessId $DiagnoseGpuMemoryProcessId -ComparePdh |
+            ConvertTo-Json -Depth 6 | Set-Content -LiteralPath (Join-Path $logs 'gpu-memory-diagnostic.json')
+        Write-Host 'Read-only PDH/CIM provider comparison retained. Only the owned typeperf helpers have a 2 s deadline; the selected demo is never stopped. This is not memory-budget acceptance.'
+        exit 0
+    }
     if ($GpuInfo) {
         $vulkan = Get-Command vulkaninfo.exe -CommandType Application -ErrorAction SilentlyContinue | Select-Object -First 1
         $vulkanPath = if ($vulkan) { $vulkan.Source } else { $null }
@@ -523,6 +1050,7 @@ try {
         exit 0
     }
 
+    if ($FlightDemo -and -not $ScenePackage) { throw 'Flight verification requires -ScenePackage.' }
     if ($Inspector -and -not $ScenePackage) { throw 'Inspector verification requires -ScenePackage.' }
     if ($ScenePackage) {
         Get-NgenSceneIdentity -Path $ScenePackage | Out-Null
@@ -534,16 +1062,7 @@ try {
         exit 0
     }
     if (-not (Get-Command cl -ErrorAction SilentlyContinue) -or $env:VSCMD_ARG_TGT_ARCH -ne 'x64') {
-        $vswhere = Join-Path ${env:ProgramFiles(x86)} 'Microsoft Visual Studio/Installer/vswhere.exe'
-        if (-not (Test-Path -LiteralPath $vswhere)) {
-            throw 'Install Visual Studio Build Tools with Desktop development with C++, then rerun.'
-        }
-        $installation = & $vswhere -latest -products '*' -requires Microsoft.VisualStudio.Component.VC.Tools.x86.x64 -property installationPath
-        if ($LASTEXITCODE -ne 0 -or -not $installation) {
-            throw 'MSVC x64/x86 tools were not found. Add Desktop development with C++ in Visual Studio Installer.'
-        }
-        Import-Module (Join-Path $installation 'Common7/Tools/Microsoft.VisualStudio.DevShell.dll')
-        Enter-VsDevShell -VsInstallPath $installation -SkipAutomaticLocation -DevCmdArguments '-arch=x64 -host_arch=x64'
+        Enter-NgenDeveloperShell
     }
     $msvc = Get-Command cl -CommandType Application -ErrorAction Stop | Select-Object -First 1
     (Get-Item $msvc.Source).VersionInfo | Format-List FileName, FileVersion, ProductVersion | Out-Host
@@ -620,13 +1139,18 @@ try {
     if ($Renderer) {
         Invoke-NgenNative -FilePath $conan -Arguments @('export', 'recipes/slangc', '--version=2026.21', '--user=ngen', '--channel=tools') -LogPath (Join-Path $logs 'slang-recipe.txt')
     }
-    $lockfile = if ($Inspector) { 'conan-inspector.lock' } elseif ($Scene) { 'conan-scene.lock' } elseif ($Renderer) { 'conan-render.lock' } else { 'conan.lock' }
+    if ($FlightDemo) {
+        Invoke-NgenNative -FilePath $conan -Arguments @('export', 'recipes/joltphysics', '--version=5.6.0', '--user=ngen', '--channel=headless-double') -LogPath (Join-Path $logs 'jolt-recipe.txt')
+    }
+    $lockfile = if ($FlightDemo) { 'conan-demo.lock' } elseif ($Inspector) { 'conan-inspector.lock' } elseif ($Scene) { 'conan-scene.lock' } elseif ($Renderer) { 'conan-render.lock' } else { 'conan.lock' }
     $inspectorOption = if ($Inspector) { 'True' } else { 'False' }
     $inspectorBuild = if ($Inspector) { 'ON' } else { 'OFF' }
     $assetsOption = if ($Scene) { 'True' } else { 'False' }
     $assetsBuild = if ($Scene) { 'ON' } else { 'OFF' }
     $rendererOption = if ($Renderer) { 'True' } else { 'False' }
     $rendererBuild = if ($Renderer) { 'ON' } else { 'OFF' }
+    $flightOption = if ($FlightDemo) { 'True' } else { 'False' }
+    $flightBuild = if ($FlightDemo) { 'ON' } else { 'OFF' }
     foreach ($config in $configurations) {
         $build = Join-Path $run $config
         $buildType = if ($Renderer) { 'Release' } else { $config }
@@ -636,17 +1160,24 @@ try {
             '-s:h', "build_type=$config", '-s:b', "build_type=$buildType",
             '-c:h', 'tools.cmake.cmaketoolchain:generator=Ninja',
             '-c:b', 'tools.cmake.cmaketoolchain:generator=Ninja',
+            # The x64 developer shell above is already active. Re-entering vcvars
+            # inside cmd.exe can overflow its command/environment line limit.
+            '-c:h', 'tools.microsoft.msbuild:installation_path=',
+            '-c:b', 'tools.microsoft.msbuild:installation_path=',
             '-c:h', 'tools.build:jobs=2', '-c:b', 'tools.build:jobs=2',
             '-o:h', "&:renderer=$rendererOption", '-o:h', "&:shaders=$rendererOption", '-o:h', "&:assets=$assetsOption", '-o:h', "&:inspector=$inspectorOption",
+            '-o:h', "&:physics=$flightOption", '-o:h', "&:audio=$flightOption",
             '--lockfile', $lockfile, '--build=missing', '-of', $build
         ) -LogPath (Join-Path $logs "$config-conan.txt")
         $toolchain = Join-Path $build 'conan_toolchain.cmake'
         Invoke-NgenNative -FilePath $cmake -Arguments @(
             '-S', $root, '-B', $build, '-G', 'Ninja',
             "-DCMAKE_TOOLCHAIN_FILE=$toolchain", "-DCMAKE_BUILD_TYPE=$config",
-            "-DNGEN_BUILD_RENDERER=$rendererBuild", "-DNGEN_BUILD_ASSETS=$assetsBuild", "-DNGEN_BUILD_INSPECTOR=$inspectorBuild"
+            "-DNGEN_BUILD_RENDERER=$rendererBuild", "-DNGEN_BUILD_ASSETS=$assetsBuild", "-DNGEN_BUILD_INSPECTOR=$inspectorBuild",
+            "-DNGEN_BUILD_PHYSICS=$flightBuild", "-DNGEN_BUILD_AUDIO=$flightBuild", "-DNGEN_BUILD_FLIGHT_DEMO=$flightBuild"
         ) -LogPath (Join-Path $logs "$config-configure.txt")
-        Invoke-NgenNative -FilePath $cmake -Arguments @('--build', $build, '-j', '2') -LogPath (Join-Path $logs "$config-build.txt")
+        # Keep diagnostics from all independent translation units; any error still fails the run.
+        Invoke-NgenNative -FilePath $cmake -Arguments @('--build', $build, '-j', '2', '--', '-k', '0') -LogPath (Join-Path $logs "$config-build.txt")
         $checks = {
             Invoke-NgenNative -FilePath $ctest -Arguments @('--test-dir', $build, '--show-only') -LogPath (Join-Path $logs "$config-test-list.txt")
             Invoke-NgenNative -FilePath $ctest -Arguments @('--test-dir', $build, '--output-on-failure', '--no-tests=error') -LogPath (Join-Path $logs "$config-tests.txt")
@@ -654,13 +1185,19 @@ try {
             Invoke-NgenNative -FilePath $harness -LogPath (Join-Path $logs "$config-serial.txt")
             Invoke-NgenNative -FilePath $harness -Arguments @('--workers=2') -LogPath (Join-Path $logs "$config-workers.txt")
         }
-        if ($Renderer) {
+        if ($FlightDemo) {
+            # Keep prerequisite fixture checks; do not rerun M2 inspector/appearance acceptance.
+            Invoke-NgenRenderer -BuildDirectory $build -LogDirectory $logs -Configuration $config -Checks $checks
+            Invoke-NgenFlight -BuildDirectory $build -LogDirectory $logs -Configuration $config -ScenePackage $ScenePackage -Python $python -SourceRoot $root
+        } elseif ($Renderer) {
             Invoke-NgenRenderer -BuildDirectory $build -LogDirectory $logs -Configuration $config -Checks $checks -Scene:$Scene -Inspector:$Inspector -ScenePackage $ScenePackage
         } else {
             & $checks
         }
     }
-    if ($Inspector) {
+    if ($FlightDemo) {
+        Write-Host "Windows $Compiler flight checks completed. Release records separate 1080p clean replay and sampled process-memory runs, plus an app-local bundle startup without SDK paths. Review actual budgets, network-disconnected startup, listening and controls separately; this is not owner acceptance. The private bundle stays outside evidence.zip."
+    } elseif ($Inspector) {
         Write-Host "Windows $Compiler inspector/bloom/reload validation completed. Release additionally records fixed-resolution steady/streaming CSVs and observed process working set. Inspect actual budgets, captures and GPU-memory scope; this is not personal visual or formal M2 acceptance."
     } elseif ($ScenePackage) {
         Write-Host "Windows $Compiler CPU, renderer/shader, built-in fixture and supplied checked-package upload/PBR/frame-pin checks passed. See the package hash and separate scene-package logs. This is not final visual, performance or M2 acceptance."

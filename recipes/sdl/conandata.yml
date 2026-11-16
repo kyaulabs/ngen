@@ -10,3 +10,6 @@ patches:
     - patch_file: patches/0002-clang-shared-asan.patch
       patch_description: Resolve Clang shared ASan instrumentation through the executable
       patch_type: portability
+    - patch_file: patches/0003-audio-assert-lookup.patch
+      patch_description: Avoid foreign-thread error TLS allocation in expected-absence audio assertions
+      patch_type: bugfix

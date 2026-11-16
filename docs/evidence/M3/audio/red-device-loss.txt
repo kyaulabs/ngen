@@ -1,0 +1,34 @@
+Test project /home/kyau/projects/kyaulabs/ngen/build/demo-release
+    Start 2: audio_output
+1/1 Test #2: audio_output .....................***Failed    0.18 sec
+Randomness seeded to: 593514111
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+audio_output_tests is a Catch2 v3.16.0 host application.
+Run with -? for options
+
+-------------------------------------------------------------------------------
+reported playback loss retires its stream and a new device reconnects without
+stale cues
+-------------------------------------------------------------------------------
+/home/kyau/projects/kyaulabs/ngen/tests/audio_output.cpp:7
+...............................................................................
+
+/home/kyau/projects/kyaulabs/ngen/tests/audio_output.cpp:17: FAILED:
+  REQUIRE( output.statistics().state == ngen::audio::State::disconnected )
+with expansion:
+  1 == 0
+
+===============================================================================
+test cases:   4 |   3 passed | 1 failed
+assertions: 233 | 232 passed | 1 failed
+
+
+
+0% tests passed, 1 tests failed out of 1
+
+Total Test time (real) =   0.19 sec
+
+The following tests FAILED:
+	  2 - audio_output (Failed)
+Errors while running CTest

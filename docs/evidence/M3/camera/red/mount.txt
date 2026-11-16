@@ -1,0 +1,34 @@
+Test project /home/kyau/projects/kyaulabs/ngen/build/flight-debug
+    Start 3: flight_camera
+1/1 Test #3: flight_camera ....................***Failed    0.00 sec
+Randomness seeded to: 2473092913
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+flight_camera_tests is a Catch2 v3.16.0 host application.
+Run with -? for options
+
+-------------------------------------------------------------------------------
+first person composes each ship's authored local mount instead of a universal
+offset
+-------------------------------------------------------------------------------
+/home/kyau/projects/kyaulabs/ngen/tests/flight_camera.cpp:9
+...............................................................................
+
+/home/kyau/projects/kyaulabs/ngen/tests/flight_camera.cpp:20: FAILED:
+  REQUIRE( first.camera.position_metres[0] == Catch::Approx(104).margin(1e-5) )
+with expansion:
+  100.0 == Approx( 104.0 )
+
+===============================================================================
+test cases: 1 | 1 failed
+assertions: 1 | 1 failed
+
+
+
+0% tests passed, 1 tests failed out of 1
+
+Total Test time (real) =   0.00 sec
+
+The following tests FAILED:
+	  3 - flight_camera (Failed)
+Errors while running CTest

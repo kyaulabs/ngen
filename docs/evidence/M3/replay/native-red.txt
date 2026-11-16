@@ -1,0 +1,1 @@
+Flight demo: flight replay produced no lit world pixels

@@ -1,0 +1,17 @@
+Test project /home/kyau/projects/kyaulabs/ngen/build/flight-asan
+    Start 1: physics
+1/6 Test #1: physics ..........................   Passed    0.22 sec
+    Start 2: flight
+2/6 Test #2: flight ...........................   Passed    2.58 sec
+    Start 3: ngen_tests
+3/6 Test #3: ngen_tests .......................   Passed    0.07 sec
+    Start 4: render_contract_tests
+4/6 Test #4: render_contract_tests ............   Passed    0.03 sec
+    Start 5: replay_serial
+5/6 Test #5: replay_serial ....................   Passed    0.04 sec
+    Start 6: replay_workers
+6/6 Test #6: replay_workers ...................   Passed    0.05 sec
+
+100% tests passed out of 6
+
+Total Test time (real) =   2.99 sec

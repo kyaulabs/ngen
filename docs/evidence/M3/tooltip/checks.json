@@ -1,0 +1,66 @@
+{
+  "source_sha256": {
+    "apps/flight_demo/app.cpp": "e4713eb3d8897e98b8fb395fa452b3077c0425e53a8aa99af5e638f7b8d14ba6",
+    "tests/flight_tooltip.py": "44bfb837bb72111b0fe74203d21fde4c405f3a550a33bf2e729f205fe26ae142"
+  },
+  "native_red": {
+    "frames": 2400,
+    "cpp_new_calls": 0,
+    "imgui_calls": 2,
+    "frame_of_growth": 2141,
+    "allocation_bytes": [
+      4680,
+      1008
+    ],
+    "window": "##Tooltip_00",
+    "stack": "ImGui::PlotEx ##force -> SetTooltipV -> ImDrawList::PrimReserve",
+    "input": "Public SDL motion events on discovered owned window, x=160, y=450, 1920x1080."
+  },
+  "fix": "Cold unsubmitted GUI frame reserves existing bounded tooltip draw storage; no styling/counter/limit changes.",
+  "native_green": {
+    "permanent_optin_cases": 1,
+    "skipped": 0,
+    "frames": 2400,
+    "cpp_new_calls": 0,
+    "imgui_calls": 0,
+    "gpu_rows": 2400,
+    "scope": "Native Debug GDB regression; not performance timing or sanitizer-under-ptrace evidence."
+  },
+  "verification": {
+    "ctests": {
+      "demo-debug": 22,
+      "demo-release": 22,
+      "demo-asan": 22,
+      "demo-gcc": 22
+    },
+    "clang_actual_commands": 3,
+    "native_walkthroughs": 4,
+    "asan_walkthrough": "Strict isolated rerun passes with unchanged checks after a concurrent-window attempt reached the quiet band and failed strict decrease.",
+    "clean_release_frames": 2400,
+    "physical_columns_unchanged": 27,
+    "warm_cpp_imgui": [
+      0,
+      0
+    ],
+    "stderr_bytes": 0
+  },
+  "remaining": [
+    "Initial untraced post-fix debugger attempt still reported 2 GUI allocations; subsequent controlled stack/capacity checks and permanent test pass.",
+    "Native Windows confirmation required.",
+    "MSVC CIM timeout remains unmeasured, not waived.",
+    "Owner F12 whole-system/device overlay and deferred UI/final M3 gates remain open."
+  ],
+  "local_log_sha256": {
+    "gui-tooltip-red-check.txt": "21fcf193c40bbcc41d71483afab43c6e80f87551ac5307363056354ef995c66b",
+    "gui-force-allocation-stack.txt": "04d876e2d731d015acaba33e7b09dbf1e31f7700df838b0bf42319641c2367d2",
+    "gui-tooltip-green.txt": "33a598853a9dbad06b201a90b22283345e7a253dc0344e8b3e7d4599c344e82a",
+    "gui-tooltip-prewarm-diagnosis.txt": "9a55a31a7d1bca9e8a71e1e835c671fbe26252ab233476ffb09aa7d3371a6148",
+    "gui-tooltip-capacities.txt": "931cc535799fcbc006dbf64e1f0954b560eb834e3ab680685a6f7e7cb28f4482",
+    "gui-tooltip-any-warm.txt": "e150d7c28e1bc93e81512bf112220293446d4d472d5614f6bcb1605ad3e5b090",
+    "tooltip-permanent-final-regression.txt": "c35b7ab9266afc17d282e6bf671bc5a03cd7506b7a94703c78f07f8e88220db0",
+    "tooltip-isolated-asan-check.txt": "47f65fff742f027913d41c5ad0dcf2693e8cccc6b297f17eedc173102d9ae59c",
+    "tooltip-ast-results.json": "0a9b97c9d51cafac00b4045598b7de81b7b7e0ef6977a6795c696cbcf27830fe",
+    "tooltip-clean-release.txt": "b31d019eb1050a6264dfe8168edb0146c23a58f05b06ac5d1cb45586261e2096",
+    "tooltip-clean-release.csv": "a6d48b65cd56a24a53dfb11ebbd4758e13365b85fb615baaf658cca77c6792f8"
+  }
+}

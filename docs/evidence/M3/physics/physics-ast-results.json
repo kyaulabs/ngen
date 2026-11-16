@@ -1,0 +1,38 @@
+[
+  {
+    "configuration": "flight-debug",
+    "source": "engine/physics/world.cpp",
+    "status": 0,
+    "flags": "Actual complete compile command; no flags removed"
+  },
+  {
+    "configuration": "flight-debug",
+    "source": "tests/physics.cpp",
+    "status": 0,
+    "flags": "Actual complete compile command; no flags removed"
+  },
+  {
+    "configuration": "flight-release",
+    "source": "engine/physics/world.cpp",
+    "status": 0,
+    "flags": "Actual complete compile command; no flags removed"
+  },
+  {
+    "configuration": "flight-release",
+    "source": "tests/physics.cpp",
+    "status": 0,
+    "flags": "Actual complete compile command; no flags removed"
+  },
+  {
+    "configuration": "flight-asan",
+    "source": "engine/physics/world.cpp",
+    "status": 0,
+    "flags": "Actual complete compile command; no flags removed"
+  },
+  {
+    "configuration": "flight-asan",
+    "source": "tests/physics.cpp",
+    "status": 0,
+    "flags": "Actual complete compile command; no flags removed"
+  }
+]

@@ -1,0 +1,5 @@
+conanvcvars.bat: Activating environment Visual Studio 17 - amd64 - winsdk_version=None - vcvars_ver=14.4
+The input line is too long.
+The syntax of the command is incorrect.
+
+ERROR:

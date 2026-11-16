@@ -1,0 +1,20 @@
+{
+  "MSVC-current": {
+    "sampled_wall_seconds": 39.9992308,
+    "mean_frame_ms": 16.666119416666668,
+    "mean_completion_gap_ms": 16.664440850354314,
+    "completion_rate_hz": 60.00801400898718
+  },
+  "ClangCl-current": {
+    "sampled_wall_seconds": 39.9990198,
+    "mean_frame_ms": 16.665879875,
+    "mean_completion_gap_ms": 16.66787423926636,
+    "completion_rate_hz": 59.9956530535963
+  },
+  "ClangCl-historical": {
+    "sampled_wall_seconds": 16.6737851,
+    "mean_frame_ms": 6.9471525,
+    "mean_completion_gap_ms": 6.947916923718216,
+    "completion_rate_hz": 143.9280306571145
+  }
+}

@@ -1,0 +1,20 @@
+[
+  {
+    "configuration": "demo-debug",
+    "source": "apps/flight_demo/app.cpp",
+    "status": 0,
+    "scope": "complete actual command; owned headers visible; no flags removed"
+  },
+  {
+    "configuration": "demo-release",
+    "source": "apps/flight_demo/app.cpp",
+    "status": 0,
+    "scope": "complete actual command; owned headers visible; no flags removed"
+  },
+  {
+    "configuration": "demo-asan",
+    "source": "apps/flight_demo/app.cpp",
+    "status": 0,
+    "scope": "complete actual command; owned headers visible; no flags removed"
+  }
+]

@@ -3,6 +3,7 @@ brand/guide/ngen-brand-guide.pdf binary
 
 # Blank unified-diff context lines (including final hunk lines) are patch syntax.
 recipes/sdl/patches/*.patch whitespace=-blank-at-eol,-blank-at-eof
+recipes/pulseaudio/patches/*.patch whitespace=-blank-at-eol,-blank-at-eof
 
 # Preserve these original tool legal notices byte-for-byte.
 docs/evidence/M2/cooked-scene/licenses/ktx/Apache-2.0.txt whitespace=-blank-at-eol
@@ -10,6 +11,7 @@ docs/evidence/M2/cooked-scene/licenses/ktx/CC-BY-4.0.txt whitespace=-blank-at-eo
 docs/evidence/M2/cooked-scene/licenses/ktx/LICENSE.md whitespace=-blank-at-eol
 
 # Preserve these upstream legal notices byte-for-byte, including their line endings.
+licenses/pulseaudio/LGPL whitespace=-blank-at-eof
 docs/evidence/M2/shader-interface/licenses/slangc/third-party-notices/miniz-LICENSE -text whitespace=cr-at-eol
 docs/evidence/M2/shader-interface/licenses/spirv-headers/LICENSE whitespace=-blank-at-eof
 docs/evidence/M2/shader-interface/licenses/spirv-headers/LICENSES/MIT.txt whitespace=-blank-at-eol

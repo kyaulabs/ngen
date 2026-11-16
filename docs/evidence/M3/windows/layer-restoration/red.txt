@@ -1,0 +1,6 @@
+[31;1mException: [0m/home/kyau/projects/kyaulabs/ngen/tests/windows_flight.ps1:162[0m
+[31;1m[0m[36;1mLine |[0m
+[31;1m[0m[36;1m[36;1m 162 | [0m …             [36;1mthrow "Offline $outcome changed $state environment presen[0m …[0m
+[31;1m[0m[36;1m[36;1m[0m[36;1m[0m[36;1m     | [31;1m               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[31;1m[0m[36;1m[36;1m[0m[36;1m[0m[36;1m[31;1m[31;1m[36;1m     | [31;1mOffline success changed absent environment presence/value for[0m
+[31;1m[0m[36;1m[36;1m[0m[36;1m[0m[36;1m[31;1m[31;1m[36;1m[31;1m[36;1m     | [31;1mVK_INSTANCE_LAYERS[0m

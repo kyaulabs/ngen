@@ -28,6 +28,20 @@ jobs:
       - name: Test Windows script boundaries (no Windows build)
         shell: pwsh
         run: ./tests/windows_build.ps1
+      - name: Test flight handoff boundaries (no Windows build)
+        shell: pwsh
+        run: ./tests/windows_flight.ps1
+      - name: Test runnable Windows flight commands (no Windows build)
+        shell: pwsh
+        run: ./tests/windows_commands.ps1
+      - name: Test GPU provider diagnostic boundaries (no Windows provider)
+        shell: pwsh
+        run: ./tests/windows_gpu_memory.ps1
+      - name: Test native GPU reader transport (no Windows counters)
+        shell: pwsh
+        run: ./tests/windows_gpu_reader.ps1
+      - name: Test Jolt CRT generator contract (no Windows compilation)
+        run: python tests/jolt_recipe.py
       - name: Select reviewed revision range
         env:
           EVENT_BASE: ${{ github.event.pull_request.base.sha || github.event.before }}
@@ -68,7 +82,37 @@ jobs:
           cmake --build --preset "$PRESET"
           ctest --preset "$PRESET" --show-only
           ctest --preset "$PRESET"
-      - name: Build renderer and checked scene contracts with offline shaders
+      - name: Build and test headless local flight physics
+        if: matrix.preset != 'tsan'
+        env:
+          PRESET: ${{ matrix.preset }}
+        run: |
+          profile=linux-clang
+          type=Debug
+          cmake_args=()
+          conan_args=()
+          if [ "$PRESET" = release ]; then type=Release; fi
+          if [ "$PRESET" = asan ]; then
+            profile=linux-asan
+            conan_args=(-c:h 'tools.build:exelinkflags=["-fsanitize=address,undefined", "-no-pie"]')
+            cmake_args=(-DCMAKE_EXE_LINKER_FLAGS=-no-pie)
+          fi
+          conan export recipes/joltphysics --version=5.6.0 --user=ngen --channel=headless-double
+          conan install . -pr:h "profiles/$profile" -pr:h profiles/ci-linux-clang -pr:b profiles/ci-linux-clang -s:h build_type="$type" -s:b build_type=Release -o '&:physics=True' --lockfile conan-physics.lock --build=missing -c tools.build:jobs=2 -of "build/flight-$PRESET" "${conan_args[@]}"
+          cmake --preset "flight-$PRESET" "${cmake_args[@]}"
+          cmake --build --preset "flight-$PRESET"
+          ctest --preset "flight-$PRESET" --show-only
+          sudo unshare --net -- runuser -u "$(id -un)" -- env -u DISPLAY -u WAYLAND_DISPLAY "$(command -v ctest)" --preset "flight-$PRESET"
+          clang-tidy-18 -p "build/flight-$PRESET" engine/physics/world.cpp tests/physics.cpp game/flight/flight.cpp tests/flight.cpp game/flight/camera.cpp tests/flight_camera.cpp game/flight/input.cpp tests/flight_input.cpp
+          for binary in physics_tests flight_tests flight_camera_tests flight_input_tests; do
+            dynamic="build/flight-$PRESET/$binary-dynamic.txt"
+            readelf -d "build/flight-$PRESET/$binary" > "$dynamic"
+            if grep -Ei 'NEEDED.*(SDL|vulkan|libX11|wayland|libGL\.|libEGL|dxgi|d3d)' "$dynamic"; then
+              echo 'Unexpected presentation dependency in headless flight' >&2
+              exit 1
+            fi
+          done
+      - name: Build renderer and playable flight contracts with offline shaders
         if: matrix.preset == 'debug' || matrix.preset == 'asan'
         env:
           PRESET: ${{ matrix.preset }}
@@ -83,14 +127,17 @@ jobs:
             conan_args=(-c:h 'tools.build:exelinkflags=["-fsanitize=address,undefined", "-no-pie"]')
             cmake_args=(-DCMAKE_EXE_LINKER_FLAGS=-no-pie)
           fi
+          conan export recipes/pulseaudio --version=17.0 --user=ngen --channel=callback-safe
           conan export recipes/sdl --version=3.4.16 --user=ngen --channel=wayland
           conan export recipes/slangc --version=2026.21 --user=ngen --channel=tools
-          conan install . -pr:h "profiles/$profile" -pr:h profiles/ci-linux-clang -pr:b profiles/ci-linux-clang -s:b build_type=Release -o '&:renderer=True' -o '&:shaders=True' -o '&:assets=True' -o '&:inspector=True' --lockfile conan-inspector.lock --build=missing -c tools.build:jobs=2 -of "build/renderer-$PRESET" "${conan_args[@]}"
-          cmake --preset "renderer-$PRESET" -DNGEN_BUILD_INSPECTOR=ON "${cmake_args[@]}"
+          conan install . -pr:h "profiles/$profile" -pr:h profiles/ci-linux-clang -pr:b profiles/ci-linux-clang -s:b build_type=Release -o '&:renderer=True' -o '&:shaders=True' -o '&:assets=True' -o '&:inspector=True' -o '&:physics=True' -o '&:audio=True' --lockfile conan-demo.lock --build=missing -c tools.build:jobs=2 -c:h 'libsndfile/*:tools.cmake:configure_args=["-DENABLE_MPEG=OFF"]' -c:h 'pulseaudio/*:tools.meson.mesontoolchain:extra_variables={"project_options":{"systemd":"disabled","asyncns":"disabled"}}' -of "build/renderer-$PRESET" "${conan_args[@]}"
+          cmake --preset "renderer-$PRESET" -DNGEN_BUILD_INSPECTOR=ON -DNGEN_BUILD_PHYSICS=ON -DNGEN_BUILD_FLIGHT_DEMO=ON "${cmake_args[@]}"
           cmake --build --preset "renderer-$PRESET"
           ctest --preset "renderer-$PRESET" --show-only
           ctest --preset "renderer-$PRESET"
-          clang-tidy-18 -p "build/renderer-$PRESET" engine/render/context.cpp engine/render/surface.cpp engine/render/presentation.cpp engine/render/resources.cpp engine/render/post.cpp engine/render/mesh.cpp engine/render/overlay.cpp engine/render/environment.cpp tests/render_environment.cpp engine/render/vma.cpp apps/probe/presentation.cpp apps/render_probe/main.cpp apps/resource_probe/main.cpp tests/render_startup.cpp tests/render_surface.cpp tests/wayland_tablets.cpp tests/shader_layout.cpp tests/shader_gpu.cpp engine/render/scene.cpp engine/render/scene_draw.cpp apps/scene_probe/main.cpp apps/scene_probe/draw.cpp apps/asset_probe/main.cpp tests/assets.cpp engine/tools/inspector.cpp engine/tools/reload.cpp engine/tools/ui.cpp tests/inspector.cpp tests/reload.cpp apps/inspector_probe/main.cpp apps/scene_workload/fixture.cpp apps/scene_workload/main.cpp apps/scene_workload/allocations.cpp tests/workload.cpp apps/probe/capture.cpp
+          clang-tidy-18 -p "build/renderer-$PRESET" engine/render/context.cpp engine/render/surface.cpp engine/render/presentation.cpp engine/render/resources.cpp engine/render/post.cpp engine/render/mesh.cpp engine/render/overlay.cpp engine/render/environment.cpp tests/render_environment.cpp engine/render/vma.cpp apps/probe/presentation.cpp apps/render_probe/main.cpp apps/resource_probe/main.cpp tests/render_startup.cpp tests/render_surface.cpp tests/wayland_tablets.cpp tests/shader_layout.cpp tests/shader_gpu.cpp engine/render/scene.cpp engine/render/scene_draw.cpp apps/scene_probe/main.cpp apps/scene_probe/draw.cpp apps/asset_probe/main.cpp tests/assets.cpp engine/tools/inspector.cpp engine/tools/reload.cpp engine/tools/gui.cpp engine/tools/ui.cpp tests/inspector.cpp tests/reload.cpp apps/inspector_probe/main.cpp apps/scene_workload/fixture.cpp apps/scene_workload/main.cpp apps/scene_workload/allocations.cpp tests/workload.cpp apps/probe/capture.cpp
+          clang-tidy-18 '--header-filter=.*/(engine|game|apps|tests)/.*' -p "build/renderer-$PRESET" apps/flight_demo/preset.cpp apps/flight_demo/view.cpp apps/flight_demo/main.cpp apps/flight_demo/app.cpp apps/flight_demo/hud_layout.cpp tests/flight_hud.cpp tests/flight_scene.cpp engine/audio/mixer.cpp engine/audio/output.cpp tests/audio_mixer.cpp tests/audio_output.cpp
+          clang-tidy-18 '--header-filter=.*/(tools/gpu_memory|tests)/.*' -p "build/renderer-$PRESET" tools/gpu_memory/counters.cpp tests/gpu_memory.cpp
       - name: Build and test bounded offline asset tools
         if: matrix.preset == 'debug' || matrix.preset == 'asan'
         env:
@@ -116,7 +163,7 @@ jobs:
         env:
           PRESET: ${{ matrix.preset }}
         run: |
-          clang-format-18 --dry-run --Werror engine/core/*pp engine/jobs/*pp engine/simulation/*pp engine/render/*pp engine/assets/*pp engine/tools/*pp tests/*.cpp tests/*.hpp apps/sim_harness/*.cpp apps/render_probe/*.cpp apps/resource_probe/*.cpp apps/probe/*pp apps/asset_probe/*.cpp apps/scene_probe/*.cpp apps/scene_workload/*pp apps/inspector_probe/*.cpp tools/assetc/*pp
+          clang-format-18 --dry-run --Werror engine/core/*pp engine/jobs/*pp engine/simulation/*pp engine/physics/*pp engine/audio/*pp engine/render/*pp engine/assets/*pp engine/tools/*pp tests/*.cpp tests/*.hpp apps/sim_harness/*.cpp apps/render_probe/*.cpp apps/resource_probe/*.cpp apps/probe/*pp apps/asset_probe/*.cpp apps/scene_probe/*.cpp apps/scene_workload/*pp apps/inspector_probe/*.cpp apps/flight_demo/*pp game/flight/*pp recipes/joltphysics/test_package/*.cpp tools/assetc/*pp tools/gpu_memory/*pp
           clang-tidy-18 -p "build/$PRESET" engine/core/values.cpp engine/core/entities.cpp engine/jobs/jobs.cpp engine/simulation/simulation.cpp tests/core.cpp tests/jobs.cpp tests/simulation.cpp apps/sim_harness/main.cpp
           # Ubuntu restricts unprivileged user namespaces. Create only the
           # network namespace with sudo, then drop back to the runner identity.

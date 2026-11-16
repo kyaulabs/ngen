@@ -1,0 +1,13 @@
+{
+  "archive_sha256": "0d18b8c84342ec848ac0c8498f08aac9bdf8331d4a997dd294234ea5df5cd62a",
+  "entry_count": 73,
+  "uncompressed_bytes": 9094324,
+  "selected": [
+    "Release-flight.replay.txt",
+    "failure.txt",
+    "revision.txt",
+    "Debug-tests.txt",
+    "Release-tests.txt"
+  ],
+  "scope": "Five named failure/replay/revision/CTest diagnostics selected after bounded metadata preflight and redacted scan. Other payloads remain unread/unextracted; no returned code executed."
+}

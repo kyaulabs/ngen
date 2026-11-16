@@ -1,0 +1,111 @@
+{
+  "schema": 1,
+  "scope": "RCS implementation working-tree snapshot on parent 6a41458; not M3 completion or final Windows/owner acceptance.",
+  "package": {
+    "sha256": "bc42a7935562bdfde872b2d09dbb473996cdbcddc5101418bca2f632ca5dc427",
+    "checksum": "423256f5",
+    "bytes": 194132322,
+    "banks": 12,
+    "sockets": 24,
+    "instances": 240,
+    "materials": 29,
+    "workload_triangles": 248934,
+    "original_prefixes_and_images_lights_exact": true
+  },
+  "native_configs": [
+    "demo-debug",
+    "demo-release",
+    "demo-asan",
+    "demo-gcc"
+  ],
+  "ctest": {
+    "graphs": 4,
+    "tests_per_graph": 21,
+    "affected_test_reruns": 4,
+    "flight_scene_cases": 16
+  },
+  "ast": {
+    "actual_clang_commands": 15,
+    "affected_test_reruns": 3,
+    "initial_test_diagnostics": "Optional assertion and size_t multiplication diagnostics fixed without suppression.",
+    "gcc_ast": "Unavailable: unsupported GCC flags retained; native GCC build/tests and device replay pass."
+  },
+  "native_rcs_cases": 12,
+  "offline_author_boundary_cases": 4,
+  "replay": {
+    "frames": 2400,
+    "warmup": 60,
+    "extent": [
+      1920,
+      1080
+    ],
+    "csv_columns": 62,
+    "gpu_ready_rows": 2400,
+    "cpp_new_calls": 0,
+    "imgui_calls": 0,
+    "all_finite_and_host_clock_monotonic": true,
+    "stderr_bytes": 0,
+    "physical_trace_and_rear_power_exact_against_original_asset_baseline": true,
+    "comparison_fields": [
+      "tick",
+      "mode",
+      "x_m",
+      "y_m",
+      "z_m",
+      "vx_mps",
+      "vy_mps",
+      "vz_mps",
+      "fx_N",
+      "fy_N",
+      "fz_N",
+      "tx_Nm",
+      "ty_Nm",
+      "tz_Nm",
+      "mass_kg",
+      "nav_goal",
+      "qx",
+      "qy",
+      "qz",
+      "qw",
+      "wx_radps",
+      "wy_radps",
+      "wz_radps",
+      "drive_power"
+    ],
+    "performance_acceptance": false,
+    "audio": "Dummy backend/muted; no listening claim."
+  },
+  "asset_inspection": {
+    "extent": [
+      1920,
+      1080
+    ],
+    "views": [
+      "idle upper",
+      "all-emitter-hot upper",
+      "all-emitter-hot lower"
+    ],
+    "pixels_changed_over_8_codes_idle_to_hot_same_camera": 9497,
+    "physical_trace": false,
+    "private_images_not_committed": true
+  },
+  "pending": [
+    "Owner visual acceptance",
+    "Current-source Windows MSVC/ClangCl and CIM memory coverage",
+    "ClangCl warm ImGui allocation finding",
+    "Deferred EVE-inspired UI pass",
+    "Final affected offline bundles and three-run budgets after UI",
+    "Final review and PR integration"
+  ],
+  "source_sha256": {
+    "apps/flight_demo/app.cpp": "2b78ac29c45bb2936bad0a37246d1e6df8192662fbefb729dfdf5d9e0927bd81",
+    "apps/flight_demo/main.cpp": "4315a4f50bb9b7a071550915871ac9b3dfc7634b0b48b57ef3563b8f8044438e",
+    "apps/flight_demo/preset.cpp": "d89d4c9c1c4240a97da9698abec255c03d678ed4aa9ac2a97c0becc9541dea41",
+    "apps/flight_demo/preset.hpp": "16a7d88dd49a4dc2606ef2c6f5e019555b03780fbe73430dd2519529f232f2da",
+    "apps/flight_demo/frigate_rcs.hpp": "fb26120405ae4e2f8f18b5010d5e89b9646bdb26d19f90d55122af10a53722af",
+    "apps/flight_demo/author_rcs.py": "7fc33872d74e97f005490c14eff6d3cccefcea4c804227dae9e536ae55bdcfcc",
+    "tests/flight_scene.cpp": "687fe43c46c8af6896683510cbf42a229b729df25d2e299b06dfadc69478841a",
+    "tests/flight_rcs.py": "b87af0d85348ec253470d77fd1f8cf84c7e96f85b739065aa549505a3755d4a1",
+    "tests/rcs_author.py": "fcc37fb1623b0f8356c9fa8665b2fa0b4a795f1fba5fe75eb952846f7b8f10d2"
+  }
+}

@@ -1,0 +1,49 @@
+FFFF
+======================================================================
+FAIL: test_declared_windows_crt_controls_jolt_for_both_compiler_frontends (__main__.JoltRuntime.test_declared_windows_crt_controls_jolt_for_both_compiler_frontends) (compiler='clang', configuration='Debug', runtime='dynamic')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/kyau/projects/kyaulabs/ngen/tests/jolt_recipe.py", line 41, in test_declared_windows_crt_controls_jolt_for_both_compiler_frontends
+    self.assertIn("USE_STATIC_MSVC_RUNTIME_LIBRARY", variables,
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                  "Jolt must not fall back to its static CRT default")
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'USE_STATIC_MSVC_RUNTIME_LIBRARY' not found in {'DOUBLE_PRECISION': 'ON', 'CPP_EXCEPTIONS_ENABLED': 'ON', 'CPP_RTTI_ENABLED': 'ON', 'TARGET_UNIT_TESTS': 'OFF', 'TARGET_HELLO_WORLD': 'OFF', 'TARGET_PERFORMANCE_TEST': 'OFF', 'TARGET_SAMPLES': 'OFF', 'TARGET_VIEWER': 'OFF', 'JPH_USE_DX12': 'OFF', 'JPH_USE_VK': 'OFF', 'JPH_USE_MTL': 'OFF', 'JPH_USE_CPU_COMPUTE': 'OFF', 'JPH_BUILD_SHARED_LIBS': 'OFF', 'INTERPROCEDURAL_OPTIMIZATION': 'OFF', 'OVERRIDE_CXX_FLAGS': 'OFF', 'GENERATE_DEBUG_SYMBOLS': 'OFF', 'ENABLE_ALL_WARNINGS': 'OFF', 'ENABLE_OBJECT_STREAM': 'OFF', 'DEBUG_RENDERER_IN_DEBUG_AND_RELEASE': 'OFF', 'DEBUG_RENDERER_IN_DISTRIBUTION': 'OFF', 'PROFILER_IN_DEBUG_AND_RELEASE': 'OFF', 'PROFILER_IN_DISTRIBUTION': 'OFF', 'FLOATING_POINT_EXCEPTIONS_ENABLED': 'OFF', 'USE_SSE4_1': 'OFF', 'USE_SSE4_2': 'OFF', 'USE_AVX': 'OFF', 'USE_AVX2': 'OFF', 'USE_AVX512': 'OFF', 'USE_LZCNT': 'OFF', 'USE_TZCNT': 'OFF', 'USE_F16C': 'OFF', 'USE_FMADD': 'OFF', 'CMAKE_POLICY_DEFAULT_CMP0091': 'NEW', 'CMAKE_BUILD_TYPE': 'Debug', 'CMAKE_C_COMPILER': 'clang-cl', 'CMAKE_CXX_COMPILER': 'clang-cl'} : Jolt must not fall back to its static CRT default
+
+======================================================================
+FAIL: test_declared_windows_crt_controls_jolt_for_both_compiler_frontends (__main__.JoltRuntime.test_declared_windows_crt_controls_jolt_for_both_compiler_frontends) (compiler='clang', configuration='Debug', runtime='static')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/kyau/projects/kyaulabs/ngen/tests/jolt_recipe.py", line 41, in test_declared_windows_crt_controls_jolt_for_both_compiler_frontends
+    self.assertIn("USE_STATIC_MSVC_RUNTIME_LIBRARY", variables,
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                  "Jolt must not fall back to its static CRT default")
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'USE_STATIC_MSVC_RUNTIME_LIBRARY' not found in {'DOUBLE_PRECISION': 'ON', 'CPP_EXCEPTIONS_ENABLED': 'ON', 'CPP_RTTI_ENABLED': 'ON', 'TARGET_UNIT_TESTS': 'OFF', 'TARGET_HELLO_WORLD': 'OFF', 'TARGET_PERFORMANCE_TEST': 'OFF', 'TARGET_SAMPLES': 'OFF', 'TARGET_VIEWER': 'OFF', 'JPH_USE_DX12': 'OFF', 'JPH_USE_VK': 'OFF', 'JPH_USE_MTL': 'OFF', 'JPH_USE_CPU_COMPUTE': 'OFF', 'JPH_BUILD_SHARED_LIBS': 'OFF', 'INTERPROCEDURAL_OPTIMIZATION': 'OFF', 'OVERRIDE_CXX_FLAGS': 'OFF', 'GENERATE_DEBUG_SYMBOLS': 'OFF', 'ENABLE_ALL_WARNINGS': 'OFF', 'ENABLE_OBJECT_STREAM': 'OFF', 'DEBUG_RENDERER_IN_DEBUG_AND_RELEASE': 'OFF', 'DEBUG_RENDERER_IN_DISTRIBUTION': 'OFF', 'PROFILER_IN_DEBUG_AND_RELEASE': 'OFF', 'PROFILER_IN_DISTRIBUTION': 'OFF', 'FLOATING_POINT_EXCEPTIONS_ENABLED': 'OFF', 'USE_SSE4_1': 'OFF', 'USE_SSE4_2': 'OFF', 'USE_AVX': 'OFF', 'USE_AVX2': 'OFF', 'USE_AVX512': 'OFF', 'USE_LZCNT': 'OFF', 'USE_TZCNT': 'OFF', 'USE_F16C': 'OFF', 'USE_FMADD': 'OFF', 'CMAKE_POLICY_DEFAULT_CMP0091': 'NEW', 'CMAKE_BUILD_TYPE': 'Debug', 'CMAKE_C_COMPILER': 'clang-cl', 'CMAKE_CXX_COMPILER': 'clang-cl'} : Jolt must not fall back to its static CRT default
+
+======================================================================
+FAIL: test_declared_windows_crt_controls_jolt_for_both_compiler_frontends (__main__.JoltRuntime.test_declared_windows_crt_controls_jolt_for_both_compiler_frontends) (compiler='clang', configuration='Release', runtime='dynamic')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/kyau/projects/kyaulabs/ngen/tests/jolt_recipe.py", line 41, in test_declared_windows_crt_controls_jolt_for_both_compiler_frontends
+    self.assertIn("USE_STATIC_MSVC_RUNTIME_LIBRARY", variables,
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                  "Jolt must not fall back to its static CRT default")
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'USE_STATIC_MSVC_RUNTIME_LIBRARY' not found in {'DOUBLE_PRECISION': 'ON', 'CPP_EXCEPTIONS_ENABLED': 'ON', 'CPP_RTTI_ENABLED': 'ON', 'TARGET_UNIT_TESTS': 'OFF', 'TARGET_HELLO_WORLD': 'OFF', 'TARGET_PERFORMANCE_TEST': 'OFF', 'TARGET_SAMPLES': 'OFF', 'TARGET_VIEWER': 'OFF', 'JPH_USE_DX12': 'OFF', 'JPH_USE_VK': 'OFF', 'JPH_USE_MTL': 'OFF', 'JPH_USE_CPU_COMPUTE': 'OFF', 'JPH_BUILD_SHARED_LIBS': 'OFF', 'INTERPROCEDURAL_OPTIMIZATION': 'OFF', 'OVERRIDE_CXX_FLAGS': 'OFF', 'GENERATE_DEBUG_SYMBOLS': 'OFF', 'ENABLE_ALL_WARNINGS': 'OFF', 'ENABLE_OBJECT_STREAM': 'OFF', 'DEBUG_RENDERER_IN_DEBUG_AND_RELEASE': 'OFF', 'DEBUG_RENDERER_IN_DISTRIBUTION': 'OFF', 'PROFILER_IN_DEBUG_AND_RELEASE': 'OFF', 'PROFILER_IN_DISTRIBUTION': 'OFF', 'FLOATING_POINT_EXCEPTIONS_ENABLED': 'OFF', 'USE_SSE4_1': 'OFF', 'USE_SSE4_2': 'OFF', 'USE_AVX': 'OFF', 'USE_AVX2': 'OFF', 'USE_AVX512': 'OFF', 'USE_LZCNT': 'OFF', 'USE_TZCNT': 'OFF', 'USE_F16C': 'OFF', 'USE_FMADD': 'OFF', 'CMAKE_POLICY_DEFAULT_CMP0091': 'NEW', 'CMAKE_BUILD_TYPE': 'Release', 'CMAKE_C_COMPILER': 'clang-cl', 'CMAKE_CXX_COMPILER': 'clang-cl'} : Jolt must not fall back to its static CRT default
+
+======================================================================
+FAIL: test_declared_windows_crt_controls_jolt_for_both_compiler_frontends (__main__.JoltRuntime.test_declared_windows_crt_controls_jolt_for_both_compiler_frontends) (compiler='clang', configuration='Release', runtime='static')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/kyau/projects/kyaulabs/ngen/tests/jolt_recipe.py", line 41, in test_declared_windows_crt_controls_jolt_for_both_compiler_frontends
+    self.assertIn("USE_STATIC_MSVC_RUNTIME_LIBRARY", variables,
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                  "Jolt must not fall back to its static CRT default")
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'USE_STATIC_MSVC_RUNTIME_LIBRARY' not found in {'DOUBLE_PRECISION': 'ON', 'CPP_EXCEPTIONS_ENABLED': 'ON', 'CPP_RTTI_ENABLED': 'ON', 'TARGET_UNIT_TESTS': 'OFF', 'TARGET_HELLO_WORLD': 'OFF', 'TARGET_PERFORMANCE_TEST': 'OFF', 'TARGET_SAMPLES': 'OFF', 'TARGET_VIEWER': 'OFF', 'JPH_USE_DX12': 'OFF', 'JPH_USE_VK': 'OFF', 'JPH_USE_MTL': 'OFF', 'JPH_USE_CPU_COMPUTE': 'OFF', 'JPH_BUILD_SHARED_LIBS': 'OFF', 'INTERPROCEDURAL_OPTIMIZATION': 'OFF', 'OVERRIDE_CXX_FLAGS': 'OFF', 'GENERATE_DEBUG_SYMBOLS': 'OFF', 'ENABLE_ALL_WARNINGS': 'OFF', 'ENABLE_OBJECT_STREAM': 'OFF', 'DEBUG_RENDERER_IN_DEBUG_AND_RELEASE': 'OFF', 'DEBUG_RENDERER_IN_DISTRIBUTION': 'OFF', 'PROFILER_IN_DEBUG_AND_RELEASE': 'OFF', 'PROFILER_IN_DISTRIBUTION': 'OFF', 'FLOATING_POINT_EXCEPTIONS_ENABLED': 'OFF', 'USE_SSE4_1': 'OFF', 'USE_SSE4_2': 'OFF', 'USE_AVX': 'OFF', 'USE_AVX2': 'OFF', 'USE_AVX512': 'OFF', 'USE_LZCNT': 'OFF', 'USE_TZCNT': 'OFF', 'USE_F16C': 'OFF', 'USE_FMADD': 'OFF', 'CMAKE_POLICY_DEFAULT_CMP0091': 'NEW', 'CMAKE_BUILD_TYPE': 'Release', 'CMAKE_C_COMPILER': 'clang-cl', 'CMAKE_CXX_COMPILER': 'clang-cl'} : Jolt must not fall back to its static CRT default
+
+----------------------------------------------------------------------
+Ran 1 test in 5.149s
+
+FAILED (failures=4)

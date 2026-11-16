@@ -1,0 +1,9 @@
+tools.build:cflags=['-fsanitize=address,undefined', '-fno-sanitize-recover=all', '-fno-omit-frame-pointer']
+tools.build:cxxflags=['-fsanitize=address,undefined', '-fno-sanitize-recover=all', '-fno-omit-frame-pointer']
+tools.build:exelinkflags=['-fsanitize=address,undefined', '-no-pie']
+tools.build:sharedlinkflags=['-fsanitize=address,undefined']
+checking if clang supports -Wl,--no-undefined flag... yes
+... instrumented libasound object imports rejected by the DSO -z,defs check ...
+conf.c:(.text.asan.module_ctor[asan.module_ctor]+0x5): undefined reference to `__asan_init'
+Package 'c3f6cc6e5e5227891a1eb99d566f01e015990ae3' build failed
+ERROR: libalsa/1.2.16.1: Error in build() method, line 65

@@ -278,14 +278,17 @@ class SDLConan(ConanFile):
         tc.variables["SDL_METAL"] = self.options.get_safe("metal")
         tc.variables["SDL_DIRECTX"] = self.options.get_safe("directx")
 
+        # False must disable CMake autodetection, not silently use ambient SDKs.
+        tc.cache_variables["SDL_PULSEAUDIO"] = self.options.get_safe("pulseaudio", False)
+        tc.cache_variables["SDL_ALSA"] = self.options.get_safe("alsa", False)
+        tc.cache_variables["SDL_SNDIO"] = self.options.get_safe("sndio", False)
+        # No PipeWire requirement/option exists in this recipe's pinned graph.
+        tc.cache_variables["SDL_PIPEWIRE"] = False
         if self.options.get_safe("pulseaudio"):
-            tc.cache_variables["SDL_PULSEAUDIO"] = True
             tc.cache_variables["SDL_PULSEAUDIO_SHARED"] = self.dependencies["pulseaudio"].options.get_safe("shared", True)
         if self.options.get_safe("alsa"):
-            tc.cache_variables["SDL_ALSA"] = True
             tc.cache_variables["SDL_ALSA_SHARED"] = self.dependencies["libalsa"].options.shared
         if self.options.get_safe("sndio"):
-            tc.cache_variables["SDL_SNDIO"] = True
             tc.cache_variables["SDL_SNDIO_SHARED"] = True  # sndio is always shared
         tc.cache_variables["SDL_LIBUDEV"] = self.options.get_safe("libudev", False)
 

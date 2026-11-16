@@ -1,0 +1,5 @@
+Traceback (most recent call last):
+  File "/home/kyau/projects/kyaulabs/ngen/docs/evidence/M3/mode-handoff/check-trace.py", line 11, in <module>
+    assert row["nav_goal"] == "0", "TAB must not reactivate the previous autopilot goal"
+           ^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: TAB must not reactivate the previous autopilot goal

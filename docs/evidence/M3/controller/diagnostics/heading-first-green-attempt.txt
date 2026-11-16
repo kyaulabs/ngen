@@ -1,0 +1,33 @@
+Test project /home/kyau/projects/kyaulabs/ngen/build/flight-debug
+    Start 2: flight
+1/1 Test #2: flight ...........................***Failed    0.06 sec
+Randomness seeded to: 3622950649
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+flight_tests is a Catch2 v3.16.0 host application.
+Run with -? for options
+
+-------------------------------------------------------------------------------
+a tactical destination converges through the same bounded physical force model
+-------------------------------------------------------------------------------
+/home/kyau/projects/kyaulabs/ngen/tests/flight.cpp:108
+...............................................................................
+
+/home/kyau/projects/kyaulabs/ngen/tests/flight.cpp:117: FAILED:
+  REQUIRE( std::abs(state.force_newtons[0]) <= definition.maximum_force_newtons[0] )
+with expansion:
+  6000.00390625f <= 6000.0f
+
+===============================================================================
+test cases:    6 |    5 passed | 1 failed
+assertions: 2383 | 2382 passed | 1 failed
+
+
+
+0% tests passed, 1 tests failed out of 1
+
+Total Test time (real) =   0.06 sec
+
+The following tests FAILED:
+	  2 - flight (Failed)
+Errors while running CTest

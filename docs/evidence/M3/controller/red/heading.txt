@@ -1,0 +1,34 @@
+Test project /home/kyau/projects/kyaulabs/ngen/build/flight-debug
+    Start 2: flight
+1/1 Test #2: flight ...........................***Failed    0.09 sec
+Randomness seeded to: 1841183295
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+flight_tests is a Catch2 v3.16.0 host application.
+Run with -? for options
+
+-------------------------------------------------------------------------------
+tactical steering turns the hull toward its destination using the shared
+attitude model
+-------------------------------------------------------------------------------
+/home/kyau/projects/kyaulabs/ngen/tests/flight.cpp:128
+...............................................................................
+
+/home/kyau/projects/kyaulabs/ngen/tests/flight.cpp:140: FAILED:
+  REQUIRE( forward_x > .95F )
+with expansion:
+  -0.0f > 0.949999988f
+
+===============================================================================
+test cases:    6 |    5 passed | 1 failed
+assertions: 7780 | 7779 passed | 1 failed
+
+
+
+0% tests passed, 1 tests failed out of 1
+
+Total Test time (real) =   0.09 sec
+
+The following tests FAILED:
+	  2 - flight (Failed)
+Errors while running CTest

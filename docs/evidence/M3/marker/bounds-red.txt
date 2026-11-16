@@ -1,0 +1,33 @@
+Test project /home/kyau/projects/kyaulabs/ngen/build/demo-debug
+    Start 8: flight_scene
+1/1 Test #8: flight_scene .....................***Failed    0.04 sec
+Randomness seeded to: 910807256
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+flight_scene_tests is a Catch2 v3.16.0 host application.
+Run with -? for options
+
+-------------------------------------------------------------------------------
+off-screen and camera-plane targets cannot generate unbounded HUD geometry
+-------------------------------------------------------------------------------
+/home/kyau/projects/kyaulabs/ngen/tests/flight_scene.cpp:26
+...............................................................................
+
+/home/kyau/projects/kyaulabs/ngen/tests/flight_scene.cpp:37: FAILED:
+  REQUIRE( !demo::project_target(frame, point, {1280, 720}).has_value() )
+with expansion:
+  false
+
+===============================================================================
+test cases:   7 |   6 passed | 1 failed
+assertions: 656 | 655 passed | 1 failed
+
+
+
+0% tests passed, 1 tests failed out of 1
+
+Total Test time (real) =   0.04 sec
+
+The following tests FAILED:
+	  8 - flight_scene (Failed)
+Errors while running CTest

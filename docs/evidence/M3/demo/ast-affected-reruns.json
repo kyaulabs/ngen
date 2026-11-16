@@ -1,0 +1,20 @@
+[
+  {
+    "configuration": "demo-debug",
+    "source": "apps/flight_demo/app.cpp",
+    "status": 0,
+    "scope": "current implementation; exact unchanged native flags; all owned headers"
+  },
+  {
+    "configuration": "demo-release",
+    "source": "apps/flight_demo/app.cpp",
+    "status": 0,
+    "scope": "current implementation; exact unchanged native flags; all owned headers"
+  },
+  {
+    "configuration": "demo-asan",
+    "source": "apps/flight_demo/app.cpp",
+    "status": 0,
+    "scope": "current implementation; exact unchanged native flags; all owned headers"
+  }
+]

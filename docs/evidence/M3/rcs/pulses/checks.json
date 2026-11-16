@@ -1,0 +1,106 @@
+{
+  "schema": 1,
+  "scope": "Presentation-only pulsed RCS on parent b7f5c01; not a new physical valve/impulse model or M3 completion.",
+  "accepted_locations_unchanged": true,
+  "private_asset_sha256": "90e55636228021f6bd04e800d2884883d6a3418eef716b396a28640e2e5270d2",
+  "banks": 16,
+  "jets": 32,
+  "design": {
+    "tick_hz": 60,
+    "minimum_burn_ticks": 6,
+    "minimum_off_ticks": 3,
+    "idle_enter_threshold": 0.0002,
+    "idle_exit_threshold": 0.0001,
+    "visual_duty": "Existing fourth-root perceptual response of peak calibrated bank demand.",
+    "coordination": "One gate for the entire calibrated moment/force pattern.",
+    "saturation": "Unit demand may stay on continuously; zero/idle/reset cancels promptly.",
+    "timing_is_nasa_hardware_specification": false,
+    "physical_controller_changed": false
+  },
+  "research": [
+    {
+      "title": "Design and Stability of an On-Orbit Attitude Control System Using Reaction Control Thrusters",
+      "year": 2016,
+      "url": "https://ntrs.nasa.gov/citations/20160001829",
+      "sections": [
+        "II",
+        "IV",
+        "V",
+        "VI"
+      ]
+    },
+    {
+      "title": "NASA State-of-the-Art of Small Spacecraft Technology: Guidance, Navigation, and Control",
+      "section": "5.2.4",
+      "url": "https://www.nasa.gov/smallsat-institute/sst-soa/guidance-navigation-and-control/"
+    }
+  ],
+  "verification": {
+    "configs": [
+      "demo-debug",
+      "demo-release",
+      "demo-asan",
+      "demo-gcc"
+    ],
+    "ctests_per_config": 22,
+    "pulse_cases": 9,
+    "actual_clang_commands": 9,
+    "native_rcs_cases": 12,
+    "frames": 2400,
+    "warmup": 60,
+    "extent": [
+      1920,
+      1080
+    ],
+    "csv_columns": 63,
+    "cpp_new_calls": 0,
+    "imgui_calls": 0,
+    "ready_gpu_rows": 2400,
+    "frames_firing": 532,
+    "frames_quiet_with_correction_demand": 540,
+    "all_physical_and_rear_power_fields_exact": [
+      "tick",
+      "mode",
+      "x_m",
+      "y_m",
+      "z_m",
+      "vx_mps",
+      "vy_mps",
+      "vz_mps",
+      "fx_N",
+      "fy_N",
+      "fz_N",
+      "tx_Nm",
+      "ty_Nm",
+      "tz_Nm",
+      "mass_kg",
+      "nav_goal",
+      "qx",
+      "qy",
+      "qz",
+      "qw",
+      "wx_radps",
+      "wy_radps",
+      "wz_radps",
+      "drive_power"
+    ],
+    "gcc_ast": "Unavailable; unsupported GCC flags retained.",
+    "audio": "Muted dummy backend; no listening claim.",
+    "performance_acceptance": false,
+    "initial_compile_failure": "Unused private state in initial API seam; corrected before runtime Red, without warning suppression."
+  },
+  "pending": [
+    "Owner pulse timing review",
+    "Current Windows/RTX, existing CIM and ImGui findings",
+    "Deferred UI pass",
+    "Final affected budgets and reviewed integration"
+  ],
+  "source_sha256": {
+    "CMakeLists.txt": "cf655dffcce5759d5b87ffc6b47d1e26ccb143d92df9effa0cc4f096284b7eb4",
+    "apps/flight_demo/app.cpp": "5b1750ddaf37a91d87c3fb12cbfecd47de4ace8a24adb29a6f0c306e20b8679f",
+    "apps/flight_demo/rcs.cpp": "65ff1fbcda268952422f5ca6a870d4c9a0e9f301a291d21a3c174efee3e7179b",
+    "apps/flight_demo/rcs.hpp": "72fe9dcd0fabf5cea99ab41ad019217afed1444968faf94be31cfaf951f8fccb",
+    "tests/rcs_pulses.cpp": "595db34177299d5501907f5e85d30c1aa61d85326b6da6efd97d8078ebcc65ab",
+    "tests/flight_rcs.py": "77843221f00d2800e411170e0d651784e98dc4224d74ea52a47ade0853cc06f6"
+  }
+}

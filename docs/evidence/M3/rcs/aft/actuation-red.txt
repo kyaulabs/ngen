@@ -1,0 +1,33 @@
+Test project /home/kyau/projects/kyaulabs/ngen/build/demo-debug
+    Start 8: flight_scene
+1/1 Test #8: flight_scene .....................***Failed    0.15 sec
+Randomness seeded to: 3712636066
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+flight_scene_tests is a Catch2 v3.16.0 host application.
+Run with -? for options
+
+-------------------------------------------------------------------------------
+every forward and aft RCS bank participates in admitted wrench patterns
+-------------------------------------------------------------------------------
+/home/kyau/projects/kyaulabs/ngen/tests/flight_scene.cpp:125
+...............................................................................
+
+/home/kyau/projects/kyaulabs/ngen/tests/flight_scene.cpp:141: FAILED:
+  REQUIRE( active )
+with expansion:
+  false
+
+===============================================================================
+test cases:   17 |   16 passed | 1 failed
+assertions: 1487 | 1486 passed | 1 failed
+
+
+
+0% tests passed, 1 tests failed out of 1
+
+Total Test time (real) =   0.15 sec
+
+The following tests FAILED:
+	  8 - flight_scene (Failed)
+Errors while running CTest

@@ -1,0 +1,35 @@
+[
+  {
+    "configuration": "demo-debug",
+    "sources": [
+      "apps/flight_demo/preset.cpp",
+      "apps/flight_demo/view.cpp",
+      "apps/flight_demo/main.cpp",
+      "apps/flight_demo/app.cpp",
+      "apps/scene_workload/allocations.cpp",
+      "tests/flight_scene.cpp"
+    ]
+  },
+  {
+    "configuration": "demo-release",
+    "sources": [
+      "apps/flight_demo/preset.cpp",
+      "apps/flight_demo/view.cpp",
+      "apps/flight_demo/main.cpp",
+      "apps/flight_demo/app.cpp",
+      "apps/scene_workload/allocations.cpp",
+      "tests/flight_scene.cpp"
+    ]
+  },
+  {
+    "configuration": "demo-asan",
+    "sources": [
+      "apps/flight_demo/preset.cpp",
+      "apps/flight_demo/view.cpp",
+      "apps/flight_demo/main.cpp",
+      "apps/flight_demo/app.cpp",
+      "apps/scene_workload/allocations.cpp",
+      "tests/flight_scene.cpp"
+    ]
+  }
+]

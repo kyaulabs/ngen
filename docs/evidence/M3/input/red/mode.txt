@@ -1,0 +1,33 @@
+Test project /home/kyau/projects/kyaulabs/ngen/build/flight-debug
+    Start 4: flight_input
+1/1 Test #4: flight_input .....................***Failed    0.00 sec
+Randomness seeded to: 3439532129
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+flight_input_tests is a Catch2 v3.16.0 host application.
+Run with -? for options
+
+-------------------------------------------------------------------------------
+a view-mode change releases live input but confirming the current mode does not
+-------------------------------------------------------------------------------
+/home/kyau/projects/kyaulabs/ngen/tests/flight_input.cpp:103
+...............................................................................
+
+/home/kyau/projects/kyaulabs/ngen/tests/flight_input.cpp:113: FAILED:
+  REQUIRE_FALSE( input.capture() )
+with expansion:
+  !true
+
+===============================================================================
+test cases:  6 |  5 passed | 1 failed
+assertions: 80 | 79 passed | 1 failed
+
+
+
+0% tests passed, 1 tests failed out of 1
+
+Total Test time (real) =   0.00 sec
+
+The following tests FAILED:
+	  4 - flight_input (Failed)
+Errors while running CTest

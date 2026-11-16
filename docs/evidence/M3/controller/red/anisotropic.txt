@@ -1,0 +1,34 @@
+Test project /home/kyau/projects/kyaulabs/ngen/build/flight-debug
+    Start 2: flight
+1/1 Test #2: flight ...........................***Failed    0.52 sec
+Randomness seeded to: 1330255927
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+flight_tests is a Catch2 v3.16.0 host application.
+Run with -? for options
+
+-------------------------------------------------------------------------------
+a speed limiter cannot demand unavailable lateral braking from an anisotropic
+hull
+-------------------------------------------------------------------------------
+/home/kyau/projects/kyaulabs/ngen/tests/flight.cpp:262
+...............................................................................
+
+/home/kyau/projects/kyaulabs/ngen/tests/flight.cpp:284: FAILED:
+  REQUIRE( std::sqrt(v[0] * v[0] + v[1] * v[1] + v[2] * v[2]) <= 10.0001F )
+with expansion:
+  10.035511971f <= 10.000100136f
+
+===============================================================================
+test cases:    11 |    10 passed | 1 failed
+assertions: 87490 | 87489 passed | 1 failed
+
+
+
+0% tests passed, 1 tests failed out of 1
+
+Total Test time (real) =   0.52 sec
+
+The following tests FAILED:
+	  2 - flight (Failed)
+Errors while running CTest

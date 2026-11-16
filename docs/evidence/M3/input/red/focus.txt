@@ -1,0 +1,34 @@
+Test project /home/kyau/projects/kyaulabs/ngen/build/flight-debug
+    Start 4: flight_input
+1/1 Test #4: flight_input .....................***Failed    0.00 sec
+Randomness seeded to: 1164201912
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+flight_input_tests is a Catch2 v3.16.0 host application.
+Run with -? for options
+
+-------------------------------------------------------------------------------
+focus loss clears held thrust and capture without replaying them when focus
+returns
+-------------------------------------------------------------------------------
+/home/kyau/projects/kyaulabs/ngen/tests/flight_input.cpp:23
+...............................................................................
+
+/home/kyau/projects/kyaulabs/ngen/tests/flight_input.cpp:36: FAILED:
+  REQUIRE_FALSE( input.capture() )
+with expansion:
+  !true
+
+===============================================================================
+test cases:  2 |  1 passed | 1 failed
+assertions: 23 | 22 passed | 1 failed
+
+
+
+0% tests passed, 1 tests failed out of 1
+
+Total Test time (real) =   0.00 sec
+
+The following tests FAILED:
+	  4 - flight_input (Failed)
+Errors while running CTest

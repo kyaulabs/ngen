@@ -1,0 +1,34 @@
+Test project /home/kyau/projects/kyaulabs/ngen/build/demo-debug
+    Start 8: flight_scene
+1/1 Test #8: flight_scene .....................***Failed    0.04 sec
+Randomness seeded to: 2260964048
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+flight_scene_tests is a Catch2 v3.16.0 host application.
+Run with -? for options
+
+-------------------------------------------------------------------------------
+RMB release promptly arrests authored steering through bounded torque without a
+reset
+-------------------------------------------------------------------------------
+/home/kyau/projects/kyaulabs/ngen/tests/flight_scene.cpp:30
+...............................................................................
+
+/home/kyau/projects/kyaulabs/ngen/tests/flight_scene.cpp:60: FAILED:
+  REQUIRE( std::abs(game->snapshot().body.angular_velocity_rps[axis]) < .04F )
+with expansion:
+  0.113696761f < 0.039999999f
+
+===============================================================================
+test cases:   10 |   9 passed | 1 failed
+assertions: 1000 | 999 passed | 1 failed
+
+
+
+0% tests passed, 1 tests failed out of 1
+
+Total Test time (real) =   0.04 sec
+
+The following tests FAILED:
+	  8 - flight_scene (Failed)
+Errors while running CTest
