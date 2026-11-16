@@ -10,7 +10,10 @@ and header artwork adopt the brand.
 Post-UI native Windows and three valid MSVC active-profile budget runs passed at
 their documented sources; driver differences and historical misses remain
 recorded. Those binaries predate the identity revisions described below and are
-not relabelled. Overall M3 acceptance remains withheld pending the revised UI.
+not relabelled. The owner accepted the subsequent 1.4 v25 preview/private clip;
+[final verification](../evidence/M3/ui/final-verification.md) records the unchanged
+full GUI-suite pass and the retained non-benchmark allocation observation.
+Normal reviewed integration may proceed.
 
 The three requested references were read in full. The initial proposal had not
 opened their images; after the owner called out that gap, all 27 relevant UI

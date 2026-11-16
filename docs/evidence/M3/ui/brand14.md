@@ -2,9 +2,12 @@
 
 The owner requested `ngen-web/brand/` as the replacement brand directory,
 selected its canonical component opacities rather than uniform 65%, and confirmed
-redistribution rights for bundling the supplied typefaces. M3 visual acceptance
-is still open; PR #10 remains draft. Earlier Graphite v24 media/source and accepted
-Windows/laptop measurements retain their actual identities, not this revision.
+redistribution rights for bundling the supplied typefaces. The owner subsequently
+accepted the frozen v25 preview/private clip and instructed continuation.
+[Final verification](final-verification.md) records the unchanged 20-test native
+GUI pass on an owned isolated display and the bounded allocation follow-up.
+Earlier Graphite v24 media/source and accepted Windows/laptop measurements retain
+their actual identities, not this revision.
 
 Bounded regular-file preflight admitted 140 files / 26,270,890 bytes, with
 100 changed, 19 added and zero removed relative to Graphite 1.2. Names, extensions,
@@ -50,7 +53,8 @@ in one, and dispatch/drag/hold assertions failed in another. These results are
 retained. A focused reopening run and nine later gesture runs passed, with full
 CSV diagnostics retained; some runs observed focus changes, but the original
 failures' cause is untraced. Do not attribute them to fonts or desktop activity,
-claim the full suite passed, or change/relax accepted input handling to hide them.
+or claim those attempts passed. The unchanged full suite later passed all 20
+methods on an isolated owned display; no input or assertion relaxation was needed.
 The changed material/font contracts pass. An attempted debugger function-call
 origin fixture timed out; it was replaced by observing public clip-rectangle
 arguments for actual popup placement, not treated as a product Red.
@@ -64,5 +68,8 @@ explanation for the first increase. Preserve all observations; no detector or
 budget was relaxed, and no clean allocation pass is claimed for the media run.
 See the [delivery record](../package/final-delivery.md) for exact clip identity
 and verification limits. No old SDK, hardware budget, audio/handling or memory
-gate is reopened. The allocation observation, GUI-suite reliability and owner
-acceptance remain unresolved; normal integration stays draft.
+gate is reopened. The original 3,854-call observation remains untraced. A later
+unmodified recording reports eight, and a separate native diagnostic attributes
+eight to two scripted resets; neither media run is a clean steady-state budget
+fixture. With the owner's visual verdict and the unchanged full-suite pass,
+normal reviewed integration may proceed, retaining these evidence limitations.

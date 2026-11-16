@@ -18,9 +18,10 @@ Results retain their actual source revisions, not the current checkout label.
 **No further build, timing, memory, hover or SDK rerun is needed for these gates.**
 
 The owner now reports that real disconnected startup and listening passed.
-M3 acceptance remains withheld for the requested Visual Identity 1.4 preview
-and its explicitly retained GUI-suite/allocation observations. Use source-bound
-Linux v25 and its private local clip in the
+The owner accepted the Visual Identity 1.4 Linux v25 preview/private clip and
+instructed continuation. The unchanged full GUI suite passes on an owned isolated
+display; the original non-benchmark allocation observation remains explicitly
+retained. See [final verification](../evidence/M3/ui/final-verification.md) and the
 [current delivery record](../evidence/M3/package/final-delivery.md). Older Windows
 binaries are not relabelled as 1.4; no new Windows gate run is requested.
 

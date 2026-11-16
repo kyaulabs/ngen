@@ -17,15 +17,17 @@ routing. Network isolation, hidden Conan and absent SDK environment are explicit
 A decoded frame was opened visually. Recording SHA-256:
 `8233792025cfc5dc0e54c88839bddd6710d24e76855364bdf4822f7ccf0b81f6`.
 
-This preview is **not fully verified for M3 acceptance**. The first instrumented
-3,600-frame run reported 3,854 warm C++ calls / zero ImGui calls. Two debugger
-recording comparisons reported eight; sampled stacks include planned reset and
-post-loop driver/HDR-readback allocation paths but do not explain the original
-increase. Counters were not suppressed; do not relabel that run as a clean budget
-pass or attribute the difference to fonts. The full GUI-suite gesture failures
-in [1.4 checks](../ui/brand14.md) also remain untraced despite focused passes.
-[brand14-linux.json](brand14-linux.json) records these limits and exact identities.
-Keep the PR draft; source/media correspondence does not supply final UI acceptance,
+The owner accepted this preview/private clip and instructed continuation. The
+unchanged 20-method GUI suite subsequently passed on an owned isolated Wayland
+display. A fresh actual recording of the unmodified frozen bundle reports eight
+warm C++ calls / zero ImGui; a separate native diagnostic attributes eight to two
+scripted physics resets. The initial recording's 3,854-call count remains untraced
+and retained, never relabelled as a clean budget pass or attributed to fonts.
+The walkthrough is not the zero-allocation steady-state fixture. No source,
+input, detector, capacity, warmup or assertion change was needed for follow-up.
+See [final verification](../ui/final-verification.md) for precise execution scopes,
+and [brand14-linux.json](brand14-linux.json) for original artifact identities.
+Normal reviewed integration may proceed; source/media correspondence is not
 clean timing/memory proof, cross-distribution support, AV certification or legal
 approval. Earlier hardware gates are not rerun for this theme revision.
 
@@ -62,8 +64,8 @@ calls, as did the old v23 pilot; the C++ call sites are untraced. Do not call th
 allocation-free or clean timing/memory evidence. Audio/video alignment is
 monotonic-time estimated, not sample-accurate certification. Earlier accepted
 performance records remain at their actual revisions and are not rerun/relabelled.
-The owner still needs to accept this revised UI; overall M3 acceptance and merge
-remain blocked on that verdict, not another SDK/timing/memory rerun.
+This Graphite candidate was superseded by the subsequently accepted 1.4 v25
+preview above; it was not relabelled or used as its visual acceptance evidence.
 
 This v23 candidate predates the owner's replacement Graphite pack and remains
 historical, not the revised-UI acceptance candidate. See

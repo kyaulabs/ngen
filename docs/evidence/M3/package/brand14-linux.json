@@ -31,7 +31,19 @@
   "warm_cpp_calls": 3854,
   "warm_imgui_calls": 0,
   "allocation_scope": "Initial media run remains 3854 C++ calls, not accepted as a clean allocation/budget pass. Later debugger recording comparisons report eight; trace samples cover planned reset and post-loop driver/HDR readback paths but do not identify the original increase. No causal attribution or detector change.",
-  "gui_scope": "Material/font contracts, 5 hover cases, strict sanitizer consumers and 108 CTests pass. Full 20-method GUI suite attempts had intermittent gesture failures; focused gesture runs pass but cause is untraced.",
-  "owner_verdict": "Revised UI and overall M3 acceptance pending; do not approve or merge yet.",
-  "scope": "Private current-Linux-ABI source/media correspondence only; not clean timing/memory, full GUI-suite success, sample-accurate AV or legal approval."
+  "gui_scope": "Material/font contracts, 5 hover cases, strict sanitizer consumers and 108 CTests pass. Earlier active-desktop GUI failures remain retained; unchanged full 20-method suite later passes on an owned isolated Wayland display, without source/input/assertion changes. Original failure causes untraced.",
+  "followup": {
+    "record": "../ui/final-verification.md",
+    "unmodified_frozen_bundle_recording": "build/m3-identity14-recording-confirmation-v25/recording.mkv",
+    "recording_sha256": "d2dc3ae96f746204217176c25dc4a626d94a2f35333e9315e5246922987cd3b4",
+    "frames": 392,
+    "duration_s": 20.099,
+    "warm_cpp_calls": 8,
+    "warm_imgui_calls": 0,
+    "separate_native_diagnostic": "All eight calls trace to two explicit physics resets. Post-loop HDR readback allocates separately. Diagnostic instrumentation removed and source hashes verified restored; not benchmark proof or original 3854-call attribution.",
+    "original_media_unchanged": true,
+    "initial_3854_call_cause": "untraced"
+  },
+  "owner_verdict": "Owner accepted frozen v25 preview/private clip and instructed continuation. Normal reviewed integration may proceed with retained evidence scopes; earlier hardware gates not reopened.",
+  "scope": "Private current-Linux-ABI source/media correspondence only; not clean timing/memory, active-desktop GUI-suite reliability, sample-accurate AV or legal approval."
 }

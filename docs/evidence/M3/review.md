@@ -3,12 +3,16 @@
 The subsequent Visual Identity 1.4 update is signed at `e45ba673`. Fresh read-only
 source review found no actionable defect in material compilation, borrowed
 program-lifetime typeface buffers, error cleanup, bounds or style restoration;
-15 actual-command header-consumer analyses pass. This is not a full runtime pass:
-two GUI-suite attempts had intermittent gesture failures, and the initial private
-recording reported 3,854 warm C++ allocations versus eight in later debugger
-comparisons. Both causes remain untraced. [1.4 checks](ui/brand14.md) and the
-[delivery record](package/final-delivery.md) retain scope and identities. The PR
-stays draft pending those concerns and revised-UI/owner acceptance.
+15 actual-command header-consumer analyses pass. Earlier active-desktop GUI
+failures remain retained; the unchanged full 20-method suite later passed on an
+owned isolated display. The owner accepted the v25 preview/private clip and
+instructed continuation. A fresh unmodified recording reports eight allocations;
+a separate native diagnostic attributes eight to two scripted resets. The first
+media run's 3,854-call count remains untraced, not a clean budget pass.
+[Final verification](ui/final-verification.md) and the
+[delivery record](package/final-delivery.md) distinguish those scopes. No
+production input/detector/assertion change or new independent review claim;
+normal reviewed integration may proceed.
 
 The later owner-requested Graphite/recorder revision is signed at `27ba939`.
 Fresh read-only reviews identified launcher-digest admission, translucent border
@@ -19,7 +23,8 @@ consumers and eight recorder cases are recorded in [Graphite checks](ui/graphite
 Current-session review checked the final pending-signal gate after desktop
 validation and before success metadata. The local v24 clip is private and source-
 bound; no source review substitutes for native execution, listening comfort or
-owner UI/M3 acceptance. PR #10 remains draft. Earlier review scope follows.
+owner UI/M3 acceptance. This historical review preceded the later 1.4 verdict.
+Earlier review scope follows.
 
 A separate, fresh read-only `gpt-6.1-sol` session reviewed source `8d4d89c`
 against accepted M2 integration `4b554cc`. Coverage included physics/flight/RCS,
