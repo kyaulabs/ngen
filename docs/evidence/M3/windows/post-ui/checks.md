@@ -81,8 +81,32 @@ strict ASan/UBSan 330-frame walkthrough pass; all 27 physical fields remain
 unchanged. An earlier concurrent walkthrough lost focus and failed its relative-
 capture fixture; that attempt is retained, not accepted. The fresh read-only
 follow-up review finds no remaining concrete defect in this scope. These local
-results do not attribute or waive the native single allocation: Windows live
-hover after the repair remains required.
+results do not attribute or waive the native single allocation.
+
+The subsequent Windows return at signed source `5fb8ddf` recompiles `gui.cpp`,
+links the affected consumers and passes all 24 Release CTests. Its 3,600-frame
+live diagnostic now records **zero warm C++ and ImGui allocations**, with every
+frame focused and audio playing. Flight Data and numeric F12 draw for 3,514 and
+3,472 frames; 25 OS samples complete without failure. The owner confirms seeing
+an actual F2 plot value tooltip while F12 remains visible. This closes the native
+live-hover allocation gate for the exercised run; it does not establish the
+original single allocation's call site. The earlier failed result is retained.
+
+The repaired source's clean replay has median/P95/P99/maximum
+7.0868 / 8.3142 / 8.7979 / 9.3124 ms, with all 2,400 frames focused and playing,
+zero warm calls and the unchanged 16.7 ms P95 target. Separate process-memory
+coverage passes: 32 observations, 33 attempts, one startup-empty attempt outside
+measurement, no missing measured queries, and a 587.9541 ms maximum gap across
+16.6736151 s. Maximum query time is 221 ms; measured queries are at most 3 ms.
+Peak dedicated/shared sum is 367,575,040 bytes; separate total committed peaks
+at 367,640,576 bytes and working set at 439,971,840 bytes. Existing cadence,
+deadline, QPC and memory limits pass. Ten declared artifact hashes, source-bound
+packaging and SDK-isolated startup verify. All 27 walkthrough fields match the
+prior MSVC result; clean and memory traces agree. No further ClangCl or SDK rerun
+is needed for this repair. See `clang-release-repaired.json`; archive SHA-256 is
+`39a77647bf0b312603f2242f22143879ea1bce21a24d70e3dba292b10037570b`.
+The archive passed bounded preflight and redacted selected-text scanning before
+verification: 51 members, 1,580,715 compressed bytes, 34,093,869 expanded bytes.
 
 All MSVC timing rows are retained, including focus transitions and the long tail:
 
@@ -132,7 +156,6 @@ accepted. The post-review bundle is
 `build/m3-offline-linux-v22/ngen-flight/run.sh`; its manifest SHA-256 is
 `ce0dd77a0760e8abaee7ed30ba475dac9773efa15cee966f23c86db54c009881`.
 
-Remaining: native allocation-free live hover after the GUI repair, two valid
-MSVC timing repeats, final recording/listening/offline-delivery and
+Remaining: two valid MSVC timing repeats, final recording/listening/offline-delivery and
 owner acceptance, then reviewed integration and exact post-merge CI. The UI
 starting point remains accepted with polish deferred. M3 is not complete.

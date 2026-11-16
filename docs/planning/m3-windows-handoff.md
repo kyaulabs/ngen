@@ -1,13 +1,12 @@
 # M3 Windows flight check
 
-The [post-UI returns](../evidence/M3/windows/post-ui/checks.md) now include a
-successful ClangCl Release continuation at `a4ebfc6`: 24 CTests, validated flight,
-app-local startup, complete sampled-memory coverage and a focused RTX replay with
-P95 8.3083 ms. The original SDK failure's cause remains unproved. Its separate
-live F2/F12 diagnostic records one warm ImGui allocation, so that gate fails.
-A local mouse-burst regression is repaired without changing flight input or
-capacities; pull and rerun the continuation below to verify native live hover
-after that repair. Do not repeat MSVC, ClangCl Debug or the successful SDK audit.
+The latest [post-UI return](../evidence/M3/windows/post-ui/checks.md), source
+`5fb8ddf`, passes ClangCl Release: 24 CTests, validated flight, app-local startup,
+complete sampled-memory coverage and a focused RTX replay with P95 8.3142 ms.
+The repaired 3,600-frame live diagnostic has zero warm C++/ImGui allocations;
+the owner confirms actual F2 plot tooltips with numeric F12 visible. The earlier
+single-allocation result is retained, not waived or conclusively attributed.
+No further ClangCl continuation or SDK audit is needed for this repair.
 
 Earlier MSVC Debug/Release and ClangCl Debug at `21e616c` passed 72 CTests. MSVC
 sampled memory and live hover pass; one focused RTX replay has P95 7.804 ms.
@@ -19,11 +18,12 @@ Use normal PowerShell 7.2+ in the repository; no pasted script bodies are needed
 
 ```powershell
 git pull --ff-only
-.\tools\resume-windows-flight.ps1
+.\tools\repeat-windows-flight-timing.ps1
 ```
 
-The continuation initializes the installed x64 developer shell, selects the
-latest matching ClangCl flight batch, finishes its cached Release build and
+For future affected ClangCl source changes only, the continuation initializes
+the installed x64 developer shell, selects the latest matching ClangCl flight
+batch, finishes its cached Release build and
 runs the existing CTest, renderer, flight, clean replay, sampled-memory,
 source-bound packaging and SDK-isolated startup checks. It then prompts for a
 bounded 3,600-frame F2 plot-hover diagnostic with numeric F12 live. Keep timed
@@ -36,7 +36,7 @@ so retrying after a later failure preserves earlier bundles.
 Run these separately only when their corresponding check is still needed:
 
 ```powershell
-.\tools\repeat-windows-flight-timing.ps1
+.\tools\resume-windows-flight.ps1
 .\tools\windows-sdk-audit.ps1
 ```
 
@@ -119,8 +119,8 @@ OS calls are not a hard real-time guarantee. Do not run the diagnostic alongside
 a clean timing or formal memory measurement.
 
 The checks below are the recipe for future affected current-source runs, not a
-request to repeat either passing memory check. Explicit hovered-tooltip and final
-timing evidence remain open. Use the named splat; do not split
+request to repeat either passing memory check. Native hovered-tooltip verification
+now passes; two valid MSVC timing repeats remain open. Use the named splat; do not split
 `Start-Process` arguments or use positional `Select-String` examples.
 
 ```powershell
@@ -178,5 +178,5 @@ playback-device removal/reconnection where available. Report control feel, sound
 comfort and any discontinuity. Synthetic SDL events are not substitutes for this.
 Keep a short original audio/video recording private; send its hash and feedback.
 The owner accepts the current UI starting point and defers polish. M3 remains
-open until the remaining native checks and valid RTX timing repeats, final
-recording/offline-delivery and owner acceptance, and reviewed integration finish.
+open until two valid MSVC timing repeats, final recording/listening/offline-delivery,
+owner acceptance and reviewed integration finish.

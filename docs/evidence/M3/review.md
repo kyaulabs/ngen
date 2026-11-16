@@ -54,8 +54,10 @@ loss when a physical mouse run returns to a touchscreen's last position. The
 fractional-position regression reproduces it; retaining the first distinct pixel
 repairs it. A fresh follow-up finds no remaining concrete defect in this scope.
 Button ordering is checked in sequence, including release. Key/device/window
-boundaries receive source review; native Windows execution after this repair is
-still pending. Reports are `build/m3-flight/clang-return-motion-{review,followup}.md`.
-The local repair does not conclusively attribute the native allocation or waive
-its failed gate. No independent runtime or hardware verification is claimed from
-the read-only reviews.
+boundaries receive source review. Reports are
+`build/m3-flight/clang-return-motion-{review,followup}.md`. The subsequent native
+ClangCl Release return at `5fb8ddf` passes 24 CTests and the 3,600-frame live-hover
+diagnostic with zero warm calls; the owner confirms actual F2 tooltips with F12
+visible. This verifies the exercised repaired path without conclusively
+attributing or waiving the earlier native allocation. No independent runtime or
+hardware verification is claimed from the read-only reviews.
