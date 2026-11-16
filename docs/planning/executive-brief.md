@@ -3,6 +3,7 @@
 NGEN has reached its first product gate: a polished offline spacecraft flight
 demonstration. M3 was accepted and normally merged through [PR #10] into `develop`
 at `03b76c724a556a30944b39072afbee4aa2dfcf8b`, following accepted M2 at `4b554cc`.
+Exact [post-merge CI] passed all four jobs; merge signature/ancestry verify.
 The next workstream is M4 coordinates, local-frame transfer and travel/streaming,
 not multiplayer or a larger editor. The [roadmap] defines its tasks and gates.
 
@@ -54,9 +55,10 @@ work, not delivered features. Fleet counts and five-figure concurrency remain
 fixtures or aspirations until measured; no dates, staffing or capacity promise is
 inferred from this roadmap.
 
-The owner requested a dedicated NGEN organization Project and all remaining
-M4–M13 atomic task issues. Milestones preserve completion dependencies; issue
-bodies carry acceptance evidence and optional/release gates. Creating a card does
+The dedicated [NGEN kanban] now contains all 56 remaining M4–M13 atomic issues
+across ten open milestones. The [tracker index] links every task; all cards begin
+in Todo, with no dates or assignees. Milestones preserve completion dependencies;
+issue bodies carry acceptance evidence and optional/release gates. Creating a card does
 not authorize implementation, spending, infrastructure or deployment. No M4 code
 is started by this planning/tracker update. Historical M0/M1 evidence and individual
 ADR statuses are not silently ratified by roadmap maintenance.
@@ -65,3 +67,6 @@ ADR statuses are not silently ratified by roadmap maintenance.
 [roadmap]: milestones.md
 [final verification]: ../evidence/M3/ui/final-verification.md
 [delivery]: ../evidence/M3/package/final-delivery.md
+[post-merge CI]: https://github.com/kyaulabs/ngen/actions/runs/43961359680
+[NGEN kanban]: https://github.com/orgs/kyaulabs/projects/4/views/3
+[tracker index]: github-tracker.md

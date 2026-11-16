@@ -13,7 +13,7 @@ Current delivery: M3 is owner-accepted and merged through [PR #10](https://githu
 | M11 | Optional selected graphics/tools; individual benefit/platform/content gates remain. |
 | M12 | Optional settlement; separate legal/security/custody and explicit execution/release permission required. |
 
-The owner selected a dedicated NGEN organization Project and all **56 M4–M13 atomic task issues**, grouped into the ten remaining milestones. Tracker cards are planning records, not implementation, spending or deployment permission. No due dates or staffing assumptions are added. The original M0–M2 chronology is retained below as history rather than the current next-action list.
+The dedicated [NGEN kanban](https://github.com/orgs/kyaulabs/projects/4/views/3) contains all **56 M4–M13 atomic task issues**, grouped into ten open milestones. The [tracker index](github-tracker.md) links every task. All cards start Todo, without dates or assignees. Tracker cards are planning records, not implementation, spending or deployment permission; no staffing assumptions are added. The original M0–M2 chronology is retained below as history rather than the current next-action list.
 
 The delivery order is **polished offline flight, miniature offline game, authoritative multiplayer**. Commands, stable IDs, clocks, snapshots and dependency boundaries appear early. Sockets, PostgreSQL, distributed ownership and blockchain appear only when their milestones require them. This document proposes source areas; the actual checkout audit must map them to existing paths and retain working implementations.
 
