@@ -224,29 +224,27 @@ HudRect window_rect() {
     const auto position = ImGui::GetWindowPos(), size = ImGui::GetWindowSize();
     return {position.x, position.y, size.x, size.y};
 }
-void panel_surface() {
+void panel_surface(tools::GuiPanelMaterials materials) {
     const auto position = ImGui::GetWindowPos(), size = ImGui::GetWindowSize();
     if (size.x <= 2 || size.y <= 2)
         return;
     auto *draw = ImGui::GetWindowDrawList();
     const auto rounding = ImGui::GetStyle().WindowRounding;
-    constexpr float opacity = .65F;
     const auto header_bottom = position.y + std::min(32.0F, size.y - 1);
-    // Disjoint fills keep both surfaces at 65%, rather than compositing a
-    // translucent header over another translucent full-window background.
+    // Preserve each supplied material's alpha without compositing the header
+    // over a second translucent full-window background.
     draw->PushClipRect(position, {position.x + size.x, position.y + size.y});
     draw->AddRectFilled({position.x + 1, position.y + 1}, {position.x + size.x - 1, header_bottom},
-                        ImGui::GetColorU32(ImGuiCol_TitleBg, opacity), rounding,
+                        ImGui::GetColorU32(materials.header), rounding,
                         ImDrawFlags_RoundCornersTop);
     if (header_bottom < position.y + size.y - 1)
-        draw->AddRectFilled({position.x + 1, header_bottom},
-                            {position.x + size.x - 1, position.y + size.y - 1},
-                            ImGui::GetColorU32(ImGuiCol_WindowBg, opacity), rounding,
-                            ImDrawFlags_RoundCornersBottom);
+        draw->AddRectFilled(
+            {position.x + 1, header_bottom}, {position.x + size.x - 1, position.y + size.y - 1},
+            ImGui::GetColorU32(materials.panel), rounding, ImDrawFlags_RoundCornersBottom);
     // AddRect already aligns its stroke by half a pixel. Keep its inner edge
     // outside the inset fills so two translucent layers never accumulate.
     draw->AddRect(position, {position.x + size.x, position.y + size.y},
-                  ImGui::GetColorU32(ImGuiCol_Border, opacity), rounding);
+                  ImGui::GetColorU32(materials.line), rounding);
     draw->PopClipRect();
 }
 bool performance_panel(tools::Gui &gui, Hud &metrics) {
@@ -270,7 +268,7 @@ bool performance_panel(tools::Gui &gui, Hud &metrics) {
     draw->VtxBuffer.reserve(static_cast<int>(overlay_vertex_limit));
     draw->IdxBuffer.reserve(static_cast<int>(overlay_index_limit));
     if (visible)
-        panel_surface();
+        panel_surface(gui.panel_materials());
     if (visible && panel.height < 240) {
         if (metrics.frame_ms > 0)
             ImGui::Text("%.1f FPS / %.2f ms", 1000 / metrics.frame_ms, metrics.frame_ms);
@@ -354,6 +352,9 @@ void centred_text(const char *text) {
 Actions hud(tools::Gui &gui, const flight::Snapshot &state, const Preset &preset, Hud &metrics,
             std::optional<std::size_t> selected, bool replay, bool mute, const FrameView &view) {
     gui.begin();
+    const auto materials = gui.panel_materials();
+    ImGui::PushStyleColor(ImGuiCol_Border, ImGui::ColorConvertU32ToFloat4(materials.line_strong));
+    ImGui::PushStyleColor(ImGuiCol_Separator, ImGui::ColorConvertU32ToFloat4(materials.line));
     Actions action;
     const auto size = ImGui::GetIO().DisplaySize;
     const auto layout = hud_layout(size.x, size.y, metrics.help, metrics.performance);
@@ -454,7 +455,7 @@ Actions hud(tools::Gui &gui, const flight::Snapshot &state, const Preset &preset
         const auto visible = ImGui::Begin("Flight utility", nullptr, utility_flags);
         if (visible) {
             reserve_ui();
-            panel_surface();
+            panel_surface(materials);
             ImGui::TextUnformatted(metrics.data ? "FLIGHT DATA" : "CONTROLS");
             ImGui::SameLine();
             if (ImGui::SmallButton("Close"))
@@ -553,7 +554,7 @@ Actions hud(tools::Gui &gui, const flight::Snapshot &state, const Preset &preset
     }
     if (ImGui::BeginPopup("Flight target actions", ImGuiWindowFlags_NoBackground)) {
         reserve_ui();
-        panel_surface();
+        panel_surface(materials);
         if (metrics.context_target && *metrics.context_target < preset.camera_obstacles.size()) {
             if (!metrics.preparing)
                 ++metrics.context_menu_drawn_frames;
@@ -583,6 +584,7 @@ Actions hud(tools::Gui &gui, const flight::Snapshot &state, const Preset &preset
         }
         ImGui::End();
     }
+    ImGui::PopStyleColor(2);
     gui.end();
     return action;
 }

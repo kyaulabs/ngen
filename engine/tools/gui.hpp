@@ -6,6 +6,9 @@
 
 namespace ngen::tools {
 enum class GuiFont : std::uint8_t { body, mono, readout };
+struct GuiPanelMaterials {
+    std::uint32_t panel{}, header{}, line{}, line_strong{};
+};
 // One owner-thread ImGui/SDL frontend over the existing Context overlay path.
 // Destroy before Context closes its window. Overlay spans borrow until the next
 // overlay() call or destruction; Context copies them during submission.
@@ -24,6 +27,7 @@ class Gui {
     void wordmark(float width = 176);
     void push_font(GuiFont font);
     void pop_font();
+    [[nodiscard]] GuiPanelMaterials panel_materials() const noexcept;
     [[nodiscard]] bool window_icon_applied() const noexcept;
     [[nodiscard]] std::variant<std::optional<render::Overlay>, render::Failure>
     overlay(VkExtent2D extent);

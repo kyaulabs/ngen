@@ -75,18 +75,38 @@ def read_png(path):
     return width, height, bytes(pixels)
 
 
+def read_font(path):
+    path = Path(path)
+    if path.is_symlink() or not path.is_file() or not 12 <= path.stat().st_size <= 4 * 1024**2:
+        raise ValueError("Invalid brand font file")
+    data = path.read_bytes()
+    if data[:4] not in (b"\x00\x01\x00\x00", b"OTTO"):
+        raise ValueError("Unsupported brand font container")
+    count = struct.unpack_from(">H", data, 4)[0]
+    if not 1 <= count <= 256 or 12 + count * 16 > len(data):
+        raise ValueError("Invalid brand font directory")
+    for entry in range(count):
+        offset, length = struct.unpack_from(">II", data, 12 + entry * 16 + 8)
+        if offset > len(data) or length > len(data) - offset:
+            raise ValueError("Brand font table exceeds its input")
+    return data
+
+
 def generate(root, output):
     root, output = Path(root), Path(output)
     paths = {"wordmark": root / "logos/png/ngen-wordmark-dark-640.png",
              "mark": root / "icons/png/ngen-mark-dark-64.png",
              "icon": root / "icons/app/ngen-app-dark-64.png"}
+    fonts = {"sans_font": root / "web/fonts/NeoSansPro-Regular.ttf",
+             "mono_font": root / "web/fonts/OperatorMonoLigNerdFont-Regular.otf"}
     tokens = root / "web/ngen-tokens.json"
-    for path in [*paths.values(), tokens]:
+    for path in [*paths.values(), *fonts.values(), tokens]:
         if any(p.is_symlink() for p in [path, *path.parents]):
             raise ValueError("Brand inputs must not use links")
     if not tokens.is_file() or tokens.stat().st_size > 65536:
         raise ValueError("Invalid brand tokens")
-    palette = json.loads(tokens.read_text(encoding="utf-8"))["themes"]["dark"]
+    document = json.loads(tokens.read_text(encoding="utf-8"))
+    palette = document["themes"]["dark"]
     if not isinstance(palette, dict) or len(palette) > 32:
         raise ValueError("Invalid dark brand palette")
     lines = ["#pragma once", "#include <array>", "#include <cstdint>",
@@ -96,7 +116,21 @@ def generate(root, output):
             raise ValueError("Invalid brand colour token")
         red, green, blue = (int(value[i:i + 2], 16) for i in (1, 3, 5))
         lines.append(f"inline constexpr std::uint32_t {key.replace('-', '_')} = 0x{(255 << 24) | (blue << 16) | (green << 8) | red:08x}U;")
-    metadata = {"text": palette["text"]}
+    metadata = {"text": palette["text"], "materials": {}}
+    materials = document["components"]["dark"]
+    if not isinstance(materials, dict) or len(materials) > 8:
+        raise ValueError("Invalid dark brand materials")
+    for name in ("panel", "panel-2", "line", "line-strong"):
+        value = materials.get(name)
+        match = re.fullmatch(r"color-mix\(in srgb, (#[0-9A-Fa-f]{6}) (100|[0-9]{1,2})%, transparent\)", value) if isinstance(value, str) else None
+        if not match:
+            raise ValueError("Invalid brand material: " + name)
+        colour, percentage = match.groups()
+        red, green, blue = (int(colour[i:i + 2], 16) for i in (1, 3, 5))
+        alpha = (int(percentage) * 255 + 50) // 100
+        packed = (alpha << 24) | (blue << 16) | (green << 8) | red
+        lines.append(f"inline constexpr std::uint32_t material_{name.replace('-', '_')} = 0x{packed:08x}U;")
+        metadata["materials"][name] = (red, green, blue, alpha)
     for name, path in paths.items():
         width, height, pixels = read_png(path)
         metadata[name] = (width, height)
@@ -104,6 +138,13 @@ def generate(root, output):
                   f"inline constexpr unsigned {name}_height = {height};",
                   f"inline constexpr std::array<unsigned char, {len(pixels)}> {name}_pixels{{{{"]
         lines += [",".join(str(v) for v in pixels[i:i + 32]) + "," for i in range(0, len(pixels), 32)]
+        lines.append("}};")
+    metadata["fonts"] = {}
+    for name, path in fonts.items():
+        data = read_font(path)
+        metadata["fonts"][name] = len(data)
+        lines.append(f"inline constexpr std::array<unsigned char, {len(data)}> {name}{{{{")
+        lines += [",".join(str(v) for v in data[i:i + 32]) + "," for i in range(0, len(data), 32)]
         lines.append("}};")
     lines += ["} // namespace ngen::tools::brand", ""]
     content = "\n".join(lines)

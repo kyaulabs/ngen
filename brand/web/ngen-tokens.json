@@ -1,48 +1,68 @@
 {
   "name": "NGEN",
-  "version": "1.2",
+  "version": "1.4",
   "themes": {
     "dark": {
-      "bg": "#202124",
-      "surface": "#2A2B2F",
-      "panel-header": "#3A414E",
-      "text": "#DDF3F8",
-      "muted": "#A9C5D0",
-      "border": "#315362",
-      "control-border": "#7899A6",
-      "accent": "#63DDF8",
-      "accent-hover": "#89E8FA",
-      "on-accent": "#08212B",
-      "secondary": "#B6A5FF",
-      "on-secondary": "#21163A",
-      "focus": "#89E8FA",
-      "success": "#7FDFBB",
-      "warning": "#FFD38A",
-      "danger": "#FFA9AC",
-      "surface-alt": "#3A414E"
+      "bg": "#04060C",
+      "surface": "#0A101D",
+      "panel-header": "#10182A",
+      "text": "#EAF2FF",
+      "muted": "#A4B5CF",
+      "subtle": "#637391",
+      "border": "#7D9BD2",
+      "control-border": "#7D9BD2",
+      "accent": "#22D3EE",
+      "accent-hover": "#22D3EE",
+      "on-accent": "#04121A",
+      "secondary": "#A78BFA",
+      "tertiary": "#F472B6",
+      "on-secondary": "#04121A",
+      "focus": "#22D3EE",
+      "success": "#34D399",
+      "warning": "#FBBF24",
+      "danger": "#FB7185",
+      "surface-alt": "#10182A"
     },
     "light": {
-      "bg": "#F3F3F4",
-      "surface": "#F7F7F8",
-      "panel-header": "#E7EBF4",
-      "text": "#173B4B",
-      "muted": "#466473",
-      "border": "#B8D2DC",
-      "control-border": "#5C7D8B",
-      "accent": "#006D89",
-      "accent-hover": "#005B74",
-      "on-accent": "#FFFFFF",
-      "secondary": "#5B45B4",
+      "bg": "#EDF0F8",
+      "surface": "#FFFFFF",
+      "panel-header": "#F4F7FD",
+      "text": "#0A1322",
+      "muted": "#3C4C68",
+      "subtle": "#71829F",
+      "border": "#102A54",
+      "control-border": "#102A54",
+      "accent": "#0891B2",
+      "accent-hover": "#0891B2",
+      "on-accent": "#0A1322",
+      "secondary": "#7C3AED",
+      "tertiary": "#DB2777",
       "on-secondary": "#FFFFFF",
-      "focus": "#006D89",
+      "focus": "#0891B2",
       "success": "#006649",
       "warning": "#80500A",
       "danger": "#A52F42",
-      "surface-alt": "#E7EBF4"
+      "surface-alt": "#F4F7FD"
+    }
+  },
+  "components": {
+    "dark": {
+      "bg-0": "#04060C",
+      "panel": "color-mix(in srgb, #0A101D 66%, transparent)",
+      "panel-2": "color-mix(in srgb, #10182A 55%, transparent)",
+      "line": "color-mix(in srgb, #7D9BD2 14%, transparent)",
+      "line-strong": "color-mix(in srgb, #7D9BD2 30%, transparent)"
+    },
+    "light": {
+      "bg-0": "#EDF0F8",
+      "panel": "color-mix(in srgb, #FFFFFF 78%, transparent)",
+      "panel-2": "color-mix(in srgb, #F4F7FD 85%, transparent)",
+      "line": "color-mix(in srgb, #102A54 12%, transparent)",
+      "line-strong": "color-mix(in srgb, #102A54 26%, transparent)"
     }
   },
   "typography": {
-    "sans": "system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
-    "mono": "ui-monospace, 'SFMono-Regular', Consolas, 'Liberation Mono', monospace"
+    "sans": "'Neo Sans Pro', system-ui, sans-serif",
+    "mono": "'Operator Mono', ui-monospace, 'Cascadia Code', monospace"
   }
 }

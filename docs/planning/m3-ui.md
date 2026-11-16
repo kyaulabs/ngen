@@ -9,7 +9,7 @@ remains approved. The inspector keeps its layout and behaviour; shared colours
 and header artwork adopt the brand.
 Post-UI native Windows and three valid MSVC active-profile budget runs passed at
 their documented sources; driver differences and historical misses remain
-recorded. Those binaries predate the Graphite revision described below and are
+recorded. Those binaries predate the identity revisions described below and are
 not relabelled. Overall M3 acceptance remains withheld pending the revised UI.
 
 The three requested references were read in full. The initial proposal had not
@@ -27,17 +27,21 @@ for image coverage, observations and concrete design consequences.
   branding, or add its health, capacitor, modules, minimap or other unimplemented
   gameplay.
 
-Use the owner's replacement NGEN Graphite 1.2 pack and semantic tokens in
-`brand/web/ngen-tokens.json`: background `#202124`, panel `#2A2B2F`, header
-`#3A414E`, cyan primary actions/focus, violet secondary accents and labelled
-warning/error states. Preserve the supplied artwork bytes; do not redraw them.
-The replacement pack supersedes the earlier 1.0 inputs, whose evidence remains
-historical. Following the first preview, the owner requested no logos in F1 or F2;
+Use the owner's Visual Identity 1.4 directory from `ngen-web/brand/` and semantic
+tokens in `brand/web/ngen-tokens.json`: background `#04060C`, panel `#0A101D`,
+header `#10182A`, text `#EAF2FF`, cyan `#22D3EE`, violet `#A78BFA` and labelled
+warning/error states. The owner chose its component material opacities and
+confirmed redistribution rights for the supplied Neo Sans Pro/Operator Mono
+programs. Preserve all supplied bytes/notices; do not redraw or globally install
+fonts. Native body/readout and mono roles use the two supplied regular faces in
+the existing ImGui atlas, not host-dependent fallbacks or a new rasterizer.
+This supersedes the 1.0/Graphite 1.2 inputs, whose evidence remains historical.
+Following the first preview, the owner requested no logos in F1 or F2;
 keep only the small upper-left standalone mark during flight. Utility headings
 are text-only. The inspector retains the proportional wordmark, its clear space
 and at least 144 px visible width; the owned window retains its supplied icon. No
-redrawn logo, animated noise, splash/front-end menu system, new font/renderer
-dependency or global desktop installation.
+redrawn logo, animated noise, splash/front-end menu system, new font/rendering
+library or global desktop installation.
 
 The default HUD has no opaque deck, target card, module grid, top bar or boxed
 binding banner. Speed/mode and actual main-drive/RCS values float near the bottom;
@@ -50,10 +54,12 @@ relative mouse mode begins only once the gesture becomes a drag/hold or is
 camera-only, avoiding SDL's cursor restoration when a popup opens. The popup
 closes on action, dismissal or input/reset handoff, and keeps the selected target
 identity with its commands. Flight controls, data, performance and context-menu
-surfaces, headers and outer borders use 65% opacity; text remains fully opaque.
-Header/body fills and the pixel-aligned border do not stack translucent layers.
-This opacity is flight-local; the inspector retains its opacity and layout while
-adopting the replacement shared RGB tokens.
+surfaces use 66% opacity, headers 55%, normal lines 14% and emphasized widget
+borders 30%; text remains fully opaque. These values come from the canonical
+component tokens, not duplicated alpha constants. Header/body fills and the
+pixel-aligned border do not stack translucent layers. These material overrides
+are flight-local; the inspector retains opacity/layout while adopting shared RGB
+and the supplied technical typeface.
 View/reset/audio controls and optional flight plots remain accessible on demand;
 F12 stays the separate system/device performance panel. F1, F2 and F12 fit their
 contents vertically at stable readable widths, capped to the available screen
@@ -90,14 +96,15 @@ review. Supply an offline Linux UI preview; do not claim fresh native Windows,
 local RTX timing, final three-run budgets or M3 completion from local checks.
 
 The owner accepted the previous UI starting point, handling/audio and real
-disconnected startup/listening, but withheld M3 acceptance for this last Graphite
-revision. Its visual acceptance remains open; further unrelated polish is deferred. The runtime implements controls, data/plots, performance,
+disconnected startup/listening, but withheld M3 acceptance for the successive identity
+revisions. Its visual acceptance remains open; further unrelated polish is deferred. The runtime implements controls, data/plots, performance,
 right-click target actions and shared branding through the existing atlas. The inspector keeps its control arrangement and technical font sizing;
 its header grows to fit the supplied wordmark. See the
 [verification record](../evidence/M3/ui/checks.md) for actual tests and review
 repairs. Private default/data/inspector captures have been visually reviewed.
 The earlier signed 50%-opacity baseline at `8d4d89c` is historical, not the current
-Graphite candidate. See [Graphite checks](../evidence/M3/ui/graphite.md).
+identity candidate. See [1.4 checks](../evidence/M3/ui/brand14.md); the
+[Graphite checks](../evidence/M3/ui/graphite.md) remain historical.
 Private offline Linux v21 launches through
 `build/m3-offline-linux-v21/ngen-flight/run.sh`; all 25 manifest hashes and
 corresponding source files verify, and isolated startup exercises controls,

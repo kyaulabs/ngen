@@ -1,4 +1,5 @@
 """Opt-in rendered HUD/brand contracts through owned native demo clients."""
+import hashlib
 import json
 import os
 import re
@@ -378,7 +379,7 @@ end
         if reopen:
             cursor = re.search(r"context_cursor=(\d+),(\d+),(\d+)", result.stdout)
             self.assertIsNotNone(cursor, result.stdout[-4000:])
-            self.assertEqual(int(cursor[3]), 1, "The reopened menu must use the new click location")
+            self.assertEqual(int(cursor[3]), 1, "The reopened menu must use the new click location\n" + result.stdout[-4000:])
             self.assertEqual(int(cursor[1]), 0, "Menu clicks must not enter cursor-restoring relative mode")
             self.assertEqual(int(cursor[2]), 0, "Menu clicks must not request a cursor warp")
         return tuple(map(int, match.groups()))
@@ -547,7 +548,7 @@ quit
         self.assertTrue(any("m/s" in label for label in labels), "Speed telemetry must remain")
 
     @unittest.skipUnless(shutil.which("gdb"), "Native menu opacity fixture needs GDB")
-    def test_flight_panels_use_graphite_surfaces_at_65_percent_opacity(self):
+    def test_flight_panels_follow_brand14_materials_without_translucent_overlap(self):
         with tempfile.TemporaryDirectory(prefix="ngen-menu-alpha-") as directory:
             output = Path(directory) / "alpha.json"
             script = Path(directory) / "alpha.gdb"
@@ -560,13 +561,23 @@ surfaces = dict((name, dict(panel=set(), header=set(), border=set())) for name i
 text_alphas = set()
 under_header = set()
 border_inner_edges = set()
+origins = dict(utility=(8, 64), performance=(922, 64))
 def rgba(value):
  return tuple((int(value) >> shift) & 255 for shift in (0, 8, 16, 24))
 def origin(x, y):
- for name, point in [('utility', (8, 64)), ('performance', (922, 64)), ('context', (640, 288))]:
+ for name, point in origins.items():
   if abs(x - point[0]) < 2 and 0 <= y - point[1] <= 33:
    return name, y - point[1]
  return None
+class PanelClip(gdb.Breakpoint):
+ def stop(self):
+  caller = gdb.newest_frame().older()
+  if caller and 'panel_surface' in (caller.name() or ''):
+   point = gdb.parse_and_eval('cr_min')
+   x, y = float(point['x']), float(point['y'])
+   if not any(abs(x - px) < 2 and abs(y - py) < 2 for px, py in (origins['utility'], origins['performance'])):
+    origins['context'] = (x, y)
+  return False
 class Foreground(gdb.Breakpoint):
  def stop(self):
   begin, end = gdb.parse_and_eval('text_begin'), gdb.parse_and_eval('text_end')
@@ -602,6 +613,7 @@ class Border(gdb.Breakpoint):
    # inner edge must not cross the header fill beginning 1 px inside.
    border_inner_edges.add((match[0], match[1] + 1.0))
   return False
+PanelClip('ImDrawList::PushClipRect', internal=True)
 Foreground('ImFont::RenderText', internal=True)
 Background('ImDrawList::AddRectFilled', internal=True)
 Border('ImDrawList::AddRect', internal=True)
@@ -622,8 +634,8 @@ quit
             self.assertNotIn("Python Exception", result.stderr)
             observed = json.loads(output.read_text())
         self.assertEqual(observed["text"], [255], "Menu text must remain fully opaque")
-        expected = {"panel": [42, 43, 47, 166], "header": [58, 65, 78, 166],
-                    "border": [120, 153, 166, 166]}
+        expected = {"panel": [10, 16, 29, 168], "header": [16, 24, 42, 140],
+                    "border": [125, 155, 210, 36]}
         for menu, roles in observed["surfaces"].items():
             for role, values in roles.items():
                 self.assertEqual(values, [expected[role]], f"{menu} {role}: actual drawn RGBA")
@@ -720,6 +732,47 @@ quit
                 return total
             self.assertGreater(violet_pixels(16, 12, 76, 64), 40, "The upper-left icon must remain")
             self.assertEqual(violet_pixels(16, 76, 420, 140), 0, "F1/F2 must not repeat the logo")
+
+    @unittest.skipUnless(shutil.which("gdb"), "Native font loading fixture needs GDB")
+    def test_ui_loads_supplied_brand_typefaces_without_external_font_files(self):
+        with tempfile.TemporaryDirectory(prefix="ngen-brand-fonts-") as directory:
+            output = Path(directory) / "fonts.json"
+            commands = Path(directory) / "fonts.gdb"
+            commands.write_text(f"""set pagination off
+set confirm off
+set debuginfod enabled off
+python
+import gdb, hashlib, json
+fonts = []
+class Font(gdb.Breakpoint):
+ def stop(self):
+  config = gdb.parse_and_eval('font_cfg_in')
+  size = int(config['FontDataSize'])
+  if size <= 0 or size > 4 * 1024 * 1024:
+   raise RuntimeError('Unbounded GUI font source')
+  data = bytes(gdb.selected_inferior().read_memory(config['FontData'], size))
+  fonts.append((config['Name'].string(), float(config['SizePixels']), hashlib.sha256(data).hexdigest()))
+  return False
+Font('ImFontAtlas::AddFont', internal=True)
+end
+run
+python
+with open({str(output)!r}, 'w') as stream:
+ json.dump(fonts, stream)
+end
+quit
+""")
+            result = subprocess.run([shutil.which("gdb"), "--batch", "-x", str(commands), "--args",
+                os.environ["NGEN_FLIGHT_DEMO"], os.environ["NGEN_FLIGHT_PACKAGE"],
+                "--replay", "--mute", "--frames=3", "--warmup=2"], capture_output=True, text=True, timeout=180)
+            self.assertEqual(result.returncode, 0, result.stdout[-4000:] + result.stderr[-4000:])
+            self.assertNotIn("Python Exception", result.stderr)
+            fonts = json.loads(output.read_text())
+        root = Path(__file__).resolve().parents[1] / "brand/web/fonts"
+        sans = hashlib.sha256((root / "NeoSansPro-Regular.ttf").read_bytes()).hexdigest()
+        mono = hashlib.sha256((root / "OperatorMonoLigNerdFont-Regular.otf").read_bytes()).hexdigest()
+        self.assertCountEqual(fonts, [["Neo Sans Pro", 15.0, sans], ["Operator Mono", 13.0, mono],
+                                     ["Neo Sans Pro", 28.0, sans]])
 
     def test_header_renders_supplied_cyan_and_violet_identity(self):
         with tempfile.TemporaryDirectory(prefix="ngen-ui-") as directory:

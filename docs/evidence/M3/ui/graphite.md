@@ -1,5 +1,9 @@
 # Graphite panels and private Linux recording
 
+This 1.2 record and v24 recording are historical. The owner's subsequent
+[Visual Identity 1.4 update](brand14.md) replaces the colours, material alphas
+and typefaces; old artifacts are not relabelled.
+
 The owner reports that real disconnected startup and listening passed, but
 withholds M3 acceptance pending this final Graphite UI revision. PR #10 stays
 draft, unapproved and unmerged. Earlier accepted handling/audio and hardware

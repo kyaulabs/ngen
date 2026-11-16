@@ -3,11 +3,12 @@
 #include <algorithm>
 #include <array>
 #include <cmath>
+#include <cstdio>
 #include <cstdlib>
 #include <cstring>
-#include <filesystem>
 #include <imgui.h>
 #include <imgui_impl_sdl3.h>
+#include <span>
 #include <stdexcept>
 
 namespace ngen::tools {
@@ -29,26 +30,6 @@ void wait(render::Context &context, const render::Submission &submission) {
         require(SDL_GetTicks() - start < 5000, "GUI font upload timed out");
         SDL_Delay(1);
     }
-}
-std::string system_font() {
-    std::array<std::filesystem::path, 4> candidates{};
-#ifdef _WIN32
-    if (const auto *root = SDL_GetEnvironmentVariable(SDL_GetEnvironment(), "SystemRoot"))
-        candidates[0] = std::filesystem::path(root) / "Fonts/segoeui.ttf";
-#else
-    candidates = {"/usr/share/fonts/TTF/DejaVuSans.ttf",
-                  "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",
-                  "/usr/share/fonts/noto/NotoSans-Regular.ttf",
-                  "/usr/share/fonts/truetype/liberation2/LiberationSans-Regular.ttf"};
-#endif
-    for (const auto &path : candidates) {
-        std::error_code error;
-        if (!path.empty() && path.is_absolute() && !std::filesystem::is_symlink(path, error) &&
-            std::filesystem::is_regular_file(path, error) &&
-            std::filesystem::file_size(path, error) <= std::uintmax_t{8} * 1024 * 1024 && !error)
-            return path.string();
-    }
-    return {};
 }
 } // namespace
 struct Gui::Impl {
@@ -103,17 +84,21 @@ struct Gui::Impl {
             static_cast<unsigned>(io.ConfigFlags) |
             static_cast<unsigned>(ImGuiConfigFlags_NavEnableKeyboard));
         io.BackendRendererName = "ngen-bounded-overlay";
-        const auto font_path = system_font();
-        const auto sans = [&](float size) {
+        const auto supplied_font = [&](std::span<const unsigned char> data, const char *name,
+                                       float size) {
+            require(!data.empty() && data.size() <= std::size_t{4} * 1024 * 1024,
+                    "GUI font source exceeds its bounded profile");
             ImFontConfig config;
             config.SizePixels = size;
-            return font_path.empty()
-                       ? io.Fonts->AddFontDefaultVector(&config)
-                       : io.Fonts->AddFontFromFileTTF(font_path.c_str(), size, &config);
+            config.FontDataOwnedByAtlas = false;
+            (void)std::snprintf(config.Name, sizeof(config.Name), "%s", name);
+            // ImGui borrows these immutable program-lifetime generated arrays.
+            return io.Fonts->AddFontFromMemoryTTF(const_cast<unsigned char *>(data.data()),
+                                                  static_cast<int>(data.size()), size, &config);
         };
-        body = sans(15);
-        mono = io.Fonts->AddFontDefaultBitmap();
-        readout = sans(28);
+        body = supplied_font(brand::sans_font, "Neo Sans Pro", 15);
+        mono = supplied_font(brand::mono_font, "Operator Mono", 13);
+        readout = supplied_font(brand::sans_font, "Neo Sans Pro", 28);
         require(body && mono && readout, "GUI fonts could not be prepared");
         io.FontDefault = body;
         wordmark_rect = io.Fonts->AddCustomRect(static_cast<int>(brand::wordmark_width),
@@ -277,6 +262,10 @@ void Gui::push_font(GuiFont role) {
 void Gui::pop_font() {
     ImGui::SetCurrentContext(impl_->context);
     ImGui::PopFont();
+}
+GuiPanelMaterials Gui::panel_materials() const noexcept {
+    return {brand::material_panel, brand::material_panel_2, brand::material_line,
+            brand::material_line_strong};
 }
 bool Gui::window_icon_applied() const noexcept { return impl_->icon_applied; }
 bool Gui::wants_mouse() const {

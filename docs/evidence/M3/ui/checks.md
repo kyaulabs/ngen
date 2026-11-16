@@ -2,7 +2,9 @@
 
 This first-pass 1.0-brand record is historical. The owner's replacement Graphite
 1.2 pack, flight-local 65% surfaces/headers/borders and private Linux recorder are
-covered by [Graphite verification](graphite.md); earlier evidence is not relabelled.
+covered by [Graphite verification](graphite.md). The current owner-requested
+[Visual Identity 1.4](brand14.md) supersedes that baseline; earlier evidence is
+not relabelled.
 
 This implements the owner's requested starting point, not final UI or M3
 acceptance. Private rendered captures and logs remain under `build/m3-flight/`.

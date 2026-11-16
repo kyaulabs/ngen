@@ -235,6 +235,7 @@ if(NGEN_BUILD_RENDERER AND NGEN_BUILD_ASSETS)
       DEPENDS tools/brandc/compile.py brand/web/ngen-tokens.json
         brand/logos/png/ngen-wordmark-dark-640.png brand/icons/png/ngen-mark-dark-64.png
         brand/icons/app/ngen-app-dark-64.png
+        brand/web/fonts/NeoSansPro-Regular.ttf brand/web/fonts/OperatorMonoLigNerdFont-Regular.otf
       VERBATIM)
     add_library(ngen_gui engine/tools/gui.cpp "${ngen_brand_header}")
     target_include_directories(ngen_gui PRIVATE "${CMAKE_CURRENT_BINARY_DIR}/ui-brand")
