@@ -27,7 +27,6 @@ namespace ngen::demo {
 namespace {
 using namespace render;
 using Clock = std::chrono::steady_clock;
-constexpr float menu_background_alpha = .50F;
 constexpr shader::Matrix identity{{1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1}};
 void require(bool value, const char *message) {
     if (!value)
@@ -225,6 +224,31 @@ HudRect window_rect() {
     const auto position = ImGui::GetWindowPos(), size = ImGui::GetWindowSize();
     return {position.x, position.y, size.x, size.y};
 }
+void panel_surface() {
+    const auto position = ImGui::GetWindowPos(), size = ImGui::GetWindowSize();
+    if (size.x <= 2 || size.y <= 2)
+        return;
+    auto *draw = ImGui::GetWindowDrawList();
+    const auto rounding = ImGui::GetStyle().WindowRounding;
+    constexpr float opacity = .65F;
+    const auto header_bottom = position.y + std::min(32.0F, size.y - 1);
+    // Disjoint fills keep both surfaces at 65%, rather than compositing a
+    // translucent header over another translucent full-window background.
+    draw->PushClipRect(position, {position.x + size.x, position.y + size.y});
+    draw->AddRectFilled({position.x + 1, position.y + 1}, {position.x + size.x - 1, header_bottom},
+                        ImGui::GetColorU32(ImGuiCol_TitleBg, opacity), rounding,
+                        ImDrawFlags_RoundCornersTop);
+    if (header_bottom < position.y + size.y - 1)
+        draw->AddRectFilled({position.x + 1, header_bottom},
+                            {position.x + size.x - 1, position.y + size.y - 1},
+                            ImGui::GetColorU32(ImGuiCol_WindowBg, opacity), rounding,
+                            ImDrawFlags_RoundCornersBottom);
+    // AddRect already aligns its stroke by half a pixel. Keep its inner edge
+    // outside the inset fills so two translucent layers never accumulate.
+    draw->AddRect(position, {position.x + size.x, position.y + size.y},
+                  ImGui::GetColorU32(ImGuiCol_Border, opacity), rounding);
+    draw->PopClipRect();
+}
 bool performance_panel(tools::Gui &gui, Hud &metrics) {
     const auto size = ImGui::GetIO().DisplaySize;
     const auto panel = hud_layout(size.x, size.y, metrics.help, true).performance;
@@ -238,13 +262,15 @@ bool performance_panel(tools::Gui &gui, Hud &metrics) {
                                       static_cast<unsigned>(ImGuiWindowFlags_NoSavedSettings) |
                                       static_cast<unsigned>(ImGuiWindowFlags_NoMove) |
                                       static_cast<unsigned>(ImGuiWindowFlags_NoInputs) |
+                                      static_cast<unsigned>(ImGuiWindowFlags_NoBackground) |
                                       static_cast<unsigned>(ImGuiWindowFlags_AlwaysAutoResize));
-    ImGui::SetNextWindowBgAlpha(menu_background_alpha);
     const auto visible = ImGui::Begin("Flight performance", nullptr, flags);
     metrics.performance_rect = window_rect();
     auto *draw = ImGui::GetWindowDrawList();
     draw->VtxBuffer.reserve(static_cast<int>(overlay_vertex_limit));
     draw->IdxBuffer.reserve(static_cast<int>(overlay_index_limit));
+    if (visible)
+        panel_surface();
     if (visible && panel.height < 240) {
         if (metrics.frame_ms > 0)
             ImGui::Text("%.1f FPS / %.2f ms", 1000 / metrics.frame_ms, metrics.frame_ms);
@@ -337,7 +363,8 @@ Actions hud(tools::Gui &gui, const flight::Snapshot &state, const Preset &preset
                                       static_cast<unsigned>(ImGuiWindowFlags_NoMove) |
                                       static_cast<unsigned>(ImGuiWindowFlags_NoNav));
     constexpr auto utility_flags = static_cast<ImGuiWindowFlags>(
-        static_cast<unsigned>(flags) | static_cast<unsigned>(ImGuiWindowFlags_AlwaysAutoResize));
+        static_cast<unsigned>(flags) | static_cast<unsigned>(ImGuiWindowFlags_AlwaysAutoResize) |
+        static_cast<unsigned>(ImGuiWindowFlags_NoBackground));
     constexpr auto transparent = static_cast<ImGuiWindowFlags>(
         static_cast<unsigned>(flags) | static_cast<unsigned>(ImGuiWindowFlags_NoBackground));
     constexpr auto floating = static_cast<ImGuiWindowFlags>(
@@ -424,10 +451,10 @@ Actions hud(tools::Gui &gui, const flight::Snapshot &state, const Preset &preset
         ImGui::SetNextWindowPos({panel.x, panel.y});
         ImGui::SetNextWindowSize({panel.width, 0});
         ImGui::SetNextWindowSizeConstraints({panel.width, 0}, {panel.width, panel.height});
-        ImGui::SetNextWindowBgAlpha(menu_background_alpha);
         const auto visible = ImGui::Begin("Flight utility", nullptr, utility_flags);
         if (visible) {
             reserve_ui();
+            panel_surface();
             ImGui::TextUnformatted(metrics.data ? "FLIGHT DATA" : "CONTROLS");
             ImGui::SameLine();
             if (ImGui::SmallButton("Close"))
@@ -524,9 +551,9 @@ Actions hud(tools::Gui &gui, const flight::Snapshot &state, const Preset &preset
         ImGui::OpenPopup("Flight target actions");
         metrics.context_request.reset();
     }
-    ImGui::SetNextWindowBgAlpha(menu_background_alpha);
-    if (ImGui::BeginPopup("Flight target actions")) {
+    if (ImGui::BeginPopup("Flight target actions", ImGuiWindowFlags_NoBackground)) {
         reserve_ui();
+        panel_surface();
         if (metrics.context_target && *metrics.context_target < preset.camera_obstacles.size()) {
             if (!metrics.preparing)
                 ++metrics.context_menu_drawn_frames;

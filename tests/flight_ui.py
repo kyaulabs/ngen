@@ -547,7 +547,7 @@ quit
         self.assertTrue(any("m/s" in label for label in labels), "Speed telemetry must remain")
 
     @unittest.skipUnless(shutil.which("gdb"), "Native menu opacity fixture needs GDB")
-    def test_flight_menu_backgrounds_are_about_50_percent_opaque(self):
+    def test_flight_panels_use_graphite_surfaces_at_65_percent_opacity(self):
         with tempfile.TemporaryDirectory(prefix="ngen-menu-alpha-") as directory:
             output = Path(directory) / "alpha.json"
             script = Path(directory) / "alpha.gdb"
@@ -556,8 +556,17 @@ set confirm off
 set debuginfod enabled off
 python
 import gdb, json
-alphas = dict(utility=set(), performance=set(), context=set())
+surfaces = dict((name, dict(panel=set(), header=set(), border=set())) for name in ('utility', 'performance', 'context'))
 text_alphas = set()
+under_header = set()
+border_inner_edges = set()
+def rgba(value):
+ return tuple((int(value) >> shift) & 255 for shift in (0, 8, 16, 24))
+def origin(x, y):
+ for name, point in [('utility', (8, 64)), ('performance', (922, 64)), ('context', (640, 288))]:
+  if abs(x - point[0]) < 2 and 0 <= y - point[1] <= 33:
+   return name, y - point[1]
+ return None
 class Foreground(gdb.Breakpoint):
  def stop(self):
   begin, end = gdb.parse_and_eval('text_begin'), gdb.parse_and_eval('text_end')
@@ -571,18 +580,36 @@ class Background(gdb.Breakpoint):
  def stop(self):
   lo, hi = gdb.parse_and_eval('p_min'), gdb.parse_and_eval('p_max')
   x, y = float(lo['x']), float(lo['y'])
-  if float(hi['x']) - x > 100 and float(hi['y']) - y > 60:
-   for name, origin in [('utility', (8, 64)), ('performance', (922, 64)), ('context', (640, 288))]:
-    if abs(x - origin[0]) < 1 and abs(y - origin[1]) < 1:
-     alphas[name].add((int(gdb.parse_and_eval('col')) >> 24) & 255)
+  match = origin(x, y)
+  if match and float(hi['x']) - x > 100:
+   name, dy = match
+   height = float(hi['y']) - y
+   if dy < 1 and height > 40:
+    surfaces[name]['panel'].add(rgba(gdb.parse_and_eval('col')))
+    under_header.add(name)
+   elif abs(dy - 1) < .1 and 10 < height <= 32:
+    surfaces[name]['header'].add(rgba(gdb.parse_and_eval('col')))
+   elif abs(dy - 32) < .1 and height > 10:
+    surfaces[name]['panel'].add(rgba(gdb.parse_and_eval('col')))
+  return False
+class Border(gdb.Breakpoint):
+ def stop(self):
+  lo, hi = gdb.parse_and_eval('p_min'), gdb.parse_and_eval('p_max')
+  match = origin(float(lo['x']), float(lo['y']))
+  if match and match[1] < 1 and float(hi['x']) - float(lo['x']) > 100:
+   surfaces[match[0]]['border'].add(rgba(gdb.parse_and_eval('col')))
+   # Pinned ImGui applies its own half-pixel alignment; a 1 px stroke's
+   # inner edge must not cross the header fill beginning 1 px inside.
+   border_inner_edges.add((match[0], match[1] + 1.0))
   return False
 Foreground('ImFont::RenderText', internal=True)
 Background('ImDrawList::AddRectFilled', internal=True)
+Border('ImDrawList::AddRect', internal=True)
 end
 run
 python
 with open({str(output)!r}, 'w') as stream:
- json.dump(dict(backgrounds=dict((name, sorted(values)) for name, values in alphas.items()), text=sorted(text_alphas)), stream)
+ json.dump(dict(surfaces=dict((name, dict((role, sorted(values)) for role, values in roles.items())) for name, roles in surfaces.items()), text=sorted(text_alphas), under_header=sorted(under_header), border_inner_edges=sorted(border_inner_edges)), stream)
 end
 quit
 """)
@@ -595,10 +622,16 @@ quit
             self.assertNotIn("Python Exception", result.stderr)
             observed = json.loads(output.read_text())
         self.assertEqual(observed["text"], [255], "Menu text must remain fully opaque")
-        for menu, values in observed["backgrounds"].items():
-            self.assertTrue(values, f"The {menu} background was not actually drawn")
-            self.assertTrue(all(127 <= alpha <= 129 for alpha in values),
-                            f"{menu} background must be about 50% opaque, got {values}")
+        expected = {"panel": [42, 43, 47, 166], "header": [58, 65, 78, 166],
+                    "border": [120, 153, 166, 166]}
+        for menu, roles in observed["surfaces"].items():
+            for role, values in roles.items():
+                self.assertEqual(values, [expected[role]], f"{menu} {role}: actual drawn RGBA")
+        self.assertEqual(observed["under_header"], [],
+                         "Do not stack a translucent header on a second translucent panel fill")
+        for menu, inner_edge in observed["border_inner_edges"]:
+            self.assertLessEqual(inner_edge, 1.01,
+                                 f"{menu} border stroke overlaps the translucent header fill")
 
     @unittest.skipUnless(shutil.which("gdb"), "Native panel geometry fixture needs GDB")
     def test_optional_panels_fit_content_including_return_from_data_to_controls(self):

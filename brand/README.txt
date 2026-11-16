@@ -1,4 +1,4 @@
-NGEN VISUAL IDENTITY 1.0
+NGEN VISUAL IDENTITY 1.2
 KYAU Labs
 
 NGEN is a C++20 game engine for space simulators, with a focus on space MMOs.
@@ -57,4 +57,6 @@ ASSET USE
   For an explicit site theme, select the matching fixed-theme favicon.
   Point Open Graph metadata to one hosted PNG using an absolute URL.
 
-  Identity 1.0 refers to this brand system.
+  The Graphite palette uses bg for the page, surface for panels, and
+  panel-header for the Slate header surface. surface-alt shares the panel
+  header color. Slate uses #3A414E in dark mode and #E7EBF4 in light mode.

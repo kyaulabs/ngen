@@ -1,5 +1,9 @@
 # M3 final delivery candidates
 
+This v23 candidate predates the owner's replacement Graphite pack and remains
+historical, not the revised-UI acceptance candidate. See
+[Graphite verification](../ui/graphite.md).
+
 The private Linux v23 bundle contains the GUI motion-burst repair and is bound to
 signed source `c27f1ecf76dd950ab3cb1c37fff01a531831256d`. Launch it with
 `build/m3-offline-linux-v23/ngen-flight/run.sh` without frame arguments for an
@@ -29,7 +33,8 @@ is relabeled with a later documentation revision. No accepted benchmark is rerun
 for this packaging refresh.
 
 Private assets, executables and recordings stay outside Git and public uploads.
-Final interactive disconnected startup, the private recording hash, listening
-verdict and overall owner acceptance remain open. Until those are recorded, the
-integration PR must remain a draft and must not be approved or merged. This
+The owner reports that real interactive disconnected startup and listening
+passed. Overall acceptance remains withheld pending the new Graphite UI preview
+and its private recording; earlier binaries are not relabelled. The integration
+PR must remain a draft and must not be approved or merged before that acceptance. This
 packaging verification is not milestone acceptance or redistribution/legal approval.

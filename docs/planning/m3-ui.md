@@ -7,8 +7,10 @@ readout, world-anchored selected-target information, and contextual actions.
 Flight data, controls/help and F12 appear only on demand. Shared NGEN identity
 remains approved. The inspector keeps its layout and behaviour; shared colours
 and header artwork adopt the brand.
-The owner now has a direct desktop session for post-UI Windows verification.
-RTX timing remains unverified; the earlier Artemis misses are retained, not waived.
+Post-UI native Windows and three valid MSVC active-profile budget runs passed at
+their documented sources; driver differences and historical misses remain
+recorded. Those binaries predate the Graphite revision described below and are
+not relabelled. Overall M3 acceptance remains withheld pending the revised UI.
 
 The three requested references were read in full. The initial proposal had not
 opened their images; after the owner called out that gap, all 27 relevant UI
@@ -25,10 +27,12 @@ for image coverage, observations and concrete design consequences.
   branding, or add its health, capacitor, modules, minimap or other unimplemented
   gameplay.
 
-Use the supplied NGEN Visual Identity 1.0 guide and dark semantic tokens in
-`brand/web/ngen-tokens.json`: quiet blue-black fields, cyan primary actions/focus,
-violet secondary accents, labelled warning/error states. Preserve original brand
-files. Following the first preview, the owner requested no logos in F1 or F2;
+Use the owner's replacement NGEN Graphite 1.2 pack and semantic tokens in
+`brand/web/ngen-tokens.json`: background `#202124`, panel `#2A2B2F`, header
+`#3A414E`, cyan primary actions/focus, violet secondary accents and labelled
+warning/error states. Preserve the supplied artwork bytes; do not redraw them.
+The replacement pack supersedes the earlier 1.0 inputs, whose evidence remains
+historical. Following the first preview, the owner requested no logos in F1 or F2;
 keep only the small upper-left standalone mark during flight. Utility headings
 are text-only. The inspector retains the proportional wordmark, its clear space
 and at least 144 px visible width; the owned window retains its supplied icon. No
@@ -46,7 +50,10 @@ relative mouse mode begins only once the gesture becomes a drag/hold or is
 camera-only, avoiding SDL's cursor restoration when a popup opens. The popup
 closes on action, dismissal or input/reset handoff, and keeps the selected target
 identity with its commands. Flight controls, data, performance and context-menu
-backgrounds use 50% opacity; text remains fully opaque.
+surfaces, headers and outer borders use 65% opacity; text remains fully opaque.
+Header/body fills and the pixel-aligned border do not stack translucent layers.
+This opacity is flight-local; the inspector retains its opacity and layout while
+adopting the replacement shared RGB tokens.
 View/reset/audio controls and optional flight plots remain accessible on demand;
 F12 stays the separate system/device performance panel. F1, F2 and F12 fit their
 contents vertically at stable readable widths, capped to the available screen
@@ -82,13 +89,15 @@ native GUI captures. Same-session review does not replace final independent/owne
 review. Supply an offline Linux UI preview; do not claim fresh native Windows,
 local RTX timing, final three-run budgets or M3 completion from local checks.
 
-The owner accepts the current UI as a decent starting point; further UI polish
-is deferred. The runtime implements controls, data/plots, performance,
+The owner accepted the previous UI starting point, handling/audio and real
+disconnected startup/listening, but withheld M3 acceptance for this last Graphite
+revision. Its visual acceptance remains open; further unrelated polish is deferred. The runtime implements controls, data/plots, performance,
 right-click target actions and shared branding through the existing atlas. The inspector keeps its control arrangement and technical font sizing;
 its header grows to fit the supplied wordmark. See the
 [verification record](../evidence/M3/ui/checks.md) for actual tests and review
 repairs. Private default/data/inspector captures have been visually reviewed.
-The signed 50%-opacity baseline is committed and pushed at `8d4d89c`.
+The earlier signed 50%-opacity baseline at `8d4d89c` is historical, not the current
+Graphite candidate. See [Graphite checks](../evidence/M3/ui/graphite.md).
 Private offline Linux v21 launches through
 `build/m3-offline-linux-v21/ngen-flight/run.sh`; all 25 manifest hashes and
 corresponding source files verify, and isolated startup exercises controls,
@@ -96,5 +105,6 @@ data, performance and the context popup. It predates the later link-bound build
 identity gate and is not the final post-review bundle. Historical v15 metadata
 is retained.
 `build/m3-flight/current-ui/run.sh` still follows the working build, not a frozen
-bundle. UI-baseline acceptance does not complete native Windows/direct-desktop
-timing, final delivery/recording, independent review or overall M3 acceptance.
+bundle. The optional [private recorder](../../tools/record_flight/README.md)
+records only its own NGEN window and playback stream. Recording and source
+verification do not substitute for the owner's final revised-UI acceptance.

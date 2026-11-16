@@ -337,6 +337,9 @@ if(NGEN_BUILD_FLIGHT_DEMO)
       "NGEN_FLIGHT_DEMO=$<TARGET_FILE:flight_demo>"
       ${Python3_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/tests/flight_demo_cli.py)
     add_test(NAME demo_package COMMAND ${Python3_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/tests/demo_package.py)
+    add_test(NAME flight_recording_policy COMMAND ${CMAKE_COMMAND} -E env "PYTHONDONTWRITEBYTECODE=1"
+      ${Python3_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/tests/flight_recording.py)
+    set_tests_properties(flight_recording_policy PROPERTIES TIMEOUT 30)
   endif()
 endif()
 if(BUILD_TESTING)

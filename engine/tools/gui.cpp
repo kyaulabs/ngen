@@ -150,8 +150,11 @@ struct Gui::Impl {
         };
         style.Colors[ImGuiCol_Text] = colour(brand::text);
         style.Colors[ImGuiCol_TextDisabled] = colour(brand::muted);
-        style.Colors[ImGuiCol_WindowBg] = colour(brand::bg);
+        style.Colors[ImGuiCol_WindowBg] = colour(brand::surface);
         style.Colors[ImGuiCol_PopupBg] = colour(brand::surface);
+        for (const auto slot :
+             {ImGuiCol_TitleBg, ImGuiCol_TitleBgActive, ImGuiCol_TitleBgCollapsed})
+            style.Colors[slot] = colour(brand::panel_header);
         style.Colors[ImGuiCol_Border] = colour(brand::control_border);
         style.Colors[ImGuiCol_Separator] = colour(brand::border);
         for (const auto slot : {ImGuiCol_FrameBg, ImGuiCol_Header, ImGuiCol_Tab, ImGuiCol_Button})
