@@ -1,7 +1,7 @@
 # M3 Windows flight check
 
-The latest [post-UI return](../evidence/M3/windows/post-ui/checks.md), source
-`5fb8ddf`, passes ClangCl Release: 24 CTests, validated flight, app-local startup,
+The [post-UI evidence](../evidence/M3/windows/post-ui/checks.md) at source
+`5fb8ddf` passes ClangCl Release: 24 CTests, validated flight, app-local startup,
 complete sampled-memory coverage and a focused RTX replay with P95 8.3142 ms.
 The repaired 3,600-frame live diagnostic has zero warm C++/ImGui allocations;
 the owner confirms actual F2 plot tooltips with numeric F12 visible. The earlier
@@ -9,17 +9,30 @@ single-allocation result is retained, not waived or conclusively attributed.
 No further ClangCl continuation or SDK audit is needed for this repair.
 
 Earlier MSVC Debug/Release and ClangCl Debug at `21e616c` passed 72 CTests. MSVC
-sampled memory and live hover pass; one focused RTX replay has P95 7.804 ms.
-Two additional replays lost focus and still require only clean timing repeats
-using the existing MSVC bundle, not a rebuild. Results retain their actual source
-revisions; do not relabel the old bundle as the current checkout.
+sampled memory and live hover pass. The original focused replay plus two valid
+existing-bundle repeats now pass the RTX budget: P95 7.8040 / 7.6079 / 7.6622 ms,
+with every frame focused and playing and zero warm calls. Earlier focus-invalid
+trials remain retained. The base and repeats report different driver versions;
+these are three independent budget passes, not controlled same-driver variance.
+Results retain their actual source revisions, not the current checkout label.
+**No further build, timing, memory, hover or SDK rerun is needed for these gates.**
 
-Use normal PowerShell 7.2+ in the repository; no pasted script bodies are needed:
+Next is final interactive offline delivery, recording/listening and owner
+acceptance. On the direct desktop, safely disconnect networking yourself; do not
+disconnect a remote session. From the repository, launch the verified repaired
+ClangCl bundle without frame limits:
 
 ```powershell
-git pull --ff-only
-.\tools\repeat-windows-flight-timing.ps1
+$demo = 'build\clang-release-resume-885bc626be0845cfa54037b135645c0e-offline'
+& "$demo\ngen-flight\run.cmd"
 ```
+
+This is an unlimited owner preview; close it yourself. Keep the short recording
+private and capture only the NGEN window and its application audio—no microphone,
+other applications or whole-desktop/system-audio mix. Return the recording hash
+and your offline-startup/listening verdict, not the private asset bundle. Accepted
+handling, audio and the UI starting point are not reopened; report new defects
+if any. Integration remains pending until this final acceptance.
 
 For future affected ClangCl source changes only, the continuation initializes
 the installed x64 developer shell, selects the latest matching ClangCl flight
@@ -33,10 +46,12 @@ admitted runs retain their archive on check failures and return a nonzero exit
 code. Every continuation uses a fresh private bundle outside its evidence ZIP,
 so retrying after a later failure preserves earlier bundles.
 
-Run these separately only when their corresponding check is still needed:
+For future affected checks only, these scripts remain available; do not rerun
+them merely for this documentation update:
 
 ```powershell
 .\tools\resume-windows-flight.ps1
+.\tools\repeat-windows-flight-timing.ps1
 .\tools\windows-sdk-audit.ps1
 ```
 
@@ -120,7 +135,7 @@ a clean timing or formal memory measurement.
 
 The checks below are the recipe for future affected current-source runs, not a
 request to repeat either passing memory check. Native hovered-tooltip verification
-now passes; two valid MSVC timing repeats remain open. Use the named splat; do not split
+and the three-active-run timing budget now pass. Use the named splat; do not split
 `Start-Process` arguments or use positional `Select-String` examples.
 
 ```powershell
@@ -153,7 +168,7 @@ The historical ClangCl return reported 2 warm ImGui allocations in the clean
 replay and a first-query CIM failure with no GPU-memory samples. Both pre-UI
 compiler returns at `7afeefe` have zero warm replay allocations and complete PDH
 coverage. Current post-UI native scope is recorded above; the MSVC live-panel
-hover check passes, while ClangCl Release has not run. The observer retains
+hover check and repaired ClangCl Release live-hover check both pass. The observer retains
 `error_details` in `Release-flight.memory.working-set.json`, including native PDH
 status/kind on failure. The 2 s operation timeout, sampling/coverage rules
 and budgets are unchanged. A failed query still fails memory acceptance; do not
@@ -178,5 +193,5 @@ playback-device removal/reconnection where available. Report control feel, sound
 comfort and any discontinuity. Synthetic SDL events are not substitutes for this.
 Keep a short original audio/video recording private; send its hash and feedback.
 The owner accepts the current UI starting point and defers polish. M3 remains
-open until two valid MSVC timing repeats, final recording/listening/offline-delivery,
-owner acceptance and reviewed integration finish.
+open until final recording/listening/offline-delivery, owner acceptance and
+reviewed integration finish.

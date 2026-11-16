@@ -120,11 +120,36 @@ Each replay contains 2,400 frames at 1920 × 1080 after 60 warmup frames, with
 validation and external process-memory sampling off, hidden F12, and zero warm
 C++/ImGui allocation calls. Every P95 is below 16.7 ms, but only the base replay
 keeps focus and playing audio throughout. The owner says multitasking may have
-changed focus. **Three-valid-run RTX acceptance remains open.** Repeat only the
-two affected clean replays using the existing immutable MSVC bundle. Do not
-remove unfocused rows or the 579.3141 ms frame to manufacture valid results.
-Earlier Artemis-session misses remain historical evidence, not retroactively
-waived or causally attributed by this direct-desktop result.
+changed focus. Those two trials are not accepted; their rows and the 579.3141 ms
+frame remain intact. Earlier Artemis-session misses remain historical evidence,
+not retroactively waived or causally attributed by later direct-desktop results.
+
+Two subsequent sequential repeats use the existing MSVC bundle at source
+`21e616c`, not the newer checkout or repaired ClangCl binary. Both retain all
+2,400 measured frames after 60 warmup frames at 1920 × 1080, with focus and
+playing audio on every row, all GPU timing rows, hidden panels, validation off
+and zero warm C++/ImGui calls. Their 27 physical fields match the accepted base.
+The repeat script launches no build, memory observer or recorder. Seven declared
+report/identity hashes verify. Bounded preflight and redacted diagnostic scanning
+pass: eight members, 589,583 compressed bytes, 2,599,407 expanded bytes; no returned
+code or media is executed. Archive SHA-256:
+`1efb7f447d88921c74b4425744c4b3cac47c19738aa9dba6a25b1479024d4409`.
+
+| Valid MSVC run | Median ms | P95 ms | P99 ms | Maximum ms | Vulkan driver, raw |
+|---|---:|---:|---:|---:|---:|
+| Previous base | 7.12535 | 7.8040 | 8.3627 | 9.6179 | 2604892160 |
+| Focused 2 | 7.20705 | 7.6079 | 8.3304 | 9.2134 | 2605056000 |
+| Focused 3 | 7.20115 | 7.6622 | 8.4079 | 9.1938 | 2605056000 |
+
+All three independently pass the unchanged 16.7 ms P95 budget and active profile.
+**Three valid MSVC budget runs are now established; no further timing repeat is
+required.** The driver differs between the base and repeats, so this is not a
+controlled same-driver three-run variance set; no timing cause is inferred.
+The repeat script checks its executable against the existing bundle manifest and
+accepted asset. The original base reports do not expose an independent executable
+hash, so do not claim an additional historical binary-hash comparison.
+`msvc-focused-replays.json` records the supplied manifest/executable/asset identities,
+verified metrics and this scope. Invalid earlier trials remain separate.
 
 Separate MSVC process-memory observation passes the existing limits: 33 valid
 samples, 34 attempts, one startup-empty attempt outside the measured window,
@@ -156,6 +181,6 @@ accepted. The post-review bundle is
 `build/m3-offline-linux-v22/ngen-flight/run.sh`; its manifest SHA-256 is
 `ce0dd77a0760e8abaee7ed30ba475dac9773efa15cee966f23c86db54c009881`.
 
-Remaining: two valid MSVC timing repeats, final recording/listening/offline-delivery and
-owner acceptance, then reviewed integration and exact post-merge CI. The UI
+Remaining: final recording/listening/offline-delivery and owner acceptance,
+then reviewed integration and exact post-merge CI. The UI
 starting point remains accepted with polish deferred. M3 is not complete.
