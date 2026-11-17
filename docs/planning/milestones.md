@@ -1,6 +1,6 @@
 # Milestones and atomic implementation tasks
 
-Current delivery: M3 is owner-accepted and merged through [PR #10](https://github.com/kyaulabs/ngen/pull/10) at `03b76c724a556a30944b39072afbee4aa2dfcf8b`, after accepted M2 at `4b554cc`. The next workstream is **M4**, gated on the coordinate/precision decision and its evidence. No M4 implementation is started or authorized by creating its tracker records. See the [executive brief](executive-brief.md) and [final M3 verification](../evidence/M3/ui/final-verification.md).
+Current delivery: M1–M3 are accepted and [0.1.0 is published as source only](https://github.com/kyaulabs/ngen/releases/tag/v0.1.0) at reviewed main `2d1a0539`, with completed release/back-merge verification. M3's private preview remains source-bound to `e45ba673`; public source is not a public playable bundle. The next parallel workstreams are **M4's precision/ADR entry gate** and **C1's reusable creator baseline**. C2 adds local MCP authoring/playtests once the relevant C1 operations exist. No implementation starts merely because this plan or its tracker changes. See the [executive brief](executive-brief.md) and [final M3 verification](../evidence/M3/ui/final-verification.md).
 
 | Scope | Current state |
 |---|---|
@@ -10,12 +10,14 @@ Current delivery: M3 is owner-accepted and merged through [PR #10](https://githu
 | M3 | Accepted offline flight/presentation/audio, normal PR #10 merge `03b76c72`; retained verification limits still apply. |
 | M4 | Next, not implemented; precision/ADR entry gate before coordinates or rebasing. |
 | M5–M10 / M13 | Planned, dependent on preceding integrated acceptance; no delivery or capacity claim. |
-| M11 | Optional selected graphics/tools; individual benefit/platform/content gates remain. |
+| M11 | Optional selected graphics; individual benefit/platform/content gates remain. Creator tooling is mandatory C1/C2, not an optional visual feature. |
 | M12 | Optional settlement; separate legal/security/custody and explicit execution/release permission required. |
+| C1 | Planned reusable 3D SDK, project/scene/build tools and documented creator acceptance; can start alongside M4. |
+| C2 | Planned local MCP authoring, authorized build/test jobs and owned playtests using C1 operations; no production or unrestricted host access. |
 
-The dedicated [NGEN kanban](https://github.com/orgs/kyaulabs/projects/4/views/3) contains all **56 M4–M13 atomic task issues**, grouped into ten open milestones. The [tracker index](github-tracker.md) links every task. All cards start Todo, without dates or assignees. Tracker cards are planning records, not implementation, spending or deployment permission; no staffing assumptions are added. The original M0–M2 chronology is retained below as history rather than the current next-action list.
+The dedicated [NGEN kanban](https://github.com/orgs/kyaulabs/projects/4/views/3) currently contains the original **56 atomic issues in ten open milestones**. This revision defines **67 remaining tasks across twelve milestones**, adding M7-G and the C1/C2 tracks; C1-D reuses former M11-F issue #55 rather than duplicating it. [Tracker synchronization](github-tracker.md) is authorized and in progress; source planning rows are not claims that new cards already exist. Preserve existing issue IDs, Todo states, undated/unassigned planning and historical M0–M3 evidence. Cards authorize no implementation, spending or deployment.
 
-The delivery order is **polished offline flight, miniature offline game, authoritative multiplayer**. Commands, stable IDs, clocks, snapshots and dependency boundaries appear early. Sockets, PostgreSQL, distributed ownership and blockchain appear only when their milestones require them. This document proposes source areas; the actual checkout audit must map them to existing paths and retain working implementations.
+The flagship delivery order remains **polished offline flight, miniature offline game, authoritative multiplayer**. The reusable engine/creator track runs alongside it: a consumable baseline precedes M5 expansion, and C1/C2 can ship without waiting for MMO production. Security law, NPC police, property and sovereignty are flagship policies, not mandatory engine assumptions. Commands, stable IDs, clocks, snapshots and dependency boundaries appear early. Sockets, PostgreSQL, distributed ownership and blockchain appear only when their milestones require them. This document proposes source areas; the actual checkout audit must map them to existing paths and retain working implementations.
 
 Read [repository-audit.md](repository-audit.md) and [build-review-infrastructure.md](build-review-infrastructure.md) before executing tasks. The accepted architecture specifications and ADRs determine API details. Numbers below are proposed acceptance budgets, never measured results or player-capacity promises.
 
@@ -32,11 +34,16 @@ flowchart TD
     M4 --> M5["M5 Miniature universe"]
     M5 --> M6["M6 Authoritative multiplayer"]
     M6 --> M7["M7 Persistent economy"]
-    M7 --> M8["M8 Event PvP"]
+    M7 --> M8["M8 Security law and sovereignty"]
     M8 --> M9["M9 Fleet scale"]
     M9 --> M10["M10 Distributed regions"]
     M10 --> M13["M13 Production hardening"]
-    M3 -. "Optional graphics work" .-> M11["M11 Graphics and tools"]
+    M3 --> C1["C1 Creator SDK and tools"]
+    C1 -->|"C1-A/B baseline"| M5
+    C1 -->|"Relevant operations"| C2["C2 Local creator MCP"]
+    C1 -->|"Full creator acceptance"| M13
+    C2 -->|"Local MCP acceptance"| M13
+    M3 -. "Optional graphics work" .-> M11["M11 Graphics"]
     M11 -. "Selected features only" .-> M13
     M0 -. "Feasibility research" .-> M12["M12 Optional settlement"]
     M7 --> M12
@@ -50,15 +57,17 @@ flowchart TD
 | M2 | M1 foundation; required-machine GPU capture and shader/device experiment | Asset preparation and offline gameplay specification |
 | M3 | M2 renderer and asset path | M11 experiments after the flight gate passes |
 | M4 | M3 flight; precision experiment accepted | Miniature-game content preparation |
-| M5 | M4 travel/streaming | Multiplayer protocol specification, no premature implementation |
+| M5 | M4 travel/streaming and C1-A/B consumable baseline | Multiplayer protocol specification; remaining C1 tools; no premature network implementation |
 | M6 | M5 playable loop and headless separation | Database schema/failure-model review |
 | M7 | M6 authority and command receipts | M11 graphics; M12 settlement model using accepted ledger contract |
-| M8 | M7 persistence and faction identities | Fleet fixture preparation |
-| M9 | M8 permission semantics and M7 economic clocks | M11 optional effects and tools |
+| M8 | M7 persistence, property rights and faction identities | Fleet fixture preparation; security law never grants client authority |
+| M9 | M8 security/sovereignty semantics and M7 economic clocks | M11 optional effects; creator-tool improvements |
 | M10 | M9 measured regional limits | Release packaging and operations documentation |
 | M11 | M3 generally; M4/M5 for tasks named below | M7–M10; never blocks core progress for an unselected feature |
 | M12 | Feasibility starts after M0; implementation requires M7 and legal/security gates | Core game development; its failure does not cancel the game |
-| M13 | M10 and selected release features; M12 only if external transfers ship | No unreviewed optional feature enters the release |
+| C1 | M3 foundation; C1-A/B before M5 expansion | M4 precision/travel; SDK/tool releases need not wait for M13 |
+| C2 | C1's applicable validated authoring/build/play operations | C1/M4 onward; local companion, not a runtime game dependency |
+| M13 | M10, full C1/C2 and selected release features; M12 only if external transfers ship | Earlier SDK/tool releases remain independent; no unreviewed feature enters production |
 
 ## Task and evidence contract
 
@@ -142,7 +151,7 @@ Performance gate: the fixed laptop replay passes the lightweight flight target a
 
 Next workstream, not implemented. Before M4-A, resolve the precision/normalization/frame-epoch contract in [ADR 0003](../adr/0003-hierarchical-coordinates.md) and accept the declared precision evidence. Do not infer full coordinate-ADR ratification from M3's local-flight acceptance. Start with the existing Jolt/command/snapshot boundaries; no networking, database, galaxy framework or arbitrary new renderer owner is implied.
 
-Deliver connected systems with security sectors, predominantly fixed celestial arrangements and orbital infrastructure; hierarchical coordinates; safe local physics frames; and committed warp with destination prefetch. Gate/wormhole routes and jump-capable ships use explicit travel permissions. Cinematic travel may conceal bounded preparation; arbitrary network/disk failure cannot be promised invisible.
+Deliver connected systems with protected and lawless security sectors, predominantly fixed celestial arrangements and orbital infrastructure; hierarchical coordinates; safe local physics frames; and committed warp with destination prefetch. Every new player starts in protected NPC jurisdiction. Lawless sectors must greatly outnumber protected ones; declare the approved ratio/counting unit in the content fixture before acceptance, not merely a 51/49 majority. Exact balance is not yet selected. This manifest establishes policy data, not M8 policing implementation. Gate/wormhole routes and jump-capable ships use explicit travel permissions. Cinematic travel may conceal bounded preparation; arbitrary network/disk failure cannot be promised invisible.
 
 | Task and outcome | Dependencies | Proposed source area | Tests and completion evidence |
 |---|---|---|---|
@@ -150,7 +159,7 @@ Deliver connected systems with security sectors, predominantly fixed celestial a
 | M4-B: transfer one local physics domain between origins at a tick barrier | M4-A | `engine/physics/`, simulation frame state | Perform 10,000 origin transfers; preserve contacts, constraints and trajectory. Test 10 m, 100 m and 1 km hull cases, with separately agreed contact tolerances. |
 | M4-C: preserve rendering/prediction history across a frame-epoch change | M4-B | Render snapshot extraction, temporal state | Compare equivalent near/far-origin views; target ≤0.25-pixel difference. Check shadows, particles and motion vectors; no consumer may mix frame epochs. |
 | M4-D: implement one committed warp trajectory with entry/transit/exit states | M4-A, M3-B | `game/travel/` | Test ship jump capability, route/security permission, cancellation, unavailable destination and repeated arrival commands. Exit cannot duplicate vessels or enter unavailable collision data. |
-| M4-E: stream connected authored/procedural system manifests with prefetch, proxies and bounded eviction | M4-C, M4-D | `engine/assets/streaming/`, world manifests | Fix seeds, security sectors, celestial/orbital placements and gate/wormhole routes. Inject slow/missing/corrupt assets and memory pressure. Residency commits after upload; failed preparation delays arrival safely. Keep hashes and a crossing trace. |
+| M4-E: stream connected authored/procedural system manifests with prefetch, proxies and bounded eviction | M4-C, M4-D | `engine/assets/streaming/`, world manifests | Fix seeds, protected/lawless sectors, protected player starts, celestial/orbital placements and gate/wormhole routes. Verify the declared lawless-majority distribution and non-overridable starter jurisdiction. Inject slow/missing/corrupt assets and memory pressure. Residency commits after upload; failed preparation delays arrival safely. Keep hashes and a crossing trace. |
 
 Performance gate: preserve flight-frame targets during the fixed crossing replay, with no warmed streaming hitch above 200 ms in the declared workload. Exceeding storage capacity changes admission/prefetch policy, not the test fixture silently. Precision loss, frame-induced velocity changes, dangling assets or collision-domain splits block closure. Review physics and rendering independently, then accept a continuous two-system traversal with fault evidence.
 
@@ -160,12 +169,12 @@ Deliver a deliberately bounded playable slice: two systems, one station market, 
 
 | Task and outcome | Dependencies | Proposed source area | Tests and completion evidence |
 |---|---|---|---|
-| M5-A: apply one local inventory/currency transfer through an idempotent transaction kernel | M4 acceptance | `game/economy/`, local state adapter | Test duplicate operation IDs, changed requests under the same ID, overflow and insufficient funds. The fixed buy/sell fixture conserves quantities and balances. |
+| M5-A: apply one local inventory/currency transfer through an idempotent transaction kernel | M4 acceptance, C1-A/B | `game/economy/`, local state adapter | Test duplicate operation IDs, changed requests under the same ID, overflow and insufficient funds. The fixed buy/sell fixture conserves quantities and balances. |
 | M5-B: make a mining command reserve and transfer a bounded resource yield | M5-A | `game/mining/` | Concurrent/repeated claims cannot overdraw an asteroid or duplicate cargo. Test capacity/full-hold behavior and a declared replenishment event; retain resource totals. |
 | M5-C: resolve the two fixture weapons against hull/component health through one damage path | M4-B, M5-A | `game/combat/`, fitted components, physics queries | Test range/line of sight, swept hits, disabled fitted equipment, invalid targets and saturation. Component hit regions do not require a rigid body per item; accepted damaging shots are never silently dropped. |
 | M5-D: transition a destroyed fixture ship into one wreck and one repeatable starter recovery entitlement | M5-A, M5-C | `game/lifecycle/`, salvage/recovery commands | Race death, salvage and repeated requests; complete several loss/recovery cycles. Exactly one wreck owns surviving cargo. Free starter recovery restores play without repeatable sellable/salvage profit. |
 | M5-E: permit the fixture market transaction through a docking state machine | M5-A, M3-B | `game/docking/`, hub interaction | Test scripted station/planetary-hub approach, abort/departure, unavailable berth and trade during transition. Docking gates market access and preserves vessel/cargo identity; planetary surface physics is excluded. |
-| M5-F: run and save one bounded first-party faction/career quest through the playable loop | M5-B–E | `engine/script/`, `game/quests/`, local save adapter | Test one faction/career branch and repeatable PvE recovery/progression with declared incentives. Enforce script limits and RAII errors. Save/reload each transition; interrupted publication and replay cannot duplicate rewards. |
+| M5-F: run and save one bounded first-party faction/career quest through the playable loop | M5-B–E | `engine/script/`, `game/quests/`, local save adapter | Start the player in protected space; teach lawful aggression, police consequences and the risk of entering lawless space without claiming M8 is already implemented. Test one faction/career branch and repeatable PvE recovery/progression with declared incentives. Enforce script limits and RAII errors. Save/reload each transition; interrupted publication and replay cannot duplicate rewards. |
 
 Performance gate: the B4 one-hour offline loop stays within flight and memory budgets; generated local transaction sequences have zero invariant failures. Compare PvE rewards, ordinary costs and repeated recovery for viable progression without a reward exploit. No PostgreSQL or server is needed. Inconsistent saves, unsafe scripts or a broken return-to-play path block acceptance. Independent gameplay/economic review and Sean's recorded playthrough close M5 before multiplayer implementation.
 
@@ -196,22 +205,25 @@ Deliver durable economic commands, world recovery, offline industry and resource
 | M7-D: complete one offline manufacturing job from reserved inputs | M7-A | Industry scheduler and job state | Restart before/after completion; vary elapsed time and clock jumps. Bound catch-up and prove one output issue, input conservation and no speedup from retry. |
 | M7-E: convert one fleet/factory between strategic and detailed representation | M7-D, M4-E | World activation/abstraction adapter | Repeated activation/collapse conserves resources, jobs, vessel IDs and missions. A second player entering cannot instantiate duplicate state. |
 | M7-F: run one bounded NPC faction decision loop that commits a durable territory transition | M7-C–E, M5-F | `game/factions/`, first-party scripts | Test expansion/production, shortages, territory loss and interrupted orders. Restart/retry preserves one territory outcome. Verify dynamic faction/career quest consequences and PvE incentives without duplicate rewards. Decisions remain bounded validated commands. |
+| M7-G: persist versioned property titles and resource/access rights for stations, planets, moons and sectors | M7-A/B | `game/ownership/`, persistence/save adapter | Race claims/transfers and duplicate operations; restore one owner/version and audit history without duplicated resources. Separate individual/group/NPC ownership, leases/access and sector jurisdiction. A sector claim does not silently seize every child asset; protected starter law cannot be sold or disabled. No surface simulation, tokenized real estate or real-world title is implied. |
 
 Performance gate: run at least one million generated commands grouped into seeded sequences, with zero unexplained imbalance, duplicate item or double spend. Match B6: proposed P95 durable local-region command latency ≤100 ms at 100 mixed commands/s on the pinned host; report contention scenarios separately. DB latency never blocks simulation. Memory/queues remain bounded during outage. State durability per tested failure domain. Independent transaction/recovery review and a clean restore drill close M7; asynchronous backups alone do not prove zero data loss after host destruction.
 
-## M8 — Enforce event-scoped PvP and territory rules
+## M8 — Enforce security law and player sovereignty
 
-Extend M7's durable NPC territory transitions with player/event rules, authoritative membership, damage permission and defenses against indirect neutral-player harm. Event entry/exit must have defined timing and version semantics. If a mechanic cannot prevent unauthorized indirect damage, constrain it outside authorized events.
+Replace event-only PvP with the owner-selected EVE-inspired legality model. Unprovoked aggression in protected space is criminal and triggers immediate dispatch of overwhelming NPC enforcement. Lawful self-defense and explicitly legal combat remain possible. Protection is punitive, not invulnerability: a victim can suffer damage or loss before the criminal is destroyed. Lawless space allows player combat without police intervention; it does not permit forged commands, economic duplication or server-authority bypass. No exact EVE timing/mechanics are claimed.
+
+Players/groups may own stations, planets, moons and resources. Sovereignty is claimable in lawless sectors; protected starter jurisdiction remains NPC-controlled. Ownership, resource/access rights, combat legality and simulation-process authority are distinct. See the [security/property contract](simulation-network-persistence.md).
 
 | Task and outcome | Dependencies | Proposed source area | Tests and completion evidence |
 |---|---|---|---|
-| M8-A: version the membership/permission state of one territorial event | M7 acceptance | `game/events/`, authority records | Test join/leave, expiry, reconnect and stale tokens at tick boundaries. Only server facts grant combat permission. |
-| M8-B: gate every fixture damage source before applying its effect | M8-A | Combat permission boundary | Exercise projectiles, drones, splash, debris and ownership changes. Unauthorized hits cause no protected-state mutation; retain causal attribution records. |
-| M8-C: constrain neutral-player environmental interaction under the accepted griefing policy | M8-B | Collision/tractor/explosion policies | Test ramming, pushing into asteroids, explosive cargo and chains of secondary impacts. Record prevention behavior and permitted environmental damage explicitly. |
-| M8-D: apply player/event rules to one durable territory-control transition | M8-A, M7-C, M7-F | Territory state, market/faction integration | Race victory, surrender, shutdown and duplicate event completion. Ownership changes once; inventories and existing orders follow the declared policy. |
-| M8-E: run an adversarial event replay across membership and authority changes | M8-C, M8-D | `tests/security/events/` | Reuse captured malicious/stale commands, including spectator attacks and fighter switches. Prove no unauthorized damage or reward, and useful investigation evidence. |
+| M8-A: classify one bounded combat fixture under versioned security/crime rules | M7 acceptance, M4 security manifests | `game/security/`, authoritative combat rules | Test protected/lawless boundaries, unprovoked attack, lawful defense, explicit legal combat, stale state and reconnect. Record crime at the declared authoritative boundary; do not restore event-only damage rejection or let the client declare legality. |
+| M8-B: dispatch and resolve one overwhelming NPC police response to criminal aggression | M8-A | NPC enforcement, combat commands | Verify immediate authoritative response dispatch and declared bounded response/destruction timing in the fixture. Lawful defenders are not punished. Jump/logout, ownership changes or replay cannot erase a committed offense. Bound police jobs/entities and test overload/restart; do not promise instantaneous delivery over a network or rely on unbounded spawns. |
+| M8-C: attribute indirect aggression and enforce explicit anti-exploit rules | M8-A/B | Collision/tractor/projectile attribution | Test drones, splash, debris, ramming, forced collisions and chained explosions, including changed ownership. Attribute causal actors without claiming perfect intent inference. Apply documented crime/response rules and necessary mechanic restrictions, not blanket immunity disguised as punitive protection. |
+| M8-D: commit one player claim/capture/transfer through property and sovereignty rules | M7-F/G, M8-A | `game/ownership/`, territory/resource rights | Race contest, surrender, transfer, shutdown and duplicates across station/planet/moon/sector records. Preserve one title/version and resource accounting. Parent sovereignty does not automatically seize child property; protected starter jurisdiction and access cannot be overridden. No planetary surface physics is implied. |
+| M8-E: run an adversarial security/sovereignty replay | M8-B–D | `tests/security/`, claim/crime fixtures | Cover lawful defense, illegal attacks and victim loss, police destruction, lawless combat without police, indirect aggression, stale rights, starter access and restart. Prove no forged authority, duplicate title/resource/reward or dropped committed crime; retain outcomes and investigation evidence. |
 
-Performance gate: maintain the M6 tick/replication budget in the declared event fixture and bound attribution-log growth. The primary pass condition is zero permission escape in the adversarial corpus. Independent security/game-rule review resolves ambiguity before approval. Closure includes a complete event replay, invariant report and the explicit restrictions on environmental mechanics.
+Performance gate: maintain M6 tick/replication budgets in declared protected and lawless fixtures, including police work and bounded attribution storage. Publish response/overload timing and actual outcomes. Zero unauthorized authority/economic mutation is required; zero victim damage is not the policy. Independent security/game-rule review resolves classification, pursuit/escape and collateral ambiguities before implementation acceptance. The integrated fixture proves criminal punishment, lawless combat, protected starts and durable ownership without pretending all grief is preventable.
 
 ## M9 — Prove fleet scale and regional time dilation
 
@@ -242,9 +254,38 @@ Deliver two simulation processes sharing one logical universe under a single-wri
 
 Performance gate: maintain M9 steady-state tick budgets and target a fault-free transfer pause ≤500 ms at P95 for the declared region payload. Fault recovery may pause longer but cannot compromise ownership. Preserve transfer latency distributions, payload sizes and recovery timelines. Independent distributed-systems review must approve fencing, rollback boundaries and partition behavior. Passing two nodes does not prove five-figure concurrency.
 
-## M11 — Add selected advanced graphics and tools
+## C1 — Deliver a reusable 3D creator SDK and toolchain
 
-This branch can begin after M3 and run alongside M7–M10. Deliver only features selected for a documented visual or workflow gain. Keep the basic Vulkan path and laptop gate working. DLSS, DLAA, FSR, global illumination (GI), ray tracing and a larger editor are optional choices gated by hardware, platform, licensing and measured benefit.
+Deliver a supported path from new project to authored, tested, packaged game without engine-core edits or private flagship assets. This mandatory creator track starts from M3 alongside M4. C1-A/B precede M5 expansion; full C1 can ship independently of the MMO. The [creator plan](creator-toolchain.md) defines scope and trust boundaries. C1-D retains former M11-F issue #55; preserve its identity rather than duplicate the editor work.
+
+| Task and outcome | Dependencies | Proposed source area | Tests and completion evidence |
+|---|---|---|---|
+| C1-A: expose the minimal consumable engine SDK boundary | M3 acceptance, ADR 0018 review | Public engine targets/headers, dependency packaging | A separate headless and graphical consumer uses supported APIs without private includes, core edits, mandatory flagship/MMO services or an invented universal ABI. Record actual supported builds/licenses. |
+| C1-B: create, validate, build/cook/test/run/package one standalone project | C1-A | Project manifest/template, existing build/asset tools | Fresh owned project runs through supported operations with structured diagnostics; invalid schema/assets/build fail usefully and cannot partially replace a good output. Reuse existing commands before adding wrappers. |
+| C1-C: author and save a bounded reusable 3D scene | C1-B | Scene/project editor, asset authoring | Create/edit entities, transforms, cameras, lights, materials and references; test undo/redo, invalid imports, stale revisions and atomic versioned save/reload. No private scene dependency. |
+| C1-D: connect owned play/inspection/reload and remove one measured authoring bottleneck | C1-C | Existing inspector/editor command boundary | Complete the same authoring task before/after; exercise play/stop, failed cook/reload, undo/save and invalid edits without corrupting active snapshots or saved projects. Tool dependencies remain optional for runtime consumers. |
+| C1-E: publish redistributable space/non-space samples and task-oriented SDK documentation | C1-A–D | Samples, tutorials, API/build/package guides | A reader follows the new-project path with no unpublished steps or restricted assets. Verify documentation against actual tools; both samples build/run and retain dependency/content notices. |
+| C1-F: accept an independently used creator workflow and packaged non-space game | C1-E | Creator acceptance fixture and SDK distribution | A developer with programming/game-development knowledge creates/modifies/tests/packages the non-space sample from a fresh supported setup without engine-core changes. Retain usability findings and actual platform evidence; fix blockers before calling the SDK usable. |
+
+Performance gate: publish measured tool/runtime resource budgets for the declared samples; preserve accepted M3 baselines rather than silently relaxing them. Closure needs the real external-consumer workflow, useful diagnostics, supported package and documentation—not only an inspector screenshot. No date, paid service or all-genres/ABI promise is added.
+
+## C2 — Deliver local MCP authoring and owned playtests
+
+Deliver an AI-facing local creator companion using C1 operations, with no model provider, production shard or unrestricted host dependency. Local authoring, explicitly authorized code execution and owned playtests are selected; remote collaboration is not. See [creator/MCP scope](creator-toolchain.md) and proposed ADR 0018.
+
+| Task and outcome | Dependencies | Proposed source area | Tests and completion evidence |
+|---|---|---|---|
+| C2-A: select/pin a local MCP protocol/SDK and expose scoped discovery/read operations | C1-A, ADR 0018 review | Separate local creator server | Exercise actual discovery/resources/tool schemas and structured errors with a protocol client. Bound output and explicit project handles; reject unauthorized roots/credentials. No network listener or engine runtime AI dependency by default. |
+| C2-B: apply project/source/scene edits through validated creator operations | C2-A, C1-B/C | MCP authoring adapter | Test expected revisions, diffs/atomic saves, malformed/oversized inputs, path/symlink escape and prompt-shaped asset text. No raw snapshot writes, cross-project access or automatic expansion of capabilities. |
+| C2-C: run bounded authorized build/cook/test/package jobs | C2-A, C1-B | Owned job/execution adapter | Require a separate execution grant and demonstrated host isolation for project code; use argument arrays, deadlines, output/concurrency caps and credential-free child environments. Test cancellation/failure/cleanup. No unrestricted shell, silent unsandboxed fallback, dependency spending or publication grant. |
+| C2-D: inspect/control only an owned development playtest | C2-B/C, C1-D | Development session adapter | Start/stop and inspect snapshots through explicit session/generation handles. Reject stale, foreign and live-production targets; apply only supported development commands. Cleanup owns every child and never kills a user's unrelated process. |
+| C2-E: prove game creation and abuse containment through real MCP messages | C2-A–D, C1-E | End-to-end protocol/creator fixtures | Create/edit/build/test/play a non-space game via a scripted MCP client; separately record any actual AI-host usability. Exercise malicious data, denied operations, stale handles, floods and cancellation; no secret leak, orphan, unauthorized mutation or paid model call required by the test. |
+
+Performance gate: bound per-call/job lifetime, memory/output/concurrency and owned process cleanup on declared hosts. No mocked-only sandbox claim. Full acceptance includes a working local creator workflow and security review; it does not authorize remote/production access or require an AI service for a shipped game.
+
+## M11 — Add selected advanced graphics
+
+This branch can begin after M3 and run alongside M7–M10. Deliver only features selected for a documented visual or workflow gain. Keep the basic Vulkan path and laptop gate working. DLSS, DLAA, FSR, global illumination (GI) and ray tracing are optional choices gated by hardware, platform, licensing and measured benefit. Required creator tooling moved to C1/C2; an optional graphics experiment cannot substitute for usable game-creation tools.
 
 | Task and outcome | Dependencies | Proposed source area | Tests and completion evidence |
 |---|---|---|---|
@@ -253,7 +294,6 @@ This branch can begin after M3 and run alongside M7–M10. Deliver only features
 | M11-C: integrate one selected DLSS/DLAA/FSR backend through a stable input contract | M3; motion-vector tests; SDK rights/platform review | Renderer temporal pass | Verify jitter, exposure, disocclusion, resize and origin changes. Compare quality/latency at equal display resolution; retain native rendering. Frame generation never counts toward base-rendering or simulation acceptance. |
 | M11-D: add one selected GI or ray-traced effect with a tested basic lighting path | M3; verified feature/device support | Renderer optional effect | Test unsupported-device selection and quality toggles. Record measured cost and visual benefit; the minimum GPU must not request RT features. |
 | M11-E: add one bounded nebula/volumetric effect to the astronomical scene | M4 acceptance | Atmosphere/volume rendering | Test extreme scale, view direction and origin shifts. Measure overdraw, temporal artifacts and memory; enforce low-preset limits. |
-| M11-F: add one editor operation that fixes a measured asset-authoring bottleneck | M5 acceptance; workflow evidence | `tools/inspector/` or existing editor | Complete the same authoring task before/after; test undo/save and invalid edits. Keep compiled game assets consistent and runtime tooling dependencies optional. |
 
 Performance gate: each accepted feature has a measured benefit, an explicit cost budget and no basic-path regression above the agreed threshold; propose ≤5% P95 regression for unaffected baseline scenes. Visual quality requires review at actual camera motion. Compiler/driver compatibility, ghosting, feature-only assets or editor corruption block the affected feature, not core progress. Close only selected tasks with captures, traces and user-approved outcomes; record deferred features explicitly.
 
@@ -277,7 +317,7 @@ Deliver a versioned release candidate, validated operations, measured capacity/c
 
 | Task and outcome | Dependencies | Proposed source area | Tests and completion evidence |
 |---|---|---|---|
-| M13-A: produce an installable client/server release candidate from the reviewed commit | M10; selected feature gates | Packaging/release workflow | Clean-install smoke on supported systems; retain source provenance, SBOM, dependency/asset manifests and compiler/cooker hashes. No developer or generation credentials ship. |
+| M13-A: produce an installable client/server release candidate from the reviewed commit | M10, C1-F, C2-E; selected feature gates | Packaging/release workflow | Clean-install smoke on supported systems; retain source provenance, SBOM, dependency/asset manifests and compiler/cooker hashes. No developer or generation credentials ship. |
 | M13-B: close the production account/session and abuse-control threat model | M6–M10 behavior frozen | Authentication/rate-limit boundaries, security tests | Exercise account takeover/session revocation, replay, flooding and malicious assets/messages. Independent security review resolves blockers and verifies least-privilege production roles. |
 | M13-C: prove recovery within the selected durability and availability objectives | M7-B, M10-E | Backup/restore and incident runbooks | Restore into clean staging and simulate process/host loss. Target recovery within 60 minutes; state any data-loss window honestly and preserve the drill timeline. |
 | M13-D: establish capacity and cost for the first launch population | M9, M10, M13-A | Load generators and capacity report | Measure stages of 32, 128, 512 and 1,000 clients plus the dense battle fixture; advance only after each gate passes. Identify saturation, admission limits and cost. Set the launch cap from evidence, with no assumed 1,000-client result. |
@@ -289,12 +329,12 @@ Performance gate: preserve fleet/network budgets at the chosen launch capacity a
 ## Prioritized critical path
 
 1. Preserve the accepted M1–M3 dependency chain, offline delivery, limits and honest evidence scopes; do not restart completed foundation/renderer/flight gates.
-2. Resolve M4's coordinate/precision entry decision, then execute M4-A through M4-C against existing local physics and render snapshots.
+2. In parallel, resolve M4's coordinate/precision entry decision and establish C1-A/B's consumable creator baseline. Neither authorizes new code merely by being planned. Execute M4-A through M4-C against existing local physics/render snapshots.
 3. Prove committed travel and bounded two-system streaming with M4-D/E before enlarging content.
-4. Finish M5's deliberately small offline gameplay/recovery/save loop before multiplayer implementation.
+4. Finish M5's deliberately small offline gameplay/recovery/save loop using the creator baseline before multiplayer implementation. Continue C1 scene/tools/docs and C2 local MCP; they can release without waiting for MMO scale.
 5. Add M6 authority/prediction, then M7 durable economy. Prove duplicate/retry/recovery correctness before increasing players or adding real-world value.
-6. Enforce M8 permissions, measure M9 fleet load and only then build M10 fenced ownership transfer.
+6. Prove M8 protected-space crime/police and lawless sovereignty/property rules, measure M9 fleet load and only then build M10 fenced simulation-authority transfer.
 7. Select useful M11 improvements and decide M12 independently; neither authorizes speculative dependencies or a mandatory external-currency release.
 8. Finish M13 around measured launch admission and rehearsed recovery, not an aspirational player count.
 
-The next workstream is **M4**, beginning with its precision/ADR entry gate before M4-A implementation. The dedicated tracker mirrors the existing bounded tasks and conditional dependencies. It does not start code, ratify every ADR, set a calendar, purchase services or authorize deployment.
+The next parallel entries are **M4 precision/ADR evidence and C1's reusable SDK baseline**. C2 follows the applicable C1 operations. The authorized tracker synchronization must be read back against the revised tasks before it is described as matching this source. This revision does not start code, ratify every ADR, set a calendar, purchase services or authorize deployment.

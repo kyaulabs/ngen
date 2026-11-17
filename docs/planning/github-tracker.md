@@ -6,7 +6,14 @@ atomic backlog. [NGEN Roadmap — Kanban][board] is Project **#4**, linked to
 milestones. It retains the default private visibility; the existing shared
 KYAU Labs Kanban Project #3 is unchanged.
 
-All **ten remaining milestones and 56 atomic task issues** exist and were read
+The 2026-11-17 [roadmap revision](milestones.md) defines **twelve milestones and
+67 remaining tasks**, replacing event-only PvP, adding durable property and
+mandatory creator/MCP tracks. **Tracker synchronization is authorized and in
+progress; the revised records have not yet been read back.** The table below still describes the actual original records, not a
+claim that new C1/C2 cards exist. Preserve issue IDs; former M11-F #55 is intended
+to become C1-D, with eleven additional issues and two additional milestones.
+
+All **ten original milestones and 56 atomic task issues** exist and were read
 back from GitHub. All milestones are open/undated, all issues open/unassigned,
 and all 56 cards are Todo. Their outcomes, proposed source areas and acceptance
 criteria match the unchanged task rows in [roadmap source `469f5c66`][source].
@@ -26,9 +33,11 @@ enforced by the board. Nothing is marked implemented or complete.
 | M12 — Optional settlement | [M12](https://github.com/kyaulabs/ngen/milestone/9) | [A #56](https://github.com/kyaulabs/ngen/issues/56), [B #57](https://github.com/kyaulabs/ngen/issues/57), [C #58](https://github.com/kyaulabs/ngen/issues/58), [D #59](https://github.com/kyaulabs/ngen/issues/59), [E #60](https://github.com/kyaulabs/ngen/issues/60) |
 | M13 — Production hardening/release | [M13](https://github.com/kyaulabs/ngen/milestone/10) | [A #61](https://github.com/kyaulabs/ngen/issues/61), [B #62](https://github.com/kyaulabs/ngen/issues/62), [C #63](https://github.com/kyaulabs/ngen/issues/63), [D #64](https://github.com/kyaulabs/ngen/issues/64), [E #65](https://github.com/kyaulabs/ngen/issues/65), [F #66](https://github.com/kyaulabs/ngen/issues/66) |
 
-Next is **M4's coordinate/precision decision and evidence**, before [M4-A #11].
-Do not infer coordinate-ADR ratification from local-flight acceptance. M11 remains
-individually selected; M12 retains separate legal/custody/security, execution and
+The revised next entries are **M4's coordinate/precision evidence** before
+[M4-A #11] and **C1's reusable creator baseline**; C2 follows applicable C1 work.
+Do not infer coordinate-ADR ratification or SDK/MCP readiness from local flight.
+M11 graphics remain individually selected; creator tooling is no longer optional
+M11-F work. M12 retains separate legal/custody/security, execution and
 public-transfer gates. Neither optional track is an unconditional game-release
 prerequisite. No due dates, staffing, implementation, spending, infrastructure or
 deployment permission is added by this index or its cards.

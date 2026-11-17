@@ -1,8 +1,8 @@
 # Requirements and deliverable traceability
 
-Planning baseline: **2026-11-02**, supplied NGEN hand-off, sections 1–11. Links establish planning coverage. They do not establish implemented behavior.
+Original planning baseline: **2026-11-02**; owner-selected creator/PvPvE revision: **2026-11-17**. Links establish coverage, not implementation.
 
-**Status:** architecture, tasks and tests are **proposed**. Private audit is **blocked on checkout access**; implementation, dependency integration, hardware validation and benchmarks are **pending**. All sixteen ADRs require acceptance. M0 remains open.
+**Current status:** M1–M3 and source-only 0.1.0 are delivered. Use the [roadmap][roadmap] and its actual source-bound evidence for acceptance. Future coordinates, MMO/security/property and C1/C2 creator work remain planned. Individual ADR statuses and historical measurements are preserved; this update does not ratify all proposals. The final package-inventory table is explicitly historical, not a claim that checkout access is still blocked.
 
 ## Engine, workflow and platform requirements
 
@@ -14,9 +14,11 @@ Planning baseline: **2026-11-02**, supplied NGEN hand-off, sections 1–11. Link
 | RAII, strong types, explicit ownership, predictable memory, bounded allocations, minimal abstractions | [Core and jobs contracts][render], ADRs 0005/0006 | M1-B–D: overflow, stale handles, capacity, cancellation, shutdown and immutable snapshots; allocation traces. |
 | Zero warnings in owned code, meaningful tests/coverage, sanitizers, profiling, static analysis | [Build workflow][build], [benchmarks][bench] | M1-F onward: relevant checks on reviewed SHA; correctness and optimized performance runs separate. |
 | Current AGENTS, Git Flow, authorized identities, signed conventional commits, branch format, PR template/Test Plan, hooks/rulesets/Gitleaks/commitlint | [Repository audit][audit], [build workflow][build], [first hand-off][first] | M0-A/B: actual policy and enforcement comparison; later authorized changes preserve all controls. |
-| Preserve README layout/logos/headers/badges; smallest sufficient changes; independent milestone review; distill documentation | [Repository audit][audit], [build workflow][build] | Actual checkout inspection precedes changes; planning review does not establish repository acceptance. |
-| Private engine; possible open-source engine with proprietary game; no modding | [License audit][audit], [script boundary][sim], ADRs 0013/0016 | M0 rights inventory and M13 release notices; engine/game separation does not itself resolve AGPL obligations. |
-| No implementation, branches, commits, PRs, infrastructure or deployments in this assignment | [Executive scope][master], [first hand-off][first] | Planning only; private NGEN inspection remains outstanding. |
+| Preserve protected README elements unless explicitly authorized; smallest sufficient changes; milestone review; distill documentation | [Repository audit][audit], [build workflow][build] | The owner explicitly authorized replacing the inherited README layout/title/badges with NGEN branding in this revision. No general future waiver or implementation acceptance is inferred. |
+| Public source engine, separately identified flagship/content and creator-authored games | [License audit][audit], [script boundary][sim], ADRs 0013/0016/0018 | Existing AGPL/notices remain. Creator-authored game code is not arbitrary player code upload or a proprietary-game exception. |
+| Reusable 3D creator SDK, practical scene/project tools, samples and documentation | [Creator contract][creator], ADR 0018 | C1-A–F: separate consumer, complete project/build/author/play/package path and independently used non-space sample without engine-core edits. |
+| Local AI-facing MCP authoring, authorized builds/tests and owned playtests | [MCP boundary][creator], ADR 0018 | C2-A–E: actual protocol workflow, bounded project/revision/job/session authority, path/credential/production denial and proven host execution isolation. No runtime AI dependency. |
+| Roadmap/documentation changes are not future implementation or infrastructure permission | [Executive scope][master], [roadmap][roadmap] | Preserve accepted delivery; no new gameplay/SDK/MCP code, paid model, deployment or blanket ADR acceptance through this revision. |
 
 ## Universe, flight and progression requirements
 
@@ -24,7 +26,7 @@ Planning baseline: **2026-11-02**, supplied NGEN hand-off, sections 1–11. Link
 |---|---|---|
 | One persistent logical galaxy; continuous km/AU/light-year coordinates; hierarchical precision | [Coordinate/authority specification][sim], ADRs 0003/0011 | M4-A–C, B3: normalized cells, frame epochs, analytic precision and rebase/history tests. Distribution follows M10. |
 | Handcrafted story systems, procedural exploration, solar systems and predominantly fixed celestials | [World manifests and streaming][roadmap] | M4-E: fixed generation seeds, celestial placement, content identity and repeatable traversal. Moving planetary ephemerides are outside the initial model. |
-| Security sectors, jump gates, wormholes and jump-capable ships | [Travel tasks][roadmap] | M4-D/E: explicit route type, sector permissions, jump eligibility/cost and unavailable-destination tests. |
+| Protected player starts and a greatly larger lawless region; gates/wormholes and jump-capable ships | [Travel/security tasks][roadmap] | M4-D/E: declared security distribution/ratio, protected starts, explicit routes, jump eligibility/cost and unavailable-destination tests. Manifest data does not claim police already work. |
 | Seamless streaming and committed EVE-style warp | [Travel/precision contracts][sim], [asset streaming][render] | M4-D/E, B3: entry/transit/exit, prefetch, bounded residency and safe arrival delays; no visible loading-screen requirement becomes a zero-latency promise. |
 | Landing/docking cinematics, orbital infrastructure and planetary hubs | [Miniature-universe tasks][roadmap] | M5-E: station/orbital/planetary approach, abort/departure, berth access and preserved cargo identity; surface physics is not required. |
 | Newtonian movement beneath assistance; manual and tactical modes for supported classes; instant mode switching | [Flight specification][sim], ADR 0004 | M3-A/B: common force controller, class permissions, momentum-preserving switches and frame-rate independence. Server control transfer still requires authority acknowledgment. |
@@ -34,7 +36,8 @@ Planning baseline: **2026-11-02**, supplied NGEN hand-off, sections 1–11. Link
 | Free starter ships; repeatable recovery/progression missions | [Recovery/economy tasks][roadmap], [reward safeguards][economy] | M5-D/F: return to play after total loss; repeated mission rewards remain idempotent and cannot manufacture sellable starter value. |
 | Authored introduction and guided onboarding before sandbox play | [Quest tasks][roadmap], [bounded scripting][sim] | M5-F, B4: recorded complete playthrough, saved transitions, bounded scripts and understandable progression. |
 | Dynamic faction/career stories, strong PvE incentives and faction competition | [Faction/progression tasks][roadmap] | M7-F/M8: persisted branching career choices, faction-state consequences and repeatable PvE rewards with anti-farming tests; balance remains a measured design decision. |
-| Player markets, crafting/industry, persistent inventory/resources/territory | [Transaction and industry contracts][sim], [economy][economy] | M5-A/B then M7-A–F, B6: reservations, fills/cancels, resource conservation, production and durable territory transitions. |
+| Player markets, crafting/industry, persistent inventory/resources/territory | [Transaction and industry contracts][sim], [economy][economy] | M5-A/B then M7-A–G, B6: reservations, fills/cancels, resource conservation, production and durable title transitions. |
+| Station/planet/moon/sector ownership, resource/access rights and lawless sovereignty | [Property contract][sim], [roadmap][roadmap] | M7-G/M8-D: versioned individual/group/NPC titles, claim/capture/transfer races, explicit child rights and conserved resources; protected starter law cannot be overridden. No real-world title or surface simulation implied. |
 
 ## Multiplayer, economy and operations requirements
 
@@ -45,7 +48,8 @@ Planning baseline: **2026-11-02**, supplied NGEN hand-off, sections 1–11. Link
 | 200 fully equipped active AI ships, plus fighters/drones/projectiles; regional time dilation | [Fleet/clocks][sim], [B7][bench], ADR 0011 | M9: separately counted extras, dense-contact workload, CPU budgets, equal-simulation-time fixtures and boundary fairness tests. |
 | Distant abstract NPC/economy simulation; local detail; offline manufacturing | [Industry and activation contracts][sim] | M7-D–F: reserved inputs, bounded catch-up and conserved identities across repeated activation/deactivation. |
 | NPC expansion, warfare, production and territorial loss | [Faction tasks][roadmap] | M7-F adds durable minimal faction transitions; M8 extends warfare/territory rules and tests loss as well as acquisition. |
-| Event-scoped PvP and environmental-grief prevention, attribution and mitigation | [Permission/damage rules][sim] | M8-A–E: versioned authorization and causal damage across collisions, debris, drones and indirect effects; unsafe mechanics remain restricted. |
+| EVE-inspired security law: criminal protected-space aggression, lawful defense/legal combat, overwhelming NPC response; unrestricted lawless PvP | [Security/enforcement rules][sim] | M8-A/B/E: authoritative classification, immediate bounded response dispatch, measured criminal-destruction outcomes, reconnect/restart and lawless-no-police tests. Punitive protection is not victim invulnerability. |
+| Indirect-aggression attribution and practical anti-exploit controls | [Causal rules][sim] | M8-C/E: drones, debris, forced collisions and chained explosions; ownership changes do not frame victims or erase crime. No perfect intent or total grief-prevention claim. |
 | Future seamless authority transfer | [Migration protocol][sim], ADR 0011 | M10, B8: durable snapshot before ownership commit, atomic fencing, 10,000 fault transfers and measured presentation/authority pause. |
 | Earned market currency; external real-money trading desirable but optional; currency alone on-chain | [Economy workstream][economy], ADR 0012 | M5/M7 closed-loop GameCredit first. M12 may adopt a separate public asset with fair funded conversion; free historical credits are never presumed backed. |
 | Secure ledger, custody, asynchronous settlement, reconciliation, failure/reorg handling, sinks, bots/fraud and independent legal/security review | [Economy contracts and dated primary sources][economy] | M7 command corpus and crash invariants; M12 legal/custody/reserve/contract gates before public transfer. No tick waits for chain confirmation. |
@@ -62,7 +66,9 @@ Planning baseline: **2026-11-02**, supplied NGEN hand-off, sections 1–11. Link
 | Development-time OpenAI 4K concepts, multiview references, separate 3D evaluation, Blender/UV/material/LOD/collision/cooker | [Art workstream][art], ADR 0015 | M2/M3 four-asset comparison, M11 fleet asset costs, M12/M13 rights checks; large-resolution API support carries its documented experimental caveat. |
 | Prompt/model/version/cost/source provenance; no shipped credentials | [Art records and budget gates][art] | Retain outputs, permissions, request/usage metadata and accepted runtime assets; generation is separately authorized development work. No API spending occurred. |
 
-## Sixteen required deliverables
+## Historical planning-package deliverables
+
+The following sixteen rows retain the 2026-11-02 package inventory and its then-open gates. They are not the current delivery status; use the roadmap/evidence above. C1/C2 and the revised security/property requirements were added after that baseline.
 
 | # | Deliverable and location | Planning status / remaining gate |
 |---|---|---|
@@ -72,8 +78,8 @@ Planning baseline: **2026-11-02**, supplied NGEN hand-off, sections 1–11. Link
 | 4 | [Module/dependency diagrams][master] | Proposed; headless/offline link proof at M1/M6. |
 | 5 | [Sixteen ADR proposals][adrs] | Owner/evidence acceptance pending. |
 | 6 | [Renderer/memory/jobs/assets][render] and [physics/coordinates/scripts/network/authority][sim] | Contracts proposed; milestone tests pending. |
-| 7 | [Milestone dependency graph][roadmap] | Present; M11/M12 remain independently gated. |
-| 8 | [Atomic tasks for M0–M13][roadmap] | Source areas await audit. |
+| 7 | [Milestone dependency graph][roadmap] | Original package included M0–M13; current graph also includes C1/C2. M11/M12 remain independently gated. |
+| 8 | [Atomic tasks][roadmap] | Original source areas were proposed; current creator/security/property tasks remain planned and require their own evidence. |
 | 9 | [Acceptance criteria][roadmap] and [tests][bench] | Defined targets; no executed passes. |
 | 10 | [Hardware/performance matrix][bench] | Present; supplied hardware unverified. |
 | 11 | [AI/PR/review/CI workflow][build] | Preserves supplied policy; actual enforcement pending. |
@@ -85,7 +91,8 @@ Planning baseline: **2026-11-02**, supplied NGEN hand-off, sections 1–11. Link
 
 Critical path: actual audit → CPU foundation → beautiful offline flight → miniature game → authority/persistence → fleet/distribution. Optional workstreams retain the requested future capabilities; scope changes require accepted decisions.
 
-[master]: ../../NGEN-PLAN.md
+[master]: executive-brief.md
+[creator]: creator-toolchain.md
 [audit]: repository-audit.md
 [tech]: technology-matrix.md
 [render]: renderer-core-assets.md
