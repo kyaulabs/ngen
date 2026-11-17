@@ -11,7 +11,7 @@ platform and Windows compiler/runtime evidence at recorded revisions. Its first
 showcase is an offline spacecraft flight demonstration; the longer-term goal is
 a reusable engine and creator toolchain, alongside an authoritative PvPvE universe.
 
-**[0.1.0 is available as source only.](https://github.com/kyaulabs/ngen/releases/tag/v0.1.0)**
+**[0.1.1 is available as source only.](https://github.com/kyaulabs/ngen/releases/tag/v0.1.1)**
 It is not a downloadable playable game: the accepted private ship/scene assets,
 runtime bundles and recordings are not public release payloads.
 
@@ -29,7 +29,7 @@ runtime bundles and recordings are not public release payloads.
 The flight application and inspector are working development tools, **not yet a
 standalone creator SDK or general-purpose scene editor**. Astronomical travel,
 gameplay economy, multiplayer, sovereignty, creator project tools and the MCP
-server are planned—not delivered features of 0.1.0. Historical hardware and
+server are planned—not delivered features of 0.1.1. Historical hardware and
 performance results retain their original sources and limits; see the
 [executive brief](docs/planning/executive-brief.md).
 
@@ -45,7 +45,7 @@ your platform; an arbitrary system compiler is not the pinned primary profile.
 CI's Clang 18 compatibility lane is separate.
 
 ```sh
-git clone --branch v0.1.0 --depth 1 https://github.com/kyaulabs/ngen.git
+git clone --branch v0.1.1 --depth 1 https://github.com/kyaulabs/ngen.git
 cd ngen
 
 python3 -m venv .venv
@@ -61,7 +61,7 @@ ctest --preset release --output-on-failure
 ```
 
 The release also provides a checked source tarball and SHA-256 inventory. See the
-[0.1.0 instructions](docs/releases/0.1.0.md) for download verification, graphical
+[0.1.1 instructions](docs/releases/0.1.1.md) for download verification, graphical
 build commands, compatible separately authorized scene requirements and platform
 limits. Graphical execution additionally needs supported Vulkan hardware/drivers
 and the desktop audio path; the private flight scene is not included.
