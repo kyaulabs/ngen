@@ -205,6 +205,10 @@
 
 - **windows:** Capture inspector bloom and reload workload evidence ([1f0a4b3](https://github.com/kyaulabs/ngen/commit/1f0a4b31a3db73f802513eab6edebd319f3c47cb))
 
+- **release:** Publish verified source releases and open reviewed back-merges ([c34dc55](https://github.com/kyaulabs/ngen/commit/c34dc55768deb275b65dbcde2536c2d4c1001ecf))
+
+- **release:** Add verified source release and back-merge automation (#68) ([ec750e8](https://github.com/kyaulabs/ngen/commit/ec750e845899f8d029fb923fcdd36f11d317bf5c))
+
 
 #### 🚀 Features
 
