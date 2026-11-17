@@ -21,9 +21,9 @@ engine, game or MCP implementation.
 
 | Field | Value |
 |---|---|
-| Last accepted step | None; all 67 steps below are unstarted. |
-| Next step | **01 — C1-A, issue #72** |
-| Next entry decision | Scoped review of [ADR 0018](../adr/0018-creator-command-boundary.md) before C1-A implementation. |
+| Last verified step | **01 — C1-A**, integrated in [PR #87](https://github.com/kyaulabs/ngen/pull/87). See the CI record below. |
+| Next step | **02 — [C1-B, issue #73](https://github.com/kyaulabs/ngen/issues/73)** |
+| Next entry decision | Review the C1-B slice of [ADR 0018](../adr/0018-creator-command-boundary.md) before defining project operations. |
 | Upcoming entry decision | [ADR 0003](../adr/0003-hierarchical-coordinates.md) and accepted precision experiment before step 03. |
 | Optional selections | M11 features and M12 settlement are not selected by this schedule. |
 
@@ -69,7 +69,7 @@ asset/build paths. Establish human-usable operations before exposing them to MCP
 
 | Step | Done | Issue | Outcome |
 |---|---|---|---|
-| 01 | [ ] | [C1-A #72](https://github.com/kyaulabs/ngen/issues/72) | Expose the minimal consumable engine SDK boundary. |
+| 01 | [x] | [C1-A #72](https://github.com/kyaulabs/ngen/issues/72) | Expose the minimal consumable engine SDK boundary. |
 | 02 | [ ] | [C1-B #73](https://github.com/kyaulabs/ngen/issues/73) | Create, validate, build/cook/test/run/package one standalone project. |
 | 03 | [ ] | [M4-A #11](https://github.com/kyaulabs/ngen/issues/11) | Implement canonical cell/offset coordinates and explicit nonrotating frame transforms. |
 | 04 | [ ] | [M4-B #12](https://github.com/kyaulabs/ngen/issues/12) | Transfer one local physics domain between origins at a tick barrier. |
@@ -274,6 +274,7 @@ work advances. Do not use this log instead of the issue's complete acceptance.
 
 | Step / decision | Source or PR | Accepted evidence / remaining blocker |
 |---|---|---|
-| Planning baseline | `7dfe1c2f`; live Project #4 checked 2026-11-17 | Sequence recorded; no implementation begun and no issue/card state changed. |
+| Planning baseline | `7dfe1c2f`; live Project #4 checked 2026-11-17 | Sequence recorded against the live issue and milestone contracts. |
+| 01 — C1-A | [PR #87](https://github.com/kyaulabs/ngen/pull/87), `93c7339`; [SDK guide](../creator-sdk.md) | Relocated headless and graphical consumer tests passed; validated Wayland first light passed. Push and PR checks passed on the feature tip. The [integration push](https://github.com/kyaulabs/ngen/actions/runs/44173501462) failed the merge-body line-length rule; the [manual workflow on the same SDK merge](https://github.com/kyaulabs/ngen/actions/runs/44174740056) passed 4/4 with its normal dispatch range. This does not clear the original message failure. No release or Windows SDK claim. |
 
 [board]: https://github.com/orgs/kyaulabs/projects/4/views/3
