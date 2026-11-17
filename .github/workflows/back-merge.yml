@@ -1,0 +1,34 @@
+name: Release back-merge recovery
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Published canonical X.Y.Z version currently at main'
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-back-merge
+  cancel-in-progress: false
+
+jobs:
+  back-merge:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Check out main and annotated release tags
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
+        with:
+          ref: main
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Validate publication and open or reuse back-merge PR
+        env:
+          GH_TOKEN: ${{ secrets.BACKMERGE_TOKEN }}
+          RELEASE_VERSION: ${{ inputs.version }}
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: python3 tools/release.py back-merge "$RELEASE_VERSION"
