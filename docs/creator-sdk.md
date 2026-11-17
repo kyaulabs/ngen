@@ -47,10 +47,14 @@ fresh prefix and use that build's matching toolchain. Request the renderer with
 `find_package(NGEN CONFIG REQUIRED COMPONENTS Renderer)` and link
 `NGEN::renderer`. The component exposes the `render/context.hpp` entry point
 and its installed surface, resource and mesh interfaces. Only this request
-resolves SDL 3.4, Vulkan 1.3 and VMA 3.3. A headless-only install reports the
-missing component if it is required. Windowed execution needs a supported
+resolves SDL 3.4, Vulkan 1.3 and VMA 3.3. An install without the renderer reports the missing component if required. Windowed execution needs a supported
 SDL/Vulkan device and driver; validation-enabled startup needs the Khronos
 validation layer. A queued frame does not prove display scan-out.
+
+The optional `Assets` component exposes `NGEN::assets` and `assets/package.hpp`
+when the SDK is built with `NGEN_BUILD_ASSETS=ON`. Only a consumer requesting it
+resolves zlib. See the [standalone starter](creator-project.md) for a project
+that cooks and loads its own scene without linking a renderer.
 
 The install copies static NGEN archives, explicitly listed headers, package
 metadata, the project license, and the VMA notice when the renderer is built.

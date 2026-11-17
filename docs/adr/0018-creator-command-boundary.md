@@ -65,6 +65,16 @@ operation. The [SDK guide](../creator-sdk.md) describes this boundary. Review of
 this slice does not ratify C1-B/C2-A operations or grant execution capabilities.
 The broader proposal remains open.
 
+## C1-B review scope
+
+The [standalone starter](../creator-project.md) has a bounded versioned
+manifest, fixed source layout, and non-overwriting source packaging. Its command
+line validates files without executing project code. Humans invoke the existing
+cooker and CMake/CTest directly in an owned workspace; project metadata does not
+select executables, arguments, or host roots. This is not a sandbox or a grant
+for an MCP client to invoke a build. No editor API or new execution service is
+introduced.
+
 ## Evidence
 
 [Creator scope and acceptance](../planning/creator-toolchain.md), the current
