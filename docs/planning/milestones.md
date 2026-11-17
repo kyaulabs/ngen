@@ -21,6 +21,10 @@ The flagship delivery order remains **polished offline flight, miniature offline
 
 Read [repository-audit.md](repository-audit.md) and [build-review-infrastructure.md](build-review-infrastructure.md) before executing tasks. The accepted architecture specifications and ADRs determine API details. Numbers below are proposed acceptance budgets, never measured results or player-capacity promises.
 
+For the exact single-stream issue sequence, creator/flagship interleaving and
+resume position, use [execution-order.md](execution-order.md). It preserves the
+requirements and optional gates below; it does not start implementation.
+
 ## Dependency graph
 
 Solid edges are completion dependencies. The M0–M1 edge requires the accepted CPU foundation review subset; deferred GPU captures close by M2-A. Dashed edges identify optional work or an earlier research start. An optional branch enters a release only after its own gate passes.
