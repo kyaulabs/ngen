@@ -52,10 +52,13 @@ if(TARGET ngen_render)
     DESTINATION "${ngen_sdk_doc_dir}/licenses")
 endif()
 
-configure_package_config_file(cmake/NGENConfig.cmake.in "${CMAKE_CURRENT_BINARY_DIR}/NGENConfig.cmake"
+# Conan adds its generators directory to CMAKE_PREFIX_PATH. Keep install-only
+# config inputs out of that search path until the matching target files exist.
+set(ngen_sdk_config_stage "${CMAKE_CURRENT_BINARY_DIR}/CMakeFiles/NGENInstall")
+configure_package_config_file(cmake/NGENConfig.cmake.in "${ngen_sdk_config_stage}/NGENConfig.cmake"
   INSTALL_DESTINATION "${ngen_sdk_cmake_dir}")
-write_basic_package_version_file("${CMAKE_CURRENT_BINARY_DIR}/NGENConfigVersion.cmake"
+write_basic_package_version_file("${ngen_sdk_config_stage}/NGENConfigVersion.cmake"
   COMPATIBILITY ExactVersion)
-install(FILES "${CMAKE_CURRENT_BINARY_DIR}/NGENConfig.cmake"
-  "${CMAKE_CURRENT_BINARY_DIR}/NGENConfigVersion.cmake" DESTINATION "${ngen_sdk_cmake_dir}")
+install(FILES "${ngen_sdk_config_stage}/NGENConfig.cmake"
+  "${ngen_sdk_config_stage}/NGENConfigVersion.cmake" DESTINATION "${ngen_sdk_cmake_dir}")
 install(FILES LICENSE DESTINATION "${ngen_sdk_doc_dir}")

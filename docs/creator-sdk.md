@@ -31,7 +31,10 @@ It resolves the matching enkiTS and thread dependencies and does not look up SDL
 Vulkan, or VMA. NGEN's headers and libraries relocate together; dependencies are
 resolved separately. Configure the consumer using the source build's matching
 Conan-generated toolchain, rather than mixing compiler, standard library,
-architecture, build type or instrumentation configurations:
+architecture, build type or instrumentation configurations. When upgrading
+from the initial C1-A SDK, use a fresh producer build directory: an old
+build-root `NGENConfig.cmake` can shadow the installed SDK. Configure the
+consumer from the NGEN checkout:
 
 ```sh
 cmake -S /path/to/my-game -B /path/to/my-game-build -G Ninja \

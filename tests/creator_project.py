@@ -126,7 +126,8 @@ class CreatorProject(unittest.TestCase):
         obj = self.root / "consumer build"
         run("cmake", "-S", project, "-B", obj, "-G", "Ninja", f"-DCMAKE_BUILD_TYPE={configuration}",
             f"-DCMAKE_TOOLCHAIN_FILE={os.environ['NGEN_STARTER_TOOLCHAIN']}",
-            f"-DCMAKE_PREFIX_PATH={prefix}", f"-DNGEN_STARTER_SCENE={scene}")
+            # Conan can put the producer directory ahead of the install prefix.
+            f"-DCMAKE_PREFIX_PATH={build};{prefix}", f"-DNGEN_STARTER_SCENE={scene}")
         run("cmake", "--build", obj, "--parallel", "2")
         run("ctest", "--test-dir", obj, "--output-on-failure", "--no-tests=error")
         self.assertIn("piece moved 42 mm", run(obj / "ngen_starter", scene).stdout)
