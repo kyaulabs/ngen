@@ -21,6 +21,10 @@ The original 56-task baseline remains available at [its source][original-source]
 Task/milestone dependencies are linked in the issue bodies, not automatically
 enforced by the board. Nothing is marked implemented or complete.
 
+Use [execution-order.md](execution-order.md) for the numbered working sequence
+and current resume point across these live issues. This index remains the task
+mapping, not a substitute for dependency or integrated-acceptance checks.
+
 | Milestone | GitHub milestone | Atomic task issues |
 |---|---|---|
 | M4 — Coordinates/travel/streaming | [M4](https://github.com/kyaulabs/ngen/milestone/1) | [A #11](https://github.com/kyaulabs/ngen/issues/11), [B #12](https://github.com/kyaulabs/ngen/issues/12), [C #13](https://github.com/kyaulabs/ngen/issues/13), [D #14](https://github.com/kyaulabs/ngen/issues/14), [E #15](https://github.com/kyaulabs/ngen/issues/15) |
