@@ -360,12 +360,10 @@ class ExactCI(unittest.TestCase):
 
 @unittest.skipUnless(shutil.which("git-cliff"), "Real git-cliff preview runs on the publication/preflight host")
 class Changelog(unittest.TestCase):
-    def test_first_release_changelog_links_ngen_and_nests_below_the_logo(self):
-        tagged = subprocess.run(["git", "tag", "--list", "v0.1.0"], cwd=ROOT,
-                                capture_output=True, text=True, check=True, timeout=15).stdout.strip()
-        scope = ["--current"] if tagged else ["--unreleased", "--tag", "v0.1.0"]
+    def test_changelog_links_ngen_and_nests_below_the_logo(self):
+        # Check formatting across history; --current requires a tagged HEAD.
         result = subprocess.run(
-            ["git-cliff", *scope, "--use-branch-tags"],
+            ["git-cliff", "--use-branch-tags"],
             cwd=ROOT, capture_output=True, text=True, check=True, timeout=60)
         self.assertNotIn("https://github.com/kyaulabs/template/", result.stdout)
         self.assertIn("https://github.com/kyaulabs/ngen/commit/", result.stdout)
