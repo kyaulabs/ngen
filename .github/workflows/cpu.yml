@@ -2,7 +2,7 @@ name: CPU foundation
 on:
   pull_request:
   push:
-    branches: [develop, 'feat/**', 'fix/**', 'ci/**']
+    branches: [main, develop, 'feat/**', 'fix/**', 'ci/**']
   workflow_dispatch:
 permissions:
   contents: read
@@ -42,26 +42,45 @@ jobs:
         run: ./tests/windows_gpu_reader.ps1
       - name: Test Jolt CRT generator contract (no Windows compilation)
         run: python tests/jolt_recipe.py
+      - name: Test source-release automation boundaries
+        run: |
+          PYTHONDONTWRITEBYTECODE=1 python3 -m unittest tests.release_automation -v
+          go run github.com/rhysd/actionlint/cmd/actionlint@v1.7.7
+      - name: Validate release promotion branch
+        if: github.event_name == 'pull_request' && github.event.pull_request.base.ref == 'main'
+        env:
+          INTERNAL_RELEASE: ${{ github.event.pull_request.head.repo.full_name == github.repository }}
+          RELEASE_BRANCH: ${{ github.event.pull_request.head.ref }}
+        run: |
+          test "$INTERNAL_RELEASE" = true
+          python3 tools/release.py validate "$RELEASE_BRANCH"
       - name: Select reviewed revision range
         env:
           EVENT_BASE: ${{ github.event.pull_request.base.sha || github.event.before }}
           EVENT_HEAD: ${{ github.event.pull_request.head.sha || github.sha }}
+          PROMOTION: ${{ (github.event.pull_request.base.ref == 'main' && startsWith(github.event.pull_request.head.ref, 'release/')) || (github.event_name == 'push' && github.ref == 'refs/heads/main') }}
         run: |
-          base="$EVENT_BASE"
-          if [ -z "$base" ] || [ "$base" = 0000000000000000000000000000000000000000 ]; then
-            # Dispatch/new branch: compare against the integration merge base.
-            base=$(git merge-base origin/develop "$EVENT_HEAD")
+          diff_base="$(python3 tools/release.py review-base --base "$EVENT_BASE" --head "$EVENT_HEAD")"
+          base="$diff_base"
+          if [ "$PROMOTION" = true ]; then
+            # Owner-approved promotion scope: develop history was reviewed already.
+            # Only new release commits are re-linted; secret/diff scans stay full.
+            base="$(python3 tools/release.py review-base --base "$EVENT_BASE" --head "$EVENT_HEAD" --promotion)"
           fi
           git rev-parse --verify "$base^{commit}"
+          git rev-parse --verify "$diff_base^{commit}"
           git rev-parse --verify "$EVENT_HEAD^{commit}"
-          echo "REVIEW_BASE=$base" >> "$GITHUB_ENV"
-          echo "REVIEW_HEAD=$EVENT_HEAD" >> "$GITHUB_ENV"
+          {
+            echo "REVIEW_BASE=$base"
+            echo "DIFF_BASE=$diff_base"
+            echo "REVIEW_HEAD=$EVENT_HEAD"
+          } >> "$GITHUB_ENV"
       - name: Secret and commit policy checks
         run: |
           go run github.com/zricethezav/gitleaks/v8@v8.24.3 git --redact --no-banner
           npm install --no-save --package-lock=false --prefix "$RUNNER_TEMP/commit-policy" @commitlint/cli@19.8.1 @commitlint/config-conventional@19.8.1
           NODE_PATH="$RUNNER_TEMP/commit-policy/node_modules" "$RUNNER_TEMP/commit-policy/node_modules/.bin/commitlint" --from "$REVIEW_BASE" --to "$REVIEW_HEAD"
-          git diff --check "$REVIEW_BASE" "$REVIEW_HEAD"
+          git diff --check "$DIFF_BASE" "$REVIEW_HEAD"
       - name: Prepare locked compatibility graph
         env:
           PRESET: ${{ matrix.preset }}
