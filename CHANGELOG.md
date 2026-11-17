@@ -1,5 +1,13 @@
 ## 📜 Changelog
-### [0.1.0](https://github.com/kyaulabs/ngen/releases/tag/v0.1.0)
+### [0.1.1](https://github.com/kyaulabs/ngen/releases/tag/v0.1.1)
+
+#### 📝 Documentation
+
+- **plan:** Define reusable creators and security-law roadmap ([5f6ce3b](https://github.com/kyaulabs/ngen/commit/5f6ce3bef93dc2801ca9c476eea21b2b06d36888))
+
+- **plan:** Record the synchronized creator and sovereignty backlog ([17a93a2](https://github.com/kyaulabs/ngen/commit/17a93a23829207cb016f7951d790214bf0fabf38))
+
+- **plan:** Integrate creator and security-law roadmap (#82) ([104adbd](https://github.com/kyaulabs/ngen/commit/104adbd7834e03d39d1fd1e6fd34f85083a8382f))### [0.1.0](https://github.com/kyaulabs/ngen/releases/tag/v0.1.0)
 
 #### ♻ Refactoring
 

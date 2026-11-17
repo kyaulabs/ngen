@@ -1,6 +1,6 @@
 # Simulation, networking and persistence
 
-Planning date: 2026-11-02. Status: proposed architecture awaiting the checkout audit and proof-of-concept gates. No engine code, test results or hardware capability was verified in this workstream. Every performance figure is a proposed acceptance budget. Source paths are candidates until the repository audit maps existing structure. Networking implementation starts at M6; commands, stable IDs and explicit ticks start earlier.
+Planning baseline: 2026-11-02; security/property and creator-boundary revision: 2026-11-17. M1–M3 and source-only 0.1.0 are delivered; use the [current roadmap](milestones.md) and source-bound evidence for actual acceptance. The future coordinate, network, persistence, security/sovereignty and creator contracts below remain proposed, not newly tested behavior. Historical technology candidates are not a replacement for current build locks. Every future performance figure is a proposed budget. Networking starts at M6; reusable creator tooling runs independently in [C1/C2](creator-toolchain.md).
 
 ## Recommended decisions
 
@@ -31,6 +31,8 @@ For Jolt 5.6, the proposed headless build sets `JPH_USE_DX12=OFF`, `JPH_USE_VK=O
 | `engine/physics` | Jolt adapter, body/shape lifetimes, contact/query results | Local-frame SI quantities and generational handles | Galaxy-scale absolute floats, game inventory ownership |
 | `game/flight` | Thruster model, flight assists, tactical controller, pilot control | Intent commands -> forces/torques -> ship state | Direct renderer writes, raw network packets |
 | `game/economy` | Inventory, production, markets, sinks/sources | Validated economic commands and committed results | Client authority, chain RPC inside simulation |
+| `game/security` | Flagship legality, crime cases, NPC jurisdiction/enforcement | Versioned sector/rule facts and causal aggression -> authoritative outcomes | Client-declared legality; mandatory policy inside generic engine |
+| `game/ownership` | Flagship property titles, claims, leases/resource/access rights | Authorized versioned ownership commands and durable results | Simulation-writer authority or real-world property rights inferred from a title |
 | `engine/net` | Transport, wire schema, bounds checking, interest replication | Authenticated inputs and snapshots | Vulkan, direct SQL mutations |
 | `server/authority` | Region owner, authority epochs, routing and later handoffs | Fenced messages, migration snapshots | Simultaneous writers for the same entity |
 | `server/persistence` | Transactions, command receipts, outbox, migrations | Durable command results | Per-frame synchronous DB waits on the simulation thread |
@@ -92,7 +94,11 @@ Ship death is an idempotent operation: mark the ship destroyed, move eligible ca
 
 Offline production uses persisted jobs and resource reservations. A completion is a compare-and-set transition with an operation ID, not a loop replaying every missed frame. Compute bounded catch-up from elapsed time and capacity limits; preserve stockpile, power, logistics and input constraints. NPC faction activity starts as coarse strategic state and scheduled plans. Detailed entities instantiate from the same reserved resources when players approach, and collapse back to strategic records without duplicating inventories or missions.
 
-M7 includes a minimal durable NPC territory transition with one ownership/version invariant. M8 adds player territorial events and permission rules on that transition boundary. This lets M7 test NPC expansion and territorial loss without depending on an unimplemented player-conquest system.
+M7 includes a minimal durable NPC territory transition and M7-G's property-title boundary. M8 adds player sovereignty and security law without making ordinary PvP depend on joining an event. M7 can test NPC expansion/loss and title conservation without pretending a conquest game already exists.
+
+Stations, planets, moons and sectors have stable identities and one versioned title per owned asset. An owner can be an individual, group or NPC authority; resource extraction, access/leases and jurisdiction are explicit rights, not automatically identical to title. A sector claim does not silently transfer every station, moon or inventory within it. Claims, capture, surrender, purchase/transfer and revocation use authorized idempotent commands, durable receipts and defined child-rights rules. Race those transitions with extraction, market work and restart; never duplicate title or issue resources twice.
+
+Sector sovereignty is claimable in lawless space. Protected starter jurisdiction remains NPC-controlled; private facility/resource rights cannot disable police or eliminate the newcomer path. This is virtual property/control, not surface simulation, tokenized real estate or a legal title claim. Economic correctness and server authorization still apply in lawless space. Asset ownership is never permission to become the authoritative server process or bypass its write fencing.
 
 World recovery needs explicit durability classes. Proposed initial targets: no acknowledged economic transaction loss on a single process crash; transient pose recovery from the latest checkpoint; ship destruction/loot outcome committed before it is acknowledged as durable. A single disk or asynchronously replicated database cannot promise zero loss after machine/site destruction. PostgreSQL documents that asynchronous replication permits a failover loss window. Before public real-value transfers, select a stronger durability topology and prove restoration and reconciliation. [S22]
 
@@ -150,12 +156,24 @@ Select one Lua error strategy and test it. C-built Lua can jump past C++ objects
 | P0, M6 | Prediction and adverse network conditions | Seeded 30-minute trace at stated RTT/jitter/loss; report correction tails and wire bytes, zero duplicate actions or stale-control acceptance. Correct reconciliation/model before increasing player count. |
 | P0, M7 | Economic crash/retry invariants | One million commands grouped into seeded sequences, including concurrent transfer, order-fill, destruction and production races; kill before/after commit and outbox delivery. Every acknowledged command reconstructs once; no negative balances, missing items or unbalanced operations. |
 | P1, M5 | Script resource and error containment | Inject runaway loops, allocation failure, malformed script assets and failing native calls. The VM stops the task within its declared quota, preserves RAII cleanup, and leaves no partial economic effect. |
-| P1, M7/M8 | Dormant/active conversion and griefing | Repeatedly instantiate/collapse the same industry/fleet; conserve cargo, jobs and mission identities. Test ramming, pushing a neutral ship into an asteroid, explosive cargo, drone ownership changes and event entry/exit. |
+| P1, M7/M8 | Dormant/active conversion and griefing | Repeatedly instantiate/collapse the same industry/fleet; conserve cargo, jobs and mission identities. Test ramming, forced collisions, explosive cargo, changed drone ownership, security boundaries, lawful defense and committed crime during logout/restart. Distinguish crime consequences from invulnerability. |
 | P1, M9 | Fleet benchmark with declared extra load | Starting fixture: 200 equipped AI ships, 800 active drones/fighters, 10,000 concurrent damaging projectiles, 5,000 static collision shapes. Pin ship mixes, guns/rates, hull dimensions and contact density. Proposed dedicated-host p99 tick ≤25 ms at 30 Hz for 30 minutes, bounded memory and zero capacity drops of accepted damage events. Record CPU model/core quota before claiming any pass. |
 | P1, M9 | Time dilation fairness | At scales 1, 0.5 and 0.25, a closed fixture with identical tick-indexed commands, RNG and controlled external events produces equivalent regional state at equal simulation time within declared tolerance. Separately test wall-time manufacturing, transfers and reinforcement fairness. Verify CPU cost/wall-second falls. |
 | P2, M10 | Fenced migration and recovery | At least 10,000 scripted transfers with process kills, delayed old-owner messages and network partitions; at most one valid writer per entity across all epochs, old-epoch rejection atomic with mutation, and zero duplicate inventory/reward effects. Recover the recorded payload after a post-commit source failure. |
 
-PvP protection must reject unauthorized damage before applying it. Track causal ownership through missiles, drones, debris, tractor forces and secondary explosions. Event membership and combat permissions are versioned server facts, rechecked at the rule-defined impact boundary. Attribution helps investigation, but cannot reliably infer intent from every collision. If indirect neutral-player harm cannot be prevented for a mechanic, constrain that mechanic outside authorized events. No algorithm can promise both unrestricted environmental lethality and complete prevention of environmental griefing.
+## Security law, NPC enforcement and sovereignty
+
+The owner replaced the former event-only PvP policy with an EVE-inspired legality model. Protected space permits crime with consequences, not blanket player-damage immunity. Unprovoked aggression creates an authoritative crime case; lawful self-defense and explicitly legal combat use server-owned rules/records. A victim may be damaged or destroyed before police destroy the criminal. No exact CCP timing, full EVE rule set or impossible guarantee of zero grief is adopted.
+
+Security manifests distinguish protected and lawless space. Lawless sectors greatly outnumber protected ones, not merely by a thin majority; the counting unit and exact approved ratio remain content-entry decisions before M4-E acceptance. Every new player begins in protected NPC jurisdiction with an understandable path into the wider sandbox. Changing ownership does not disable that starter jurisdiction. An unselected middle-security tier is not implicitly added.
+
+The server classifies aggression at a declared tick/rule boundary using actor, victim, causal source, location, rule version and legal-combat state. Reject malformed/stale/forged commands, not all criminal aggression as if the old permission-only model still applied. Record and dispatch NPC enforcement immediately at that boundary, within a measured declared tick budget. Police use bounded authoritative NPC/combat work with overwhelming capability in the accepted fixture. Detection, dispatch, arrival and destruction are separate observations; network latency and overload must not be concealed behind an instant-kill claim.
+
+Crime is not erased by logout, jumping, ownership transfer, authority migration or replay. Define pursuit, travel restrictions, reconnect, wanted-state expiry and overload/failure outcomes before implementing enforcement. Committed cases remain recoverable; never promise bounded work while spawning unlimited police. Do not punish a lawful defender or let an attacker frame a victim through a client-supplied actor ID. Ordinary lawless combat creates no protected-space police response; crossing a boundary cannot silently cancel a previously committed case.
+
+Track causal ownership through missiles, drones, splash, debris, tractor forces, forced collisions and secondary explosions, including ownership changes after launch. Test documented classifications and necessary mechanic restrictions. Attribution cannot perfectly infer intent; investigation evidence is not a guarantee of automatic grief prevention. Rate limits and bounded storage must preserve declared accepted-work semantics rather than silently dropping committed cases.
+
+Player/group asset ownership and lawless sovereignty use M7's durable title/rights contract. Capture and resource control are gameplay decisions, separate from policing jurisdiction and process authority. Protected law and starting access remain non-overridable. No police intervention in lawless combat does not authorize economic duplication, impersonation or arbitrary authoritative-state mutation. Keep all these flagship rules out of a reusable non-space engine consumer.
 
 ## Suggested ADRs and milestone task boundaries
 
@@ -165,7 +183,8 @@ PvP protection must reject unauthorized damage before applying it. Track causal 
 - M5: idempotent local economic command model and save schema; modular damage/wreck state; bounded first-party scripting.
 - M6: authoritative snapshots with local flight prediction; GNS transport/auth contract; interest budget and saturation rules.
 - M7: PostgreSQL transaction/outbox model; recovery durability classes; scheduled industry and dormant/active conservation.
-- M8: event permission state machine and indirect-damage policy, including clear fail-closed behavior.
+- M8: security/legal-aggression and crime/enforcement state machines; indirect-cause policy; lawless sovereignty over durable titles without overriding protected starts.
+- C1/C2: independent reusable creator operations and local MCP project/execution boundaries; no mandatory flagship or AI runtime dependency.
 - M9: explicit benchmark fixture and regional time domains; no unspecified '200 ships' performance claim.
 - M10: single-writer regions, monotonic epochs and fenced handoff; no speculative distributed implementation before local capacity measurements.
 
