@@ -55,6 +55,16 @@ host/isolation/protocol versions and limitations. This proposal does not ratify
 other ADRs or claim those tests ran. Revisit for a demonstrated second integration,
 remote users or a requested new execution/extension boundary.
 
+## C1-A review scope
+
+The first external consumer uses an opt-in CMake install of static engine
+libraries and an explicit public header set. The default package is headless;
+rendering is a separate component. This reuses the current C++ targets without
+committing to a stable binary ABI, game-specific content or any new creator
+operation. The [SDK guide](../creator-sdk.md) describes this boundary. Review of
+this slice does not ratify C1-B/C2-A operations or grant execution capabilities.
+The broader proposal remains open.
+
 ## Evidence
 
 [Creator scope and acceptance](../planning/creator-toolchain.md), the current
