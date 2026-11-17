@@ -1,0 +1,13 @@
+stdout marker
+stderr marker
+one argument with spaces
+checks
+--check-validation-callback
+startup
+checks
+checks
+--check-validation-callback
+checks
+--check-validation-callback
+startup
+PASS: process/output boundaries, Clang/MSVC profiles, GPU capture validation and input/platform checks

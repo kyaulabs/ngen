@@ -1,0 +1,33 @@
+Test project /home/kyau/projects/kyaulabs/ngen/build/flight-debug
+    Start 2: flight
+1/1 Test #2: flight ...........................***Failed    0.01 sec
+Randomness seeded to: 184257915
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+flight_tests is a Catch2 v3.16.0 host application.
+Run with -? for options
+
+-------------------------------------------------------------------------------
+direct pilot thrust reaches the fixed-step physical hull at the next boundary
+-------------------------------------------------------------------------------
+/home/kyau/projects/kyaulabs/ngen/tests/flight.cpp:7
+...............................................................................
+
+/home/kyau/projects/kyaulabs/ngen/tests/flight.cpp:24: FAILED:
+  REQUIRE( after.body.velocity_mps[0] == Catch::Approx(6).margin(1e-4) )
+with expansion:
+  0.0f == Approx( 6.0 )
+
+===============================================================================
+test cases:  1 |  0 passed | 1 failed
+assertions: 68 | 67 passed | 1 failed
+
+
+
+0% tests passed, 1 tests failed out of 1
+
+Total Test time (real) =   0.01 sec
+
+The following tests FAILED:
+	  2 - flight (Failed)
+Errors while running CTest

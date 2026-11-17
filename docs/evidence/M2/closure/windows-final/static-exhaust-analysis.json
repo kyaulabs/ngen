@@ -1,0 +1,159 @@
+{
+  "archive_sha256": "44ad6601f42fad44d863914eac86253634d6b52603f1bfb1497413c8a1d9832a",
+  "archive_bytes": 127459,
+  "package_sha256": "067407fb5fa2527771212cc7280a345b02ad3dd2a823ae8ba81b3553689ec52b",
+  "binary_sha256": "886826efa79e9e85f664cb6704c32388d342943327cbfd8c0310f2c230897449",
+  "build_evidence_revision": "5a2f8415aa226d9f757dfa18af403ab039d51806",
+  "build_directory": "D:\\Git\\kyaulabs\\ngen\\build\\windows\\20261109-091306-098\\Release",
+  "exit_code": 0,
+  "validation_stderr_empty": true,
+  "measured_frames": 600,
+  "warmup_frames": 60,
+  "validation_enabled": true,
+  "optimized_performance_claim": false,
+  "actual_draw_records": 195,
+  "visible_ship_plume_triangles": 238272,
+  "visible_total_triangles": 246272,
+  "fixture_crc_windows": "54bc3dc7",
+  "package_crc": "091e9782",
+  "distributions_ns": {
+    "frame_ns": {
+      "p50": 14606500.0,
+      "p95": 21822100.0,
+      "p99": 22265200.0,
+      "max": 22897200.0
+    },
+    "prepare_ns": {
+      "p50": 8434400.0,
+      "p95": 9794200.0,
+      "p99": 10728700.0,
+      "max": 14548900.0
+    },
+    "present_ns": {
+      "p50": 5816000.0,
+      "p95": 13071900.0,
+      "p99": 13568200.0,
+      "max": 14228100.0
+    },
+    "gpu_shadow_ns": {
+      "p50": 59808.0,
+      "p95": 62720.0,
+      "p99": 65184.0,
+      "max": 234048.0
+    },
+    "gpu_pbr_ns": {
+      "p50": 78048.0,
+      "p95": 84224.0,
+      "p99": 91040.0,
+      "max": 978496.0
+    },
+    "gpu_post_ns": {
+      "p50": 57152.0,
+      "p95": 57632.0,
+      "p99": 58176.0,
+      "max": 202496.0
+    },
+    "ui_prepare_ns": {
+      "p50": 121900.0,
+      "p95": 148900.0,
+      "p99": 193800.0,
+      "max": 2023200.0
+    },
+    "gpu_ui_ns": {
+      "p50": 13600.0,
+      "p95": 15360.0,
+      "p99": 173120.0,
+      "max": 800416.0
+    }
+  },
+  "generation_transitions": [
+    {
+      "frame": 0,
+      "generation": 1
+    },
+    {
+      "frame": 35,
+      "generation": 2
+    },
+    {
+      "frame": 93,
+      "generation": 3
+    },
+    {
+      "frame": 151,
+      "generation": 4
+    },
+    {
+      "frame": 210,
+      "generation": 5
+    }
+  ],
+  "extent_transitions": [
+    {
+      "frame": 0,
+      "extent": [
+        1280,
+        720
+      ]
+    },
+    {
+      "frame": 20,
+      "extent": [
+        1024,
+        640
+      ]
+    },
+    {
+      "frame": 40,
+      "extent": [
+        1280,
+        720
+      ]
+    }
+  ],
+  "extent_counts": {
+    "1280x720": 580,
+    "1024x640": 20
+  },
+  "tracked": {
+    "vma_allocation_bytes": {
+      "peak": 448207872,
+      "final": 199350704,
+      "last300_min": 199350704,
+      "last300_max": 199350704
+    },
+    "vma_reserved_bytes": {
+      "peak": 451054912,
+      "final": 202243312,
+      "last300_min": 202243312,
+      "last300_max": 202243312
+    },
+    "resource_live": {
+      "peak": 31,
+      "final": 23,
+      "last300_min": 23,
+      "last300_max": 23
+    },
+    "resource_retiring": {
+      "peak": 0,
+      "final": 0,
+      "last300_min": 0,
+      "last300_max": 0
+    }
+  },
+  "settings_scope": "default/restored exposure1 FXAAon bloom.04; walkthrough frames1-2 exposure.75/FXAAoff, restored3; every frame included",
+  "allocation_scope": "mixed edit/resize/reload activity: 2650 C++ and 1 ImGui call; not zero steady-state evidence",
+  "capture": {
+    "sha256": "780423256efd08c4df89c31e5a002a691978247867e5edf6e144db4de57b53cf",
+    "bytes": 3686538,
+    "native_extent": [
+      1280,
+      720
+    ],
+    "actual_left_gutter": 16,
+    "actual_right_gutter": 16,
+    "visually_inspected": true,
+    "contents": "accepted blue-white exhaust inside complete ship bounds; 14-material/194-ship-draw UI; no upscaling"
+  },
+  "claim": "Actual RTX5070 native accepted-package execution closes the remaining asset execution gap using the already verified MSVC Release build. No rebuild/matrix/memory run/personal reapproval."
+}

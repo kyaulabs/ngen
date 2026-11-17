@@ -1,0 +1,22 @@
+Filters: "*surface selection*"
+Randomness seeded to: 1366948257
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+render_startup_tests is a Catch2 v3.16.0 host application.
+Run with -? for options
+
+-------------------------------------------------------------------------------
+surface selection prefers explicit sRGB and FIFO without retaining query
+storage
+-------------------------------------------------------------------------------
+/home/kyau/projects/kyaulabs/ngen/tests/render_surface.cpp:25
+...............................................................................
+
+/home/kyau/projects/kyaulabs/ngen/tests/render_surface.cpp:27: FAILED:
+  REQUIRE( std::holds_alternative<SurfacePlan>(result) )
+with expansion:
+  false
+
+===============================================================================
+test cases: 1 | 1 failed
+assertions: 1 | 1 failed

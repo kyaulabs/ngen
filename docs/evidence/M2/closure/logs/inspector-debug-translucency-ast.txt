@@ -1,0 +1,26 @@
+60 warnings generated.
+<ROOT>/apps/inspector_probe/main.cpp:66:28: error: performing an implicit widening conversion to type 'size_type' (aka 'unsigned long') of a multiplication performed in type 'std::uint32_t' (aka 'unsigned int') [bugprone-implicit-widening-of-multiplication-result,-warnings-as-errors]
+   66 |         sections[2].resize((primitive + 1) * 80, std::byte{0});
+      |                            ^
+<ROOT>/apps/inspector_probe/main.cpp:66:28: note: make conversion explicit to silence this warning
+    6 |         sections[2].resize((primitive + 1) * 80, std::byte{0});
+      |                            ^~~~~~~~~~~~~~~~~~~~
+      |                            static_cast<size_type>( )
+<ROOT>/apps/inspector_probe/main.cpp:66:28: note: perform multiplication in a wider type
+   66 |         sections[2].resize((primitive + 1) * 80, std::byte{0});
+      |                            ^~~~~~~~~~~~~~
+      |                             static_cast<size_type>( )
+<ROOT>/apps/inspector_probe/main.cpp:80:28: error: performing an implicit widening conversion to type 'size_type' (aka 'unsigned long') of a multiplication performed in type 'std::uint32_t' (aka 'unsigned int') [bugprone-implicit-widening-of-multiplication-result,-warnings-as-errors]
+   80 |         sections[3].resize((primitive + 1) * 128, std::byte{0});
+      |                            ^
+<ROOT>/apps/inspector_probe/main.cpp:80:28: note: make conversion explicit to silence this warning
+   80 |         sections[3].resize((primitive + 1) * 128, std::byte{0});
+      |                            ^~~~~~~~~~~~~~~~~~~~~
+      |                            static_cast<size_type>( )
+<ROOT>/apps/inspector_probe/main.cpp:80:28: note: perform multiplication in a wider type
+   80 |         sections[3].resize((primitive + 1) * 128, std::byte{0});
+      |                            ^~~~~~~~~~~~~~
+      |                             static_cast<size_type>( )
+Suppressed 58 warnings (58 in non-user code).
+Use -header-filter=.* or leave it as default to display errors from all non-system headers. Use -system-headers to display errors from system headers as well.
+2 warnings treated as errors

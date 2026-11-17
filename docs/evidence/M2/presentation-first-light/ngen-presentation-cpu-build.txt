@@ -1,0 +1,17 @@
+[1/34] Scanning /home/kyau/projects/kyaulabs/ngen/engine/core/values.cpp for CXX dependencies
+[2/34] Scanning /home/kyau/projects/kyaulabs/ngen/engine/core/entities.cpp for CXX dependencies
+[3/34] Generating CXX dyndep file CMakeFiles/ngen_core.dir/CXX.dd
+[4/31] Scanning /home/kyau/projects/kyaulabs/ngen/engine/jobs/jobs.cpp for CXX dependencies
+[5/31] Generating CXX dyndep file CMakeFiles/ngen_jobs.dir/CXX.dd
+[6/29] Scanning /home/kyau/projects/kyaulabs/ngen/engine/simulation/simulation.cpp for CXX dependencies
+[7/29] Generating CXX dyndep file CMakeFiles/ngen_simulation.dir/CXX.dd
+[8/27] Scanning /home/kyau/projects/kyaulabs/ngen/engine/render/capabilities.cpp for CXX dependencies
+[9/27] Generating CXX dyndep file CMakeFiles/ngen_render_contract.dir/CXX.dd
+[10/25] Scanning /home/kyau/projects/kyaulabs/ngen/apps/sim_harness/main.cpp for CXX dependencies
+[11/25] Scanning /home/kyau/projects/kyaulabs/ngen/tests/core.cpp for CXX dependencies
+[12/25] Scanning /home/kyau/projects/kyaulabs/ngen/tests/jobs.cpp for CXX dependencies
+[13/25] Scanning /home/kyau/projects/kyaulabs/ngen/tests/simulation.cpp for CXX dependencies
+[14/25] Scanning /home/kyau/projects/kyaulabs/ngen/tests/render_capabilities.cpp for CXX dependencies
+[15/25] Generating CXX dyndep file CMakeFiles/sim_harness.dir/CXX.dd
+[16/23] Generating CXX dyndep file CMakeFiles/ngen_tests.dir/CXX.dd
+[17/19] Generating CXX dyndep file CMakeFiles/render_contract_tests.dir/CXX.dd

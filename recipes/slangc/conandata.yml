@@ -1,0 +1,8 @@
+sources:
+  "2026.21":
+    Linux:
+      url: "https://github.com/shader-slang/slang/releases/download/v2026.21/slang-2026.21-linux-x86_64-glibc-2.28.tar.gz"
+      sha256: "7b8800e7115668bfb073456ada3b20fa40718d7be41e7beec7c46c31351ba569"
+    Windows:
+      url: "https://github.com/shader-slang/slang/releases/download/v2026.21/slang-2026.21-windows-x86_64.zip"
+      sha256: "4b6f509e73397175ed36a341beb7ad15f4fff5feaf5f6d95fecf896c0d86b8de"

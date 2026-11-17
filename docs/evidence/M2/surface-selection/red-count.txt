@@ -1,0 +1,32 @@
+Filters: "*image count respects*"
+Randomness seeded to: 1243914425
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+render_startup_tests is a Catch2 v3.16.0 host application.
+Run with -? for options
+
+-------------------------------------------------------------------------------
+image count respects finite limits and cannot wrap
+-------------------------------------------------------------------------------
+/home/kyau/projects/kyaulabs/ngen/tests/render_surface.cpp:92
+...............................................................................
+
+/home/kyau/projects/kyaulabs/ngen/tests/render_surface.cpp:102: FAILED:
+  REQUIRE( std::get<SurfacePlan>(result).image_count == expected )
+with expansion:
+  3 == 2
+
+-------------------------------------------------------------------------------
+image count respects finite limits and cannot wrap
+-------------------------------------------------------------------------------
+/home/kyau/projects/kyaulabs/ngen/tests/render_surface.cpp:92
+...............................................................................
+
+/home/kyau/projects/kyaulabs/ngen/tests/render_surface.cpp:102: FAILED:
+  REQUIRE( std::get<SurfacePlan>(result).image_count == expected )
+with expansion:
+  0 == 4294967295 (0xffffffff)
+
+===============================================================================
+test cases: 1 | 1 failed
+assertions: 4 | 2 passed | 2 failed

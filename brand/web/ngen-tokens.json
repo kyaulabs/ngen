@@ -1,0 +1,68 @@
+{
+  "name": "NGEN",
+  "version": "1.4",
+  "themes": {
+    "dark": {
+      "bg": "#04060C",
+      "surface": "#0A101D",
+      "panel-header": "#10182A",
+      "text": "#EAF2FF",
+      "muted": "#A4B5CF",
+      "subtle": "#637391",
+      "border": "#7D9BD2",
+      "control-border": "#7D9BD2",
+      "accent": "#22D3EE",
+      "accent-hover": "#22D3EE",
+      "on-accent": "#04121A",
+      "secondary": "#A78BFA",
+      "tertiary": "#F472B6",
+      "on-secondary": "#04121A",
+      "focus": "#22D3EE",
+      "success": "#34D399",
+      "warning": "#FBBF24",
+      "danger": "#FB7185",
+      "surface-alt": "#10182A"
+    },
+    "light": {
+      "bg": "#EDF0F8",
+      "surface": "#FFFFFF",
+      "panel-header": "#F4F7FD",
+      "text": "#0A1322",
+      "muted": "#3C4C68",
+      "subtle": "#71829F",
+      "border": "#102A54",
+      "control-border": "#102A54",
+      "accent": "#0891B2",
+      "accent-hover": "#0891B2",
+      "on-accent": "#0A1322",
+      "secondary": "#7C3AED",
+      "tertiary": "#DB2777",
+      "on-secondary": "#FFFFFF",
+      "focus": "#0891B2",
+      "success": "#006649",
+      "warning": "#80500A",
+      "danger": "#A52F42",
+      "surface-alt": "#F4F7FD"
+    }
+  },
+  "components": {
+    "dark": {
+      "bg-0": "#04060C",
+      "panel": "color-mix(in srgb, #0A101D 66%, transparent)",
+      "panel-2": "color-mix(in srgb, #10182A 55%, transparent)",
+      "line": "color-mix(in srgb, #7D9BD2 14%, transparent)",
+      "line-strong": "color-mix(in srgb, #7D9BD2 30%, transparent)"
+    },
+    "light": {
+      "bg-0": "#EDF0F8",
+      "panel": "color-mix(in srgb, #FFFFFF 78%, transparent)",
+      "panel-2": "color-mix(in srgb, #F4F7FD 85%, transparent)",
+      "line": "color-mix(in srgb, #102A54 12%, transparent)",
+      "line-strong": "color-mix(in srgb, #102A54 26%, transparent)"
+    }
+  },
+  "typography": {
+    "sans": "'Neo Sans Pro', system-ui, sans-serif",
+    "mono": "'Operator Mono', ui-monospace, 'Cascadia Code', monospace"
+  }
+}

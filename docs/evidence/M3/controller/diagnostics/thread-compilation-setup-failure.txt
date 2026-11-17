@@ -1,0 +1,50 @@
+[1/18] Scanning /home/kyau/projects/kyaulabs/ngen/engine/core/entities.cpp for CXX dependencies
+[2/18] Scanning /home/kyau/projects/kyaulabs/ngen/engine/core/values.cpp for CXX dependencies
+[3/18] Generating CXX dyndep file CMakeFiles/ngen_core.dir/CXX.dd
+[4/15] Scanning /home/kyau/projects/kyaulabs/ngen/engine/physics/world.cpp for CXX dependencies
+[5/15] Scanning /home/kyau/projects/kyaulabs/ngen/game/flight/flight.cpp for CXX dependencies
+[6/15] Generating CXX dyndep file CMakeFiles/ngen_physics.dir/CXX.dd
+[7/13] Generating CXX dyndep file CMakeFiles/ngen_flight.dir/CXX.dd
+[8/11] Scanning /home/kyau/projects/kyaulabs/ngen/tests/flight.cpp for CXX dependencies
+[9/11] Generating CXX dyndep file CMakeFiles/flight_tests.dir/CXX.dd
+[10/11] Building CXX object CMakeFiles/flight_tests.dir/tests/flight.cpp.o
+FAILED: [code=1] CMakeFiles/flight_tests.dir/tests/flight.cpp.o
+/bin/clang++  -I/home/kyau/projects/kyaulabs/ngen/game -I/home/kyau/projects/kyaulabs/ngen/engine -isystem /home/kyau/.conan2/p/b/catch646a1245bf61b/p/include -m64 -stdlib=libstdc++ -g -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror -MD -MT CMakeFiles/flight_tests.dir/tests/flight.cpp.o -MF CMakeFiles/flight_tests.dir/tests/flight.cpp.o.d @CMakeFiles/flight_tests.dir/tests/flight.cpp.o.modmap -o CMakeFiles/flight_tests.dir/tests/flight.cpp.o -c /home/kyau/projects/kyaulabs/ngen/tests/flight.cpp
+/home/kyau/projects/kyaulabs/ngen/tests/flight.cpp:255:43: error: no member named 'thread' in 'ngen::Error'; did you mean 'std::thread'?
+  255 |     REQUIRE(std::get<Error>(submitted) == Error::thread);
+      |                                           ^      ~~~~~~
+/usr/bin/../lib64/gcc/x86_64-pc-linux-gnu/16/../../../../include/c++/16/bits/std_thread.h:84:9: note: 'std::thread' declared here
+   84 |   class thread
+      |         ^
+/home/kyau/projects/kyaulabs/ngen/tests/flight.cpp:255:43: error: no member named 'thread' in 'ngen::Error'; did you mean 'std::thread'?
+  255 |     REQUIRE(std::get<Error>(submitted) == Error::thread);
+      |                                           ^      ~~~~~~
+/usr/bin/../lib64/gcc/x86_64-pc-linux-gnu/16/../../../../include/c++/16/bits/std_thread.h:84:9: note: 'std::thread' declared here
+   84 |   class thread
+      |         ^
+/home/kyau/projects/kyaulabs/ngen/tests/flight.cpp:255:43: error: no member named 'thread' in 'ngen::Error'; did you mean 'std::thread'?
+  255 |     REQUIRE(std::get<Error>(submitted) == Error::thread);
+      |                                           ^      ~~~~~~
+/usr/bin/../lib64/gcc/x86_64-pc-linux-gnu/16/../../../../include/c++/16/bits/std_thread.h:84:9: note: 'std::thread' declared here
+   84 |   class thread
+      |         ^
+/home/kyau/projects/kyaulabs/ngen/tests/flight.cpp:256:42: error: no member named 'thread' in 'ngen::Error'; did you mean 'std::thread'?
+  256 |     REQUIRE(std::get<Error>(advanced) == Error::thread);
+      |                                          ^      ~~~~~~
+/usr/bin/../lib64/gcc/x86_64-pc-linux-gnu/16/../../../../include/c++/16/bits/std_thread.h:84:9: note: 'std::thread' declared here
+   84 |   class thread
+      |         ^
+/home/kyau/projects/kyaulabs/ngen/tests/flight.cpp:256:42: error: no member named 'thread' in 'ngen::Error'; did you mean 'std::thread'?
+  256 |     REQUIRE(std::get<Error>(advanced) == Error::thread);
+      |                                          ^      ~~~~~~
+/usr/bin/../lib64/gcc/x86_64-pc-linux-gnu/16/../../../../include/c++/16/bits/std_thread.h:84:9: note: 'std::thread' declared here
+   84 |   class thread
+      |         ^
+/home/kyau/projects/kyaulabs/ngen/tests/flight.cpp:256:42: error: no member named 'thread' in 'ngen::Error'; did you mean 'std::thread'?
+  256 |     REQUIRE(std::get<Error>(advanced) == Error::thread);
+      |                                          ^      ~~~~~~
+/usr/bin/../lib64/gcc/x86_64-pc-linux-gnu/16/../../../../include/c++/16/bits/std_thread.h:84:9: note: 'std::thread' declared here
+   84 |   class thread
+      |         ^
+6 errors generated.
+ninja: build stopped: subcommand failed.

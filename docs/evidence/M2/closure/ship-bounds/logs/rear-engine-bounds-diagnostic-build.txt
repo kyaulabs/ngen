@@ -1,0 +1,31 @@
+[0/2] Re-checking globbed directories...
+[1/57] Scanning <ROOT>/engine/core/entities.cpp for CXX dependencies
+[2/57] Scanning <ROOT>/engine/core/values.cpp for CXX dependencies
+[3/57] Scanning <ROOT>/engine/render/capabilities.cpp for CXX dependencies
+[4/57] Scanning <ROOT>/engine/render/vma.cpp for CXX dependencies
+[5/57] Scanning <ROOT>/engine/assets/package.cpp for CXX dependencies
+[6/57] Generating CXX dyndep file CMakeFiles/ngen_core.dir/CXX.dd
+[7/54] Generating CXX dyndep file CMakeFiles/ngen_render_contract.dir/CXX.dd
+[8/52] Generating CXX dyndep file CMakeFiles/ngen_assets.dir/CXX.dd
+[9/50] Scanning <ROOT>/engine/tools/reload.cpp for CXX dependencies
+[10/50] Scanning <ROOT>/engine/tools/inspector.cpp for CXX dependencies
+[11/50] Generating CXX dyndep file CMakeFiles/ngen_vma.dir/CXX.dd
+[12/48] Scanning <ROOT>/engine/render/surface.cpp for CXX dependencies
+[13/48] Scanning <ROOT>/engine/render/context.cpp for CXX dependencies
+[14/48] Scanning <ROOT>/engine/render/presentation.cpp for CXX dependencies
+[15/48] Scanning <ROOT>/engine/render/resources.cpp for CXX dependencies
+[16/48] Scanning <ROOT>/engine/render/post.cpp for CXX dependencies
+[17/48] Scanning <ROOT>/engine/render/mesh.cpp for CXX dependencies
+[18/48] Scanning <ROOT>/engine/render/environment.cpp for CXX dependencies
+[19/48] Generating CXX dyndep file CMakeFiles/ngen_inspector.dir/CXX.dd
+[20/45] Scanning <ROOT>/engine/render/overlay.cpp for CXX dependencies
+[21/45] Generating CXX dyndep file CMakeFiles/ngen_render.dir/CXX.dd
+[22/36] Scanning <ROOT>/engine/render/scene.cpp for CXX dependencies
+[23/36] Scanning <ROOT>/engine/render/scene_draw.cpp for CXX dependencies
+[24/36] Generating CXX dyndep file CMakeFiles/ngen_scene.dir/CXX.dd
+[25/33] Scanning <ROOT>/engine/tools/ui.cpp for CXX dependencies
+[26/33] Generating CXX dyndep file CMakeFiles/ngen_inspector_ui.dir/CXX.dd
+[27/31] Scanning <ROOT>/apps/inspector_probe/main.cpp for CXX dependencies
+[28/31] Generating CXX dyndep file CMakeFiles/inspector_probe.dir/CXX.dd
+[29/31] Building CXX object CMakeFiles/inspector_probe.dir/apps/inspector_probe/main.cpp.o
+[30/31] Linking CXX executable inspector_probe

@@ -1,0 +1,21 @@
+Filters: "flight replay encloses admitted ship bounds at every camera orientation"
+Randomness seeded to: 301254126
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+scene_workload_tests is a Catch2 v3.16.0 host application.
+Run with -? for options
+
+-------------------------------------------------------------------------------
+flight replay encloses admitted ship bounds at every camera orientation
+-------------------------------------------------------------------------------
+$REPO/tests/workload.cpp:56
+...............................................................................
+
+$REPO/tests/workload.cpp:72: FAILED:
+  REQUIRE( std::abs(clip[0]) < clip[3] )
+with expansion:
+  1.047565579f < 1.0f
+
+===============================================================================
+test cases:  1 |  0 passed | 1 failed
+assertions: 14 | 13 passed | 1 failed

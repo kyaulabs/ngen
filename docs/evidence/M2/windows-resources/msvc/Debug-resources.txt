@@ -1,0 +1,5 @@
+device=NVIDIA GeForce RTX 5070 api=1.4 driver=2588573696 queue=0 display=windows
+device=NVIDIA GeForce RTX 5070 api=1.4 driver=2588573696 queue=0 display=windows
+queued_frames=96 swapchain_generations=3 verified_resizes=2 minimize_verified=1
+presented_image_replacements=471 vma_allocation_bytes=4752 vma_reserved_bytes=3145728
+buffer_lifetime=1 gpu_roundtrip=1 pending_retirement=1 resource_slots=64 replacement_cycles=128 image_lifetime=1 image_roundtrip=1 image_retirement=1 close_invalidated=1

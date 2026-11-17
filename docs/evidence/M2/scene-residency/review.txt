@@ -1,0 +1,36 @@
+Same-session review on 0a7fc3b; not independent/human M2 acceptance.
+
+Read SceneVersion/SceneUpload ownership, Context transfer calls, new combined
+presets/lock/CI, shared package fixture and complete native scene probe. Runtime
+links checked assets/renderer only. No source importer, KTX decoder or shader
+compiler is introduced into scene/runtime linkage.
+
+begin admits checked bounded package geometry/native image records, creates only
+private targets and retains the owning package. Partial construction releases
+native values through Context retirement. advance performs a bounded phase,
+preserves explicit two-context backpressure and holds mapped staging through its
+successful submission/completion. It publishes no partial ScenePin. Cancellation
+releases private CPU/target ownership but resource last-use keeps submitted native
+staging/geometry alive; real gated tests verify retention and reclamation without
+changing the active version. Ready data/geometry/mips remain immutable through the
+API; owning CPU pins can be copied to jobs, GPU values stay owner-thread values.
+Context close invalidates outliving values rather than dereferencing dead state.
+
+Actual source geometry/index/all mip readback verifies phase routing and native
+packing, not just uploaded counts. Repeated same-source versions have distinct
+live native geometry. Full-source pinned replacement exposed the old 256 MiB
+admission cap; explicit 512 MiB allocation admission fits the actual two-version
+workload within the separate 1 GiB whole-graphics goal. No asset reduction or
+threshold-free growth is used. Current-limit oversized native requirement controls
+still reject before allocation. Pipeline/driver/WSI bytes are excluded from VMA
+statistics and final memory/performance remains unverified.
+
+Four combined native graphs pass 9/9, synthetic/full GPU controls including
+instrumented leak/UB/address checking, and full-source equality of every vertex,
+LOD index and 89478480 mip bytes. Six consumers x three actual Clang databases
+are clean; GCC native builds/tests pass, not its incompatible clang-tidy parser.
+Shared fixture refactoring keeps the existing independent runtime package tests.
+No additional demonstrated task-related correctness defect remained after review.
+Limits: no scene draw/descriptors/frame pins yet, no asynchronous background file
+loader/app, no final scene/pass/inspector/performance/Windows/acceptance claim.
+No whole-process memory/time/filesystem sandbox or arbitrary driver recovery.

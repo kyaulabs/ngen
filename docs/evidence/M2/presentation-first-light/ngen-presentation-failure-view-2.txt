@@ -1,0 +1,4 @@
+injected_allocation_failure=view:2
+Vulkan presentation: create swapchain view: VkResult -2
+device=Intel(R) Iris(R) Xe Graphics (TGL GT2) api=1.4 driver=109060102 queue=0 display=wayland
+surface=1280x720 format=50 color_space=0 present_mode=2 images=4

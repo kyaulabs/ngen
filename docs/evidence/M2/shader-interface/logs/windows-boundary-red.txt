@@ -1,0 +1,13 @@
+stdout marker
+stderr marker
+one argument with spaces
+checks
+--check-validation-callback
+startup
+--check-presentation
+resources
+Exception: <ROOT>/tests/windows_build.ps1:171
+Line |
+ 171 |                  throw 'GPU shaders were not exercised and captured'
+     |                  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     | GPU shaders were not exercised and captured

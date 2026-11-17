@@ -1,0 +1,14 @@
+F
+======================================================================
+FAIL: test_scripted_walkthrough_applies_edits_then_keyboard_reload_and_resize (__main__.Inspector.test_scripted_walkthrough_applies_edits_then_keyboard_reload_and_resize)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<ROOT>/tests/inspector_cli.py", line 57, in test_scripted_walkthrough_applies_edits_then_keyboard_reload_and_resize
+    self.assertIn(marker, result.stdout)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'post_exposure=1.00 fxaa=1 bloom_strength=0.0400' not found in 'device=Intel(R) Iris(R) Xe Graphics (TGL GT2) api=1.4 driver=109060102 queue=0 display=wayland\nasteroid_instances=100 asteroid_triangles=80 ship_triangles=238080 total_triangles=246080 scene_draws=189 fixture_seed=0x4e47454e fixture_crc32=740711bd package_crc32=04a13010\nworkload_frames=600 workload_warmup=2 workload_wsi_queued=600 workload_hdr_finite=1 workload_lit_pixels=31871 workload_capture=0 width=1280 height=720 shadow_extent=1024 validation=1\npost_exposure=0.75 fxaa=0 bloom_strength=0.0400 bloom_kernel=9x9 bloom_samples=25 gpu_post_includes_bloom=1\nframe_ns p50=24174429 p95=32556413 p99=39216574 max=79839667 gpu_timestamps=available allocation_probe=1 warm_cpp_allocations=9931660 vma_allocation_bytes=211566728 vma_reserved_bytes=214396216\ncpu_prepare_ns p50=21551111 p95=28173685 cpu_present_ns p50=2149841 p95=2771693\ngpu_shadow_ns p50=1153698 p95=1282396 gpu_pbr_ns p50=1570312 p95=1755573 gpu_post_ns p50=389531 p95=426094\nwalkthrough_edits=1 walkthrough_keyboard_reload=1 inspector_resize_mask=3 inspector_native_generations=2 inspector_reload_phase=idle inspector_completed_reloads=1\nwalkthrough_edits=1 walkthrough_keyboard_reload=1 inspector_resizes=2 inspector_reloads=1 inspector_ui=1 inspector_snapshot_generation=2 inspector_vertices=2646 inspector_draws=9 warm_imgui_allocations=5 ui_prepare_ns_p95=301289 gpu_ui_ns_p95=476927\n'
+
+----------------------------------------------------------------------
+Ran 1 test in 16.455s
+
+FAILED (failures=1)

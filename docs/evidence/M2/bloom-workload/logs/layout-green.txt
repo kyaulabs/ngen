@@ -1,0 +1,7 @@
+Test project <ROOT>/build/inspector-debug
+    Start 1: shader_offline
+1/1 Test #1: shader_offline ...................   Passed   47.19 sec
+
+100% tests passed out of 1
+
+Total Test time (real) =  47.19 sec

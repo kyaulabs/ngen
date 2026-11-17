@@ -1,0 +1,5 @@
+msvc Debug: build=66/66 tests=5/5 frames=96 generations=3 resizes=2 minimize=1 image_replacements=471 allocated=4752 reserved=3145728
+msvc Release: build=66/66 tests=5/5 frames=96 generations=3 resizes=2 minimize=1 image_replacements=463 allocated=4752 reserved=3145728
+clang Debug: build=66/66 tests=5/5 frames=96 generations=3 resizes=2 minimize=1 image_replacements=467 allocated=4752 reserved=3145728
+clang Release: build=66/66 tests=5/5 frames=96 generations=3 resizes=2 minimize=1 image_replacements=450 allocated=4752 reserved=3145728
+All source/compiler/profile/dependency/normal/calibration/replay assertions passed.

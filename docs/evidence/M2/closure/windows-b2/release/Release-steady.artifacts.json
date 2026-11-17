@@ -1,0 +1,12 @@
+[
+  {
+    "name": "Release-steady.bmp",
+    "bytes": 3686538,
+    "sha256": "1186cfb73958de8b3ee0c8b6fc5effa1f45f098fdbf1af6e210ca927ae744597"
+  },
+  {
+    "name": "Release-steady.csv",
+    "bytes": 83844,
+    "sha256": "d7bff47ad82ced83a1e357a5da06d1be1c0351cdfc57d165acda2294f9f56f52"
+  }
+]

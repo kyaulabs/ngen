@@ -1,0 +1,4 @@
+[1/4] Scanning <REPO>/apps/asset_probe/main.cpp for CXX dependencies
+[2/4] Generating CXX dyndep file CMakeFiles/asset_package_probe.dir/CXX.dd
+[3/4] Building CXX object CMakeFiles/asset_package_probe.dir/apps/asset_probe/main.cpp.o
+[4/4] Linking CXX executable asset_package_probe

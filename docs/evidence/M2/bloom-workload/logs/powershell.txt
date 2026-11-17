@@ -1,0 +1,89 @@
+stdout marker
+[31;1mstderr marker[0m
+one argument with spaces
+checks
+--check-validation-callback
+startup
+--check-presentation
+resources
+shaders
+scene
+checks
+checks
+--check-validation-callback
+checks
+--check-validation-callback
+startup
+checks
+--check-validation-callback
+startup
+--check-presentation
+checks
+--check-validation-callback
+startup
+--check-presentation
+resources
+checks
+--check-validation-callback
+startup
+--check-presentation
+resources
+shaders
+checks
+--check-validation-callback
+startup
+--check-presentation
+resources
+shaders
+scene
+--check-validation-callback
+startup
+--check-presentation
+resources
+shaders
+scene
+package argument: /tmp/ngen script test 788df532-36b0-44a1-86f4-1e8bf0236f3f/checked ship with spaces.ngas
+capture argument: /tmp/ngen script test 788df532-36b0-44a1-86f4-1e8bf0236f3f/scene package logs 082d7df0-349c-4228-a775-5762bc37616c/Release-scene-package.bmp
+scene-package
+--check-validation-callback
+startup
+--check-presentation
+resources
+shaders
+scene
+--check-validation-callback
+startup
+--check-presentation
+resources
+shaders
+scene
+package argument: /tmp/ngen script test 788df532-36b0-44a1-86f4-1e8bf0236f3f/checked ship with spaces.ngas
+capture argument: /tmp/ngen script test 788df532-36b0-44a1-86f4-1e8bf0236f3f/scene package logs 230afa85-ebd4-467e-a650-a6b9db1ab74d/Release-scene-package.bmp
+scene-package
+--check-validation-callback
+startup
+--check-presentation
+resources
+shaders
+scene
+package argument: /tmp/ngen script test 788df532-36b0-44a1-86f4-1e8bf0236f3f/checked ship with spaces.ngas
+capture argument: /tmp/ngen script test 788df532-36b0-44a1-86f4-1e8bf0236f3f/scene package logs eb1a91a2-fd16-4e00-8276-f431d5a0f110/Release-scene-package.bmp
+scene-package
+--check-validation-callback
+startup
+--check-presentation
+resources
+shaders
+scene
+package argument: /tmp/ngen script test 788df532-36b0-44a1-86f4-1e8bf0236f3f/checked ship with spaces.ngas
+scene-package
+--check-validation-callback
+startup
+--check-presentation
+resources
+shaders
+SDK environment inherited
+SDK environment inherited
+SDK environment inherited
+SDK environment inherited
+PASS: process/output boundaries, Clang/MSVC profiles, GPU/renderer checks, SDK environment inheritance and input/platform checks

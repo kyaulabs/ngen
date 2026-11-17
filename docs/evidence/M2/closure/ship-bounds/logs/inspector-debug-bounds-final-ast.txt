@@ -1,0 +1,10 @@
+[1/2] Processing file <ROOT>/engine/tools/ui.cpp.
+53 warnings generated.
+[2/2] Processing file <ROOT>/apps/inspector_probe/main.cpp.
+112 warnings generated.
+<ROOT>/apps/inspector_probe/main.cpp:547:39: error: unchecked access to optional value [bugprone-unchecked-optional-access,-warnings-as-errors]
+  547 |             for (const auto &vertex : geometry.value().vertices)
+      |                                       ^~~~~~~~
+Suppressed 111 warnings (111 in non-user code).
+Use -header-filter=.* or leave it as default to display errors from all non-system headers. Use -system-headers to display errors from system headers as well.
+1 warning treated as error

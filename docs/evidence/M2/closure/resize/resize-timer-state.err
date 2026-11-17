@@ -1,0 +1,25 @@
+native_latency name=submit begin_ns=418404547305260 end_ns=418404584609726 duration_ns=37304466 result=0
+delay_observation requested_ms=1 actual_ns=1085266 slack_ns=50000
+delay_observation requested_ms=1 actual_ns=1118361 slack_ns=50000
+delay_observation requested_ms=1 actual_ns=1057832 slack_ns=50000
+delay_observation requested_ms=1 actual_ns=1077150 slack_ns=50000
+delay_observation requested_ms=1 actual_ns=1060866 slack_ns=50000
+delay_observation requested_ms=1 actual_ns=1059483 slack_ns=50000
+delay_observation requested_ms=1 actual_ns=1077027 slack_ns=50000
+delay_observation requested_ms=1 actual_ns=1080402 slack_ns=50000
+delay_observation requested_ms=1 actual_ns=1074158 slack_ns=50000
+delay_observation requested_ms=1 actual_ns=1077175 slack_ns=50000
+delay_observation requested_ms=1 actual_ns=1072749 slack_ns=50000
+delay_observation requested_ms=1 actual_ns=1146958 slack_ns=50000
+window_state flags=268435488 hidden=0 minimized=0 occluded=0 focus=0 refresh_hz=60.000
+window_thread_timer_slack_ns=50000
+swapchain_created at_ns=418404729466199 width=1280 height=720 requested_images=4 result=0
+window_state flags=268437024 hidden=0 minimized=0 occluded=0 focus=1 refresh_hz=60.000
+window_thread_timer_slack_ns=50000
+swapchain_created at_ns=418406045451611 width=1024 height=640 requested_images=4 result=0
+native_latency name=submit begin_ns=418406237328943 end_ns=418406268015161 duration_ns=30686218 result=0
+native_latency name=submit begin_ns=418406313743702 end_ns=418406323264587 duration_ns=9520885 result=0
+swapchain_created at_ns=418406453767029 width=1280 height=720 requested_images=4 result=0
+native_latency name=submit begin_ns=418407430622552 end_ns=418407460614571 duration_ns=29992019 result=0
+native_latency name=submit begin_ns=418408563238847 end_ns=418408598602911 duration_ns=35364064 result=0
+native_latency name=submit begin_ns=418409623303160 end_ns=418409654815734 duration_ns=31512574 result=0

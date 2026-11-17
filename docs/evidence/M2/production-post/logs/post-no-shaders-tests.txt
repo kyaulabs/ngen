@@ -1,0 +1,19 @@
+Test project <REPO>/build/renderer-no-shaders
+    Start 1: ngen_tests
+1/7 Test #1: ngen_tests .......................   Passed    0.02 sec
+    Start 2: render_contract_tests
+2/7 Test #2: render_contract_tests ............   Passed    0.01 sec
+    Start 3: render_startup_tests
+3/7 Test #3: render_startup_tests .............   Passed    0.02 sec
+    Start 4: wayland_tablet_shutdown
+4/7 Test #4: wayland_tablet_shutdown ..........   Passed    0.15 sec
+    Start 5: wayland_tablet_removal
+5/7 Test #5: wayland_tablet_removal ...........   Passed    0.10 sec
+    Start 6: replay_serial
+6/7 Test #6: replay_serial ....................   Passed    0.04 sec
+    Start 7: replay_workers
+7/7 Test #7: replay_workers ...................   Passed    0.05 sec
+
+100% tests passed out of 7
+
+Total Test time (real) =   0.39 sec

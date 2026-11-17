@@ -1,0 +1,40 @@
+Test project <REPO>/build/asset-debug
+    Start 3: asset_import_tests
+1/1 Test #3: asset_import_tests ...............***Failed    0.01 sec
+Randomness seeded to: 2625073352
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+asset_import_tests is a Catch2 v3.16.0 host application.
+Run with -? for options
+
+-------------------------------------------------------------------------------
+static GLB import names unsupported required extensions
+-------------------------------------------------------------------------------
+<REPO>/tests/asset_import.cpp:350
+...............................................................................
+
+<REPO>/tests/asset_import.cpp:356: FAILED:
+  CHECK( failure.issue == ImportIssue::unsupported )
+with expansion:
+  0 == 1
+
+<REPO>/tests/asset_import.cpp:357: FAILED:
+  CHECK( failure.message.find("KHR_not_supported") != std::string::npos )
+with expansion:
+  18446744073709551615 (0xffffffffffffffff)
+  !=
+  18446744073709551615 (0xffffffffffffffff)
+
+===============================================================================
+test cases:  14 |  13 passed | 1 failed
+assertions: 142 | 140 passed | 2 failed
+
+
+
+0% tests passed, 1 tests failed out of 1
+
+Total Test time (real) =   0.01 sec
+
+The following tests FAILED:
+	  3 - asset_import_tests (Failed)
+Errors while running CTest

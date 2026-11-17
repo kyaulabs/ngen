@@ -1,0 +1,87 @@
+
+=================================================================
+==3949071==ERROR: LeakSanitizer: detected memory leaks
+
+Direct leak of 72 byte(s) in 1 object(s) allocated from:
+    #0 0x0000004e0a72 in realloc (/home/kyau/projects/kyaulabs/ngen/build/m3-flight/audio-desktop-probe-demo-asan+0x4e0a72) (BuildId: 06f5ce26bffae52cb1d19a18552879deac201405)
+    #1 0x61a088ba9a24 in real_realloc /home/kyau/.conan2/p/b/sdl83ec0e36b75f3/b/src/src/stdlib/SDL_malloc.c:6336:64
+    #2 0x61a088ba9ec7 in SDL_realloc_REAL /home/kyau/.conan2/p/b/sdl83ec0e36b75f3/b/src/src/stdlib/SDL_malloc.c:6496:11
+    #3 0x61a088bc3f6c in SDL_SetTLS_REAL /home/kyau/.conan2/p/b/sdl83ec0e36b75f3/b/src/src/thread/SDL_thread.c:102:38
+    #4 0x61a088bc5933 in SDL_GetErrBuf /home/kyau/.conan2/p/b/sdl83ec0e36b75f3/b/src/src/thread/SDL_thread.c:317:9
+    #5 0x61a0888bdd66 in SDL_SetErrorV_REAL /home/kyau/.conan2/p/b/sdl83ec0e36b75f3/b/src/src/SDL_error.c:45:28
+    #6 0x61a0888bdb8e in SDL_SetError_REAL /home/kyau/.conan2/p/b/sdl83ec0e36b75f3/b/src/src/SDL_error.c:35:14
+    #7 0x61a0888eb5e3 in SDL_FindPhysicalAudioDeviceByCallback /home/kyau/.conan2/p/b/sdl83ec0e36b75f3/b/src/src/audio/SDL_audio.c:1570:9
+    #8 0x61a0888deca3 in SDL_FindPhysicalAudioDeviceByHandle /home/kyau/.conan2/p/b/sdl83ec0e36b75f3/b/src/src/audio/SDL_audio.c:1583:12
+    #9 0x61a0888ddf14 in SDL_AddAudioDevice /home/kyau/.conan2/p/b/sdl83ec0e36b75f3/b/src/src/audio/SDL_audio.c:700:16
+    #10 0x61a089212914 in AddPulseAudioDevice /home/kyau/.conan2/p/b/sdl83ec0e36b75f3/b/src/src/audio/pulseaudio/SDL_pulseaudio.c:857:13
+    #11 0x61a0892117de in SinkInfoCallback /home/kyau/.conan2/p/b/sdl83ec0e36b75f3/b/src/src/audio/pulseaudio/SDL_pulseaudio.c:866:9
+    #12 0x61a087ecce19 in context_get_sink_info_callback /home/kyau/.conan2/p/b/pulsef1a846e69e878/b/build-debug/../src/src/pulse/introspect.c:268:17
+    #13 0x61a087776fbb in run_action /home/kyau/.conan2/p/b/pulsef1a846e69e878/b/build-debug/../src/src/pulsecore/pdispatch.c:291:5
+    #14 0x61a087776504 in pa_pdispatch_run /home/kyau/.conan2/p/b/pulsef1a846e69e878/b/build-debug/../src/src/pulsecore/pdispatch.c:344:13
+    #15 0x61a087eace3a in pstream_packet_callback /home/kyau/.conan2/p/b/pulsef1a846e69e878/b/build-debug/../src/src/pulse/context.c:364:9
+    #16 0x61a0877945f5 in do_read /home/kyau/.conan2/p/b/pulsef1a846e69e878/b/build-debug/../src/src/pulsecore/pstream.c:1032:17
+    #17 0x61a087790ce7 in do_pstream_read_write /home/kyau/.conan2/p/b/pulsef1a846e69e878/b/build-debug/../src/src/pulsecore/pstream.c:265:13
+    #18 0x61a087784f87 in io_callback /home/kyau/.conan2/p/b/pulsef1a846e69e878/b/build-debug/../src/src/pulsecore/pstream.c:317:5
+    #19 0x61a087716e80 in callback /home/kyau/.conan2/p/b/pulsef1a846e69e878/b/build-debug/../src/src/pulsecore/iochannel.c:158:13
+    #20 0x61a087f011bb in dispatch_pollfds /home/kyau/.conan2/p/b/pulsef1a846e69e878/b/build-debug/../src/src/pulse/mainloop.c:676:9
+    #21 0x61a087eff0d5 in pa_mainloop_dispatch /home/kyau/.conan2/p/b/pulsef1a846e69e878/b/build-debug/../src/src/pulse/mainloop.c:917:27
+    #22 0x61a087f015f9 in pa_mainloop_iterate /home/kyau/.conan2/p/b/pulsef1a846e69e878/b/build-debug/../src/src/pulse/mainloop.c:948:14
+    #23 0x61a087f016d9 in pa_mainloop_run /home/kyau/.conan2/p/b/pulsef1a846e69e878/b/build-debug/../src/src/pulse/mainloop.c:963:17
+    #24 0x61a087f6435a in thread /home/kyau/.conan2/p/b/pulsef1a846e69e878/b/build-debug/../src/src/pulse/thread-mainloop.c:101:12
+    #25 0x61a0877ded9b in internal_thread_func /home/kyau/.conan2/p/b/pulsef1a846e69e878/b/build-debug/../src/src/pulsecore/thread-posix.c:81:5
+    #26 0x0000004dd766 in asan_thread_start(void*) asan_interceptors.cpp.o
+
+Indirect leak of 72 byte(s) in 1 object(s) allocated from:
+    #0 0x0000004e0a72 in realloc (/home/kyau/projects/kyaulabs/ngen/build/m3-flight/audio-desktop-probe-demo-asan+0x4e0a72) (BuildId: 06f5ce26bffae52cb1d19a18552879deac201405)
+    #1 0x61a088ba9a24 in real_realloc /home/kyau/.conan2/p/b/sdl83ec0e36b75f3/b/src/src/stdlib/SDL_malloc.c:6336:64
+    #2 0x61a088bc5792 in SDL_GetErrBuf /home/kyau/.conan2/p/b/sdl83ec0e36b75f3/b/src/src/thread/SDL_thread.c:310:31
+    #3 0x61a0888bdd66 in SDL_SetErrorV_REAL /home/kyau/.conan2/p/b/sdl83ec0e36b75f3/b/src/src/SDL_error.c:45:28
+    #4 0x61a0888bdb8e in SDL_SetError_REAL /home/kyau/.conan2/p/b/sdl83ec0e36b75f3/b/src/src/SDL_error.c:35:14
+    #5 0x61a0888eb5e3 in SDL_FindPhysicalAudioDeviceByCallback /home/kyau/.conan2/p/b/sdl83ec0e36b75f3/b/src/src/audio/SDL_audio.c:1570:9
+    #6 0x61a0888deca3 in SDL_FindPhysicalAudioDeviceByHandle /home/kyau/.conan2/p/b/sdl83ec0e36b75f3/b/src/src/audio/SDL_audio.c:1583:12
+    #7 0x61a0888ddf14 in SDL_AddAudioDevice /home/kyau/.conan2/p/b/sdl83ec0e36b75f3/b/src/src/audio/SDL_audio.c:700:16
+    #8 0x61a089212914 in AddPulseAudioDevice /home/kyau/.conan2/p/b/sdl83ec0e36b75f3/b/src/src/audio/pulseaudio/SDL_pulseaudio.c:857:13
+    #9 0x61a0892117de in SinkInfoCallback /home/kyau/.conan2/p/b/sdl83ec0e36b75f3/b/src/src/audio/pulseaudio/SDL_pulseaudio.c:866:9
+    #10 0x61a087ecce19 in context_get_sink_info_callback /home/kyau/.conan2/p/b/pulsef1a846e69e878/b/build-debug/../src/src/pulse/introspect.c:268:17
+    #11 0x61a087776fbb in run_action /home/kyau/.conan2/p/b/pulsef1a846e69e878/b/build-debug/../src/src/pulsecore/pdispatch.c:291:5
+    #12 0x61a087776504 in pa_pdispatch_run /home/kyau/.conan2/p/b/pulsef1a846e69e878/b/build-debug/../src/src/pulsecore/pdispatch.c:344:13
+    #13 0x61a087eace3a in pstream_packet_callback /home/kyau/.conan2/p/b/pulsef1a846e69e878/b/build-debug/../src/src/pulse/context.c:364:9
+    #14 0x61a0877945f5 in do_read /home/kyau/.conan2/p/b/pulsef1a846e69e878/b/build-debug/../src/src/pulsecore/pstream.c:1032:17
+    #15 0x61a087790ce7 in do_pstream_read_write /home/kyau/.conan2/p/b/pulsef1a846e69e878/b/build-debug/../src/src/pulsecore/pstream.c:265:13
+    #16 0x61a087784f87 in io_callback /home/kyau/.conan2/p/b/pulsef1a846e69e878/b/build-debug/../src/src/pulsecore/pstream.c:317:5
+    #17 0x61a087716e80 in callback /home/kyau/.conan2/p/b/pulsef1a846e69e878/b/build-debug/../src/src/pulsecore/iochannel.c:158:13
+    #18 0x61a087f011bb in dispatch_pollfds /home/kyau/.conan2/p/b/pulsef1a846e69e878/b/build-debug/../src/src/pulse/mainloop.c:676:9
+    #19 0x61a087eff0d5 in pa_mainloop_dispatch /home/kyau/.conan2/p/b/pulsef1a846e69e878/b/build-debug/../src/src/pulse/mainloop.c:917:27
+    #20 0x61a087f015f9 in pa_mainloop_iterate /home/kyau/.conan2/p/b/pulsef1a846e69e878/b/build-debug/../src/src/pulse/mainloop.c:948:14
+    #21 0x61a087f016d9 in pa_mainloop_run /home/kyau/.conan2/p/b/pulsef1a846e69e878/b/build-debug/../src/src/pulse/mainloop.c:963:17
+    #22 0x61a087f6435a in thread /home/kyau/.conan2/p/b/pulsef1a846e69e878/b/build-debug/../src/src/pulse/thread-mainloop.c:101:12
+    #23 0x61a0877ded9b in internal_thread_func /home/kyau/.conan2/p/b/pulsef1a846e69e878/b/build-debug/../src/src/pulsecore/thread-posix.c:81:5
+    #24 0x0000004dd766 in asan_thread_start(void*) asan_interceptors.cpp.o
+
+Indirect leak of 34 byte(s) in 2 object(s) allocated from:
+    #0 0x0000004e0a72 in realloc (/home/kyau/projects/kyaulabs/ngen/build/m3-flight/audio-desktop-probe-demo-asan+0x4e0a72) (BuildId: 06f5ce26bffae52cb1d19a18552879deac201405)
+    #1 0x61a088ba9a24 in real_realloc /home/kyau/.conan2/p/b/sdl83ec0e36b75f3/b/src/src/stdlib/SDL_malloc.c:6336:64
+    #2 0x61a0888be51e in SDL_SetErrorV_REAL /home/kyau/.conan2/p/b/sdl83ec0e36b75f3/b/src/src/SDL_error.c:62:33
+    #3 0x61a0888bdb8e in SDL_SetError_REAL /home/kyau/.conan2/p/b/sdl83ec0e36b75f3/b/src/src/SDL_error.c:35:14
+    #4 0x61a0888eb5e3 in SDL_FindPhysicalAudioDeviceByCallback /home/kyau/.conan2/p/b/sdl83ec0e36b75f3/b/src/src/audio/SDL_audio.c:1570:9
+    #5 0x61a0888deca3 in SDL_FindPhysicalAudioDeviceByHandle /home/kyau/.conan2/p/b/sdl83ec0e36b75f3/b/src/src/audio/SDL_audio.c:1583:12
+    #6 0x61a0888ddf14 in SDL_AddAudioDevice /home/kyau/.conan2/p/b/sdl83ec0e36b75f3/b/src/src/audio/SDL_audio.c:700:16
+    #7 0x61a089212914 in AddPulseAudioDevice /home/kyau/.conan2/p/b/sdl83ec0e36b75f3/b/src/src/audio/pulseaudio/SDL_pulseaudio.c:857:13
+    #8 0x61a0892117de in SinkInfoCallback /home/kyau/.conan2/p/b/sdl83ec0e36b75f3/b/src/src/audio/pulseaudio/SDL_pulseaudio.c:866:9
+    #9 0x61a087ecce19 in context_get_sink_info_callback /home/kyau/.conan2/p/b/pulsef1a846e69e878/b/build-debug/../src/src/pulse/introspect.c:268:17
+    #10 0x61a087776fbb in run_action /home/kyau/.conan2/p/b/pulsef1a846e69e878/b/build-debug/../src/src/pulsecore/pdispatch.c:291:5
+    #11 0x61a087776504 in pa_pdispatch_run /home/kyau/.conan2/p/b/pulsef1a846e69e878/b/build-debug/../src/src/pulsecore/pdispatch.c:344:13
+    #12 0x61a087eace3a in pstream_packet_callback /home/kyau/.conan2/p/b/pulsef1a846e69e878/b/build-debug/../src/src/pulse/context.c:364:9
+    #13 0x61a0877945f5 in do_read /home/kyau/.conan2/p/b/pulsef1a846e69e878/b/build-debug/../src/src/pulsecore/pstream.c:1032:17
+    #14 0x61a087790ce7 in do_pstream_read_write /home/kyau/.conan2/p/b/pulsef1a846e69e878/b/build-debug/../src/src/pulsecore/pstream.c:265:13
+    #15 0x61a087784f87 in io_callback /home/kyau/.conan2/p/b/pulsef1a846e69e878/b/build-debug/../src/src/pulsecore/pstream.c:317:5
+    #16 0x61a087716e80 in callback /home/kyau/.conan2/p/b/pulsef1a846e69e878/b/build-debug/../src/src/pulsecore/iochannel.c:158:13
+    #17 0x61a087f011bb in dispatch_pollfds /home/kyau/.conan2/p/b/pulsef1a846e69e878/b/build-debug/../src/src/pulse/mainloop.c:676:9
+    #18 0x61a087eff0d5 in pa_mainloop_dispatch /home/kyau/.conan2/p/b/pulsef1a846e69e878/b/build-debug/../src/src/pulse/mainloop.c:917:27
+    #19 0x61a087f015f9 in pa_mainloop_iterate /home/kyau/.conan2/p/b/pulsef1a846e69e878/b/build-debug/../src/src/pulse/mainloop.c:948:14
+    #20 0x61a087f016d9 in pa_mainloop_run /home/kyau/.conan2/p/b/pulsef1a846e69e878/b/build-debug/../src/src/pulse/mainloop.c:963:17
+    #21 0x61a087f6435a in thread /home/kyau/.conan2/p/b/pulsef1a846e69e878/b/build-debug/../src/src/pulse/thread-mainloop.c:101:12
+    #22 0x61a0877ded9b in internal_thread_func /home/kyau/.conan2/p/b/pulsef1a846e69e878/b/build-debug/../src/src/pulsecore/thread-posix.c:81:5
+    #23 0x0000004dd766 in asan_thread_start(void*) asan_interceptors.cpp.o
+
+SUMMARY: AddressSanitizer: 178 byte(s) leaked in 4 allocation(s).

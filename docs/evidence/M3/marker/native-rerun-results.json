@@ -1,0 +1,18 @@
+[
+  {
+    "configuration": "demo-asan",
+    "status": 0,
+    "stderr_bytes": 0,
+    "scope": "real SDL dummy audio/threads and renderer; reported device/focus events; actual ImGui reset and mute key; no physical unplug/listening proof",
+    "checks": true,
+    "markers": true
+  },
+  {
+    "configuration": "demo-gcc",
+    "status": 0,
+    "stderr_bytes": 0,
+    "scope": "real SDL dummy audio/threads and renderer; reported device/focus events; actual ImGui reset and mute key; no physical unplug/listening proof",
+    "checks": true,
+    "markers": true
+  }
+]

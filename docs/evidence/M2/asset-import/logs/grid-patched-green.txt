@@ -1,0 +1,4 @@
+Filters: "*shared indexed grid*"
+Randomness seeded to: 4083149192
+===============================================================================
+All tests passed (1100 assertions in 1 test case)

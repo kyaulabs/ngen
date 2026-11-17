@@ -1,0 +1,2 @@
+Scene probe replacement while active version is pinned: buffer size exceeds the resource admission budget
+device=Intel(R) Iris(R) Xe Graphics (TGL GT2) api=1.4 driver=109060102 queue=0 display=wayland

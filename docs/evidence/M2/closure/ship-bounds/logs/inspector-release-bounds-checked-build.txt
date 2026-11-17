@@ -1,0 +1,39 @@
+[0/2] Re-checking globbed directories...
+[1/73] Scanning <ROOT>/engine/render/capabilities.cpp for CXX dependencies
+[2/73] Scanning <ROOT>/engine/render/vma.cpp for CXX dependencies
+[3/73] Scanning <ROOT>/engine/core/values.cpp for CXX dependencies
+[4/73] Generating CXX dyndep file CMakeFiles/ngen_render_contract.dir/CXX.dd
+[5/71] Scanning <ROOT>/engine/core/entities.cpp for CXX dependencies
+[6/71] Generating CXX dyndep file CMakeFiles/ngen_vma.dir/CXX.dd
+[7/69] Scanning <ROOT>/engine/assets/package.cpp for CXX dependencies
+[8/69] Scanning <ROOT>/engine/render/context.cpp for CXX dependencies
+[9/69] Scanning <ROOT>/engine/render/surface.cpp for CXX dependencies
+[10/69] Scanning <ROOT>/engine/render/presentation.cpp for CXX dependencies
+[11/69] Scanning <ROOT>/engine/render/resources.cpp for CXX dependencies
+[12/69] Scanning <ROOT>/engine/render/post.cpp for CXX dependencies
+[13/69] Scanning <ROOT>/engine/render/mesh.cpp for CXX dependencies
+[14/69] Scanning <ROOT>/engine/render/environment.cpp for CXX dependencies
+[15/69] Generating CXX dyndep file CMakeFiles/ngen_core.dir/CXX.dd
+[16/66] Generating CXX dyndep file CMakeFiles/ngen_assets.dir/CXX.dd
+[17/64] Scanning <ROOT>/engine/render/overlay.cpp for CXX dependencies
+[18/64] Scanning <ROOT>/engine/tools/inspector.cpp for CXX dependencies
+[19/64] Generating CXX dyndep file CMakeFiles/ngen_render.dir/CXX.dd
+[20/55] Scanning <ROOT>/engine/tools/reload.cpp for CXX dependencies
+[21/55] Scanning <ROOT>/engine/render/scene.cpp for CXX dependencies
+[22/55] Generating CXX dyndep file CMakeFiles/ngen_inspector.dir/CXX.dd
+[23/52] Scanning <ROOT>/engine/render/scene_draw.cpp for CXX dependencies
+[24/52] Scanning <ROOT>/apps/probe/presentation.cpp for CXX dependencies
+[25/52] Generating CXX dyndep file CMakeFiles/ngen_scene.dir/CXX.dd
+[26/49] Scanning <ROOT>/apps/probe/capture.cpp for CXX dependencies
+[27/49] Scanning <ROOT>/apps/scene_workload/fixture.cpp for CXX dependencies
+[28/49] Generating CXX dyndep file CMakeFiles/ngen_probe_support.dir/CXX.dd
+[29/46] Generating CXX dyndep file CMakeFiles/scene_workload_fixture.dir/CXX.dd
+[30/44] Scanning <ROOT>/engine/tools/ui.cpp for CXX dependencies
+[31/44] Generating CXX dyndep file CMakeFiles/ngen_inspector_ui.dir/CXX.dd
+[32/42] Scanning <ROOT>/apps/scene_workload/allocations.cpp for CXX dependencies
+[33/42] Scanning <ROOT>/apps/scene_workload/main.cpp for CXX dependencies
+[34/42] Generating CXX dyndep file CMakeFiles/scene_workload.dir/CXX.dd
+[35/39] Scanning <ROOT>/apps/inspector_probe/main.cpp for CXX dependencies
+[36/39] Generating CXX dyndep file CMakeFiles/inspector_probe.dir/CXX.dd
+[37/39] Building CXX object CMakeFiles/inspector_probe.dir/apps/inspector_probe/main.cpp.o
+[38/39] Linking CXX executable inspector_probe

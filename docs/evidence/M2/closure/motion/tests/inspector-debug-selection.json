@@ -1,0 +1,359 @@
+{
+  "backtraceGraph" :
+  {
+    "commands" :
+    [
+      "add_test"
+    ],
+    "files" :
+    [
+      "/home/kyau/projects/kyaulabs/ngen/CMakeLists.txt"
+    ],
+    "nodes" :
+    [
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 120,
+        "parent" : 0
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 211,
+        "parent" : 2
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 214,
+        "parent" : 4
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 218,
+        "parent" : 6
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 228,
+        "parent" : 8
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 234,
+        "parent" : 10
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 240,
+        "parent" : 12
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 277,
+        "parent" : 14
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 283,
+        "parent" : 16
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 284,
+        "parent" : 18
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 288,
+        "parent" : 20
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 289,
+        "parent" : 22
+      }
+    ]
+  },
+  "kind" : "ctestInfo",
+  "tests" :
+  [
+    {
+      "backtrace" : 1,
+      "command" :
+      [
+        "/bin/cmake",
+        "-E",
+        "env",
+        "NGEN_SLANG_ROOT=/home/kyau/.conan2/p/b/slang7104446505e7f/p",
+        "NGEN_SPIRV_VAL=/home/kyau/.conan2/p/b/spirv79479c8ec1730/p/bin/spirv-val",
+        "NGEN_SHADER_LAYOUT=/home/kyau/projects/kyaulabs/ngen/build/inspector-debug/shader_contract_layout",
+        "NGEN_SHADER_PACKAGE=/home/kyau/projects/kyaulabs/ngen/build/inspector-debug/shaders/443907750ecf6ae025f15b483d9877297aec36598b3f9724cc1ad74785624571",
+        "/bin/python3.14",
+        "/home/kyau/projects/kyaulabs/ngen/tests/shaders.py"
+      ],
+      "name" : "shader_offline",
+      "properties" :
+      [
+        {
+          "name" : "TIMEOUT",
+          "value" : 180.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "/home/kyau/projects/kyaulabs/ngen/build/inspector-debug"
+        }
+      ]
+    },
+    {
+      "backtrace" : 3,
+      "command" :
+      [
+        "/home/kyau/projects/kyaulabs/ngen/build/inspector-debug/ngen_tests"
+      ],
+      "name" : "ngen_tests",
+      "properties" :
+      [
+        {
+          "name" : "TIMEOUT",
+          "value" : 60.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "/home/kyau/projects/kyaulabs/ngen/build/inspector-debug"
+        }
+      ]
+    },
+    {
+      "backtrace" : 5,
+      "command" :
+      [
+        "/home/kyau/projects/kyaulabs/ngen/build/inspector-debug/render_contract_tests"
+      ],
+      "name" : "render_contract_tests",
+      "properties" :
+      [
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "/home/kyau/projects/kyaulabs/ngen/build/inspector-debug"
+        }
+      ]
+    },
+    {
+      "backtrace" : 7,
+      "command" :
+      [
+        "/home/kyau/projects/kyaulabs/ngen/build/inspector-debug/render_environment_tests"
+      ],
+      "name" : "render_environment_tests",
+      "properties" :
+      [
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "/home/kyau/projects/kyaulabs/ngen/build/inspector-debug"
+        }
+      ]
+    },
+    {
+      "backtrace" : 9,
+      "command" :
+      [
+        "/home/kyau/projects/kyaulabs/ngen/build/inspector-debug/scene_workload_tests"
+      ],
+      "name" : "scene_workload_tests",
+      "properties" :
+      [
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "/home/kyau/projects/kyaulabs/ngen/build/inspector-debug"
+        }
+      ]
+    },
+    {
+      "backtrace" : 11,
+      "command" :
+      [
+        "/home/kyau/projects/kyaulabs/ngen/build/inspector-debug/asset_package_tests"
+      ],
+      "name" : "asset_package_tests",
+      "properties" :
+      [
+        {
+          "name" : "TIMEOUT",
+          "value" : 90.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "/home/kyau/projects/kyaulabs/ngen/build/inspector-debug"
+        }
+      ]
+    },
+    {
+      "backtrace" : 13,
+      "command" :
+      [
+        "/home/kyau/projects/kyaulabs/ngen/build/inspector-debug/inspector_tests"
+      ],
+      "name" : "inspector_tests",
+      "properties" :
+      [
+        {
+          "name" : "TIMEOUT",
+          "value" : 30.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "/home/kyau/projects/kyaulabs/ngen/build/inspector-debug"
+        }
+      ]
+    },
+    {
+      "backtrace" : 15,
+      "command" :
+      [
+        "/home/kyau/projects/kyaulabs/ngen/build/inspector-debug/render_startup_tests"
+      ],
+      "name" : "render_startup_tests",
+      "properties" :
+      [
+        {
+          "name" : "TIMEOUT",
+          "value" : 30.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "/home/kyau/projects/kyaulabs/ngen/build/inspector-debug"
+        }
+      ]
+    },
+    {
+      "backtrace" : 17,
+      "command" :
+      [
+        "/home/kyau/projects/kyaulabs/ngen/build/inspector-debug/wayland_tablet_tests"
+      ],
+      "name" : "wayland_tablet_shutdown",
+      "properties" :
+      [
+        {
+          "name" : "TIMEOUT",
+          "value" : 20.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "/home/kyau/projects/kyaulabs/ngen/build/inspector-debug"
+        }
+      ]
+    },
+    {
+      "backtrace" : 19,
+      "command" :
+      [
+        "/home/kyau/projects/kyaulabs/ngen/build/inspector-debug/wayland_tablet_tests",
+        "--remove"
+      ],
+      "name" : "wayland_tablet_removal",
+      "properties" :
+      [
+        {
+          "name" : "TIMEOUT",
+          "value" : 20.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "/home/kyau/projects/kyaulabs/ngen/build/inspector-debug"
+        }
+      ]
+    },
+    {
+      "backtrace" : 21,
+      "command" :
+      [
+        "/home/kyau/projects/kyaulabs/ngen/build/inspector-debug/sim_harness"
+      ],
+      "name" : "replay_serial",
+      "properties" :
+      [
+        {
+          "name" : "TIMEOUT",
+          "value" : 60.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "/home/kyau/projects/kyaulabs/ngen/build/inspector-debug"
+        }
+      ]
+    },
+    {
+      "backtrace" : 23,
+      "command" :
+      [
+        "/home/kyau/projects/kyaulabs/ngen/build/inspector-debug/sim_harness",
+        "--workers=2"
+      ],
+      "name" : "replay_workers",
+      "properties" :
+      [
+        {
+          "name" : "TIMEOUT",
+          "value" : 60.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "/home/kyau/projects/kyaulabs/ngen/build/inspector-debug"
+        }
+      ]
+    }
+  ],
+  "version" :
+  {
+    "major" : 1,
+    "minor" : 0
+  }
+}

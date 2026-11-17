@@ -1,0 +1,8 @@
+58 warnings and 3 errors generated.
+Error while processing <ROOT>/apps/inspector_probe/main.cpp.
+error: unknown argument: '-fdeps-format=p1689r5' [clang-diagnostic-error]
+error: unknown argument: '-fmodule-mapper=CMakeFiles/inspector_probe.dir/apps/inspector_probe/main.cpp.o.modmap' [clang-diagnostic-error]
+error: unknown argument: '-fmodules-ts' [clang-diagnostic-error]
+Suppressed 58 warnings (58 in non-user code).
+Use -header-filter=.* or leave it as default to display errors from all non-system headers. Use -system-headers to display errors from system headers as well.
+Found compiler error(s).

@@ -1,0 +1,49 @@
+Test project <REPO>/build/asset-debug
+    Start 3: asset_import_tests
+1/1 Test #3: asset_import_tests ...............***Failed    0.01 sec
+Randomness seeded to: 4191206588
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+asset_import_tests is a Catch2 v3.16.0 host application.
+Run with -? for options
+
+-------------------------------------------------------------------------------
+static GLB import preserves mesh instances and parent child transforms
+-------------------------------------------------------------------------------
+<REPO>/tests/asset_import.cpp:202
+...............................................................................
+
+<REPO>/tests/asset_import.cpp:220: FAILED:
+  CHECK( scene.primitives[0].bounds.maximum == std::array<float, 3>{1, 1, 0} )
+with expansion:
+  { 0.0f, 0.0f, 0.0f }
+  ==
+  { 1.0f, 1.0f, 0.0f }
+
+<REPO>/tests/asset_import.cpp:221: FAILED:
+  CHECK( scene.bounds.minimum == std::array<float, 3>{2, 3, 4} )
+with expansion:
+  { 0.0f, 0.0f, 0.0f }
+  ==
+  { 2.0f, 3.0f, 4.0f }
+
+<REPO>/tests/asset_import.cpp:222: FAILED:
+  CHECK( scene.bounds.maximum == std::array<float, 3>{4, 6, 4} )
+with expansion:
+  { 0.0f, 0.0f, 0.0f }
+  ==
+  { 4.0f, 6.0f, 4.0f }
+
+===============================================================================
+test cases:  9 |  8 passed | 1 failed
+assertions: 89 | 86 passed | 3 failed
+
+
+
+0% tests passed, 1 tests failed out of 1
+
+Total Test time (real) =   0.01 sec
+
+The following tests FAILED:
+	  3 - asset_import_tests (Failed)
+Errors while running CTest

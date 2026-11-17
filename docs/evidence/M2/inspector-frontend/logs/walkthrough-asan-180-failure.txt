@@ -1,0 +1,21 @@
+.F.
+======================================================================
+FAIL: test_scripted_walkthrough_applies_edits_then_keyboard_reload_and_resize (__main__.Inspector.test_scripted_walkthrough_applies_edits_then_keyboard_reload_and_resize)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<ROOT>/tests/inspector_cli.py", line 30, in test_scripted_walkthrough_applies_edits_then_keyboard_reload_and_resize
+    self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != 0 : device=Intel(R) Iris(R) Xe Graphics (TGL GT2) api=1.4 driver=109060102 queue=0 display=wayland
+asteroid_instances=100 asteroid_triangles=80 ship_triangles=238080 total_triangles=246080 scene_draws=189 fixture_seed=0x4e47454e fixture_crc32=740711bd package_crc32=04a13010
+workload_frames=180 workload_warmup=2 workload_wsi_queued=180 workload_hdr_finite=1 workload_lit_pixels=25118 workload_capture=0 width=1280 height=720 shadow_extent=1024 validation=1
+frame_ns p50=47354376 p95=65071434 p99=77468889 max=96378073 gpu_timestamps=available allocation_probe=0 warm_cpp_allocations=0 vma_allocation_bytes=211566728 vma_reserved_bytes=214396216
+cpu_prepare_ns p50=39258549 p95=49799495 cpu_present_ns p50=4192169 p95=6464594
+gpu_shadow_ns p50=1067292 p95=1223021 gpu_pbr_ns p50=1530260 p95=1696771 gpu_post_ns p50=49427 p95=67031
+Scene workload: inspector walkthrough did not complete edits, keyboard reload and native resize publication
+
+
+----------------------------------------------------------------------
+Ran 3 tests in 56.436s
+
+FAILED (failures=1)

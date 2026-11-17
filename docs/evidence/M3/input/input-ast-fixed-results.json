@@ -1,0 +1,20 @@
+[
+  {
+    "configuration": "flight-debug",
+    "source": "tests/flight_input.cpp",
+    "status": 0,
+    "flags": "Complete original native command; no flags removed"
+  },
+  {
+    "configuration": "flight-release",
+    "source": "tests/flight_input.cpp",
+    "status": 0,
+    "flags": "Complete original native command; no flags removed"
+  },
+  {
+    "configuration": "flight-asan",
+    "source": "tests/flight_input.cpp",
+    "status": 0,
+    "flags": "Complete original native command; no flags removed"
+  }
+]

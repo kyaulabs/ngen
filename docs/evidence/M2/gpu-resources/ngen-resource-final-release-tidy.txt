@@ -1,0 +1,24 @@
+[1/11] Processing file <repo>/engine/render/context.cpp.
+42 warnings generated.
+[2/11] Processing file <repo>/engine/render/surface.cpp.
+72 warnings generated.
+[3/11] Processing file <repo>/engine/render/presentation.cpp.
+114 warnings generated.
+[4/11] Processing file <repo>/engine/render/resources.cpp.
+156 warnings generated.
+[5/11] Processing file <repo>/engine/render/vma.cpp.
+189 warnings generated.
+[6/11] Processing file <repo>/apps/probe/presentation.cpp.
+233 warnings generated.
+[7/11] Processing file <repo>/apps/render_probe/main.cpp.
+277 warnings generated.
+[8/11] Processing file <repo>/apps/resource_probe/main.cpp.
+321 warnings generated.
+[9/11] Processing file <repo>/tests/render_startup.cpp.
+374 warnings generated.
+[10/11] Processing file <repo>/tests/render_surface.cpp.
+417 warnings generated.
+[11/11] Processing file <repo>/tests/wayland_tablets.cpp.
+503 warnings generated.
+Suppressed 524 warnings (503 in non-user code, 21 NOLINT).
+Use -header-filter=.* or leave it as default to display errors from all non-system headers. Use -system-headers to display errors from system headers as well.

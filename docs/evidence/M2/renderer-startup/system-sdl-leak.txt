@@ -1,0 +1,22 @@
+device=Intel(R) Iris(R) Xe Graphics (TGL GT2) api=1.4 driver=109060102 queue=0 display=wayland
+
+=================================================================
+==778354==ERROR: LeakSanitizer: detected memory leaks
+
+Direct leak of 480 byte(s) in 5 object(s) allocated from:
+    #0 0x0000004e190e in calloc (/home/kyau/projects/kyaulabs/ngen/build/render-asan/render_probe+0x4e190e) (BuildId: aec79666015993040c961ba115a47b5cc53642a7)
+    #1 0x6c62e1a4b620  (<unknown module>)
+    #2 0x6c62e1a4c65e  (<unknown module>)
+    #3 0x6c62e1a4c73f  (<unknown module>)
+    #4 0x6c62e1a4c82b  (<unknown module>)
+    #5 0x6c62e21d6fa5 in Wayland_VideoInit /usr/src/debug/sdl3/SDL3-3.4.18/src/video/wayland/SDL_waylandvideo.c:1504:5
+    #6 0x6c62e201fdaa in SDL_VideoInit /usr/src/debug/sdl3/SDL3-3.4.18/src/video/SDL_video.c:712:10
+    #7 0x6c62e201fdaa in SDL_InitSubSystem_REAL /usr/src/debug/sdl3/SDL3-3.4.18/src/SDL.c:409:18
+    #8 0x00000052c8e5 in ngen::render::Context::initialize(ngen::render::Context::Options) /home/kyau/projects/kyaulabs/ngen/engine/render/context.cpp:45:14
+    #9 0x00000052bc8a in ngen::render::Context::create(ngen::render::Context::Options) /home/kyau/projects/kyaulabs/ngen/engine/render/context.cpp:29:18
+    #10 0x000000527854 in main /home/kyau/projects/kyaulabs/ngen/apps/render_probe/main.cpp:14:19
+    #11 0x6c62e1827780 in __libc_start_call_main /usr/src/debug/glibc/glibc/csu/../sysdeps/nptl/libc_start_call_main.h:59:16
+    #12 0x6c62e18278b8 in __libc_start_main /usr/src/debug/glibc/glibc/csu/../csu/libc-start.c:372:3
+    #13 0x00000042e344 in _start (/home/kyau/projects/kyaulabs/ngen/build/render-asan/render_probe+0x42e344) (BuildId: aec79666015993040c961ba115a47b5cc53642a7)
+
+SUMMARY: AddressSanitizer: 480 byte(s) leaked in 5 allocation(s).

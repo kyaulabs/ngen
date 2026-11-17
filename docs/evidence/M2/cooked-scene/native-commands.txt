@@ -1,0 +1,67 @@
+Repository root; x86_64 Linux. Primary Clang 23.1.4/libstdc++, C++20,
+CMake 4.4.5, Ninja 1.13.2, Conan 2.34.0. GCC 16.2.1 compatibility.
+Activate the existing Conan environment; do not change host/driver policy.
+
+  sh tools/prepare.sh asset-debug
+  sh tools/prepare.sh asset-release
+  sh tools/prepare.sh asset-gcc
+  sh tools/prepare.sh asset-asan -c:h 'tools.build:exelinkflags=["-fsanitize=address,undefined", "-no-pie"]'
+KTX CLI is a build-context Release/C++17 tool; host code stays C++20.
+For each four asset presets, configure/build/list/execute matching tests:
+  cmake --preset <preset>
+  cmake --build --preset <preset>
+  ctest --preset <preset> --show-only
+  ctest --preset <preset>
+For asset-asan configure also -DCMAKE_EXE_LINKER_FLAGS=-no-pie, preserving all
+sanitizers. Preset environment enables leak detection and UBSan halt/stack traces.
+All four: 9/9, no skips/failures. Selected JUnit/CTest logs retain actual counts.
+
+Runtime-only graph, with no importer/PNG/KTX/compiler requirements:
+  sh tools/prepare.sh asset-runtime-debug
+  cmake --preset asset-runtime-debug
+  cmake --build --preset asset-runtime-debug
+  ctest --preset asset-runtime-debug --show-only
+  ctest --preset asset-runtime-debug
+Actual: 5/5. Its asset_package_probe loads the full cooked frigate.
+
+Public offline workflow (use configured absolute executable paths):
+  python tools/assetc/cook.py --assetc <build/asset-release/assetc> --ktx <configured NGEN_KTX_EXECUTABLE> --probe <build/asset-release/asset_package_probe> --source planning/models/frigate/frigate-01.glb --source-manifest planning/models/frigate/frigate-01.asset.json --output <new-or-empty-package-directory>
+Native staging is independently available:
+  build/asset-debug/assetc stage --preset laptop <source.glb> <new-staging-directory>
+The assembler calls only argument-array native/KTX/runtime tools, validates raw
+staging paths/counts, writes private output, verifies via the runtime reader,
+checks source bytes and publishes only after success. Tool stdout/stderr remains
+visible on failure; existing nonempty outputs are preserved.
+
+Canonical Release runs to two different directories have equal package SHA256:
+  e0ee6a023900c78b2c313f493f2a0e78c9639c39b6d830a1eaf3a3f6c0a29b6d
+GCC also cooks/loads the full source with equal semantic counts, not byte identity.
+The instrumented full-source success in sanitizer-scope.json uses the exact current
+assetc binary/input. A newer instrumented runtime reader separately loads it:
+  ASAN_OPTIONS=detect_leaks=1:halt_on_error=1 UBSAN_OPTIONS=halt_on_error=1:print_stacktrace=1 build/asset-asan/asset_package_probe <earlier-instrumented-scene.ngas>
+Two later instrumented recooks hit the existing 180-second native stage deadline.
+No pass is claimed for those attempts; no deadline or detector was relaxed.
+
+Owned affected AST scope (13 TUs) in Debug/Release/ASan actual databases:
+  <Conan-environment-python> tools/assetc/check_tidy.py --build build/<preset>
+Native clang-tidy returns 1 only on the two known vendor enum findings; policy
+reports them advisory, NOT clean AST. An owned exception-escape finding in the
+new CLI entry point initially failed this policy and was fixed, not suppressed.
+GCC clang-tidy argument incompatibility remains the established limitation;
+no filtered/synthetic compile database was used to manufacture success.
+
+  build/format-tools/bin/clang-format --dry-run --Werror engine/assets/*pp tools/assetc/*pp apps/asset_probe/*.cpp tests/assets.cpp tests/asset_cook.cpp tests/package_fixture.hpp
+  sh -n tools/prepare.sh
+Python AST, JSON/YAML and local documentation links checked without bytecode.
+  ninja -C build/asset-runtime-debug -t commands asset_package_probe
+  ninja -C build/asset-debug -t commands sim_harness
+Inspect actual link commands; do not execute extracted command strings.
+
+Synthetic KTX fixtures are generated through the pinned CLI with raw specified
+pixels and independently specified mip values, then validated by that tool:
+  python tests/fixtures/make_ktx.py --ktx <configured tool> --output <new file>
+  python tests/fixtures/make_ktx.py --ktx <configured tool> --linear --output <new file>
+No flagged vendor-header read is retried or recovered through another route.
+
+Not established here: GPU upload/residency, actual rendering/pass sequence,
+inspector, frame/memory performance, Windows execution or independent acceptance.

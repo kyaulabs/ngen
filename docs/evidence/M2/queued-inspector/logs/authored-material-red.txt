@@ -1,0 +1,21 @@
+Filters: "inspector snapshots*"
+Randomness seeded to: 1410953482
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+inspector_tests is a Catch2 v3.16.0 host application.
+Run with -? for options
+
+-------------------------------------------------------------------------------
+inspector snapshots preserve authored material factors and own their package
+-------------------------------------------------------------------------------
+$REPO/tests/inspector.cpp:23
+...............................................................................
+
+$REPO/tests/inspector.cpp:28: FAILED:
+  REQUIRE( snapshot.material_count == 1 )
+with expansion:
+  0 == 1
+
+===============================================================================
+test cases: 1 | 1 failed
+assertions: 1 | 1 failed

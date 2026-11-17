@@ -1,0 +1,165 @@
+{
+  "steady": {
+    "measured_frames": 600,
+    "warmup_frames": 60,
+    "frame_ns": {
+      "p50": 16483775,
+      "p95": 17690003,
+      "p99": 18446928,
+      "max": 18921454
+    },
+    "emissive_flow": {
+      "material": 13,
+      "cycle_seconds": 16,
+      "unique_phases": 600,
+      "first_phase": 0.06015,
+      "last_phase": 0.684891,
+      "complete_domain_and_nonresetting_clock_checked": true
+    },
+    "extents": {
+      "1280x720": 600
+    },
+    "extent_transitions": [
+      {
+        "frame": 0,
+        "extent": "1280x720"
+      }
+    ],
+    "generation_transitions": [
+      {
+        "frame": 0,
+        "generation": 1
+      }
+    ],
+    "tracked": {
+      "vma_allocation_bytes": {
+        "peak": 232000808,
+        "final": 232000808,
+        "tail_min": 232000808,
+        "tail_max": 232000808
+      },
+      "vma_reserved_bytes": {
+        "peak": 234698712,
+        "final": 234698712,
+        "tail_min": 234698712,
+        "tail_max": 234698712
+      },
+      "resource_live": {
+        "peak": 27,
+        "final": 27,
+        "tail_min": 27,
+        "tail_max": 27
+      },
+      "resource_retiring": {
+        "peak": 0,
+        "final": 0,
+        "tail_min": 0,
+        "tail_max": 0
+      }
+    },
+    "steady_allocation_check": "zero warm C++ and ImGui allocation calls",
+    "settings_scope": "default exposure 1/FXAA on throughout",
+    "artifact_sha256": {
+      ".bmp": "4f0d8b35507b786cc4407c032c77808e7758e881fe08a44ecce8bce5a80ddef4",
+      ".csv": "43cafe9969500f3f29f295e36ffcc978c9135d3a85464a6a004b97c4bf864e82",
+      ".txt": "a6edc9130f7f630dfa44075855f3388232daa250f307025d2df06fb804aea299",
+      ".err": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "capture_hash_recomputed": true
+  },
+  "mixed": {
+    "measured_frames": 600,
+    "warmup_frames": 60,
+    "frame_ns": {
+      "p50": 16542992,
+      "p95": 17867540,
+      "p99": 37239223,
+      "max": 115195218
+    },
+    "emissive_flow": {
+      "material": 13,
+      "cycle_seconds": 16,
+      "unique_phases": 600,
+      "first_phase": 0.06012,
+      "last_phase": 0.692078,
+      "complete_domain_and_nonresetting_clock_checked": true
+    },
+    "extents": {
+      "1280x720": 580,
+      "1024x640": 20
+    },
+    "extent_transitions": [
+      {
+        "frame": 0,
+        "extent": "1280x720"
+      },
+      {
+        "frame": 20,
+        "extent": "1024x640"
+      },
+      {
+        "frame": 40,
+        "extent": "1280x720"
+      }
+    ],
+    "generation_transitions": [
+      {
+        "frame": 0,
+        "generation": 1
+      },
+      {
+        "frame": 39,
+        "generation": 2
+      },
+      {
+        "frame": 107,
+        "generation": 3
+      },
+      {
+        "frame": 175,
+        "generation": 4
+      },
+      {
+        "frame": 238,
+        "generation": 5
+      }
+    ],
+    "tracked": {
+      "vma_allocation_bytes": {
+        "peak": 514172840,
+        "final": 232000808,
+        "tail_min": 232000808,
+        "tail_max": 232000808
+      },
+      "vma_reserved_bytes": {
+        "peak": 518836312,
+        "final": 236795864,
+        "tail_min": 236795864,
+        "tail_max": 236795864
+      },
+      "resource_live": {
+        "peak": 39,
+        "final": 27,
+        "tail_min": 27,
+        "tail_max": 27
+      },
+      "resource_retiring": {
+        "peak": 0,
+        "final": 0,
+        "tail_min": 0,
+        "tail_max": 0
+      }
+    },
+    "steady_allocation_check": "not applicable: scripted resize/reload/edit activity",
+    "settings_scope": "walkthrough frames 1-2 exposure .75/FXAA off; restored at 3; all frames retained",
+    "artifact_sha256": {
+      ".bmp": "72810ca1e8879ead1429b713e28d016198358f8ed89693ccc9a7f5cc76b374fa",
+      ".csv": "37e8c092c61df1f7137a09288492c34bdc063bb1ee42e45431ce07473c66bcf9",
+      ".txt": "ab6da313e3c7fb14819a87a8693e2686c5216510007fa1c55b6c2b08bcf6339b",
+      ".err": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "capture_hash_recomputed": true
+  },
+  "package_sha256": "a02d5438ad32d9c8fb917ce847d5a822688ca5b51d69125f6da71cf2ba2116ed",
+  "scope": "Post-lattice-fix native Iris Xe optimized timing with final unchanged private asset; validation off, no new process/WDDM memory measurement."
+}

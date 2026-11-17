@@ -1,0 +1,18 @@
+../src/src/pulsecore/hashmap.c:230:13: runtime error: call to function property_free through pointer to incorrect function type 'void (*)(void *)'
+/home/kyau/.conan2/p/b/pulse234a1640c1d5d/b/build-debug/../src/src/pulse/proplist.c:57: note: property_free defined here
+    #0 0x67e511efd29d in pa_hashmap_remove_all /home/kyau/.conan2/p/b/pulse234a1640c1d5d/b/build-debug/../src/src/pulsecore/hashmap.c:230:13
+    #1 0x67e511efce8a in pa_hashmap_free /home/kyau/.conan2/p/b/pulse234a1640c1d5d/b/build-debug/../src/src/pulsecore/hashmap.c:118:5
+    #2 0x67e51270c92a in pa_proplist_free /home/kyau/.conan2/p/b/pulse234a1640c1d5d/b/build-debug/../src/src/pulse/proplist.c:72:5
+    #3 0x67e513a0a015 in ConnectToPulseServer /home/kyau/.conan2/p/b/sdl94a1adba221a6/b/src/src/audio/pulseaudio/SDL_pulseaudio.c:374:5
+    #4 0x67e513a0924d in PULSEAUDIO_Init /home/kyau/.conan2/p/b/sdl94a1adba221a6/b/src/src/audio/pulseaudio/SDL_pulseaudio.c:1083:17
+    #5 0x67e5130e1455 in SDL_InitAudio /home/kyau/.conan2/p/b/sdl94a1adba221a6/b/src/src/audio/SDL_audio.c:1045:17
+    #6 0x67e5130b9c34 in SDL_InitSubSystem_REAL /home/kyau/.conan2/p/b/sdl94a1adba221a6/b/src/src/SDL.c:436:18
+    #7 0x67e5131a4bee in SDL_InitSubSystem /home/kyau/.conan2/p/b/sdl94a1adba221a6/b/src/src/dynapi/SDL_dynapi_procs.h:640:1
+    #8 0x000000527b49 in ngen::audio::Output::prepare() /home/kyau/projects/kyaulabs/ngen/engine/audio/output.cpp:50:14
+    #9 0x0000005282aa in ngen::audio::Output::update(ngen::audio::Levels) /home/kyau/projects/kyaulabs/ngen/engine/audio/output.cpp:77:10
+    #10 0x000000526642 in main /home/kyau/projects/kyaulabs/ngen/build/m3-flight/audio-desktop-probe.cpp:10:60
+    #11 0x67e511427780 in __libc_start_call_main /usr/src/debug/glibc/glibc/csu/../sysdeps/nptl/libc_start_call_main.h:59:16
+    #12 0x67e5114278b8 in __libc_start_main /usr/src/debug/glibc/glibc/csu/../csu/libc-start.c:372:3
+    #13 0x00000042d254 in _start (/home/kyau/projects/kyaulabs/ngen/build/m3-flight/audio-desktop-probe-demo-asan+0x42d254) (BuildId: 3a614013a57e7c14b117a9d51a9a194b57a346c5)
+
+SUMMARY: UndefinedBehaviorSanitizer: undefined-behavior ../src/src/pulsecore/hashmap.c:230:13

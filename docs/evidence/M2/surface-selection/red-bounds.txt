@@ -1,0 +1,76 @@
+Filters: "*malformed surface*"
+Randomness seeded to: 2049767783
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+render_startup_tests is a Catch2 v3.16.0 host application.
+Run with -? for options
+
+-------------------------------------------------------------------------------
+malformed surface bounds and image counts fail before planning
+-------------------------------------------------------------------------------
+/home/kyau/projects/kyaulabs/ngen/tests/render_surface.cpp:39
+...............................................................................
+
+/home/kyau/projects/kyaulabs/ngen/tests/render_surface.cpp:48: FAILED:
+  REQUIRE( std::holds_alternative<SurfaceFailure>(result) )
+with expansion:
+  false
+
+-------------------------------------------------------------------------------
+malformed surface bounds and image counts fail before planning
+-------------------------------------------------------------------------------
+/home/kyau/projects/kyaulabs/ngen/tests/render_surface.cpp:39
+...............................................................................
+
+/home/kyau/projects/kyaulabs/ngen/tests/render_surface.cpp:48: FAILED:
+  REQUIRE( std::holds_alternative<SurfaceFailure>(result) )
+with expansion:
+  false
+
+-------------------------------------------------------------------------------
+malformed surface bounds and image counts fail before planning
+-------------------------------------------------------------------------------
+/home/kyau/projects/kyaulabs/ngen/tests/render_surface.cpp:39
+...............................................................................
+
+/home/kyau/projects/kyaulabs/ngen/tests/render_surface.cpp:48: FAILED:
+  REQUIRE( std::holds_alternative<SurfaceFailure>(result) )
+with expansion:
+  false
+
+-------------------------------------------------------------------------------
+malformed surface bounds and image counts fail before planning
+-------------------------------------------------------------------------------
+/home/kyau/projects/kyaulabs/ngen/tests/render_surface.cpp:39
+...............................................................................
+
+/home/kyau/projects/kyaulabs/ngen/tests/render_surface.cpp:48: FAILED:
+  REQUIRE( std::holds_alternative<SurfaceFailure>(result) )
+with expansion:
+  false
+
+-------------------------------------------------------------------------------
+malformed surface bounds and image counts fail before planning
+-------------------------------------------------------------------------------
+/home/kyau/projects/kyaulabs/ngen/tests/render_surface.cpp:39
+...............................................................................
+
+/home/kyau/projects/kyaulabs/ngen/tests/render_surface.cpp:48: FAILED:
+  REQUIRE( std::holds_alternative<SurfaceFailure>(result) )
+with expansion:
+  false
+
+-------------------------------------------------------------------------------
+malformed surface bounds and image counts fail before planning
+-------------------------------------------------------------------------------
+/home/kyau/projects/kyaulabs/ngen/tests/render_surface.cpp:39
+...............................................................................
+
+/home/kyau/projects/kyaulabs/ngen/tests/render_surface.cpp:48: FAILED:
+  REQUIRE( std::holds_alternative<SurfaceFailure>(result) )
+with expansion:
+  false
+
+===============================================================================
+test cases: 1 | 1 failed
+assertions: 6 | 6 failed

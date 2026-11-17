@@ -1,0 +1,2 @@
+Test project <repo>/build/scene-gcc
+      Start  1: shader_offline

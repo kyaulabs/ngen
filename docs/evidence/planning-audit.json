@@ -1,0 +1,153 @@
+{
+  "planning_date": "2026-11-02",
+  "scope": "Planning only; no private NGEN checkout inspected or engine tests run",
+  "public_template": {
+    "repository": "https://github.com/kyaulabs/template",
+    "branch": "develop",
+    "commit": "588ff8affa0888d09010bd22bd17e43b9e852eee",
+    "committed_at": "2026-09-03T14:07:56Z",
+    "tree_truncated": false,
+    "files": [
+      {
+        "path": ".github/CODEOWNERS",
+        "git_blob_sha": "d9b6e55b5df22994f7a66b85a289b3e579d3b1c2",
+        "size": 7,
+        "text_bytes_downloaded": true,
+        "sha256": "663d0e73b27dd8b382eb8f8e2885bbd19feac871f2e2705d9c2aeb5fac3fcca5"
+      },
+      {
+        "path": ".github/FUNDING.yml",
+        "git_blob_sha": "9516d1362d34749c94147a4cf4dc48207331cb12",
+        "size": 13,
+        "text_bytes_downloaded": true,
+        "sha256": "9a84cd5cc7eadec4003ba541cadd0ead8f125f792c6c061ff22d0ab4c0cc2b25"
+      },
+      {
+        "path": ".github/ISSUE_TEMPLATE/01_ISSUE.md",
+        "git_blob_sha": "ef1c409565ec3261fb3ce8d8605b121cc3cb6a8b",
+        "size": 526,
+        "text_bytes_downloaded": true,
+        "sha256": "c21430cc0a38c8d99272cd3edb5c900b3cf95fc5fac6d492116073688d936bf0"
+      },
+      {
+        "path": ".github/ISSUE_TEMPLATE/config.yml",
+        "git_blob_sha": "752cec990f550529ab4236dc3de0888716f3a45a",
+        "size": 180,
+        "text_bytes_downloaded": true,
+        "sha256": "5aa640938ad4d318e0ff9e2775ba91c2155ebde8c73a2cefda59ca00e1a6bd00"
+      },
+      {
+        "path": ".github/PULL_REQUEST_TEMPLATE.md",
+        "git_blob_sha": "e95e6569491fe0e9e090f33a008bc37caf69edd4",
+        "size": 2844,
+        "text_bytes_downloaded": true,
+        "sha256": "adbe9e6539ad71ef924b46acf92edf5dc73e3f1ed2ec3effd3cc11a60d4f65d4"
+      },
+      {
+        "path": ".github/hooks/commit-msg",
+        "git_blob_sha": "b0983b788af6a7b6c163e1af23d5ad2243b48ede",
+        "size": 32,
+        "text_bytes_downloaded": true,
+        "sha256": "e553a485d8d392a6ad8a473b4a32898c93f69bab579fb1b6df69c86a9aead4de"
+      },
+      {
+        "path": ".github/hooks/pre-commit",
+        "git_blob_sha": "ad417c85753149b67ad4e1005defb0d6a55a1a99",
+        "size": 76,
+        "text_bytes_downloaded": true,
+        "sha256": "e73cccfc91caa5a9d918e9b2aea85bd706dfa906ebf0a4c6eae568a9fe3eb5e0"
+      },
+      {
+        "path": ".github/media/git-flow.svg",
+        "git_blob_sha": "45180ae0d72f48ca74f7f64aed5ba723a1205193",
+        "size": 26345,
+        "text_bytes_downloaded": false,
+        "sha256": null
+      },
+      {
+        "path": ".github/media/github-flow.svg",
+        "git_blob_sha": "1d536e2b39a413945a88c340d79298c4d86f85ae",
+        "size": 18870,
+        "text_bytes_downloaded": false,
+        "sha256": null
+      },
+      {
+        "path": ".gitignore",
+        "git_blob_sha": "8d1ee3b1f42a54b7b73c0cead41caa5a293416ea",
+        "size": 47,
+        "text_bytes_downloaded": true,
+        "sha256": "36d1f667f91bbe954ac9ecfaf12065818f3a5b42cb88a0940fa11e03094a1f15"
+      },
+      {
+        "path": "CODE_OF_CONDUCT.md",
+        "git_blob_sha": "50deb39eae77d4bfa8e4dd12d859e78029a12787",
+        "size": 5521,
+        "text_bytes_downloaded": true,
+        "sha256": "7a5a67a625f72e4dac37b10d6853565b5900f32e2dd0637a61c36c4d9dc08a75"
+      },
+      {
+        "path": "CONTRIBUTING.md",
+        "git_blob_sha": "025316fae472cd19a694b8d47d8d9107cabcbd23",
+        "size": 1814,
+        "text_bytes_downloaded": true,
+        "sha256": "92b7727e2dbec9f136ccf059077c7915d284553d865152b64f984510ad195f74"
+      },
+      {
+        "path": "LICENSE",
+        "git_blob_sha": "0ad25db4bd1d86c452db3f9602ccdbe172438f52",
+        "size": 34523,
+        "text_bytes_downloaded": true,
+        "sha256": "8486a10c4393cee1c25392769ddd3b2d6c242d6ec7928e1414efff7dfb2f07ef"
+      },
+      {
+        "path": "README.md",
+        "git_blob_sha": "8eabcf8fb36dc4d267e5d8c21c797a96dafb53fc",
+        "size": 14676,
+        "text_bytes_downloaded": true,
+        "sha256": "0a819077ede5a4d1eee248b8d57445c4c99ba7f3d5ae1b08d8ce54bd2167fc0a"
+      },
+      {
+        "path": "SECURITY.md",
+        "git_blob_sha": "0e29b8cf88bc666e0d018b63ca58638106dd90a5",
+        "size": 1743,
+        "text_bytes_downloaded": true,
+        "sha256": "5a4b5bfefb2b5c2ed00dadaf981586e5ce38a1106970b2fe6a1d9a3ebc21257c"
+      },
+      {
+        "path": "cliff.toml",
+        "git_blob_sha": "80fc24ee67a0f9cae697d98a121df0da91088887",
+        "size": 4591,
+        "text_bytes_downloaded": true,
+        "sha256": "04e2afe2abb0e564edfe1fb2aa477d4c1924c670f103f3f878cc5a9f5576f732"
+      },
+      {
+        "path": "commitlint.config.js",
+        "git_blob_sha": "58fd40fb53088002c4deeaa645c26e88be5e3337",
+        "size": 217,
+        "text_bytes_downloaded": true,
+        "sha256": "684a843a90ae31b9da42566b4dbe06796ee6dc0ddf92df0dc202d675f9ce8877"
+      }
+    ]
+  },
+  "missing_evidence": [
+    "Private NGEN checkout/current HEAD and rulesets",
+    "Original raw Vulkan Profiles JSON",
+    "Physical hardware and GPU passthrough validation",
+    "Resolved/built Conan toolchain graph",
+    "Executed NGEN benchmarks"
+  ],
+  "input_hashes": {
+    "handoff": {
+      "sha256": "fa1610f5660d6b385330505ace053722bf9a121bab820c0e7f263952b0d51380",
+      "bytes": 14920
+    },
+    "supplied_agents_copy": {
+      "sha256": "63157dff80d551befa0413c037f9abbac5c0f51466092719bbfcdf5c5460cd0e",
+      "bytes": 4446
+    },
+    "distill_skill_used": {
+      "sha256": "28796151bdb11667011267af1654e9fa10048a43cdeec3f850f4497016cbba8f",
+      "bytes": 3903
+    }
+  }
+}

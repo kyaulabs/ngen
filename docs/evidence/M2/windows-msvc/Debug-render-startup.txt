@@ -1,0 +1,1 @@
+device=NVIDIA GeForce RTX 5070 api=1.4 driver=2588573696 queue=0 display=windows

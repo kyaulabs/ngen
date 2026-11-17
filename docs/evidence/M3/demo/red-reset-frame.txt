@@ -1,0 +1,5 @@
+Traceback (most recent call last):
+  File "/home/kyau/projects/kyaulabs/ngen/build/m3-flight/check-sdl-walkthrough.py", line 39, in <module>
+    assert error < 1e-6, ('a reset may not mix rendered and newly reset physical snapshots', i, error)
+           ^^^^^^^^^^^^
+AssertionError: ('a reset may not mix rendered and newly reset physical snapshots', 301, 0.880427279742)

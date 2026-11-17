@@ -1,0 +1,24 @@
+Same-session review, not independent/owner or Windows GPU acceptance.
+
+Scope: optional Inspector graph selection, existing checked-scene/native flow,
+new argument-array process observer, fresh workload artifacts, process working
+set/deadline/exit/stderr capture, environment cleanup and handoff instructions.
+
+Verified with real subprocesses under PowerShell 7 on Linux: spaced package and
+output paths, inspection/steady/stream modes, no validation in performance modes,
+actual child working-set observations, inspector and each workload child failure,
+missing capture/report, timeout retained as failure, preservation of an existing
+owner capture, output artifact records and Conan environment restoration. CLI
+parameter sets continue to reject mixing GPU capture and inspector/build modes.
+The initial Red accepted Inspector but did not execute its process; retained.
+
+Process start/exit/kill races use owned Process lifetime and narrow already-exited
+handling. Only that child/tree is terminated on failure/deadline. Input identity
+is checked before/after workloads; paths and outputs use literal/argument-array
+APIs. Captures/reports must be fresh nonempty regular bounded files. Memory
+metadata explicitly excludes GPU accounting and exact continuous peak claims.
+
+No demonstrated remaining task defect from this review. Native MSVC/clang-cl,
+Windows process counters, RTX 5070 shaders/WSI/UI and actual performance remain
+unexecuted here; they are precisely the owner handoff. The source retains current
+signing/SDK/CRT/validation settings and does not ask for old ef984ef repetition.

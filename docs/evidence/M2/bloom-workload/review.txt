@@ -1,0 +1,39 @@
+Same-session C++/code/security review, not independent graphics or owner approval.
+
+Reviewed public bloom admission and copied queued settings; source/old snapshot
+preservation; post push-constant reflection/native ABI offsets; threshold and
+exposure/color-space order; fixed sampler footprint; FXAA reuse approximation;
+UI-after-post and clipping; successful tracked submission/retirement; native
+WSI argument parity; fixed-extent versus resize diagnostics; bounded reload
+count, monotonic requests, completed publication and 30-frame retirement hold;
+allocation/driver-memory/RSS distinctions; exclusive capture/report outputs.
+No extra GPU owner, resources, runtime shader compiler or dependency was added.
+
+Behavioral Reds: bloom did not spread to a black neighbor; queued settings
+admitted invalid strength; WSI admitted invalid bloom; workload lacked disable
+control; repeated reload/settled-memory report and fixed-extent control missing;
+walkthrough ended at exposure .75/FXAA off. Greens exercise public native/model/
+process boundaries. PostDraw size and CPU reflection registration failures were
+ABI/setup discoveries, not behavioral Reds, and were repaired without weakening
+assertions. The walkthrough now restores exposure 1/FXAA on before reloads.
+
+Four native graphs: 12/12 CTests, physical resource/UI probes, 5/5 workload and
+4/4 inspector process checks each. TSan model 6/6, shipping 11/11, no-shader 10/10.
+119 affected native Clang invocations plus Main/UI reruns complete their scope;
+actual GCC module flags are preserved rather than relabeled as AST-clean.
+Pinned format and native shader/reflection regressions pass. Later gutter-only
+alignment is independently signed and verified with native capture/pixel checks.
+
+The 256.8 ms resize-adjacent frame remains a retained failure. Instrumentation
+observes acquire-poll spans after resize; no-reload/no-resize controls separate
+that path from file replacement. No FIFO policy, validation or numeric limit was
+changed. Fixed 1280x720 streaming keeps the strict all-frame 200 ms check; the
+mixed resize diagnostic is not used as a passing performance run.
+
+Scoped steady/four-reload runs pass their numeric budgets with fixed geometry,
+quality, bloom and UI. Driver totals include shared objects and are sampled;
+CPU RSS has retention variation and is not an exact flat/long-run plateau proof.
+File cache is warm. No remaining demonstrated code defect from this review,
+but the resize tail, cold-storage/general driver recovery, changed-tree Windows/
+NVIDIA, longer memory acceptance and independent/personal visual review remain
+open. Do not infer acceptance from integration or retained measurement logs.

@@ -1,0 +1,5 @@
+Vulkan resource depth attachment allocation: unsupported image format
+device=Intel(R) Iris(R) Xe Graphics (TGL GT2) api=1.4 driver=109060102 queue=0 display=wayland
+device=Intel(R) Iris(R) Xe Graphics (TGL GT2) api=1.4 driver=109060102 queue=0 display=wayland
+mip_chain_roundtrip=1 mip_levels=3 mip_bytes=168
+hdr_attachment=1 hdr_roundtrip_bytes=48

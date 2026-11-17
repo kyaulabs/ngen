@@ -1,0 +1,25 @@
+Filters: "opposing RCS demand*"
+Randomness seeded to: 926872165
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+rcs_pulse_tests is a Catch2 v3.16.0 host application.
+Run with -? for options
+
+-------------------------------------------------------------------------------
+opposing RCS demand fires immediately without inheriting the old set's off debt
+-------------------------------------------------------------------------------
+/home/kyau/projects/kyaulabs/ngen/tests/rcs_pulses.cpp:66
+...............................................................................
+
+/home/kyau/projects/kyaulabs/ngen/tests/rcs_pulses.cpp:76: FAILED:
+  REQUIRE( std::get<demo::RcsLevels>(pulses.step(stop)) == stop )
+with expansion:
+  { 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.
+  0f, 0.0f, 0.0f, 0.0f }
+  ==
+  { 0.0f, 0.0f, 0.0f, 0.01f, 0.0f, 0.0f, 0.0f, 0.0f, 0.006f, 0.0f, 0.0f, 0.0f,
+  0.0f, 0.0f, 0.0f, 0.0f }
+
+===============================================================================
+test cases: 1 | 1 failed
+assertions: 8 | 7 passed | 1 failed

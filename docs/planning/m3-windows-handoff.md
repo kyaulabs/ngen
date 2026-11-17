@@ -1,0 +1,205 @@
+# M3 Windows flight check
+
+The [post-UI evidence](../evidence/M3/windows/post-ui/checks.md) at source
+`5fb8ddf` passes ClangCl Release: 24 CTests, validated flight, app-local startup,
+complete sampled-memory coverage and a focused RTX replay with P95 8.3142 ms.
+The repaired 3,600-frame live diagnostic has zero warm C++/ImGui allocations;
+the owner confirms actual F2 plot tooltips with numeric F12 visible. The earlier
+single-allocation result is retained, not waived or conclusively attributed.
+No further ClangCl continuation or SDK audit is needed for this repair.
+
+Earlier MSVC Debug/Release and ClangCl Debug at `21e616c` passed 72 CTests. MSVC
+sampled memory and live hover pass. The original focused replay plus two valid
+existing-bundle repeats now pass the RTX budget: P95 7.8040 / 7.6079 / 7.6622 ms,
+with every frame focused and playing and zero warm calls. Earlier focus-invalid
+trials remain retained. The base and repeats report different driver versions;
+these are three independent budget passes, not controlled same-driver variance.
+Results retain their actual source revisions, not the current checkout label.
+**No further build, timing, memory, hover or SDK rerun is needed for these gates.**
+
+The owner now reports that real disconnected startup and listening passed.
+The owner accepted the Visual Identity 1.4 Linux v25 preview/private clip and
+instructed continuation. The unchanged full GUI suite passes on an owned isolated
+display; the original non-benchmark allocation observation remains explicitly
+retained. See [final verification](../evidence/M3/ui/final-verification.md) and the
+[current delivery record](../evidence/M3/package/final-delivery.md). Older Windows
+binaries are not relabelled as 1.4; no new Windows gate run is requested.
+
+The retained Windows startup procedure below is historical, not a new test plan.
+On the direct desktop, safely disconnect networking yourself if repeating it; do
+not disconnect a remote session. From the repository, launch the verified repaired
+ClangCl bundle without frame limits:
+
+```powershell
+$demo = 'build\clang-release-resume-885bc626be0845cfa54037b135645c0e-offline'
+& "$demo\ngen-flight\run.cmd"
+```
+
+This is an unlimited owner preview; close it yourself. Keep the short recording
+private and capture only the NGEN window and its application audio—no microphone,
+other applications or whole-desktop/system-audio mix. Return the recording hash
+and your offline-startup/listening verdict, not the private asset bundle. Accepted
+handling, audio and the UI starting point are not reopened; report new defects
+if any. Integration remains pending until this final acceptance.
+
+For future affected ClangCl source changes only, the continuation initializes
+the installed x64 developer shell, selects the latest matching ClangCl flight
+batch, finishes its cached Release build and
+runs the existing CTest, renderer, flight, clean replay, sampled-memory,
+source-bound packaging and SDK-isolated startup checks. It then prompts for a
+bounded 3,600-frame F2 plot-hover diagnostic with numeric F12 live. Keep timed
+windows foreground, do not record concurrently, and let diagnostic windows close
+themselves. This is not an interactive owner preview. Send the printed ZIP;
+admitted runs retain their archive on check failures and return a nonzero exit
+code. Every continuation uses a fresh private bundle outside its evidence ZIP,
+so retrying after a later failure preserves earlier bundles.
+
+For future affected checks only, these scripts remain available; do not rerun
+them merely for this documentation update:
+
+```powershell
+.\tools\resume-windows-flight.ps1
+.\tools\repeat-windows-flight-timing.ps1
+.\tools\windows-sdk-audit.ps1
+```
+
+The timing script selects the latest delivered MSVC flight bundle, verifies its
+executable and accepted asset, and collects just two clean focused replays—no
+rebuild, memory observer or recording. The SDK script records library search
+before/after developer-shell setup and Conan activation/deactivation, then
+forces one CPU link. Neither changes services, counters, privileges or global
+SDK settings. All three scripts infer the repository root, keep old results and
+create a fresh evidence directory. To select another existing batch explicitly,
+pass `-RunDirectory 'build\windows\<batch>'`; discovery rejects foreign-source,
+wrong-compiler/runtime and linked batches. Scripts operate sequentially.
+
+Use a clean checkout of `feat/kyau-023ba5-m3-flight`. Set `$scene` to the new
+private RCS cooked derivative, not the GLB or original M2 package. Its SHA-256 is
+`99c996f33d3cc98dbd801e3aa302ee2a5894d0fa6bcfdd18f59b73e72e74d834`;
+its CRC compatibility marker is `6bbe6157`. Copy it to a new path and preserve the
+accepted M2 original. The owner accepts the current physical RCS handling/nozzle
+aim; the accepted rear exhaust/hull appearance is not reopened. See the
+[directional 32-jet RCS checkpoint](../evidence/M3/rcs/directional/README.md).
+The current private input is `build/cooked-candidate/frigate-rcs-directional-v1/scene.ngas`;
+older all-bank firing candidates are not equivalent to this source/profile.
+The [physical RCS simulation](../evidence/M3/rcs/physical/README.md) now applies
+published bank firings to Jolt; rebuild the current source, including its changed
+owning ship/snapshot layout. Earlier smooth-wrench trajectories are historical,
+not current physical replay acceptance.
+
+The [explicit-CSV comparison](../evidence/M3/windows/provider-comparison/pdh-csv-return.md)
+now establishes matching direct-PDH and raw-CIM snapshots around three CIM
+timeouts. The observer transport has been replaced by a bounded native PDH
+helper, preserving existing coverage and budgets. The
+[ClangCl](../evidence/M3/windows/pdh-collector/clangcl.md) and
+[MSVC](../evidence/M3/windows/pdh-collector/msvc.md) returns at `7afeefe` now pass
+sampled memory coverage and native F12 readings. Both clean replays miss the
+unchanged 16.7 ms RTX P95 target (21.8084 / 21.8387 ms). Their completion cadence
+is near 60 Hz versus roughly 144 Hz historically. The owner reports running via
+Artemis Virtual Desktop, a plausible but unproved presentation confound.
+**Retain functional/memory results; defer final RTX timing to a direct desktop
+session after the UI pass. Do not repeat the unchanged full build or probe.**
+Future affected builds must include `gpu_memory_observer.exe` beside `flight_demo.exe`.
+
+For later read-only diagnosis only: start an **already built** native Windows
+flight demo normally, wait for the scene and leave it open. In a second
+PowerShell 7.2+ terminal, list only these clients and choose the window's ID:
+
+```powershell
+Get-Process -Name flight_demo | Select-Object Id, StartTime, MainWindowTitle
+$probe = @{ DiagnoseGpuMemoryProcessId = 12345 } # Replace with that actual ID.
+& ./tools/build-windows.ps1 @probe
+```
+
+Send the small `evidence.zip` path printed by this diagnostic. It does not build,
+install anything, start/stop the client, alter services/counters or elevate. Close
+the client yourself when finished. PID/start-time checks stop collection if the
+selected process exits or changes.
+
+The [first native comparison](../evidence/M3/windows/provider-comparison/README.md)
+has three timeouts followed by a successful raw reading on the same live client.
+The failure is not confined to the first or formatted query; its cause remains
+unproven.
+
+The updated read-only sequence is direct PDH → formatted → raw → formatted → raw
+→ direct PDH. The four CIM calls keep the same PID filter, fields and 2 s operation
+timeout. The PDH references use Windows' existing `typeperf.exe`, bypassing CIM;
+each has a 2 s budget including helper startup. Only those owned helpers can be
+terminated, never the selected demo. Their output is bounded and retained for
+inspection. The [first PDH return](../evidence/M3/windows/provider-comparison/pdh-return.md)
+contains only redirected status text, not counter values. The corrected probe
+requests an explicit CSV file, admits bounded regular-file content and copies it
+into the JSON before deleting its owned temporary file/directory. Missing CSV is
+an explicit failure even when the tool exits 0. A captured file is still not
+validated counter data or budget acceptance; localized/unavailable counter names
+remain explicit failures, not zero readings.
+
+Each CIM attempt retains its elapsed time, projected counter values and bounded
+typed error details; failures do not hide other attempts. The sequence tests the
+shared counter backend versus the CIM route without assuming that a preceding
+read has no warmup effect. No result substitutes for complete formal observations.
+OS calls are not a hard real-time guarantee. Do not run the diagnostic alongside
+a clean timing or formal memory measurement.
+
+The checks below are the recipe for future affected current-source runs, not a
+request to repeat either passing memory check. Native hovered-tooltip verification
+and the three-active-run timing budget now pass. Use the named splat; do not split
+`Start-Process` arguments or use positional `Select-String` examples.
+
+```powershell
+$check = @{
+    Configuration = 'All'
+    Compiler = 'MSVC'
+    FlightDemo = $true
+    ScenePackage = $scene
+}
+& ./tools/build-windows.ps1 @check
+```
+
+After that run exits, preserve its evidence archive and run the second compiler
+sequentially, even if the first run failed. Do not change profiles or suppress a
+failed check to reach the other compiler:
+
+```powershell
+$check.Compiler = 'ClangCl'
+& ./tools/build-windows.ps1 @check
+```
+
+Each run prints its `evidence.zip` path. Send those two archives privately, not the
+whole build directory. They contain current-source build/test results, a 330-frame
+validation/control/audio walkthrough, a separate unvalidated 2,400-frame 1080p replay,
+and another replay with sampled working-set/WDDM observations. The latter is
+instrumented memory evidence, not clean timing or a continuous global-memory bound.
+No GTX VM result is implied.
+
+The historical ClangCl return reported 2 warm ImGui allocations in the clean
+replay and a first-query CIM failure with no GPU-memory samples. Both pre-UI
+compiler returns at `7afeefe` have zero warm replay allocations and complete PDH
+coverage. Current post-UI native scope is recorded above; the MSVC live-panel
+hover check and repaired ClangCl Release live-hover check both pass. The observer retains
+`error_details` in `Release-flight.memory.working-set.json`, including native PDH
+status/kind on failure. The 2 s operation timeout, sampling/coverage rules
+and budgets are unchanged. A failed query still fails memory acceptance; do not
+restart services, rebuild counters, elevate permissions or relax checks on the
+basis of the historical generic message.
+
+The standard build's Release private bundle is beside its build directories at
+`offline/ngen-flight`. A continuation instead uses
+`build/clang-release-resume-<id>-offline/ngen-flight`, outside its evidence ZIP.
+The workflow checks headless admission and three rendered
+frames with Conan deactivated and SDK paths removed. It does **not** disconnect
+networking or change firewall/adapter settings. From a direct desktop session,
+disconnect networking yourself and launch `run.cmd` to confirm the interactive
+offline path; do not disconnect the Artemis connection while working remotely. Do not publish or
+send the bundle: it contains the private accepted asset.
+
+Try tactical orbit, TAB to the authored direct camera, thrust then coast, SPACE
+braking, ALT+RMB free look, focus changes and reset. Check that switching modes
+preserves motion, release/OS focus loss clears controls, and pointer capture exits
+cleanly. Listen to engine/thrust/brake/UI cues; try M, real focus loss and a real
+playback-device removal/reconnection where available. Report control feel, sound
+comfort and any discontinuity. Synthetic SDL events are not substitutes for this.
+Keep a short original audio/video recording private; send its hash and feedback.
+The owner accepts the current UI starting point and defers polish. M3 remains
+open until final recording/listening/offline-delivery, owner acceptance and
+reviewed integration finish.

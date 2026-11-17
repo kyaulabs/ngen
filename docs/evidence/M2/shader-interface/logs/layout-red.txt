@@ -1,0 +1,17 @@
+F
+======================================================================
+FAIL: test_uniform_layouts_match_compiled_cpu_types (__main__.ShaderCompilation.test_uniform_layouts_match_compiled_cpu_types)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<ROOT>/tests/shaders.py", line 55, in test_uniform_layouts_match_compiled_cpu_types
+    check_struct(parameter["type"]["elementType"])
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<ROOT>/tests/shaders.py", line 42, in check_struct
+    self.assertEqual(size["value"], layout["size"], name + " byte size")
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 128 != 112 : CullConstants byte size
+
+----------------------------------------------------------------------
+Ran 1 test in 6.669s
+
+FAILED (failures=1)

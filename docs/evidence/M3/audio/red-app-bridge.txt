@@ -1,0 +1,5 @@
+Traceback (most recent call last):
+  File "/home/kyau/projects/kyaulabs/ngen/build/m3-flight/check-demo-audio.py", line 4, in <module>
+    assert 'audio_pending=0' in text, 'playable application must integrate the real bounded audio owner'
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: playable application must integrate the real bounded audio owner

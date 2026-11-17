@@ -1,0 +1,17 @@
+# Context-owned indexed PBR batch
+
+Candidate follow-up on signed `9b60f4f`; its workflow [42307975397](https://github.com/kyaulabs/ngen/actions/runs/42307975397) passed all four jobs. This is a production resource-path draw, not the full-scene renderer or M2 acceptance.
+
+`Context::draw_mesh(MeshPass)` copies a bounded 1..256-draw batch into one of two tracked uniform buffers. It uses validated embedded PBR modules, six prewarmed facing/blend pipelines, a bounded 64-entry material sampler cache, HDR color/D32 attachments and the existing resource command contexts/timeline. Descriptor slots reuse only after proven frame completion. All geometry, sampled images, attachments and uniform buffers publish last-use/layout state only after successful submission. Partial construction/submission failures retain correct ownership. Geometry contents/transforms are trusted engine inputs; callers must supply checked local indices. The checked package/version bridge is still pending.
+
+Public native Red: `tracked indexed mesh drawing is not implemented`. Green verifies exact binary16 red/green/background pixels from two indexed, separately material-bound draws, positive base vertex, nonzero first indices and near-before-far depth testing. A real timeline gate holds two submissions, exhausts both command contexts and prevents six released geometry/texture/depth owners from reclaiming early. Completion reclaims them. No ordinary device/queue idle is added; only failed test cleanup may block.
+
+Passed:
+- Clang Debug/Release/ASan and GCC: full builds, 9/9 CTest entries and actual validation-enabled resource/WSI probes, including `tracked_indexed_pbr=1 mesh_depth=1 mesh_materials=2 mesh_retirement=1 mesh_two_slots=1`.
+- Twelve affected consumers × three actual Clang databases: 36 AST analyses, exit 0. Initial owned enum-init, widening and swappable-argument findings were fixed. GCC native execution is not a GCC clang-tidy claim.
+- Shader-disabled renderer builds and passes 7/7. No runtime compiler, reflection parser or new dependency.
+- Seven process-local ASan/UBSan controls from `failure.cpp`: set allocation, sampler, module, second pipeline and draw submission fail with expected native messages; valid depth-disabled/wrong-index controls fail the intended pixel assertion. Each exits 1 without unexpected validation/sanitizer/leak output.
+
+Reproduction: build/test `scene-{debug,release,asan,gcc}`, then run `resource_probe` with the configured Khronos layer path/library path; retain ASan leak/UBSan halt options. Compile `failure.cpp` as a sanitizer-enabled shared library against the configured Vulkan headers, then preload it **after timeout via env** with `NGEN_MESH_CONTROL={sets,sampler,module,pipeline2,submit,no-depth,index}`. Current local logs are `/tmp/ngen-scene-*-mesh-final-*`, `/tmp/ngen-mesh-control-*.txt` and `/tmp/ngen-tracked-mesh-red.txt`; no copied artifact/log/hash archive is claimed. The earlier shader-interface collection safety failure was not retried.
+
+Same-session review checked bounded descriptor/UBO offsets, package-order map/sampler bindings, host/graphics/image barriers, queue-success publication, partial cleanup and close-after-completion. No remaining demonstrated task defect was found; this is not independent review. Source package/frame pins, real ship/asteroid draws, generated IBL/shadows/transparent ordering, inspector, Windows/NVIDIA, final performance/residency and owner acceptance remain open.

@@ -1,0 +1,292 @@
+CONFIGURATION renderer-debug
+{
+  "directory": "<repo>/build/renderer-debug",
+  "command": "/bin/clang++ -I<repo>/engine -m64 -stdlib=libstdc++ -g -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror @CMakeFiles/ngen_render_contract.dir/engine/render/capabilities.cpp.o.modmap -o CMakeFiles/ngen_render_contract.dir/engine/render/capabilities.cpp.o -c <repo>/engine/render/capabilities.cpp",
+  "file": "<repo>/engine/render/capabilities.cpp",
+  "output": "<repo>/build/renderer-debug/CMakeFiles/ngen_render_contract.dir/engine/render/capabilities.cpp.o"
+}
+{
+  "directory": "<repo>/build/renderer-debug",
+  "command": "/bin/clang++ -DVMA_VULKAN_VERSION=1003000 -isystem <conan-cache>/p/vulka5f8c9f361cfa0/p/include -isystem <conan-cache>/p/vulkabd7575518f65a/p/res/vulkan/registry -isystem <conan-cache>/p/vulkabd7575518f65a/p/include -m64 -stdlib=libstdc++ -g -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror @CMakeFiles/ngen_vma.dir/engine/render/vma.cpp.o.modmap -o CMakeFiles/ngen_vma.dir/engine/render/vma.cpp.o -c <repo>/engine/render/vma.cpp",
+  "file": "<repo>/engine/render/vma.cpp",
+  "output": "<repo>/build/renderer-debug/CMakeFiles/ngen_vma.dir/engine/render/vma.cpp.o"
+}
+{
+  "directory": "<repo>/build/renderer-debug",
+  "command": "/bin/clang++ -DFFI_STATIC_BUILD -DLIBXML_STATIC -DVMA_VULKAN_VERSION=1003000 -DXML_STATIC -I<repo>/engine -isystem <conan-cache>/p/b/sdlee9e38e66a538/p/include -isystem <conan-cache>/p/b/wayla064c9fb324c75/p/include -isystem <conan-cache>/p/vulka5f8c9f361cfa0/p/include -isystem <conan-cache>/p/vulkabd7575518f65a/p/res/vulkan/registry -isystem <conan-cache>/p/vulkabd7575518f65a/p/include -m64 -stdlib=libstdc++ -g -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror @CMakeFiles/ngen_render.dir/engine/render/context.cpp.o.modmap -o CMakeFiles/ngen_render.dir/engine/render/context.cpp.o -c <repo>/engine/render/context.cpp",
+  "file": "<repo>/engine/render/context.cpp",
+  "output": "<repo>/build/renderer-debug/CMakeFiles/ngen_render.dir/engine/render/context.cpp.o"
+}
+{
+  "directory": "<repo>/build/renderer-debug",
+  "command": "/bin/clang++ -DFFI_STATIC_BUILD -DLIBXML_STATIC -DVMA_VULKAN_VERSION=1003000 -DXML_STATIC -I<repo>/engine -isystem <conan-cache>/p/b/sdlee9e38e66a538/p/include -isystem <conan-cache>/p/b/wayla064c9fb324c75/p/include -isystem <conan-cache>/p/vulka5f8c9f361cfa0/p/include -isystem <conan-cache>/p/vulkabd7575518f65a/p/res/vulkan/registry -isystem <conan-cache>/p/vulkabd7575518f65a/p/include -m64 -stdlib=libstdc++ -g -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror @CMakeFiles/ngen_render.dir/engine/render/surface.cpp.o.modmap -o CMakeFiles/ngen_render.dir/engine/render/surface.cpp.o -c <repo>/engine/render/surface.cpp",
+  "file": "<repo>/engine/render/surface.cpp",
+  "output": "<repo>/build/renderer-debug/CMakeFiles/ngen_render.dir/engine/render/surface.cpp.o"
+}
+{
+  "directory": "<repo>/build/renderer-debug",
+  "command": "/bin/clang++ -DFFI_STATIC_BUILD -DLIBXML_STATIC -DVMA_VULKAN_VERSION=1003000 -DXML_STATIC -I<repo>/engine -isystem <conan-cache>/p/b/sdlee9e38e66a538/p/include -isystem <conan-cache>/p/b/wayla064c9fb324c75/p/include -isystem <conan-cache>/p/vulka5f8c9f361cfa0/p/include -isystem <conan-cache>/p/vulkabd7575518f65a/p/res/vulkan/registry -isystem <conan-cache>/p/vulkabd7575518f65a/p/include -m64 -stdlib=libstdc++ -g -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror @CMakeFiles/ngen_render.dir/engine/render/presentation.cpp.o.modmap -o CMakeFiles/ngen_render.dir/engine/render/presentation.cpp.o -c <repo>/engine/render/presentation.cpp",
+  "file": "<repo>/engine/render/presentation.cpp",
+  "output": "<repo>/build/renderer-debug/CMakeFiles/ngen_render.dir/engine/render/presentation.cpp.o"
+}
+{
+  "directory": "<repo>/build/renderer-debug",
+  "command": "/bin/clang++ -DFFI_STATIC_BUILD -DLIBXML_STATIC -DVMA_VULKAN_VERSION=1003000 -DXML_STATIC -I<repo>/engine -isystem <conan-cache>/p/b/sdlee9e38e66a538/p/include -isystem <conan-cache>/p/b/wayla064c9fb324c75/p/include -isystem <conan-cache>/p/vulka5f8c9f361cfa0/p/include -isystem <conan-cache>/p/vulkabd7575518f65a/p/res/vulkan/registry -isystem <conan-cache>/p/vulkabd7575518f65a/p/include -m64 -stdlib=libstdc++ -g -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror @CMakeFiles/ngen_render.dir/engine/render/resources.cpp.o.modmap -o CMakeFiles/ngen_render.dir/engine/render/resources.cpp.o -c <repo>/engine/render/resources.cpp",
+  "file": "<repo>/engine/render/resources.cpp",
+  "output": "<repo>/build/renderer-debug/CMakeFiles/ngen_render.dir/engine/render/resources.cpp.o"
+}
+{
+  "directory": "<repo>/build/renderer-debug",
+  "command": "/bin/clang++ -DFFI_STATIC_BUILD -DLIBXML_STATIC -DXML_STATIC -I<repo>/apps -I<repo>/engine -isystem <conan-cache>/p/b/sdlee9e38e66a538/p/include -isystem <conan-cache>/p/b/wayla064c9fb324c75/p/include -m64 -stdlib=libstdc++ -g -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror @CMakeFiles/ngen_probe_support.dir/apps/probe/presentation.cpp.o.modmap -o CMakeFiles/ngen_probe_support.dir/apps/probe/presentation.cpp.o -c <repo>/apps/probe/presentation.cpp",
+  "file": "<repo>/apps/probe/presentation.cpp",
+  "output": "<repo>/build/renderer-debug/CMakeFiles/ngen_probe_support.dir/apps/probe/presentation.cpp.o"
+}
+{
+  "directory": "<repo>/build/renderer-debug",
+  "command": "/bin/clang++ -DFFI_STATIC_BUILD -DLIBXML_STATIC -DXML_STATIC -I<repo>/apps -I<repo>/engine -isystem <conan-cache>/p/b/sdlee9e38e66a538/p/include -isystem <conan-cache>/p/b/wayla064c9fb324c75/p/include -m64 -stdlib=libstdc++ -g -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror @CMakeFiles/render_probe.dir/apps/render_probe/main.cpp.o.modmap -o CMakeFiles/render_probe.dir/apps/render_probe/main.cpp.o -c <repo>/apps/render_probe/main.cpp",
+  "file": "<repo>/apps/render_probe/main.cpp",
+  "output": "<repo>/build/renderer-debug/CMakeFiles/render_probe.dir/apps/render_probe/main.cpp.o"
+}
+{
+  "directory": "<repo>/build/renderer-debug",
+  "command": "/bin/clang++ -DFFI_STATIC_BUILD -DLIBXML_STATIC -DXML_STATIC -I<repo>/apps -I<repo>/engine -isystem <conan-cache>/p/b/sdlee9e38e66a538/p/include -isystem <conan-cache>/p/b/wayla064c9fb324c75/p/include -m64 -stdlib=libstdc++ -g -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror @CMakeFiles/resource_probe.dir/apps/resource_probe/main.cpp.o.modmap -o CMakeFiles/resource_probe.dir/apps/resource_probe/main.cpp.o -c <repo>/apps/resource_probe/main.cpp",
+  "file": "<repo>/apps/resource_probe/main.cpp",
+  "output": "<repo>/build/renderer-debug/CMakeFiles/resource_probe.dir/apps/resource_probe/main.cpp.o"
+}
+{
+  "directory": "<repo>/build/renderer-debug",
+  "command": "/bin/clang++ -DFFI_STATIC_BUILD -DLIBXML_STATIC -DXML_STATIC -I<repo>/engine -isystem <conan-cache>/p/b/sdlee9e38e66a538/p/include -isystem <conan-cache>/p/b/wayla064c9fb324c75/p/include -isystem <conan-cache>/p/b/catch646a1245bf61b/p/include -m64 -stdlib=libstdc++ -g -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror @CMakeFiles/render_startup_tests.dir/tests/render_startup.cpp.o.modmap -o CMakeFiles/render_startup_tests.dir/tests/render_startup.cpp.o -c <repo>/tests/render_startup.cpp",
+  "file": "<repo>/tests/render_startup.cpp",
+  "output": "<repo>/build/renderer-debug/CMakeFiles/render_startup_tests.dir/tests/render_startup.cpp.o"
+}
+{
+  "directory": "<repo>/build/renderer-debug",
+  "command": "/bin/clang++ -DFFI_STATIC_BUILD -DLIBXML_STATIC -DXML_STATIC -I<repo>/engine -isystem <conan-cache>/p/b/sdlee9e38e66a538/p/include -isystem <conan-cache>/p/b/wayla064c9fb324c75/p/include -isystem <conan-cache>/p/b/catch646a1245bf61b/p/include -m64 -stdlib=libstdc++ -g -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror @CMakeFiles/render_startup_tests.dir/tests/render_surface.cpp.o.modmap -o CMakeFiles/render_startup_tests.dir/tests/render_surface.cpp.o -c <repo>/tests/render_surface.cpp",
+  "file": "<repo>/tests/render_surface.cpp",
+  "output": "<repo>/build/renderer-debug/CMakeFiles/render_startup_tests.dir/tests/render_surface.cpp.o"
+}
+{
+  "directory": "<repo>/build/renderer-debug",
+  "command": "/bin/clang++ -DFFI_STATIC_BUILD -DLIBXML_STATIC -DXML_STATIC -isystem <conan-cache>/p/b/sdlee9e38e66a538/p/include -isystem <conan-cache>/p/b/wayla064c9fb324c75/p/include -m64 -stdlib=libstdc++ -g -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror @CMakeFiles/wayland_tablet_tests.dir/tests/wayland_tablets.cpp.o.modmap -o CMakeFiles/wayland_tablet_tests.dir/tests/wayland_tablets.cpp.o -c <repo>/tests/wayland_tablets.cpp",
+  "file": "<repo>/tests/wayland_tablets.cpp",
+  "output": "<repo>/build/renderer-debug/CMakeFiles/wayland_tablet_tests.dir/tests/wayland_tablets.cpp.o"
+}
+CONFIGURATION renderer-release
+{
+  "directory": "<repo>/build/renderer-release",
+  "command": "/bin/clang++ -I<repo>/engine -m64 -stdlib=libstdc++ -O3 -DNDEBUG -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror @CMakeFiles/ngen_render_contract.dir/engine/render/capabilities.cpp.o.modmap -o CMakeFiles/ngen_render_contract.dir/engine/render/capabilities.cpp.o -c <repo>/engine/render/capabilities.cpp",
+  "file": "<repo>/engine/render/capabilities.cpp",
+  "output": "<repo>/build/renderer-release/CMakeFiles/ngen_render_contract.dir/engine/render/capabilities.cpp.o"
+}
+{
+  "directory": "<repo>/build/renderer-release",
+  "command": "/bin/clang++ -DVMA_VULKAN_VERSION=1003000 -isystem <conan-cache>/p/vulka5f8c9f361cfa0/p/include -isystem <conan-cache>/p/vulkabd7575518f65a/p/res/vulkan/registry -isystem <conan-cache>/p/vulkabd7575518f65a/p/include -m64 -stdlib=libstdc++ -O3 -DNDEBUG -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror @CMakeFiles/ngen_vma.dir/engine/render/vma.cpp.o.modmap -o CMakeFiles/ngen_vma.dir/engine/render/vma.cpp.o -c <repo>/engine/render/vma.cpp",
+  "file": "<repo>/engine/render/vma.cpp",
+  "output": "<repo>/build/renderer-release/CMakeFiles/ngen_vma.dir/engine/render/vma.cpp.o"
+}
+{
+  "directory": "<repo>/build/renderer-release",
+  "command": "/bin/clang++ -DFFI_STATIC_BUILD -DLIBXML_STATIC -DVMA_VULKAN_VERSION=1003000 -DXML_STATIC -I<repo>/engine -isystem <conan-cache>/p/b/sdl09793c119812a/p/include -isystem <conan-cache>/p/b/waylaedcc845c0414e/p/include -isystem <conan-cache>/p/vulka5f8c9f361cfa0/p/include -isystem <conan-cache>/p/vulkabd7575518f65a/p/res/vulkan/registry -isystem <conan-cache>/p/vulkabd7575518f65a/p/include -m64 -stdlib=libstdc++ -O3 -DNDEBUG -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror @CMakeFiles/ngen_render.dir/engine/render/context.cpp.o.modmap -o CMakeFiles/ngen_render.dir/engine/render/context.cpp.o -c <repo>/engine/render/context.cpp",
+  "file": "<repo>/engine/render/context.cpp",
+  "output": "<repo>/build/renderer-release/CMakeFiles/ngen_render.dir/engine/render/context.cpp.o"
+}
+{
+  "directory": "<repo>/build/renderer-release",
+  "command": "/bin/clang++ -DFFI_STATIC_BUILD -DLIBXML_STATIC -DVMA_VULKAN_VERSION=1003000 -DXML_STATIC -I<repo>/engine -isystem <conan-cache>/p/b/sdl09793c119812a/p/include -isystem <conan-cache>/p/b/waylaedcc845c0414e/p/include -isystem <conan-cache>/p/vulka5f8c9f361cfa0/p/include -isystem <conan-cache>/p/vulkabd7575518f65a/p/res/vulkan/registry -isystem <conan-cache>/p/vulkabd7575518f65a/p/include -m64 -stdlib=libstdc++ -O3 -DNDEBUG -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror @CMakeFiles/ngen_render.dir/engine/render/surface.cpp.o.modmap -o CMakeFiles/ngen_render.dir/engine/render/surface.cpp.o -c <repo>/engine/render/surface.cpp",
+  "file": "<repo>/engine/render/surface.cpp",
+  "output": "<repo>/build/renderer-release/CMakeFiles/ngen_render.dir/engine/render/surface.cpp.o"
+}
+{
+  "directory": "<repo>/build/renderer-release",
+  "command": "/bin/clang++ -DFFI_STATIC_BUILD -DLIBXML_STATIC -DVMA_VULKAN_VERSION=1003000 -DXML_STATIC -I<repo>/engine -isystem <conan-cache>/p/b/sdl09793c119812a/p/include -isystem <conan-cache>/p/b/waylaedcc845c0414e/p/include -isystem <conan-cache>/p/vulka5f8c9f361cfa0/p/include -isystem <conan-cache>/p/vulkabd7575518f65a/p/res/vulkan/registry -isystem <conan-cache>/p/vulkabd7575518f65a/p/include -m64 -stdlib=libstdc++ -O3 -DNDEBUG -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror @CMakeFiles/ngen_render.dir/engine/render/presentation.cpp.o.modmap -o CMakeFiles/ngen_render.dir/engine/render/presentation.cpp.o -c <repo>/engine/render/presentation.cpp",
+  "file": "<repo>/engine/render/presentation.cpp",
+  "output": "<repo>/build/renderer-release/CMakeFiles/ngen_render.dir/engine/render/presentation.cpp.o"
+}
+{
+  "directory": "<repo>/build/renderer-release",
+  "command": "/bin/clang++ -DFFI_STATIC_BUILD -DLIBXML_STATIC -DVMA_VULKAN_VERSION=1003000 -DXML_STATIC -I<repo>/engine -isystem <conan-cache>/p/b/sdl09793c119812a/p/include -isystem <conan-cache>/p/b/waylaedcc845c0414e/p/include -isystem <conan-cache>/p/vulka5f8c9f361cfa0/p/include -isystem <conan-cache>/p/vulkabd7575518f65a/p/res/vulkan/registry -isystem <conan-cache>/p/vulkabd7575518f65a/p/include -m64 -stdlib=libstdc++ -O3 -DNDEBUG -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror @CMakeFiles/ngen_render.dir/engine/render/resources.cpp.o.modmap -o CMakeFiles/ngen_render.dir/engine/render/resources.cpp.o -c <repo>/engine/render/resources.cpp",
+  "file": "<repo>/engine/render/resources.cpp",
+  "output": "<repo>/build/renderer-release/CMakeFiles/ngen_render.dir/engine/render/resources.cpp.o"
+}
+{
+  "directory": "<repo>/build/renderer-release",
+  "command": "/bin/clang++ -DFFI_STATIC_BUILD -DLIBXML_STATIC -DXML_STATIC -I<repo>/apps -I<repo>/engine -isystem <conan-cache>/p/b/sdl09793c119812a/p/include -isystem <conan-cache>/p/b/waylaedcc845c0414e/p/include -m64 -stdlib=libstdc++ -O3 -DNDEBUG -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror @CMakeFiles/ngen_probe_support.dir/apps/probe/presentation.cpp.o.modmap -o CMakeFiles/ngen_probe_support.dir/apps/probe/presentation.cpp.o -c <repo>/apps/probe/presentation.cpp",
+  "file": "<repo>/apps/probe/presentation.cpp",
+  "output": "<repo>/build/renderer-release/CMakeFiles/ngen_probe_support.dir/apps/probe/presentation.cpp.o"
+}
+{
+  "directory": "<repo>/build/renderer-release",
+  "command": "/bin/clang++ -DFFI_STATIC_BUILD -DLIBXML_STATIC -DXML_STATIC -I<repo>/apps -I<repo>/engine -isystem <conan-cache>/p/b/sdl09793c119812a/p/include -isystem <conan-cache>/p/b/waylaedcc845c0414e/p/include -m64 -stdlib=libstdc++ -O3 -DNDEBUG -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror @CMakeFiles/render_probe.dir/apps/render_probe/main.cpp.o.modmap -o CMakeFiles/render_probe.dir/apps/render_probe/main.cpp.o -c <repo>/apps/render_probe/main.cpp",
+  "file": "<repo>/apps/render_probe/main.cpp",
+  "output": "<repo>/build/renderer-release/CMakeFiles/render_probe.dir/apps/render_probe/main.cpp.o"
+}
+{
+  "directory": "<repo>/build/renderer-release",
+  "command": "/bin/clang++ -DFFI_STATIC_BUILD -DLIBXML_STATIC -DXML_STATIC -I<repo>/apps -I<repo>/engine -isystem <conan-cache>/p/b/sdl09793c119812a/p/include -isystem <conan-cache>/p/b/waylaedcc845c0414e/p/include -m64 -stdlib=libstdc++ -O3 -DNDEBUG -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror @CMakeFiles/resource_probe.dir/apps/resource_probe/main.cpp.o.modmap -o CMakeFiles/resource_probe.dir/apps/resource_probe/main.cpp.o -c <repo>/apps/resource_probe/main.cpp",
+  "file": "<repo>/apps/resource_probe/main.cpp",
+  "output": "<repo>/build/renderer-release/CMakeFiles/resource_probe.dir/apps/resource_probe/main.cpp.o"
+}
+{
+  "directory": "<repo>/build/renderer-release",
+  "command": "/bin/clang++ -DFFI_STATIC_BUILD -DLIBXML_STATIC -DXML_STATIC -I<repo>/engine -isystem <conan-cache>/p/b/sdl09793c119812a/p/include -isystem <conan-cache>/p/b/waylaedcc845c0414e/p/include -isystem <conan-cache>/p/b/catcha767e5502f6e3/p/include -m64 -stdlib=libstdc++ -O3 -DNDEBUG -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror @CMakeFiles/render_startup_tests.dir/tests/render_startup.cpp.o.modmap -o CMakeFiles/render_startup_tests.dir/tests/render_startup.cpp.o -c <repo>/tests/render_startup.cpp",
+  "file": "<repo>/tests/render_startup.cpp",
+  "output": "<repo>/build/renderer-release/CMakeFiles/render_startup_tests.dir/tests/render_startup.cpp.o"
+}
+{
+  "directory": "<repo>/build/renderer-release",
+  "command": "/bin/clang++ -DFFI_STATIC_BUILD -DLIBXML_STATIC -DXML_STATIC -I<repo>/engine -isystem <conan-cache>/p/b/sdl09793c119812a/p/include -isystem <conan-cache>/p/b/waylaedcc845c0414e/p/include -isystem <conan-cache>/p/b/catcha767e5502f6e3/p/include -m64 -stdlib=libstdc++ -O3 -DNDEBUG -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror @CMakeFiles/render_startup_tests.dir/tests/render_surface.cpp.o.modmap -o CMakeFiles/render_startup_tests.dir/tests/render_surface.cpp.o -c <repo>/tests/render_surface.cpp",
+  "file": "<repo>/tests/render_surface.cpp",
+  "output": "<repo>/build/renderer-release/CMakeFiles/render_startup_tests.dir/tests/render_surface.cpp.o"
+}
+{
+  "directory": "<repo>/build/renderer-release",
+  "command": "/bin/clang++ -DFFI_STATIC_BUILD -DLIBXML_STATIC -DXML_STATIC -isystem <conan-cache>/p/b/sdl09793c119812a/p/include -isystem <conan-cache>/p/b/waylaedcc845c0414e/p/include -m64 -stdlib=libstdc++ -O3 -DNDEBUG -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror @CMakeFiles/wayland_tablet_tests.dir/tests/wayland_tablets.cpp.o.modmap -o CMakeFiles/wayland_tablet_tests.dir/tests/wayland_tablets.cpp.o -c <repo>/tests/wayland_tablets.cpp",
+  "file": "<repo>/tests/wayland_tablets.cpp",
+  "output": "<repo>/build/renderer-release/CMakeFiles/wayland_tablet_tests.dir/tests/wayland_tablets.cpp.o"
+}
+CONFIGURATION renderer-asan
+{
+  "directory": "<repo>/build/renderer-asan",
+  "command": "/bin/clang++ -I<repo>/engine -m64 -stdlib=libstdc++ -fsanitize=address,undefined -fno-sanitize-recover=all -fno-omit-frame-pointer -g -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror -fsanitize=address,undefined -fno-sanitize-recover=all -fno-omit-frame-pointer @CMakeFiles/ngen_render_contract.dir/engine/render/capabilities.cpp.o.modmap -o CMakeFiles/ngen_render_contract.dir/engine/render/capabilities.cpp.o -c <repo>/engine/render/capabilities.cpp",
+  "file": "<repo>/engine/render/capabilities.cpp",
+  "output": "<repo>/build/renderer-asan/CMakeFiles/ngen_render_contract.dir/engine/render/capabilities.cpp.o"
+}
+{
+  "directory": "<repo>/build/renderer-asan",
+  "command": "/bin/clang++ -DVMA_VULKAN_VERSION=1003000 -isystem <conan-cache>/p/vulka5f8c9f361cfa0/p/include -isystem <conan-cache>/p/vulkabd7575518f65a/p/res/vulkan/registry -isystem <conan-cache>/p/vulkabd7575518f65a/p/include -m64 -stdlib=libstdc++ -fsanitize=address,undefined -fno-sanitize-recover=all -fno-omit-frame-pointer -g -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror -fsanitize=address,undefined -fno-sanitize-recover=all -fno-omit-frame-pointer @CMakeFiles/ngen_vma.dir/engine/render/vma.cpp.o.modmap -o CMakeFiles/ngen_vma.dir/engine/render/vma.cpp.o -c <repo>/engine/render/vma.cpp",
+  "file": "<repo>/engine/render/vma.cpp",
+  "output": "<repo>/build/renderer-asan/CMakeFiles/ngen_vma.dir/engine/render/vma.cpp.o"
+}
+{
+  "directory": "<repo>/build/renderer-asan",
+  "command": "/bin/clang++ -DFFI_STATIC_BUILD -DLIBXML_STATIC -DVMA_VULKAN_VERSION=1003000 -DXML_STATIC -I<repo>/engine -isystem <conan-cache>/p/b/sdld55aa4ffbc9f1/p/include -isystem <conan-cache>/p/b/wayla18d5b71128707/p/include -isystem <conan-cache>/p/vulka5f8c9f361cfa0/p/include -isystem <conan-cache>/p/vulkabd7575518f65a/p/res/vulkan/registry -isystem <conan-cache>/p/vulkabd7575518f65a/p/include -m64 -stdlib=libstdc++ -fsanitize=address,undefined -fno-sanitize-recover=all -fno-omit-frame-pointer -g -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror -fsanitize=address,undefined -fno-sanitize-recover=all -fno-omit-frame-pointer @CMakeFiles/ngen_render.dir/engine/render/context.cpp.o.modmap -o CMakeFiles/ngen_render.dir/engine/render/context.cpp.o -c <repo>/engine/render/context.cpp",
+  "file": "<repo>/engine/render/context.cpp",
+  "output": "<repo>/build/renderer-asan/CMakeFiles/ngen_render.dir/engine/render/context.cpp.o"
+}
+{
+  "directory": "<repo>/build/renderer-asan",
+  "command": "/bin/clang++ -DFFI_STATIC_BUILD -DLIBXML_STATIC -DVMA_VULKAN_VERSION=1003000 -DXML_STATIC -I<repo>/engine -isystem <conan-cache>/p/b/sdld55aa4ffbc9f1/p/include -isystem <conan-cache>/p/b/wayla18d5b71128707/p/include -isystem <conan-cache>/p/vulka5f8c9f361cfa0/p/include -isystem <conan-cache>/p/vulkabd7575518f65a/p/res/vulkan/registry -isystem <conan-cache>/p/vulkabd7575518f65a/p/include -m64 -stdlib=libstdc++ -fsanitize=address,undefined -fno-sanitize-recover=all -fno-omit-frame-pointer -g -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror -fsanitize=address,undefined -fno-sanitize-recover=all -fno-omit-frame-pointer @CMakeFiles/ngen_render.dir/engine/render/surface.cpp.o.modmap -o CMakeFiles/ngen_render.dir/engine/render/surface.cpp.o -c <repo>/engine/render/surface.cpp",
+  "file": "<repo>/engine/render/surface.cpp",
+  "output": "<repo>/build/renderer-asan/CMakeFiles/ngen_render.dir/engine/render/surface.cpp.o"
+}
+{
+  "directory": "<repo>/build/renderer-asan",
+  "command": "/bin/clang++ -DFFI_STATIC_BUILD -DLIBXML_STATIC -DVMA_VULKAN_VERSION=1003000 -DXML_STATIC -I<repo>/engine -isystem <conan-cache>/p/b/sdld55aa4ffbc9f1/p/include -isystem <conan-cache>/p/b/wayla18d5b71128707/p/include -isystem <conan-cache>/p/vulka5f8c9f361cfa0/p/include -isystem <conan-cache>/p/vulkabd7575518f65a/p/res/vulkan/registry -isystem <conan-cache>/p/vulkabd7575518f65a/p/include -m64 -stdlib=libstdc++ -fsanitize=address,undefined -fno-sanitize-recover=all -fno-omit-frame-pointer -g -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror -fsanitize=address,undefined -fno-sanitize-recover=all -fno-omit-frame-pointer @CMakeFiles/ngen_render.dir/engine/render/presentation.cpp.o.modmap -o CMakeFiles/ngen_render.dir/engine/render/presentation.cpp.o -c <repo>/engine/render/presentation.cpp",
+  "file": "<repo>/engine/render/presentation.cpp",
+  "output": "<repo>/build/renderer-asan/CMakeFiles/ngen_render.dir/engine/render/presentation.cpp.o"
+}
+{
+  "directory": "<repo>/build/renderer-asan",
+  "command": "/bin/clang++ -DFFI_STATIC_BUILD -DLIBXML_STATIC -DVMA_VULKAN_VERSION=1003000 -DXML_STATIC -I<repo>/engine -isystem <conan-cache>/p/b/sdld55aa4ffbc9f1/p/include -isystem <conan-cache>/p/b/wayla18d5b71128707/p/include -isystem <conan-cache>/p/vulka5f8c9f361cfa0/p/include -isystem <conan-cache>/p/vulkabd7575518f65a/p/res/vulkan/registry -isystem <conan-cache>/p/vulkabd7575518f65a/p/include -m64 -stdlib=libstdc++ -fsanitize=address,undefined -fno-sanitize-recover=all -fno-omit-frame-pointer -g -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror -fsanitize=address,undefined -fno-sanitize-recover=all -fno-omit-frame-pointer @CMakeFiles/ngen_render.dir/engine/render/resources.cpp.o.modmap -o CMakeFiles/ngen_render.dir/engine/render/resources.cpp.o -c <repo>/engine/render/resources.cpp",
+  "file": "<repo>/engine/render/resources.cpp",
+  "output": "<repo>/build/renderer-asan/CMakeFiles/ngen_render.dir/engine/render/resources.cpp.o"
+}
+{
+  "directory": "<repo>/build/renderer-asan",
+  "command": "/bin/clang++ -DFFI_STATIC_BUILD -DLIBXML_STATIC -DXML_STATIC -I<repo>/apps -I<repo>/engine -isystem <conan-cache>/p/b/sdld55aa4ffbc9f1/p/include -isystem <conan-cache>/p/b/wayla18d5b71128707/p/include -m64 -stdlib=libstdc++ -fsanitize=address,undefined -fno-sanitize-recover=all -fno-omit-frame-pointer -g -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror -fsanitize=address,undefined -fno-sanitize-recover=all -fno-omit-frame-pointer @CMakeFiles/ngen_probe_support.dir/apps/probe/presentation.cpp.o.modmap -o CMakeFiles/ngen_probe_support.dir/apps/probe/presentation.cpp.o -c <repo>/apps/probe/presentation.cpp",
+  "file": "<repo>/apps/probe/presentation.cpp",
+  "output": "<repo>/build/renderer-asan/CMakeFiles/ngen_probe_support.dir/apps/probe/presentation.cpp.o"
+}
+{
+  "directory": "<repo>/build/renderer-asan",
+  "command": "/bin/clang++ -DFFI_STATIC_BUILD -DLIBXML_STATIC -DXML_STATIC -I<repo>/apps -I<repo>/engine -isystem <conan-cache>/p/b/sdld55aa4ffbc9f1/p/include -isystem <conan-cache>/p/b/wayla18d5b71128707/p/include -m64 -stdlib=libstdc++ -fsanitize=address,undefined -fno-sanitize-recover=all -fno-omit-frame-pointer -g -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror -fsanitize=address,undefined -fno-sanitize-recover=all -fno-omit-frame-pointer @CMakeFiles/render_probe.dir/apps/render_probe/main.cpp.o.modmap -o CMakeFiles/render_probe.dir/apps/render_probe/main.cpp.o -c <repo>/apps/render_probe/main.cpp",
+  "file": "<repo>/apps/render_probe/main.cpp",
+  "output": "<repo>/build/renderer-asan/CMakeFiles/render_probe.dir/apps/render_probe/main.cpp.o"
+}
+{
+  "directory": "<repo>/build/renderer-asan",
+  "command": "/bin/clang++ -DFFI_STATIC_BUILD -DLIBXML_STATIC -DXML_STATIC -I<repo>/apps -I<repo>/engine -isystem <conan-cache>/p/b/sdld55aa4ffbc9f1/p/include -isystem <conan-cache>/p/b/wayla18d5b71128707/p/include -m64 -stdlib=libstdc++ -fsanitize=address,undefined -fno-sanitize-recover=all -fno-omit-frame-pointer -g -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror -fsanitize=address,undefined -fno-sanitize-recover=all -fno-omit-frame-pointer @CMakeFiles/resource_probe.dir/apps/resource_probe/main.cpp.o.modmap -o CMakeFiles/resource_probe.dir/apps/resource_probe/main.cpp.o -c <repo>/apps/resource_probe/main.cpp",
+  "file": "<repo>/apps/resource_probe/main.cpp",
+  "output": "<repo>/build/renderer-asan/CMakeFiles/resource_probe.dir/apps/resource_probe/main.cpp.o"
+}
+{
+  "directory": "<repo>/build/renderer-asan",
+  "command": "/bin/clang++ -DFFI_STATIC_BUILD -DLIBXML_STATIC -DXML_STATIC -I<repo>/engine -isystem <conan-cache>/p/b/sdld55aa4ffbc9f1/p/include -isystem <conan-cache>/p/b/wayla18d5b71128707/p/include -isystem <conan-cache>/p/b/catch6ca307d792caf/p/include -m64 -stdlib=libstdc++ -fsanitize=address,undefined -fno-sanitize-recover=all -fno-omit-frame-pointer -g -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror -fsanitize=address,undefined -fno-sanitize-recover=all -fno-omit-frame-pointer @CMakeFiles/render_startup_tests.dir/tests/render_startup.cpp.o.modmap -o CMakeFiles/render_startup_tests.dir/tests/render_startup.cpp.o -c <repo>/tests/render_startup.cpp",
+  "file": "<repo>/tests/render_startup.cpp",
+  "output": "<repo>/build/renderer-asan/CMakeFiles/render_startup_tests.dir/tests/render_startup.cpp.o"
+}
+{
+  "directory": "<repo>/build/renderer-asan",
+  "command": "/bin/clang++ -DFFI_STATIC_BUILD -DLIBXML_STATIC -DXML_STATIC -I<repo>/engine -isystem <conan-cache>/p/b/sdld55aa4ffbc9f1/p/include -isystem <conan-cache>/p/b/wayla18d5b71128707/p/include -isystem <conan-cache>/p/b/catch6ca307d792caf/p/include -m64 -stdlib=libstdc++ -fsanitize=address,undefined -fno-sanitize-recover=all -fno-omit-frame-pointer -g -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror -fsanitize=address,undefined -fno-sanitize-recover=all -fno-omit-frame-pointer @CMakeFiles/render_startup_tests.dir/tests/render_surface.cpp.o.modmap -o CMakeFiles/render_startup_tests.dir/tests/render_surface.cpp.o -c <repo>/tests/render_surface.cpp",
+  "file": "<repo>/tests/render_surface.cpp",
+  "output": "<repo>/build/renderer-asan/CMakeFiles/render_startup_tests.dir/tests/render_surface.cpp.o"
+}
+{
+  "directory": "<repo>/build/renderer-asan",
+  "command": "/bin/clang++ -DFFI_STATIC_BUILD -DLIBXML_STATIC -DXML_STATIC -isystem <conan-cache>/p/b/sdld55aa4ffbc9f1/p/include -isystem <conan-cache>/p/b/wayla18d5b71128707/p/include -m64 -stdlib=libstdc++ -fsanitize=address,undefined -fno-sanitize-recover=all -fno-omit-frame-pointer -g -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror -fsanitize=address,undefined -fno-sanitize-recover=all -fno-omit-frame-pointer @CMakeFiles/wayland_tablet_tests.dir/tests/wayland_tablets.cpp.o.modmap -o CMakeFiles/wayland_tablet_tests.dir/tests/wayland_tablets.cpp.o -c <repo>/tests/wayland_tablets.cpp",
+  "file": "<repo>/tests/wayland_tablets.cpp",
+  "output": "<repo>/build/renderer-asan/CMakeFiles/wayland_tablet_tests.dir/tests/wayland_tablets.cpp.o"
+}
+CONFIGURATION renderer-gcc
+{
+  "directory": "<repo>/build/renderer-gcc",
+  "command": "/bin/g++ -I<repo>/engine -m64 -g -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror -fmodules-ts -fmodule-mapper=CMakeFiles/ngen_render_contract.dir/engine/render/capabilities.cpp.o.modmap -MD -fdeps-format=p1689r5 -x c++ -o CMakeFiles/ngen_render_contract.dir/engine/render/capabilities.cpp.o -c <repo>/engine/render/capabilities.cpp",
+  "file": "<repo>/engine/render/capabilities.cpp",
+  "output": "<repo>/build/renderer-gcc/CMakeFiles/ngen_render_contract.dir/engine/render/capabilities.cpp.o"
+}
+{
+  "directory": "<repo>/build/renderer-gcc",
+  "command": "/bin/g++ -DVMA_VULKAN_VERSION=1003000 -isystem <conan-cache>/p/vulka5f8c9f361cfa0/p/include -isystem <conan-cache>/p/vulkabd7575518f65a/p/res/vulkan/registry -isystem <conan-cache>/p/vulkabd7575518f65a/p/include -m64 -g -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror -fmodules-ts -fmodule-mapper=CMakeFiles/ngen_vma.dir/engine/render/vma.cpp.o.modmap -MD -fdeps-format=p1689r5 -x c++ -o CMakeFiles/ngen_vma.dir/engine/render/vma.cpp.o -c <repo>/engine/render/vma.cpp",
+  "file": "<repo>/engine/render/vma.cpp",
+  "output": "<repo>/build/renderer-gcc/CMakeFiles/ngen_vma.dir/engine/render/vma.cpp.o"
+}
+{
+  "directory": "<repo>/build/renderer-gcc",
+  "command": "/bin/g++ -DFFI_STATIC_BUILD -DLIBXML_STATIC -DVMA_VULKAN_VERSION=1003000 -DXML_STATIC -I<repo>/engine -isystem <conan-cache>/p/b/sdl112350e9e86a3/p/include -isystem <conan-cache>/p/b/waylad435838a1c9eb/p/include -isystem <conan-cache>/p/vulka5f8c9f361cfa0/p/include -isystem <conan-cache>/p/vulkabd7575518f65a/p/res/vulkan/registry -isystem <conan-cache>/p/vulkabd7575518f65a/p/include -m64 -g -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror -fmodules-ts -fmodule-mapper=CMakeFiles/ngen_render.dir/engine/render/context.cpp.o.modmap -MD -fdeps-format=p1689r5 -x c++ -o CMakeFiles/ngen_render.dir/engine/render/context.cpp.o -c <repo>/engine/render/context.cpp",
+  "file": "<repo>/engine/render/context.cpp",
+  "output": "<repo>/build/renderer-gcc/CMakeFiles/ngen_render.dir/engine/render/context.cpp.o"
+}
+{
+  "directory": "<repo>/build/renderer-gcc",
+  "command": "/bin/g++ -DFFI_STATIC_BUILD -DLIBXML_STATIC -DVMA_VULKAN_VERSION=1003000 -DXML_STATIC -I<repo>/engine -isystem <conan-cache>/p/b/sdl112350e9e86a3/p/include -isystem <conan-cache>/p/b/waylad435838a1c9eb/p/include -isystem <conan-cache>/p/vulka5f8c9f361cfa0/p/include -isystem <conan-cache>/p/vulkabd7575518f65a/p/res/vulkan/registry -isystem <conan-cache>/p/vulkabd7575518f65a/p/include -m64 -g -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror -fmodules-ts -fmodule-mapper=CMakeFiles/ngen_render.dir/engine/render/surface.cpp.o.modmap -MD -fdeps-format=p1689r5 -x c++ -o CMakeFiles/ngen_render.dir/engine/render/surface.cpp.o -c <repo>/engine/render/surface.cpp",
+  "file": "<repo>/engine/render/surface.cpp",
+  "output": "<repo>/build/renderer-gcc/CMakeFiles/ngen_render.dir/engine/render/surface.cpp.o"
+}
+{
+  "directory": "<repo>/build/renderer-gcc",
+  "command": "/bin/g++ -DFFI_STATIC_BUILD -DLIBXML_STATIC -DVMA_VULKAN_VERSION=1003000 -DXML_STATIC -I<repo>/engine -isystem <conan-cache>/p/b/sdl112350e9e86a3/p/include -isystem <conan-cache>/p/b/waylad435838a1c9eb/p/include -isystem <conan-cache>/p/vulka5f8c9f361cfa0/p/include -isystem <conan-cache>/p/vulkabd7575518f65a/p/res/vulkan/registry -isystem <conan-cache>/p/vulkabd7575518f65a/p/include -m64 -g -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror -fmodules-ts -fmodule-mapper=CMakeFiles/ngen_render.dir/engine/render/presentation.cpp.o.modmap -MD -fdeps-format=p1689r5 -x c++ -o CMakeFiles/ngen_render.dir/engine/render/presentation.cpp.o -c <repo>/engine/render/presentation.cpp",
+  "file": "<repo>/engine/render/presentation.cpp",
+  "output": "<repo>/build/renderer-gcc/CMakeFiles/ngen_render.dir/engine/render/presentation.cpp.o"
+}
+{
+  "directory": "<repo>/build/renderer-gcc",
+  "command": "/bin/g++ -DFFI_STATIC_BUILD -DLIBXML_STATIC -DVMA_VULKAN_VERSION=1003000 -DXML_STATIC -I<repo>/engine -isystem <conan-cache>/p/b/sdl112350e9e86a3/p/include -isystem <conan-cache>/p/b/waylad435838a1c9eb/p/include -isystem <conan-cache>/p/vulka5f8c9f361cfa0/p/include -isystem <conan-cache>/p/vulkabd7575518f65a/p/res/vulkan/registry -isystem <conan-cache>/p/vulkabd7575518f65a/p/include -m64 -g -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror -fmodules-ts -fmodule-mapper=CMakeFiles/ngen_render.dir/engine/render/resources.cpp.o.modmap -MD -fdeps-format=p1689r5 -x c++ -o CMakeFiles/ngen_render.dir/engine/render/resources.cpp.o -c <repo>/engine/render/resources.cpp",
+  "file": "<repo>/engine/render/resources.cpp",
+  "output": "<repo>/build/renderer-gcc/CMakeFiles/ngen_render.dir/engine/render/resources.cpp.o"
+}
+{
+  "directory": "<repo>/build/renderer-gcc",
+  "command": "/bin/g++ -DFFI_STATIC_BUILD -DLIBXML_STATIC -DXML_STATIC -I<repo>/apps -I<repo>/engine -isystem <conan-cache>/p/b/sdl112350e9e86a3/p/include -isystem <conan-cache>/p/b/waylad435838a1c9eb/p/include -m64 -g -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror -fmodules-ts -fmodule-mapper=CMakeFiles/ngen_probe_support.dir/apps/probe/presentation.cpp.o.modmap -MD -fdeps-format=p1689r5 -x c++ -o CMakeFiles/ngen_probe_support.dir/apps/probe/presentation.cpp.o -c <repo>/apps/probe/presentation.cpp",
+  "file": "<repo>/apps/probe/presentation.cpp",
+  "output": "<repo>/build/renderer-gcc/CMakeFiles/ngen_probe_support.dir/apps/probe/presentation.cpp.o"
+}
+{
+  "directory": "<repo>/build/renderer-gcc",
+  "command": "/bin/g++ -DFFI_STATIC_BUILD -DLIBXML_STATIC -DXML_STATIC -I<repo>/apps -I<repo>/engine -isystem <conan-cache>/p/b/sdl112350e9e86a3/p/include -isystem <conan-cache>/p/b/waylad435838a1c9eb/p/include -m64 -g -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror -fmodules-ts -fmodule-mapper=CMakeFiles/render_probe.dir/apps/render_probe/main.cpp.o.modmap -MD -fdeps-format=p1689r5 -x c++ -o CMakeFiles/render_probe.dir/apps/render_probe/main.cpp.o -c <repo>/apps/render_probe/main.cpp",
+  "file": "<repo>/apps/render_probe/main.cpp",
+  "output": "<repo>/build/renderer-gcc/CMakeFiles/render_probe.dir/apps/render_probe/main.cpp.o"
+}
+{
+  "directory": "<repo>/build/renderer-gcc",
+  "command": "/bin/g++ -DFFI_STATIC_BUILD -DLIBXML_STATIC -DXML_STATIC -I<repo>/apps -I<repo>/engine -isystem <conan-cache>/p/b/sdl112350e9e86a3/p/include -isystem <conan-cache>/p/b/waylad435838a1c9eb/p/include -m64 -g -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror -fmodules-ts -fmodule-mapper=CMakeFiles/resource_probe.dir/apps/resource_probe/main.cpp.o.modmap -MD -fdeps-format=p1689r5 -x c++ -o CMakeFiles/resource_probe.dir/apps/resource_probe/main.cpp.o -c <repo>/apps/resource_probe/main.cpp",
+  "file": "<repo>/apps/resource_probe/main.cpp",
+  "output": "<repo>/build/renderer-gcc/CMakeFiles/resource_probe.dir/apps/resource_probe/main.cpp.o"
+}
+{
+  "directory": "<repo>/build/renderer-gcc",
+  "command": "/bin/g++ -DFFI_STATIC_BUILD -DLIBXML_STATIC -DXML_STATIC -I<repo>/engine -isystem <conan-cache>/p/b/sdl112350e9e86a3/p/include -isystem <conan-cache>/p/b/waylad435838a1c9eb/p/include -isystem <conan-cache>/p/b/catch689513cf6391a/p/include -m64 -g -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror -fmodules-ts -fmodule-mapper=CMakeFiles/render_startup_tests.dir/tests/render_startup.cpp.o.modmap -MD -fdeps-format=p1689r5 -x c++ -o CMakeFiles/render_startup_tests.dir/tests/render_startup.cpp.o -c <repo>/tests/render_startup.cpp",
+  "file": "<repo>/tests/render_startup.cpp",
+  "output": "<repo>/build/renderer-gcc/CMakeFiles/render_startup_tests.dir/tests/render_startup.cpp.o"
+}
+{
+  "directory": "<repo>/build/renderer-gcc",
+  "command": "/bin/g++ -DFFI_STATIC_BUILD -DLIBXML_STATIC -DXML_STATIC -I<repo>/engine -isystem <conan-cache>/p/b/sdl112350e9e86a3/p/include -isystem <conan-cache>/p/b/waylad435838a1c9eb/p/include -isystem <conan-cache>/p/b/catch689513cf6391a/p/include -m64 -g -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror -fmodules-ts -fmodule-mapper=CMakeFiles/render_startup_tests.dir/tests/render_surface.cpp.o.modmap -MD -fdeps-format=p1689r5 -x c++ -o CMakeFiles/render_startup_tests.dir/tests/render_surface.cpp.o -c <repo>/tests/render_surface.cpp",
+  "file": "<repo>/tests/render_surface.cpp",
+  "output": "<repo>/build/renderer-gcc/CMakeFiles/render_startup_tests.dir/tests/render_surface.cpp.o"
+}
+{
+  "directory": "<repo>/build/renderer-gcc",
+  "command": "/bin/g++ -DFFI_STATIC_BUILD -DLIBXML_STATIC -DXML_STATIC -isystem <conan-cache>/p/b/sdl112350e9e86a3/p/include -isystem <conan-cache>/p/b/waylad435838a1c9eb/p/include -m64 -g -std=c++20 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror -fmodules-ts -fmodule-mapper=CMakeFiles/wayland_tablet_tests.dir/tests/wayland_tablets.cpp.o.modmap -MD -fdeps-format=p1689r5 -x c++ -o CMakeFiles/wayland_tablet_tests.dir/tests/wayland_tablets.cpp.o -c <repo>/tests/wayland_tablets.cpp",
+  "file": "<repo>/tests/wayland_tablets.cpp",
+  "output": "<repo>/build/renderer-gcc/CMakeFiles/wayland_tablet_tests.dir/tests/wayland_tablets.cpp.o"
+}

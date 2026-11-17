@@ -1,0 +1,1 @@
+Flight demo: overlay positions must be finite local pixels

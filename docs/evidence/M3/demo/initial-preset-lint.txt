@@ -1,0 +1,17 @@
+50 warnings generated.
+/home/kyau/projects/kyaulabs/ngen/apps/flight_demo/preset.cpp:60:45: error: narrowing conversion from constant value 24000000 of type 'int' to 'float' [bugprone-narrowing-conversions,-warnings-as-errors]
+   60 |     profile.flight.maximum_force_newtons = {24000000, 24000000, 72000000};
+      |                                             ^
+/home/kyau/projects/kyaulabs/ngen/apps/flight_demo/preset.cpp:60:55: error: narrowing conversion from constant value 24000000 of type 'int' to 'float' [bugprone-narrowing-conversions,-warnings-as-errors]
+   60 |     profile.flight.maximum_force_newtons = {24000000, 24000000, 72000000};
+      |                                                       ^
+/home/kyau/projects/kyaulabs/ngen/apps/flight_demo/preset.cpp:60:65: error: narrowing conversion from constant value 72000000 of type 'int' to 'float' [bugprone-narrowing-conversions,-warnings-as-errors]
+   60 |     profile.flight.maximum_force_newtons = {24000000, 24000000, 72000000};
+      |                                                                 ^
+/home/kyau/projects/kyaulabs/ngen/apps/flight_demo/preset.cpp:71:70: error: the parameter 'package' of type 'assets::PackagePin' (aka 'std::shared_ptr<const Scene>') is copied for each invocation but only used as a const reference; consider making it a const reference [performance-unnecessary-value-param,-warnings-as-errors]
+   71 | std::variant<Preset, render::Failure> make_preset(assets::PackagePin package,
+      |                                                                      ^
+      |                                                   const             &
+Suppressed 46 warnings (46 in non-user code).
+Use -header-filter=.* or leave it as default to display errors from all non-system headers. Use -system-headers to display errors from system headers as well.
+4 warnings treated as errors

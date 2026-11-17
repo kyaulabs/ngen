@@ -1,0 +1,14 @@
+[1/16] Scanning /home/kyau/projects/kyaulabs/ngen/engine/render/context.cpp for CXX dependencies
+[2/16] Scanning /home/kyau/projects/kyaulabs/ngen/engine/render/presentation.cpp for CXX dependencies
+[3/16] Generating CXX dyndep file CMakeFiles/ngen_render.dir/CXX.dd
+[4/15] Scanning /home/kyau/projects/kyaulabs/ngen/apps/render_probe/main.cpp for CXX dependencies
+[5/15] Scanning /home/kyau/projects/kyaulabs/ngen/tests/render_startup.cpp for CXX dependencies
+[6/15] Building CXX object CMakeFiles/ngen_render.dir/engine/render/presentation.cpp.o
+[7/15] Generating CXX dyndep file CMakeFiles/render_probe.dir/CXX.dd
+[8/15] Generating CXX dyndep file CMakeFiles/render_startup_tests.dir/CXX.dd
+[9/14] Building CXX object CMakeFiles/ngen_render.dir/engine/render/context.cpp.o
+[10/14] Linking CXX static library libngen_render.a
+[11/14] Building CXX object CMakeFiles/render_probe.dir/apps/render_probe/main.cpp.o
+[12/14] Linking CXX executable render_probe
+[13/14] Building CXX object CMakeFiles/render_startup_tests.dir/tests/render_startup.cpp.o
+[14/14] Linking CXX executable render_startup_tests

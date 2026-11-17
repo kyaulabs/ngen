@@ -1,0 +1,8 @@
+{
+  "accepted_package_sha256": "9b645de103ea92677c3cfe97cb8bd88ede8e7109f34c0f926888ba65c7522e63",
+  "owner_verdict": "Accept exhaust",
+  "hull_verdict": "unaccepted; inspect separately",
+  "shader_sha256": "1d4ac1c6c7c4a9eead9054ce188ffc958171e4a5de5bf3086d3f5ca8986dec32",
+  "geometry_receipt": "droplet-v2-geometry-green.json",
+  "preview_log": "live-droplet-v2-preview1.txt"
+}

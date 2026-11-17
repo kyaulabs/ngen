@@ -1,0 +1,32 @@
+Test project <REPO>/build/asset-debug
+    Start 5: asset_cook_tests
+1/1 Test #5: asset_cook_tests .................***Failed    0.00 sec
+Randomness seeded to: 1242792019
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+asset_cook_tests is a Catch2 v3.16.0 host application.
+Run with -? for options
+
+-------------------------------------------------------------------------------
+offline cooker filters linear material data without sRGB conversion
+-------------------------------------------------------------------------------
+<REPO>/tests/asset_cook.cpp:105
+...............................................................................
+
+<REPO>/tests/asset_cook.cpp:113: FAILED:
+explicitly with message:
+  non-color mip cooking is not implemented
+
+===============================================================================
+test cases:  4 |  3 passed | 1 failed
+assertions: 51 | 50 passed | 1 failed
+
+
+
+0% tests passed, 1 tests failed out of 1
+
+Total Test time (real) =   0.01 sec
+
+The following tests FAILED:
+	  5 - asset_cook_tests (Failed)
+Errors while running CTest

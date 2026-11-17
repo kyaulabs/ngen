@@ -1,0 +1,32 @@
+Test project <REPO>/build/asset-debug
+    Start 3: asset_import_tests
+1/1 Test #3: asset_import_tests ...............***Failed    0.00 sec
+Randomness seeded to: 1692575717
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+asset_import_tests is a Catch2 v3.16.0 host application.
+Run with -? for options
+
+-------------------------------------------------------------------------------
+static GLB import preserves punctual light units and world transforms
+-------------------------------------------------------------------------------
+<REPO>/tests/asset_import.cpp:72
+...............................................................................
+
+<REPO>/tests/asset_import.cpp:78: FAILED:
+explicitly with message:
+  MissingExtensions
+
+===============================================================================
+test cases:  6 |  5 passed | 1 failed
+assertions: 28 | 27 passed | 1 failed
+
+
+
+0% tests passed, 1 tests failed out of 1
+
+Total Test time (real) =   0.00 sec
+
+The following tests FAILED:
+	  3 - asset_import_tests (Failed)
+Errors while running CTest

@@ -1,0 +1,14 @@
+E...
+======================================================================
+ERROR: test_bad_controls_and_existing_outputs_reject_before_native_execution (__main__.Workload.test_bad_controls_and_existing_outputs_reject_before_native_execution)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "$REPO/tests/workload_cli.py", line 60, in test_bad_controls_and_existing_outputs_reject_before_native_execution
+    path = pathlib.Path(temporary) / ("owner" + suffix)
+           ^^^^^^^
+NameError: name 'pathlib' is not defined. Did you forget to import 'pathlib'?
+
+----------------------------------------------------------------------
+Ran 4 tests in 44.973s
+
+FAILED (errors=1)

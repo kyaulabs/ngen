@@ -1,0 +1,33 @@
+Test project /home/kyau/projects/kyaulabs/ngen/build/demo-debug
+    Start 9: flight_rcs_pulses
+1/1 Test #9: flight_rcs_pulses ................***Failed    0.03 sec
+Randomness seeded to: 1535298074
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+rcs_pulse_tests is a Catch2 v3.16.0 host application.
+Run with -? for options
+
+-------------------------------------------------------------------------------
+published RCS firings supply the force and moment actually applied to Jolt
+-------------------------------------------------------------------------------
+/home/kyau/projects/kyaulabs/ngen/tests/rcs_pulses.cpp:9
+...............................................................................
+
+/home/kyau/projects/kyaulabs/ngen/tests/rcs_pulses.cpp:37: FAILED:
+  REQUIRE( std::abs(after.force_newtons[axis] - force[axis]) <= std::max(1., std::abs(force[axis])) * 1e-5 )
+with expansion:
+  24000000.0 <= 0.00001
+
+===============================================================================
+test cases:   10 |    9 passed | 1 failed
+assertions: 2840 | 2839 passed | 1 failed
+
+
+
+0% tests passed, 1 tests failed out of 1
+
+Total Test time (real) =   0.03 sec
+
+The following tests FAILED:
+	  9 - flight_rcs_pulses (Failed)
+Errors while running CTest

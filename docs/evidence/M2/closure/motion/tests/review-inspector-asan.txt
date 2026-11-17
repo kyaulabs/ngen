@@ -1,0 +1,27 @@
+Test project /home/kyau/projects/kyaulabs/ngen/build/inspector-asan
+      Start  1: ngen_tests
+ 1/11 Test  #1: ngen_tests .......................   Passed    0.02 sec
+      Start  2: render_contract_tests
+ 2/11 Test  #2: render_contract_tests ............   Passed    0.02 sec
+      Start  3: render_environment_tests
+ 3/11 Test  #3: render_environment_tests .........   Passed    3.02 sec
+      Start  4: scene_workload_tests
+ 4/11 Test  #4: scene_workload_tests .............   Passed    0.04 sec
+      Start  5: asset_package_tests
+ 5/11 Test  #5: asset_package_tests ..............   Passed    0.62 sec
+      Start  6: inspector_tests
+ 6/11 Test  #6: inspector_tests ..................   Passed    0.03 sec
+      Start  7: render_startup_tests
+ 7/11 Test  #7: render_startup_tests .............   Passed    0.04 sec
+      Start  8: wayland_tablet_shutdown
+ 8/11 Test  #8: wayland_tablet_shutdown ..........   Passed    0.66 sec
+      Start  9: wayland_tablet_removal
+ 9/11 Test  #9: wayland_tablet_removal ...........   Passed    0.66 sec
+      Start 10: replay_serial
+10/11 Test #10: replay_serial ....................   Passed    0.04 sec
+      Start 11: replay_workers
+11/11 Test #11: replay_workers ...................   Passed    0.05 sec
+
+100% tests passed out of 11
+
+Total Test time (real) =   5.20 sec

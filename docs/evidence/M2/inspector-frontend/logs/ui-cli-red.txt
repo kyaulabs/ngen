@@ -1,0 +1,15 @@
+F
+======================================================================
+FAIL: test_native_inspector_is_composited_into_the_workload_and_capture (__main__.Inspector.test_native_inspector_is_composited_into_the_workload_and_capture)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<ROOT>/tests/inspector_cli.py", line 21, in test_native_inspector_is_composited_into_the_workload_and_capture
+    self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 2 != 0 : Workload arguments: unknown workload argument
+
+
+----------------------------------------------------------------------
+Ran 1 test in 0.003s
+
+FAILED (failures=1)

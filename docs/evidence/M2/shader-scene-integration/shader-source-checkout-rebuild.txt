@@ -1,0 +1,77 @@
+[0/2] Re-checking globbed directories...
+[1/2] Re-running CMake...
+-- Using Conan toolchain: <REPO>/build/renderer-debug/conan_toolchain.cmake
+-- Conan toolchain: Defining architecture flag: -m64
+-- Conan toolchain: Defining libcxx as C++ flags: -stdlib=libstdc++
+-- Conan toolchain: C++ Standard 20 with extensions OFF
+-- Conan: Target declared 'enkiTS::enkiTS'
+-- Conan: Component target declared 'SDL3::Headers'
+-- Conan: Component target declared 'SDL3::SDL3'
+-- Conan: Target declared 'sdl::sdl'
+-- Conan: Component target declared 'xkbcommon::libxkbcommon'
+-- Conan: Component target declared 'xkbcommon::libxkbregistry'
+-- Conan: Component target declared 'xkbcommon::xkbcli-interactive-wayland'
+-- Conan: Target declared 'xkbcommon::xkbcommon'
+-- Conan: Target declared 'xkeyboard-config::xkeyboard-config'
+-- Conan: Component target declared 'wayland::wayland-scanner'
+-- Conan: Component target declared 'wayland::wayland-server'
+-- Conan: Component target declared 'wayland::wayland-client'
+-- Conan: Component target declared 'wayland::wayland-egl-backend'
+-- Conan: Component target declared 'wayland::wayland-cursor'
+-- Conan: Component target declared 'wayland::wayland-egl'
+-- Conan: Target declared 'wayland::wayland'
+-- Conan: Target declared 'libffi::libffi'
+-- Conan: Target declared 'LibXml2::LibXml2'
+-- Conan: Target declared 'Iconv::Iconv'
+-- Conan: Target declared 'ZLIB::ZLIB'
+-- Conan: Target declared 'expat::expat'
+-- Conan: Target declared 'egl::egl'
+-- Conan: Target declared 'GPUOpen::VulkanMemoryAllocator'
+-- Conan: Component target declared 'Vulkan::Registry'
+-- Conan: Target declared 'vulkan-headers::vulkan-headers'
+-- Conan: Component target declared 'Catch2::Catch2'
+-- Conan: Component target declared 'Catch2::Catch2WithMain'
+-- Configuring done (0.5s)
+-- Generating done (0.0s)
+-- Build files have been written to: <REPO>/build/renderer-debug
+[0/4] Re-checking globbed directories...
+[1/82] Scanning <REPO>/engine/core/entities.cpp for CXX dependencies
+[2/82] Scanning <REPO>/engine/core/values.cpp for CXX dependencies
+[3/82] Scanning <REPO>/engine/render/capabilities.cpp for CXX dependencies
+[4/82] Generating CXX dyndep file CMakeFiles/ngen_core.dir/CXX.dd
+[5/79] Scanning <REPO>/engine/render/vma.cpp for CXX dependencies
+[6/79] Generating CXX dyndep file CMakeFiles/ngen_render_contract.dir/CXX.dd
+[7/77] Generating CXX dyndep file CMakeFiles/ngen_vma.dir/CXX.dd
+[8/75] Scanning <REPO>/engine/jobs/jobs.cpp for CXX dependencies
+[9/75] Scanning <REPO>/engine/render/surface.cpp for CXX dependencies
+[10/75] Scanning <REPO>/engine/render/context.cpp for CXX dependencies
+[11/75] Scanning <REPO>/engine/render/presentation.cpp for CXX dependencies
+[12/75] Generating CXX dyndep file CMakeFiles/ngen_jobs.dir/CXX.dd
+[13/73] Scanning <REPO>/engine/render/resources.cpp for CXX dependencies
+[14/73] Generating CXX dyndep file CMakeFiles/ngen_render.dir/CXX.dd
+[15/68] Scanning <REPO>/engine/simulation/simulation.cpp for CXX dependencies
+[16/68] Scanning <REPO>/apps/probe/presentation.cpp for CXX dependencies
+[17/68] Generating CXX dyndep file CMakeFiles/ngen_simulation.dir/CXX.dd
+[18/66] Scanning <REPO>/apps/sim_harness/main.cpp for CXX dependencies
+[19/66] Generating CXX dyndep file CMakeFiles/ngen_probe_support.dir/CXX.dd
+[20/64] Scanning <REPO>/apps/render_probe/main.cpp for CXX dependencies
+[21/64] Scanning <REPO>/apps/resource_probe/main.cpp for CXX dependencies
+[22/64] Scanning <REPO>/tests/core.cpp for CXX dependencies
+[23/64] Scanning <REPO>/tests/jobs.cpp for CXX dependencies
+[24/64] Scanning <REPO>/tests/simulation.cpp for CXX dependencies
+[25/64] Scanning <REPO>/tests/render_capabilities.cpp for CXX dependencies
+[26/64] Scanning <REPO>/tests/render_startup.cpp for CXX dependencies
+[27/64] Scanning <REPO>/tests/render_surface.cpp for CXX dependencies
+[28/64] Scanning <REPO>/tests/wayland_tablets.cpp for CXX dependencies
+[29/64] Generating CXX dyndep file CMakeFiles/sim_harness.dir/CXX.dd
+[30/62] Generating CXX dyndep file CMakeFiles/render_probe.dir/CXX.dd
+[31/60] Generating CXX dyndep file CMakeFiles/resource_probe.dir/CXX.dd
+[32/58] Generating CXX dyndep file CMakeFiles/ngen_tests.dir/CXX.dd
+[33/54] Generating CXX dyndep file CMakeFiles/render_contract_tests.dir/CXX.dd
+[34/52] Generating CXX dyndep file CMakeFiles/render_startup_tests.dir/CXX.dd
+[35/49] Generating CXX dyndep file CMakeFiles/wayland_tablet_tests.dir/CXX.dd
+[36/47] Generating shaders/9f97231fe6884633bd7726ec74b7106376c2c3ff7cfbbdb1238a8881385967c8/manifest.json
+[37/47] Scanning <REPO>/tests/shader_layout.cpp for CXX dependencies
+[38/47] Generating CXX dyndep file CMakeFiles/shader_contract_layout.dir/CXX.dd
+[39/45] Scanning <REPO>/tests/shader_gpu.cpp for CXX dependencies
+[40/45] Generating CXX dyndep file CMakeFiles/shader_gpu_probe.dir/CXX.dd

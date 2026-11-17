@@ -1,0 +1,34 @@
+Test project /home/kyau/projects/kyaulabs/ngen/build/flight-debug
+    Start 3: flight_camera
+1/1 Test #3: flight_camera ....................***Failed    0.00 sec
+Randomness seeded to: 3396754410
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+flight_camera_tests is a Catch2 v3.16.0 host application.
+Run with -? for options
+
+-------------------------------------------------------------------------------
+a tactical camera boom shortens before an obstacle without pushing the mounted
+first person
+-------------------------------------------------------------------------------
+/home/kyau/projects/kyaulabs/ngen/tests/flight_camera.cpp:155
+...............................................................................
+
+/home/kyau/projects/kyaulabs/ngen/tests/flight_camera.cpp:166: FAILED:
+  REQUIRE( distance < 4.751 )
+with expansion:
+  8.99999981348973321 < 4.75100000000000033
+
+===============================================================================
+test cases:   7 |   6 passed | 1 failed
+assertions: 147 | 146 passed | 1 failed
+
+
+
+0% tests passed, 1 tests failed out of 1
+
+Total Test time (real) =   0.00 sec
+
+The following tests FAILED:
+	  3 - flight_camera (Failed)
+Errors while running CTest

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="(empty)"
+	tests="6"
+	failures="0"
+	disabled="0"
+	skipped="0"
+	hostname=""
+	time="4"
+	timestamp="2026-11-06T07:15:00"
+	>
+	<testcase name="ngen_tests" classname="ngen_tests" time="0.117991" status="run">
+		<properties/>
+		<system-out>Randomness seeded to: 2799189049
+===============================================================================
+All tests passed (281 assertions in 10 test cases)
+
+</system-out>
+	</testcase>
+	<testcase name="render_contract_tests" classname="render_contract_tests" time="0.102694" status="run">
+		<properties/>
+		<system-out>Randomness seeded to: 1557121540
+===============================================================================
+All tests passed (9 assertions in 1 test case)
+
+</system-out>
+	</testcase>
+	<testcase name="asset_import_tests" classname="asset_import_tests" time="3.79883" status="run">
+		<properties/>
+		<system-out>Randomness seeded to: 3993663301
+===============================================================================
+All tests passed (29412 assertions in 26 test cases)
+
+</system-out>
+	</testcase>
+	<testcase name="asset_cli" classname="asset_cli" time="0.597812" status="run">
+		<properties/>
+		<system-out>....
+----------------------------------------------------------------------
+Ran 4 tests in 0.375s
+
+OK
+</system-out>
+	</testcase>
+	<testcase name="replay_serial" classname="replay_serial" time="0.105322" status="run">
+		<properties/>
+		<system-out>seed=0x4e47454e workers=0 ticks=1000 entities=8 commands=32000 sum=11930
+tick_ns p50=52688 p95=98424 p99=121771 allocation_probe=0 new_allocations=0 scheduler_allocations=0
+</system-out>
+	</testcase>
+	<testcase name="replay_workers" classname="replay_workers" time="0.113203" status="run">
+		<properties/>
+		<system-out>seed=0x4e47454e workers=2 ticks=1000 entities=8 commands=32000 sum=11930
+tick_ns p50=74881 p95=130180 p99=159838 allocation_probe=0 new_allocations=0 scheduler_allocations=0
+</system-out>
+	</testcase>
+</testsuite>

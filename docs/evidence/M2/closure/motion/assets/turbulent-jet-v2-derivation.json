@@ -1,0 +1,37 @@
+{
+  "package": "/home/kyau/projects/kyaulabs/ngen/build/cooked-candidate/frigate-turbulent-jet-v2/scene.ngas",
+  "sha256": "5e69d51b48539b17b00b15d9b8e71d1d705b625bbfceab7cb539390aa24e988b",
+  "runtime": {
+    "package_valid": 1,
+    "vertices": 1304372,
+    "indices": 3309156,
+    "primitives": 189,
+    "instances": 194,
+    "materials": 14,
+    "images": 6,
+    "textures": 17,
+    "lights": 612,
+    "light_instances": 612,
+    "texture_bytes": 89565864,
+    "lod_triangles": [
+      574168,
+      290836,
+      238112
+    ],
+    "checksum": 2549969289
+  },
+  "turbulent_jet": {
+    "name": "long-white-core-blue-fringe-v2",
+    "base_sha256": "067407fb5fa2527771212cc7280a345b02ad3dd2a823ae8ba81b3553689ec52b",
+    "author_sha256": "a2f98161aa7aec84de303a5467eeee606b66121d7e5237eba06dc227c5249753",
+    "ktx_sha256": "415cc81715d1b5e4661b5077ecfde9ba207c7fbd997f0b78a44c57dfe6ceca97",
+    "texture_extent": [
+      128,
+      64
+    ],
+    "texture_bytes": 43692,
+    "white_core_full_until_u": 0.6,
+    "white_core_fades_until_u": 0.95,
+    "scope": "Owner explicitly chose a white-hot center along most of the jet, blue fringes and irregular fast streaks. Sprite authored mathematically; no reference pixels or logos. Source geometry, transforms, overall length/radius, original images, other materials, dark housings and light definitions are preserved."
+  }
+}

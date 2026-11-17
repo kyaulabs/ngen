@@ -1,0 +1,67 @@
+[
+  {
+    "configuration": "inspector-debug",
+    "header": "engine/render/scene_draw.hpp",
+    "consumers": [
+      "engine/render/scene_draw.cpp",
+      "apps/scene_workload/fixture.cpp",
+      "engine/tools/ui.cpp",
+      "apps/scene_workload/main.cpp",
+      "apps/inspector_probe/main.cpp",
+      "apps/scene_probe/main.cpp",
+      "apps/scene_probe/draw.cpp",
+      "tests/workload.cpp"
+    ]
+  },
+  {
+    "configuration": "inspector-release",
+    "header": "engine/render/scene_draw.hpp",
+    "consumers": [
+      "engine/render/scene_draw.cpp",
+      "apps/scene_workload/fixture.cpp",
+      "engine/tools/ui.cpp",
+      "apps/scene_workload/main.cpp",
+      "apps/inspector_probe/main.cpp",
+      "apps/scene_probe/main.cpp",
+      "apps/scene_probe/draw.cpp",
+      "tests/workload.cpp"
+    ]
+  },
+  {
+    "configuration": "inspector-asan",
+    "header": "engine/render/scene_draw.hpp",
+    "consumers": [
+      "engine/render/scene_draw.cpp",
+      "apps/scene_workload/fixture.cpp",
+      "engine/tools/ui.cpp",
+      "apps/scene_workload/main.cpp",
+      "apps/inspector_probe/main.cpp",
+      "apps/scene_probe/main.cpp",
+      "apps/scene_probe/draw.cpp",
+      "tests/workload.cpp"
+    ]
+  },
+  {
+    "configuration": "scene-shipping",
+    "header": "engine/render/scene_draw.hpp",
+    "consumers": [
+      "engine/render/scene_draw.cpp",
+      "apps/scene_workload/fixture.cpp",
+      "apps/scene_workload/main.cpp",
+      "apps/scene_probe/main.cpp",
+      "apps/scene_probe/draw.cpp",
+      "tests/workload.cpp"
+    ]
+  },
+  {
+    "configuration": "scene-no-shaders",
+    "header": "engine/render/scene_draw.hpp",
+    "consumers": [
+      "engine/render/scene_draw.cpp",
+      "apps/scene_workload/fixture.cpp",
+      "apps/scene_probe/main.cpp",
+      "apps/scene_probe/draw.cpp",
+      "tests/workload.cpp"
+    ]
+  }
+]

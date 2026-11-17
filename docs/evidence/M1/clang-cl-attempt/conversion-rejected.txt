@@ -1,0 +1,13 @@
+Change Dir: '/home/kyau/projects/kyaulabs/ngen/build/clang-warning-red'
+
+Run Build Command(s): /bin/ninja -v conversion_error
+[1/3] "/usr/bin/clang-scan-deps" -format=p1689 -- /bin/clang-cl   /DWIN32 /D_WINDOWS /EHsc /Ob0 /Od /RTC1 -std:c++20 -MDd -Zi /W4 -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror -x c++ -c -clang:-o -clang:CMakeFiles/conversion_error.dir/conversion.cpp.obj -clang:-MT -clang:CMakeFiles/conversion_error.dir/conversion.cpp.obj.ddi -clang:-MD -clang:-MF -clang:CMakeFiles/conversion_error.dir/conversion.cpp.obj.ddi.d -- /home/kyau/projects/kyaulabs/ngen/build/clang-warning-fixture/conversion.cpp > CMakeFiles/conversion_error.dir/conversion.cpp.obj.ddi.tmp && mv CMakeFiles/conversion_error.dir/conversion.cpp.obj.ddi.tmp CMakeFiles/conversion_error.dir/conversion.cpp.obj.ddi
+[2/3] /bin/cmake -E cmake_ninja_dyndep --tdi=CMakeFiles/conversion_error.dir/CXXDependInfo.json --lang=CXX --modmapfmt=clang --dd=CMakeFiles/conversion_error.dir/CXX.dd @CMakeFiles/conversion_error.dir/CXX.dd.rsp
+[3/3] /bin/clang-cl  /nologo -TP   /DWIN32 /D_WINDOWS /EHsc /Ob0 /Od /RTC1 -std:c++20 -MDd -Zi /W4 -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror -clang:-MD -clang:-MTCMakeFiles/conversion_error.dir/conversion.cpp.obj -clang:-MFCMakeFiles/conversion_error.dir/conversion.cpp.obj.d @CMakeFiles/conversion_error.dir/conversion.cpp.obj.modmap /FoCMakeFiles/conversion_error.dir/conversion.cpp.obj /FdCMakeFiles/conversion_error.dir/ -c -- /home/kyau/projects/kyaulabs/ngen/build/clang-warning-fixture/conversion.cpp
+FAILED: [code=1] CMakeFiles/conversion_error.dir/conversion.cpp.obj
+/bin/clang-cl  /nologo -TP   /DWIN32 /D_WINDOWS /EHsc /Ob0 /Od /RTC1 -std:c++20 -MDd -Zi /W4 -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror -clang:-MD -clang:-MTCMakeFiles/conversion_error.dir/conversion.cpp.obj -clang:-MFCMakeFiles/conversion_error.dir/conversion.cpp.obj.d @CMakeFiles/conversion_error.dir/conversion.cpp.obj.modmap /FoCMakeFiles/conversion_error.dir/conversion.cpp.obj /FdCMakeFiles/conversion_error.dir/ -c -- /home/kyau/projects/kyaulabs/ngen/build/clang-warning-fixture/conversion.cpp
+/home/kyau/projects/kyaulabs/ngen/build/clang-warning-fixture/conversion.cpp(1,35): error: implicit conversion turns floating-point number into integer: 'double' to 'int' [-Werror,-Wfloat-conversion]
+    1 | int narrow(double value) { return value; }
+      |                            ~~~~~~ ^~~~~
+1 error generated.
+ninja: build stopped: subcommand failed.

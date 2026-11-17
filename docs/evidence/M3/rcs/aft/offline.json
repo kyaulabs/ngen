@@ -1,0 +1,17 @@
+{
+  "source_revision": "c63c4520430f1e50ff93f6b45b112a5eb7cf5881",
+  "bundle": "build/m3-offline-linux-v9/ngen-flight",
+  "manifest_files_verified": 23,
+  "source_archive_members": 241,
+  "source_correspondence": true,
+  "network_unshared": true,
+  "conan_hidden": true,
+  "sdk_environment_absent": true,
+  "headless_geometry_verified": true,
+  "rendered_frames": 3,
+  "warmup": 2,
+  "finite_hdr_all_gpu_rows": true,
+  "stderr_bytes": 0,
+  "platform_abi_still_required": true,
+  "scope": "New RCS checkpoint bundle, not final UI/Windows/three-run/listening acceptance."
+}

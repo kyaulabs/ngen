@@ -1,0 +1,12 @@
+[
+  {
+    "name": "long-stream.bmp",
+    "bytes": 3686538,
+    "sha256": "496e22bc7cc9930ba0eb91dad945be76b7710c979441131943178900cdb24a50"
+  },
+  {
+    "name": "long-stream.csv",
+    "bytes": 506008,
+    "sha256": "cbda173e9674e5ad5192fba2e1aff9f17afe0a67eb66d6bbbe1d1f954604fc07"
+  }
+]

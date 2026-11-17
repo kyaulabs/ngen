@@ -1,0 +1,6 @@
+{"aft_of_nozzle_roi": [1110, 200, 1260, 900], "bright_pixels": 0, "blue_pixels": 0, "white_core_pixels": 0}
+Traceback (most recent call last):
+  File "<repo>/build/m2-engine-color/check-plume-pixels.py", line 11, in <module>
+    assert bright>250 and blue>100 and white>10,'directional blue-white plume does not extend beyond nozzle'
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: directional blue-white plume does not extend beyond nozzle

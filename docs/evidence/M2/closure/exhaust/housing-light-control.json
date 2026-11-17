@@ -1,0 +1,44 @@
+{
+  "blue-white-native-rear.bmp": {
+    "housing_region": [
+      930,
+      575,
+      990,
+      630
+    ],
+    "median_rgb": [
+      242.0,
+      250.0,
+      255.0
+    ],
+    "white_clipped_pixels": 3180
+  },
+  "control-native-rear.bmp": {
+    "housing_region": [
+      930,
+      575,
+      990,
+      630
+    ],
+    "median_rgb": [
+      2.0,
+      3.0,
+      6.0
+    ],
+    "white_clipped_pixels": 0
+  },
+  "localized-native-rear.bmp": {
+    "housing_region": [
+      930,
+      575,
+      990,
+      630
+    ],
+    "median_rgb": [
+      2.0,
+      3.0,
+      6.0
+    ],
+    "white_clipped_pixels": 0
+  }
+}

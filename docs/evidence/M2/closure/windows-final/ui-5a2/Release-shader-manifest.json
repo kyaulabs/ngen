@@ -1,0 +1,219 @@
+{
+  "schema": 1,
+  "target": "vulkan1.3",
+  "spirv": "1.5",
+  "matrix_layout": "column-major",
+  "compiler": {
+    "version": "2026.21",
+    "sha256": "71d56bcc90709700b318413bfced07a4b7378c76b2bbc539e89f2d2c90b1e5f8"
+  },
+  "validator": {
+    "version": "SPIRV-Tools v2026.3 unknown hash, 2026-09-23T11:21:28+00:00\r\nTargets:\r\n  SPIR-V 1.0\r\n  SPIR-V 1.1\r\n  SPIR-V 1.2\r\n  SPIR-V 1.3\r\n  SPIR-V 1.4\r\n  SPIR-V 1.5\r\n  SPIR-V 1.6\r\n  SPIR-V 1.2 (under OpenCL 2.2 Full Profile semantics)\r\n  SPIR-V 1.0 (under Vulkan 1.0 semantics)\r\n  SPIR-V 1.3 (under Vulkan 1.1 semantics)\r\n  SPIR-V 1.4 (under Vulkan 1.1 semantics)\r\n  SPIR-V 1.5 (under Vulkan 1.2 semantics)\r\n  SPIR-V 1.6 (under Vulkan 1.3 semantics) SPIR-V 1.6 (under Vulkan 1.4 semantics)",
+    "sha256": "bc87e6c5ebfe1703df75d24c5c4275c6fcda17f8bd644f3e82df52e7b624970a"
+  },
+  "libraries": [
+    {
+      "file": "bin/gfx.dll",
+      "sha256": "740e9528af060053c09740d048bbc2a7b32f08251f1c935f8794f2c11c45b42e"
+    },
+    {
+      "file": "bin/gfx.slang",
+      "sha256": "621f34605c411822bfda8f098d9b2b467d525d77ced141aa62bd8c7816aa95c8"
+    },
+    {
+      "file": "bin/slang-compiler.dll",
+      "sha256": "5550138e528b9cd2d2eeabb5e148823b92d71e7e7c0a5c5946b18f7ce4a4b241"
+    },
+    {
+      "file": "bin/slang-glsl-module.dll",
+      "sha256": "e50de18dcc594b3faec7369b04b5f5d4946ade4b0430533b09b6e14278146199"
+    },
+    {
+      "file": "bin/slang-glslang.dll",
+      "sha256": "2129567ceeb21590bdb46831c7ade2ebd22b0ca25383735aeb1ecde3c22aa782"
+    },
+    {
+      "file": "bin/slang-llvm.dll",
+      "sha256": "ecca3a9c07baf80fb9e0f2462382795a1b036afec852a895b050684a25ede0b8"
+    },
+    {
+      "file": "bin/slang-rt.dll",
+      "sha256": "be2cf037011bf0d47960a097d3ffbe2a2acbf5a578ab6c66eef48ba259a62951"
+    },
+    {
+      "file": "bin/slang-standard-module-2026.21/experimental/workgraph.slang",
+      "sha256": "5ac051e0bbb9e78cad3d7d368aa76045adefe417133182e4b9a783ed711345d7"
+    },
+    {
+      "file": "bin/slang-standard-module-2026.21/slang/accelerate-vector-coopmat.slang",
+      "sha256": "bdf92713aea036cb8a68bb520155f8e67dc1ef74b299ea2371fd187fbaf5f1e9"
+    },
+    {
+      "file": "bin/slang-standard-module-2026.21/slang/activations.slang",
+      "sha256": "17111ed31a33986a8f3e1028754da83f8e8c17ad4eae082b46a6910c486f1469"
+    },
+    {
+      "file": "bin/slang-standard-module-2026.21/slang/bindless-storage.slang",
+      "sha256": "af5d4c7a6cce1b7c19dcb556823d4855394ee1e0e6d2d2a74887cd3775ec671e"
+    },
+    {
+      "file": "bin/slang-standard-module-2026.21/slang/hash-function.slang",
+      "sha256": "bee7e1dd58b8ac576189f6543ec9c0bcea49d780c92b3f59649317e7f68c0601"
+    },
+    {
+      "file": "bin/slang-standard-module-2026.21/slang/iactivation.slang",
+      "sha256": "886d1de409f9788a15272358306771106d356811ba05431d2e2ea4405fdc80bf"
+    },
+    {
+      "file": "bin/slang-standard-module-2026.21/slang/iencoder.slang",
+      "sha256": "d54547342622935f630954e475c532d3e6280b12066456ddb629407bee747c41"
+    },
+    {
+      "file": "bin/slang-standard-module-2026.21/slang/ilayer.slang",
+      "sha256": "f90e83e132de9a1b729b85d85ee64cd7ba20c4b0db1321cfb0058db84792541d"
+    },
+    {
+      "file": "bin/slang-standard-module-2026.21/slang/inline-vector.slang",
+      "sha256": "4dd82536ccc99a05af682d8f08891906aa8e8190470cc1746a5ffeafffaf20d5"
+    },
+    {
+      "file": "bin/slang-standard-module-2026.21/slang/istorages.slang",
+      "sha256": "6bd2a6aae09e5bad8a2ef6a3f086f1fee430d859366325f2e343253ba8f06ab4"
+    },
+    {
+      "file": "bin/slang-standard-module-2026.21/slang/ivector.slang",
+      "sha256": "4146fb8627f89c7d0ee2f516f617fdcb27182a62fcb371d248cb43889c4baa4a"
+    },
+    {
+      "file": "bin/slang-standard-module-2026.21/slang/layers.slang",
+      "sha256": "9a772bf23d5697d1b7325dec59856ea47158e05a95218a4ecb17e6128a277d1e"
+    },
+    {
+      "file": "bin/slang-standard-module-2026.21/slang/mma-linear-layout-help.slang",
+      "sha256": "6778fc740686062015448effd4536ef35331d62a1ff6f4278e5c7a5af1a8a163"
+    },
+    {
+      "file": "bin/slang-standard-module-2026.21/slang/mma-tiled-cuda.slang",
+      "sha256": "c002e5bbfe7d73bd05691122ea8d0c860c7defa07fd5f077481fbb7d64874c47"
+    },
+    {
+      "file": "bin/slang-standard-module-2026.21/slang/mma-tiled-layout-helper.slang",
+      "sha256": "a7f3bacede85b39797927710fb8aa47d952e2621428d0eb23b3b3142d3eef00e"
+    },
+    {
+      "file": "bin/slang-standard-module-2026.21/slang/mma-tiled-metal.slang",
+      "sha256": "60eb69591e610da07a791ee0ff565c1f56117d5e2f00af5f15c26a16daab1420"
+    },
+    {
+      "file": "bin/slang-standard-module-2026.21/slang/mma-tiled-vulkan.slang",
+      "sha256": "60b9df04e732f0f9598426a0f175f5556d6904d4711281716a8fa986d824e3c4"
+    },
+    {
+      "file": "bin/slang-standard-module-2026.21/slang/network-parameter-layout-converter.slang",
+      "sha256": "40c0a26d4204c63977024e609d13d2f041fcfd36103e072fc87a4c523058c3ae"
+    },
+    {
+      "file": "bin/slang-standard-module-2026.21/slang/neural.slang",
+      "sha256": "598c9c3d987c3231551cb0dbd12bdb6345d0b05f18da5318d1e5b636e5b8d43e"
+    },
+    {
+      "file": "bin/slang-standard-module-2026.21/slang/permuto-encoder.slang",
+      "sha256": "8564f73a57c355c478ca86349c18ec7e7fe321f316c71126531ba1a98f3e4011"
+    },
+    {
+      "file": "bin/slang-standard-module-2026.21/slang/shared-memory-pool.slang",
+      "sha256": "cc2b1fe4ff31cfdef98cb8d4802edc50508c6b7431ef7a64664b4ad32a9a33e2"
+    },
+    {
+      "file": "bin/slang-standard-module-2026.21/slang/vectorized-reader.slang",
+      "sha256": "5da65a878563ac190c847a90a85d6a404f4091e159fd2cdbc98730aef005d646"
+    },
+    {
+      "file": "bin/slang-standard-module-2026.21/slang/WaveMatrix.slang",
+      "sha256": "7b538d81618f9fe7a8a317dd0e85ff259202a7cc3b34246307880acfc2e7f973"
+    },
+    {
+      "file": "bin/slang.dll",
+      "sha256": "0e96768e31bd8d3e239e14fc91c868810c4a57a0e36a590ec26d31c90eb2a761"
+    },
+    {
+      "file": "bin/slang.slang",
+      "sha256": "94dc40cf0909ecdf157410ee2f483b90cd5ba583d9a8ee84e9bdd3e1a6672a24"
+    }
+  ],
+  "shaders": [
+    {
+      "name": "cull",
+      "stage": "compute",
+      "entry": "cullMain",
+      "source_sha256": "8e7bd81509655f5d1229f9ed9e15fa8118e15b9075fd60b0553a26d70eda7f0e",
+      "sha256": "c02bd1d5144d5d6175a4eb79073f6eea71d4bc88da1b95f65885ef6cd1927e09",
+      "reflection_sha256": "8c25f5bf2dae27145bc480db5affd5e72517016c3c3a602fe66aaaa600e032d6"
+    },
+    {
+      "name": "pbr-vertex",
+      "stage": "vertex",
+      "entry": "vertexMain",
+      "source_sha256": "1ab6897fe40f6342a7d24ae507409654f6bee03a48cd840fc30014aaebf5f96e",
+      "sha256": "3d3f91124693c13d2d95c0075b386cbfb51b53342b1eea8e683c4413eb78bb7d",
+      "reflection_sha256": "e9d735ae26f60a0020484a131c038b041a3561739323aa1ecd515220b5a8031f"
+    },
+    {
+      "name": "pbr-fragment",
+      "stage": "fragment",
+      "entry": "fragmentMain",
+      "source_sha256": "1ab6897fe40f6342a7d24ae507409654f6bee03a48cd840fc30014aaebf5f96e",
+      "sha256": "58624a370ee5b199b6cbdeb2fb4c741781df8da593ff10d0e7971aa715c8dc8b",
+      "reflection_sha256": "ceeb6547bc8da4047e61092ce4b70a64dbb447164b9dc148d26265037315ff0a"
+    },
+    {
+      "name": "shadow-vertex",
+      "stage": "vertex",
+      "entry": "shadowVertex",
+      "source_sha256": "1ab6897fe40f6342a7d24ae507409654f6bee03a48cd840fc30014aaebf5f96e",
+      "sha256": "1bd5775966ba80e6e9803c0980c702d8e65fbf0ae23407db9dc1d063297da38b",
+      "reflection_sha256": "5d1d04075883bd55cb6e64275ff5a65a9e49e9814dc944f7acdb23c6628a1156"
+    },
+    {
+      "name": "shadow-fragment",
+      "stage": "fragment",
+      "entry": "shadowFragment",
+      "source_sha256": "1ab6897fe40f6342a7d24ae507409654f6bee03a48cd840fc30014aaebf5f96e",
+      "sha256": "4d3b674db7fd4e5af0b834f1885fec078a218f0c135d914b1b33d9475b2213b2",
+      "reflection_sha256": "653644cdd1742af8e71abbfebebde013a804b6d505cc1424b4cf619b3b433117"
+    },
+    {
+      "name": "post-vertex",
+      "stage": "vertex",
+      "entry": "postVertex",
+      "source_sha256": "63591463fd184091305723c87473f26f4d60a30d73eaf92056ea468657159fa4",
+      "sha256": "99fd5b75fb074d38b0fd3d0d74962193c71e0dd59d18d769cfd4bd1acc81dcb6",
+      "reflection_sha256": "f7560a61857f7a0ec8cddcd1127d3cf08d651fb5c884d3c9e03058e17ec2183f"
+    },
+    {
+      "name": "post-fragment",
+      "stage": "fragment",
+      "entry": "postFragment",
+      "source_sha256": "63591463fd184091305723c87473f26f4d60a30d73eaf92056ea468657159fa4",
+      "sha256": "e974c78ed12b363c34e90f94d833883172c5bb3be581a647b70bda086bbb5785",
+      "reflection_sha256": "fec80329a0b9fa2ede95fdfc4f3e877cb6c9360fb860aa3bf62b7a6ebbe4b449"
+    },
+    {
+      "name": "overlay-vertex",
+      "stage": "vertex",
+      "entry": "overlayVertex",
+      "source_sha256": "8284e3e80a357008c7a0991095c36984992108888d25a22232ada349118b6bea",
+      "sha256": "8b094f645dfbc359bc2ea4dd1f8ae27b658ac6e0b62e743c52682b9bb206a403",
+      "reflection_sha256": "bb7035b5941fa723975a82ad4ef30d29c1c889e48562aabc8a3cad05281e21e7"
+    },
+    {
+      "name": "overlay-fragment",
+      "stage": "fragment",
+      "entry": "overlayFragment",
+      "source_sha256": "8284e3e80a357008c7a0991095c36984992108888d25a22232ada349118b6bea",
+      "sha256": "4b3597df0eb4a436f82b35d34a3c4d097ba56345a882e7637c3ac006b82e7221",
+      "reflection_sha256": "38d05c4a46c96430f1d2c2fd957060728d6a7c997c296af7332afb938ffa5bf9"
+    }
+  ],
+  "runtime_header_sha256": "cba1601b18d762148f17a71af6b89430c575d35e622db0290048235f4fe9912c"
+}

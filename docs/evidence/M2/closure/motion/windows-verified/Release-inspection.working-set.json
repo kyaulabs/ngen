@@ -1,0 +1,12 @@
+{
+  "schema": 1,
+  "process_id": 216068,
+  "exit_code": 0,
+  "timed_out": false,
+  "elapsed_ms": 14879,
+  "sample_period_ms": 25,
+  "observed_peak_working_set_bytes": 902963200,
+  "observed_peak_counter_bytes": 902963200,
+  "sampled_resident_bytes": 902963200,
+  "scope": "Observed OS process working set/high-water counter, including startup; not GPU memory or an exact continuous peak."
+}

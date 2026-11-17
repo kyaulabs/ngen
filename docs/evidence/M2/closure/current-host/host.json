@@ -1,0 +1,19 @@
+{
+  "recorded_after_clean_run": true,
+  "settings_changed_by_agent": false,
+  "owner_reports_changes_before_both_operator_runs": true,
+  "cpu_driver": "intel_pstate",
+  "governor": "powersave",
+  "epp": "balance_performance",
+  "profile": "balanced",
+  "turbo_enabled": true,
+  "min_khz": 400000,
+  "max_khz": 4800000,
+  "rapl_enabled": true,
+  "rapl_limits_uw": [
+    15000000,
+    25000000
+  ],
+  "rapl_long_window_us": 27983872,
+  "scope": "Read-only post-run settings; not a continuous frequency, temperature or power trace."
+}

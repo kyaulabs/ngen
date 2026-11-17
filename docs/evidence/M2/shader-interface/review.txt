@@ -1,0 +1,58 @@
+Scope: M2-C offline tool/package, CPU interface contracts and test-only native
+GPU fixtures on feat/kyau-bc4a5d-shader-reflection, based on integrated e1cc4f4.
+Same-session implementation/source review; not independent milestone acceptance.
+
+Trace: Conan build-profile Slang/SPIR-V tools -> immutable CMake package ->
+compiler/reflection/validator/capability admission -> shader_contract_layout ->
+Python public-process CTest -> explicit physical-device shader_gpu_probe.
+CPU targets and runtime library graph remain compiler/importer-free.
+
+Fixed concrete findings:
+- spirv-val PATH lookup could override the explicit configured tool. Public
+  process control reproduced wrong validator exit 99; explicit selection wins.
+- successful compiler diagnostics were discarded, admitting a real preprocessor
+  warning. Warnings-as-errors now rejects it and preserves transactional output.
+- SPIR-V semantic validation admitted optional device features. Float64 is
+  rejected; 1.6-generated DemoteToHelperInvocation required an unenabled feature.
+  SPIR-V 1.5 emits OpKill without expanding the Context feature contract.
+- explicit uint3 shader padding enlarged CullConstants to 128 bytes versus 112
+  in the actual C++ type. Removed unnecessary padding; reflection checks all
+  sizes, alignments, fields, offsets, nested light stride and vertex locations.
+- fixture initially used basic validation only. Actual vkCreateInstance observer
+  Red rejected this; final four GPU configurations explicitly enable sync checks
+  through Context's existing presentation-validation option, without presenting.
+- Windows native shader execution and exact tool/reflection identity were absent
+  from capture. Real process fixtures reproduce both; helper now runs the probe,
+  stops on its failure, captures metadata only after success and restores runtime.
+- strict AST found nullable mapped access, swappable adjacent native flags,
+  invalid zero enum initializers and integer widening. Mapping is checked,
+  named fixture descriptions prevent flag swaps, enums are fully initialized,
+  and arithmetic is performed at the appropriate native width. No suppression.
+- development Debug cache still selected the initial manual tools after Conan
+  preparation. Final Debug removed only those two overrides; all reported final
+  configurations use the pinned package paths. Fresh Windows builds avoid this.
+
+Ownership/error review: Context-owned Buffer/Image objects are never submitted
+natively by this fixture. Fixture allocations use the existing VMA implementation;
+all native handles are owned, counts pre-reserved/bounded, mapping checked and
+views destroyed before images. Submissions wait on finite fences before host
+access and reuse. Teardown proves device completion/loss; unproven non-device-lost
+completion retains native ownership rather than destroying live objects. General
+driver recovery, arbitrary device loss and fault coverage are not claimed.
+
+Actual verification: four configurations 8/8 CTest, ten offline process tests in
+each; 1,152 culling/guard values, 4,096 coverage pixels and nine analytic PBR draws
+in every explicit synchronization-validated Intel run. Separate ASan/UBSan/leak
+sensitivity controls expose expected culling-guard/matrix errors without validation
+or sanitizer diagnostics. Two consumer TUs x three actual Clang databases pass
+strict AST checks. Actual GCC database fails clang-tidy on module-dependency flags,
+retained without filtering. Existing sanitized startup/calibration/resources and
+CPU-only regression pass. Windows helper boundary tests pass on Linux, not Windows.
+
+No remaining demonstrated task-related source defect found in this review.
+Limitations: no Windows/NVIDIA shader execution yet; no independent/human graphics
+acceptance; no total vendor-warning or vendor-sanitizer claim. Native tiny-fixture
+waits/idle, constant cubemaps and one-mip textures are not a production frame path,
+asset IBL pipeline, scanout proof or a performance result. The deferred cooked
+frigate, tracked runtime draw/retirement integration, fixed pass schedule,
+inspector and M2 scene/visual/performance gates remain explicit.

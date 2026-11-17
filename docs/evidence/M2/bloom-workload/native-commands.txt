@@ -1,0 +1,50 @@
+Source base: 2e88dced74e07f7f696f9856a977d94d66556ed7 plus sources.sha256.
+Root: <ROOT>. Linux x86-64, C++20/libstdc++, actual flags in compile-commands.json.
+
+cmake --build --preset inspector-{debug,release,asan,gcc}
+ctest --preset inspector-{debug,release,asan,gcc}
+# Brace forms denote four separate invocations. The existing ASan cache retains
+# -m64 -fsanitize=address,undefined -no-pie for this hardened host's ELF layout.
+# Physical correctness runs set the isolated ordinary validation layer:
+VK_LAYER_PATH=<ROOT>/build/validation-layer/usr/share/vulkan/explicit_layer.d
+LD_LIBRARY_PATH=<ROOT>/build/validation-layer/usr/lib
+ASAN_OPTIONS=detect_leaks=1:halt_on_error=1
+UBSAN_OPTIONS=halt_on_error=1:print_stacktrace=1
+build/inspector-{debug,release,asan,gcc}/resource_probe
+build/inspector-{debug,release,asan,gcc}/inspector_probe
+NGEN_WORKLOAD_EXE=<ROOT>/build/inspector-{debug,release,asan,gcc}/scene_workload
+NGEN_WORKLOAD_PACKAGE=<ROOT>/build/cooked-candidate/frigate-canonical-first/scene.ngas
+python tests/workload_cli.py
+python tests/inspector_cli.py
+build/inspector-{release,asan}/shader_gpu_probe
+
+cmake --build build/inspector-tsan -j2
+TSAN_OPTIONS=halt_on_error=1 ctest --test-dir build/inspector-tsan --output-on-failure
+cmake --build build/scene-shipping -j2
+ctest --test-dir build/scene-shipping --output-on-failure
+cmake --build build/scene-no-shaders -j2
+ctest --test-dir build/scene-no-shaders --output-on-failure
+PATH=/tmp/prism-conan-venv/bin:$PATH build/powershell/pwsh -NoProfile -File tests/windows_build.ps1
+clang-tidy -p <one-entry-native-database> <affected-owned-TU>
+# 119 native source/target/configuration entries plus changed Main/UI reruns.
+# No GCC argument filtering or manufactured declarations.
+build/format-tools/bin/clang-format --dry-run --Werror [affected owned C++ files]
+
+# Optimized measurements, no concurrent builds/analysis or validation layers:
+python build/bloom-check/measure.py steady gutters
+python build/bloom-check/measure.py stream gutters 4
+# Existing output prefixes cannot be overwritten. Change the label for a new run.
+# Package hashing deliberately warms the file cache; this is not cold disk I/O.
+
+# Earlier failing mixed resize/reload measurement, retained unchanged:
+python build/bloom-check/measure.py stream verified1
+# The earlier collector version/settings and raw failed JSON/CSV are retained;
+# do not overwrite that prefix or reinterpret it as fixed-resolution performance.
+
+clang++ -std=c++20 -shared -fPIC -Wall -Wextra -Werror -I<CONAN>/p/vulkabd7575518f65a/p/include -I<CONAN>/p/b/sdl09793c119812a/p/include build/bloom-check/latency.cpp -ldl -o build/bloom-check/latency.so
+# Diagnostic-only runs: actual native boundary observations, not performance passes.
+timeout 120s env LD_PRELOAD=<ROOT>/build/bloom-check/latency.so build/inspector-release/scene_workload build/cooked-candidate/frigate-canonical-first/scene.ngas --inspector --walkthrough --reload-cycles=3 --frames=600 --warmup=60 --report=build/m2-diagnostic-resume1.csv
+# Two separate causal controls, expected exit 1 because a required action is omitted:
+NGEN_LATENCY_CONTROL=no-reload
+NGEN_LATENCY_CONTROL=no-resize
+# Same diagnostic workload and fresh CSV/log paths. Retain stderr and actual outcome.

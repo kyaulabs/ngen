@@ -1,0 +1,4 @@
+
+Algorithm : SHA256
+Hash      : DA2AAC11ACF19302362D6DC0223524E69992D39A18DE96C63E5E0C3DC278A735
+Path      : C:\Windows\System32\vulkaninfo.exe

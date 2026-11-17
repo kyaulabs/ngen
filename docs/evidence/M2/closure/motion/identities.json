@@ -1,0 +1,30 @@
+{
+  "source_parent": "d036c914180e6a16bdf333244c621305dee1f175",
+  "source_files": {
+    "apps/inspector_probe/main.cpp": "7559471cb4d4f5c5247ac11ce01d2d331bf46a469e78ac87ab00f4acb64c6655",
+    "apps/resource_probe/main.cpp": "a13656174d80a33f8bfdd2ce083c0dd6a00a4cd284e105b9bca3d4adaf7c259d",
+    "apps/scene_workload/main.cpp": "f50262e8119792fcdf04654165e76255b62367950f7ce4b45d9c1f1e98ec958c",
+    "engine/render/resources.cpp": "f3a2e36e4f673b18b6728b4f48cf859b4158501de1bed98ead2e965d0db5f94b",
+    "engine/render/scene_draw.cpp": "f22848b447b04a056bffffa55386a561e3ba3bbe9f700e389fd50f1fd2922bb8",
+    "engine/render/scene_draw.hpp": "3565511bdd6b1aa9162221da4f6a1265331b2ebb2418ae149b71d0823b24f4c3",
+    "engine/render/shader_contract.hpp": "5e0ccbd045e8f5b483e45ba090d5667bf67d3a0bcf04063face200daacfc3c17",
+    "shaders/pbr.slang": "7233fb61f2f1977eb4389ade3fd03ea9c0593808aa77792f7a7818bbd6c4c6d8"
+  },
+  "actual_compile_databases": {
+    "inspector-debug": "8c787772250530569177cbd63b1316e722dfe268a3f93f446217c7eff1ab608d",
+    "inspector-release": "6675335f990f5d0a1b952278af70126ef1f2531945112ce1a290b6b2f7904e3d",
+    "inspector-asan": "e1b90ba736223054c4082f008302677ea00ac2cf86aa09ab4ae86d9f218598cb",
+    "inspector-gcc": "136dbf6ed1cd9979d83995082bf5379dc9a3709542318cda36878434457b04b2",
+    "scene-shipping": "efcedea1ddabca92fc67dadd534c5d81e58eef2a8fec0258ef941063c3c9769a",
+    "scene-no-shaders": "a20d9c34bc46a3d21c535c8685492af74b2a57e05deffba72cbadf3b986e8906",
+    "inspector-tsan": "ad94c013c8b01aa1531aa7b126cbc451d45c5cacad2bd2dfaa9b15cc2589dfa5"
+  },
+  "release_executables": {
+    "resource_probe": "90eab5089dd37ddcad53b1f34f0fc357aec6eeb09bb81cab0111ab0889ce48c4",
+    "inspector_probe": "97866239d2dd79474a22da494c7e9a44c8e1a165ee44b7ee0103837ef9257499",
+    "scene_workload": "096d3b64a0aad25b3bbe41f11b3fb85037ce26aae6c026efbd262f72de4f3bcf",
+    "asset_package_probe": "da9943b29431ade30ad2b51fa4e0e4df96f29300277197720846398465daaf9f"
+  },
+  "private_final_package_sha256": "a02d5438ad32d9c8fb917ce847d5a822688ca5b51d69125f6da71cf2ba2116ed",
+  "scope": "Current dirty source identities plus actual native command metadata, not an invented source commit. Asset/capture/original-model/reference bytes remain private."
+}

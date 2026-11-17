@@ -1,0 +1,3 @@
+inspector-debug engine/tools/ui.cpp CMakeFiles/ngen_inspector_ui.dir/engine/tools/ui.cpp.o 0
+inspector-release engine/tools/ui.cpp CMakeFiles/ngen_inspector_ui.dir/engine/tools/ui.cpp.o 0
+inspector-asan engine/tools/ui.cpp CMakeFiles/ngen_inspector_ui.dir/engine/tools/ui.cpp.o 0

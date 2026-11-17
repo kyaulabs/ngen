@@ -1,0 +1,23 @@
+{
+  "schema": 1,
+  "declared_build_revision": "b2fa7da44d569cba2aec8221eac04b6df840b20a",
+  "build_tree_record_empty": true,
+  "binary_sha256": "ff795a255db8de06eca4a8d9d2929fbddd55e1688521d6146a9a4ca02216c763",
+  "cmake_cache_sha256": "5fe22e083d7617a5d430e82759242bd228d95d75549743b15f33b9872861de9a",
+  "package": {
+    "schema": 1,
+    "name": "scene.ngas",
+    "bytes": 175854711,
+    "sha256": "e0ee6a023900c78b2c313f493f2a0e78c9639c39b6d830a1eaf3a3f6c0a29b6d"
+  },
+  "frames": 3600,
+  "warmup": 60,
+  "reload_cycles": 4,
+  "fixed_extent": "1280x720",
+  "inspector": true,
+  "exposure": 1,
+  "fxaa": true,
+  "bloom": 0.04,
+  "validation": false,
+  "scope": "Existing Release binary with its original declared build record, no rebuild. Input hashing warms cache. External CIM observation is instrumented memory evidence, not a clean performance run or proof of binary/source equivalence."
+}

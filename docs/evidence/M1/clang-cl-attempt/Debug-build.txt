@@ -1,0 +1,128 @@
+[1/34] Scanning D:\Git\kyaulabs\ngen\engine\core\values.cpp for CXX dependencies
+[2/34] Scanning D:\Git\kyaulabs\ngen\engine\core\entities.cpp for CXX dependencies
+[3/34] Generating CXX dyndep file CMakeFiles\ngen_core.dir\CXX.dd
+[4/34] Scanning D:\Git\kyaulabs\ngen\engine\jobs\jobs.cpp for CXX dependencies
+[5/34] Building CXX object CMakeFiles\ngen_core.dir\engine\core\values.cpp.obj
+FAILED: [code=1] CMakeFiles/ngen_core.dir/engine/core/values.cpp.obj
+"C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\Llvm\x64\bin\clang-cl.exe"  /nologo -TP  -ID:\Git\kyaulabs\ngen\engine /DWIN32 /D_WINDOWS /EHsc /Ob0 /Od /RTC1 -std:c++20 -MDd -Zi -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror -clang:-MD -clang:-MTCMakeFiles\ngen_core.dir\engine\core\values.cpp.obj -clang:-MFCMakeFiles\ngen_core.dir\engine\core\values.cpp.obj.d @CMakeFiles\ngen_core.dir\engine\core\values.cpp.obj.modmap /FoCMakeFiles\ngen_core.dir\engine\core\values.cpp.obj /FdCMakeFiles\ngen_core.dir\ngen_core.pdb -c -- D:\Git\kyaulabs\ngen\engine\core\values.cpp
+In file included from D:\Git\kyaulabs\ngen\engine\core\values.cpp:1:
+D:\Git\kyaulabs\ngen\engine\core/values.hpp(7,6): error: scoped enumerations are incompatible with C++98 [-Werror,-Wc++98-compat]
+    7 | enum class Error : std::uint8_t { invalid, overflow, capacity, stale, order, closed, busy };
+      |      ^
+D:\Git\kyaulabs\ngen\engine\core/values.hpp(7,18): error: enumeration types with a fixed underlying type are incompatible with C++98 [-Werror,-Wc++98-compat]
+    7 | enum class Error : std::uint8_t { invalid, overflow, capacity, stale, order, closed, busy };
+      |                  ^~~~~~~~~~~~~~
+D:\Git\kyaulabs\ngen\engine\core/values.hpp(8,35): error: alias declarations are incompatible with C++98 [-Werror,-Wc++98-compat]
+    8 | template <class T> using Result = std::variant<T, Error>;
+      |                                   ^
+D:\Git\kyaulabs\ngen\engine\core/values.hpp(10,24): error: default member initializer for non-static data members is incompatible with C++98 [-Werror,-Wc++98-compat]
+   10 |     std::uint64_t value{};
+      |                        ^
+D:\Git\kyaulabs\ngen\engine\core/values.hpp(11,18): error: '<=>' operator is incompatible with C++ standards before C++20 [-Werror,-Wpre-c++20-compat]
+   11 |     auto operator<=>(const Tick &) const = default;
+      |                  ^
+D:\Git\kyaulabs\ngen\engine\core/values.hpp(11,5): error: 'auto' type specifier is incompatible with C++98 [-Werror,-Wc++98-compat]
+   11 |     auto operator<=>(const Tick &) const = default;
+      |     ^~~~
+D:\Git\kyaulabs\ngen\engine\core/values.hpp(11,5): error: return type deduction is incompatible with C++ standards before C++14 [-Werror,-Wpre-c++14-compat]
+D:\Git\kyaulabs\ngen\engine\core/values.hpp(11,44): error: defaulted function definitions are incompatible with C++98 [-Werror,-Wc++98-compat]
+   11 |     auto operator<=>(const Tick &) const = default;
+      |                                            ^
+D:\Git\kyaulabs\ngen\engine\core/values.hpp(11,10): error: defaulted comparison operators are incompatible with C++ standards before C++20 [-Werror,-Wpre-c++20-compat]
+   11 |     auto operator<=>(const Tick &) const = default;
+      |          ^
+D:\Git\kyaulabs\ngen\engine\core/values.hpp(11,10): note: while declaring the corresponding implicit 'operator==' for this defaulted 'operator<=>'
+D:\Git\kyaulabs\ngen\engine\core/values.hpp(10,24): error: scalar initialized from empty initializer list is incompatible with C++98 [-Werror,-Wc++98-compat]
+   10 |     std::uint64_t value{};
+      |                        ^~
+D:\Git\kyaulabs\ngen\engine\core/values.hpp(14,23): error: default member initializer for non-static data members is incompatible with C++98 [-Werror,-Wc++98-compat]
+   14 |     std::int64_t value{};
+      |                       ^
+D:\Git\kyaulabs\ngen\engine\core/values.hpp(15,18): error: '<=>' operator is incompatible with C++ standards before C++20 [-Werror,-Wpre-c++20-compat]
+   15 |     auto operator<=>(const Millimetres &) const = default;
+      |                  ^
+D:\Git\kyaulabs\ngen\engine\core/values.hpp(15,5): error: 'auto' type specifier is incompatible with C++98 [-Werror,-Wc++98-compat]
+   15 |     auto operator<=>(const Millimetres &) const = default;
+      |     ^~~~
+D:\Git\kyaulabs\ngen\engine\core/values.hpp(15,5): error: return type deduction is incompatible with C++ standards before C++14 [-Werror,-Wpre-c++14-compat]
+D:\Git\kyaulabs\ngen\engine\core/values.hpp(15,51): error: defaulted function definitions are incompatible with C++98 [-Werror,-Wc++98-compat]
+   15 |     auto operator<=>(const Millimetres &) const = default;
+      |                                                   ^
+D:\Git\kyaulabs\ngen\engine\core/values.hpp(15,10): error: defaulted comparison operators are incompatible with C++ standards before C++20 [-Werror,-Wpre-c++20-compat]
+   15 |     auto operator<=>(const Millimetres &) const = default;
+      |          ^
+D:\Git\kyaulabs\ngen\engine\core/values.hpp(15,10): note: while declaring the corresponding implicit 'operator==' for this defaulted 'operator<=>'
+D:\Git\kyaulabs\ngen\engine\core/values.hpp(14,23): error: scalar initialized from empty initializer list is incompatible with C++98 [-Werror,-Wc++98-compat]
+   14 |     std::int64_t value{};
+      |                       ^~
+D:\Git\kyaulabs\ngen\engine\core/values.hpp(17,1): error: [[]] attributes are incompatible with C++ standards before C++11 [-Werror,-Wc++98-compat]
+   17 | [[nodiscard]] Result<Millimetres> metres(double value);
+      | ^
+D:\Git\kyaulabs\ngen\engine\core/values.hpp(18,1): error: [[]] attributes are incompatible with C++ standards before C++11 [-Werror,-Wc++98-compat]
+   18 | [[nodiscard]] Result<Millimetres> add(Millimetres a, Millimetres b);
+      | ^
+fatal error: too many errors emitted, stopping now [-ferror-limit=]
+20 errors generated.
+[6/34] Building CXX object CMakeFiles\ngen_core.dir\engine\core\entities.cpp.obj
+FAILED: [code=1] CMakeFiles/ngen_core.dir/engine/core/entities.cpp.obj
+"C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\Llvm\x64\bin\clang-cl.exe"  /nologo -TP  -ID:\Git\kyaulabs\ngen\engine /DWIN32 /D_WINDOWS /EHsc /Ob0 /Od /RTC1 -std:c++20 -MDd -Zi -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror -clang:-MD -clang:-MTCMakeFiles\ngen_core.dir\engine\core\entities.cpp.obj -clang:-MFCMakeFiles\ngen_core.dir\engine\core\entities.cpp.obj.d @CMakeFiles\ngen_core.dir\engine\core\entities.cpp.obj.modmap /FoCMakeFiles\ngen_core.dir\engine\core\entities.cpp.obj /FdCMakeFiles\ngen_core.dir\ngen_core.pdb -c -- D:\Git\kyaulabs\ngen\engine\core\entities.cpp
+In file included from D:\Git\kyaulabs\ngen\engine\core\entities.cpp:1:
+In file included from D:\Git\kyaulabs\ngen\engine\core/entities.hpp:2:
+D:\Git\kyaulabs\ngen\engine\core/values.hpp(7,6): error: scoped enumerations are incompatible with C++98 [-Werror,-Wc++98-compat]
+    7 | enum class Error : std::uint8_t { invalid, overflow, capacity, stale, order, closed, busy };
+      |      ^
+D:\Git\kyaulabs\ngen\engine\core/values.hpp(7,18): error: enumeration types with a fixed underlying type are incompatible with C++98 [-Werror,-Wc++98-compat]
+    7 | enum class Error : std::uint8_t { invalid, overflow, capacity, stale, order, closed, busy };
+      |                  ^~~~~~~~~~~~~~
+D:\Git\kyaulabs\ngen\engine\core/values.hpp(8,35): error: alias declarations are incompatible with C++98 [-Werror,-Wc++98-compat]
+    8 | template <class T> using Result = std::variant<T, Error>;
+      |                                   ^
+D:\Git\kyaulabs\ngen\engine\core/values.hpp(10,24): error: default member initializer for non-static data members is incompatible with C++98 [-Werror,-Wc++98-compat]
+   10 |     std::uint64_t value{};
+      |                        ^
+D:\Git\kyaulabs\ngen\engine\core/values.hpp(11,18): error: '<=>' operator is incompatible with C++ standards before C++20 [-Werror,-Wpre-c++20-compat]
+   11 |     auto operator<=>(const Tick &) const = default;
+      |                  ^
+D:\Git\kyaulabs\ngen\engine\core/values.hpp(11,5): error: 'auto' type specifier is incompatible with C++98 [-Werror,-Wc++98-compat]
+   11 |     auto operator<=>(const Tick &) const = default;
+      |     ^~~~
+D:\Git\kyaulabs\ngen\engine\core/values.hpp(11,5): error: return type deduction is incompatible with C++ standards before C++14 [-Werror,-Wpre-c++14-compat]
+D:\Git\kyaulabs\ngen\engine\core/values.hpp(11,44): error: defaulted function definitions are incompatible with C++98 [-Werror,-Wc++98-compat]
+   11 |     auto operator<=>(const Tick &) const = default;
+      |                                            ^
+D:\Git\kyaulabs\ngen\engine\core/values.hpp(11,10): error: defaulted comparison operators are incompatible with C++ standards before C++20 [-Werror,-Wpre-c++20-compat]
+   11 |     auto operator<=>(const Tick &) const = default;
+      |          ^
+D:\Git\kyaulabs\ngen\engine\core/values.hpp(11,10): note: while declaring the corresponding implicit 'operator==' for this defaulted 'operator<=>'
+D:\Git\kyaulabs\ngen\engine\core/values.hpp(10,24): error: scalar initialized from empty initializer list is incompatible with C++98 [-Werror,-Wc++98-compat]
+   10 |     std::uint64_t value{};
+      |                        ^~
+D:\Git\kyaulabs\ngen\engine\core/values.hpp(14,23): error: default member initializer for non-static data members is incompatible with C++98 [-Werror,-Wc++98-compat]
+   14 |     std::int64_t value{};
+      |                       ^
+D:\Git\kyaulabs\ngen\engine\core/values.hpp(15,18): error: '<=>' operator is incompatible with C++ standards before C++20 [-Werror,-Wpre-c++20-compat]
+   15 |     auto operator<=>(const Millimetres &) const = default;
+      |                  ^
+D:\Git\kyaulabs\ngen\engine\core/values.hpp(15,5): error: 'auto' type specifier is incompatible with C++98 [-Werror,-Wc++98-compat]
+   15 |     auto operator<=>(const Millimetres &) const = default;
+      |     ^~~~
+D:\Git\kyaulabs\ngen\engine\core/values.hpp(15,5): error: return type deduction is incompatible with C++ standards before C++14 [-Werror,-Wpre-c++14-compat]
+D:\Git\kyaulabs\ngen\engine\core/values.hpp(15,51): error: defaulted function definitions are incompatible with C++98 [-Werror,-Wc++98-compat]
+   15 |     auto operator<=>(const Millimetres &) const = default;
+      |                                                   ^
+D:\Git\kyaulabs\ngen\engine\core/values.hpp(15,10): error: defaulted comparison operators are incompatible with C++ standards before C++20 [-Werror,-Wpre-c++20-compat]
+   15 |     auto operator<=>(const Millimetres &) const = default;
+      |          ^
+D:\Git\kyaulabs\ngen\engine\core/values.hpp(15,10): note: while declaring the corresponding implicit 'operator==' for this defaulted 'operator<=>'
+D:\Git\kyaulabs\ngen\engine\core/values.hpp(14,23): error: scalar initialized from empty initializer list is incompatible with C++98 [-Werror,-Wc++98-compat]
+   14 |     std::int64_t value{};
+      |                       ^~
+D:\Git\kyaulabs\ngen\engine\core/values.hpp(17,1): error: [[]] attributes are incompatible with C++ standards before C++11 [-Werror,-Wc++98-compat]
+   17 | [[nodiscard]] Result<Millimetres> metres(double value);
+      | ^
+D:\Git\kyaulabs\ngen\engine\core/values.hpp(18,1): error: [[]] attributes are incompatible with C++ standards before C++11 [-Werror,-Wc++98-compat]
+   18 | [[nodiscard]] Result<Millimetres> add(Millimetres a, Millimetres b);
+      | ^
+fatal error: too many errors emitted, stopping now [-ferror-limit=]
+20 errors generated.
+ninja: build stopped: subcommand failed.

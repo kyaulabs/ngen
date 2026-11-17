@@ -1,0 +1,13 @@
+native_latency name=submit begin_ns=416526434704161 end_ns=416526475981215 duration_ns=41277054 result=0
+swapchain_created at_ns=416526677100977 width=1280 height=720 requested_images=4 result=0
+native_latency name=submit begin_ns=416530557944813 end_ns=416530610871229 duration_ns=52926416 result=0
+diagnostic_old_swapchain_handoff=1
+swapchain_created at_ns=416530616107114 width=1024 height=640 requested_images=4 result=0
+native_latency name=acquire_poll_span begin_ns=416530708653062 end_ns=416530824442439 duration_ns=115789377 result=0
+diagnostic_old_swapchain_handoff=1
+swapchain_created at_ns=416531592971996 width=1280 height=720 requested_images=4 result=0
+native_latency name=acquire_poll_span begin_ns=416531607922260 end_ns=416531838660375 duration_ns=230738115 result=0
+native_latency name=submit begin_ns=416533208510040 end_ns=416533257242033 duration_ns=48731993 result=0
+native_latency name=submit begin_ns=416535844273209 end_ns=416535891403324 duration_ns=47130115 result=0
+native_latency name=submit begin_ns=416538433659931 end_ns=416538474433689 duration_ns=40773758 result=0
+Scene workload: workload cancelled

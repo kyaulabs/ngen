@@ -1,0 +1,37 @@
+[
+  {
+    "configuration": "inspector-debug",
+    "source": "apps/resource_probe/main.cpp",
+    "status": 0,
+    "compile_database_sha256": "188ab6930fa16924ff2edc28299bcc19e57d7cfdbc6ecd92d41d620925532d88",
+    "flags": "Actual complete native invocation; no flags removed"
+  },
+  {
+    "configuration": "inspector-release",
+    "source": "apps/resource_probe/main.cpp",
+    "status": 0,
+    "compile_database_sha256": "ed7f0d8c033e0dbb408e6131c330486c8ccd71f0750fd059074a3702c65fee2f",
+    "flags": "Actual complete native invocation; no flags removed"
+  },
+  {
+    "configuration": "inspector-asan",
+    "source": "apps/resource_probe/main.cpp",
+    "status": 0,
+    "compile_database_sha256": "9f18b893b11417273647b902a8ef52df8abaa8d6f1bdb8445b9f16bda4fb06fd",
+    "flags": "Actual complete native invocation; no flags removed"
+  },
+  {
+    "configuration": "scene-shipping",
+    "source": "apps/resource_probe/main.cpp",
+    "status": 0,
+    "compile_database_sha256": "695476390c8c866dfa9191dc893baa6b4ce38421a24fc7aa1418b67a13b62536",
+    "flags": "Actual complete native invocation; no flags removed"
+  },
+  {
+    "configuration": "scene-no-shaders",
+    "source": "apps/resource_probe/main.cpp",
+    "status": 0,
+    "compile_database_sha256": "a20d9c34bc46a3d21c535c8685492af74b2a57e05deffba72cbadf3b986e8906",
+    "flags": "Actual complete native invocation; no flags removed"
+  }
+]

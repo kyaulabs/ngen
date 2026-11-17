@@ -1,0 +1,2 @@
+package_compile_validate_elapsed_seconds=4.967229 exit=0
+One non-isolated canonical package run; includes tool/library hashing and validation, not pure compiler or runtime frame timing.

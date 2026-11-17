@@ -1,0 +1,21 @@
+Filters: "reload identifiers*"
+Randomness seeded to: 859648946
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+inspector_tests is a Catch2 v3.16.0 host application.
+Run with -? for options
+
+-------------------------------------------------------------------------------
+reload identifiers reject zero and cannot reuse a consumed result
+-------------------------------------------------------------------------------
+$REPO/tests/reload.cpp:40
+...............................................................................
+
+$REPO/tests/reload.cpp:44: FAILED:
+  REQUIRE( loader.request(0) == ngen::Result<std::monostate>{ngen::Error::invalid} )
+with expansion:
+  {?} == {?}
+
+===============================================================================
+test cases: 1 | 1 failed
+assertions: 1 | 1 failed

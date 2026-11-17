@@ -1,0 +1,22 @@
+Linux Clang Debug/Release/ASan+UBSan+leaks and GCC Debug: 8/8 CTest each.
+Each graph includes ten public-process offline shader tests.
+Final explicit sync-validation observer + actual Intel GPU: all four pass.
+Each native run: 6 culling counts / 1,152 output+guard values; 9 offscreen PBR draws;
+4,096 transformed-coverage pixels; expected material/color/shadow/normal/alpha checks.
+ASan/UBSan/leak sensitivity controls: two expected behavioral failures, exit 1;
+no validation or sanitizer diagnostics. No production source was changed by controls.
+Strict clang-tidy: actual two owned consumers x three Clang configurations pass.
+Actual GCC AST flags fail parsing; original diagnostics retained, no filtered database.
+Pinned clang-format 18.1.8: pass, no source suppressions.
+PowerShell 7.6.9 boundary suite: pass, including actual native failure/short-circuit,
+shader metadata capture and runtime restoration. This is not Windows execution.
+CPU-only Debug: 4/4. Sanitized prior startup/calibration/resource smoke: pass.
+Calibration alone contains the separately expected intentional callback diagnostic.
+Simulation link graph has no SDL/Vulkan/Slang/SPIR-V; shader probe has no Slang/SPIR-V.
+Existing CPU lock and renderer dependency pins preserved; three build-only tool pins added.
+Changed YAML and local documentation links: pass. Artifact/source hashes: pass.
+Staged whitespace and redacted Gitleaks scan: pass before commit.
+Canonical full package compile+validation: 4.967229 seconds, one non-isolated run;
+not a pure compiler comparison, isolated performance test or frame-time claim.
+Windows/NVIDIA shader runs, hosted workflow result and formal milestone acceptance:
+pending at source commit; never inferred from the earlier Windows resource evidence.

@@ -1,0 +1,7 @@
+59 warnings generated.
+<ROOT>/apps/inspector_probe/main.cpp:404:80: error: unchecked access to optional value [bugprone-unchecked-optional-access,-warnings-as-errors]
+  404 |             const auto result = take(context->render_frame({color, 1, false, &*geometry}));
+      |                                                                                ^~~~~~~~
+Suppressed 58 warnings (58 in non-user code).
+Use -header-filter=.* or leave it as default to display errors from all non-system headers. Use -system-headers to display errors from system headers as well.
+1 warning treated as error

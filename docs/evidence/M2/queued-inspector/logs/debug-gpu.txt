@@ -1,0 +1,2 @@
+device=Intel(R) Iris(R) Xe Graphics (TGL GT2) api=1.4 driver=109060102 queue=0 display=wayland
+inspector_material_gpu=1 next_frame_edit=1 old_snapshot_gpu=1 immutable_material=1 inspector_pbr_factors=3 factor_admission=1

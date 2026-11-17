@@ -1,0 +1,85 @@
+{
+  "package": "/home/kyau/projects/kyaulabs/ngen/build/cooked-candidate/frigate-charcoal-glazing-v1/scene.ngas",
+  "sha256": "27de456e8f29b6392a50099dd65f69b2bd42a8ce2a73b3b3b0cc2c716811ee81",
+  "runtime": {
+    "package_valid": 1,
+    "vertices": 1304579,
+    "indices": 3390150,
+    "primitives": 204,
+    "instances": 209,
+    "materials": 17,
+    "images": 9,
+    "textures": 20,
+    "lights": 612,
+    "light_instances": 612,
+    "texture_bytes": 106343076,
+    "lod_triangles": [
+      574376,
+      291044,
+      238320
+    ],
+    "checksum": 2929244381
+  },
+  "charcoal_glazing": {
+    "name": "charcoal-coated-hull-smoky-glazing-v1",
+    "base_sha256": "bce7f71bfa18eea6c73d425565be71144915e9b3fde66063a263bcc424d09cc5",
+    "author_sha256": "665de53b3b4d72785cfa023fa5e39844ac12c6f0a08a7d63e25dae6290790565",
+    "coating_linear_scale": 0.4,
+    "coating_materials": [
+      {
+        "material": 14,
+        "name": "M2_HullPlatingLight",
+        "old_base_rgb": [
+          0.5,
+          0.5652173757553101,
+          0.6521739363670349
+        ],
+        "new_base_rgb": [
+          0.2,
+          0.22608695030212403,
+          0.260869574546814
+        ]
+      },
+      {
+        "material": 15,
+        "name": "M2_HullPlating",
+        "old_base_rgb": [
+          0.32608696818351746,
+          0.3695652186870575,
+          0.43478262424468994
+        ],
+        "new_base_rgb": [
+          0.130434787273407,
+          0.147826087474823,
+          0.173913049697876
+        ]
+      },
+      {
+        "material": 16,
+        "name": "M2_HullPlatingDark",
+        "old_base_rgb": [
+          0.15217390656471252,
+          0.186956524848938,
+          0.23043477535247803
+        ],
+        "new_base_rgb": [
+          0.06086956262588501,
+          0.0747826099395752,
+          0.09217391014099122
+        ]
+      }
+    ],
+    "glazing_material": 9,
+    "glazing_base_rgba": [
+      0.015,
+      0.02,
+      0.025,
+      0.28
+    ],
+    "glazing_emissive_strength": 0,
+    "glazing_metallic": 0,
+    "glazing_roughness": 0.06,
+    "glazing_alpha_mode": "blend",
+    "scope": "Owner rejected the light gray hull and cyan dashed glazing. Darken only the three coating material base colors; preserve existing wear/normal/ORM maps and all geometry. Use existing dielectric/glossy alpha-blend PBR for the six original glazing strips, not cyan emission. No cockpit interior, cut openings, refraction shader or new render pass. Preserve bridge-light correction, accepted exhaust, dark engine housings, all other materials and global lighting/exposure/bloom."
+  }
+}

@@ -1,0 +1,1 @@
+size=288 align=16 factors=184 flows=200 root=224 material_constants=64

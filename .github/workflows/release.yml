@@ -1,0 +1,128 @@
+name: Release
+
+on:
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize, reopened, closed]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-${{ github.event.pull_request.head.ref }}
+  cancel-in-progress: false
+
+defaults:
+  run:
+    shell: bash
+
+env:
+  PYTHONDONTWRITEBYTECODE: '1'
+
+jobs:
+  credentials:
+    name: Verify back-merge bot access
+    if: >-
+      github.event.pull_request.head.repo.full_name == github.repository &&
+      startsWith(github.event.pull_request.head.ref, 'release/') &&
+      (github.event.action != 'closed' || github.event.pull_request.merged == true)
+    runs-on: ubuntu-24.04
+    steps:
+      # No checkout, build command, or PR-controlled script receives this token.
+      - name: Verify inherited bot identity and PR access
+        env:
+          GH_TOKEN: ${{ secrets.BACKMERGE_TOKEN }}
+          REPOSITORY: ${{ github.repository }}
+        run: |
+          test -n "$GH_TOKEN"
+          test "$(gh api user --jq .login)" = kyaulabs-bot
+          gh pr list --repo "$REPOSITORY" --base develop --head main --state open --json number >/dev/null
+
+  preflight:
+    name: Validate source release
+    if: >-
+      github.event.pull_request.head.repo.full_name == github.repository &&
+      startsWith(github.event.pull_request.head.ref, 'release/') &&
+      (github.event.action != 'closed' || github.event.pull_request.merged == true)
+    runs-on: ubuntu-24.04
+    container: archlinux:base-devel
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+    steps:
+      - name: Install source-release validation tools
+        run: pacman -Syu --needed --noconfirm git git-cliff python
+      - name: Check out exact release revision
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
+        with:
+          ref: ${{ github.event.action == 'closed' && github.event.pull_request.merge_commit_sha || github.event.pull_request.head.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Trust isolated container workspace
+        run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
+      - name: Validate canonical version and release notes
+        id: version
+        env:
+          RELEASE_BRANCH: ${{ github.event.pull_request.head.ref }}
+        run: |
+          version="$(python tools/release.py validate "$RELEASE_BRANCH")"
+          printf 'version=%s\n' "$version" >>"$GITHUB_OUTPUT"
+          python tools/release.py notes "$RELEASE_BRANCH" >"$RUNNER_TEMP/release-notes.md"
+      - name: Test release boundaries and build checked source payload
+        env:
+          RELEASE_BRANCH: ${{ github.event.pull_request.head.ref }}
+        run: |
+          python -m unittest tests.release_automation -v
+          python tools/release.py package "$RELEASE_BRANCH" --output "$RUNNER_TEMP/ngen-source-check"
+
+  publish:
+    name: Publish verified source
+    needs: [credentials, preflight]
+    if: github.event.action == 'closed' && github.event.pull_request.merged == true
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    container: archlinux:base-devel
+    permissions:
+      contents: write
+      actions: read
+    steps:
+      - name: Install source publication tools
+        run: pacman -Syu --needed --noconfirm git git-cliff github-cli python
+      - name: Check out exact merged release
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
+        with:
+          ref: ${{ github.event.pull_request.merge_commit_sha }}
+          fetch-depth: 0
+          # Only this reviewed publication job needs the checkout credential to push a tag.
+      - name: Trust isolated container workspace
+        run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
+      - name: Require successful CI at the exact main merge
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_COMMIT: ${{ github.event.pull_request.merge_commit_sha }}
+        run: python tools/release.py wait-ci "$RELEASE_COMMIT"
+      - name: Package and publish verified source inventory
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_COMMIT: ${{ github.event.pull_request.merge_commit_sha }}
+          RELEASE_BRANCH: ${{ github.event.pull_request.head.ref }}
+        run: |
+          python tools/release.py package "$RELEASE_BRANCH" --output "$RUNNER_TEMP/ngen-release"
+          python tools/release.py publish "$RELEASE_BRANCH" --directory "$RUNNER_TEMP/ngen-release"
+
+  back-merge:
+    name: Open reviewed release back-merge
+    needs: [preflight, publish]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Check out published main revision and tags
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
+        with:
+          ref: ${{ github.event.pull_request.merge_commit_sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Open or reuse bot-authored back-merge PR
+        env:
+          GH_TOKEN: ${{ secrets.BACKMERGE_TOKEN }}
+          RELEASE_VERSION: ${{ needs.preflight.outputs.version }}
+        run: python3 tools/release.py back-merge "$RELEASE_VERSION"

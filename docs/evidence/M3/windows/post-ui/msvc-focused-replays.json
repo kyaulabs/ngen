@@ -1,0 +1,84 @@
+{
+  "archive_sha256": "1efb7f447d88921c74b4425744c4b3cac47c19738aa9dba6a25b1479024d4409",
+  "archive_bytes": 589583,
+  "archive_entries": 8,
+  "expanded_bytes": 2599407,
+  "source_revision": "21e616c13c8a9344a84908a9b00bd53f1d35a8b8",
+  "compiler": "MSVC 19.44.35229.0 (existing accepted Release bundle)",
+  "bundle_identity": {
+    "manifest_sha256": "e624def8958d663300c5f7a1097dfc97e30d06a3e9eb9ee41ee8caf2f1457bdb",
+    "executable_sha256": "9b7c342f9d79dee8922908e81f1ecf52554afaeae5b8d9f1cae85bcbe181e861",
+    "asset_sha256": "99c996f33d3cc98dbd801e3aa302ee2a5894d0fa6bcfdd18f59b73e72e74d834"
+  },
+  "identity_scope": "Repeat script checks executable against its existing bundle manifest and accepted asset. Baseline source and all 27 physical trace fields match; no independent historical baseline executable hash is available in its returned reports. This is not malicious-builder attestation.",
+  "declared_artifact_hashes_verified": 7,
+  "all_csv_values_finite_and_gpu_rows_complete": true,
+  "new_frames_retained": 4800,
+  "new_replays_sequential": true,
+  "all_27_physical_fields_match_baseline": true,
+  "runs": [
+    {
+      "run": "previous_base",
+      "frames": 2400,
+      "warmup_frames": 60,
+      "median_ms": 7.12535,
+      "p95_ms": 7.804,
+      "p99_ms": 8.3627,
+      "maximum_ms": 9.6179,
+      "p95_target_ms": 16.7,
+      "unfocused_frames": 0,
+      "not_playing_frames": 0,
+      "warm_cpp_calls": 0,
+      "warm_imgui_calls": 0,
+      "vulkan_driver_raw": 2604892160,
+      "accepted_active_clean_run": true
+    },
+    {
+      "run": "focused-2",
+      "frames": 2400,
+      "warmup_frames": 60,
+      "median_ms": 7.20705,
+      "p95_ms": 7.6079,
+      "p99_ms": 8.3304,
+      "maximum_ms": 9.2134,
+      "p95_target_ms": 16.7,
+      "unfocused_frames": 0,
+      "not_playing_frames": 0,
+      "warm_cpp_calls": 0,
+      "warm_imgui_calls": 0,
+      "vulkan_driver_raw": 2605056000,
+      "accepted_active_clean_run": true
+    },
+    {
+      "run": "focused-3",
+      "frames": 2400,
+      "warmup_frames": 60,
+      "median_ms": 7.20115,
+      "p95_ms": 7.6622,
+      "p99_ms": 8.4079,
+      "maximum_ms": 9.1938,
+      "p95_target_ms": 16.7,
+      "unfocused_frames": 0,
+      "not_playing_frames": 0,
+      "warm_cpp_calls": 0,
+      "warm_imgui_calls": 0,
+      "vulkan_driver_raw": 2605056000,
+      "accepted_active_clean_run": true
+    }
+  ],
+  "valid_active_clean_runs": 3,
+  "three_valid_active_clean_runs": true,
+  "one_constant_driver_across_all_three": false,
+  "driver_scope": "Original base reports 2604892160; repeats report 2605056000. All three independently meet the unchanged budget, but this is not a controlled same-driver three-run variance set. No driver-change or timing cause is inferred.",
+  "retained_invalid_trials": {
+    "prior_archive_sha256": "efbc537a6b3a5f3b986448918efe62e70753e789404c9fea254e0b94d28d19b4",
+    "focus_invalid_runs": 2,
+    "unfocused_frames": [
+      1448,
+      755
+    ],
+    "longest_frame_ms": 579.3141,
+    "status": "retained, not accepted or deleted"
+  },
+  "scope": "Three valid active-profile MSVC budget runs at source 21e616c, not the current checkout or repaired ClangCl binary. No build, observer or recording launched by the repeat script. Final recording/listening, real disconnected delivery, owner acceptance and reviewed integration remain open."
+}

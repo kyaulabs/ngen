@@ -1,0 +1,19 @@
+{
+  "archive_sha256": "5b8ec57c7a5d57def2f284052d34e53d81ed08766ed18500c624bb2dfbaf228b",
+  "source_revision": "21e616c13c8a9344a84908a9b00bd53f1d35a8b8",
+  "initial_developer_shell_initialized": false,
+  "sdk_version": "10.0.26100.0\\",
+  "sdk_imports_checked": [
+    "kernel32.lib",
+    "user32.lib",
+    "gdi32.lib",
+    "shell32.lib",
+    "pdh.lib",
+    "comdlg32.lib"
+  ],
+  "all_checked_imports_resolve_after_developer_shell": true,
+  "conan_activation_deactivation_preserve_sdk_lib_paths": true,
+  "native_cpu_compile_and_link_succeeded": true,
+  "link_stderr_empty": true,
+  "scope": "One native SDK setup/runtime round-trip and real CPU target link. Does not establish the original failed-session cause, full ClangCl Release link/tests, GPU memory, timing or M3 acceptance."
+}

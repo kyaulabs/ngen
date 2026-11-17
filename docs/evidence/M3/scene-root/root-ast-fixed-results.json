@@ -1,0 +1,20 @@
+[
+  {
+    "configuration": "inspector-debug",
+    "source": "apps/inspector_probe/main.cpp",
+    "status": 0,
+    "flags": "Complete original native command; no flags removed"
+  },
+  {
+    "configuration": "inspector-release",
+    "source": "apps/inspector_probe/main.cpp",
+    "status": 0,
+    "flags": "Complete original native command; no flags removed"
+  },
+  {
+    "configuration": "inspector-asan",
+    "source": "apps/inspector_probe/main.cpp",
+    "status": 0,
+    "flags": "Complete original native command; no flags removed"
+  }
+]

@@ -1,0 +1,20 @@
+Filters: "*unindexed*"
+Randomness seeded to: 4274204824
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+asset_import_tests is a Catch2 v3.16.0 host application.
+Run with -? for options
+
+-------------------------------------------------------------------------------
+static GLB import generates indices for unindexed triangles
+-------------------------------------------------------------------------------
+<REPO>/tests/asset_import.cpp:72
+...............................................................................
+
+<REPO>/tests/asset_import.cpp:75: FAILED:
+explicitly with message:
+  indexed triangles are required
+
+===============================================================================
+test cases: 1 | 1 failed
+assertions: 2 | 1 passed | 1 failed

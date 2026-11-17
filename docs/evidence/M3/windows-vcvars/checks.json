@@ -1,0 +1,12 @@
+{
+  "recorded_windows_revision": "ef85f4c28b50f9bf30f4e5b0342b9fa5d680cdf6",
+  "phase": "Jolt CMake setup / duplicate Visual Studio activation; no application compile yet",
+  "conan_version": "2.34.0",
+  "native_owner_rerun": "required",
+  "checks": {
+    "original_powershell_boundaries": "passed",
+    "flight_powershell_boundaries": "passed",
+    "real_conan_generator_fixture": "passed; no batch executed; dynamic Debug CRT and C++20 retained"
+  },
+  "scope": "Only two scoped Conan configuration arguments change; no C++ behavior/dependency/lock changes."
+}

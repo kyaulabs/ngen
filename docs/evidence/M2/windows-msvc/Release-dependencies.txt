@@ -1,0 +1,67 @@
+Using lockfile: 'D:\Git\kyaulabs\ngen\conan-render.lock'
+
+======== Input profiles ========
+Profile host:
+[settings]
+arch=x86_64
+build_type=Release
+compiler=msvc
+compiler.cppstd=20
+compiler.runtime=dynamic
+compiler.runtime_type=Release
+compiler.version=194
+os=Windows
+[options]
+&:renderer=True
+[conf]
+tools.build:jobs=2
+tools.cmake.cmaketoolchain:generator=Ninja
+
+Profile build:
+[settings]
+arch=x86_64
+build_type=Release
+compiler=msvc
+compiler.cppstd=20
+compiler.runtime=dynamic
+compiler.runtime_type=Release
+compiler.version=194
+os=Windows
+[conf]
+tools.build:jobs=2
+tools.cmake.cmaketoolchain:generator=Ninja
+
+
+======== Computing dependency graph ========
+Graph root
+    conanfile.py: D:\Git\kyaulabs\ngen\conanfile.py
+Requirements
+    enkits/1.12#66203195b410e9ccba5ac22e3216b7d7 - Cache
+    sdl/3.4.16#fe421775c8e1866eb22a3ba23ef8fd62 - Cache
+Test requirements
+    catch2/3.16.0#95f400ca2fba9f0c5ce5aea6e6fe0055 - Cache
+Build requirements
+    cmake/4.4.4#fec9c7048fae91e03c31e59977cd9c12 - Cache
+
+======== Computing necessary packages ========
+Connecting to remote 'conancenter' anonymously
+enkits/1.12: Main binary package '6119fcdeccb25969de15c5fd8a88f617d4396ca6' missing
+enkits/1.12: Checking 7 compatible configurations
+enkits/1.12: Found compatible package '4d8ab52ebb49f51e63d5193ed580b5a7672e23d5': compiler.cppstd=14
+sdl/3.4.16: Main binary package '58903aa465caa613a4138787e32245ba84c73eb1' missing
+sdl/3.4.16: Checking 1 compatible configurations
+sdl/3.4.16: Compatible configurations not found in cache, checking servers
+sdl/3.4.16: '87e1592511173d88d75027cd17148dab9a720fd2': compiler.version=193
+sdl/3.4.16: No compatible configuration found
+
+A new experimental approach for binary compatibility detection is available.
+    Enable it by setting the core.graph:compatibility_mode=optimized conf
+    and get improved performance when querying multiple compatible binaries in remotes.
+
+Requirements
+    enkits/1.12#66203195b410e9ccba5ac22e3216b7d7:4d8ab52ebb49f51e63d5193ed580b5a7672e23d5#ad66249a14a6c01633baed61ec6effa7 - Cache
+    sdl/3.4.16#fe421775c8e1866eb22a3ba23ef8fd62:58903aa465caa613a4138787e32245ba84c73eb1 - Build
+Test requirements
+    catch2/3.16.0#95f400ca2fba9f0c5ce5aea6e6fe0055:d9c548eb2668b980e4cf8d5e617a70868b559bec#f919c87abbcd3bb6be456778ecb422fb - Cache
+Build requirements
+    cmake/4.4.4#fec9c7048fae91e03c31e59977cd9c12:522dcea5982a3f8a5b624c16477e47195da2f84f#9bdca4f8c6341bd4d9b64aee41c9be05 - Cache

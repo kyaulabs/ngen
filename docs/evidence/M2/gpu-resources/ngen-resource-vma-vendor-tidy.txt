@@ -1,0 +1,602 @@
+5491 warnings generated.
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:707:9: error: use of a signed integer operand with a binary bitwise operator [bugprone-signed-bitwise,-warnings-as-errors]
+  707 |         VMA_ALLOCATION_CREATE_STRATEGY_MIN_MEMORY_BIT |
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  708 |         VMA_ALLOCATION_CREATE_STRATEGY_MIN_TIME_BIT |
+      |         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ~
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:785:9: error: use of a signed integer operand with a binary bitwise operator [bugprone-signed-bitwise,-warnings-as-errors]
+  785 |         VMA_DEFRAGMENTATION_FLAG_ALGORITHM_FAST_BIT |
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  786 |         VMA_DEFRAGMENTATION_FLAG_ALGORITHM_BALANCED_BIT |
+      |         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  787 |         VMA_DEFRAGMENTATION_FLAG_ALGORITHM_FULL_BIT |
+      |         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ~
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:3161:13: error: macro argument should be enclosed in parentheses [bugprone-macro-parentheses,-warnings-as-errors]
+ 3161 |             className& operator=(const className&) = delete;
+      |             ^
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:3167:23: error: macro argument should be enclosed in parentheses [bugprone-macro-parentheses,-warnings-as-errors]
+ 3167 |             className(className&&) = delete; \
+      |                       ^
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:3168:13: error: macro argument should be enclosed in parentheses [bugprone-macro-parentheses,-warnings-as-errors]
+ 3168 |             className& operator=(const className&) = delete; \
+      |             ^
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:3169:13: error: macro argument should be enclosed in parentheses [bugprone-macro-parentheses,-warnings-as-errors]
+ 3169 |             className& operator=(className&&) = delete;
+      |             ^
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:3169:34: error: macro argument should be enclosed in parentheses [bugprone-macro-parentheses,-warnings-as-errors]
+ 3169 |             className& operator=(className&&) = delete;
+      |                                  ^
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:3432:6: error: enum 'VMA_CACHE_OPERATION' uses a larger base type ('unsigned int', size: 4 bytes) than necessary for its value set, consider using 'std::uint8_t' (1 byte) as the base type to reduce its size [performance-enum-size,-warnings-as-errors]
+ 3432 | enum VMA_CACHE_OPERATION
+      |      ^
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:3438:12: error: enum 'VmaAllocationRequestType' uses a larger base type ('int', size: 4 bytes) than necessary for its value set, consider using 'std::uint8_t' (1 byte) as the base type to reduce its size [performance-enum-size,-warnings-as-errors]
+ 3438 | enum class VmaAllocationRequestType
+      |            ^
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:3658:13: error: use of a signed integer operand with a binary bitwise operator [bugprone-signed-bitwise,-warnings-as-errors]
+ 3658 |     return (x & (x - 1)) == 0;
+      |             ^ ~
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:3697:15: error: use of a signed integer operand with a binary bitwise operator [bugprone-signed-bitwise,-warnings-as-errors]
+ 3697 |     v |= v >> 1;
+      |            ~~ ^
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:3698:15: error: use of a signed integer operand with a binary bitwise operator [bugprone-signed-bitwise,-warnings-as-errors]
+ 3698 |     v |= v >> 2;
+      |            ~~ ^
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:3699:15: error: use of a signed integer operand with a binary bitwise operator [bugprone-signed-bitwise,-warnings-as-errors]
+ 3699 |     v |= v >> 4;
+      |            ~~ ^
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:3700:15: error: use of a signed integer operand with a binary bitwise operator [bugprone-signed-bitwise,-warnings-as-errors]
+ 3700 |     v |= v >> 8;
+      |            ~~ ^
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:3701:15: error: use of a signed integer operand with a binary bitwise operator [bugprone-signed-bitwise,-warnings-as-errors]
+ 3701 |     v |= v >> 16;
+      |            ~~ ^~
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:3709:15: error: use of a signed integer operand with a binary bitwise operator [bugprone-signed-bitwise,-warnings-as-errors]
+ 3709 |     v |= v >> 1;
+      |            ~~ ^
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:3710:15: error: use of a signed integer operand with a binary bitwise operator [bugprone-signed-bitwise,-warnings-as-errors]
+ 3710 |     v |= v >> 2;
+      |            ~~ ^
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:3711:15: error: use of a signed integer operand with a binary bitwise operator [bugprone-signed-bitwise,-warnings-as-errors]
+ 3711 |     v |= v >> 4;
+      |            ~~ ^
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:3712:15: error: use of a signed integer operand with a binary bitwise operator [bugprone-signed-bitwise,-warnings-as-errors]
+ 3712 |     v |= v >> 8;
+      |            ~~ ^
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:3713:15: error: use of a signed integer operand with a binary bitwise operator [bugprone-signed-bitwise,-warnings-as-errors]
+ 3713 |     v |= v >> 16;
+      |            ~~ ^~
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:3714:15: error: use of a signed integer operand with a binary bitwise operator [bugprone-signed-bitwise,-warnings-as-errors]
+ 3714 |     v |= v >> 32;
+      |            ~~ ^~
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:3722:15: error: use of a signed integer operand with a binary bitwise operator [bugprone-signed-bitwise,-warnings-as-errors]
+ 3722 |     v |= v >> 1;
+      |            ~~ ^
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:3723:15: error: use of a signed integer operand with a binary bitwise operator [bugprone-signed-bitwise,-warnings-as-errors]
+ 3723 |     v |= v >> 2;
+      |            ~~ ^
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:3724:15: error: use of a signed integer operand with a binary bitwise operator [bugprone-signed-bitwise,-warnings-as-errors]
+ 3724 |     v |= v >> 4;
+      |            ~~ ^
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:3725:15: error: use of a signed integer operand with a binary bitwise operator [bugprone-signed-bitwise,-warnings-as-errors]
+ 3725 |     v |= v >> 8;
+      |            ~~ ^
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:3726:15: error: use of a signed integer operand with a binary bitwise operator [bugprone-signed-bitwise,-warnings-as-errors]
+ 3726 |     v |= v >> 16;
+      |            ~~ ^~
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:3727:19: error: use of a signed integer operand with a binary bitwise operator [bugprone-signed-bitwise,-warnings-as-errors]
+ 3727 |     v = v ^ (v >> 1);
+      |                ~~ ^
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:3733:15: error: use of a signed integer operand with a binary bitwise operator [bugprone-signed-bitwise,-warnings-as-errors]
+ 3733 |     v |= v >> 1;
+      |            ~~ ^
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:3734:15: error: use of a signed integer operand with a binary bitwise operator [bugprone-signed-bitwise,-warnings-as-errors]
+ 3734 |     v |= v >> 2;
+      |            ~~ ^
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:3735:15: error: use of a signed integer operand with a binary bitwise operator [bugprone-signed-bitwise,-warnings-as-errors]
+ 3735 |     v |= v >> 4;
+      |            ~~ ^
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:3736:15: error: use of a signed integer operand with a binary bitwise operator [bugprone-signed-bitwise,-warnings-as-errors]
+ 3736 |     v |= v >> 8;
+      |            ~~ ^
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:3737:15: error: use of a signed integer operand with a binary bitwise operator [bugprone-signed-bitwise,-warnings-as-errors]
+ 3737 |     v |= v >> 16;
+      |            ~~ ^~
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:3738:15: error: use of a signed integer operand with a binary bitwise operator [bugprone-signed-bitwise,-warnings-as-errors]
+ 3738 |     v |= v >> 32;
+      |            ~~ ^~
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:3739:19: error: use of a signed integer operand with a binary bitwise operator [bugprone-signed-bitwise,-warnings-as-errors]
+ 3739 |     v = v ^ (v >> 1);
+      |                ~~ ^
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:3972:48: error: initialization of 'UNKNOWN' with static storage duration may throw an exception that cannot be caught [bugprone-throwing-static-initialization,-warnings-as-errors]
+ 3972 | const VmaBufferImageUsage VmaBufferImageUsage::UNKNOWN = VmaBufferImageUsage(0);
+      |                                                ^
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:3957:14: note: possibly throwing constructor declared here
+ 3957 |     explicit VmaBufferImageUsage(BaseType usage) : Value(usage) { }
+      |              ^
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:4009:5: error: 3 adjacent parameters of 'FindMemoryPreferences' of similar type ('VkMemoryPropertyFlags &') are easily swapped by mistake [bugprone-easily-swappable-parameters,-warnings-as-errors]
+ 4009 |     VkMemoryPropertyFlags& outRequiredFlags,
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 4010 |     VkMemoryPropertyFlags& outPreferredFlags,
+      |     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 4011 |     VkMemoryPropertyFlags& outNotPreferredFlags)
+      |     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:4009:28: note: the first parameter in the range is 'outRequiredFlags'
+ 4009 |     VkMemoryPropertyFlags& outRequiredFlags,
+      |                            ^~~~~~~~~~~~~~~~
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:4011:28: note: the last parameter in the range is 'outNotPreferredFlags'
+ 4011 |     VkMemoryPropertyFlags& outNotPreferredFlags)
+      |                            ^~~~~~~~~~~~~~~~~~~~
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:4028:29: error: use of a signed integer operand with a binary bitwise operator [bugprone-signed-bitwise,-warnings-as-errors]
+ 4028 |         outRequiredFlags |= VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT;
+      |                          ~~ ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:4093:38: error: use of a signed integer operand with a binary bitwise operator [bugprone-signed-bitwise,-warnings-as-errors]
+ 4093 |                 outPreferredFlags |= VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT | VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT;
+      |                                   ~~ ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:4222:39: error: multilevel pointer conversion from 'VmaBlockMetadata_TLSF::Block **' to 'void *', please use explicit cast [bugprone-multi-level-implicit-pointer-conversion,-warnings-as-errors]
+ 4222 |         VmaFree(pAllocationCallbacks, ptr);
+      |                                       ^
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:4479:54: error: multilevel pointer conversion from 'VmaBlockMetadata_TLSF::Block **' to 'void *', please use explicit cast [bugprone-multi-level-implicit-pointer-conversion,-warnings-as-errors]
+ 4479 |     ~VmaVector() { VmaFree(m_Allocator.m_pCallbacks, m_pArray); }
+      |                                                      ^
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:4479:54: error: multilevel pointer conversion from 'VmaDeviceMemoryBlock **' to 'void *', please use explicit cast [bugprone-multi-level-implicit-pointer-conversion,-warnings-as-errors]
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:4607:13: error: do not use 'memcpy' to cast between pointers [bugprone-bitwise-pointer-cast,-warnings-as-errors]
+ 4607 |             memcpy(newArray, m_pArray, elementsToCopy * sizeof(T));
+      |             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:4607:20: error: multilevel pointer conversion from 'VmaDeviceMemoryBlock **' to 'void *', please use explicit cast [bugprone-multi-level-implicit-pointer-conversion,-warnings-as-errors]
+ 4607 |             memcpy(newArray, m_pArray, elementsToCopy * sizeof(T));
+      |                    ^
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:4607:30: error: multilevel pointer conversion from 'VmaDeviceMemoryBlock **' to 'const void *', please use explicit cast [bugprone-multi-level-implicit-pointer-conversion,-warnings-as-errors]
+ 4607 |             memcpy(newArray, m_pArray, elementsToCopy * sizeof(T));
+      |                              ^
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:4609:43: error: multilevel pointer conversion from 'VmaDeviceMemoryBlock **' to 'void *', please use explicit cast [bugprone-multi-level-implicit-pointer-conversion,-warnings-as-errors]
+ 4609 |         VmaFree(m_Allocator.m_pCallbacks, m_pArray);
+      |                                           ^
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:4654:17: error: multilevel pointer conversion from 'VmaDeviceMemoryBlock **' to 'void *', please use explicit cast [bugprone-multi-level-implicit-pointer-conversion,-warnings-as-errors]
+ 4654 |         memmove(m_pArray + index, m_pArray + (index + 1), (oldCount - index - 1) * sizeof(T));
+      |                 ^
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:4654:35: error: multilevel pointer conversion from 'VmaDeviceMemoryBlock **' to 'const void *', please use explicit cast [bugprone-multi-level-implicit-pointer-conversion,-warnings-as-errors]
+ 4654 |         memmove(m_pArray + index, m_pArray + (index + 1), (oldCount - index - 1) * sizeof(T));
+      |                                   ^
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:4919:9: error: do not use 'memcpy' to cast between pointers [bugprone-bitwise-pointer-cast,-warnings-as-errors]
+ 4919 |         memcpy(&pItemPtr, &ptr, sizeof(pItemPtr));
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:4919:16: error: multilevel pointer conversion from 'Item **' to 'void *', please use explicit cast [bugprone-multi-level-implicit-pointer-conversion,-warnings-as-errors]
+ 4919 |         memcpy(&pItemPtr, &ptr, sizeof(pItemPtr));
+      |                ^
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:4919:27: error: multilevel pointer conversion from 'VmaAllocation_T **' to 'const void *', please use explicit cast [bugprone-multi-level-implicit-pointer-conversion,-warnings-as-errors]
+ 4919 |         memcpy(&pItemPtr, &ptr, sizeof(pItemPtr));
+      |                           ^
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:4919:27: error: multilevel pointer conversion from 'VmaBlockMetadata_TLSF::Block **' to 'const void *', please use explicit cast [bugprone-multi-level-implicit-pointer-conversion,-warnings-as-errors]
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:4919:33: error: suspicious usage of 'sizeof()' on an expression of pointer type [bugprone-sizeof-expression,-warnings-as-errors]
+ 4919 |         memcpy(&pItemPtr, &ptr, sizeof(pItemPtr));
+      |                                 ^~~~~~~~~~~~~~~~
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:5732:16: error: narrowing conversion from 'int' to signed type 'char' is implementation-defined [bugprone-narrowing-conversions,-warnings-as-errors]
+ 5732 |         *--p = '0' + (char)(num % 10);
+      |                ^
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:5745:16: error: narrowing conversion from 'int' to signed type 'char' is implementation-defined [bugprone-narrowing-conversions,-warnings-as-errors]
+ 5745 |         *--p = '0' + (char)(num % 10);
+      |                ^
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:5816:10: error: enum 'COLLECTION_TYPE' uses a larger base type ('unsigned int', size: 4 bytes) than necessary for its value set, consider using 'std::uint8_t' (1 byte) as the base type to reduce its size [performance-enum-size,-warnings-as-errors]
+ 5816 |     enum COLLECTION_TYPE
+      |          ^
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:6383:10: error: enum 'FLAGS' uses a larger base type ('unsigned int', size: 4 bytes) than necessary for its value set, consider using 'std::uint8_t' (1 byte) as the base type to reduce its size [performance-enum-size,-warnings-as-errors]
+ 6383 |     enum FLAGS
+      |          ^
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:6390:10: error: enum 'ALLOCATION_TYPE' uses a larger base type ('unsigned int', size: 4 bytes) than necessary for its value set, consider using 'std::uint8_t' (1 byte) as the base type to reduce its size [performance-enum-size,-warnings-as-errors]
+ 6390 |     enum ALLOCATION_TYPE
+      |          ^
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:6828:43: error: 2 adjacent parameters of 'DebugLogAllocation' of similar type ('VkDeviceSize') are easily swapped by mistake [bugprone-easily-swappable-parameters,-warnings-as-errors]
+ 6828 | void VmaBlockMetadata::DebugLogAllocation(VkDeviceSize offset, VkDeviceSize size, void* userData) const
+      |                                           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:6828:56: note: the first parameter in the range is 'offset'
+ 6828 | void VmaBlockMetadata::DebugLogAllocation(VkDeviceSize offset, VkDeviceSize size, void* userData) const
+      |                                                        ^~~~~~
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:6828:77: note: the last parameter in the range is 'size'
+ 6828 | void VmaBlockMetadata::DebugLogAllocation(VkDeviceSize offset, VkDeviceSize size, void* userData) const
+      |                                                                             ^~~~
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:7019:5: error: 2 adjacent parameters of 'RoundupAllocRequest' of similar type ('VkDeviceSize &') are easily swapped by mistake [bugprone-easily-swappable-parameters,-warnings-as-errors]
+ 7019 |     VkDeviceSize& inOutAllocSize,
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 7020 |     VkDeviceSize& inOutAllocAlignment) const
+      |     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:7019:19: note: the first parameter in the range is 'inOutAllocSize'
+ 7019 |     VkDeviceSize& inOutAllocSize,
+      |                   ^~~~~~~~~~~~~~
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:7020:19: note: the last parameter in the range is 'inOutAllocAlignment'
+ 7020 |     VkDeviceSize& inOutAllocAlignment) const
+      |                   ^~~~~~~~~~~~~~~~~~~
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:7063:49: error: 2 adjacent parameters of 'AllocPages' of convertible types are easily swapped by mistake [bugprone-easily-swappable-parameters,-warnings-as-errors]
+ 7063 | void VmaBlockBufferImageGranularity::AllocPages(uint8_t allocType, VkDeviceSize offset, VkDeviceSize size)
+      |                                                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:7063:57: note: the first parameter in the range is 'allocType'
+ 7063 | void VmaBlockBufferImageGranularity::AllocPages(uint8_t allocType, VkDeviceSize offset, VkDeviceSize size)
+      |                                                         ^~~~~~~~~
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:7063:81: note: the last parameter in the range is 'offset'
+ 7063 | void VmaBlockBufferImageGranularity::AllocPages(uint8_t allocType, VkDeviceSize offset, VkDeviceSize size)
+      |                                                                                 ^~~~~~
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:7063:49: note:
+ 7063 | void VmaBlockBufferImageGranularity::AllocPages(uint8_t allocType, VkDeviceSize offset, VkDeviceSize size)
+      |                                                 ^
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:7063:68: note: 'uint8_t' and 'VkDeviceSize' may be implicitly converted: 'uint8_t' (as 'unsigned char') -> 'VkDeviceSize' (as 'unsigned long'), 'VkDeviceSize' (as 'unsigned long') -> 'uint8_t' (as 'unsigned char')
+ 7063 | void VmaBlockBufferImageGranularity::AllocPages(uint8_t allocType, VkDeviceSize offset, VkDeviceSize size)
+      |                                                                    ^
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:7302:10: error: enum 'SECOND_VECTOR_MODE' uses a larger base type ('unsigned int', size: 4 bytes) than necessary for its value set, consider using 'std::uint8_t' (1 byte) as the base type to reduce its size [performance-enum-size,-warnings-as-errors]
+ 7302 |     enum SECOND_VECTOR_MODE
+      |          ^
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:8549:37: error: use of a signed integer operand with a binary bitwise operator [bugprone-signed-bitwise,-warnings-as-errors]
+ 8549 |                 m_1stVectorIndex ^= 1;
+      |                                  ~~ ^
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:8558:5: error: 2 adjacent parameters of 'CreateAllocationRequest_LowerAddress' of similar type ('VkDeviceSize') are easily swapped by mistake [bugprone-easily-swappable-parameters,-warnings-as-errors]
+ 8558 |     VkDeviceSize allocSize,
+      |     ^~~~~~~~~~~~~~~~~~~~~~~
+ 8559 |     VkDeviceSize allocAlignment,
+      |     ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:8558:18: note: the first parameter in the range is 'allocSize'
+ 8558 |     VkDeviceSize allocSize,
+      |                  ^~~~~~~~~
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:8559:18: note: the last parameter in the range is 'allocAlignment'
+ 8559 |     VkDeviceSize allocAlignment,
+      |                  ^~~~~~~~~~~~~~
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:8642:47: error: integer to pointer cast pessimizes optimization opportunities [performance-no-int-to-ptr,-warnings-as-errors]
+ 8642 |             pAllocationRequest->allocHandle = (VmaAllocHandle)(resultOffset + 1);
+      |                                               ^
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:8725:47: error: integer to pointer cast pessimizes optimization opportunities [performance-no-int-to-ptr,-warnings-as-errors]
+ 8725 |             pAllocationRequest->allocHandle = (VmaAllocHandle)(resultOffset + 1);
+      |                                               ^
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:8736:5: error: 2 adjacent parameters of 'CreateAllocationRequest_UpperAddress' of similar type ('VkDeviceSize') are easily swapped by mistake [bugprone-easily-swappable-parameters,-warnings-as-errors]
+ 8736 |     VkDeviceSize allocSize,
+      |     ^~~~~~~~~~~~~~~~~~~~~~~
+ 8737 |     VkDeviceSize allocAlignment,
+      |     ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:8736:18: note: the first parameter in the range is 'allocSize'
+ 8736 |     VkDeviceSize allocSize,
+      |                  ^~~~~~~~~
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:8737:18: note: the last parameter in the range is 'allocAlignment'
+ 8737 |     VkDeviceSize allocAlignment,
+      |                  ^~~~~~~~~~~~~~
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:8842:43: error: integer to pointer cast pessimizes optimization opportunities [performance-no-int-to-ptr,-warnings-as-errors]
+ 8842 |         pAllocationRequest->allocHandle = (VmaAllocHandle)(resultOffset + 1);
+      |                                           ^
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:9025:18: error: multilevel pointer conversion from 'VmaBlockMetadata_TLSF::Block **' to 'void *', please use explicit cast [bugprone-multi-level-implicit-pointer-conversion,-warnings-as-errors]
+ 9025 |     m_FreeList = vma_new_array(GetAllocationCallbacks(), Block*, m_ListsCount);
+      |                  ^
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:4204:53: note: expanded from macro 'vma_new_array'
+ 4204 | #define vma_new_array(allocator, type, count)   new(VmaAllocateArray<type>((allocator), (count)))(type)
+      |                                                     ^
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:9026:12: error: multilevel pointer conversion from 'Block **' to 'void *', please use explicit cast [bugprone-multi-level-implicit-pointer-conversion,-warnings-as-errors]
+ 9026 |     memset(m_FreeList, 0, m_ListsCount * sizeof(Block*));
+      |            ^
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:9218:37: error: use of a signed integer operand with a binary bitwise operator [bugprone-signed-bitwise,-warnings-as-errors]
+ 9218 |         sizeForNextList += (1ULL << (VMA_BITSCAN_MSB(allocSize) - SECOND_LEVEL_INDEX));
+      |                                  ~~ ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:9602:12: error: multilevel pointer conversion from 'Block **' to 'void *', please use explicit cast [bugprone-multi-level-implicit-pointer-conversion,-warnings-as-errors]
+ 9602 |     memset(m_FreeList, 0, m_ListsCount * sizeof(Block*));
+      |            ^
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:9636:43: error: use of a signed integer operand with a binary bitwise operator [bugprone-signed-bitwise,-warnings-as-errors]
+ 9636 |     return static_cast<uint16_t>((size >> (memoryClass + MEMORY_CLASS_SHIFT - SECOND_LEVEL_INDEX)) ^ (1U << SECOND_LEVEL_INDEX));
+      |                                        ~~ ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:9644:70: error: use of a signed integer operand with a binary bitwise operator [bugprone-signed-bitwise,-warnings-as-errors]
+ 9644 |     const uint32_t index = static_cast<uint32_t>(memoryClass - 1) * (1 << SECOND_LEVEL_INDEX) + secondIndex;
+      |                                                                      ^ ~~
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:9646:25: error: use of a signed integer operand with a binary bitwise operator [bugprone-signed-bitwise,-warnings-as-errors]
+ 9646 |         return index + (1 << SECOND_LEVEL_INDEX);
+      |                         ^ ~~
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:9728:54: error: use of a signed integer operand with a binary bitwise operator [bugprone-signed-bitwise,-warnings-as-errors]
+ 9728 |         uint32_t freeMap = m_IsFreeBitmap & (~0UL << (memoryClass + 1));
+      |                                                   ~~ ^~~~~~~~~~~~~~~~~
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:9745:5: error: 3 adjacent parameters of 'CheckBlock' of convertible types are easily swapped by mistake [bugprone-easily-swappable-parameters,-warnings-as-errors]
+ 9745 |     uint32_t listIndex,
+      |     ^~~~~~~~~~~~~~~~~~~
+ 9746 |     VkDeviceSize allocSize,
+      |     ~~~~~~~~~~~~~~~~~~~~~~~
+ 9747 |     VkDeviceSize allocAlignment,
+      |     ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:9745:14: note: the first parameter in the range is 'listIndex'
+ 9745 |     uint32_t listIndex,
+      |              ^~~~~~~~~
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:9747:18: note: the last parameter in the range is 'allocAlignment'
+ 9747 |     VkDeviceSize allocAlignment,
+      |                  ^~~~~~~~~~~~~~
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:9745:5: note:
+ 9745 |     uint32_t listIndex,
+      |     ^
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:9746:5: note: 'uint32_t' and 'VkDeviceSize' may be implicitly converted: 'uint32_t' (as 'unsigned int') -> 'VkDeviceSize' (as 'unsigned long'), 'VkDeviceSize' (as 'unsigned long') -> 'uint32_t' (as 'unsigned int')
+ 9746 |     VkDeviceSize allocSize,
+      |     ^
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:9766:38: error: integer to pointer cast pessimizes optimization opportunities [performance-no-int-to-ptr,-warnings-as-errors]
+ 9766 |     pAllocationRequest->customData = (void*)allocType;
+      |                                      ^
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:9931:16: error: enum 'CounterStatus' uses a larger base type ('int', size: 4 bytes) than necessary for its value set, consider using 'std::uint8_t' (1 byte) as the base type to reduce its size [performance-enum-size,-warnings-as-errors]
+ 9931 |     enum class CounterStatus { Pass, Ignore, End };
+      |                ^
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:10354:70: error: use of a signed integer operand with a binary bitwise operator [bugprone-signed-bitwise,-warnings-as-errors]
+ 10354 |         return (m_MemProps.memoryTypes[memTypeIndex].propertyFlags & (VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT)) ==
+       |                                                                    ~ ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:10677:5: error: 4 adjacent parameters of 'Init' of convertible types are easily swapped by mistake [bugprone-easily-swappable-parameters,-warnings-as-errors]
+ 10677 |     VkDeviceSize newSize,
+       |     ^~~~~~~~~~~~~~~~~~~~~
+ 10678 |     uint32_t id,
+       |     ~~~~~~~~~~~~
+ 10679 |     uint32_t algorithm,
+       |     ~~~~~~~~~~~~~~~~~~~
+ 10680 |     VkDeviceSize bufferImageGranularity)
+       |     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:10677:18: note: the first parameter in the range is 'newSize'
+ 10677 |     VkDeviceSize newSize,
+       |                  ^~~~~~~
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:10680:18: note: the last parameter in the range is 'bufferImageGranularity'
+ 10680 |     VkDeviceSize bufferImageGranularity)
+       |                  ^~~~~~~~~~~~~~~~~~~~~~
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:10677:5: note:
+ 10677 |     VkDeviceSize newSize,
+       |     ^
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:10678:5: note: 'VkDeviceSize' and 'uint32_t' may be implicitly converted: 'VkDeviceSize' (as 'unsigned long') -> 'uint32_t' (as 'unsigned int'), 'uint32_t' (as 'unsigned int') -> 'VkDeviceSize' (as 'unsigned long')
+ 10678 |     uint32_t id,
+       |     ^
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:10942:5: error: 3 adjacent parameters of 'InitBlockAllocation' of convertible types are easily swapped by mistake [bugprone-easily-swappable-parameters,-warnings-as-errors]
+ 10942 |     VkDeviceSize alignment,
+       |     ^~~~~~~~~~~~~~~~~~~~~~~
+ 10943 |     VkDeviceSize size,
+       |     ~~~~~~~~~~~~~~~~~~
+ 10944 |     uint32_t memoryTypeIndex,
+       |     ~~~~~~~~~~~~~~~~~~~~~~~~
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:10942:18: note: the first parameter in the range is 'alignment'
+ 10942 |     VkDeviceSize alignment,
+       |                  ^~~~~~~~~
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:10944:14: note: the last parameter in the range is 'memoryTypeIndex'
+ 10944 |     uint32_t memoryTypeIndex,
+       |              ^~~~~~~~~~~~~~~
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:10942:5: note:
+ 10942 |     VkDeviceSize alignment,
+       |     ^
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:10944:5: note: 'VkDeviceSize' and 'uint32_t' may be implicitly converted: 'VkDeviceSize' (as 'unsigned long') -> 'uint32_t' (as 'unsigned int'), 'uint32_t' (as 'unsigned int') -> 'VkDeviceSize' (as 'unsigned long')
+ 10944 |     uint32_t memoryTypeIndex,
+       |     ^
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:11268:5: error: 5 adjacent parameters of 'VmaBlockVector' of convertible types are easily swapped by mistake [bugprone-easily-swappable-parameters,-warnings-as-errors]
+ 11268 |     uint32_t memoryTypeIndex,
+       |     ^~~~~~~~~~~~~~~~~~~~~~~~~
+ 11269 |     VkDeviceSize preferredBlockSize,
+       |     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 11270 |     size_t minBlockCount,
+       |     ~~~~~~~~~~~~~~~~~~~~~
+ 11271 |     size_t maxBlockCount,
+       |     ~~~~~~~~~~~~~~~~~~~~~
+ 11272 |     VkDeviceSize bufferImageGranularity,
+       |     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:11268:14: note: the first parameter in the range is 'memoryTypeIndex'
+ 11268 |     uint32_t memoryTypeIndex,
+       |              ^~~~~~~~~~~~~~~
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:11272:18: note: the last parameter in the range is 'bufferImageGranularity'
+ 11272 |     VkDeviceSize bufferImageGranularity,
+       |                  ^~~~~~~~~~~~~~~~~~~~~~
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:11268:5: note:
+ 11268 |     uint32_t memoryTypeIndex,
+       |     ^
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:11269:5: note: 'uint32_t' and 'VkDeviceSize' may be implicitly converted: 'uint32_t' (as 'unsigned int') -> 'VkDeviceSize' (as 'unsigned long'), 'VkDeviceSize' (as 'unsigned long') -> 'uint32_t' (as 'unsigned int')
+ 11269 |     VkDeviceSize preferredBlockSize,
+       |     ^
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:11268:5: note:
+ 11268 |     uint32_t memoryTypeIndex,
+       |     ^
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:11270:5: note: 'uint32_t' and 'size_t' may be implicitly converted: 'uint32_t' (as 'unsigned int') -> 'size_t' (as 'unsigned long'), 'size_t' (as 'unsigned long') -> 'uint32_t' (as 'unsigned int')
+ 11270 |     size_t minBlockCount,
+       |     ^
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:11269:5: note: after resolving type aliases, the common type of 'VkDeviceSize' and 'size_t' is 'unsigned long'
+ 11269 |     VkDeviceSize preferredBlockSize,
+       |     ^
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:11274:5: error: 3 adjacent parameters of 'VmaBlockVector' of convertible types are easily swapped by mistake [bugprone-easily-swappable-parameters,-warnings-as-errors]
+ 11274 |     uint32_t algorithm,
+       |     ^~~~~~~~~~~~~~~~~~~
+ 11275 |     float priority,
+       |     ~~~~~~~~~~~~~~~
+ 11276 |     VkDeviceSize minAllocationAlignment,
+       |     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:11274:14: note: the first parameter in the range is 'algorithm'
+ 11274 |     uint32_t algorithm,
+       |              ^~~~~~~~~
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:11276:18: note: the last parameter in the range is 'minAllocationAlignment'
+ 11276 |     VkDeviceSize minAllocationAlignment,
+       |                  ^~~~~~~~~~~~~~~~~~~~~~
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:11274:5: note:
+ 11274 |     uint32_t algorithm,
+       |     ^
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:11275:5: note: 'uint32_t' and 'float' may be implicitly converted: 'uint32_t' (as 'unsigned int') -> 'float', 'float' -> 'uint32_t' (as 'unsigned int')
+ 11275 |     float priority,
+       |     ^
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:11274:5: note:
+ 11274 |     uint32_t algorithm,
+       |     ^
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:11276:5: note: 'uint32_t' and 'VkDeviceSize' may be implicitly converted: 'uint32_t' (as 'unsigned int') -> 'VkDeviceSize' (as 'unsigned long'), 'VkDeviceSize' (as 'unsigned long') -> 'uint32_t' (as 'unsigned int')
+ 11276 |     VkDeviceSize minAllocationAlignment,
+       |     ^
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:11275:5: note:
+ 11275 |     float priority,
+       |     ^
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:11276:5: note: 'float' and 'VkDeviceSize' may be implicitly converted: 'float' -> 'VkDeviceSize' (as 'unsigned long'), 'VkDeviceSize' (as 'unsigned long') -> 'float'
+ 11276 |     VkDeviceSize minAllocationAlignment,
+       |     ^
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:11399:16: error: multilevel pointer conversion from 'VmaAllocation *' (aka 'struct VmaAllocation_T **') to 'void *', please use explicit cast [bugprone-multi-level-implicit-pointer-conversion,-warnings-as-errors]
+ 11399 |         memset(pAllocations, 0, sizeof(VmaAllocation) * allocationCount);
+       |                ^
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:11470:21: error: use of a signed integer operand with a binary bitwise operator [bugprone-signed-bitwise,-warnings-as-errors]
+ 11469 |                 const bool isMappingAllowed = (createInfo.flags &
+       |                                                                 ~
+ 11470 |                     (VMA_ALLOCATION_CREATE_HOST_ACCESS_SEQUENTIAL_WRITE_BIT | VMA_ALLOCATION_CREATE_HOST_ACCESS_RANDOM_BIT)) != 0;
+       |                     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:11767:5: error: 2 adjacent parameters of 'CommitAllocationRequest' of convertible types are easily swapped by mistake [bugprone-easily-swappable-parameters,-warnings-as-errors]
+ 11767 |     VkDeviceSize alignment,
+       |     ^~~~~~~~~~~~~~~~~~~~~~~
+ 11768 |     VmaAllocationCreateFlags allocFlags,
+       |     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:11767:18: note: the first parameter in the range is 'alignment'
+ 11767 |     VkDeviceSize alignment,
+       |                  ^~~~~~~~~
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:11768:30: note: the last parameter in the range is 'allocFlags'
+ 11768 |     VmaAllocationCreateFlags allocFlags,
+       |                              ^~~~~~~~~~
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:11767:5: note:
+ 11767 |     VkDeviceSize alignment,
+       |     ^
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:11768:5: note: 'VkDeviceSize' and 'VmaAllocationCreateFlags' may be implicitly converted: 'VkDeviceSize' (as 'unsigned long') -> 'VmaAllocationCreateFlags' (as 'unsigned int'), 'VmaAllocationCreateFlags' (as 'unsigned int') -> 'VkDeviceSize' (as 'unsigned long')
+ 11768 |     VmaAllocationCreateFlags allocFlags,
+       |     ^
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:11776:9: error: use of a signed integer operand with a binary bitwise operator [bugprone-signed-bitwise,-warnings-as-errors]
+ 11775 |     const bool isMappingAllowed = (allocFlags &
+       |                                               ~
+ 11776 |         (VMA_ALLOCATION_CREATE_HOST_ACCESS_SEQUENTIAL_WRITE_BIT | VMA_ALLOCATION_CREATE_HOST_ACCESS_RANDOM_BIT)) != 0;
+       |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:12341:27: error: use of a signed integer operand with a binary bitwise operator [bugprone-signed-bitwise,-warnings-as-errors]
+ 12341 |         moveData.flags |= VMA_ALLOCATION_CREATE_HOST_ACCESS_SEQUENTIAL_WRITE_BIT | VMA_ALLOCATION_CREATE_HOST_ACCESS_RANDOM_BIT;
+       |                        ~~ ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:12878:5: error: 3 adjacent parameters of 'MoveDataToFreeBlocks' of similar type ('bool &') are easily swapped by mistake [bugprone-easily-swappable-parameters,-warnings-as-errors]
+ 12878 |     bool& texturePresent, bool& bufferPresent, bool& otherPresent)
+       |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:12878:11: note: the first parameter in the range is 'texturePresent'
+ 12878 |     bool& texturePresent, bool& bufferPresent, bool& otherPresent)
+       |           ^~~~~~~~~~~~~~
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:12878:54: note: the last parameter in the range is 'otherPresent'
+ 12878 |     bool& texturePresent, bool& bufferPresent, bool& otherPresent)
+       |                                                      ^~~~~~~~~~~~
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:13530:17: error: use of a signed integer operand with a binary bitwise operator [bugprone-signed-bitwise,-warnings-as-errors]
+ 13529 |             (finalCreateInfo.flags &
+       |                                    ~
+ 13530 |                 (VMA_ALLOCATION_CREATE_HOST_ACCESS_SEQUENTIAL_WRITE_BIT | VMA_ALLOCATION_CREATE_HOST_ACCESS_RANDOM_BIT)) != 0,
+       |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:13573:21: error: use of a signed integer operand with a binary bitwise operator [bugprone-signed-bitwise,-warnings-as-errors]
+ 13572 |                 (finalCreateInfo.flags &
+       |                                        ~
+ 13573 |                     (VMA_ALLOCATION_CREATE_HOST_ACCESS_SEQUENTIAL_WRITE_BIT | VMA_ALLOCATION_CREATE_HOST_ACCESS_RANDOM_BIT)) != 0,
+       |                     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:13614:17: error: use of a signed integer operand with a binary bitwise operator [bugprone-signed-bitwise,-warnings-as-errors]
+ 13613 |             (finalCreateInfo.flags &
+       |                                    ~
+ 13614 |                 (VMA_ALLOCATION_CREATE_HOST_ACCESS_SEQUENTIAL_WRITE_BIT | VMA_ALLOCATION_CREATE_HOST_ACCESS_RANDOM_BIT)) != 0,
+       |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:13777:16: error: multilevel pointer conversion from 'VmaAllocation *' (aka 'struct VmaAllocation_T **') to 'void *', please use explicit cast [bugprone-multi-level-implicit-pointer-conversion,-warnings-as-errors]
+ 13777 |         memset(pAllocations, 0, sizeof(VmaAllocation) * allocationCount);
+       |                ^
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:13839:5: error: 2 adjacent parameters of 'GetBufferMemoryRequirements' of similar type ('bool &') are easily swapped by mistake [bugprone-easily-swappable-parameters,-warnings-as-errors]
+ 13839 |     bool& requiresDedicatedAllocation,
+       |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 13840 |     bool& prefersDedicatedAllocation) const
+       |     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:13839:11: note: the first parameter in the range is 'requiresDedicatedAllocation'
+ 13839 |     bool& requiresDedicatedAllocation,
+       |           ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:13840:11: note: the last parameter in the range is 'prefersDedicatedAllocation'
+ 13840 |     bool& prefersDedicatedAllocation) const
+       |           ^~~~~~~~~~~~~~~~~~~~~~~~~~
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:13871:5: error: 2 adjacent parameters of 'GetImageMemoryRequirements' of similar type ('bool &') are easily swapped by mistake [bugprone-easily-swappable-parameters,-warnings-as-errors]
+ 13871 |     bool& requiresDedicatedAllocation,
+       |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 13872 |     bool& prefersDedicatedAllocation) const
+       |     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:13871:11: note: the first parameter in the range is 'requiresDedicatedAllocation'
+ 13871 |     bool& requiresDedicatedAllocation,
+       |           ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:13872:11: note: the last parameter in the range is 'prefersDedicatedAllocation'
+ 13872 |     bool& prefersDedicatedAllocation) const
+       |           ^~~~~~~~~~~~~~~~~~~~~~~~~~
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:13929:40: error: use of a signed integer operand with a binary bitwise operator [bugprone-signed-bitwise,-warnings-as-errors]
+ 13929 |         ++memTypeIndex, memTypeBit <<= 1)
+       |                                    ~~~ ^
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:13960:5: error: 2 adjacent parameters of 'CalcMemTypeParams' of convertible types are easily swapped by mistake [bugprone-easily-swappable-parameters,-warnings-as-errors]
+ 13960 |     uint32_t memTypeIndex,
+       |     ^~~~~~~~~~~~~~~~~~~~~~
+ 13961 |     VkDeviceSize size,
+       |     ~~~~~~~~~~~~~~~~~
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:13960:14: note: the first parameter in the range is 'memTypeIndex'
+ 13960 |     uint32_t memTypeIndex,
+       |              ^~~~~~~~~~~~
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:13961:18: note: the last parameter in the range is 'size'
+ 13961 |     VkDeviceSize size,
+       |                  ^~~~
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:13960:5: note:
+ 13960 |     uint32_t memTypeIndex,
+       |     ^
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:13961:5: note: 'uint32_t' and 'VkDeviceSize' may be implicitly converted: 'uint32_t' (as 'unsigned int') -> 'VkDeviceSize' (as 'unsigned long'), 'VkDeviceSize' (as 'unsigned long') -> 'uint32_t' (as 'unsigned int')
+ 13961 |     VkDeviceSize size,
+       |     ^
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:13968:34: error: use of a signed integer operand with a binary bitwise operator [bugprone-signed-bitwise,-warnings-as-errors]
+ 13968 |         inoutCreateInfo.flags &= ~VMA_ALLOCATION_CREATE_MAPPED_BIT;
+       |                               ~~ ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:13990:9: error: use of a signed integer operand with a binary bitwise operator [bugprone-signed-bitwise,-warnings-as-errors]
+ 13990 |         (VMA_ALLOCATION_CREATE_HOST_ACCESS_SEQUENTIAL_WRITE_BIT | VMA_ALLOCATION_CREATE_HOST_ACCESS_RANDOM_BIT)) !=
+       |         ^
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:2994:48: note: expanded from macro 'VMA_ASSERT'
+ 2994 |        #define VMA_ASSERT(expr)         assert(expr)
+      |                                         ~~~~~~~^~~~~
+/usr/include/assert.h:138:8: note: expanded from macro 'assert'
+  138 |      ((__VA_ARGS__)                                                     \
+      |        ^~~~~~~~~~~
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:13994:34: error: use of a signed integer operand with a binary bitwise operator [bugprone-signed-bitwise,-warnings-as-errors]
+ 13994 |         (inoutCreateInfo.flags & (VMA_ALLOCATION_CREATE_HOST_ACCESS_SEQUENTIAL_WRITE_BIT | VMA_ALLOCATION_CREATE_HOST_ACCESS_RANDOM_BIT)) != 0)) &&
+       |                                  ^
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:2994:48: note: expanded from macro 'VMA_ASSERT'
+ 2994 |        #define VMA_ASSERT(expr)         assert(expr)
+      |                                         ~~~~~~~^~~~~
+/usr/include/assert.h:138:8: note: expanded from macro 'assert'
+  138 |      ((__VA_ARGS__)                                                     \
+      |        ^~~~~~~~~~~
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:14000:49: error: use of a signed integer operand with a binary bitwise operator [bugprone-signed-bitwise,-warnings-as-errors]
+ 14000 |             VMA_ASSERT((inoutCreateInfo.flags & (VMA_ALLOCATION_CREATE_HOST_ACCESS_SEQUENTIAL_WRITE_BIT | VMA_ALLOCATION_CREATE_HOST_ACCESS_RANDOM_BIT)) != 0 &&
+       |                                                 ^
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:2994:48: note: expanded from macro 'VMA_ASSERT'
+ 2994 |        #define VMA_ASSERT(expr)         assert(expr)
+      |                                         ~~~~~~~^~~~~
+/usr/include/assert.h:138:8: note: expanded from macro 'assert'
+  138 |      ((__VA_ARGS__)                                                     \
+      |        ^~~~~~~~~~~
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:14044:37: error: use of a signed integer operand with a binary bitwise operator [bugprone-signed-bitwise,-warnings-as-errors]
+ 14044 |         if((inoutCreateInfo.flags & (VMA_ALLOCATION_CREATE_HOST_ACCESS_SEQUENTIAL_WRITE_BIT | VMA_ALLOCATION_CREATE_HOST_ACCESS_RANDOM_BIT)) == 0)
+       |                                   ~ ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:14065:12: error: multilevel pointer conversion from 'VmaAllocation *' (aka 'struct VmaAllocation_T **') to 'void *', please use explicit cast [bugprone-multi-level-implicit-pointer-conversion,-warnings-as-errors]
+ 14065 |     memset(pAllocations, 0, sizeof(VmaAllocation) * allocationCount);
+       |            ^
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:14735:5: error: 2 adjacent parameters of 'FlushOrInvalidateAllocations' of similar type ('const VkDeviceSize *') are easily swapped by mistake [bugprone-easily-swappable-parameters,-warnings-as-errors]
+ 14735 |     const VkDeviceSize* offsets, const VkDeviceSize* sizes,
+       |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:14735:25: note: the first parameter in the range is 'offsets'
+ 14735 |     const VkDeviceSize* offsets, const VkDeviceSize* sizes,
+       |                         ^~~~~~~
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:14735:54: note: the last parameter in the range is 'sizes'
+ 14735 |     const VkDeviceSize* offsets, const VkDeviceSize* sizes,
+       |                                                      ^~~~~
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:15397:33: error: use of a signed integer operand with a binary bitwise operator [bugprone-signed-bitwise,-warnings-as-errors]
+ 15396 |                             VkMemoryHeapFlags flags = heapInfo.flags &
+       |                                                                      ~
+ 15397 |                                 ~(VK_MEMORY_HEAP_DEVICE_LOCAL_BIT
+       |                                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 15398 |                         #if VMA_VULKAN_VERSION >= 1001000
+       |                         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 15399 |                                     | VK_MEMORY_HEAP_MULTI_INSTANCE_BIT
+       |                                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 15400 |                         #endif
+       |                         ~~~~~~
+ 15401 |                                     );
+       |                                     ~
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:15397:34: error: use of a signed integer operand with a unary bitwise operator [bugprone-signed-bitwise,-warnings-as-errors]
+ 15397 |                                 ~(VK_MEMORY_HEAP_DEVICE_LOCAL_BIT
+       |                                 ~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 15398 |                         #if VMA_VULKAN_VERSION >= 1001000
+       |                         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 15399 |                                     | VK_MEMORY_HEAP_MULTI_INSTANCE_BIT
+       |                                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 15400 |                         #endif
+       |                         ~~~~~~
+ 15401 |                                     );
+       |                                     ~
+<conan-cache>/p/vulka5f8c9f361cfa0/p/include/vk_mem_alloc.h:15460:56: error: use of a signed integer operand with a binary bitwise operator [bugprone-signed-bitwise,-warnings-as-errors]
+ 15460 |                                             flags &= ~(VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT
+       |                                                        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 15461 |                                         #if VMA_VULKAN_VERSION >= 1001000
+       |                                         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 15462 |                                                 | VK_MEMORY_PROPERTY_LAZILY_ALLOCATED_BIT
+       |                                                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 15463 |                                         #endif
+ 15464 |                                         #if VK_AMD_device_coherent_memory
+ 15465 |                                                 | VK_MEMORY_PROPERTY_DEVICE_COHERENT_BIT_AMD_COPY
+       |                                                 ~
+Suppressed 5374 warnings (5374 in non-user code).
+Use -header-filter=.* or leave it as default to display errors from all non-system headers. Use -system-headers to display errors from system headers as well.
+107 warnings treated as errors

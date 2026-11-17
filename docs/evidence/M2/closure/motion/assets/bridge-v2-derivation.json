@@ -1,0 +1,155 @@
+{
+  "package": "/home/kyau/projects/kyaulabs/ngen/build/cooked-candidate/frigate-hull-focus-bridge-v2/scene.ngas",
+  "sha256": "bce7f71bfa18eea6c73d425565be71144915e9b3fde66063a263bcc424d09cc5",
+  "runtime": {
+    "package_valid": 1,
+    "vertices": 1304579,
+    "indices": 3390150,
+    "primitives": 204,
+    "instances": 209,
+    "materials": 17,
+    "images": 9,
+    "textures": 20,
+    "lights": 612,
+    "light_instances": 612,
+    "texture_bytes": 106343076,
+    "lod_triangles": [
+      574376,
+      291044,
+      238320
+    ],
+    "checksum": 2040274864
+  },
+  "bridge_glazing": {
+    "name": "subtle-bridge-glazing-v2",
+    "base_sha256": "a1f70ef7b3e6b7e67341e36b5828a759e9ca3502859d3fc6dba7c9a02688929f",
+    "source_sha256": "e68cd409c479036556446ed1753b287c0e7a40260109b3cd442abe7f533941fe",
+    "author_sha256": "d06fc3469311f9a81985172bf4852e221cd3b79dcdf22272667ce007870253bf",
+    "material": 9,
+    "old_emissive_strength": 1.3600000143051147,
+    "new_emissive_strength": 0.06,
+    "bridge_lights": [
+      {
+        "light": 294,
+        "old_intensity_cd": 6522.16943359375,
+        "new_intensity_cd": 6522.16943359375,
+        "old_range_m": 9.0,
+        "new_range_m": 0.6
+      },
+      {
+        "light": 295,
+        "old_intensity_cd": 6522.16943359375,
+        "new_intensity_cd": 6522.16943359375,
+        "old_range_m": 9.0,
+        "new_range_m": 0.6
+      },
+      {
+        "light": 296,
+        "old_intensity_cd": 6522.16943359375,
+        "new_intensity_cd": 6522.16943359375,
+        "old_range_m": 9.0,
+        "new_range_m": 0.6
+      },
+      {
+        "light": 297,
+        "old_intensity_cd": 6522.16943359375,
+        "new_intensity_cd": 6522.16943359375,
+        "old_range_m": 9.0,
+        "new_range_m": 0.6
+      },
+      {
+        "light": 298,
+        "old_intensity_cd": 6522.16943359375,
+        "new_intensity_cd": 6522.16943359375,
+        "old_range_m": 9.0,
+        "new_range_m": 0.6
+      },
+      {
+        "light": 299,
+        "old_intensity_cd": 6522.16943359375,
+        "new_intensity_cd": 6522.16943359375,
+        "old_range_m": 9.0,
+        "new_range_m": 0.6
+      }
+    ],
+    "bridge_light_instances": [
+      {
+        "instance": 294,
+        "light": 294,
+        "old_xy": [
+          -5.174999713897705,
+          12.317435264587402
+        ],
+        "new_xy": [
+          -4.425000476837158,
+          11.567435264587402
+        ]
+      },
+      {
+        "instance": 295,
+        "light": 295,
+        "old_xy": [
+          -5.174999713897705,
+          12.317435264587402
+        ],
+        "new_xy": [
+          -4.425000476837158,
+          11.567435264587402
+        ]
+      },
+      {
+        "instance": 296,
+        "light": 296,
+        "old_xy": [
+          -5.174999713897705,
+          12.317435264587402
+        ],
+        "new_xy": [
+          -4.425000476837158,
+          11.567435264587402
+        ]
+      },
+      {
+        "instance": 297,
+        "light": 297,
+        "old_xy": [
+          -5.174999713897705,
+          12.317435264587402
+        ],
+        "new_xy": [
+          -4.425000476837158,
+          11.567435264587402
+        ]
+      },
+      {
+        "instance": 298,
+        "light": 298,
+        "old_xy": [
+          -5.174999713897705,
+          12.317435264587402
+        ],
+        "new_xy": [
+          -4.425000476837158,
+          11.567435264587402
+        ]
+      },
+      {
+        "instance": 299,
+        "light": 299,
+        "old_xy": [
+          -5.174999713897705,
+          12.317435264587402
+        ],
+        "new_xy": [
+          -4.425000476837158,
+          11.567435264587402
+        ]
+      }
+    ],
+    "glazing_x_bounds": [
+      -5.120000839233398,
+      -4.880000114440918
+    ],
+    "scope": "Only bridge glazing emission and its six proxy lights. Move proxies behind the raked glazing into the pressure compartment; constrain reach so they cannot wash exterior plating. Preserve original point powers/selection, cyan hue, geometry, all images and other materials/lights, global exposure/bloom and accepted exhaust. No new glass/transmission shader."
+  }
+}

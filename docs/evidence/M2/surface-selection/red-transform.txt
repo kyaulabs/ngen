@@ -1,0 +1,32 @@
+Filters: "*malformed surface*"
+Randomness seeded to: 1181215902
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+render_startup_tests is a Catch2 v3.16.0 host application.
+Run with -? for options
+
+-------------------------------------------------------------------------------
+malformed surface bounds and image counts fail before planning
+-------------------------------------------------------------------------------
+/home/kyau/projects/kyaulabs/ngen/tests/render_surface.cpp:130
+...............................................................................
+
+/home/kyau/projects/kyaulabs/ngen/tests/render_surface.cpp:141: FAILED:
+  REQUIRE( std::holds_alternative<SurfaceFailure>(result) )
+with expansion:
+  false
+
+-------------------------------------------------------------------------------
+malformed surface bounds and image counts fail before planning
+-------------------------------------------------------------------------------
+/home/kyau/projects/kyaulabs/ngen/tests/render_surface.cpp:130
+...............................................................................
+
+/home/kyau/projects/kyaulabs/ngen/tests/render_surface.cpp:141: FAILED:
+  REQUIRE( std::holds_alternative<SurfaceFailure>(result) )
+with expansion:
+  false
+
+===============================================================================
+test cases:  1 |  0 passed | 1 failed
+assertions: 14 | 12 passed | 2 failed

@@ -1,0 +1,86 @@
+{
+  "graphs": [
+    {
+      "configuration": "demo-debug",
+      "selected": 20,
+      "executed": 20,
+      "failed": 0,
+      "affected_header_tests": "audio_output and flight_demo_cli passed after constant-width repair"
+    },
+    {
+      "configuration": "demo-release",
+      "selected": 20,
+      "executed": 20,
+      "failed": 0,
+      "affected_header_tests": "audio_output and flight_demo_cli passed after constant-width repair"
+    },
+    {
+      "configuration": "demo-asan",
+      "selected": 20,
+      "executed": 20,
+      "failed": 0,
+      "affected_header_tests": "audio_output and flight_demo_cli passed after constant-width repair"
+    },
+    {
+      "configuration": "demo-gcc",
+      "selected": 20,
+      "executed": 20,
+      "failed": 0,
+      "affected_header_tests": "audio_output and flight_demo_cli passed after constant-width repair"
+    }
+  ],
+  "audio_disabled_graphs": [
+    {
+      "configuration": "inspector-debug",
+      "tests": 12,
+      "failed": 0
+    },
+    {
+      "configuration": "inspector-release",
+      "tests": 12,
+      "failed": 0
+    },
+    {
+      "configuration": "inspector-asan",
+      "tests": 12,
+      "failed": 0
+    },
+    {
+      "configuration": "inspector-gcc",
+      "tests": 12,
+      "failed": 0
+    },
+    {
+      "configuration": "scene-shipping",
+      "tests": 11,
+      "failed": 0
+    },
+    {
+      "configuration": "scene-no-shaders",
+      "tests": 10,
+      "failed": 0
+    }
+  ],
+  "ast": {
+    "complete_commands": 30,
+    "affected_header_reruns": 9,
+    "flags_removed": false,
+    "gcc_ast": "unsupported unchanged native module flags, not stripped"
+  },
+  "parent_ci": {
+    "head": "cf725196bd0513245f113304dc99f1ec502ae124",
+    "run": 42970251740,
+    "jobs": 4,
+    "conclusion": "success",
+    "scope": "parent playable source, not this audio diff"
+  },
+  "native": "four current-source 330-frame renderer/audio SDL dummy runs with empty stderr, plus four audio-disabled original probes; actual ALSA quiet muted admission only",
+  "pending": [
+    "offline package",
+    "current Windows",
+    "three warmed laptop runs",
+    "scoped RTX",
+    "recording",
+    "physical control/listening/reconnection acceptance"
+  ]
+}

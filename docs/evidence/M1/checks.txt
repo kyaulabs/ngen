@@ -1,0 +1,313 @@
+=== debug build ===
+[0/1] Re-running CMake...
+-- Using Conan toolchain: /home/kyau/projects/kyaulabs/ngen/build/debug/conan_toolchain.cmake
+-- Conan toolchain: Defining architecture flag: -m64
+-- Conan toolchain: Defining libcxx as C++ flags: -stdlib=libstdc++
+-- Conan toolchain: C++ Standard 20 with extensions OFF
+-- Conan: Target declared 'enkiTS::enkiTS'
+-- Conan: Component target declared 'Catch2::Catch2'
+-- Conan: Component target declared 'Catch2::Catch2WithMain'
+-- Configuring done (0.1s)
+-- Generating done (0.0s)
+-- Build files have been written to: /home/kyau/projects/kyaulabs/ngen/build/debug
+[1/27] Scanning /home/kyau/projects/kyaulabs/ngen/engine/core/entities.cpp for CXX dependencies
+[2/27] Scanning /home/kyau/projects/kyaulabs/ngen/engine/core/values.cpp for CXX dependencies
+[3/27] Generating CXX dyndep file CMakeFiles/ngen_core.dir/CXX.dd
+[4/27] Scanning /home/kyau/projects/kyaulabs/ngen/engine/jobs/jobs.cpp for CXX dependencies
+[5/27] Building CXX object CMakeFiles/ngen_core.dir/engine/core/entities.cpp.o
+[6/27] Generating CXX dyndep file CMakeFiles/ngen_jobs.dir/CXX.dd
+[7/27] Building CXX object CMakeFiles/ngen_core.dir/engine/core/values.cpp.o
+[8/27] Scanning /home/kyau/projects/kyaulabs/ngen/engine/simulation/simulation.cpp for CXX dependencies
+[9/27] Linking CXX static library libngen_core.a
+[10/27] Generating CXX dyndep file CMakeFiles/ngen_simulation.dir/CXX.dd
+[11/27] Scanning /home/kyau/projects/kyaulabs/ngen/apps/sim_harness/main.cpp for CXX dependencies
+[12/27] Scanning /home/kyau/projects/kyaulabs/ngen/tests/core.cpp for CXX dependencies
+[13/27] Scanning /home/kyau/projects/kyaulabs/ngen/tests/jobs.cpp for CXX dependencies
+[14/27] Scanning /home/kyau/projects/kyaulabs/ngen/tests/simulation.cpp for CXX dependencies
+[15/27] Building CXX object CMakeFiles/ngen_jobs.dir/engine/jobs/jobs.cpp.o
+[16/27] Linking CXX static library libngen_jobs.a
+[17/27] Generating CXX dyndep file CMakeFiles/sim_harness.dir/CXX.dd
+[18/27] Generating CXX dyndep file CMakeFiles/ngen_tests.dir/CXX.dd
+[19/27] Building CXX object CMakeFiles/ngen_simulation.dir/engine/simulation/simulation.cpp.o
+[20/27] Linking CXX static library libngen_simulation.a
+[21/27] Building CXX object CMakeFiles/sim_harness.dir/apps/sim_harness/main.cpp.o
+[22/27] Building CXX object CMakeFiles/ngen_tests.dir/tests/core.cpp.o
+[23/27] Building CXX object CMakeFiles/ngen_tests.dir/tests/jobs.cpp.o
+[24/27] Linking CXX executable sim_harness
+[25/27] Building CXX object CMakeFiles/ngen_tests.dir/tests/simulation.cpp.o
+[26/27] Linking CXX executable ngen_tests
+
+=== debug test ===
+Test project /home/kyau/projects/kyaulabs/ngen/build/debug
+    Start 1: ngen_tests
+1/3 Test #1: ngen_tests .......................   Passed    0.01 sec
+    Start 2: replay_serial
+2/3 Test #2: replay_serial ....................   Passed    0.02 sec
+    Start 3: replay_workers
+3/3 Test #3: replay_workers ...................   Passed    0.02 sec
+
+100% tests passed out of 3
+
+Total Test time (real) =   0.06 sec
+
+=== release build ===
+[0/1] Re-running CMake...
+-- Using Conan toolchain: /home/kyau/projects/kyaulabs/ngen/build/release/conan_toolchain.cmake
+-- Conan toolchain: Defining architecture flag: -m64
+-- Conan toolchain: Defining libcxx as C++ flags: -stdlib=libstdc++
+-- Conan toolchain: C++ Standard 20 with extensions OFF
+-- Conan: Target declared 'enkiTS::enkiTS'
+-- Conan: Component target declared 'Catch2::Catch2'
+-- Conan: Component target declared 'Catch2::Catch2WithMain'
+-- Configuring done (0.1s)
+-- Generating done (0.0s)
+-- Build files have been written to: /home/kyau/projects/kyaulabs/ngen/build/release
+[1/27] Scanning /home/kyau/projects/kyaulabs/ngen/engine/core/entities.cpp for CXX dependencies
+[2/27] Scanning /home/kyau/projects/kyaulabs/ngen/engine/core/values.cpp for CXX dependencies
+[3/27] Generating CXX dyndep file CMakeFiles/ngen_core.dir/CXX.dd
+[4/27] Scanning /home/kyau/projects/kyaulabs/ngen/engine/jobs/jobs.cpp for CXX dependencies
+[5/27] Building CXX object CMakeFiles/ngen_core.dir/engine/core/entities.cpp.o
+[6/27] Building CXX object CMakeFiles/ngen_core.dir/engine/core/values.cpp.o
+[7/27] Generating CXX dyndep file CMakeFiles/ngen_jobs.dir/CXX.dd
+[8/27] Linking CXX static library libngen_core.a
+[9/27] Scanning /home/kyau/projects/kyaulabs/ngen/engine/simulation/simulation.cpp for CXX dependencies
+[10/27] Generating CXX dyndep file CMakeFiles/ngen_simulation.dir/CXX.dd
+[11/27] Scanning /home/kyau/projects/kyaulabs/ngen/apps/sim_harness/main.cpp for CXX dependencies
+[12/27] Scanning /home/kyau/projects/kyaulabs/ngen/tests/core.cpp for CXX dependencies
+[13/27] Scanning /home/kyau/projects/kyaulabs/ngen/tests/jobs.cpp for CXX dependencies
+[14/27] Scanning /home/kyau/projects/kyaulabs/ngen/tests/simulation.cpp for CXX dependencies
+[15/27] Building CXX object CMakeFiles/ngen_jobs.dir/engine/jobs/jobs.cpp.o
+[16/27] Linking CXX static library libngen_jobs.a
+[17/27] Generating CXX dyndep file CMakeFiles/sim_harness.dir/CXX.dd
+[18/27] Generating CXX dyndep file CMakeFiles/ngen_tests.dir/CXX.dd
+[19/27] Building CXX object CMakeFiles/ngen_simulation.dir/engine/simulation/simulation.cpp.o
+[20/27] Linking CXX static library libngen_simulation.a
+[21/27] Building CXX object CMakeFiles/sim_harness.dir/apps/sim_harness/main.cpp.o
+[22/27] Building CXX object CMakeFiles/ngen_tests.dir/tests/core.cpp.o
+[23/27] Building CXX object CMakeFiles/ngen_tests.dir/tests/jobs.cpp.o
+[24/27] Linking CXX executable sim_harness
+[25/27] Building CXX object CMakeFiles/ngen_tests.dir/tests/simulation.cpp.o
+[26/27] Linking CXX executable ngen_tests
+
+=== release test ===
+Test project /home/kyau/projects/kyaulabs/ngen/build/release
+    Start 1: ngen_tests
+1/3 Test #1: ngen_tests .......................   Passed    0.01 sec
+    Start 2: replay_serial
+2/3 Test #2: replay_serial ....................   Passed    0.01 sec
+    Start 3: replay_workers
+3/3 Test #3: replay_workers ...................   Passed    0.01 sec
+
+100% tests passed out of 3
+
+Total Test time (real) =   0.03 sec
+
+=== gcc build ===
+[0/1] Re-running CMake...
+-- Using Conan toolchain: /home/kyau/projects/kyaulabs/ngen/build/gcc/conan_toolchain.cmake
+-- Conan toolchain: Defining architecture flag: -m64
+-- Conan toolchain: C++ Standard 20 with extensions OFF
+-- Conan: Target declared 'enkiTS::enkiTS'
+-- Conan: Component target declared 'Catch2::Catch2'
+-- Conan: Component target declared 'Catch2::Catch2WithMain'
+-- Configuring done (0.1s)
+-- Generating done (0.0s)
+-- Build files have been written to: /home/kyau/projects/kyaulabs/ngen/build/gcc
+[1/27] Scanning /home/kyau/projects/kyaulabs/ngen/engine/core/entities.cpp for CXX dependencies
+[2/27] Scanning /home/kyau/projects/kyaulabs/ngen/engine/core/values.cpp for CXX dependencies
+[3/27] Generating CXX dyndep file CMakeFiles/ngen_core.dir/CXX.dd
+[4/27] Scanning /home/kyau/projects/kyaulabs/ngen/engine/jobs/jobs.cpp for CXX dependencies
+[5/27] Building CXX object CMakeFiles/ngen_core.dir/engine/core/entities.cpp.o
+[6/27] Generating CXX dyndep file CMakeFiles/ngen_jobs.dir/CXX.dd
+[7/27] Building CXX object CMakeFiles/ngen_core.dir/engine/core/values.cpp.o
+[8/27] Linking CXX static library libngen_core.a
+[9/27] Scanning /home/kyau/projects/kyaulabs/ngen/engine/simulation/simulation.cpp for CXX dependencies
+[10/27] Generating CXX dyndep file CMakeFiles/ngen_simulation.dir/CXX.dd
+[11/27] Scanning /home/kyau/projects/kyaulabs/ngen/apps/sim_harness/main.cpp for CXX dependencies
+[12/27] Scanning /home/kyau/projects/kyaulabs/ngen/tests/core.cpp for CXX dependencies
+[13/27] Scanning /home/kyau/projects/kyaulabs/ngen/tests/jobs.cpp for CXX dependencies
+[14/27] Scanning /home/kyau/projects/kyaulabs/ngen/tests/simulation.cpp for CXX dependencies
+[15/27] Building CXX object CMakeFiles/ngen_jobs.dir/engine/jobs/jobs.cpp.o
+[16/27] Linking CXX static library libngen_jobs.a
+[17/27] Generating CXX dyndep file CMakeFiles/sim_harness.dir/CXX.dd
+[18/27] Generating CXX dyndep file CMakeFiles/ngen_tests.dir/CXX.dd
+[19/27] Building CXX object CMakeFiles/ngen_simulation.dir/engine/simulation/simulation.cpp.o
+[20/27] Linking CXX static library libngen_simulation.a
+[21/27] Building CXX object CMakeFiles/sim_harness.dir/apps/sim_harness/main.cpp.o
+[22/27] Building CXX object CMakeFiles/ngen_tests.dir/tests/core.cpp.o
+[23/27] Building CXX object CMakeFiles/ngen_tests.dir/tests/jobs.cpp.o
+[24/27] Linking CXX executable sim_harness
+[25/27] Building CXX object CMakeFiles/ngen_tests.dir/tests/simulation.cpp.o
+[26/27] Linking CXX executable ngen_tests
+
+=== gcc test ===
+Test project /home/kyau/projects/kyaulabs/ngen/build/gcc
+    Start 1: ngen_tests
+1/3 Test #1: ngen_tests .......................   Passed    0.01 sec
+    Start 2: replay_serial
+2/3 Test #2: replay_serial ....................   Passed    0.02 sec
+    Start 3: replay_workers
+3/3 Test #3: replay_workers ...................   Passed    0.03 sec
+
+100% tests passed out of 3
+
+Total Test time (real) =   0.06 sec
+
+=== asan build ===
+[0/1] Re-running CMake...
+-- Using Conan toolchain: /home/kyau/projects/kyaulabs/ngen/build/asan/conan_toolchain.cmake
+-- Conan toolchain: Defining architecture flag: -m64
+-- Conan toolchain: Defining libcxx as C++ flags: -stdlib=libstdc++
+-- Conan toolchain: C++ Standard 20 with extensions OFF
+-- Conan: Target declared 'enkiTS::enkiTS'
+-- Conan: Component target declared 'Catch2::Catch2'
+-- Conan: Component target declared 'Catch2::Catch2WithMain'
+-- Configuring done (0.1s)
+-- Generating done (0.0s)
+-- Build files have been written to: /home/kyau/projects/kyaulabs/ngen/build/asan
+[1/27] Scanning /home/kyau/projects/kyaulabs/ngen/engine/core/entities.cpp for CXX dependencies
+[2/27] Scanning /home/kyau/projects/kyaulabs/ngen/engine/core/values.cpp for CXX dependencies
+[3/27] Generating CXX dyndep file CMakeFiles/ngen_core.dir/CXX.dd
+[4/27] Scanning /home/kyau/projects/kyaulabs/ngen/engine/jobs/jobs.cpp for CXX dependencies
+[5/27] Building CXX object CMakeFiles/ngen_core.dir/engine/core/entities.cpp.o
+[6/27] Generating CXX dyndep file CMakeFiles/ngen_jobs.dir/CXX.dd
+[7/27] Building CXX object CMakeFiles/ngen_core.dir/engine/core/values.cpp.o
+[8/27] Scanning /home/kyau/projects/kyaulabs/ngen/engine/simulation/simulation.cpp for CXX dependencies
+[9/27] Linking CXX static library libngen_core.a
+[10/27] Generating CXX dyndep file CMakeFiles/ngen_simulation.dir/CXX.dd
+[11/27] Scanning /home/kyau/projects/kyaulabs/ngen/apps/sim_harness/main.cpp for CXX dependencies
+[12/27] Scanning /home/kyau/projects/kyaulabs/ngen/tests/core.cpp for CXX dependencies
+[13/27] Scanning /home/kyau/projects/kyaulabs/ngen/tests/jobs.cpp for CXX dependencies
+[14/27] Scanning /home/kyau/projects/kyaulabs/ngen/tests/simulation.cpp for CXX dependencies
+[15/27] Building CXX object CMakeFiles/ngen_jobs.dir/engine/jobs/jobs.cpp.o
+[16/27] Linking CXX static library libngen_jobs.a
+[17/27] Generating CXX dyndep file CMakeFiles/sim_harness.dir/CXX.dd
+[18/27] Generating CXX dyndep file CMakeFiles/ngen_tests.dir/CXX.dd
+[19/27] Building CXX object CMakeFiles/ngen_simulation.dir/engine/simulation/simulation.cpp.o
+[20/27] Linking CXX static library libngen_simulation.a
+[21/27] Building CXX object CMakeFiles/sim_harness.dir/apps/sim_harness/main.cpp.o
+[22/27] Building CXX object CMakeFiles/ngen_tests.dir/tests/core.cpp.o
+[23/27] Building CXX object CMakeFiles/ngen_tests.dir/tests/jobs.cpp.o
+[24/27] Linking CXX executable sim_harness
+[25/27] Building CXX object CMakeFiles/ngen_tests.dir/tests/simulation.cpp.o
+[26/27] Linking CXX executable ngen_tests
+
+=== asan test ===
+Test project /home/kyau/projects/kyaulabs/ngen/build/asan
+    Start 1: ngen_tests
+1/3 Test #1: ngen_tests .......................   Passed    0.05 sec
+    Start 2: replay_serial
+2/3 Test #2: replay_serial ....................   Passed    0.10 sec
+    Start 3: replay_workers
+3/3 Test #3: replay_workers ...................   Passed    0.11 sec
+
+100% tests passed out of 3
+
+Total Test time (real) =   0.26 sec
+
+=== tsan build ===
+[1/26] Scanning /home/kyau/projects/kyaulabs/ngen/engine/core/entities.cpp for CXX dependencies
+[2/26] Scanning /home/kyau/projects/kyaulabs/ngen/engine/core/values.cpp for CXX dependencies
+[3/26] Generating CXX dyndep file CMakeFiles/ngen_core.dir/CXX.dd
+[4/26] Scanning /home/kyau/projects/kyaulabs/ngen/engine/jobs/jobs.cpp for CXX dependencies
+[5/26] Building CXX object CMakeFiles/ngen_core.dir/engine/core/entities.cpp.o
+[6/26] Generating CXX dyndep file CMakeFiles/ngen_jobs.dir/CXX.dd
+[7/26] Building CXX object CMakeFiles/ngen_core.dir/engine/core/values.cpp.o
+[8/26] Scanning /home/kyau/projects/kyaulabs/ngen/engine/simulation/simulation.cpp for CXX dependencies
+[9/26] Linking CXX static library libngen_core.a
+[10/26] Generating CXX dyndep file CMakeFiles/ngen_simulation.dir/CXX.dd
+[11/26] Scanning /home/kyau/projects/kyaulabs/ngen/apps/sim_harness/main.cpp for CXX dependencies
+[12/26] Scanning /home/kyau/projects/kyaulabs/ngen/tests/core.cpp for CXX dependencies
+[13/26] Scanning /home/kyau/projects/kyaulabs/ngen/tests/jobs.cpp for CXX dependencies
+[14/26] Scanning /home/kyau/projects/kyaulabs/ngen/tests/simulation.cpp for CXX dependencies
+[15/26] Building CXX object CMakeFiles/ngen_jobs.dir/engine/jobs/jobs.cpp.o
+[16/26] Linking CXX static library libngen_jobs.a
+[17/26] Generating CXX dyndep file CMakeFiles/sim_harness.dir/CXX.dd
+[18/26] Generating CXX dyndep file CMakeFiles/ngen_tests.dir/CXX.dd
+[19/26] Building CXX object CMakeFiles/ngen_simulation.dir/engine/simulation/simulation.cpp.o
+[20/26] Linking CXX static library libngen_simulation.a
+[21/26] Building CXX object CMakeFiles/sim_harness.dir/apps/sim_harness/main.cpp.o
+[22/26] Building CXX object CMakeFiles/ngen_tests.dir/tests/core.cpp.o
+[23/26] Building CXX object CMakeFiles/ngen_tests.dir/tests/jobs.cpp.o
+[24/26] Linking CXX executable sim_harness
+[25/26] Building CXX object CMakeFiles/ngen_tests.dir/tests/simulation.cpp.o
+[26/26] Linking CXX executable ngen_tests
+
+=== tsan test ===
+Test project /home/kyau/projects/kyaulabs/ngen/build/tsan
+    Start 1: ngen_tests
+1/3 Test #1: ngen_tests .......................   Passed    0.07 sec
+    Start 2: replay_serial
+2/3 Test #2: replay_serial ....................   Passed    0.13 sec
+    Start 3: replay_workers
+3/3 Test #3: replay_workers ...................   Passed    0.16 sec
+
+100% tests passed out of 3
+
+Total Test time (real) =   0.36 sec
+
+=== clean build ===
+[1/26] Scanning /home/kyau/projects/kyaulabs/ngen/engine/core/entities.cpp for CXX dependencies
+[2/26] Scanning /home/kyau/projects/kyaulabs/ngen/engine/core/values.cpp for CXX dependencies
+[3/26] Generating CXX dyndep file CMakeFiles/ngen_core.dir/CXX.dd
+[4/26] Scanning /home/kyau/projects/kyaulabs/ngen/engine/jobs/jobs.cpp for CXX dependencies
+[5/26] Building CXX object CMakeFiles/ngen_core.dir/engine/core/entities.cpp.o
+[6/26] Generating CXX dyndep file CMakeFiles/ngen_jobs.dir/CXX.dd
+[7/26] Scanning /home/kyau/projects/kyaulabs/ngen/engine/simulation/simulation.cpp for CXX dependencies
+[8/26] Building CXX object CMakeFiles/ngen_core.dir/engine/core/values.cpp.o
+[9/26] Linking CXX static library libngen_core.a
+[10/26] Generating CXX dyndep file CMakeFiles/ngen_simulation.dir/CXX.dd
+[11/26] Scanning /home/kyau/projects/kyaulabs/ngen/apps/sim_harness/main.cpp for CXX dependencies
+[12/26] Scanning /home/kyau/projects/kyaulabs/ngen/tests/core.cpp for CXX dependencies
+[13/26] Scanning /home/kyau/projects/kyaulabs/ngen/tests/jobs.cpp for CXX dependencies
+[14/26] Scanning /home/kyau/projects/kyaulabs/ngen/tests/simulation.cpp for CXX dependencies
+[15/26] Building CXX object CMakeFiles/ngen_jobs.dir/engine/jobs/jobs.cpp.o
+[16/26] Linking CXX static library libngen_jobs.a
+[17/26] Generating CXX dyndep file CMakeFiles/sim_harness.dir/CXX.dd
+[18/26] Generating CXX dyndep file CMakeFiles/ngen_tests.dir/CXX.dd
+[19/26] Building CXX object CMakeFiles/ngen_simulation.dir/engine/simulation/simulation.cpp.o
+[20/26] Linking CXX static library libngen_simulation.a
+[21/26] Building CXX object CMakeFiles/sim_harness.dir/apps/sim_harness/main.cpp.o
+[22/26] Building CXX object CMakeFiles/ngen_tests.dir/tests/core.cpp.o
+[23/26] Building CXX object CMakeFiles/ngen_tests.dir/tests/jobs.cpp.o
+[24/26] Linking CXX executable sim_harness
+[25/26] Building CXX object CMakeFiles/ngen_tests.dir/tests/simulation.cpp.o
+[26/26] Linking CXX executable ngen_tests
+
+=== clean test ===
+Test project /home/kyau/projects/kyaulabs/ngen/build/clean
+    Start 1: ngen_tests
+1/3 Test #1: ngen_tests .......................   Passed    0.01 sec
+    Start 2: replay_serial
+2/3 Test #2: replay_serial ....................   Passed    0.01 sec
+    Start 3: replay_workers
+3/3 Test #3: replay_workers ...................   Passed    0.02 sec
+
+100% tests passed out of 3
+
+Total Test time (real) =   0.05 sec
+
+=== clang-tidy ===
+[1/8] Processing file /home/kyau/projects/kyaulabs/ngen/engine/core/values.cpp.
+28 warnings generated.
+[2/8] Processing file /home/kyau/projects/kyaulabs/ngen/engine/core/entities.cpp.
+44 warnings generated.
+[3/8] Processing file /home/kyau/projects/kyaulabs/ngen/engine/jobs/jobs.cpp.
+77 warnings generated.
+[4/8] Processing file /home/kyau/projects/kyaulabs/ngen/engine/simulation/simulation.cpp.
+110 warnings generated.
+[5/8] Processing file /home/kyau/projects/kyaulabs/ngen/tests/core.cpp.
+152 warnings generated.
+[6/8] Processing file /home/kyau/projects/kyaulabs/ngen/tests/jobs.cpp.
+196 warnings generated.
+[7/8] Processing file /home/kyau/projects/kyaulabs/ngen/tests/simulation.cpp.
+240 warnings generated.
+[8/8] Processing file /home/kyau/projects/kyaulabs/ngen/apps/sim_harness/main.cpp.
+275 warnings generated.
+Suppressed 325 warnings (275 in non-user code, 50 NOLINT).
+Use -header-filter=.* or leave it as default to display errors from all non-system headers. Use -system-headers to display errors from system headers as well.
+
+=== coverage tests ===
+Randomness seeded to: 3413848496
+===============================================================================
+All tests passed (281 assertions in 10 test cases)

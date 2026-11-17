@@ -1,0 +1,3 @@
+injected_resource_failure=commands:1
+Vulkan resource allocation: allocate transfer commands: VkResult -2
+device=Intel(R) Iris(R) Xe Graphics (TGL GT2) api=1.4 driver=109060102 queue=0 display=wayland

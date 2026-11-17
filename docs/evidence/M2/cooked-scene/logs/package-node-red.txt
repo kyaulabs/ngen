@@ -1,0 +1,33 @@
+Test project <REPO>/build/asset-debug
+    Start 3: asset_package_tests
+1/1 Test #3: asset_package_tests ..............***Failed    0.02 sec
+Randomness seeded to: 2535698632
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+asset_package_tests is a Catch2 v3.16.0 host application.
+Run with -? for options
+
+-------------------------------------------------------------------------------
+runtime package rejects source node identifiers outside its domain
+-------------------------------------------------------------------------------
+<REPO>/tests/assets.cpp:143
+...............................................................................
+
+<REPO>/tests/assets.cpp:147: FAILED:
+  REQUIRE( std::holds_alternative<Failure>(result) )
+with expansion:
+  false
+
+===============================================================================
+test cases:  8 |  7 passed | 1 failed
+assertions: 80 | 79 passed | 1 failed
+
+
+
+0% tests passed, 1 tests failed out of 1
+
+Total Test time (real) =   0.03 sec
+
+The following tests FAILED:
+	  3 - asset_package_tests (Failed)
+Errors while running CTest

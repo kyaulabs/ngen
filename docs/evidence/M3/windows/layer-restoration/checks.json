@@ -1,0 +1,24 @@
+{
+  "recorded_revision": "f36026085265ab63a6086ab3664367bf7291c4d5",
+  "loader_archive_sha256": "09761704c05d22e3c24ef5535f657cdd93e31bf50fc0d98ec47ca3b6d55cc94f",
+  "loader_archive_entries": 7,
+  "clangcl_debug_ctests": 19,
+  "observed_loader_state": {
+    "explicit_layer_search_locations": [],
+    "khronos_validation_enumerated": false,
+    "empty_instance_layers_warning": true,
+    "device": "NVIDIA GeForce RTX 5070",
+    "driver": "621.14",
+    "device_uuid": "2af4ad0b-3769-1f01-f43e-8e1fd9a3bb7e"
+  },
+  "native_process_reproduction": "Untyped null creates an empty variable; typed NullString restores absence",
+  "regression_red": "Offline success changed absent environment presence/value for VK_INSTANCE_LAYERS",
+  "regression_green": "All absent/empty/nonempty states restored on success and failure",
+  "boundary_suites": {
+    "windows_build": "passed",
+    "windows_flight": "passed"
+  },
+  "scope": "Real PowerShell environment/orchestration behavior with mocked native process boundaries; not native Windows rendering verification",
+  "remaining": "Remove already-polluted empty variables once, then rerun native ClangCl validation/replay/package",
+  "review": "Same-session only; original nonempty and host-representable empty settings are preserved; no SDK/registry change or validation suppression"
+}

@@ -1,0 +1,160 @@
+--- inspector-tsan/16/analysis.txt ---
+67 warnings generated.
+$REPO/tests/reload.cpp:51:59: error: unchecked access to optional value [bugprone-unchecked-optional-access,-warnings-as-errors]
+   51 |     REQUIRE(std::holds_alternative<ngen::assets::Failure>(cancelled.value().package));
+      |                                                           ^
+$REPO/tests/reload.cpp:52:45: error: unchecked access to optional value [bugprone-unchecked-optional-access,-warnings-as-errors]
+   52 |     REQUIRE(std::get<ngen::assets::Failure>(cancelled.value().package).issue ==
+      |                                             ^
+$REPO/tests/reload.cpp:59:13: error: unchecked access to optional value [bugprone-unchecked-optional-access,-warnings-as-errors]
+   59 |     REQUIRE(restarted.value().request == 2);
+      |             ^
+$REPO/tests/reload.cpp:60:62: error: unchecked access to optional value [bugprone-unchecked-optional-access,-warnings-as-errors]
+   60 |     REQUIRE(std::holds_alternative<ngen::assets::PackagePin>(restarted.value().package));
+      |                                                              ^
+$REPO/tests/reload.cpp:86:59: error: unchecked access to optional value [bugprone-unchecked-optional-access,-warnings-as-errors]
+   86 |     REQUIRE(std::holds_alternative<ngen::assets::Failure>(failed.value().package));
+      |                                                           ^
+$REPO/tests/reload.cpp:87:57: error: unchecked access to optional value [bugprone-unchecked-optional-access,-warnings-as-errors]
+   87 |     const auto &error = std::get<ngen::assets::Failure>(failed.value().package);
+      |                                                         ^~~~~~
+$REPO/tests/reload.cpp:116:13: error: unchecked access to optional value [bugprone-unchecked-optional-access,-warnings-as-errors]
+  116 |     REQUIRE(ready.value().request == 1);
+      |             ^
+$REPO/tests/reload.cpp:117:62: error: unchecked access to optional value [bugprone-unchecked-optional-access,-warnings-as-errors]
+  117 |     REQUIRE(std::holds_alternative<ngen::assets::PackagePin>(ready.value().package));
+      |                                                              ^
+$REPO/tests/reload.cpp:118:61: error: unchecked access to optional value [bugprone-unchecked-optional-access,-warnings-as-errors]
+  118 |     const auto package = std::get<ngen::assets::PackagePin>(ready.value().package);
+      |                                                             ^~~~~
+Suppressed 74 warnings (58 in non-user code, 16 NOLINT).
+Use -header-filter=.* or leave it as default to display errors from all non-system headers. Use -system-headers to display errors from system headers as well.
+9 warnings treated as errors
+--- inspector-tsan/9/analysis.txt ---
+38 warnings generated.
+$REPO/engine/tools/reload.cpp:38:5: error: unchecked access to optional value [bugprone-unchecked-optional-access,-warnings-as-errors]
+   38 |     worker_.value().join();
+      |     ^~~~~~~
+Suppressed 37 warnings (37 in non-user code).
+Use -header-filter=.* or leave it as default to display errors from all non-system headers. Use -system-headers to display errors from system headers as well.
+1 warning treated as error
+--- scene-asan/40/analysis.txt ---
+67 warnings generated.
+$REPO/tests/reload.cpp:51:59: error: unchecked access to optional value [bugprone-unchecked-optional-access,-warnings-as-errors]
+   51 |     REQUIRE(std::holds_alternative<ngen::assets::Failure>(cancelled.value().package));
+      |                                                           ^
+$REPO/tests/reload.cpp:52:45: error: unchecked access to optional value [bugprone-unchecked-optional-access,-warnings-as-errors]
+   52 |     REQUIRE(std::get<ngen::assets::Failure>(cancelled.value().package).issue ==
+      |                                             ^
+$REPO/tests/reload.cpp:59:13: error: unchecked access to optional value [bugprone-unchecked-optional-access,-warnings-as-errors]
+   59 |     REQUIRE(restarted.value().request == 2);
+      |             ^
+$REPO/tests/reload.cpp:60:62: error: unchecked access to optional value [bugprone-unchecked-optional-access,-warnings-as-errors]
+   60 |     REQUIRE(std::holds_alternative<ngen::assets::PackagePin>(restarted.value().package));
+      |                                                              ^
+$REPO/tests/reload.cpp:86:59: error: unchecked access to optional value [bugprone-unchecked-optional-access,-warnings-as-errors]
+   86 |     REQUIRE(std::holds_alternative<ngen::assets::Failure>(failed.value().package));
+      |                                                           ^
+$REPO/tests/reload.cpp:87:57: error: unchecked access to optional value [bugprone-unchecked-optional-access,-warnings-as-errors]
+   87 |     const auto &error = std::get<ngen::assets::Failure>(failed.value().package);
+      |                                                         ^~~~~~
+$REPO/tests/reload.cpp:116:13: error: unchecked access to optional value [bugprone-unchecked-optional-access,-warnings-as-errors]
+  116 |     REQUIRE(ready.value().request == 1);
+      |             ^
+$REPO/tests/reload.cpp:117:62: error: unchecked access to optional value [bugprone-unchecked-optional-access,-warnings-as-errors]
+  117 |     REQUIRE(std::holds_alternative<ngen::assets::PackagePin>(ready.value().package));
+      |                                                              ^
+$REPO/tests/reload.cpp:118:61: error: unchecked access to optional value [bugprone-unchecked-optional-access,-warnings-as-errors]
+  118 |     const auto package = std::get<ngen::assets::PackagePin>(ready.value().package);
+      |                                                             ^~~~~
+Suppressed 74 warnings (58 in non-user code, 16 NOLINT).
+Use -header-filter=.* or leave it as default to display errors from all non-system headers. Use -system-headers to display errors from system headers as well.
+9 warnings treated as errors
+--- scene-asan/9/analysis.txt ---
+38 warnings generated.
+$REPO/engine/tools/reload.cpp:38:5: error: unchecked access to optional value [bugprone-unchecked-optional-access,-warnings-as-errors]
+   38 |     worker_.value().join();
+      |     ^~~~~~~
+Suppressed 37 warnings (37 in non-user code).
+Use -header-filter=.* or leave it as default to display errors from all non-system headers. Use -system-headers to display errors from system headers as well.
+1 warning treated as error
+--- scene-debug/40/analysis.txt ---
+67 warnings generated.
+$REPO/tests/reload.cpp:51:59: error: unchecked access to optional value [bugprone-unchecked-optional-access,-warnings-as-errors]
+   51 |     REQUIRE(std::holds_alternative<ngen::assets::Failure>(cancelled.value().package));
+      |                                                           ^
+$REPO/tests/reload.cpp:52:45: error: unchecked access to optional value [bugprone-unchecked-optional-access,-warnings-as-errors]
+   52 |     REQUIRE(std::get<ngen::assets::Failure>(cancelled.value().package).issue ==
+      |                                             ^
+$REPO/tests/reload.cpp:59:13: error: unchecked access to optional value [bugprone-unchecked-optional-access,-warnings-as-errors]
+   59 |     REQUIRE(restarted.value().request == 2);
+      |             ^
+$REPO/tests/reload.cpp:60:62: error: unchecked access to optional value [bugprone-unchecked-optional-access,-warnings-as-errors]
+   60 |     REQUIRE(std::holds_alternative<ngen::assets::PackagePin>(restarted.value().package));
+      |                                                              ^
+$REPO/tests/reload.cpp:86:59: error: unchecked access to optional value [bugprone-unchecked-optional-access,-warnings-as-errors]
+   86 |     REQUIRE(std::holds_alternative<ngen::assets::Failure>(failed.value().package));
+      |                                                           ^
+$REPO/tests/reload.cpp:87:57: error: unchecked access to optional value [bugprone-unchecked-optional-access,-warnings-as-errors]
+   87 |     const auto &error = std::get<ngen::assets::Failure>(failed.value().package);
+      |                                                         ^~~~~~
+$REPO/tests/reload.cpp:116:13: error: unchecked access to optional value [bugprone-unchecked-optional-access,-warnings-as-errors]
+  116 |     REQUIRE(ready.value().request == 1);
+      |             ^
+$REPO/tests/reload.cpp:117:62: error: unchecked access to optional value [bugprone-unchecked-optional-access,-warnings-as-errors]
+  117 |     REQUIRE(std::holds_alternative<ngen::assets::PackagePin>(ready.value().package));
+      |                                                              ^
+$REPO/tests/reload.cpp:118:61: error: unchecked access to optional value [bugprone-unchecked-optional-access,-warnings-as-errors]
+  118 |     const auto package = std::get<ngen::assets::PackagePin>(ready.value().package);
+      |                                                             ^~~~~
+Suppressed 74 warnings (58 in non-user code, 16 NOLINT).
+Use -header-filter=.* or leave it as default to display errors from all non-system headers. Use -system-headers to display errors from system headers as well.
+9 warnings treated as errors
+--- scene-debug/9/analysis.txt ---
+38 warnings generated.
+$REPO/engine/tools/reload.cpp:38:5: error: unchecked access to optional value [bugprone-unchecked-optional-access,-warnings-as-errors]
+   38 |     worker_.value().join();
+      |     ^~~~~~~
+Suppressed 37 warnings (37 in non-user code).
+Use -header-filter=.* or leave it as default to display errors from all non-system headers. Use -system-headers to display errors from system headers as well.
+1 warning treated as error
+--- scene-release/40/analysis.txt ---
+66 warnings generated.
+$REPO/tests/reload.cpp:51:59: error: unchecked access to optional value [bugprone-unchecked-optional-access,-warnings-as-errors]
+   51 |     REQUIRE(std::holds_alternative<ngen::assets::Failure>(cancelled.value().package));
+      |                                                           ^
+$REPO/tests/reload.cpp:52:45: error: unchecked access to optional value [bugprone-unchecked-optional-access,-warnings-as-errors]
+   52 |     REQUIRE(std::get<ngen::assets::Failure>(cancelled.value().package).issue ==
+      |                                             ^
+$REPO/tests/reload.cpp:59:13: error: unchecked access to optional value [bugprone-unchecked-optional-access,-warnings-as-errors]
+   59 |     REQUIRE(restarted.value().request == 2);
+      |             ^
+$REPO/tests/reload.cpp:60:62: error: unchecked access to optional value [bugprone-unchecked-optional-access,-warnings-as-errors]
+   60 |     REQUIRE(std::holds_alternative<ngen::assets::PackagePin>(restarted.value().package));
+      |                                                              ^
+$REPO/tests/reload.cpp:86:59: error: unchecked access to optional value [bugprone-unchecked-optional-access,-warnings-as-errors]
+   86 |     REQUIRE(std::holds_alternative<ngen::assets::Failure>(failed.value().package));
+      |                                                           ^
+$REPO/tests/reload.cpp:87:57: error: unchecked access to optional value [bugprone-unchecked-optional-access,-warnings-as-errors]
+   87 |     const auto &error = std::get<ngen::assets::Failure>(failed.value().package);
+      |                                                         ^~~~~~
+$REPO/tests/reload.cpp:116:13: error: unchecked access to optional value [bugprone-unchecked-optional-access,-warnings-as-errors]
+  116 |     REQUIRE(ready.value().request == 1);
+      |             ^
+$REPO/tests/reload.cpp:117:62: error: unchecked access to optional value [bugprone-unchecked-optional-access,-warnings-as-errors]
+  117 |     REQUIRE(std::holds_alternative<ngen::assets::PackagePin>(ready.value().package));
+      |                                                              ^
+$REPO/tests/reload.cpp:118:61: error: unchecked access to optional value [bugprone-unchecked-optional-access,-warnings-as-errors]
+  118 |     const auto package = std::get<ngen::assets::PackagePin>(ready.value().package);
+      |                                                             ^~~~~
+Suppressed 73 warnings (57 in non-user code, 16 NOLINT).
+Use -header-filter=.* or leave it as default to display errors from all non-system headers. Use -system-headers to display errors from system headers as well.
+9 warnings treated as errors
+--- scene-release/9/analysis.txt ---
+37 warnings generated.
+$REPO/engine/tools/reload.cpp:38:5: error: unchecked access to optional value [bugprone-unchecked-optional-access,-warnings-as-errors]
+   38 |     worker_.value().join();
+      |     ^~~~~~~
+Suppressed 36 warnings (36 in non-user code).
+Use -header-filter=.* or leave it as default to display errors from all non-system headers. Use -system-headers to display errors from system headers as well.
+1 warning treated as error

@@ -1,0 +1,41 @@
+Same-session code review on 885e3d1; not independent/human acceptance.
+
+Reviewed Context API/wrapper, Resources entry/command/retirement paths, private
+post pipeline creation/record/close, finite compiler/header generation, CMake/CI,
+compiled/reflected layout, native resource regression and Windows metadata tests.
+The post implementation is new Context-owned production code, not promotion of
+the test-only shader fixture's independent VMA/queue path.
+
+Public Red: compiled post stages absent; embedded validated runtime modules absent;
+tracked native post API unavailable; new Windows reflections not retained.
+Green: fourteen actual compiler cases, direct asymmetric tone-map/exposure/sRGB
+readback, spatial-AA edge/flat controls, native in-flight draw retirement and
+complete resource regression in four configurations. The accidental DrawParameters
+capability remains rejected by the unchanged minimum profile. Shader/compiler/
+validator warnings, capability admission and runtime dependencies were not weakened.
+
+Trace ownership: pipeline, layout, sampler and descriptor pool belong to resource
+state. Constructor catches clean partial objects/modules; successful modules are
+destroyed after pipeline creation. Two descriptor sets follow the same command
+context/timeline completion acquisition as resource data. Distinct owner/generation,
+format/usage/layout/filterability, target mip/layer and exposure admission precede
+draw recording. Source/target last use and target layout publish only after queue
+submission succeeds. Collection cannot reclaim owners released during a gated draw.
+Normal close destroys commands/program state/views/images before device teardown;
+unproven completion retains native ownership rather than destructing live objects.
+
+Observed resource-command exhaustion is explicit engine backpressure, not a defect
+to hide with device idle or unbounded contexts. Verification retries only that
+specific admission result within two seconds; rendering callers must remain
+nonblocking. New owned analyzer findings were fixed: valid Vulkan enum initialization
+and size-typed image indices. No warning/check/compiler-argument suppression used.
+36 actual enabled Clang consumers plus three disabled-shader consumers are clean.
+GCC native tests pass; its established real-argument AST limitation remains.
+
+Six native ASan error controls cover pool/set/sampler creation, a second module,
+a second graphics pipeline and submission after recorded draw. All intentionally
+fail with no unexpected validation/sanitizer/leak output. They demonstrate cleanup,
+not every driver failure/interleaving or arbitrary recovery. No additional concrete
+task-related correctness defect remained after this review. WSI tracking, prepared
+scene/version pins, main fixed passes, final Windows/hardware/performance and human
+acceptance remain open. No entire M2 completion or zero-frame-allocation claim.

@@ -1,0 +1,28 @@
+[1/52] Scanning <REPO>/engine/core/entities.cpp for CXX dependencies
+[2/52] Scanning <REPO>/engine/core/values.cpp for CXX dependencies
+[3/52] Generating CXX dyndep file CMakeFiles/ngen_core.dir/CXX.dd
+[4/49] Scanning <REPO>/engine/jobs/jobs.cpp for CXX dependencies
+[5/49] Generating CXX dyndep file CMakeFiles/ngen_jobs.dir/CXX.dd
+[6/47] Scanning <REPO>/engine/render/capabilities.cpp for CXX dependencies
+[7/47] Scanning <REPO>/engine/simulation/simulation.cpp for CXX dependencies
+[8/47] Scanning <REPO>/tools/assetc/import.cpp for CXX dependencies
+[9/47] Scanning <REPO>/tools/assetc/metadata.cpp for CXX dependencies
+[10/47] Scanning <REPO>/tools/assetc/png.cpp for CXX dependencies
+[11/47] Generating CXX dyndep file CMakeFiles/ngen_simulation.dir/CXX.dd
+[12/45] Scanning <REPO>/tools/assetc/tangents.cpp for CXX dependencies
+[13/45] Generating CXX dyndep file CMakeFiles/ngen_render_contract.dir/CXX.dd
+[14/43] Generating CXX dyndep file CMakeFiles/ngen_asset_import.dir/CXX.dd
+[15/38] Scanning <REPO>/apps/sim_harness/main.cpp for CXX dependencies
+[16/38] Scanning <REPO>/tools/assetc/main.cpp for CXX dependencies
+[17/38] Scanning <REPO>/tests/core.cpp for CXX dependencies
+[18/38] Scanning <REPO>/tests/jobs.cpp for CXX dependencies
+[19/38] Scanning <REPO>/tests/simulation.cpp for CXX dependencies
+[20/38] Scanning <REPO>/tests/render_capabilities.cpp for CXX dependencies
+[21/38] Generating CXX dyndep file CMakeFiles/sim_harness.dir/CXX.dd
+[22/36] Generating CXX dyndep file CMakeFiles/assetc.dir/CXX.dd
+[23/34] Generating CXX dyndep file CMakeFiles/ngen_tests.dir/CXX.dd
+[24/30] Generating CXX dyndep file CMakeFiles/render_contract_tests.dir/CXX.dd
+[25/28] Scanning <REPO>/tests/asset_import.cpp for CXX dependencies
+[26/28] Generating CXX dyndep file CMakeFiles/asset_import_tests.dir/CXX.dd
+[27/28] Building CXX object CMakeFiles/asset_import_tests.dir/tests/asset_import.cpp.o
+[28/28] Linking CXX executable asset_import_tests

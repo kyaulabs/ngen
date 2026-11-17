@@ -1,0 +1,12 @@
+{
+  "all_three_aft_captures_byte_identical": true,
+  "native_extent": [
+    1920,
+    1080
+  ],
+  "sha256": {
+    "side": "e337d59ba323a04ae1bfe3646c09f0e1be0f9953a910259c0c318b80e6872406",
+    "quarter": "7d37fb8cff368632f6bd2ef2fdb792ba8d8f5d1b87c722f165b79688fcb7c652",
+    "rear": "78f05dfffba4c74ac662f358a59f6f8722184d3b2f667967148b2f795068f9ff"
+  }
+}

@@ -1,0 +1,5 @@
+device=Intel(R) Iris(R) Xe Graphics (TGL GT2) api=1.4 driver=109060102 queue=0 display=wayland
+cancelled_inflight_scene=1 unpublished_version=1 active_pin_preserved=1 submitted_retirement=1
+pinned_versions=2 resident_allocation_bytes=8584 resident_reserved_bytes=2097152
+resident_verified_mip_bytes=20
+Scene probe: submit transfer: VkResult -1

@@ -1,0 +1,34 @@
+Test project /home/kyau/projects/kyaulabs/ngen/build/demo-debug
+    Start 8: flight_scene
+1/1 Test #8: flight_scene .....................***Failed    0.05 sec
+Randomness seeded to: 891206128
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+flight_scene_tests is a Catch2 v3.16.0 host application.
+Run with -? for options
+
+-------------------------------------------------------------------------------
+the authored frigate reaches a useful bounded direct turn rate within one
+second
+-------------------------------------------------------------------------------
+/home/kyau/projects/kyaulabs/ngen/tests/flight_scene.cpp:11
+...............................................................................
+
+/home/kyau/projects/kyaulabs/ngen/tests/flight_scene.cpp:24: FAILED:
+  REQUIRE( rate >= .35F )
+with expansion:
+  0.060041863f >= 0.349999994f
+
+===============================================================================
+test cases:   9 |   8 passed | 1 failed
+assertions: 731 | 730 passed | 1 failed
+
+
+
+0% tests passed, 1 tests failed out of 1
+
+Total Test time (real) =   0.06 sec
+
+The following tests FAILED:
+	  8 - flight_scene (Failed)
+Errors while running CTest

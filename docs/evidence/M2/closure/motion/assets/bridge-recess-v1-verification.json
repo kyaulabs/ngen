@@ -1,0 +1,44 @@
+{
+  "base_sha256": "27de456e8f29b6392a50099dd65f69b2bd42a8ce2a73b3b3b0cc2c716811ee81",
+  "package_sha256": "a02d5438ad32d9c8fb917ce847d5a822688ca5b51d69125f6da71cf2ba2116ed",
+  "accepted_hull_materials_maps_unchanged": true,
+  "accepted_exhaust_local_geometry_materials_models_unchanged": true,
+  "all_unrelated_primitive_attributes_and_three_lod_topology_unchanged": true,
+  "roof_original_vertex_attributes_preserved": true,
+  "roof_topology_outside_bridge_region_unchanged": true,
+  "removed_roof_area_m2_per_lod": [
+    9.18528760317713,
+    9.186841284295951,
+    9.186841284295951
+  ],
+  "new_cut_triangles_nondegenerate_after_float32_quantization": true,
+  "only_six_existing_bridge_proxies_repositioned": [
+    294,
+    295,
+    296,
+    297,
+    298,
+    299
+  ],
+  "visible_workload_triangles": 247542,
+  "runtime": {
+    "checksum": 2733341730,
+    "images": 9,
+    "indices": 3307404,
+    "instances": 210,
+    "light_instances": 612,
+    "lights": 612,
+    "lod_triangles": [
+      573892,
+      290954,
+      238342
+    ],
+    "materials": 17,
+    "package_valid": 1,
+    "primitives": 205,
+    "texture_bytes": 106343076,
+    "textures": 20,
+    "vertices": 1328627
+  },
+  "scope": "Bounded six local openings, replacement recessed panes and one black interior/frame primitive; original instance prefix and all images/materials/light definitions unchanged."
+}

@@ -1,0 +1,14 @@
+F
+======================================================================
+FAIL: test_reject_compiler_warning_without_publishing (__main__.ShaderCompilation.test_reject_compiler_warning_without_publishing)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<ROOT>/tests/shaders.py", line 132, in test_reject_compiler_warning_without_publishing
+    self.assertNotEqual(result.returncode, 0, "compiler warning was silently admitted")
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 == 0 : compiler warning was silently admitted
+
+----------------------------------------------------------------------
+Ran 1 test in 14.276s
+
+FAILED (failures=1)

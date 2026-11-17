@@ -1,0 +1,13 @@
+Test project <REPO>/build/debug
+    Start 1: ngen_tests
+1/4 Test #1: ngen_tests .......................   Passed    0.03 sec
+    Start 2: render_contract_tests
+2/4 Test #2: render_contract_tests ............   Passed    0.02 sec
+    Start 3: replay_serial
+3/4 Test #3: replay_serial ....................   Passed    0.04 sec
+    Start 4: replay_workers
+4/4 Test #4: replay_workers ...................   Passed    0.12 sec
+
+100% tests passed out of 4
+
+Total Test time (real) =   0.22 sec

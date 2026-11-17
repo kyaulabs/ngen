@@ -1,0 +1,59 @@
+#pragma once
+#include "render/mesh.hpp"
+#include "render/scene.hpp"
+
+namespace ngen::render {
+struct EmissiveFlow {
+    float phase{};  // Normalized visual cycle [0,1), not simulation time.
+    float amount{}; // [0,1]; zero preserves authored static rendering.
+};
+struct SceneView {
+    shader::Matrix view_projection;
+    shader::Matrix light_view_projection;
+    shader::Float4 camera_position{};
+    shader::Float4 key_direction_intensity{0, -1, 0, 1};
+    shader::Float4 key_color{1, 1, 1, 0};
+    std::uint32_t lod{2};
+    // Empty uses authored factors; otherwise a complete material-indexed table.
+    // Borrowed only through draw(); immutable package/map/facing data is unchanged.
+    std::span<const assets::MaterialFactors> material_factors{};
+    // Empty disables motion; otherwise a complete material-indexed table.
+    // Clamped normalized UV0.u guides aft flow. Blend materials only;
+    // values are copied before draw returns.
+    std::span<const EmissiveFlow> material_flows{};
+    // Fill the 8-byte span-to-matrix gap without changing the copied view layout.
+    std::uint64_t root_padding{};
+    // Proper rigid local-to-world transform for the immutable scene only:
+    // unit/orthogonal rotation within 1e-4, local translation within +/-16384m.
+    // Extras remain in their own world frame; constants are copied by draw().
+    shader::Matrix root_transform{{1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1}};
+};
+struct SceneTargets {
+    const Image &color;
+    const Image &depth;
+    const Image &shadow;
+    const Image &irradiance;
+    const Image &prefiltered;
+    const Image &brdf;
+    const Image &default_texture;
+};
+// Owner-thread bounded scene/version bridge. Constants are copied, while two
+// successful frame pins retain immutable CPU/GPU scene metadata until completion.
+class SceneRenderer {
+  public:
+    SceneRenderer();
+    ~SceneRenderer();
+    SceneRenderer(const SceneRenderer &) = delete;
+    SceneRenderer &operator=(const SceneRenderer &) = delete;
+    // Extra opaque/masked meshes share this view/lighting/schedule; their geometry
+    // and instance spans borrow only for this call and join Context retirement.
+    [[nodiscard]] std::variant<Submission, Failure>
+    draw(Context &context, ScenePin version, const SceneView &view, SceneTargets targets,
+         TimelineWait wait = {}, std::span<const MeshDraw> extras = {});
+    [[nodiscard]] std::variant<std::size_t, Failure> collect(Context &context);
+
+  private:
+    struct Impl;
+    std::unique_ptr<Impl> impl_;
+};
+} // namespace ngen::render

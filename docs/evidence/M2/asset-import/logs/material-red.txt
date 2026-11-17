@@ -1,0 +1,33 @@
+Test project <REPO>/build/asset-debug
+    Start 3: asset_import_tests
+1/1 Test #3: asset_import_tests ...............***Failed    0.00 sec
+Randomness seeded to: 2337645370
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+asset_import_tests is a Catch2 v3.16.0 host application.
+Run with -? for options
+
+-------------------------------------------------------------------------------
+static GLB import preserves PBR factors alpha and emissive strength
+-------------------------------------------------------------------------------
+<REPO>/tests/asset_import.cpp:72
+...............................................................................
+
+<REPO>/tests/asset_import.cpp:80: FAILED:
+  REQUIRE( scene.materials.size() == 1 )
+with expansion:
+  0 == 1
+
+===============================================================================
+test cases:  7 |  6 passed | 1 failed
+assertions: 41 | 40 passed | 1 failed
+
+
+
+0% tests passed, 1 tests failed out of 1
+
+Total Test time (real) =   0.00 sec
+
+The following tests FAILED:
+	  3 - asset_import_tests (Failed)
+Errors while running CTest

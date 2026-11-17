@@ -1,0 +1,47 @@
+[
+  {
+    "configuration": "demo-debug",
+    "sources": [
+      "engine/audio/mixer.cpp",
+      "engine/audio/output.cpp",
+      "tests/audio_mixer.cpp",
+      "tests/audio_output.cpp",
+      "apps/flight_demo/preset.cpp",
+      "apps/flight_demo/view.cpp",
+      "apps/flight_demo/main.cpp",
+      "apps/flight_demo/app.cpp",
+      "apps/scene_workload/allocations.cpp",
+      "tests/flight_scene.cpp"
+    ]
+  },
+  {
+    "configuration": "demo-release",
+    "sources": [
+      "engine/audio/mixer.cpp",
+      "engine/audio/output.cpp",
+      "tests/audio_mixer.cpp",
+      "tests/audio_output.cpp",
+      "apps/flight_demo/preset.cpp",
+      "apps/flight_demo/view.cpp",
+      "apps/flight_demo/main.cpp",
+      "apps/flight_demo/app.cpp",
+      "apps/scene_workload/allocations.cpp",
+      "tests/flight_scene.cpp"
+    ]
+  },
+  {
+    "configuration": "demo-asan",
+    "sources": [
+      "engine/audio/mixer.cpp",
+      "engine/audio/output.cpp",
+      "tests/audio_mixer.cpp",
+      "tests/audio_output.cpp",
+      "apps/flight_demo/preset.cpp",
+      "apps/flight_demo/view.cpp",
+      "apps/flight_demo/main.cpp",
+      "apps/flight_demo/app.cpp",
+      "apps/scene_workload/allocations.cpp",
+      "tests/flight_scene.cpp"
+    ]
+  }
+]

@@ -1,0 +1,93 @@
+stdout marker
+stderr marker
+one argument with spaces
+checks
+--check-validation-callback
+startup
+--check-presentation
+resources
+shaders
+scene
+checks
+checks
+--check-validation-callback
+checks
+--check-validation-callback
+startup
+checks
+--check-validation-callback
+startup
+--check-presentation
+checks
+--check-validation-callback
+startup
+--check-presentation
+resources
+checks
+--check-validation-callback
+startup
+--check-presentation
+resources
+shaders
+checks
+--check-validation-callback
+startup
+--check-presentation
+resources
+shaders
+scene
+--check-validation-callback
+startup
+--check-presentation
+resources
+shaders
+scene
+package argument: /tmp/ngen script test edfaa650-83ac-4c2d-a5a1-d9d168ec366a/checked ship with spaces.ngas
+capture argument: /tmp/ngen script test edfaa650-83ac-4c2d-a5a1-d9d168ec366a/scene package logs d1989cb6-0b26-4424-bf69-889467765a0e/Release-scene-package.bmp
+scene-package
+--check-validation-callback
+startup
+--check-presentation
+resources
+shaders
+scene
+--check-validation-callback
+startup
+--check-presentation
+resources
+shaders
+scene
+package argument: /tmp/ngen script test edfaa650-83ac-4c2d-a5a1-d9d168ec366a/checked ship with spaces.ngas
+capture argument: /tmp/ngen script test edfaa650-83ac-4c2d-a5a1-d9d168ec366a/scene package logs 1e194efc-5414-4b60-bd7e-677c37501d1c/Release-scene-package.bmp
+scene-package
+--check-validation-callback
+startup
+--check-presentation
+resources
+shaders
+scene
+package argument: /tmp/ngen script test edfaa650-83ac-4c2d-a5a1-d9d168ec366a/checked ship with spaces.ngas
+capture argument: /tmp/ngen script test edfaa650-83ac-4c2d-a5a1-d9d168ec366a/scene package logs 82484ca6-5fe5-4fed-8ff2-828ec01e6b17/Release-scene-package.bmp
+scene-package
+--check-validation-callback
+startup
+--check-presentation
+resources
+shaders
+scene
+package argument: /tmp/ngen script test edfaa650-83ac-4c2d-a5a1-d9d168ec366a/checked ship with spaces.ngas
+scene-package
+--check-validation-callback
+startup
+--check-presentation
+resources
+shaders
+scene
+package argument: /tmp/ngen script test edfaa650-83ac-4c2d-a5a1-d9d168ec366a/checked ship with spaces.ngas
+capture argument: /tmp/ngen script test edfaa650-83ac-4c2d-a5a1-d9d168ec366a/inspector logs/Release-scene-package.bmp
+scene-package
+Exception: <ROOT>/tests/windows_build.ps1:285
+Line |
+ 285 |  … r.txt'))) { throw 'Inspector mode did not execute the actual inspecto …
+     |                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     | Inspector mode did not execute the actual inspector process

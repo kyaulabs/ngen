@@ -1,0 +1,2 @@
+Vulkan startup: no compatible Vulkan device:
+Intel(R) Iris(R) Xe Graphics (TGL GT2): presentation requires VK_EXT_swapchain_maintenance1;

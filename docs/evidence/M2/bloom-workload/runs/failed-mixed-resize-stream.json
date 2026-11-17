@@ -1,0 +1,269 @@
+{
+  "settings": {
+    "mode": "stream",
+    "frames": 600,
+    "warmup": 60,
+    "width": 1280,
+    "height": 720,
+    "ship_lod": 2,
+    "asteroid_instances": 100,
+    "asteroid_triangles": 80,
+    "shadow_extent": 1024,
+    "validation": false,
+    "gpu_timestamps": true,
+    "bloom_strength": 0.04,
+    "bloom_taps": 25,
+    "bloom_footprint": "9x9",
+    "gpu_post_includes_bloom": true,
+    "ui": true,
+    "reload_cycles": 3,
+    "filesystem_cache": "package identity hashing before launch warms the same-file reload cache; not cold storage latency",
+    "script": "stream: queued edit at frame 0, verify at 1, restore exposure/FXAA at 3; keyboard reloads; resize at 20/40; 30 settling frames between reloads",
+    "source_sha256": {
+      "CMakeLists.txt": "fbc2abff6a80d50a5e8c851ea79a5c72cf2ead51c345f021eeb457d2f5c08e3e",
+      "apps/scene_workload/allocations.cpp": "589a007ecd00d26b86a67e1d2126165a74d792d076aa649b5b6598dfc0928d41",
+      "apps/scene_workload/allocations.hpp": "1e390c4ba2edd1cc832ca1783dedb1d170492c4ac36e564d6605c32228d351f1",
+      "apps/scene_workload/fixture.cpp": "d627973ce8406a5950c49454a72466217b1810cf1f3d439c742b1361cc2ca864",
+      "apps/scene_workload/fixture.hpp": "2c00c1d29ab9ff126a2811fe0b98ff9b6d197af5970138626045dc84cc8c4089",
+      "apps/scene_workload/main.cpp": "c8103623467ce5118868923db3b7806cc2888f59d40118f3faf0daefe12d10f2",
+      "conan-inspector.lock": "280d9c8bd9c98f08f437692849f2e6c1d14fb4726bf8c9067b13fc51238e5e1a",
+      "engine/render/capabilities.cpp": "b792c9b32dee562488640a11c536d97fa7d5ee55ae84b682d1b10c5fceeaa70f",
+      "engine/render/capabilities.hpp": "102f24a5b094959572cfe8642d1244092ed3858f9e85b67e4f01c6c78c043f2a",
+      "engine/render/context.cpp": "40c4497bfd0ac22cd9d0276c7500615ff2d34bc9885e67b07cff5d6e17c597c4",
+      "engine/render/context.hpp": "f2132d4a43d5bc8da8bbfd59cb577531cc25a664468106b5eca20f1aadc3b393",
+      "engine/render/environment.cpp": "eff29342c93d41472f0625078670e6dbb45e4229a934aafbdebc0b130a5e2bab",
+      "engine/render/environment.hpp": "00b1be1abe62d8fb9b730d3c6863e1848b6815968742054fbfee5f13502672e8",
+      "engine/render/mesh.cpp": "d85a9086295b12238d7f4b31595f23a8a065fd2a1e7146d236a2f375995060a2",
+      "engine/render/mesh.hpp": "2220b9c68d8ea1bf62711893befdc20f6c0f1267d90360f2df3adcbdea501242",
+      "engine/render/mesh_internal.hpp": "a6749da3efcb52cc00ac37eaf330b07080325037fc63518e180047bbe0d7df61",
+      "engine/render/overlay.cpp": "44bc58b3de69c05cfdbda9093ed5c7fe1fbbe36a58149252e5875b68bea451d3",
+      "engine/render/overlay.hpp": "1324f42ac2c6e6be7ddd5a22307639efd527dd9c1116ae84b01f38b641512b21",
+      "engine/render/post.cpp": "294564a99c734c7c4aeca0e0cb9d9b389094da375c74cd34428b9cfd596f174f",
+      "engine/render/post.hpp": "bf6d0d853c9b21bbfd50c668411134db112da8d6c9392efdefa094005d59f4b3",
+      "engine/render/presentation.cpp": "a4bc7c5a15927ee87d5795c6f4a1497016f6aaf743df74cee4a59bd9878cab05",
+      "engine/render/presentation.hpp": "52c73691724f4962aeb558253e34edc591a1748a7cd22323ee26193ac371a9bf",
+      "engine/render/resources.cpp": "b11f09e24c2aa74898dccb8165a6120b604bdf1f2b3474d9f16ac726aac9c8c0",
+      "engine/render/resources.hpp": "29cf76de20ad733cfc640902276e895520fd4027ce3e3620bb105e7854c75ce6",
+      "engine/render/resources_internal.hpp": "c1dbb95daf032fe06a19de401511669d0c2dfd1cb37d1cd1781016fe2e5b603c",
+      "engine/render/scene.cpp": "3797fd600188773d492baac314761bed9205c6c8beb5d07ab6c117103c58a8ca",
+      "engine/render/scene.hpp": "334d0679c8e21e0b152aefaf6649c7e29457c65c3469f19a6ca45cbe52689eed",
+      "engine/render/scene_draw.cpp": "afaa7cd38768e1925c7f0b0f4bf0e59fc2fc8285d5779b9d5f830a0c83989204",
+      "engine/render/scene_draw.hpp": "2033037f80bb3550bf77d5aba4a5a3a68b89c14897a7282d1fc912df1f5c0b59",
+      "engine/render/shader_contract.hpp": "43068c331f43606e4d93daf9f0922193fe87574cdb8906fc419412cef8df9d27",
+      "engine/render/surface.cpp": "db7f9fe156fa259a65c5d72001a1915922745f9fe1766c580713e6733b5300aa",
+      "engine/render/surface.hpp": "dadc85fcd4b645ba349722a4928e1e447f8a7b40d8ac4ae59d0d2e547cc6de76",
+      "engine/render/vma.cpp": "56d006a5e6364a6d1bc4c8e1a6b0010c236bf935fd2613b08f07c7336d9a4bc7",
+      "engine/tools/inspector.cpp": "585a2bc46f400be0ca4ba5b36b71bb0feea78ad4e2de36bb87a67343b290bf4a",
+      "engine/tools/inspector.hpp": "a086f027dffa69ac049a2c0d58cd89ef1b87fbed469b3798fb38d65c2a499aa3",
+      "engine/tools/reload.cpp": "e97d1242a0bceaf5eb60922c8d27a65fb07d8dec8e0a986600155d538e85e728",
+      "engine/tools/reload.hpp": "d0a8dbc696911ca1890d691f772ffd540f1da35cddb7f01a8ed0f8c97696ca7b",
+      "engine/tools/ui.cpp": "3df24cd1a0628af9b60cfd7c471a2307b77bcd307bd106fb30cb882e83c10980",
+      "engine/tools/ui.hpp": "aee424fec84854d60906b2d67a8f921a6f5d1f3d148700704ded8d5b53c9669a",
+      "shaders/pbr.slang": "1ab6897fe40f6342a7d24ae507409654f6bee03a48cd840fc30014aaebf5f96e",
+      "shaders/post.slang": "63591463fd184091305723c87473f26f4d60a30d73eaf92056ea468657159fa4"
+    }
+  },
+  "settings_sha256": "620fccfd505f41ff0b130382b34561a24c558ade6e0980ede93f728219dacf59",
+  "package_sha256": "e0ee6a023900c78b2c313f493f2a0e78c9639c39b6d830a1eaf3a3f6c0a29b6d",
+  "package_bytes": 175854711,
+  "exe_sha256": "be5b4a6392f56fedff22b3d48b839b59b012e54190ae749031407c4e4e1aafa6",
+  "compile_database_sha256": "3d27cff789e8036fb71f43871a3fd2883d0802e59283fecfa97f33ee989b0621",
+  "distributions_ns": {
+    "frame_ns": {
+      "p50": 16601483.0,
+      "p95": 18731761.0,
+      "p99": 57242978.0,
+      "max": 256819599.0
+    },
+    "prepare_ns": {
+      "p50": 2905221.0,
+      "p95": 6258110.0,
+      "p99": 11577514.0,
+      "max": 70666191.0
+    },
+    "present_ns": {
+      "p50": 13522519.0,
+      "p95": 15314552.0,
+      "p99": 16226132.0,
+      "max": 254596538.0
+    },
+    "ui_prepare_ns": {
+      "p50": 239084.0,
+      "p95": 360465.0,
+      "p99": 472443.0,
+      "max": 23823121.0
+    },
+    "gpu_shadow_ns": {
+      "p50": 702760.399509,
+      "p95": 1211927.053745,
+      "p99": 1272031.218945,
+      "max": 2545208.271194
+    },
+    "gpu_pbr_ns": {
+      "p50": 1323802.051014,
+      "p95": 1638541.626663,
+      "p99": 1715624.958115,
+      "max": 2611249.936249
+    },
+    "gpu_post_ns": {
+      "p50": 501510.404423,
+      "p95": 530624.987045,
+      "p99": 617760.401585,
+      "max": 633906.234524
+    },
+    "gpu_ui_ns": {
+      "p50": 544947.903362,
+      "p95": 583749.985748,
+      "p99": 678229.150108,
+      "max": 704791.64946
+    }
+  },
+  "process_exit": 0,
+  "wall_seconds_including_cold_work": 12.133154001,
+  "linux_wait4_maxrss_kib_including_cold_work": 540732,
+  "user_cpu_seconds_including_cold_work": 3.729444,
+  "system_cpu_seconds_including_cold_work": 2.489419,
+  "memory_sample_period_seconds": 0.025,
+  "memory_samples": 430,
+  "sampled_peak_drm_total_bytes": 531017728,
+  "sampled_peak_drm_resident_bytes": 531017728,
+  "peak_drm_client_fields": [
+    {
+      "drm-driver": "i915",
+      "drm-client-id": "3323",
+      "drm-pdev": "0000:00:02.0",
+      "drm-total-system0": "0",
+      "drm-shared-system0": "0",
+      "drm-active-system0": "0",
+      "drm-resident-system0": "0",
+      "drm-purgeable-system0": "0",
+      "drm-total-stolen-system0": "0",
+      "drm-shared-stolen-system0": "0",
+      "drm-active-stolen-system0": "0",
+      "drm-resident-stolen-system0": "0",
+      "drm-purgeable-stolen-system0": "0",
+      "drm-engine-render": "0 ns",
+      "drm-engine-copy": "0 ns",
+      "drm-engine-video": "0 ns",
+      "drm-engine-capacity-video": "2",
+      "drm-engine-video-enhance": "0 ns"
+    },
+    {
+      "drm-driver": "i915",
+      "drm-client-id": "3324",
+      "drm-pdev": "0000:00:02.0",
+      "drm-total-system0": "518572 KiB",
+      "drm-shared-system0": "14800 KiB",
+      "drm-active-system0": "507140 KiB",
+      "drm-resident-system0": "518572 KiB",
+      "drm-purgeable-system0": "1124 KiB",
+      "drm-total-stolen-system0": "0",
+      "drm-shared-stolen-system0": "0",
+      "drm-active-stolen-system0": "0",
+      "drm-resident-stolen-system0": "0",
+      "drm-purgeable-stolen-system0": "0",
+      "drm-engine-render": "725398388 ns",
+      "drm-engine-copy": "0 ns",
+      "drm-engine-video": "0 ns",
+      "drm-engine-capacity-video": "2",
+      "drm-engine-video-enhance": "0 ns"
+    }
+  ],
+  "clock_correlation": "Linux steady_clock and parent CLOCK_MONOTONIC validated in run interval",
+  "plateaus": [
+    {
+      "generation": 2,
+      "first_frame": 49,
+      "last_frame": 63,
+      "vma_allocation_bytes": [
+        211566728
+      ],
+      "vma_reserved_bytes": [
+        214396216
+      ],
+      "resource_live": [
+        22
+      ],
+      "rss_bytes": [
+        202547200,
+        202547200
+      ],
+      "drm_total_bytes": [
+        270106624
+      ]
+    },
+    {
+      "generation": 3,
+      "first_frame": 133,
+      "last_frame": 147,
+      "vma_allocation_bytes": [
+        211566728
+      ],
+      "vma_reserved_bytes": [
+        214396216
+      ],
+      "resource_live": [
+        22
+      ],
+      "rss_bytes": [
+        202928128,
+        202928128
+      ],
+      "drm_total_bytes": [
+        270106624
+      ]
+    },
+    {
+      "generation": 4,
+      "first_frame": 585,
+      "last_frame": 599,
+      "vma_allocation_bytes": [
+        211566728
+      ],
+      "vma_reserved_bytes": [
+        214396216
+      ],
+      "resource_live": [
+        22
+      ],
+      "rss_bytes": [
+        305311744,
+        305311744
+      ],
+      "drm_total_bytes": [
+        270106624
+      ]
+    }
+  ],
+  "scoped_budget_observations": {
+    "median_le_50ms": true,
+    "p95_le_66_7ms": true,
+    "p99_le_100ms": true,
+    "no_frame_over_200ms": false,
+    "sampled_process_drm_total_le_1gib": true,
+    "cold_inclusive_linux_peak_rss_le_6gib": true
+  },
+  "artifacts": {
+    "report": {
+      "sha256": "18a397f6423a96858b437d8b288a2468bbd91db05810e7757682d9541d793f85",
+      "bytes": 83440
+    },
+    "capture": {
+      "sha256": "ae914e3424812051312eecd7cb283223cf977432afc9a69eedcb91585a0f0405",
+      "bytes": 3686538
+    },
+    "stdout": {
+      "sha256": "43966e8e0f19402b2324d05b556756e5f33b68282a8286e9eebabe1044f33e41",
+      "bytes": 1354
+    },
+    "stderr": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "memory": {
+      "sha256": "e10fa5cefa2edbf13627163a91fd43b67bb9af3640ae867d8a0afa4368c3ef6d",
+      "bytes": 26023
+    }
+  },
+  "notes": "DRM totals are deduplicated per-process i915 client/region counters including shared objects, not whole-device/global usage. Peaks are sampled, not hard bounds. VMA totals, driver residency and CPU RSS are distinct; Linux RSS is not Windows working set. No owner/independent acceptance."
+}

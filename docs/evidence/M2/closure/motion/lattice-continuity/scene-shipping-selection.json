@@ -1,0 +1,303 @@
+{
+  "backtraceGraph": {
+    "commands": [
+      "add_test"
+    ],
+    "files": [
+      "/home/kyau/projects/kyaulabs/ngen/CMakeLists.txt"
+    ],
+    "nodes": [
+      {
+        "file": 0
+      },
+      {
+        "command": 0,
+        "file": 0,
+        "line": 120,
+        "parent": 0
+      },
+      {
+        "file": 0
+      },
+      {
+        "command": 0,
+        "file": 0,
+        "line": 211,
+        "parent": 2
+      },
+      {
+        "file": 0
+      },
+      {
+        "command": 0,
+        "file": 0,
+        "line": 214,
+        "parent": 4
+      },
+      {
+        "file": 0
+      },
+      {
+        "command": 0,
+        "file": 0,
+        "line": 218,
+        "parent": 6
+      },
+      {
+        "file": 0
+      },
+      {
+        "command": 0,
+        "file": 0,
+        "line": 228,
+        "parent": 8
+      },
+      {
+        "file": 0
+      },
+      {
+        "command": 0,
+        "file": 0,
+        "line": 234,
+        "parent": 10
+      },
+      {
+        "file": 0
+      },
+      {
+        "command": 0,
+        "file": 0,
+        "line": 277,
+        "parent": 12
+      },
+      {
+        "file": 0
+      },
+      {
+        "command": 0,
+        "file": 0,
+        "line": 283,
+        "parent": 14
+      },
+      {
+        "file": 0
+      },
+      {
+        "command": 0,
+        "file": 0,
+        "line": 284,
+        "parent": 16
+      },
+      {
+        "file": 0
+      },
+      {
+        "command": 0,
+        "file": 0,
+        "line": 288,
+        "parent": 18
+      },
+      {
+        "file": 0
+      },
+      {
+        "command": 0,
+        "file": 0,
+        "line": 289,
+        "parent": 20
+      }
+    ]
+  },
+  "kind": "ctestInfo",
+  "tests": [
+    {
+      "backtrace": 1,
+      "command": [
+        "/bin/cmake",
+        "-E",
+        "env",
+        "NGEN_SLANG_ROOT=/home/kyau/.conan2/p/b/slang7104446505e7f/p",
+        "NGEN_SPIRV_VAL=/home/kyau/.conan2/p/b/spirv79479c8ec1730/p/bin/spirv-val",
+        "NGEN_SHADER_LAYOUT=/home/kyau/projects/kyaulabs/ngen/build/scene-shipping/shader_contract_layout",
+        "NGEN_SHADER_PACKAGE=/home/kyau/projects/kyaulabs/ngen/build/scene-shipping/shaders/86a8eada6605cc9aadc991d8c280efb5ea3f16a574c5930ff39cf6ff1d80fb8c",
+        "/bin/python3.14",
+        "/home/kyau/projects/kyaulabs/ngen/tests/shaders.py"
+      ],
+      "name": "shader_offline",
+      "properties": [
+        {
+          "name": "TIMEOUT",
+          "value": 180.0
+        },
+        {
+          "name": "WORKING_DIRECTORY",
+          "value": "/home/kyau/projects/kyaulabs/ngen/build/scene-shipping"
+        }
+      ]
+    },
+    {
+      "backtrace": 3,
+      "command": [
+        "/home/kyau/projects/kyaulabs/ngen/build/scene-shipping/ngen_tests"
+      ],
+      "name": "ngen_tests",
+      "properties": [
+        {
+          "name": "TIMEOUT",
+          "value": 60.0
+        },
+        {
+          "name": "WORKING_DIRECTORY",
+          "value": "/home/kyau/projects/kyaulabs/ngen/build/scene-shipping"
+        }
+      ]
+    },
+    {
+      "backtrace": 5,
+      "command": [
+        "/home/kyau/projects/kyaulabs/ngen/build/scene-shipping/render_contract_tests"
+      ],
+      "name": "render_contract_tests",
+      "properties": [
+        {
+          "name": "WORKING_DIRECTORY",
+          "value": "/home/kyau/projects/kyaulabs/ngen/build/scene-shipping"
+        }
+      ]
+    },
+    {
+      "backtrace": 7,
+      "command": [
+        "/home/kyau/projects/kyaulabs/ngen/build/scene-shipping/render_environment_tests"
+      ],
+      "name": "render_environment_tests",
+      "properties": [
+        {
+          "name": "WORKING_DIRECTORY",
+          "value": "/home/kyau/projects/kyaulabs/ngen/build/scene-shipping"
+        }
+      ]
+    },
+    {
+      "backtrace": 9,
+      "command": [
+        "/home/kyau/projects/kyaulabs/ngen/build/scene-shipping/scene_workload_tests"
+      ],
+      "name": "scene_workload_tests",
+      "properties": [
+        {
+          "name": "WORKING_DIRECTORY",
+          "value": "/home/kyau/projects/kyaulabs/ngen/build/scene-shipping"
+        }
+      ]
+    },
+    {
+      "backtrace": 11,
+      "command": [
+        "/home/kyau/projects/kyaulabs/ngen/build/scene-shipping/asset_package_tests"
+      ],
+      "name": "asset_package_tests",
+      "properties": [
+        {
+          "name": "TIMEOUT",
+          "value": 90.0
+        },
+        {
+          "name": "WORKING_DIRECTORY",
+          "value": "/home/kyau/projects/kyaulabs/ngen/build/scene-shipping"
+        }
+      ]
+    },
+    {
+      "backtrace": 13,
+      "command": [
+        "/home/kyau/projects/kyaulabs/ngen/build/scene-shipping/render_startup_tests"
+      ],
+      "name": "render_startup_tests",
+      "properties": [
+        {
+          "name": "TIMEOUT",
+          "value": 30.0
+        },
+        {
+          "name": "WORKING_DIRECTORY",
+          "value": "/home/kyau/projects/kyaulabs/ngen/build/scene-shipping"
+        }
+      ]
+    },
+    {
+      "backtrace": 15,
+      "command": [
+        "/home/kyau/projects/kyaulabs/ngen/build/scene-shipping/wayland_tablet_tests"
+      ],
+      "name": "wayland_tablet_shutdown",
+      "properties": [
+        {
+          "name": "TIMEOUT",
+          "value": 20.0
+        },
+        {
+          "name": "WORKING_DIRECTORY",
+          "value": "/home/kyau/projects/kyaulabs/ngen/build/scene-shipping"
+        }
+      ]
+    },
+    {
+      "backtrace": 17,
+      "command": [
+        "/home/kyau/projects/kyaulabs/ngen/build/scene-shipping/wayland_tablet_tests",
+        "--remove"
+      ],
+      "name": "wayland_tablet_removal",
+      "properties": [
+        {
+          "name": "TIMEOUT",
+          "value": 20.0
+        },
+        {
+          "name": "WORKING_DIRECTORY",
+          "value": "/home/kyau/projects/kyaulabs/ngen/build/scene-shipping"
+        }
+      ]
+    },
+    {
+      "backtrace": 19,
+      "command": [
+        "/home/kyau/projects/kyaulabs/ngen/build/scene-shipping/sim_harness"
+      ],
+      "name": "replay_serial",
+      "properties": [
+        {
+          "name": "TIMEOUT",
+          "value": 60.0
+        },
+        {
+          "name": "WORKING_DIRECTORY",
+          "value": "/home/kyau/projects/kyaulabs/ngen/build/scene-shipping"
+        }
+      ]
+    },
+    {
+      "backtrace": 21,
+      "command": [
+        "/home/kyau/projects/kyaulabs/ngen/build/scene-shipping/sim_harness",
+        "--workers=2"
+      ],
+      "name": "replay_workers",
+      "properties": [
+        {
+          "name": "TIMEOUT",
+          "value": 60.0
+        },
+        {
+          "name": "WORKING_DIRECTORY",
+          "value": "/home/kyau/projects/kyaulabs/ngen/build/scene-shipping"
+        }
+      ]
+    }
+  ],
+  "version": {
+    "major": 1,
+    "minor": 0
+  }
+}

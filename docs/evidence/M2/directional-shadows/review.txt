@@ -1,0 +1,41 @@
+Scope: ad8cb92439b5159f6982cf7c9cdab38137bb0fb5 plus this change.
+Review: assistant-operated, same session; not independent/human M2 acceptance.
+
+Reviewed public MeshPass admission, SceneRenderer callers/pins, both resource
+command slots, descriptor/UBO reuse, shadow/color barriers and successful-submit
+publication, native teardown/partial creation, cutout/facing shader interfaces,
+file/process boundaries and supplied-package identities. No new dependency or
+shipping compiler/importer path was added. The provided-shadow path remains an
+explicit analytic/existing caller contract, not the scene's implementation.
+
+Fixed concrete findings:
+- Updating shared descriptor sets between recorded passes invalidated the command
+  buffer. Prepare all draw sets once before either pass binds them; retain the
+  original validation failure and exercise both slots under a real gate.
+- An output created after initial path admission was overwritten by SDL_SaveBMP.
+  Bounded memory encoding plus exclusive final creation preserves it; a genuine
+  public-process concurrent-writer Red and four native configuration Greens exist.
+- GCC warnings-as-errors rejected the attributed fclose function pointer as a
+  template argument. Use a lambda deleter; keep warning policy unchanged. Windows
+  uses fopen_s rather than invoking the MSVC-deprecated fopen declaration.
+- clang-tidy rejected implicit widening of constant-size multiplication. Perform
+  those bounded calculations in size_t; preserve actual compilation arguments.
+
+Verification: 10/10 CTests in each of four scene configurations; physical resource
+and shader probes; 3/3 full-package capture-process tests per configuration;
+positive facing/mirrored depth and seven ASan boundary/sensitivity controls; 28
+Clang TU/configuration analyses plus affected final resource-probe reruns;
+shader-disabled 8/8 plus four AST analyses; CPU 4/4; real-child PowerShell checks;
+pinned clang-format 18; selected-log/staged redacted secret and whitespace checks.
+GCC clang-tidy remains unsupported with its real module flags, not filtered clean.
+An additional outer verification deadline interrupted GCC's suite; its dedicated
+rerun passed. Preserve that incomplete batch separately.
+
+No unresolved concrete defect found within this change's exercised contract.
+Open: genuine new Windows MSVC/clang-cl/NVIDIA execution, full frigate visual
+review, compiler-choice acceptance, 100-instanced-asteroid workload, queued
+inspector/UI and disabled-tooling graph, bloom, final material/scheduling cases,
+warmed allocations/pass/frame distributions, whole-memory plateau/accounting,
+independent review and formal M2 acceptance. No new Windows or performance pass
+is claimed. Model/package/capture data remains ignored and redistribution is not
+approved. See ../acceptance.md and ../windows-frigate/README.md.

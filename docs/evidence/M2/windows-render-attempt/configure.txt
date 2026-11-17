@@ -1,0 +1,30 @@
+-- Using Conan toolchain: D:/Git/kyaulabs/ngen/build/windows/20261104-235620-314/Debug/conan_toolchain.cmake
+-- Conan toolchain: Setting CMAKE_MSVC_RUNTIME_LIBRARY=$<$<CONFIG:Debug>:MultiThreadedDebugDLL>
+-- Conan toolchain: C++ Standard 20 with extensions OFF
+-- The CXX compiler identification is MSVC 19.44.35229.0
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: C:/Program Files (x86)/Microsoft Visual Studio/2022/BuildTools/VC/Tools/MSVC/14.44.35207/bin/Hostx64/x64/cl.exe - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- Conan: Target declared 'enkiTS::enkiTS'
+-- Performing Test CMAKE_HAVE_LIBC_PTHREAD
+-- Performing Test CMAKE_HAVE_LIBC_PTHREAD - Failed
+-- Looking for pthread_create in pthreads
+-- Looking for pthread_create in pthreads - not found
+-- Looking for pthread_create in pthread
+-- Looking for pthread_create in pthread - not found
+-- Found Threads: TRUE
+-- Conan: Component target declared 'SDL3::Headers'
+-- Conan: Component target declared 'SDL3::SDL3'
+-- Conan: Target declared 'sdl::sdl'
+CMake Error at build/windows-tools/Lib/site-packages/cmake/data/share/cmake-4.4/Modules/FindPackageHandleStandardArgs.cmake:290 (message):
+  Could NOT find Vulkan: (Required is at least version "1.3") (found
+  Vulkan_LIBRARY-NOTFOUNDfound components: glslc glslangValidator)
+Call Stack (most recent call first):
+  build/windows-tools/Lib/site-packages/cmake/data/share/cmake-4.4/Modules/FindPackageHandleStandardArgs.cmake:652 (_FPHSA_FAILURE_MESSAGE)
+  build/windows-tools/Lib/site-packages/cmake/data/share/cmake-4.4/Modules/FindVulkan.cmake:780 (find_package_handle_standard_args)
+  CMakeLists.txt:45 (find_package)
+
+
+-- Configuring incomplete, errors occurred!

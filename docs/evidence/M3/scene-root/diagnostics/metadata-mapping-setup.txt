@@ -1,0 +1,5 @@
+Traceback (most recent call last):
+  File "/home/kyau/projects/kyaulabs/ngen/build/m3-flight/root-ast.py", line 24, in <module>
+    assert len(selected) == len(objects), (config, objects)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ('inspector-debug', {'CMakeFiles/scene_workload.dir/apps/scene_workload/main.cpp.o', 'CMakeFiles/scene_probe.dir/apps/scene_probe/main.cpp.o', 'CMakeFiles/inspector_probe.dir/apps/inspector_probe/main.cpp.o', 'CMakeFiles/scene_workload_tests.dir/tests/workload.cpp.o', 'CMakeFiles/ngen_inspector_ui.dir/engine/tools/ui.cpp.o', 'CMakeFiles/scene_probe.dir/apps/scene_probe/draw.cpp.o', 'CMakeFiles/scene_workload_fixture.dir/apps/scene_workload/fixture.cpp.o', 'CMakeFiles/ngen_scene.dir/engine/render/scene_draw.cpp.o'})

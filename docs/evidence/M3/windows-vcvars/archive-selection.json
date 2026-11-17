@@ -1,0 +1,28 @@
+{
+  "archive_sha256": "203e33c47a68cb79a1d59967e0ebfb44186e30cb960b3a2ed74e3d32716e5060",
+  "archive_bytes": 11920,
+  "entry_count": 16,
+  "uncompressed_bytes": 28541,
+  "selected": [
+    "build-profile.txt",
+    "cmake-version.txt",
+    "conan-version.txt",
+    "failure.txt",
+    "host-profile.txt",
+    "ninja-version.txt",
+    "profile.txt",
+    "revision.txt",
+    "vulkan-sdk.txt",
+    "working-tree.txt",
+    "Debug-conan.txt"
+  ],
+  "excluded_unread": [
+    "jolt-recipe.txt",
+    "profile-detect.txt",
+    "session.txt",
+    "slang-recipe.txt",
+    "tools-install.txt"
+  ],
+  "scope": "Bounded flat regular metadata preflight; explicit non-setup selection only; no scripts/binaries executed.",
+  "diagnostic_scope": "Specific native dependency-build failure log, not session transcript or bootstrap script. Additional selection after complete archive metadata preflight."
+}

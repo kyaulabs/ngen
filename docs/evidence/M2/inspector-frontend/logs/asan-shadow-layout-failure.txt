@@ -1,0 +1,31 @@
+Test project <ROOT>/build/inspector-asan
+      Start  1: shader_offline
+ 1/12 Test  #1: shader_offline ...................***Failed   23.57 sec
+.............F
+======================================================================
+FAIL: test_uniform_layouts_match_compiled_cpu_types (__main__.ShaderCompilation.test_uniform_layouts_match_compiled_cpu_types)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<ROOT>/tests/shaders.py", line 93, in test_uniform_layouts_match_compiled_cpu_types
+    self.assertEqual(native.returncode, 0, native.stdout + native.stderr)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != 0 : ==1757574==Shadow memory range interleaves with an existing memory mapping. ASan cannot proceed correctly. ABORTING.
+==1757574==ASan shadow was supposed to be located in the [0x00007fff7000-0x10007fff7fff] range.
+==1757574==This might be related to ELF_ET_DYN_BASE change in Linux 4.12.
+==1757574==See https://github.com/google/sanitizers/issues/856 for possible workarounds.
+==1757574==Process memory map follows:
+	0x000100000000-0x000100030000	<ROOT>/build/inspector-asan/shader_contract_layout
+	0x000100030000-0x00010012d000	<ROOT>/build/inspector-asan/shader_contract_layout
+	0x00010012d000-0x000100169000	<ROOT>/build/inspector-asan/shader_contract_layout
+	0x000100169000-0x00010016a000	<ROOT>/build/inspector-asan/shader_contract_layout
+	0x00010016a000-0x00010016f000	<ROOT>/build/inspector-asan/shader_contract_layout
+	0x00010016f000-0x000100ac3000
+	0x7ffff6c00000-0x7ffff6d00000
+	0x7ffff6e00000-0x7ffff6f00000
+	0x7ffff7000000-0x7ffff7100000
+	0x7ffff7200000-0x7ffff7300000
+	0x7ffff7472000-0x7ffff7800000
+	0x7ffff7800000-0x7ffff7824000	/usr/lib/libc.so.6
+	0x7ffff7824000-0x7ffff799f000	/usr/lib/libc.so.6
+	0x7ffff799f000-0x7ffff7a15000	/usr/lib/libc.so.6
+[excerpt; original hash retained]

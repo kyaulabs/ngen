@@ -1,0 +1,1 @@
+assetc: normal/tangent frame is not orthonormal

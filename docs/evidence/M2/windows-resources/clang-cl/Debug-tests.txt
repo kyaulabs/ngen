@@ -1,0 +1,15 @@
+Test project D:/Git/kyaulabs/ngen/build/windows/20261105-170801-850/Debug
+    Start 1: ngen_tests
+1/5 Test #1: ngen_tests .......................   Passed    0.04 sec
+    Start 2: render_contract_tests
+2/5 Test #2: render_contract_tests ............   Passed    0.04 sec
+    Start 3: render_startup_tests
+3/5 Test #3: render_startup_tests .............   Passed    0.07 sec
+    Start 4: replay_serial
+4/5 Test #4: replay_serial ....................   Passed    0.04 sec
+    Start 5: replay_workers
+5/5 Test #5: replay_workers ...................   Passed    0.02 sec
+
+100% tests passed out of 5
+
+Total Test time (real) =   0.21 sec

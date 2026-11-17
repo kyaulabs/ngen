@@ -1,0 +1,26 @@
+{
+  "current_assetc_sha256": "897a7044fcb7eaa8b8add9e0782b320316d544ecef57b0020ba894d36e8297a0",
+  "current_runtime_reader_sha256": "dc7e0de82d0d9df89a149705f41c42316d58cf045371ada80f29691567c0e2be",
+  "earlier_full_cook_assetc_sha256": "897a7044fcb7eaa8b8add9e0782b320316d544ecef57b0020ba894d36e8297a0",
+  "earlier_runtime": {
+    "checksum": 70013633,
+    "images": 4,
+    "indices": 3309060,
+    "instances": 188,
+    "light_instances": 612,
+    "lights": 612,
+    "lod_triangles": [
+      574136,
+      290804,
+      238080
+    ],
+    "materials": 13,
+    "package_valid": 1,
+    "primitives": 188,
+    "texture_bytes": 89478480,
+    "textures": 15,
+    "vertices": 1304323
+  },
+  "scope": "Earlier full-source sanitizer success is reused only for byte-identical assetc/input; current runtime reader checked separately. Later 180-second recooks time out.",
+  "source_sha256": "e68cd409c479036556446ed1753b287c0e7a40260109b3cd442abe7f533941fe"
+}

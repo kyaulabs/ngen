@@ -1,0 +1,49 @@
+{
+  "head": "ec0809c6db67c7513022c49a22894a34af8b1014",
+  "workflow": 42580662171,
+  "url": "https://github.com/kyaulabs/ngen/actions/runs/42580662171",
+  "attempts": [
+    {
+      "attempt": 1,
+      "release": "success",
+      "tsan": "success",
+      "debug": {
+        "conclusion": "failure",
+        "step": "renderer/checked-scene preparation",
+        "cause": "Pinned libffi 3.4.8 download HTTP 504 before project renderer compilation."
+      },
+      "asan": {
+        "conclusion": "failure",
+        "step": "renderer/checked-scene preparation",
+        "cause": "Pinned Slang 2026.21 download HTTP 504 before project renderer compilation."
+      }
+    },
+    {
+      "attempt": 2,
+      "release": "success",
+      "tsan": "success",
+      "debug": {
+        "conclusion": "failure",
+        "step": "renderer/checked-scene preparation",
+        "cause": "Pinned libffi 3.4.8 download HTTP 504 before project renderer compilation."
+      },
+      "asan": {
+        "conclusion": "failure",
+        "renderer_step": "success",
+        "step": "bounded offline asset tools preparation",
+        "cause": "Pinned fmt 11.2.0 download HTTP 504 before asset-tool configure; do not misclassify the completed renderer step as failing."
+      }
+    }
+  ],
+  "diagnostic_scope": "Only concrete download/process-failure lines retained from gh failed-job diagnostics; setup/account/session records excluded. No recipe, lock, dependency, check or CI infrastructure changes.",
+  "owner_direction": "Wait for upstream recovery; no scoped download/cache fallback. Inspector/input separately accepted.",
+  "availability_recheck": {
+    "observed_utc": "2026-11-09T16:10:46.695800+00:00",
+    "method": "bounded public ranged GET 0-0; response discarded; no redirect headers/signed URL printed",
+    "libffi_http": 206,
+    "fmt_http": 206,
+    "slang_http": 206,
+    "bytes_each": 1,
+    "scope": "Agent route after pause; hosted new-head CI still needs actual execution."
+  }
+}

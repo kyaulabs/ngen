@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>NGEN Brand Guide 1.4</title>
+<link rel="icon" href="../icons/favicon/favicon-dark.svg">
+<style>
+@font-face{font-family:'Neo Sans Pro';src:url('../web/fonts/NeoSansPro-Regular.ttf');font-weight:400;font-display:swap}
+@font-face{font-family:'Neo Sans Pro';src:url('../web/fonts/NeoSansPro-Bold.ttf');font-weight:700;font-display:swap}
+@font-face{font-family:'Operator Mono';src:url('../web/fonts/OperatorMonoLigNerdFont-Regular.otf');font-weight:400;font-display:swap}
+@font-face{font-family:'Operator Mono';src:url('../web/fonts/OperatorMonoSSmLigNerdFont-Bold.otf');font-weight:700;font-display:swap}
+@page{size:960pt 640pt;margin:0}
+:root{--field:#EDF0F8;--ink:#0A1322;--muted:#3C4C68;--panel:rgb(255 255 255 / 78%);--header:rgb(244 247 253 / 85%);--line:rgb(16 42 84 / 12%);--strong:rgb(16 42 84 / 26%);--accent:#0891B2;--on-accent:#0A1322;--success:#006649}
+.dark,.cover{--field:#04060C;--ink:#EAF2FF;--muted:#A4B5CF;--panel:rgb(10 16 29 / 66%);--header:rgb(16 24 42 / 55%);--line:rgb(125 155 210 / 14%);--strong:rgb(125 155 210 / 30%);--accent:#22D3EE;--on-accent:#04121A;--success:#34D399}
+*{box-sizing:border-box}body{margin:0;background:var(--field);color:var(--ink);font:14pt/1.5 'Neo Sans Pro',sans-serif}
+.page{position:relative;width:960pt;height:640pt;break-after:page;overflow:hidden}.page:last-child{break-after:auto}
+header,footer{position:absolute;left:54pt;right:54pt;display:flex;justify-content:space-between;font:700 10pt 'Operator Mono',monospace;color:var(--muted)}
+header{top:35pt;padding:0 0 16pt 14pt;border-bottom:.7pt solid var(--line)}header:before{content:'';position:absolute;left:0;width:5pt;height:12pt;background:var(--accent);border-radius:1pt}footer{bottom:20pt;font-size:9pt}
+.content{position:absolute;inset:81pt 54pt 54pt}h1{margin:0 0 13pt;font-size:41pt;line-height:1.15;letter-spacing:-1pt}h2{font-size:20pt;margin:0 0 8pt;line-height:1.25}h3{font-size:15pt;margin:0 0 5pt}p{margin:0 0 12pt}p.lead{color:var(--muted);margin-bottom:30pt}small,.small{font-size:11pt}.muted{color:var(--muted)}.label{font:700 10pt 'Operator Mono',monospace;letter-spacing:1pt;margin-bottom:12pt}
+.columns{display:grid;grid-template-columns:1fr 1fr;gap:28pt}.thirds{display:grid;grid-template-columns:repeat(3,1fr);gap:22pt}.stack{margin-top:24pt}img{display:block;max-width:100%;object-fit:contain}figure{margin:0}figcaption{margin-top:10pt;font:700 9pt 'Operator Mono',monospace;color:var(--muted)}
+.field{padding:22pt;border-radius:6pt;border:1pt solid var(--line);background:var(--field);color:var(--ink)}.panel{border:1pt solid var(--line);border-radius:6pt;overflow:hidden;background:var(--panel);color:var(--ink)}.titlebar{padding:12pt 16pt;background:var(--header)}.panel-body{padding:12pt 16pt}.action,.outline{display:inline-block;font-size:10pt;padding:6pt 12pt;border-radius:4pt}.action{background:var(--accent);color:var(--on-accent);font-weight:700}.outline{border:1pt solid var(--strong);margin-left:6pt}.success{margin-left:12pt;color:var(--success)}
+.swatches{display:grid;grid-template-columns:repeat(5,1fr);gap:14pt}.swatch{height:62pt;border-radius:5pt;border:.7pt solid var(--strong);margin-bottom:10pt}.swatches strong{display:block;font-size:12pt}.swatches code{color:var(--muted);font-size:10pt}code,pre{font-family:'Operator Mono',monospace}pre{font-size:8pt;line-height:2;white-space:pre-wrap;overflow-wrap:anywhere;margin:0}table{width:100%;border-collapse:collapse;font-size:11pt}th{text-align:left;font:700 9pt 'Operator Mono',monospace;color:var(--muted)}td,th{padding:8pt 6pt;border-bottom:.6pt solid var(--line)}td:not(:first-child),th:not(:first-child){text-align:right}td code{font-size:10pt;white-space:nowrap}.tokens{align-self:start}.tokens td,.tokens th{padding:5pt 2pt}.tokens td:first-child{font-family:'Operator Mono',monospace;font-size:10pt}
+.cover{background:var(--field);color:var(--ink)}.cover .content{top:137pt}.cover .wordmark{width:498.3pt;margin-left:-22.15pt;margin-bottom:28pt}.cover h1{font-size:47pt}.cover .subtitle{font-size:20pt;margin:20pt 0 18pt}
+.logos .lead,.themes .lead{margin-bottom:18pt}.logos .columns{row-gap:18pt}.logos .field{padding:10pt 22pt}.logos .label{margin-bottom:6pt}.logos .stack{margin-top:16pt}
+.themes .titlebar{padding:8pt 12pt;font-size:11pt}.themes .panel-body{padding:10pt}.themes .panel-body p{margin-bottom:6pt}.themes .action,.themes .outline{font-size:9pt;padding:4pt 8pt}.themes table.stack{margin-top:14pt}.themes td,.themes th{padding:5pt 6pt;line-height:1.3}
+</style>
+<main>
+<section class="page cover" aria-label="Cover">
+<header><span>KYAU LABS / ENGINE IDENTITY</span><span>GUIDE 1.4</span></header>
+<div class="content"><img class="wordmark" src="../logos/svg/ngen-wordmark-dark.svg" alt="NGEN"><h1>Visual identity</h1><p class="subtitle">A C++20 game engine for space simulation.</p><p class="muted">Brand standards and implementation assets</p></div>
+<footer><span>BALANCED / CYAN + VIOLET</span><span>C++20 / SPACE SIMULATION / MMO FOCUS</span></footer>
+</section>
+<section class="page" aria-label="Brand foundations">
+<header><span>KYAU LABS / NGEN BRAND GUIDE</span><span>01 / FOUNDATIONS</span></header>
+<div class="content"><h1>Brand foundations</h1><p class="lead">NGEN is a C++20 game engine for space simulators, with a focus on space MMOs.</p>
+<div class="columns"><div class="field"><p class="label">PRIMARY DESCRIPTION</p><img src="../logos/svg/ngen-wordmark-light.svg" alt="NGEN" style="width:230pt;margin:16pt 0 20pt"><h2>A C++20 game engine for space simulation.</h2></div><div><h2>The Balanced mark</h2><p>The stepped joint suggests engineered components. Two violet wakes flank the diagonal, giving the mark a sense of motion.</p><p>The symbol forms the first N in the wordmark and also serves as the standalone application icon.</p></div></div>
+<div class="thirds stack"><div><h3>Product</h3><p class="small muted">Write the name as NGEN in headings, UI, and prose.</p></div><div><h3>Audience</h3><p class="small muted">Lead with the engine and its use for space simulator development.</p></div><div><h3>Voice</h3><p class="small muted">Use concrete terms. Describe verified features and plans separately.</p></div></div></div>
+<footer><span>NGEN / VISUAL IDENTITY 1.4</span><span>02 / 11</span></footer>
+</section>
+<section class="page logos" aria-label="Logo system">
+<header><span>KYAU LABS / NGEN BRAND GUIDE</span><span>02 / LOGO SYSTEM</span></header>
+<div class="content"><h1>Logo system</h1><p class="lead">Use the approved wordmark for product headers. Use the standalone N where space is limited.</p>
+<div class="columns"><div><p class="label">PRIMARY / DARK</p><div class="field dark"><img src="../logos/svg/ngen-wordmark-dark.svg" alt="Dark-background wordmark" style="width:300pt"></div></div><div><p class="label">PRIMARY / LIGHT</p><div class="field"><img src="../logos/svg/ngen-wordmark-light.svg" alt="Light-background wordmark" style="width:300pt"></div></div><div><p class="label">MONO WHITE</p><div class="field dark"><img src="../logos/svg/ngen-wordmark-mono-white.svg" alt="White wordmark" style="width:300pt"></div></div><div><p class="label">MONO INK</p><div class="field"><img src="../logos/svg/ngen-wordmark-mono-ink.svg" alt="Black wordmark" style="width:300pt"></div></div></div>
+<div class="stack"><h2>Descriptor signature</h2><p class="small muted">Use the signature for an audience meeting NGEN for the first time. Use the shorter wordmark in a compact header.</p><img src="../logos/svg/ngen-signature-light.svg" alt="NGEN — space simulation engine" style="width:320pt;max-height:64pt;object-position:left"></div></div>
+<footer><span>NGEN / VISUAL IDENTITY 1.4</span><span>03 / 11</span></footer>
+</section>
+<section class="page" aria-label="Clear space and size">
+<header><span>KYAU LABS / NGEN BRAND GUIDE</span><span>03 / LOGO USE</span></header>
+<div class="content"><h1>Clear space and size</h1><p class="lead">Reserve one N upright of clear space around the artwork. Measure from the visible edges.</p>
+<div class="columns"><div class="field"><p class="label">X = WIDTH OF ONE N UPRIGHT</p><div style="position:relative;margin:24pt 0;border:1pt dashed var(--strong);width:315pt"><img src="../logos/svg/ngen-wordmark-light.svg" alt="Wordmark with clear space around its visible edges" style="width:100%"><span style="position:absolute;bottom:-18pt;left:0;font-family:'Operator Mono',monospace">X</span></div></div><div><h2>Digital minimums</h2><table><tbody><tr><td>144 px</td><td>Wordmark width</td></tr><tr><td>220 px</td><td>Signature width</td></tr><tr><td>24 px</td><td>Standalone icon canvas</td></tr></tbody></table><p class="small muted stack">Use the favicon tile at 16 px. Fine joint details resolve more clearly at 24 px and above.</p></div></div>
+<div class="stack"><h2>Placement</h2><p class="muted">Keep the wordmark horizontal and proportional. Keep the custom N inside the wordmark. Use a quiet field with enough contrast and switch to monochrome for single-color applications.</p><p class="muted">Avoid stretching, adding outlines or shadows, and placing busy linework inside the clear space.</p></div></div>
+<footer><span>NGEN / VISUAL IDENTITY 1.4</span><span>04 / 11</span></footer>
+</section>
+<section class="page" aria-label="Core palette">
+<header><span>KYAU LABS / NGEN BRAND GUIDE</span><span>04 / CORE COLORS</span></header>
+<div class="content"><h1>Core palette</h1><p class="lead">Prism-derived fields and cyan/violet/pink accents. The NGEN mark retains its geometry and paired violet wakes.</p><p class="label">DARK</p>
+<div class="swatches"><div><div class="swatch" style="background:#04060C"></div><strong>Field</strong><code>#04060C</code></div><div><div class="swatch" style="background:#EAF2FF"></div><strong>Wordmark</strong><code>#EAF2FF</code></div><div><div class="swatch" style="background:#22D3EE"></div><strong>Signal cyan</strong><code>#22D3EE</code></div><div><div class="swatch" style="background:#A78BFA"></div><strong>Wake violet</strong><code>#A78BFA</code></div><div><div class="swatch" style="background:#F472B6"></div><strong>Accent pink</strong><code>#F472B6</code></div></div>
+<p class="label stack">LIGHT</p><div class="swatches"><div><div class="swatch" style="background:#EDF0F8"></div><strong>Field</strong><code>#EDF0F8</code></div><div><div class="swatch" style="background:#0A1322"></div><strong>Wordmark</strong><code>#0A1322</code></div><div><div class="swatch" style="background:#0891B2"></div><strong>Signal cyan</strong><code>#0891B2</code></div><div><div class="swatch" style="background:#7C3AED"></div><strong>Wake violet</strong><code>#7C3AED</code></div><div><div class="swatch" style="background:#DB2777"></div><strong>Accent pink</strong><code>#DB2777</code></div></div>
+<p class="small muted stack">Use the theme-specific SVGs near their reference fields. Check contrast on other surfaces; use monochrome when needed. Pure-black/white monochrome artwork is unchanged.</p></div>
+<footer><span>NGEN / VISUAL IDENTITY 1.4</span><span>05 / 11</span></footer>
+</section>
+<section class="page themes" aria-label="Website themes">
+<header><span>KYAU LABS / NGEN BRAND GUIDE</span><span>05 / WEBSITE THEMES</span></header>
+<div class="content"><h1>Website themes</h1><p class="lead">Prism-derived reference themes. The NGEN website remains dark-only.</p>
+<div class="columns"><div class="field dark" style="padding:14pt"><p class="label">DARK</p><div class="panel"><div class="titlebar"><strong>Engine documentation</strong></div><div class="panel-body small"><p class="muted">Setup, architecture, and development notes</p><span class="action">Read the docs</span><span class="outline">Reference</span><span class="success">Success</span></div></div></div><div class="field" style="padding:14pt"><p class="label">LIGHT</p><div class="panel"><div class="titlebar"><strong>Engine documentation</strong></div><div class="panel-body small"><p class="muted">Setup, architecture, and development notes</p><span class="action">Read the docs</span><span class="outline">Reference</span><span class="success">Success</span></div></div></div></div>
+<table class="stack"><thead><tr><th>CONTRAST ON REFERENCE FIELDS</th><th>DARK</th><th>LIGHT</th></tr></thead><tbody><tr><td>Text / page background</td><td>17.99:1</td><td>16.31:1</td></tr><tr><td>Muted text / panel header</td><td>8.92:1</td><td>8.12:1</td></tr><tr><td>Action text / accent fill</td><td>10.50:1</td><td>5.05:1</td></tr><tr><td>Action text / hover fill</td><td>10.50:1</td><td>5.05:1</td></tr><tr><td>Decorative strong border / panel</td><td>1.64:1</td><td>1.69:1</td></tr><tr><td>Focus ring / panel</td><td>10.78:1</td><td>3.58:1</td></tr></tbody></table>
+<p class="small muted" style="margin-top:14pt">Composite over the reference page, not arbitrary imagery. Use readable muted labels, dark ink on light cyan buttons and bright focus. Subtle pigments and faint borders are decorative.</p></div>
+<footer><span>NGEN / VISUAL IDENTITY 1.4</span><span>06 / 11</span></footer>
+</section>
+<section class="page" aria-label="Theme tokens">
+<header><span>KYAU LABS / NGEN BRAND GUIDE</span><span>06 / TOKEN REFERENCE</span></header>
+<div class="content"><h1>Theme tokens</h1><p class="lead">CSS and JSON share these base colors. Each base CSS name starts with --ngen-.</p>
+<div class="columns"><table class="tokens"><thead><tr><th>TOKEN</th><th>DARK</th><th>LIGHT</th></tr></thead><tbody>
+<tr><td>bg</td><td><code>#04060C</code></td><td><code>#EDF0F8</code></td></tr><tr><td>surface</td><td><code>#0A101D</code></td><td><code>#FFFFFF</code></td></tr><tr><td>panel-header</td><td><code>#10182A</code></td><td><code>#F4F7FD</code></td></tr><tr><td>text</td><td><code>#EAF2FF</code></td><td><code>#0A1322</code></td></tr><tr><td>muted</td><td><code>#A4B5CF</code></td><td><code>#3C4C68</code></td></tr><tr><td>subtle</td><td><code>#637391</code></td><td><code>#71829F</code></td></tr><tr><td>border</td><td><code>#7D9BD2</code></td><td><code>#102A54</code></td></tr><tr><td>control-border</td><td><code>#7D9BD2</code></td><td><code>#102A54</code></td></tr><tr><td>accent</td><td><code>#22D3EE</code></td><td><code>#0891B2</code></td></tr><tr><td>accent-hover</td><td><code>#22D3EE</code></td><td><code>#0891B2</code></td></tr></tbody></table>
+<table class="tokens"><thead><tr><th>TOKEN</th><th>DARK</th><th>LIGHT</th></tr></thead><tbody><tr><td>on-accent</td><td><code>#04121A</code></td><td><code>#0A1322</code></td></tr><tr><td>secondary</td><td><code>#A78BFA</code></td><td><code>#7C3AED</code></td></tr><tr><td>tertiary</td><td><code>#F472B6</code></td><td><code>#DB2777</code></td></tr><tr><td>on-secondary</td><td><code>#04121A</code></td><td><code>#FFFFFF</code></td></tr><tr><td>focus</td><td><code>#22D3EE</code></td><td><code>#0891B2</code></td></tr><tr><td>success</td><td><code>#34D399</code></td><td><code>#006649</code></td></tr><tr><td>warning</td><td><code>#FBBF24</code></td><td><code>#80500A</code></td></tr><tr><td>danger</td><td><code>#FB7185</code></td><td><code>#A52F42</code></td></tr><tr><td>surface-alt</td><td><code>#10182A</code></td><td><code>#F4F7FD</code></td></tr></tbody></table></div>
+<p class="small muted stack">Dark panel/header alpha: 66% / 55%; dark border alpha: 14% / 30%. Light panel/header alpha: 78% / 85%; light border alpha: 12% / 26%. Keep base colors separate from rendered material expressions. Light status text retains its higher-contrast semantic colors.</p></div>
+<footer><span>NGEN / VISUAL IDENTITY 1.4</span><span>07 / 11</span></footer>
+</section>
+<section class="page" aria-label="Typography and graphics">
+<header><span>KYAU LABS / NGEN BRAND GUIDE</span><span>07 / TYPE AND GRAPHICS</span></header>
+<div class="content"><h1>Typography and graphics</h1><p class="lead">Use the outlined wordmark for the name, Neo Sans Pro for surrounding text, and Operator Mono for data and terminal UI.</p>
+<div class="columns"><div><h2 style="font-size:38pt;margin-top:12pt">Space simulation</h2><h3>Documentation and engine tools</h3><p class="muted">Use sans-serif text for headings and prose. Use monospace for code, units, build identifiers, diagram labels and compact controls. Preserve the original case of issue titles, names and prose.</p><p class="label stack">C++20 / BUILD / TRANSFER GEOMETRY</p><h2 class="stack">Orbital schematic</h2><p class="muted">Pair fine orbit traces with sparse nodes and reference ticks. Keep the upright mark on a quiet field.</p></div><div><img src="../graphics/ngen-orbital-schematic-light.svg" alt="Upright N inside fine orbital tracks" style="height:310pt;margin:auto"></div></div>
+<p class="small muted stack">Font binaries are supplied under web/fonts with their embedded notices; the website license does not relicense them. Use PNG/PDF exports where authoring fonts are unavailable.</p></div>
+<footer><span>NGEN / VISUAL IDENTITY 1.4</span><span>08 / 11</span></footer>
+</section>
+<section class="page" aria-label="Icons and avatars">
+<header><span>KYAU LABS / NGEN BRAND GUIDE</span><span>08 / ICONS AND AVATARS</span></header>
+<div class="content"><h1>Icons and avatars</h1><p class="lead">The standalone N connects the brand across application launchers, favicons, and profile images. Website UI icons use Font Awesome Free, not the brand mark.</p>
+<div class="columns"><div><p class="label">DARK</p><div class="thirds" style="align-items:center"><figure><img src="../icons/app/ngen-app-dark.svg" alt="Dark application tile" style="height:96pt"><figcaption>APP TILE</figcaption></figure><figure><img src="../social/ngen-avatar-dark.svg" alt="Dark profile avatar" style="height:96pt"><figcaption>AVATAR</figcaption></figure><figure><img src="../icons/favicon/favicon-dark.svg" alt="Dark favicon" style="height:48pt"><figcaption>FAVICON</figcaption></figure></div></div><div><p class="label">LIGHT</p><div class="thirds" style="align-items:center"><figure><img src="../icons/app/ngen-app-light.svg" alt="Light application tile" style="height:96pt"><figcaption>APP TILE</figcaption></figure><figure><img src="../social/ngen-avatar-light.svg" alt="Light profile avatar" style="height:96pt"><figcaption>AVATAR</figcaption></figure><figure><img src="../icons/favicon/favicon-light.svg" alt="Light favicon" style="height:48pt"><figcaption>FAVICON</figcaption></figure></div></div></div>
+<table class="stack"><tbody><tr><td>Standalone mark</td><td style="text-align:left">Transparent SVG and PNG. Use it in compact UI or alongside unrelated text.</td></tr><tr><td>Application tile</td><td style="text-align:left">Opaque square with room for platform masking. PNGs from 32 to 1024 px.</td></tr><tr><td>Avatar</td><td style="text-align:left">1024 px square, designed to survive a circular crop.</td></tr><tr><td>Favicon</td><td style="text-align:left">SVG plus fixed-theme PNG and multi-size ICO. Test at 16 and 32 px.</td></tr></tbody></table></div>
+<footer><span>NGEN / VISUAL IDENTITY 1.4</span><span>09 / 11</span></footer>
+</section>
+<section class="page" aria-label="Social graphics">
+<header><span>KYAU LABS / NGEN BRAND GUIDE</span><span>09 / SOCIAL ARTWORK</span></header>
+<div class="content"><h1>Social graphics</h1><p class="lead">Open Graph cards put the engine name and category first, with the orbital schematic as context.</p>
+<div class="columns"><figure><p class="label">OPEN GRAPH / DARK</p><img src="../social/ngen-og-dark.svg" alt="Dark NGEN link preview"></figure><figure><p class="label">OPEN GRAPH / LIGHT</p><img src="../social/ngen-og-light.svg" alt="Light NGEN link preview"></figure></div>
+<div class="thirds stack"><div><h3>Link preview</h3><p class="muted">1200 × 630 px</p><p class="small muted">Select one theme per page and publish the PNG at an absolute URL.</p></div><div><h3>Profile banner</h3><p class="muted">1500 × 500 px</p><p class="small muted">Check the crop in the destination preview before publishing.</p></div><div><h3>Profile avatar</h3><p class="muted">1024 × 1024 px</p><p class="small muted">Pair with the matching banner theme.</p></div></div></div>
+<footer><span>NGEN / VISUAL IDENTITY 1.4</span><span>10 / 11</span></footer>
+</section>
+<section class="page" aria-label="Implementation">
+<header><span>KYAU LABS / NGEN BRAND GUIDE</span><span>10 / HANDOFF</span></header>
+<div class="content"><h1>Implementation</h1><p class="lead">Use SVG masters in products and documentation. Use PNGs for publishing and platforms requiring raster artwork.</p>
+<div class="columns"><div><table><tbody><tr><td><code>logos/</code></td><td style="text-align:left">Wordmark and descriptor signature</td></tr><tr><td><code>icons/</code></td><td style="text-align:left">Standalone marks, app tiles, favicons</td></tr><tr><td><code>social/</code></td><td style="text-align:left">Open Graph cards, banners, avatars</td></tr><tr><td><code>graphics/</code></td><td style="text-align:left">Orbital schematics</td></tr><tr><td><code>web/</code></td><td style="text-align:left">CSS, JSON, fonts, palettes, examples</td></tr><tr><td><code>identity/</code></td><td style="text-align:left">Combined and theme-specific boards</td></tr><tr><td><code>guide/</code></td><td style="text-align:left">HTML, PDF, page exports</td></tr></tbody></table></div><div><div class="field"><p class="label">THEME SETUP</p><pre>&lt;link rel="stylesheet"
+ href="/brand/web/ngen-theme.css"&gt;
+&lt;link rel="icon"
+ href="/brand/icons/favicon/favicon.svg"&gt;
+
+&lt;html data-theme="dark"&gt;
+&lt;html data-theme="light"&gt;</pre></div><p class="small muted stack">The reference CSS supports explicit and system themes. The active NGEN website bundles only dark styles and self-hosts its assets; it does not load this dual-theme CSS.</p></div></div>
+<p class="small muted stack">Edit tokens, SVG masters and this HTML; run the optional brand authoring command to refresh exports. Review both palettes. Keep logo geometry, monochrome artwork and the approved website nebula unchanged.</p></div>
+<footer><span>NGEN / VISUAL IDENTITY 1.4</span><span>11 / 11</span></footer>
+</section>
+</main>
+</html>

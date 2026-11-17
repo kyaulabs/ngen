@@ -1,0 +1,25 @@
+Test project <repo>/build/scene-asan
+      Start  1: shader_offline
+ 1/10 Test  #1: shader_offline ...................   Passed   50.00 sec
+      Start  2: ngen_tests
+ 2/10 Test  #2: ngen_tests .......................   Passed    0.13 sec
+      Start  3: render_contract_tests
+ 3/10 Test  #3: render_contract_tests ............   Passed    0.10 sec
+      Start  4: render_environment_tests
+ 4/10 Test  #4: render_environment_tests .........   Passed    9.66 sec
+      Start  5: asset_package_tests
+ 5/10 Test  #5: asset_package_tests ..............   Passed    2.24 sec
+      Start  6: render_startup_tests
+ 6/10 Test  #6: render_startup_tests .............   Passed    0.16 sec
+      Start  7: wayland_tablet_shutdown
+ 7/10 Test  #7: wayland_tablet_shutdown ..........   Passed    1.38 sec
+      Start  8: wayland_tablet_removal
+ 8/10 Test  #8: wayland_tablet_removal ...........   Passed    0.88 sec
+      Start  9: replay_serial
+ 9/10 Test  #9: replay_serial ....................   Passed    0.13 sec
+      Start 10: replay_workers
+10/10 Test #10: replay_workers ...................   Passed    0.12 sec
+
+100% tests passed out of 10
+
+Total Test time (real) =  64.81 sec

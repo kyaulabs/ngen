@@ -1,0 +1,15 @@
+[1/12] Processing file <REPO>/engine/render/context.cpp.
+43 warnings generated.
+[2/12] Processing file <REPO>/engine/render/surface.cpp.
+74 warnings generated.
+[3/12] Processing file <REPO>/engine/render/presentation.cpp.
+117 warnings generated.
+[4/12] Processing file <REPO>/engine/render/resources.cpp.
+160 warnings generated.
+[5/12] Processing file <REPO>/engine/render/post.cpp.
+189 warnings generated.
+[6/12] Processing file <REPO>/apps/probe/presentation.cpp.
+234 warnings generated.
+[7/12] Processing file <REPO>/apps/render_probe/main.cpp.
+279 warnings generated.
+[8/12] Processing file <REPO>/apps/resource_probe/main.cpp.

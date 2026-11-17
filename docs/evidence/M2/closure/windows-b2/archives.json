@@ -1,0 +1,338 @@
+{
+  "release": {
+    "archive_sha256": "bc4a57bc07ee549ffd6d0d083d85a3dba4dab33e4a8f4bf08981c42c9d0d69de",
+    "archive_bytes": 576372,
+    "entries": 58,
+    "uncompressed_bytes": 15681291,
+    "files": [
+      {
+        "name": "build-profile.txt",
+        "bytes": 132
+      },
+      {
+        "name": "cmake-version.txt",
+        "bytes": 93
+      },
+      {
+        "name": "conan-version.txt",
+        "bytes": 22
+      },
+      {
+        "name": "host-profile.txt",
+        "bytes": 132
+      },
+      {
+        "name": "ninja-version.txt",
+        "bytes": 37
+      },
+      {
+        "name": "profile-detect.txt",
+        "bytes": 734
+      },
+      {
+        "name": "profile.txt",
+        "bytes": 377
+      },
+      {
+        "name": "Release-build.txt",
+        "bytes": 12342
+      },
+      {
+        "name": "Release-conan.txt",
+        "bytes": 5846
+      },
+      {
+        "name": "Release-configure.txt",
+        "bytes": 2008
+      },
+      {
+        "name": "Release-cull.reflection.json",
+        "bytes": 15512
+      },
+      {
+        "name": "Release-inspection.artifacts.json",
+        "bytes": 314
+      },
+      {
+        "name": "Release-inspection.bmp",
+        "bytes": 3686538
+      },
+      {
+        "name": "Release-inspection.csv",
+        "bytes": 167590
+      },
+      {
+        "name": "Release-inspection.txt",
+        "bytes": 1335
+      },
+      {
+        "name": "Release-inspection.txt.stderr.txt",
+        "bytes": 0
+      },
+      {
+        "name": "Release-inspection.working-set.json",
+        "bytes": 403
+      },
+      {
+        "name": "Release-inspector.txt",
+        "bytes": 690
+      },
+      {
+        "name": "Release-overlay-fragment.reflection.json",
+        "bytes": 15820
+      },
+      {
+        "name": "Release-overlay-vertex.reflection.json",
+        "bytes": 17899
+      },
+      {
+        "name": "Release-pbr-fragment.reflection.json",
+        "bytes": 110487
+      },
+      {
+        "name": "Release-pbr-vertex.reflection.json",
+        "bytes": 112389
+      },
+      {
+        "name": "Release-post-fragment.reflection.json",
+        "bytes": 17178
+      },
+      {
+        "name": "Release-post-vertex.reflection.json",
+        "bytes": 14845
+      },
+      {
+        "name": "Release-presentation.txt",
+        "bytes": 246
+      },
+      {
+        "name": "Release-render-startup.txt",
+        "bytes": 148
+      },
+      {
+        "name": "Release-resources.txt",
+        "bytes": 1838
+      },
+      {
+        "name": "Release-scene-package.bmp",
+        "bytes": 3686538
+      },
+      {
+        "name": "Release-scene-package.json",
+        "bytes": 150
+      },
+      {
+        "name": "Release-scene-package.txt",
+        "bytes": 1171
+      },
+      {
+        "name": "Release-scene.txt",
+        "bytes": 1126
+      },
+      {
+        "name": "Release-serial.txt",
+        "bytes": 168
+      },
+      {
+        "name": "Release-shader-manifest.json",
+        "bytes": 9716
+      },
+      {
+        "name": "Release-shaders.txt",
+        "bytes": 403
+      },
+      {
+        "name": "Release-shadow-fragment.reflection.json",
+        "bytes": 101374
+      },
+      {
+        "name": "Release-shadow-vertex.reflection.json",
+        "bytes": 108925
+      },
+      {
+        "name": "Release-steady.artifacts.json",
+        "bytes": 305
+      },
+      {
+        "name": "Release-steady.bmp",
+        "bytes": 3686538
+      },
+      {
+        "name": "Release-steady.csv",
+        "bytes": 83844
+      },
+      {
+        "name": "Release-steady.txt",
+        "bytes": 1094
+      },
+      {
+        "name": "Release-steady.txt.stderr.txt",
+        "bytes": 0
+      },
+      {
+        "name": "Release-steady.working-set.json",
+        "bytes": 402
+      },
+      {
+        "name": "Release-stream.artifacts.json",
+        "bytes": 305
+      },
+      {
+        "name": "Release-stream.bmp",
+        "bytes": 3686538
+      },
+      {
+        "name": "Release-stream.csv",
+        "bytes": 83863
+      },
+      {
+        "name": "Release-stream.txt",
+        "bytes": 1331
+      },
+      {
+        "name": "Release-stream.txt.stderr.txt",
+        "bytes": 0
+      },
+      {
+        "name": "Release-stream.working-set.json",
+        "bytes": 402
+      },
+      {
+        "name": "Release-test-list.txt",
+        "bytes": 406
+      },
+      {
+        "name": "Release-tests.txt",
+        "bytes": 1227
+      },
+      {
+        "name": "Release-validation-callback.txt",
+        "bytes": 212
+      },
+      {
+        "name": "Release-workers.txt",
+        "bytes": 171
+      },
+      {
+        "name": "revision.txt",
+        "bytes": 42
+      },
+      {
+        "name": "session.txt",
+        "bytes": 37517
+      },
+      {
+        "name": "slang-recipe.txt",
+        "bytes": 487
+      },
+      {
+        "name": "tools-install.txt",
+        "bytes": 2046
+      },
+      {
+        "name": "vulkan-sdk.txt",
+        "bytes": 35
+      },
+      {
+        "name": "working-tree.txt",
+        "bytes": 0
+      }
+    ]
+  },
+  "memory-failed": {
+    "archive_sha256": "acc5720023cec30cccf0040cfaf8d8f271183bf1004ada6ba4d4f3f4c2f928c7",
+    "archive_bytes": 217048,
+    "entries": 10,
+    "uncompressed_bytes": 4198380,
+    "files": [
+      {
+        "name": "failure.txt",
+        "bytes": 335
+      },
+      {
+        "name": "long-stream.bmp",
+        "bytes": 3686538
+      },
+      {
+        "name": "long-stream.csv",
+        "bytes": 504574
+      },
+      {
+        "name": "long-stream.input.json",
+        "bytes": 919
+      },
+      {
+        "name": "long-stream.txt",
+        "bytes": 1333
+      },
+      {
+        "name": "long-stream.txt.stderr.txt",
+        "bytes": 0
+      },
+      {
+        "name": "long-stream.working-set.json",
+        "bytes": 1314
+      },
+      {
+        "name": "revision.txt",
+        "bytes": 42
+      },
+      {
+        "name": "session.txt",
+        "bytes": 3325
+      },
+      {
+        "name": "working-tree.txt",
+        "bytes": 0
+      }
+    ]
+  },
+  "memory-verified": {
+    "archive_sha256": "32f7620302ae380ecbf7f77c21cf7f8b87e8d4990c0448ac6b3f23312b4df548",
+    "archive_bytes": 222044,
+    "entries": 10,
+    "uncompressed_bytes": 4228370,
+    "files": [
+      {
+        "name": "long-stream.artifacts.json",
+        "bytes": 300
+      },
+      {
+        "name": "long-stream.bmp",
+        "bytes": 3686538
+      },
+      {
+        "name": "long-stream.csv",
+        "bytes": 506008
+      },
+      {
+        "name": "long-stream.input.json",
+        "bytes": 919
+      },
+      {
+        "name": "long-stream.txt",
+        "bytes": 1333
+      },
+      {
+        "name": "long-stream.txt.stderr.txt",
+        "bytes": 0
+      },
+      {
+        "name": "long-stream.working-set.json",
+        "bytes": 30525
+      },
+      {
+        "name": "revision.txt",
+        "bytes": 42
+      },
+      {
+        "name": "session.txt",
+        "bytes": 2705
+      },
+      {
+        "name": "working-tree.txt",
+        "bytes": 0
+      }
+    ]
+  }
+}

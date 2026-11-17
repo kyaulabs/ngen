@@ -1,0 +1,17 @@
+{
+  "long_iris": {
+    "sha256": "546e456e8d3da9f06b3e9e93b097edc284d43c175d5d09129dfcbc3e10c0cccd",
+    "bytes": 3686538,
+    "pixels_private_not_retained": true
+  },
+  "review_iris": {
+    "sha256": "ac27072b744bdb7c8773a632e9a403b625e0bdb65641677993d86d5a4ad4813d",
+    "bytes": 93047,
+    "pixels_private_not_retained": true
+  },
+  "review_rtx": {
+    "sha256": "31c3d7eae43e443aa80cefc1bec34c05cc4ea824a88d37f5627d9875e265f06a",
+    "bytes": 95804,
+    "pixels_private_not_retained": true
+  }
+}

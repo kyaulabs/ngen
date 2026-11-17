@@ -1,0 +1,206 @@
+{
+  "schema": 1,
+  "target": "vulkan1.3",
+  "spirv": "1.5",
+  "matrix_layout": "column-major",
+  "compiler": {
+    "version": "2026.21",
+    "sha256": "8ac6f48667a828baed17034066f11858a6cf4b1ab832f6e7ec27130e0da800a7"
+  },
+  "validator": {
+    "version": "SPIRV-Tools v2026.3 unknown hash, 2026-11-06T02:26:02+00:00\nTargets:\n  SPIR-V 1.0\n  SPIR-V 1.1\n  SPIR-V 1.2\n  SPIR-V 1.3\n  SPIR-V 1.4\n  SPIR-V 1.5\n  SPIR-V 1.6\n  SPIR-V 1.2 (under OpenCL 2.2 Full Profile semantics)\n  SPIR-V 1.0 (under Vulkan 1.0 semantics)\n  SPIR-V 1.3 (under Vulkan 1.1 semantics)\n  SPIR-V 1.4 (under Vulkan 1.1 semantics)\n  SPIR-V 1.5 (under Vulkan 1.2 semantics)\n  SPIR-V 1.6 (under Vulkan 1.3 semantics) SPIR-V 1.6 (under Vulkan 1.4 semantics)",
+    "sha256": "a50adcdf9432b28047b2b7a47290c34785eeb2fd39acb8c0185f7f3b1e785cd9"
+  },
+  "libraries": [
+    {
+      "file": "bin/gfx.slang",
+      "sha256": "689e55fcee4fa6877e9aca267cc04cd4f189b2baf6e68a0b171147b5a7ee6ade"
+    },
+    {
+      "file": "bin/slang.slang",
+      "sha256": "8480e5f4ff36484f25ba9c3eae83e964c8e576c8bde3f9834266855b737c6e5f"
+    },
+    {
+      "file": "lib/libgfx.so",
+      "sha256": "d5ea2eb8f7c3278ce4547f89465aa69e5ab87ee00ea438665bde3894efc7a56c"
+    },
+    {
+      "file": "lib/libgfx.so.0.2026.21",
+      "sha256": "d5ea2eb8f7c3278ce4547f89465aa69e5ab87ee00ea438665bde3894efc7a56c"
+    },
+    {
+      "file": "lib/libslang-compiler.so",
+      "sha256": "192a666e08146241aac6793d886e6369ae4fd81eea76db25f44b54af7313928c"
+    },
+    {
+      "file": "lib/libslang-compiler.so.0.2026.21",
+      "sha256": "192a666e08146241aac6793d886e6369ae4fd81eea76db25f44b54af7313928c"
+    },
+    {
+      "file": "lib/libslang-glsl-module-2026.21.so",
+      "sha256": "caf74db76f0c7bc89b811f26a70062b82c234e38c274c5aba40a25d0e48305db"
+    },
+    {
+      "file": "lib/libslang-glslang-2026.21.so",
+      "sha256": "a31f047b075be03b046ed68bfe6f675a06e6f6abbb6ff389b6f009737e769b22"
+    },
+    {
+      "file": "lib/libslang-rt.so",
+      "sha256": "1fc19f0552ee3be5cbbd2dbfc2d943c1e0eb5e944ac4a25d2052a57ebc87983e"
+    },
+    {
+      "file": "lib/libslang-rt.so.0.2026.21",
+      "sha256": "1fc19f0552ee3be5cbbd2dbfc2d943c1e0eb5e944ac4a25d2052a57ebc87983e"
+    },
+    {
+      "file": "lib/libslang.so",
+      "sha256": "192a666e08146241aac6793d886e6369ae4fd81eea76db25f44b54af7313928c"
+    },
+    {
+      "file": "lib/slang-standard-module-2026.21/experimental/workgraph.slang",
+      "sha256": "4ccb32d0cc2a4d735ae2da16ef6908d24d0a991753e8593ff01ef433e3aab078"
+    },
+    {
+      "file": "lib/slang-standard-module-2026.21/experimental/workgraph.slang-module",
+      "sha256": "e3d9eb28eef4a38f070773d9f2f7e9a6240003d84b06cce7e96917f389d55778"
+    },
+    {
+      "file": "lib/slang-standard-module-2026.21/slang/WaveMatrix.slang",
+      "sha256": "7c54344d6f5a0570d6417888296753e6b341e041ca4a6a39335e14af87ffd27e"
+    },
+    {
+      "file": "lib/slang-standard-module-2026.21/slang/accelerate-vector-coopmat.slang",
+      "sha256": "fa3261f635f146ac70fb5dec91a1408121f03798c42ee7d343574bf2b654f06d"
+    },
+    {
+      "file": "lib/slang-standard-module-2026.21/slang/activations.slang",
+      "sha256": "b3f34b0fa1d20a1e7e37a30234b2af5e0ef8bf0ace410592dda205ac9c67fb67"
+    },
+    {
+      "file": "lib/slang-standard-module-2026.21/slang/bindless-storage.slang",
+      "sha256": "d55135354347cd2333caa2346ef79527a9bc8dfd0db9313463e44c53246a3337"
+    },
+    {
+      "file": "lib/slang-standard-module-2026.21/slang/functional.slang-module",
+      "sha256": "ee97ba8c2cc5049c7727aae36de49ae9fd7493a86a335fce3e694613cbcd38fe"
+    },
+    {
+      "file": "lib/slang-standard-module-2026.21/slang/hash-function.slang",
+      "sha256": "f730f5bb868d8f8805ae9ce6420599b4c43cec17decfedda001705cab3107bc1"
+    },
+    {
+      "file": "lib/slang-standard-module-2026.21/slang/iactivation.slang",
+      "sha256": "5ae0684a7f6d796eceb16d9dd91c6f391ce462b0ae5a88b4b64c8e03939b60cd"
+    },
+    {
+      "file": "lib/slang-standard-module-2026.21/slang/iencoder.slang",
+      "sha256": "2177cea7d3da4e4577ee840989fa2a7502939ef14bd57ceed4e6dc870ce3d005"
+    },
+    {
+      "file": "lib/slang-standard-module-2026.21/slang/ilayer.slang",
+      "sha256": "3e47ef65ea31f6cff857d8c3158755e679d206058433cd635ec55de87fdbc3fa"
+    },
+    {
+      "file": "lib/slang-standard-module-2026.21/slang/inline-vector.slang",
+      "sha256": "50c9d0726c6e8ea93b2d43c46628b8ca30e3ab02b79942d132040859af214600"
+    },
+    {
+      "file": "lib/slang-standard-module-2026.21/slang/istorages.slang",
+      "sha256": "d1818c0eef09cce3e677d591b7a2e1b09b8770bcf960f97b78f6a29b7c19d2cb"
+    },
+    {
+      "file": "lib/slang-standard-module-2026.21/slang/ivector.slang",
+      "sha256": "1c44acd25cd5ad63756494ef6066865f6e7eef38f486f86beb2fdad2d59e79b3"
+    },
+    {
+      "file": "lib/slang-standard-module-2026.21/slang/layers.slang",
+      "sha256": "0fce3dc9f13022516addc2df9d8dc1751962f9b2207533206e175449ca3a0e00"
+    },
+    {
+      "file": "lib/slang-standard-module-2026.21/slang/mma-linear-layout-help.slang",
+      "sha256": "2d29e94392b54d3605c741c9d04bc7bf3cef181afd39a7d6d398a77033f6089e"
+    },
+    {
+      "file": "lib/slang-standard-module-2026.21/slang/mma-tiled-cuda.slang",
+      "sha256": "0d8de6257095a8bc498b48e2ed2a6be7ddae1b692dd40a347ace2610a8a50cb4"
+    },
+    {
+      "file": "lib/slang-standard-module-2026.21/slang/mma-tiled-layout-helper.slang",
+      "sha256": "4c82a16fd615b2284fa45bc4ae2163a4346b0ce474315541632c98d999dce3a3"
+    },
+    {
+      "file": "lib/slang-standard-module-2026.21/slang/mma-tiled-metal.slang",
+      "sha256": "180cbf0b52cb01479e2ec197f5340ac7c5814a18299203aa6c8fa38ec72edb7e"
+    },
+    {
+      "file": "lib/slang-standard-module-2026.21/slang/mma-tiled-vulkan.slang",
+      "sha256": "345b5b19f8303dd11cfe128e8fe9b1c935c9387af7c85679ed35465c6e366c14"
+    },
+    {
+      "file": "lib/slang-standard-module-2026.21/slang/network-parameter-layout-converter.slang",
+      "sha256": "2ed702f22ab8db77715aebdb5f6ef98068019c8da1d86b08f8b6a8696004598a"
+    },
+    {
+      "file": "lib/slang-standard-module-2026.21/slang/neural.slang",
+      "sha256": "9c13d2c2f46557d704cb0f41c59fd0335243f9dc5692f90b72dfeb6a4db13717"
+    },
+    {
+      "file": "lib/slang-standard-module-2026.21/slang/neural.slang-module",
+      "sha256": "0d1f3c7f9e08932f7a0c4704e15b272b998f7911e4f9dd5624fb31df3be661f8"
+    },
+    {
+      "file": "lib/slang-standard-module-2026.21/slang/numerics/__builtin.slang-module",
+      "sha256": "0aeaead97245883af91c70aadfa17bcbb0a08c5af0e8ed67bb953227fb71822b"
+    },
+    {
+      "file": "lib/slang-standard-module-2026.21/slang/numerics/__builtin_differentiable.slang-module",
+      "sha256": "c7cbb0d33b26d775686d6818282433fbbc58cba315177c37e4fbd630f880e13d"
+    },
+    {
+      "file": "lib/slang-standard-module-2026.21/slang/numerics/differentiable.slang-module",
+      "sha256": "6ae616fbf3ea839b7925870a917dd7021d93ea0830209c37bcc3c0f5938df283"
+    },
+    {
+      "file": "lib/slang-standard-module-2026.21/slang/numerics.slang-module",
+      "sha256": "43dd29a858861e21730fe833edb082871e2465f681a07668b8801d069d59111e"
+    },
+    {
+      "file": "lib/slang-standard-module-2026.21/slang/permuto-encoder.slang",
+      "sha256": "e26ce720e984d906b8475dc32eb3dac45ee377ea39591a40044ab311d77302b1"
+    },
+    {
+      "file": "lib/slang-standard-module-2026.21/slang/shared-memory-pool.slang",
+      "sha256": "5e723beac8f33532c40bf67e701412764b16fd656d92040c0da45ba6b07f4a5d"
+    },
+    {
+      "file": "lib/slang-standard-module-2026.21/slang/vectorized-reader.slang",
+      "sha256": "ed75edc8f84a593dee13c1c54fbff023382b7f102dde3046b9917e08ae630daa"
+    }
+  ],
+  "shaders": [
+    {
+      "name": "cull",
+      "stage": "compute",
+      "entry": "cullMain",
+      "source_sha256": "8e7bd81509655f5d1229f9ed9e15fa8118e15b9075fd60b0553a26d70eda7f0e",
+      "sha256": "c02bd1d5144d5d6175a4eb79073f6eea71d4bc88da1b95f65885ef6cd1927e09",
+      "reflection_sha256": "03b01fdd2a2d194c707be408187febc76e7d2d5b0dc91e2e0d558cb168ca13c4"
+    },
+    {
+      "name": "pbr-vertex",
+      "stage": "vertex",
+      "entry": "vertexMain",
+      "source_sha256": "53b35e113636149d1fee9ef8a2196e2234a4ae30087645c7bec0628cdd4365e8",
+      "sha256": "c83f50134ccf4e43a58bf8375a62c97984e4bed164379fd856022859073bffce",
+      "reflection_sha256": "4a5037fe006a30c6a130324b54c297315a0711cb2537d46651f19305dc238951"
+    },
+    {
+      "name": "pbr-fragment",
+      "stage": "fragment",
+      "entry": "fragmentMain",
+      "source_sha256": "53b35e113636149d1fee9ef8a2196e2234a4ae30087645c7bec0628cdd4365e8",
+      "sha256": "20f37d449af20a7764fcb5c1179dad6f19b0d2107f1d3daa0d15eb86e2b5c602",
+      "reflection_sha256": "3510e67f4abdbbd0b38ad4d5e5a2340b7be5ec9c95110fa57ab3f5e2859799b5"
+    }
+  ]
+}

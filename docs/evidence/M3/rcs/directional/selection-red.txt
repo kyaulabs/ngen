@@ -1,0 +1,33 @@
+Test project /home/kyau/projects/kyaulabs/ngen/build/demo-debug
+    Start 8: flight_scene
+1/1 Test #8: flight_scene .....................***Failed    0.09 sec
+Randomness seeded to: 3980504055
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+flight_scene_tests is a Catch2 v3.16.0 host application.
+Run with -? for options
+
+-------------------------------------------------------------------------------
+pure turns and arrest use selective nonoverlapping RCS sets
+-------------------------------------------------------------------------------
+/home/kyau/projects/kyaulabs/ngen/tests/flight_scene.cpp:125
+...............................................................................
+
+/home/kyau/projects/kyaulabs/ngen/tests/flight_scene.cpp:135: FAILED:
+  REQUIRE( std::count_if(turning.begin(), turning.end(), [](float v) { return v > 1e-6F; }) <= 6 )
+with expansion:
+  16 <= 6
+
+===============================================================================
+test cases:   17 |   16 passed | 1 failed
+assertions: 1475 | 1474 passed | 1 failed
+
+
+
+0% tests passed, 1 tests failed out of 1
+
+Total Test time (real) =   0.09 sec
+
+The following tests FAILED:
+	  8 - flight_scene (Failed)
+Errors while running CTest

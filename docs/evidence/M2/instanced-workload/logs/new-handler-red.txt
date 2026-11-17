@@ -1,0 +1,22 @@
+Filters: "workload allocation instrumentation*"
+Randomness seeded to: 321951147
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+scene_workload_tests is a Catch2 v3.16.0 host application.
+Run with -? for options
+
+-------------------------------------------------------------------------------
+workload allocation instrumentation observes scalar and aligned requests
+without replacing OOM policy
+-------------------------------------------------------------------------------
+$REPO/tests/workload.cpp:9
+...............................................................................
+
+$REPO/tests/workload.cpp:35: FAILED:
+  REQUIRE( called )
+with expansion:
+  false
+
+===============================================================================
+test cases: 1 | 1 failed
+assertions: 3 | 2 passed | 1 failed

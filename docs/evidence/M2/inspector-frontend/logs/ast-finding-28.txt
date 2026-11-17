@@ -1,0 +1,13 @@
+56 warnings generated.
+<ROOT>/engine/tools/ui.cpp:32:5: error: use of a signed integer operand with a binary bitwise operator [bugprone-signed-bitwise,-warnings-as-errors]
+   32 |     ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoSavedSettings;
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ~
+<ROOT>/engine/tools/ui.cpp:72:9: error: use of a signed integer operand with a binary bitwise operator [bugprone-signed-bitwise,-warnings-as-errors]
+   72 |         io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
+      |         ^~~~~~~~~~~~~~ ~~
+<ROOT>/engine/tools/ui.cpp:292:51: error: result of a `data()` call may not be null terminated, provide size information to the callee to prevent potential issues [bugprone-suspicious-stringview-data-usage,-warnings-as-errors]
+  292 |             ImGui::TextUnformatted(metrics.status.data(),
+      |                                    ~~~~~~~~~~~~~~~^~~~
+Suppressed 53 warnings (53 in non-user code).
+Use -header-filter=.* or leave it as default to display errors from all non-system headers. Use -system-headers to display errors from system headers as well.
+3 warnings treated as errors

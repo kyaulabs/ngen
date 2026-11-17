@@ -1,0 +1,9 @@
+native_latency name=submit begin_ns=397947782208739 end_ns=397947819224252 duration_ns=37015513 result=0
+swapchain_created at_ns=397947960720446 width=1280 height=720 requested_images=4 result=0
+diagnostic_resize_omitted=1 at_ns=397949278127358
+native_latency name=submit begin_ns=397949511404647 end_ns=397949553861255 duration_ns=42456608 result=0
+diagnostic_resize_omitted=1 at_ns=397949654816679
+native_latency name=submit begin_ns=397950662360369 end_ns=397950693303688 duration_ns=30943319 result=0
+native_latency name=submit begin_ns=397951811980436 end_ns=397951842425452 duration_ns=30445016 result=0
+native_latency name=submit begin_ns=397951883301324 end_ns=397951888866264 duration_ns=5564940 result=0
+Scene workload: inspector walkthrough did not complete edits, keyboard reload and native resize publication

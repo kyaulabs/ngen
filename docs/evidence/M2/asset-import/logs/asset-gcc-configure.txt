@@ -1,0 +1,25 @@
+-- Using Conan toolchain: <REPO>/build/asset-gcc/conan_toolchain.cmake
+-- Conan toolchain: Defining architecture flag: -m64
+-- Conan toolchain: C++ Standard 20 with extensions OFF
+-- The CXX compiler identification is GNU 16.2.1
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: /bin/g++ - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- Conan: Target declared 'enkiTS::enkiTS'
+-- Performing Test CMAKE_HAVE_LIBC_PTHREAD
+-- Performing Test CMAKE_HAVE_LIBC_PTHREAD - Success
+-- Found Threads: TRUE
+-- Conan: Target declared 'fastgltf::fastgltf'
+-- Conan: Target declared 'simdjson::simdjson'
+-- Conan: Target declared 'PNG::PNG'
+-- Conan: Target declared 'ZLIB::ZLIB'
+-- Conan: Target declared 'mikktspace::mikktspace'
+-- Conan: Target declared 'meshoptimizer::meshoptimizer'
+-- Conan: Component target declared 'Catch2::Catch2'
+-- Conan: Component target declared 'Catch2::Catch2WithMain'
+-- Found Python3: <TMP>/prism-conan-venv/bin/python3.14 (found suitable version "3.14.9", minimum required is "3.8") found components: Interpreter
+-- Configuring done (0.6s)
+-- Generating done (0.0s)
+-- Build files have been written to: <REPO>/build/asset-gcc

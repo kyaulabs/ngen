@@ -1,0 +1,52 @@
+[1/8] Processing file <repo>/engine/render/mesh.cpp.
+33 warnings generated.
+[2/8] Processing file <repo>/engine/render/resources.cpp.
+76 warnings generated.
+[3/8] Processing file <repo>/engine/render/scene_draw.cpp.
+123 warnings generated.
+[4/8] Processing file <repo>/engine/render/context.cpp.
+166 warnings generated.
+[5/8] Processing file <repo>/engine/render/post.cpp.
+195 warnings generated.
+[6/8] Processing file <repo>/apps/resource_probe/main.cpp.
+243 warnings generated.
+[7/8] Processing file <repo>/apps/scene_probe/main.cpp.
+302 warnings generated.
+[8/8] Processing file <repo>/apps/scene_probe/draw.cpp.
+350 warnings generated.
+<repo>/apps/resource_probe/main.cpp:484:23: error: performing an implicit widening conversion to type 'std::size_t' (aka 'unsigned long') of a multiplication performed in type 'int' [bugprone-implicit-widening-of-multiplication-result,-warnings-as-errors]
+  484 |     std::array<float, 16 * 16> unoccluded{};
+      |                       ^
+<repo>/apps/resource_probe/main.cpp:484:23: note: make conversion explicit to silence this warning
+    8 |     std::array<float, 16 * 16> unoccluded{};
+      |                       ^~~~~~~
+      |                       static_cast<std::size_t>( )
+<repo>/apps/resource_probe/main.cpp:484:23: note: perform multiplication in a wider type
+  484 |     std::array<float, 16 * 16> unoccluded{};
+      |                       ^~
+      |                       static_cast<long>( )
+<repo>/apps/resource_probe/main.cpp:567:23: error: performing an implicit widening conversion to type 'std::size_t' (aka 'unsigned long') of a multiplication performed in type 'int' [bugprone-implicit-widening-of-multiplication-result,-warnings-as-errors]
+  567 |     std::array<float, 16 * 16> shadow_pixels{};
+      |                       ^
+<repo>/apps/resource_probe/main.cpp:567:23: note: make conversion explicit to silence this warning
+  567 |     std::array<float, 16 * 16> shadow_pixels{};
+      |                       ^~~~~~~
+      |                       static_cast<std::size_t>( )
+<repo>/apps/resource_probe/main.cpp:567:23: note: perform multiplication in a wider type
+  567 |     std::array<float, 16 * 16> shadow_pixels{};
+      |                       ^~
+      |                       static_cast<long>( )
+<repo>/apps/scene_probe/draw.cpp:193:40: error: performing an implicit widening conversion to type 'size_type' (aka 'unsigned long') of a multiplication performed in type 'unsigned int' [bugprone-implicit-widening-of-multiplication-result,-warnings-as-errors]
+  193 |         std::vector<std::byte> encoded(4U * 1024U * 1024U);
+      |                                        ^
+<repo>/apps/scene_probe/draw.cpp:193:40: note: make conversion explicit to silence this warning
+    6 |         std::vector<std::byte> encoded(4U * 1024U * 1024U);
+      |                                        ^~~~~~~~~~~~~~~~~~
+      |                                        static_cast<size_type>( )
+<repo>/apps/scene_probe/draw.cpp:193:40: note: perform multiplication in a wider type
+  193 |         std::vector<std::byte> encoded(4U * 1024U * 1024U);
+      |                                        ^~~~~~~~~~
+      |                                        static_cast<size_type>( )
+Suppressed 346 warnings (346 in non-user code).
+Use -header-filter=.* or leave it as default to display errors from all non-system headers. Use -system-headers to display errors from system headers as well.
+3 warnings treated as errors

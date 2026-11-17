@@ -1,0 +1,205 @@
+{
+  "package": "/home/kyau/projects/kyaulabs/ngen/build/m2-motion-replay-ta3mvy9u/build/cooked-candidate/frigate-droplet-jet-v2/scene.ngas",
+  "sha256": "9b645de103ea92677c3cfe97cb8bd88ede8e7109f34c0f926888ba65c7522e63",
+  "runtime": {
+    "package_valid": 1,
+    "vertices": 1304579,
+    "indices": 3309780,
+    "primitives": 189,
+    "instances": 194,
+    "materials": 14,
+    "images": 6,
+    "textures": 17,
+    "lights": 612,
+    "light_instances": 612,
+    "texture_bytes": 89565864,
+    "lod_triangles": [
+      574376,
+      291044,
+      238320
+    ],
+    "checksum": 1686867862
+  },
+  "droplet_jet": {
+    "name": "recessed-droplet-v2",
+    "base_sha256": "5e69d51b48539b17b00b15d9b8e71d1d705b625bbfceab7cb539390aa24e988b",
+    "author_sha256": "81248ef7249c2518227bdd867ca1079e65a0514eee5e1b27dc1f5f478835042a",
+    "numpy_version": "2.5.4",
+    "shared_vertices": 256,
+    "shared_triangles": 240,
+    "instances": 6,
+    "visible_jet_triangles": 1440,
+    "base_disc_removed": true,
+    "profile": [
+      [
+        0,
+        1.0
+      ],
+      [
+        0.02,
+        1.032523069155503
+      ],
+      [
+        0.05,
+        1.0758173084857006
+      ],
+      [
+        0.09,
+        1.1234597844919685
+      ],
+      [
+        0.14,
+        1.1671759521130574
+      ],
+      [
+        0.2,
+        1.1971180132129555
+      ],
+      [
+        0.27,
+        1.2022597091823652
+      ],
+      [
+        0.35,
+        1.170957748288909
+      ],
+      [
+        0.44,
+        1.0917731764236025
+      ],
+      [
+        0.54,
+        0.9547429771720384
+      ],
+      [
+        0.64,
+        0.7737062452661063
+      ],
+      [
+        0.74,
+        0.5588834176305818
+      ],
+      [
+        0.83,
+        0.3486655386370838
+      ],
+      [
+        0.9,
+        0.18543927644209068
+      ],
+      [
+        0.96,
+        0.059089418257740924
+      ],
+      [
+        1,
+        0.006
+      ]
+    ],
+    "emitters": [
+      {
+        "source_node": 12,
+        "plume_source_node": 654,
+        "emitter_face_x": 149.70001220703125,
+        "plume_start_x": 149.72001220703126,
+        "bell_end_x": 160.0,
+        "old_plume_end_x": 181.45999908447266,
+        "plume_end_x": 202.9199981689453,
+        "base_radii": [
+          2.464232445064838,
+          2.3866860155690297
+        ],
+        "inner_opening_radii": [
+          2.5145229031273857,
+          2.4353938934377855
+        ]
+      },
+      {
+        "source_node": 23,
+        "plume_source_node": 655,
+        "emitter_face_x": 149.70001220703125,
+        "plume_start_x": 149.72001220703126,
+        "bell_end_x": 160.0,
+        "old_plume_end_x": 185.42000007629395,
+        "plume_end_x": 210.8400001525879,
+        "base_radii": [
+          2.908601914510791,
+          2.8170717023708622
+        ],
+        "inner_opening_radii": [
+          2.967961137255909,
+          2.874562961602921
+        ]
+      },
+      {
+        "source_node": 34,
+        "plume_source_node": 656,
+        "emitter_face_x": 149.70001220703125,
+        "plume_start_x": 149.72001220703126,
+        "bell_end_x": 160.0,
+        "old_plume_end_x": 185.42000007629395,
+        "plume_end_x": 210.8400001525879,
+        "base_radii": [
+          2.908601759343152,
+          2.8170713693074774
+        ],
+        "inner_opening_radii": [
+          2.9679609789215835,
+          2.874562621742324
+        ]
+      },
+      {
+        "source_node": 45,
+        "plume_source_node": 657,
+        "emitter_face_x": 149.70001220703125,
+        "plume_start_x": 149.72001220703126,
+        "bell_end_x": 160.0,
+        "old_plume_end_x": 185.42000007629395,
+        "plume_end_x": 210.8400001525879,
+        "base_radii": [
+          2.9086007229215283,
+          2.8170713031488455
+        ],
+        "inner_opening_radii": [
+          2.9679599213484984,
+          2.874562554233516
+        ]
+      },
+      {
+        "source_node": 56,
+        "plume_source_node": 658,
+        "emitter_face_x": 149.70001220703125,
+        "plume_start_x": 149.72001220703126,
+        "bell_end_x": 160.0,
+        "old_plume_end_x": 185.42000007629395,
+        "plume_end_x": 210.8400001525879,
+        "base_radii": [
+          2.9086005995275492,
+          2.817071000859233
+        ],
+        "inner_opening_radii": [
+          2.9679597954362746,
+          2.8745622457747277
+        ]
+      },
+      {
+        "source_node": 67,
+        "plume_source_node": 659,
+        "emitter_face_x": 149.70001220703125,
+        "plume_start_x": 149.72001220703126,
+        "bell_end_x": 160.0,
+        "old_plume_end_x": 181.45999908447266,
+        "plume_end_x": 202.9199981689453,
+        "base_radii": [
+          2.4642329249362347,
+          2.3866864803394514
+        ],
+        "inner_opening_radii": [
+          2.5145233927920763,
+          2.4353943676933176
+        ]
+      }
+    ],
+    "scope": "Latest owner request: originate at recessed white-core/inner-blue-coil opening, narrow to it, extend twice the earlier exposed tail and taper nearly to a point. Preserve the improved white-core/blue-fringe texture and turbulent shader style; no original ship geometry, materials, images, light or reference pixels changed."
+  }
+}

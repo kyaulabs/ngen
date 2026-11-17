@@ -1,0 +1,29 @@
+Test project <ROOT>/build/inspector-asan
+      Start  1: shader_offline
+ 1/12 Test  #1: shader_offline ...................   Passed   29.10 sec
+      Start  2: ngen_tests
+ 2/12 Test  #2: ngen_tests .......................   Passed    0.07 sec
+      Start  3: render_contract_tests
+ 3/12 Test  #3: render_contract_tests ............   Passed    0.06 sec
+      Start  4: render_environment_tests
+ 4/12 Test  #4: render_environment_tests .........   Passed    3.65 sec
+      Start  5: scene_workload_tests
+ 5/12 Test  #5: scene_workload_tests .............   Passed    0.09 sec
+      Start  6: asset_package_tests
+ 6/12 Test  #6: asset_package_tests ..............   Passed    0.79 sec
+      Start  7: inspector_tests
+ 7/12 Test  #7: inspector_tests ..................   Passed    0.09 sec
+      Start  8: render_startup_tests
+ 8/12 Test  #8: render_startup_tests .............   Passed    0.08 sec
+      Start  9: wayland_tablet_shutdown
+ 9/12 Test  #9: wayland_tablet_shutdown ..........   Passed    1.56 sec
+      Start 10: wayland_tablet_removal
+10/12 Test #10: wayland_tablet_removal ...........   Passed    0.66 sec
+      Start 11: replay_serial
+11/12 Test #11: replay_serial ....................   Passed    0.05 sec
+      Start 12: replay_workers
+12/12 Test #12: replay_workers ...................   Passed    0.05 sec
+
+100% tests passed out of 12
+
+Total Test time (real) =  36.27 sec

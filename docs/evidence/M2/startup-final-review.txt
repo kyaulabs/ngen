@@ -1,0 +1,1 @@
+None found in the inspected startup slice: queue-family-labeled rejection reasons are retained, shutdown errors persist across repeated `close()` calls, and borrowed handles are cleared.

@@ -1,0 +1,7 @@
+Test project /home/kyau/projects/kyaulabs/ngen/build/flight-debug
+    Start 1: physics
+1/1 Test #1: physics ..........................   Passed    0.07 sec
+
+100% tests passed out of 1
+
+Total Test time (real) =   0.07 sec

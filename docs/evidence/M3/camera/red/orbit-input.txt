@@ -1,0 +1,34 @@
+Test project /home/kyau/projects/kyaulabs/ngen/build/flight-debug
+    Start 3: flight_camera
+1/1 Test #3: flight_camera ....................***Failed    0.00 sec
+Randomness seeded to: 2721075728
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+flight_camera_tests is a Catch2 v3.16.0 host application.
+Run with -? for options
+
+-------------------------------------------------------------------------------
+tactical drag and wheel deltas orbit and zoom within finite bounds without
+moving the ship
+-------------------------------------------------------------------------------
+/home/kyau/projects/kyaulabs/ngen/tests/flight_camera.cpp:84
+...............................................................................
+
+/home/kyau/projects/kyaulabs/ngen/tests/flight_camera.cpp:89: FAILED:
+  REQUIRE( std::holds_alternative<std::monostate>(rig.orbit({.4F, .2F, 4})) )
+with expansion:
+  false
+
+===============================================================================
+test cases:  4 |  3 passed | 1 failed
+assertions: 24 | 23 passed | 1 failed
+
+
+
+0% tests passed, 1 tests failed out of 1
+
+Total Test time (real) =   0.00 sec
+
+The following tests FAILED:
+	  3 - flight_camera (Failed)
+Errors while running CTest

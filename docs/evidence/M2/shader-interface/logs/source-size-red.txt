@@ -1,0 +1,14 @@
+F
+======================================================================
+FAIL: test_oversized_source_is_rejected_before_publication (__main__.ShaderCompilation.test_oversized_source_is_rejected_before_publication)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<ROOT>/tests/shaders.py", line 132, in test_oversized_source_is_rejected_before_publication
+    self.assertNotEqual(result.returncode, 0, "oversized shader source admitted")
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 == 0 : oversized shader source admitted
+
+----------------------------------------------------------------------
+Ran 1 test in 15.525s
+
+FAILED (failures=1)

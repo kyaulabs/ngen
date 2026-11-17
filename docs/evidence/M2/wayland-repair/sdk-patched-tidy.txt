@@ -1,0 +1,1118 @@
+612 warnings generated.
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:109:57: error: 2 adjacent parameters of 'Wayland_SeatAddTouch' of convertible types are easily swapped by mistake [bugprone-easily-swappable-parameters,-warnings-as-errors]
+  109 | static void Wayland_SeatAddTouch(SDL_WaylandSeat *seat, SDL_TouchID id, wl_fixed_t fx, wl_fixed_t fy, struct wl_surface *surface)
+      |                                                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:109:69: note: the first parameter in the range is 'id'
+  109 | static void Wayland_SeatAddTouch(SDL_WaylandSeat *seat, SDL_TouchID id, wl_fixed_t fx, wl_fixed_t fy, struct wl_surface *surface)
+      |                                                                     ^~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:109:84: note: the last parameter in the range is 'fx'
+  109 | static void Wayland_SeatAddTouch(SDL_WaylandSeat *seat, SDL_TouchID id, wl_fixed_t fx, wl_fixed_t fy, struct wl_surface *surface)
+      |                                                                                    ^~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:109:57: note:
+  109 | static void Wayland_SeatAddTouch(SDL_WaylandSeat *seat, SDL_TouchID id, wl_fixed_t fx, wl_fixed_t fy, struct wl_surface *surface)
+      |                                                         ^
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:109:73: note: 'SDL_TouchID' and 'wl_fixed_t' may be implicitly converted: 'SDL_TouchID' (as 'unsigned long') -> 'wl_fixed_t' (as 'int'), 'wl_fixed_t' (as 'int') -> 'SDL_TouchID' (as 'unsigned long')
+  109 | static void Wayland_SeatAddTouch(SDL_WaylandSeat *seat, SDL_TouchID id, wl_fixed_t fx, wl_fixed_t fy, struct wl_surface *surface)
+      |                                                                         ^
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:150:60: error: 2 adjacent parameters of 'Wayland_SeatUpdateTouch' of convertible types are easily swapped by mistake [bugprone-easily-swappable-parameters,-warnings-as-errors]
+  150 | static void Wayland_SeatUpdateTouch(SDL_WaylandSeat *seat, SDL_TouchID id, wl_fixed_t fx, wl_fixed_t fy, struct wl_surface **surface)
+      |                                                            ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:150:72: note: the first parameter in the range is 'id'
+  150 | static void Wayland_SeatUpdateTouch(SDL_WaylandSeat *seat, SDL_TouchID id, wl_fixed_t fx, wl_fixed_t fy, struct wl_surface **surface)
+      |                                                                        ^~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:150:87: note: the last parameter in the range is 'fx'
+  150 | static void Wayland_SeatUpdateTouch(SDL_WaylandSeat *seat, SDL_TouchID id, wl_fixed_t fx, wl_fixed_t fy, struct wl_surface **surface)
+      |                                                                                       ^~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:150:60: note:
+  150 | static void Wayland_SeatUpdateTouch(SDL_WaylandSeat *seat, SDL_TouchID id, wl_fixed_t fx, wl_fixed_t fy, struct wl_surface **surface)
+      |                                                            ^
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:150:76: note: 'SDL_TouchID' and 'wl_fixed_t' may be implicitly converted: 'SDL_TouchID' (as 'unsigned long') -> 'wl_fixed_t' (as 'int'), 'wl_fixed_t' (as 'int') -> 'SDL_TouchID' (as 'unsigned long')
+  150 | static void Wayland_SeatUpdateTouch(SDL_WaylandSeat *seat, SDL_TouchID id, wl_fixed_t fx, wl_fixed_t fy, struct wl_surface **surface)
+      |                                                                            ^
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:272:49: error: use of a signed integer operand with a binary bitwise operator [bugprone-signed-bitwise,-warnings-as-errors]
+  272 |     *((Uint64 *)data) = ((((Uint64)tv_sec_hi << 32) | (Uint64)tv_sec_lo) * SDL_NS_PER_SECOND) + tv_nsec;
+      |                                              ~~ ^~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:309:111: error: 2 adjacent parameters of 'handle_pinch_begin' of similar type ('uint32_t') are easily swapped by mistake [bugprone-easily-swappable-parameters,-warnings-as-errors]
+  309 | static void handle_pinch_begin(void *data, struct zwp_pointer_gesture_pinch_v1 *zwp_pointer_gesture_pinch_v1, uint32_t serial, uint32_t time, struct wl_surface *surface, uint32_t fingers)
+      |                                                                                                               ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:309:120: note: the first parameter in the range is 'serial'
+  309 | static void handle_pinch_begin(void *data, struct zwp_pointer_gesture_pinch_v1 *zwp_pointer_gesture_pinch_v1, uint32_t serial, uint32_t time, struct wl_surface *surface, uint32_t fingers)
+      |                                                                                                                        ^~~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:309:137: note: the last parameter in the range is 'time'
+  309 | static void handle_pinch_begin(void *data, struct zwp_pointer_gesture_pinch_v1 *zwp_pointer_gesture_pinch_v1, uint32_t serial, uint32_t time, struct wl_surface *surface, uint32_t fingers)
+      |                                                                                                                                         ^~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:325:112: error: 2 adjacent parameters of 'handle_pinch_update' of convertible types are easily swapped by mistake [bugprone-easily-swappable-parameters,-warnings-as-errors]
+  325 | static void handle_pinch_update(void *data, struct zwp_pointer_gesture_pinch_v1 *zwp_pointer_gesture_pinch_v1, uint32_t time,
+      |                                                                                                                ^~~~~~~~~~~~~~
+  326 |                                 wl_fixed_t dx, wl_fixed_t dy, wl_fixed_t scale, wl_fixed_t rotation)
+      |                                 ~~~~~~~~~~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:325:121: note: the first parameter in the range is 'time'
+  325 | static void handle_pinch_update(void *data, struct zwp_pointer_gesture_pinch_v1 *zwp_pointer_gesture_pinch_v1, uint32_t time,
+      |                                                                                                                         ^~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:326:44: note: the last parameter in the range is 'dx'
+  326 |                                 wl_fixed_t dx, wl_fixed_t dy, wl_fixed_t scale, wl_fixed_t rotation)
+      |                                            ^~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:325:112: note:
+  325 | static void handle_pinch_update(void *data, struct zwp_pointer_gesture_pinch_v1 *zwp_pointer_gesture_pinch_v1, uint32_t time,
+      |                                                                                                                ^
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:326:33: note: 'uint32_t' and 'wl_fixed_t' may be implicitly converted: 'uint32_t' (as 'unsigned int') -> 'wl_fixed_t' (as 'int'), 'wl_fixed_t' (as 'int') -> 'uint32_t' (as 'unsigned int')
+  326 |                                 wl_fixed_t dx, wl_fixed_t dy, wl_fixed_t scale, wl_fixed_t rotation)
+      |                                 ^
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:326:48: error: 3 adjacent parameters of 'handle_pinch_update' of similar type ('wl_fixed_t') are easily swapped by mistake [bugprone-easily-swappable-parameters,-warnings-as-errors]
+  326 |                                 wl_fixed_t dx, wl_fixed_t dy, wl_fixed_t scale, wl_fixed_t rotation)
+      |                                                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:326:59: note: the first parameter in the range is 'dy'
+  326 |                                 wl_fixed_t dx, wl_fixed_t dy, wl_fixed_t scale, wl_fixed_t rotation)
+      |                                                           ^~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:326:92: note: the last parameter in the range is 'rotation'
+  326 |                                 wl_fixed_t dx, wl_fixed_t dy, wl_fixed_t scale, wl_fixed_t rotation)
+      |                                                                                            ^~~~~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:337:109: error: 3 adjacent parameters of 'handle_pinch_end' of convertible types are easily swapped by mistake [bugprone-easily-swappable-parameters,-warnings-as-errors]
+  337 | static void handle_pinch_end(void *data, struct zwp_pointer_gesture_pinch_v1 *zwp_pointer_gesture_pinch_v1, uint32_t serial, uint32_t time, int32_t cancelled)
+      |                                                                                                             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:337:118: note: the first parameter in the range is 'serial'
+  337 | static void handle_pinch_end(void *data, struct zwp_pointer_gesture_pinch_v1 *zwp_pointer_gesture_pinch_v1, uint32_t serial, uint32_t time, int32_t cancelled)
+      |                                                                                                                      ^~~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:337:149: note: the last parameter in the range is 'cancelled'
+  337 | static void handle_pinch_end(void *data, struct zwp_pointer_gesture_pinch_v1 *zwp_pointer_gesture_pinch_v1, uint32_t serial, uint32_t time, int32_t cancelled)
+      |                                                                                                                                                     ^~~~~~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:337:109: note:
+  337 | static void handle_pinch_end(void *data, struct zwp_pointer_gesture_pinch_v1 *zwp_pointer_gesture_pinch_v1, uint32_t serial, uint32_t time, int32_t cancelled)
+      |                                                                                                             ^
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:337:141: note: 'uint32_t' and 'int32_t' may be implicitly converted: 'uint32_t' (as 'unsigned int') -> 'int32_t' (as 'int'), 'int32_t' (as 'int') -> 'uint32_t' (as 'unsigned int')
+  337 | static void handle_pinch_end(void *data, struct zwp_pointer_gesture_pinch_v1 *zwp_pointer_gesture_pinch_v1, uint32_t serial, uint32_t time, int32_t cancelled)
+      |                                                                                                                                             ^
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:418:119: error: narrowing conversion from 'Uint32' (aka 'unsigned int') to signed type 'int' is implementation-defined [bugprone-narrowing-conversions,-warnings-as-errors]
+  418 |             SDL_SendKeyboardKeyIgnoreModifiers(Wayland_AdjustEventTimestampBase(timestamp), repeat_info->keyboard_id, repeat_info->key, repeat_info->scancode, true);
+      |                                                                                                                       ^
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:437:73: error: 5 adjacent parameters of 'keyboard_repeat_set' of convertible types are easily swapped by mistake [bugprone-easily-swappable-parameters,-warnings-as-errors]
+  437 | static void keyboard_repeat_set(SDL_WaylandKeyboardRepeat *repeat_info, Uint32 keyboard_id, uint32_t key, Uint32 wl_press_time_ms,
+      |                                                                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  438 |                                 Uint64 base_time_ns, uint32_t scancode, bool has_text, char text[8])
+      |                                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:437:80: note: the first parameter in the range is 'keyboard_id'
+  437 | static void keyboard_repeat_set(SDL_WaylandKeyboardRepeat *repeat_info, Uint32 keyboard_id, uint32_t key, Uint32 wl_press_time_ms,
+      |                                                                                ^~~~~~~~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:438:63: note: the last parameter in the range is 'scancode'
+  438 |                                 Uint64 base_time_ns, uint32_t scancode, bool has_text, char text[8])
+      |                                                               ^~~~~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:437:73: note: after resolving type aliases, 'Uint32' and 'uint32_t' are the same
+  437 | static void keyboard_repeat_set(SDL_WaylandKeyboardRepeat *repeat_info, Uint32 keyboard_id, uint32_t key, Uint32 wl_press_time_ms,
+      |                                                                         ^
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:437:93: note: after resolving type aliases, the common type of 'uint32_t' and 'Uint32' is 'unsigned int'
+  437 | static void keyboard_repeat_set(SDL_WaylandKeyboardRepeat *repeat_info, Uint32 keyboard_id, uint32_t key, Uint32 wl_press_time_ms,
+      |                                                                                             ^
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:437:73: note:
+  437 | static void keyboard_repeat_set(SDL_WaylandKeyboardRepeat *repeat_info, Uint32 keyboard_id, uint32_t key, Uint32 wl_press_time_ms,
+      |                                                                         ^
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:438:33: note: 'Uint32' and 'Uint64' may be implicitly converted: 'Uint32' (as 'unsigned int') -> 'Uint64' (as 'unsigned long'), 'Uint64' (as 'unsigned long') -> 'Uint32' (as 'unsigned int')
+  438 |                                 Uint64 base_time_ns, uint32_t scancode, bool has_text, char text[8])
+      |                                 ^
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:437:93: note:
+  437 | static void keyboard_repeat_set(SDL_WaylandKeyboardRepeat *repeat_info, Uint32 keyboard_id, uint32_t key, Uint32 wl_press_time_ms,
+      |                                                                                             ^
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:438:33: note: 'uint32_t' and 'Uint64' may be implicitly converted: 'uint32_t' (as 'unsigned int') -> 'Uint64' (as 'unsigned long'), 'Uint64' (as 'unsigned long') -> 'uint32_t' (as 'unsigned int')
+  438 |                                 Uint64 base_time_ns, uint32_t scancode, bool has_text, char text[8])
+      |                                 ^
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:470:9: error: The first element of the 2nd argument is undefined [clang-analyzer-unix.cstring.UninitializedRead,-warnings-as-errors]
+  470 |         SDL_copyp(repeat_info->text, text);
+      |         ^
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/include/SDL3/SDL_stdinc.h:2542:5: note: expanded from macro 'SDL_copyp'
+ 2542 |     SDL_memcpy((dst), (src), sizeof(*(src)))
+      |     ^
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/include/SDL3/SDL_stdinc.h:2512:21: note: expanded from macro 'SDL_memcpy'
+ 2512 | #define SDL_memcpy  memcpy
+      |                     ^
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:470:9: note: Other elements might also be undefined
+  470 |         SDL_copyp(repeat_info->text, text);
+      |         ^
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/include/SDL3/SDL_stdinc.h:2542:5: note: expanded from macro 'SDL_copyp'
+ 2542 |     SDL_memcpy((dst), (src), sizeof(*(src)))
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/include/SDL3/SDL_stdinc.h:2512:21: note: expanded from macro 'SDL_memcpy'
+ 2512 | #define SDL_memcpy  memcpy
+      |                     ^
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:2297:5: note: Calling 'Wayland_ReconcileModifiers'
+ 2297 |     Wayland_ReconcileModifiers(seat, false);
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:1841:10: note: 'key_pressed' is false
+ 1841 |     if (!key_pressed) {
+      |          ^~~~~~~~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:1841:5: note: Taking true branch
+ 1841 |     if (!key_pressed) {
+      |     ^
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:1842:13: note: Assuming the condition is false
+ 1842 |         if (seat->keyboard.xkb.wl_pressed_modifiers & seat->keyboard.xkb.shift_mask) {
+      |             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:1842:9: note: Taking false branch
+ 1842 |         if (seat->keyboard.xkb.wl_pressed_modifiers & seat->keyboard.xkb.shift_mask) {
+      |         ^
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:1850:13: note: Assuming the condition is false
+ 1850 |         if (seat->keyboard.xkb.wl_pressed_modifiers & seat->keyboard.xkb.ctrl_mask) {
+      |             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:1850:9: note: Taking false branch
+ 1850 |         if (seat->keyboard.xkb.wl_pressed_modifiers & seat->keyboard.xkb.ctrl_mask) {
+      |         ^
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:1858:13: note: Assuming the condition is false
+ 1858 |         if (seat->keyboard.xkb.wl_pressed_modifiers & seat->keyboard.xkb.alt_mask) {
+      |             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:1858:9: note: Taking false branch
+ 1858 |         if (seat->keyboard.xkb.wl_pressed_modifiers & seat->keyboard.xkb.alt_mask) {
+      |         ^
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:1866:13: note: Assuming the condition is false
+ 1866 |         if (seat->keyboard.xkb.wl_pressed_modifiers & seat->keyboard.xkb.gui_mask) {
+      |             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:1866:9: note: Taking false branch
+ 1866 |         if (seat->keyboard.xkb.wl_pressed_modifiers & seat->keyboard.xkb.gui_mask) {
+      |         ^
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:1874:13: note: Assuming the condition is false
+ 1874 |         if (seat->keyboard.xkb.wl_pressed_modifiers & seat->keyboard.xkb.level3_mask) {
+      |             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:1874:9: note: Taking false branch
+ 1874 |         if (seat->keyboard.xkb.wl_pressed_modifiers & seat->keyboard.xkb.level3_mask) {
+      |         ^
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:1882:13: note: Assuming the condition is false
+ 1882 |         if (seat->keyboard.xkb.wl_pressed_modifiers & seat->keyboard.xkb.level5_mask) {
+      |             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:1882:9: note: Taking false branch
+ 1882 |         if (seat->keyboard.xkb.wl_pressed_modifiers & seat->keyboard.xkb.level5_mask) {
+      |         ^
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:1900:9: note: Assuming the condition is false
+ 1900 |     if (xkb_locked_modifiers & seat->keyboard.xkb.shift_mask) {
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:1900:5: note: Taking false branch
+ 1900 |     if (xkb_locked_modifiers & seat->keyboard.xkb.shift_mask) {
+      |     ^
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:1911:9: note: Assuming the condition is false
+ 1911 |     if (xkb_locked_modifiers & seat->keyboard.xkb.ctrl_mask) {
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:1911:5: note: Taking false branch
+ 1911 |     if (xkb_locked_modifiers & seat->keyboard.xkb.ctrl_mask) {
+      |     ^
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:1922:9: note: Assuming the condition is false
+ 1922 |     if (xkb_locked_modifiers & seat->keyboard.xkb.alt_mask) {
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:1922:5: note: Taking false branch
+ 1922 |     if (xkb_locked_modifiers & seat->keyboard.xkb.alt_mask) {
+      |     ^
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:1933:9: note: Assuming the condition is false
+ 1933 |     if (xkb_locked_modifiers & seat->keyboard.xkb.gui_mask) {
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:1933:5: note: Taking false branch
+ 1933 |     if (xkb_locked_modifiers & seat->keyboard.xkb.gui_mask) {
+      |     ^
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:1944:9: note: Assuming the condition is false
+ 1944 |     if (xkb_locked_modifiers & seat->keyboard.xkb.level3_mask) {
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:1944:5: note: Taking false branch
+ 1944 |     if (xkb_locked_modifiers & seat->keyboard.xkb.level3_mask) {
+      |     ^
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:1950:9: note: Assuming the condition is false
+ 1950 |     if (xkb_locked_modifiers & seat->keyboard.xkb.level5_mask) {
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:1950:5: note: Taking false branch
+ 1950 |     if (xkb_locked_modifiers & seat->keyboard.xkb.level5_mask) {
+      |     ^
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:1957:9: note: Assuming the condition is false
+ 1957 |     if (xkb_locked_modifiers & seat->keyboard.xkb.caps_mask) {
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:1957:5: note: Taking false branch
+ 1957 |     if (xkb_locked_modifiers & seat->keyboard.xkb.caps_mask) {
+      |     ^
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:1963:9: note: Assuming the condition is true
+ 1963 |     if (xkb_locked_modifiers & seat->keyboard.xkb.num_mask) {
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:1963:5: note: Taking true branch
+ 1963 |     if (xkb_locked_modifiers & seat->keyboard.xkb.num_mask) {
+      |     ^
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:1970:1: note: Returning without writing to 'seat->keyboard.xkb.state', which participates in a condition later
+ 1970 | }
+      | ^
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:1970:1: note: Returning without writing to 'seat->keyboard.repeat.is_initialized', which participates in a condition later
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:2297:5: note: Returning from 'Wayland_ReconcileModifiers'
+ 2297 |     Wayland_ReconcileModifiers(seat, false);
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:2300:9: note: Assuming field 'state' is non-null
+ 2300 |     if (!seat->keyboard.xkb.state) {
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:2300:5: note: Taking false branch
+ 2300 |     if (!seat->keyboard.xkb.state) {
+      |     ^
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:2309:9: note: Calling 'keyboard_repeat_is_set'
+ 2309 |     if (keyboard_repeat_is_set(&seat->keyboard.repeat)) {
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:476:12: note: Assuming field 'is_initialized' is true
+  476 |     return repeat_info->is_initialized && repeat_info->is_key_down;
+      |            ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:476:12: note: Left side of '&&' is true
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:476:5: note: Returning without writing to 'repeat_info->is_initialized', which participates in a condition later
+  476 |     return repeat_info->is_initialized && repeat_info->is_key_down;
+      |     ^
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:2309:9: note: Returning from 'keyboard_repeat_is_set'
+ 2309 |     if (keyboard_repeat_is_set(&seat->keyboard.repeat)) {
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:2309:9: note: Assuming the condition is true
+ 2309 |     if (keyboard_repeat_is_set(&seat->keyboard.repeat)) {
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:2309:5: note: Taking true branch
+ 2309 |     if (keyboard_repeat_is_set(&seat->keyboard.repeat)) {
+      |     ^
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:2310:9: note: 'text' declared without an initial value
+ 2310 |         char text[8];
+      |         ^~~~~~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:2311:30: note: Calling 'keyboard_repeat_get_key'
+ 2311 |         const uint32_t key = keyboard_repeat_get_key(&seat->keyboard.repeat);
+      |                              ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:460:22: note: Field 'is_initialized' is true
+  460 |     if (repeat_info->is_initialized && repeat_info->is_key_down) {
+      |                      ^
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:460:9: note: Left side of '&&' is true
+  460 |     if (repeat_info->is_initialized && repeat_info->is_key_down) {
+      |         ^
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:460:53: note: Field 'is_key_down' is true
+  460 |     if (repeat_info->is_initialized && repeat_info->is_key_down) {
+      |                                                     ^
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:460:5: note: Taking true branch
+  460 |     if (repeat_info->is_initialized && repeat_info->is_key_down) {
+      |     ^
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:461:9: note: Returning without writing to 'repeat_info->is_initialized', which participates in a condition later
+  461 |         return repeat_info->key;
+      |         ^
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:2311:30: note: Returning from 'keyboard_repeat_get_key'
+ 2311 |         const uint32_t key = keyboard_repeat_get_key(&seat->keyboard.repeat);
+      |                              ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:2313:13: note: Calling 'keyboard_input_get_text'
+ 2313 |         if (keyboard_input_get_text(text, seat, key, true, NULL)) {
+      |             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:2159:9: note: Assuming field 'focus' is non-null
+ 2159 |     if (!seat->keyboard.focus || !seat->keyboard.xkb.state) {
+      |         ^~~~~~~~~~~~~~~~~~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:2159:9: note: Left side of '||' is false
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:2159:54: note: Field 'state' is non-null
+ 2159 |     if (!seat->keyboard.focus || !seat->keyboard.xkb.state) {
+      |                                                      ^
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:2159:5: note: Taking false branch
+ 2159 |     if (!seat->keyboard.focus || !seat->keyboard.xkb.state) {
+      |     ^
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:2164:9: note: Assuming the condition is false
+ 2164 |     if (WAYLAND_xkb_state_key_get_syms(seat->keyboard.xkb.state, key + 8, &syms) != 1) {
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:2164:5: note: Taking false branch
+ 2164 |     if (WAYLAND_xkb_state_key_get_syms(seat->keyboard.xkb.state, key + 8, &syms) != 1) {
+      |     ^
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:2170:9: note: Assuming the condition is true
+ 2170 |     if (SDL_IME_ProcessKeyEvent(sym, key + 8, down)) {
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:2170:5: note: Taking true branch
+ 2170 |     if (SDL_IME_ProcessKeyEvent(sym, key + 8, down)) {
+      |     ^
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:2171:13: note: 'handled_by_ime' is null
+ 2171 |         if (handled_by_ime) {
+      |             ^~~~~~~~~~~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:2171:9: note: Taking false branch
+ 2171 |         if (handled_by_ime) {
+      |         ^
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:2174:9: note: Returning without writing to '*text'
+ 2174 |         return true;
+      |         ^
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:2313:13: note: Returning from 'keyboard_input_get_text'
+ 2313 |         if (keyboard_input_get_text(text, seat, key, true, NULL)) {
+      |             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:2313:9: note: Taking true branch
+ 2313 |         if (keyboard_input_get_text(text, seat, key, true, NULL)) {
+      |         ^
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:2314:62: note: Passing value via 2nd parameter 'text'
+ 2314 |             keyboard_repeat_set_text(&seat->keyboard.repeat, text);
+      |                                                              ^~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:2314:13: note: Calling 'keyboard_repeat_set_text'
+ 2314 |             keyboard_repeat_set_text(&seat->keyboard.repeat, text);
+      |             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:469:22: note: Field 'is_initialized' is true
+  469 |     if (repeat_info->is_initialized) {
+      |                      ^
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:469:5: note: Taking true branch
+  469 |     if (repeat_info->is_initialized) {
+      |     ^
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:470:9: note: The first element of the 2nd argument is undefined
+  470 |         SDL_copyp(repeat_info->text, text);
+      |         ^
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/include/SDL3/SDL_stdinc.h:2542:5: note: expanded from macro 'SDL_copyp'
+ 2542 |     SDL_memcpy((dst), (src), sizeof(*(src)))
+      |     ^                 ~~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/include/SDL3/SDL_stdinc.h:2512:21: note: expanded from macro 'SDL_memcpy'
+ 2512 | #define SDL_memcpy  memcpy
+      |                     ^
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:530:29: error: narrowing conversion from 'Uint64' (aka 'unsigned long') to signed type 'Sint64' (aka 'long') is implementation-defined [bugprone-narrowing-conversions,-warnings-as-errors]
+  530 |                 timeoutNS = next_repeat_wait_time;
+      |                             ^
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:541:58: error: narrowing conversion from 'Uint64' (aka 'unsigned long') to signed type 'Sint64' (aka 'long') is implementation-defined [bugprone-narrowing-conversions,-warnings-as-errors]
+  541 |             timeoutNS = elapsed <= timeoutNS ? timeoutNS - elapsed : 0;
+      |                                                          ^
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:548:43: error: use of a signed integer operand with a binary bitwise operator [bugprone-signed-bitwise,-warnings-as-errors]
+  548 |             ret = SDL_IOReady(display_fd, SDL_IOR_WRITE | SDL_IOR_NO_RETRY, timeoutNS);
+      |                                           ^             ~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/../../core/unix/SDL_poll.h:28:26: note: expanded from macro 'SDL_IOR_WRITE'
+   28 | #define SDL_IOR_WRITE    0x2
+      |                          ^~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:565:13: error: Value stored to 'start' is never read [clang-analyzer-deadcode.DeadStores,-warnings-as-errors]
+  565 |             start = now;
+      |             ^       ~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:565:13: note: Value stored to 'start' is never read
+  565 |             start = now;
+      |             ^       ~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:566:58: error: narrowing conversion from 'Uint64' (aka 'unsigned long') to signed type 'Sint64' (aka 'long') is implementation-defined [bugprone-narrowing-conversions,-warnings-as-errors]
+  566 |             timeoutNS = elapsed <= timeoutNS ? timeoutNS - elapsed : 0;
+      |                                                          ^
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:570:39: error: use of a signed integer operand with a binary bitwise operator [bugprone-signed-bitwise,-warnings-as-errors]
+  570 |         ret = SDL_IOReady(display_fd, SDL_IOR_READ | SDL_IOR_NO_RETRY, timeoutNS);
+      |                                       ^            ~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/../../core/unix/SDL_poll.h:27:26: note: expanded from macro 'SDL_IOR_READ'
+   27 | #define SDL_IOR_READ     0x1
+      |                          ^~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:703:58: error: use of a signed integer operand with a binary bitwise operator [bugprone-signed-bitwise,-warnings-as-errors]
+  703 |                 if ((window_data->toplevel_constraints & WAYLAND_TOPLEVEL_CONSTRAINED_TOP) &&
+      |                                                        ~ ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:704:58: error: use of a signed integer operand with a binary bitwise operator [bugprone-signed-bitwise,-warnings-as-errors]
+  704 |                     (window_data->toplevel_constraints & WAYLAND_TOPLEVEL_CONSTRAINED_LEFT)) {
+      |                                                        ~ ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:706:64: error: use of a signed integer operand with a binary bitwise operator [bugprone-signed-bitwise,-warnings-as-errors]
+  706 |                 } else if (window_data->toplevel_constraints & WAYLAND_TOPLEVEL_CONSTRAINED_TOP) {
+      |                                                              ~ ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:708:64: error: use of a signed integer operand with a binary bitwise operator [bugprone-signed-bitwise,-warnings-as-errors]
+  708 |                 } else if (window_data->toplevel_constraints & WAYLAND_TOPLEVEL_CONSTRAINED_LEFT) {
+      |                                                              ~ ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:713:57: error: use of a signed integer operand with a binary bitwise operator [bugprone-signed-bitwise,-warnings-as-errors]
+  713 |                 if (window_data->toplevel_constraints & WAYLAND_TOPLEVEL_CONSTRAINED_TOP) {
+      |                                                       ~ ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:718:58: error: use of a signed integer operand with a binary bitwise operator [bugprone-signed-bitwise,-warnings-as-errors]
+  718 |                 if ((window_data->toplevel_constraints & WAYLAND_TOPLEVEL_CONSTRAINED_TOP) &&
+      |                                                        ~ ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:719:58: error: use of a signed integer operand with a binary bitwise operator [bugprone-signed-bitwise,-warnings-as-errors]
+  719 |                     (window_data->toplevel_constraints & WAYLAND_TOPLEVEL_CONSTRAINED_RIGHT)) {
+      |                                                        ~ ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:721:64: error: use of a signed integer operand with a binary bitwise operator [bugprone-signed-bitwise,-warnings-as-errors]
+  721 |                 } else if (window_data->toplevel_constraints & WAYLAND_TOPLEVEL_CONSTRAINED_TOP) {
+      |                                                              ~ ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:723:64: error: use of a signed integer operand with a binary bitwise operator [bugprone-signed-bitwise,-warnings-as-errors]
+  723 |                 } else if (window_data->toplevel_constraints & WAYLAND_TOPLEVEL_CONSTRAINED_RIGHT) {
+      |                                                              ~ ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:728:57: error: use of a signed integer operand with a binary bitwise operator [bugprone-signed-bitwise,-warnings-as-errors]
+  728 |                 if (window_data->toplevel_constraints & WAYLAND_TOPLEVEL_CONSTRAINED_RIGHT) {
+      |                                                       ~ ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:733:58: error: use of a signed integer operand with a binary bitwise operator [bugprone-signed-bitwise,-warnings-as-errors]
+  733 |                 if ((window_data->toplevel_constraints & WAYLAND_TOPLEVEL_CONSTRAINED_BOTTOM) &&
+      |                                                        ~ ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:734:58: error: use of a signed integer operand with a binary bitwise operator [bugprone-signed-bitwise,-warnings-as-errors]
+  734 |                     (window_data->toplevel_constraints & WAYLAND_TOPLEVEL_CONSTRAINED_RIGHT)) {
+      |                                                        ~ ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:736:64: error: use of a signed integer operand with a binary bitwise operator [bugprone-signed-bitwise,-warnings-as-errors]
+  736 |                 } else if (window_data->toplevel_constraints & WAYLAND_TOPLEVEL_CONSTRAINED_BOTTOM) {
+      |                                                              ~ ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:738:64: error: use of a signed integer operand with a binary bitwise operator [bugprone-signed-bitwise,-warnings-as-errors]
+  738 |                 } else if (window_data->toplevel_constraints & WAYLAND_TOPLEVEL_CONSTRAINED_RIGHT) {
+      |                                                              ~ ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:743:57: error: use of a signed integer operand with a binary bitwise operator [bugprone-signed-bitwise,-warnings-as-errors]
+  743 |                 if (window_data->toplevel_constraints & WAYLAND_TOPLEVEL_CONSTRAINED_BOTTOM) {
+      |                                                       ~ ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:748:58: error: use of a signed integer operand with a binary bitwise operator [bugprone-signed-bitwise,-warnings-as-errors]
+  748 |                 if ((window_data->toplevel_constraints & WAYLAND_TOPLEVEL_CONSTRAINED_BOTTOM) &&
+      |                                                        ~ ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:749:58: error: use of a signed integer operand with a binary bitwise operator [bugprone-signed-bitwise,-warnings-as-errors]
+  749 |                     (window_data->toplevel_constraints & WAYLAND_TOPLEVEL_CONSTRAINED_LEFT)) {
+      |                                                        ~ ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:751:64: error: use of a signed integer operand with a binary bitwise operator [bugprone-signed-bitwise,-warnings-as-errors]
+  751 |                 } else if (window_data->toplevel_constraints & WAYLAND_TOPLEVEL_CONSTRAINED_BOTTOM) {
+      |                                                              ~ ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:753:64: error: use of a signed integer operand with a binary bitwise operator [bugprone-signed-bitwise,-warnings-as-errors]
+  753 |                 } else if (window_data->toplevel_constraints & WAYLAND_TOPLEVEL_CONSTRAINED_LEFT) {
+      |                                                              ~ ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:758:57: error: use of a signed integer operand with a binary bitwise operator [bugprone-signed-bitwise,-warnings-as-errors]
+  758 |                 if (window_data->toplevel_constraints & WAYLAND_TOPLEVEL_CONSTRAINED_LEFT) {
+      |                                                       ~ ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:775:35: error: 2 adjacent parameters of 'pointer_handle_motion' of convertible types are easily swapped by mistake [bugprone-easily-swappable-parameters,-warnings-as-errors]
+  775 |                                   uint32_t time, wl_fixed_t sx, wl_fixed_t sy)
+      |                                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:775:44: note: the first parameter in the range is 'time'
+  775 |                                   uint32_t time, wl_fixed_t sx, wl_fixed_t sy)
+      |                                            ^~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:775:61: note: the last parameter in the range is 'sx'
+  775 |                                   uint32_t time, wl_fixed_t sx, wl_fixed_t sy)
+      |                                                             ^~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:775:35: note:
+  775 |                                   uint32_t time, wl_fixed_t sx, wl_fixed_t sy)
+      |                                   ^
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:775:50: note: 'uint32_t' and 'wl_fixed_t' may be implicitly converted: 'uint32_t' (as 'unsigned int') -> 'wl_fixed_t' (as 'int'), 'wl_fixed_t' (as 'int') -> 'uint32_t' (as 'unsigned int')
+  775 |                                   uint32_t time, wl_fixed_t sx, wl_fixed_t sy)
+      |                                                  ^
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:799:34: error: 2 adjacent parameters of 'pointer_handle_enter' of similar type ('wl_fixed_t') are easily swapped by mistake [bugprone-easily-swappable-parameters,-warnings-as-errors]
+  799 |                                  wl_fixed_t sx_w, wl_fixed_t sy_w)
+      |                                  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:799:45: note: the first parameter in the range is 'sx_w'
+  799 |                                  wl_fixed_t sx_w, wl_fixed_t sy_w)
+      |                                             ^~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:799:62: note: the last parameter in the range is 'sy_w'
+  799 |                                  wl_fixed_t sx_w, wl_fixed_t sy_w)
+      |                                                              ^~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:976:65: error: 4 adjacent parameters of 'pointer_handle_button_common' of convertible types are easily swapped by mistake [bugprone-easily-swappable-parameters,-warnings-as-errors]
+  976 | static void pointer_handle_button_common(SDL_WaylandSeat *seat, uint32_t serial,
+      |                                                                 ^~~~~~~~~~~~~~~~
+  977 |                                          Uint64 nsTimestamp, uint32_t button, uint32_t state_w)
+      |                                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:976:74: note: the first parameter in the range is 'serial'
+  976 | static void pointer_handle_button_common(SDL_WaylandSeat *seat, uint32_t serial,
+      |                                                                          ^~~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:977:88: note: the last parameter in the range is 'state_w'
+  977 |                                          Uint64 nsTimestamp, uint32_t button, uint32_t state_w)
+      |                                                                                        ^~~~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:976:65: note:
+  976 | static void pointer_handle_button_common(SDL_WaylandSeat *seat, uint32_t serial,
+      |                                                                 ^
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:977:42: note: 'uint32_t' and 'Uint64' may be implicitly converted: 'uint32_t' (as 'unsigned int') -> 'Uint64' (as 'unsigned long'), 'Uint64' (as 'unsigned long') -> 'uint32_t' (as 'unsigned int')
+  977 |                                          Uint64 nsTimestamp, uint32_t button, uint32_t state_w)
+      |                                          ^
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:1052:43: error: 3 adjacent parameters of 'pointer_handle_axis_common_v1' of convertible types are easily swapped by mistake [bugprone-easily-swappable-parameters,-warnings-as-errors]
+ 1052 |                                           Uint64 nsTimestamp, uint32_t axis, wl_fixed_t value)
+      |                                           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:1052:50: note: the first parameter in the range is 'nsTimestamp'
+ 1052 |                                           Uint64 nsTimestamp, uint32_t axis, wl_fixed_t value)
+      |                                                  ^~~~~~~~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:1052:89: note: the last parameter in the range is 'value'
+ 1052 |                                           Uint64 nsTimestamp, uint32_t axis, wl_fixed_t value)
+      |                                                                                         ^~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:1052:43: note:
+ 1052 |                                           Uint64 nsTimestamp, uint32_t axis, wl_fixed_t value)
+      |                                           ^
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:1052:63: note: 'Uint64' and 'uint32_t' may be implicitly converted: 'Uint64' (as 'unsigned long') -> 'uint32_t' (as 'unsigned int'), 'uint32_t' (as 'unsigned int') -> 'Uint64' (as 'unsigned long')
+ 1052 |                                           Uint64 nsTimestamp, uint32_t axis, wl_fixed_t value)
+      |                                                               ^
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:1052:43: note:
+ 1052 |                                           Uint64 nsTimestamp, uint32_t axis, wl_fixed_t value)
+      |                                           ^
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:1052:78: note: 'Uint64' and 'wl_fixed_t' may be implicitly converted: 'Uint64' (as 'unsigned long') -> 'wl_fixed_t' (as 'int'), 'wl_fixed_t' (as 'int') -> 'Uint64' (as 'unsigned long')
+ 1052 |                                           Uint64 nsTimestamp, uint32_t axis, wl_fixed_t value)
+      |                                                                              ^
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:1052:63: note:
+ 1052 |                                           Uint64 nsTimestamp, uint32_t axis, wl_fixed_t value)
+      |                                                               ^
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:1052:78: note: 'uint32_t' and 'wl_fixed_t' may be implicitly converted: 'uint32_t' (as 'unsigned int') -> 'wl_fixed_t' (as 'int'), 'wl_fixed_t' (as 'int') -> 'uint32_t' (as 'unsigned int')
+ 1052 |                                           Uint64 nsTimestamp, uint32_t axis, wl_fixed_t value)
+      |                                                                              ^
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:1080:63: error: 3 adjacent parameters of 'pointer_handle_axis_common' of convertible types are easily swapped by mistake [bugprone-easily-swappable-parameters,-warnings-as-errors]
+ 1080 | static void pointer_handle_axis_common(SDL_WaylandSeat *seat, enum SDL_WaylandAxisEvent type,
+      |                                                               ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 1081 |                                        uint32_t axis, wl_fixed_t value)
+      |                                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:1080:89: note: the first parameter in the range is 'type'
+ 1080 | static void pointer_handle_axis_common(SDL_WaylandSeat *seat, enum SDL_WaylandAxisEvent type,
+      |                                                                                         ^~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:1081:66: note: the last parameter in the range is 'value'
+ 1081 |                                        uint32_t axis, wl_fixed_t value)
+      |                                                                  ^~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:1080:63: note:
+ 1080 | static void pointer_handle_axis_common(SDL_WaylandSeat *seat, enum SDL_WaylandAxisEvent type,
+      |                                                               ^
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:1081:40: note: 'enum SDL_WaylandAxisEvent' and 'uint32_t' may be implicitly converted: 'enum SDL_WaylandAxisEvent' -> 'uint32_t' (as 'unsigned int'), 'uint32_t' (as 'unsigned int') -> 'enum SDL_WaylandAxisEvent'
+ 1081 |                                        uint32_t axis, wl_fixed_t value)
+      |                                        ^
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:1080:63: note:
+ 1080 | static void pointer_handle_axis_common(SDL_WaylandSeat *seat, enum SDL_WaylandAxisEvent type,
+      |                                                               ^
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:1081:55: note: 'enum SDL_WaylandAxisEvent' and 'wl_fixed_t' may be implicitly converted: 'enum SDL_WaylandAxisEvent' -> 'wl_fixed_t' (as 'int'), 'wl_fixed_t' (as 'int') -> 'enum SDL_WaylandAxisEvent'
+ 1081 |                                        uint32_t axis, wl_fixed_t value)
+      |                                                       ^
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:1081:40: note:
+ 1081 |                                        uint32_t axis, wl_fixed_t value)
+      |                                        ^
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:1081:55: note: 'uint32_t' and 'wl_fixed_t' may be implicitly converted: 'uint32_t' (as 'unsigned int') -> 'wl_fixed_t' (as 'int'), 'wl_fixed_t' (as 'int') -> 'uint32_t' (as 'unsigned int')
+ 1081 |                                        uint32_t axis, wl_fixed_t value)
+      |                                                       ^
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:1156:33: error: 2 adjacent parameters of 'pointer_handle_axis' of similar type ('uint32_t') are easily swapped by mistake [bugprone-easily-swappable-parameters,-warnings-as-errors]
+ 1156 |                                 uint32_t time, uint32_t axis, wl_fixed_t value)
+      |                                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:1156:42: note: the first parameter in the range is 'time'
+ 1156 |                                 uint32_t time, uint32_t axis, wl_fixed_t value)
+      |                                          ^~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:1156:57: note: the last parameter in the range is 'axis'
+ 1156 |                                 uint32_t time, uint32_t axis, wl_fixed_t value)
+      |                                                         ^~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:1170:52: error: 2 adjacent parameters of 'pointer_handle_axis_relative_direction' of similar type ('uint32_t') are easily swapped by mistake [bugprone-easily-swappable-parameters,-warnings-as-errors]
+ 1170 |                                                    uint32_t axis, uint32_t axis_relative_direction)
+      |                                                    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:1170:61: note: the first parameter in the range is 'axis'
+ 1170 |                                                    uint32_t axis, uint32_t axis_relative_direction)
+      |                                                             ^~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:1170:76: note: the last parameter in the range is 'axis_relative_direction'
+ 1170 |                                                    uint32_t axis, uint32_t axis_relative_direction)
+      |                                                                            ^~~~~~~~~~~~~~~~~~~~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:1174:5: error: potential uncovered code path; add a default label [bugprone-unhandled-code-paths,-warnings-as-errors]
+ 1174 |     switch (axis_relative_direction) {
+      |     ^
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:1174:5: error: switching on non-enum value without default case may not cover all cases [bugprone-switch-missing-default-case,-warnings-as-errors]
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:1284:38: error: 2 adjacent parameters of 'pointer_handle_axis_stop' of similar type ('uint32_t') are easily swapped by mistake [bugprone-easily-swappable-parameters,-warnings-as-errors]
+ 1284 |                                      uint32_t time, uint32_t axis)
+      |                                      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:1284:47: note: the first parameter in the range is 'time'
+ 1284 |                                      uint32_t time, uint32_t axis)
+      |                                               ^~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:1284:62: note: the last parameter in the range is 'axis'
+ 1284 |                                      uint32_t time, uint32_t axis)
+      |                                                              ^~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:1322:53: error: 2 adjacent parameters of 'relative_pointer_handle_relative_motion' of convertible types are easily swapped by mistake [bugprone-easily-swappable-parameters,-warnings-as-errors]
+ 1322 |                                                     uint32_t time_lo,
+      |                                                     ^~~~~~~~~~~~~~~~~
+ 1323 |                                                     wl_fixed_t dx,
+      |                                                     ~~~~~~~~~~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:1322:62: note: the first parameter in the range is 'time_lo'
+ 1322 |                                                     uint32_t time_lo,
+      |                                                              ^~~~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:1323:64: note: the last parameter in the range is 'dx'
+ 1323 |                                                     wl_fixed_t dx,
+      |                                                                ^~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:1322:53: note:
+ 1322 |                                                     uint32_t time_lo,
+      |                                                     ^
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:1323:53: note: 'uint32_t' and 'wl_fixed_t' may be implicitly converted: 'uint32_t' (as 'unsigned int') -> 'wl_fixed_t' (as 'int'), 'wl_fixed_t' (as 'int') -> 'uint32_t' (as 'unsigned int')
+ 1323 |                                                     wl_fixed_t dx,
+      |                                                     ^
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:1324:53: error: 3 adjacent parameters of 'relative_pointer_handle_relative_motion' of similar type ('wl_fixed_t') are easily swapped by mistake [bugprone-easily-swappable-parameters,-warnings-as-errors]
+ 1324 |                                                     wl_fixed_t dy,
+      |                                                     ^~~~~~~~~~~~~~
+ 1325 |                                                     wl_fixed_t dx_unaccel,
+      |                                                     ~~~~~~~~~~~~~~~~~~~~~~
+ 1326 |                                                     wl_fixed_t dy_unaccel)
+      |                                                     ~~~~~~~~~~~~~~~~~~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:1324:64: note: the first parameter in the range is 'dy'
+ 1324 |                                                     wl_fixed_t dy,
+      |                                                                ^~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:1326:64: note: the last parameter in the range is 'dy_unaccel'
+ 1326 |                                                     wl_fixed_t dy_unaccel)
+      |                                                                ^~~~~~~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:1336:114: error: use of a signed integer operand with a binary bitwise operator [bugprone-signed-bitwise,-warnings-as-errors]
+ 1336 |     seat->pointer.pending_frame.timestamp_ns = Wayland_AdjustEventTimestampBase(SDL_US_TO_NS(((Uint64)time_hi << 32) | (Uint64)time_lo));
+      |                                                                                                                  ^
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:1381:68: error: 2 adjacent parameters of 'touch_handler_down' of similar type ('uint32_t') are easily swapped by mistake [bugprone-easily-swappable-parameters,-warnings-as-errors]
+ 1381 | static void touch_handler_down(void *data, struct wl_touch *touch, uint32_t serial,
+      |                                                                    ^~~~~~~~~~~~~~~~
+ 1382 |                                uint32_t timestamp, struct wl_surface *surface,
+      |                                ~~~~~~~~~~~~~~~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:1381:77: note: the first parameter in the range is 'serial'
+ 1381 | static void touch_handler_down(void *data, struct wl_touch *touch, uint32_t serial,
+      |                                                                             ^~~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:1382:41: note: the last parameter in the range is 'timestamp'
+ 1382 |                                uint32_t timestamp, struct wl_surface *surface,
+      |                                         ^~~~~~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:1403:49: error: narrowing conversion from 'int' to 'float' [bugprone-narrowing-conversions,-warnings-as-errors]
+ 1403 |             x = (float)wl_fixed_to_double(fx) / (window_data->current.logical_width - 1);
+      |                                                 ^
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:1408:49: error: narrowing conversion from 'int' to 'float' [bugprone-narrowing-conversions,-warnings-as-errors]
+ 1408 |             y = (float)wl_fixed_to_double(fy) / (window_data->current.logical_height - 1);
+      |                                                 ^
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:1415:23: error: either cast from 'int' to 'SDL_FingerID' (aka 'unsigned long') is ineffective, or there is loss of precision before the conversion [bugprone-misplaced-widening-cast,-warnings-as-errors]
+ 1415 |                       (SDL_FingerID)(id + 1), window_data->sdlwindow, SDL_EVENT_FINGER_DOWN, x, y, 1.0f);
+      |                       ^
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:1419:66: error: 2 adjacent parameters of 'touch_handler_up' of similar type ('uint32_t') are easily swapped by mistake [bugprone-easily-swappable-parameters,-warnings-as-errors]
+ 1419 | static void touch_handler_up(void *data, struct wl_touch *touch, uint32_t serial,
+      |                                                                  ^~~~~~~~~~~~~~~~
+ 1420 |                              uint32_t timestamp, int id)
+      |                              ~~~~~~~~~~~~~~~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:1419:75: note: the first parameter in the range is 'serial'
+ 1419 | static void touch_handler_up(void *data, struct wl_touch *touch, uint32_t serial,
+      |                                                                           ^~~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:1420:39: note: the last parameter in the range is 'timestamp'
+ 1420 |                              uint32_t timestamp, int id)
+      |                                       ^~~~~~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:1432:61: error: narrowing conversion from 'int' to 'float' [bugprone-narrowing-conversions,-warnings-as-errors]
+ 1432 |             const float x = (float)wl_fixed_to_double(fx) / window_data->current.logical_width;
+      |                                                             ^
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:1433:61: error: narrowing conversion from 'int' to 'float' [bugprone-narrowing-conversions,-warnings-as-errors]
+ 1433 |             const float y = (float)wl_fixed_to_double(fy) / window_data->current.logical_height;
+      |                                                             ^
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:1436:27: error: either cast from 'int' to 'SDL_FingerID' (aka 'unsigned long') is ineffective, or there is loss of precision before the conversion [bugprone-misplaced-widening-cast,-warnings-as-errors]
+ 1436 |                           (SDL_FingerID)(id + 1), window_data->sdlwindow, SDL_EVENT_FINGER_UP, x, y, 0.0f);
+      |                           ^
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:1463:61: error: narrowing conversion from 'int' to 'float' [bugprone-narrowing-conversions,-warnings-as-errors]
+ 1463 |             const float x = (float)wl_fixed_to_double(fx) / window_data->current.logical_width;
+      |                                                             ^
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:1464:61: error: narrowing conversion from 'int' to 'float' [bugprone-narrowing-conversions,-warnings-as-errors]
+ 1464 |             const float y = (float)wl_fixed_to_double(fy) / window_data->current.logical_height;
+      |                                                             ^
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:1467:33: error: either cast from 'int' to 'SDL_FingerID' (aka 'unsigned long') is ineffective, or there is loss of precision before the conversion [bugprone-misplaced-widening-cast,-warnings-as-errors]
+ 1467 |                                 (SDL_FingerID)(id + 1), window_data->sdlwindow, x, y, 1.0f);
+      |                                 ^
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:1487:72: error: 3 adjacent parameters of 'touch_handler_shape' of similar type are easily swapped by mistake [bugprone-easily-swappable-parameters,-warnings-as-errors]
+ 1487 | static void touch_handler_shape(void *data, struct wl_touch *wl_touch, int32_t id, wl_fixed_t major, wl_fixed_t minor)
+      |                                                                        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:1487:80: note: the first parameter in the range is 'id'
+ 1487 | static void touch_handler_shape(void *data, struct wl_touch *wl_touch, int32_t id, wl_fixed_t major, wl_fixed_t minor)
+      |                                                                                ^~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:1487:113: note: the last parameter in the range is 'minor'
+ 1487 | static void touch_handler_shape(void *data, struct wl_touch *wl_touch, int32_t id, wl_fixed_t major, wl_fixed_t minor)
+      |                                                                                                                 ^~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:1487:72: note: after resolving type aliases, the common type of 'int32_t' and 'wl_fixed_t' is 'int'
+ 1487 | static void touch_handler_shape(void *data, struct wl_touch *wl_touch, int32_t id, wl_fixed_t major, wl_fixed_t minor)
+      |                                                                        ^
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:1491:78: error: 2 adjacent parameters of 'touch_handler_orientation' of similar type are easily swapped by mistake [bugprone-easily-swappable-parameters,-warnings-as-errors]
+ 1491 | static void touch_handler_orientation(void *data, struct wl_touch *wl_touch, int32_t id, wl_fixed_t orientation)
+      |                                                                              ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:1491:86: note: the first parameter in the range is 'id'
+ 1491 | static void touch_handler_orientation(void *data, struct wl_touch *wl_touch, int32_t id, wl_fixed_t orientation)
+      |                                                                                      ^~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:1491:101: note: the last parameter in the range is 'orientation'
+ 1491 | static void touch_handler_orientation(void *data, struct wl_touch *wl_touch, int32_t id, wl_fixed_t orientation)
+      |                                                                                                     ^~~~~~~~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:1491:78: note: after resolving type aliases, the common type of 'int32_t' and 'wl_fixed_t' is 'int'
+ 1491 | static void touch_handler_orientation(void *data, struct wl_touch *wl_touch, int32_t id, wl_fixed_t orientation)
+      |                                                                              ^
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:1567:75: error: narrowing conversion from 'xkb_keycode_t' (aka 'unsigned int') to signed type 'int' is implementation-defined [bugprone-narrowing-conversions,-warnings-as-errors]
+ 1567 |         scancode = SDL_GetScancodeFromTable(SDL_SCANCODE_TABLE_XFREE86_2, (key - 8));
+      |                                                                           ^
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:1636:36: error: 2 adjacent parameters of 'keyboard_handle_keymap' of convertible types are easily swapped by mistake [bugprone-easily-swappable-parameters,-warnings-as-errors]
+ 1636 |                                    uint32_t format, int fd, uint32_t size)
+      |                                    ^~~~~~~~~~~~~~~~~~~~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:1636:45: note: the first parameter in the range is 'format'
+ 1636 |                                    uint32_t format, int fd, uint32_t size)
+      |                                             ^~~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:1636:57: note: the last parameter in the range is 'fd'
+ 1636 |                                    uint32_t format, int fd, uint32_t size)
+      |                                                         ^~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:1636:36: note:
+ 1636 |                                    uint32_t format, int fd, uint32_t size)
+      |                                    ^
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:1636:53: note: 'uint32_t' and 'int' may be implicitly converted: 'uint32_t' (as 'unsigned int') -> 'int', 'int' -> 'uint32_t' (as 'unsigned int')
+ 1636 |                                    uint32_t format, int fd, uint32_t size)
+      |                                                     ^
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:1680:14: error: multilevel pointer conversion from 'SDL_Keymap **' (aka 'struct SDL_Keymap **') to 'void *', please use explicit cast [bugprone-multi-level-implicit-pointer-conversion,-warnings-as-errors]
+ 1680 |     SDL_free(seat->keyboard.sdl_keymap);
+      |              ^
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:1696:37: error: use of a signed integer operand with a binary bitwise operator [bugprone-signed-bitwise,-warnings-as-errors]
+ 1696 |     seat->keyboard.xkb.shift_mask = 1 << GET_MOD_INDEX(SHIFT);
+      |                                     ^ ~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:1697:36: error: use of a signed integer operand with a binary bitwise operator [bugprone-signed-bitwise,-warnings-as-errors]
+ 1697 |     seat->keyboard.xkb.ctrl_mask = 1 << GET_MOD_INDEX(CTRL);
+      |                                    ^ ~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:1698:35: error: use of a signed integer operand with a binary bitwise operator [bugprone-signed-bitwise,-warnings-as-errors]
+ 1698 |     seat->keyboard.xkb.alt_mask = 1 << GET_MOD_INDEX(ALT);
+      |                                   ^ ~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:1699:35: error: use of a signed integer operand with a binary bitwise operator [bugprone-signed-bitwise,-warnings-as-errors]
+ 1699 |     seat->keyboard.xkb.gui_mask = 1 << GET_MOD_INDEX(LOGO);
+      |                                   ^ ~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:1701:38: error: use of a signed integer operand with a binary bitwise operator [bugprone-signed-bitwise,-warnings-as-errors]
+ 1701 |     seat->keyboard.xkb.level3_mask = 1 << GET_MOD_INDEX(MOD5);
+      |                                      ^ ~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:1702:38: error: use of a signed integer operand with a binary bitwise operator [bugprone-signed-bitwise,-warnings-as-errors]
+ 1702 |     seat->keyboard.xkb.level5_mask = 1 << GET_MOD_INDEX(MOD3);
+      |                                      ^ ~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:1703:35: error: use of a signed integer operand with a binary bitwise operator [bugprone-signed-bitwise,-warnings-as-errors]
+ 1703 |     seat->keyboard.xkb.num_mask = 1 << GET_MOD_INDEX(NUM);
+      |                                   ^ ~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:1704:36: error: use of a signed integer operand with a binary bitwise operator [bugprone-signed-bitwise,-warnings-as-errors]
+ 1704 |     seat->keyboard.xkb.caps_mask = 1 << GET_MOD_INDEX(CAPS);
+      |                                    ^ ~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:1743:26: error: multilevel pointer conversion from 'SDL_Keymap **' (aka 'struct SDL_Keymap **') to 'void *', please use explicit cast [bugprone-multi-level-implicit-pointer-conversion,-warnings-as-errors]
+ 1743 |                 SDL_free(seat->keyboard.sdl_keymap);
+      |                          ^
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:1819:75: error: narrowing conversion from 'uint32_t' (aka 'unsigned int') to signed type 'int' is implementation-defined [bugprone-narrowing-conversions,-warnings-as-errors]
+ 1819 |         scancode = SDL_GetScancodeFromTable(SDL_SCANCODE_TABLE_XFREE86_2, key);
+      |                                                                           ^
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:2021:45: error: use of a signed integer operand with a binary bitwise operator [bugprone-signed-bitwise,-warnings-as-errors]
+ 2021 |         seat->keyboard.pressed_modifiers &= ~mod;
+      |                                          ~~ ^~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:2086:86: error: narrowing conversion from 'uint32_t' (aka 'unsigned int') to signed type 'int' is implementation-defined [bugprone-narrowing-conversions,-warnings-as-errors]
+ 2086 |                 SDL_SendKeyboardKeyIgnoreModifiers(timestamp, seat->keyboard.sdl_id, *key, scancode, true);
+      |                                                                                      ^
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:2205:33: error: 2 adjacent parameters of 'keyboard_handle_key' of similar type ('uint32_t') are easily swapped by mistake [bugprone-easily-swappable-parameters,-warnings-as-errors]
+ 2205 |                                 uint32_t serial, uint32_t time, uint32_t key,
+      |                                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:2205:42: note: the first parameter in the range is 'serial'
+ 2205 |                                 uint32_t serial, uint32_t time, uint32_t key,
+      |                                          ^~~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:2205:59: note: the last parameter in the range is 'time'
+ 2205 |                                 uint32_t serial, uint32_t time, uint32_t key,
+      |                                                           ^~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:2205:65: error: 2 adjacent parameters of 'keyboard_handle_key' of similar type ('uint32_t') are easily swapped by mistake [bugprone-easily-swappable-parameters,-warnings-as-errors]
+ 2205 |                                 uint32_t serial, uint32_t time, uint32_t key,
+      |                                                                 ^~~~~~~~~~~~~
+ 2206 |                                 uint32_t state_w)
+      |                                 ~~~~~~~~~~~~~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:2205:74: note: the first parameter in the range is 'key'
+ 2205 |                                 uint32_t serial, uint32_t time, uint32_t key,
+      |                                                                          ^~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:2206:42: note: the last parameter in the range is 'state_w'
+ 2206 |                                 uint32_t state_w)
+      |                                          ^~~~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:2269:77: error: narrowing conversion from 'uint32_t' (aka 'unsigned int') to signed type 'int' is implementation-defined [bugprone-narrowing-conversions,-warnings-as-errors]
+ 2269 |     SDL_SendKeyboardKeyIgnoreModifiers(timestamp_ns, seat->keyboard.sdl_id, key, scancode, state == WL_KEYBOARD_KEY_STATE_PRESSED);
+      |                                                                             ^
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:2285:39: error: 2 adjacent parameters of 'keyboard_handle_modifiers' of similar type ('uint32_t') are easily swapped by mistake [bugprone-easily-swappable-parameters,-warnings-as-errors]
+ 2285 |                                       uint32_t serial, uint32_t mods_depressed,
+      |                                       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:2285:48: note: the first parameter in the range is 'serial'
+ 2285 |                                       uint32_t serial, uint32_t mods_depressed,
+      |                                                ^~~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:2285:65: note: the last parameter in the range is 'mods_depressed'
+ 2285 |                                       uint32_t serial, uint32_t mods_depressed,
+      |                                                                 ^~~~~~~~~~~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:2329:41: error: 2 adjacent parameters of 'keyboard_handle_repeat_info' of similar type ('int32_t') are easily swapped by mistake [bugprone-easily-swappable-parameters,-warnings-as-errors]
+ 2329 |                                         int32_t rate, int32_t delay)
+      |                                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:2329:49: note: the first parameter in the range is 'rate'
+ 2329 |                                         int32_t rate, int32_t delay)
+      |                                                 ^~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:2329:63: note: the last parameter in the range is 'delay'
+ 2329 |                                         int32_t rate, int32_t delay)
+      |                                                               ^~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:2410:18: error: multilevel pointer conversion from 'SDL_Keymap **' (aka 'struct SDL_Keymap **') to 'void *', please use explicit cast [bugprone-multi-level-implicit-pointer-conversion,-warnings-as-errors]
+ 2410 |         SDL_free(seat->keyboard.sdl_keymap);
+      |                  ^
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:2481:25: error: use of a signed integer operand with a binary bitwise operator [bugprone-signed-bitwise,-warnings-as-errors]
+ 2481 |     if ((capabilities & WL_SEAT_CAPABILITY_POINTER) && !seat->pointer.wl_pointer) {
+      |                       ~ ^~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:2502:33: error: use of a signed integer operand with a binary bitwise operator [bugprone-signed-bitwise,-warnings-as-errors]
+ 2502 |     } else if (!(capabilities & WL_SEAT_CAPABILITY_POINTER) && seat->pointer.wl_pointer) {
+      |                               ~ ^~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:2506:25: error: use of a signed integer operand with a binary bitwise operator [bugprone-signed-bitwise,-warnings-as-errors]
+ 2506 |     if ((capabilities & WL_SEAT_CAPABILITY_TOUCH) && !seat->touch.wl_touch) {
+      |                       ~ ^~~~~~~~~~~~~~~~~~~~~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:2518:33: error: use of a signed integer operand with a binary bitwise operator [bugprone-signed-bitwise,-warnings-as-errors]
+ 2518 |     } else if (!(capabilities & WL_SEAT_CAPABILITY_TOUCH) && seat->touch.wl_touch) {
+      |                               ~ ^~~~~~~~~~~~~~~~~~~~~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:2522:25: error: use of a signed integer operand with a binary bitwise operator [bugprone-signed-bitwise,-warnings-as-errors]
+ 2522 |     if ((capabilities & WL_SEAT_CAPABILITY_KEYBOARD) && !seat->keyboard.wl_keyboard) {
+      |                       ~ ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:2536:33: error: use of a signed integer operand with a binary bitwise operator [bugprone-signed-bitwise,-warnings-as-errors]
+ 2536 |     } else if (!(capabilities & WL_SEAT_CAPABILITY_KEYBOARD) && seat->keyboard.wl_keyboard) {
+      |                               ~ ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:2823:43: error: Access to field 'offer' results in a dereference of a null pointer (loaded from field 'drag_offer') [clang-analyzer-core.NullDereference,-warnings-as-errors]
+ 2823 |             if (wl_data_offer_get_version(data_device->drag_offer->offer) >= WL_DATA_OFFER_SET_ACTIONS_SINCE_VERSION) {
+      |                                           ^            ~~~~~~~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:2754:30: note: Assuming 'surface' is null
+ 2754 |     SDL_WindowData *window = surface ? Wayland_GetWindowDataForOwnedSurface(surface) : NULL;
+      |                              ^~~~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:2754:30: note: '?' condition is false
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:2761:9: note: Assuming 'id' is non-null
+ 2761 |     if (id) {
+      |         ^~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:2761:5: note: Taking true branch
+ 2761 |     if (id) {
+      |     ^
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:2762:9: note: Value assigned to field 'drag_offer'
+ 2762 |         data_device->drag_offer = wl_data_offer_get_user_data(id);
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:2765:9: note: Assuming field 'drag_offer' is null
+ 2765 |     if (data_device->drag_offer && window && window->accepts_drag_and_drop) {
+      |         ^~~~~~~~~~~~~~~~~~~~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:2765:33: note: Left side of '&&' is false
+ 2765 |     if (data_device->drag_offer && window && window->accepts_drag_and_drop) {
+      |                                 ^
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:2821:13: note: 'id' is non-null
+ 2821 |         if (id) {
+      |             ^~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:2821:9: note: Taking true branch
+ 2821 |         if (id) {
+      |         ^
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:2823:43: note: Access to field 'offer' results in a dereference of a null pointer (loaded from field 'drag_offer')
+ 2823 |             if (wl_data_offer_get_version(data_device->drag_offer->offer) >= WL_DATA_OFFER_SET_ACTIONS_SINCE_VERSION) {
+      |                                           ^            ~~~~~~~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:2863:39: error: 2 adjacent parameters of 'data_device_handle_motion' of convertible types are easily swapped by mistake [bugprone-easily-swappable-parameters,-warnings-as-errors]
+ 2863 |                                       uint32_t time, wl_fixed_t x, wl_fixed_t y)
+      |                                       ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:2863:48: note: the first parameter in the range is 'time'
+ 2863 |                                       uint32_t time, wl_fixed_t x, wl_fixed_t y)
+      |                                                ^~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:2863:65: note: the last parameter in the range is 'x'
+ 2863 |                                       uint32_t time, wl_fixed_t x, wl_fixed_t y)
+      |                                                                 ^
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:2863:39: note:
+ 2863 |                                       uint32_t time, wl_fixed_t x, wl_fixed_t y)
+      |                                       ^
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:2863:54: note: 'uint32_t' and 'wl_fixed_t' may be implicitly converted: 'uint32_t' (as 'unsigned int') -> 'wl_fixed_t' (as 'int'), 'wl_fixed_t' (as 'int') -> 'uint32_t' (as 'unsigned int')
+ 2863 |                                       uint32_t time, wl_fixed_t x, wl_fixed_t y)
+      |                                                      ^
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:3105:48: error: 2 adjacent parameters of 'text_input_delete_surrounding_text' of similar type ('uint32_t') are easily swapped by mistake [bugprone-easily-swappable-parameters,-warnings-as-errors]
+ 3105 |                                                uint32_t before_length,
+      |                                                ^~~~~~~~~~~~~~~~~~~~~~~
+ 3106 |                                                uint32_t after_length)
+      |                                                ~~~~~~~~~~~~~~~~~~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:3105:57: note: the first parameter in the range is 'before_length'
+ 3105 |                                                uint32_t before_length,
+      |                                                         ^~~~~~~~~~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:3106:57: note: the last parameter in the range is 'after_length'
+ 3106 |                                                uint32_t after_length)
+      |                                                         ^~~~~~~~~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:3259:93: error: 2 adjacent parameters of 'tablet_tool_handle_hardware_serial' of similar type ('uint32_t') are easily swapped by mistake [bugprone-easily-swappable-parameters,-warnings-as-errors]
+ 3259 | static void tablet_tool_handle_hardware_serial(void *data, struct zwp_tablet_tool_v2 *tool, uint32_t serial_hi, uint32_t serial_lo)
+      |                                                                                             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:3259:102: note: the first parameter in the range is 'serial_hi'
+ 3259 | static void tablet_tool_handle_hardware_serial(void *data, struct zwp_tablet_tool_v2 *tool, uint32_t serial_hi, uint32_t serial_lo)
+      |                                                                                                      ^~~~~~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:3259:122: note: the last parameter in the range is 'serial_lo'
+ 3259 | static void tablet_tool_handle_hardware_serial(void *data, struct zwp_tablet_tool_v2 *tool, uint32_t serial_hi, uint32_t serial_lo)
+      |                                                                                                                          ^~~~~~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:3264:95: error: 2 adjacent parameters of 'tablet_tool_handle_hardware_id_wacom' of similar type ('uint32_t') are easily swapped by mistake [bugprone-easily-swappable-parameters,-warnings-as-errors]
+ 3264 | static void tablet_tool_handle_hardware_id_wacom(void *data, struct zwp_tablet_tool_v2 *tool, uint32_t id_hi, uint32_t id_lo)
+      |                                                                                               ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:3264:104: note: the first parameter in the range is 'id_hi'
+ 3264 | static void tablet_tool_handle_hardware_id_wacom(void *data, struct zwp_tablet_tool_v2 *tool, uint32_t id_hi, uint32_t id_lo)
+      |                                                                                                        ^~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:3264:120: note: the last parameter in the range is 'id_lo'
+ 3264 | static void tablet_tool_handle_hardware_id_wacom(void *data, struct zwp_tablet_tool_v2 *tool, uint32_t id_hi, uint32_t id_lo)
+      |                                                                                                                        ^~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:3274:110: error: macro argument should be enclosed in parentheses [bugprone-macro-parentheses,-warnings-as-errors]
+ 3274 |         #define CASE(wltyp,sdltyp) case ZWP_TABLET_TOOL_V2_CAPABILITY_##wltyp: sdltool->info.capabilities |= sdltyp; return
+      |                                                                                                              ^
+      |                                                                                                              (     )
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:3275:20: error: use of a signed integer operand with a binary bitwise operator [bugprone-signed-bitwise,-warnings-as-errors]
+ 3275 |         CASE(TILT, SDL_PEN_CAPABILITY_XTILT | SDL_PEN_CAPABILITY_YTILT);
+      |                    ^
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/../../events/SDL_pen_c.h:31:45: note: expanded from macro 'SDL_PEN_CAPABILITY_XTILT'
+   31 | #define SDL_PEN_CAPABILITY_XTILT     (1u << 1)  /**< Provides horizontal tilt information on SDL_PEN_AXIS_XTILT. */
+      |                                          ~~ ^
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:3275:47: error: use of a signed integer operand with a binary bitwise operator [bugprone-signed-bitwise,-warnings-as-errors]
+ 3275 |         CASE(TILT, SDL_PEN_CAPABILITY_XTILT | SDL_PEN_CAPABILITY_YTILT);
+      |                                               ^
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/../../events/SDL_pen_c.h:32:45: note: expanded from macro 'SDL_PEN_CAPABILITY_YTILT'
+   32 | #define SDL_PEN_CAPABILITY_YTILT     (1u << 2)  /**< Provides vertical tilt information on SDL_PEN_AXIS_YTILT. */
+      |                                          ~~ ^
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:3276:24: error: use of a signed integer operand with a binary bitwise operator [bugprone-signed-bitwise,-warnings-as-errors]
+ 3276 |         CASE(PRESSURE, SDL_PEN_CAPABILITY_PRESSURE);
+      |                        ^
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/../../events/SDL_pen_c.h:30:45: note: expanded from macro 'SDL_PEN_CAPABILITY_PRESSURE'
+   30 | #define SDL_PEN_CAPABILITY_PRESSURE  (1u << 0)  /**< Provides pressure information on SDL_PEN_AXIS_PRESSURE. */
+      |                                          ~~ ^
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:3277:24: error: use of a signed integer operand with a binary bitwise operator [bugprone-signed-bitwise,-warnings-as-errors]
+ 3277 |         CASE(DISTANCE, SDL_PEN_CAPABILITY_DISTANCE);
+      |                        ^
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/../../events/SDL_pen_c.h:33:45: note: expanded from macro 'SDL_PEN_CAPABILITY_DISTANCE'
+   33 | #define SDL_PEN_CAPABILITY_DISTANCE  (1u << 3)  /**< Provides distance to drawing tablet on SDL_PEN_AXIS_DISTANCE. */
+      |                                          ~~ ^
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:3278:24: error: use of a signed integer operand with a binary bitwise operator [bugprone-signed-bitwise,-warnings-as-errors]
+ 3278 |         CASE(ROTATION, SDL_PEN_CAPABILITY_ROTATION);
+      |                        ^
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/../../events/SDL_pen_c.h:34:45: note: expanded from macro 'SDL_PEN_CAPABILITY_ROTATION'
+   34 | #define SDL_PEN_CAPABILITY_ROTATION  (1u << 4)  /**< Provides barrel rotation info on SDL_PEN_AXIS_ROTATION. */
+      |                                          ~~ ^
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:3279:22: error: use of a signed integer operand with a binary bitwise operator [bugprone-signed-bitwise,-warnings-as-errors]
+ 3279 |         CASE(SLIDER, SDL_PEN_CAPABILITY_SLIDER);
+      |                      ^
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/../../events/SDL_pen_c.h:35:45: note: expanded from macro 'SDL_PEN_CAPABILITY_SLIDER'
+   35 | #define SDL_PEN_CAPABILITY_SLIDER    (1u << 5)  /**< Provides slider/finger wheel/etc on SDL_PEN_AXIS_SLIDER. */
+      |                                          ~~ ^
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:3354:39: error: use of a signed integer operand with a binary bitwise operator [bugprone-signed-bitwise,-warnings-as-errors]
+ 3354 |     sdltool->frame.axes_set |= (1u << SDL_PEN_AXIS_PRESSURE);
+      |                                    ~~ ^~~~~~~~~~~~~~~~~~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:3357:43: error: use of a signed integer operand with a binary bitwise operator [bugprone-signed-bitwise,-warnings-as-errors]
+ 3357 |         sdltool->frame.axes_set |= (1u << SDL_PEN_AXIS_DISTANCE);
+      |                                        ~~ ^~~~~~~~~~~~~~~~~~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:3365:39: error: use of a signed integer operand with a binary bitwise operator [bugprone-signed-bitwise,-warnings-as-errors]
+ 3365 |     sdltool->frame.axes_set |= (1u << SDL_PEN_AXIS_DISTANCE);
+      |                                    ~~ ^~~~~~~~~~~~~~~~~~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:3368:43: error: use of a signed integer operand with a binary bitwise operator [bugprone-signed-bitwise,-warnings-as-errors]
+ 3368 |         sdltool->frame.axes_set |= (1u << SDL_PEN_AXIS_PRESSURE);
+      |                                        ~~ ^~~~~~~~~~~~~~~~~~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:3377:39: error: use of a signed integer operand with a binary bitwise operator [bugprone-signed-bitwise,-warnings-as-errors]
+ 3377 |     sdltool->frame.axes_set |= (1u << SDL_PEN_AXIS_XTILT) | (1u << SDL_PEN_AXIS_YTILT);
+      |                                    ~~ ^~~~~~~~~~~~~~~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:3377:68: error: use of a signed integer operand with a binary bitwise operator [bugprone-signed-bitwise,-warnings-as-errors]
+ 3377 |     sdltool->frame.axes_set |= (1u << SDL_PEN_AXIS_XTILT) | (1u << SDL_PEN_AXIS_YTILT);
+      |                                                                 ~~ ^~~~~~~~~~~~~~~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:3380:84: error: 3 adjacent parameters of 'tablet_tool_handle_button' of similar type ('uint32_t') are easily swapped by mistake [bugprone-easily-swappable-parameters,-warnings-as-errors]
+ 3380 | static void tablet_tool_handle_button(void *data, struct zwp_tablet_tool_v2 *tool, uint32_t serial, uint32_t button, uint32_t state)
+      |                                                                                    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:3380:93: note: the first parameter in the range is 'serial'
+ 3380 | static void tablet_tool_handle_button(void *data, struct zwp_tablet_tool_v2 *tool, uint32_t serial, uint32_t button, uint32_t state)
+      |                                                                                             ^~~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:3380:127: note: the last parameter in the range is 'state'
+ 3380 | static void tablet_tool_handle_button(void *data, struct zwp_tablet_tool_v2 *tool, uint32_t serial, uint32_t button, uint32_t state)
+      |                                                                                                                               ^~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:3409:39: error: use of a signed integer operand with a binary bitwise operator [bugprone-signed-bitwise,-warnings-as-errors]
+ 3409 |     sdltool->frame.axes_set |= (1u << SDL_PEN_AXIS_ROTATION);
+      |                                    ~~ ^~~~~~~~~~~~~~~~~~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:3415:48: error: narrowing conversion from 'int32_t' (aka 'int') to 'float' [bugprone-narrowing-conversions,-warnings-as-errors]
+ 3415 |     sdltool->frame.axes[SDL_PEN_AXIS_SLIDER] = position / 65535.f;
+      |                                                ^
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:3416:39: error: use of a signed integer operand with a binary bitwise operator [bugprone-signed-bitwise,-warnings-as-errors]
+ 3416 |     sdltool->frame.axes_set |= (1u << SDL_PEN_AXIS_SLIDER);
+      |                                    ~~ ^~~~~~~~~~~~~~~~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:3419:83: error: 2 adjacent parameters of 'tablet_tool_handle_wheel' of similar type ('int32_t') are easily swapped by mistake [bugprone-easily-swappable-parameters,-warnings-as-errors]
+ 3419 | static void tablet_tool_handle_wheel(void *data, struct zwp_tablet_tool_v2 *tool, int32_t degrees, int32_t clicks)
+      |                                                                                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:3419:91: note: the first parameter in the range is 'degrees'
+ 3419 | static void tablet_tool_handle_wheel(void *data, struct zwp_tablet_tool_v2 *tool, int32_t degrees, int32_t clicks)
+      |                                                                                           ^~~~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:3419:108: note: the last parameter in the range is 'clicks'
+ 3419 | static void tablet_tool_handle_wheel(void *data, struct zwp_tablet_tool_v2 *tool, int32_t degrees, int32_t clicks)
+      |                                                                                                            ^~~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:3595:96: error: 3 adjacent parameters of 'tablet_group_handle_mode_switch' of similar type ('uint32_t') are easily swapped by mistake [bugprone-easily-swappable-parameters,-warnings-as-errors]
+ 3595 | static void tablet_group_handle_mode_switch(void *data, struct zwp_tablet_pad_group_v2 *group, uint32_t time, uint32_t serial, uint32_t mode) {}
+      |                                                                                                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:3595:105: note: the first parameter in the range is 'time'
+ 3595 | static void tablet_group_handle_mode_switch(void *data, struct zwp_tablet_pad_group_v2 *group, uint32_t time, uint32_t serial, uint32_t mode) {}
+      |                                                                                                         ^~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:3595:137: note: the last parameter in the range is 'mode'
+ 3595 | static void tablet_group_handle_mode_switch(void *data, struct zwp_tablet_pad_group_v2 *group, uint32_t time, uint32_t serial, uint32_t mode) {}
+      |                                                                                                                                         ^~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:3615:81: error: 3 adjacent parameters of 'tablet_pad_handle_button' of similar type ('uint32_t') are easily swapped by mistake [bugprone-easily-swappable-parameters,-warnings-as-errors]
+ 3615 | static void tablet_pad_handle_button(void *data, struct zwp_tablet_pad_v2 *pad, uint32_t time, uint32_t button, uint32_t state) {}
+      |                                                                                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:3615:90: note: the first parameter in the range is 'time'
+ 3615 | static void tablet_pad_handle_button(void *data, struct zwp_tablet_pad_v2 *pad, uint32_t time, uint32_t button, uint32_t state) {}
+      |                                                                                          ^~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:3615:122: note: the last parameter in the range is 'state'
+ 3615 | static void tablet_pad_handle_button(void *data, struct zwp_tablet_pad_v2 *pad, uint32_t time, uint32_t button, uint32_t state) {}
+      |                                                                                                                          ^~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:3688:69: error: 2 adjacent parameters of 'Wayland_remove_all_pens_callback' of similar type ('void *') are easily swapped by mistake [bugprone-easily-swappable-parameters,-warnings-as-errors]
+ 3688 | static void Wayland_remove_all_pens_callback(SDL_PenID instance_id, void *handle, void *userdata)
+      |                                                                     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:3688:75: note: the first parameter in the range is 'handle'
+ 3688 | static void Wayland_remove_all_pens_callback(SDL_PenID instance_id, void *handle, void *userdata)
+      |                                                                           ^~~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:3688:89: note: the last parameter in the range is 'userdata'
+ 3688 | static void Wayland_remove_all_pens_callback(SDL_PenID instance_id, void *handle, void *userdata)
+      |                                                                                         ^~~~~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:3932:92: error: Access to field 'surface' results in a dereference of a null pointer (loaded from field 'focus') [clang-analyzer-core.NullDereference,-warnings-as-errors]
+ 3932 |                                                                                            seat->pointer.focus->surface,
+      |                                                                                            ^
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:3791:9: note: Assuming 'seat' is non-null
+ 3791 |     if (!seat) {
+      |         ^~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:3791:10: note: 'seat' is non-null
+ 3791 |     if (!seat) {
+      |          ^~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:3791:5: note: Taking false branch
+ 3791 |     if (!seat) {
+      |     ^
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:3797:9: note: Assuming field 'data_device' is null
+ 3797 |     if (seat->data_device) {
+      |         ^~~~~~~~~~~~~~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:3797:5: note: Taking false branch
+ 3797 |     if (seat->data_device) {
+      |     ^
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:3816:9: note: Assuming field 'primary_selection_device' is null
+ 3816 |     if (seat->primary_selection_device) {
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:3816:5: note: Taking false branch
+ 3816 |     if (seat->primary_selection_device) {
+      |     ^
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:3829:9: note: Assuming field 'zwp_text_input' is null
+ 3829 |     if (seat->text_input.zwp_text_input) {
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:3829:5: note: Taking false branch
+ 3829 |     if (seat->text_input.zwp_text_input) {
+      |     ^
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:3834:5: note: Calling 'Wayland_SeatDestroyPointer'
+ 3834 |     Wayland_SeatDestroyPointer(seat);
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:2351:9: note: Assuming field 'gesture_focus' is null
+ 2351 |     if (seat->pointer.gesture_focus) {
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:2351:5: note: Taking false branch
+ 2351 |     if (seat->pointer.gesture_focus) {
+      |     ^
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:2356:9: note: Assuming field 'focus' is non-null
+ 2356 |     if (seat->pointer.focus) {
+      |         ^~~~~~~~~~~~~~~~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:2356:5: note: Taking true branch
+ 2356 |     if (seat->pointer.focus) {
+      |     ^
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:2357:9: note: Calling 'pointer_handle_leave'
+ 2357 |         pointer_handle_leave(seat, seat->pointer.wl_pointer, 0, seat->pointer.focus->surface);
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:857:9: note: Assuming 'surface' is non-null
+  857 |     if (!surface) {
+      |         ^~~~~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:857:5: note: Taking false branch
+  857 |     if (!surface) {
+      |     ^
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:863:9: note: Assuming 'window' is non-null
+  863 |     if (!window) {
+      |         ^~~~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:863:5: note: Taking false branch
+  863 |     if (!window) {
+      |     ^
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:872:5: note: Null pointer value stored to field 'focus'
+  872 |     seat->pointer.focus = NULL;
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:873:5: note: Loop condition is false. Execution continues on line 883
+  873 |     for (int i = 1; seat->pointer.buttons_pressed; ++i) {
+      |     ^
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:884:28: note: Assuming 'mouse_focus' is null
+  884 |     const bool had_focus = mouse_focus && window->sdlwindow == mouse_focus;
+      |                            ^~~~~~~~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:884:40: note: Left side of '&&' is false
+  884 |     const bool had_focus = mouse_focus && window->sdlwindow == mouse_focus;
+      |                                        ^
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:885:9: note: Assuming the condition is false
+  885 |     if (!--window->pointer_focus_count && had_focus && !window->active_touch_count) {
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:885:40: note: Left side of '&&' is false
+  885 |     if (!--window->pointer_focus_count && had_focus && !window->active_touch_count) {
+      |                                        ^
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:889:5: note: Calling 'Wayland_SeatUpdatePointerGrab'
+  889 |     Wayland_SeatUpdatePointerGrab(seat);
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:3910:5: note: Calling 'Wayland_SeatUpdateRelativePointer'
+ 3910 |     Wayland_SeatUpdateRelativePointer(seat);
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:3850:9: note: Assuming field 'relative_pointer_manager' is null
+ 3850 |     if (seat->display->relative_pointer_manager) {
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:3850:5: note: Taking false branch
+ 3850 |     if (seat->display->relative_pointer_manager) {
+      |     ^
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:3879:1: note: Returning without writing to 'seat->pointer.wl_pointer', which participates in a condition later
+ 3879 | }
+      | ^
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:3879:1: note: Returning without writing to 'seat->pointer.relative_pointer', which participates in a condition later
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:3879:1: note: Returning without writing to 'seat->pointer.locked_pointer', which participates in a condition later
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:3879:1: note: Returning without writing to 'seat->pointer.focus'
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:3910:5: note: Returning from 'Wayland_SeatUpdateRelativePointer'
+ 3910 |     Wayland_SeatUpdateRelativePointer(seat);
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:3912:9: note: Assuming field 'pointer_constraints' is non-null
+ 3912 |     if (display->pointer_constraints) {
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:3912:5: note: Taking true branch
+ 3912 |     if (display->pointer_constraints) {
+      |     ^
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:3913:13: note: Assuming field 'locked_pointer' is null
+ 3913 |         if (seat->pointer.locked_pointer && !seat->pointer.relative_pointer) {
+      |             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:3913:42: note: Left side of '&&' is false
+ 3913 |         if (seat->pointer.locked_pointer && !seat->pointer.relative_pointer) {
+      |                                          ^
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:3921:13: note: Assuming field 'wl_pointer' is non-null
+ 3921 |         if (seat->pointer.wl_pointer) {
+      |             ^~~~~~~~~~~~~~~~~~~~~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:3921:9: note: Taking true branch
+ 3921 |         if (seat->pointer.wl_pointer) {
+      |         ^
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:3923:17: note: Assuming field 'relative_pointer' is non-null
+ 3923 |             if (seat->pointer.relative_pointer) {
+      |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:3923:13: note: Taking true branch
+ 3923 |             if (seat->pointer.relative_pointer) {
+      |             ^
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:3924:36: note: Field 'locked_pointer' is null
+ 3924 |                 if (!seat->pointer.locked_pointer) {
+      |                                    ^
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:3924:17: note: Taking true branch
+ 3924 |                 if (!seat->pointer.locked_pointer) {
+      |                 ^
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:3926:25: note: Assuming field 'confined_pointer' is null
+ 3926 |                     if (seat->pointer.confined_pointer) {
+      |                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:3926:21: note: Taking false branch
+ 3926 |                     if (seat->pointer.confined_pointer) {
+      |                     ^
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:3932:92: note: Access to field 'surface' results in a dereference of a null pointer (loaded from field 'focus')
+ 3932 |                                                                                            seat->pointer.focus->surface,
+      |                                                                                            ^             ~~~~~
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:4001:52: error: narrowing conversion from 'int' to 'float' [bugprone-narrowing-conversions,-warnings-as-errors]
+ 4001 |                     Wayland_SeatWarpMouse(seat, w, closest_x, closest_y);
+      |                                                    ^
+/home/kyau/.conan2/p/b/sdld55aa4ffbc9f1/b/src/src/video/wayland/SDL_waylandevents.c:4001:63: error: narrowing conversion from 'int' to 'float' [bugprone-narrowing-conversions,-warnings-as-errors]
+ 4001 |                     Wayland_SeatWarpMouse(seat, w, closest_x, closest_y);
+      |                                                               ^
+Suppressed 494 warnings (494 in non-user code).
+Use -header-filter=.* or leave it as default to display errors from all non-system headers. Use -system-headers to display errors from system headers as well.
+118 warnings treated as errors

@@ -1,0 +1,21 @@
+Filters: "inspector refuses render*"
+Randomness seeded to: 3728874164
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+inspector_tests is a Catch2 v3.16.0 host application.
+Run with -? for options
+
+-------------------------------------------------------------------------------
+inspector refuses render settings outside production exposure admission
+-------------------------------------------------------------------------------
+$REPO/tests/inspector.cpp:38
+...............................................................................
+
+$REPO/tests/inspector.cpp:43: FAILED:
+  REQUIRE( inspector.enqueue(ngen::tools::SetView{before.generation, {exposure, false}}) == ngen::Result<std::monostate>{ngen::Error::invalid} )
+with expansion:
+  {?} == {?}
+
+===============================================================================
+test cases: 1 | 1 failed
+assertions: 1 | 1 failed

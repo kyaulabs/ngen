@@ -1,0 +1,15 @@
+41 warnings generated.
+/home/kyau/projects/kyaulabs/ngen/engine/audio/output.hpp:39:23: error: performing an implicit widening conversion to type 'std::size_t' (aka 'unsigned long') of a multiplication performed in type 'unsigned int' [bugprone-implicit-widening-of-multiplication-result,-warnings-as-errors]
+   39 |     std::array<float, 512 * Mixer::channels> pcm_{};
+      |                       ^
+/home/kyau/projects/kyaulabs/ngen/engine/audio/output.hpp:39:23: note: make conversion explicit to silence this warning
+    3 |     std::array<float, 512 * Mixer::channels> pcm_{};
+      |                       ^~~~~~~~~~~~~~~~~~~~~
+      |                       static_cast<std::size_t>( )
+/home/kyau/projects/kyaulabs/ngen/engine/audio/output.hpp:39:23: note: perform multiplication in a wider type
+   39 |     std::array<float, 512 * Mixer::channels> pcm_{};
+      |                       ^~~
+      |                       static_cast<std::size_t>( )
+Suppressed 40 warnings (40 in non-user code).
+Use -header-filter=.* or leave it as default to display errors from all non-system headers. Use -system-headers to display errors from system headers as well.
+1 warning treated as error

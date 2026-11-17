@@ -1,0 +1,21 @@
+Filters: "inspector applies bounded*"
+Randomness seeded to: 1805486967
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+inspector_tests is a Catch2 v3.16.0 host application.
+Run with -? for options
+
+-------------------------------------------------------------------------------
+inspector applies bounded FIFO render commands only at the frame boundary
+-------------------------------------------------------------------------------
+$REPO/tests/inspector.cpp:38
+...............................................................................
+
+$REPO/tests/inspector.cpp:48: FAILED:
+  REQUIRE( applied.applied == 16 )
+with expansion:
+  0 == 16
+
+===============================================================================
+test cases:  1 |  0 passed | 1 failed
+assertions: 19 | 18 passed | 1 failed

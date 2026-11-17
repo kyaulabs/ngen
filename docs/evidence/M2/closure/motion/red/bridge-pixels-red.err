@@ -1,0 +1,5 @@
+Traceback (most recent call last):
+  File "/home/kyau/projects/kyaulabs/ngen/build/m2-engine-color/check-bridge-pixels.py", line 13, in <module>
+    assert result['nearly_clipped_cyan_fraction']<=0.01,'bridge window lighting washes out adjacent hull plating'
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: bridge window lighting washes out adjacent hull plating

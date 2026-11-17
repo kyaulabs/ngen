@@ -1,0 +1,40 @@
+Local checkpoint on feat/kyau-c10e83-asset-import; M2-D importer, not full M2.
+
+Passed: four actual x86_64 native configure/build/link/CTest graphs: Clang 23.1.4
+Debug, Release, ASan+UBSan+leak; GCC 16.2.1 Debug. Each selects/runs 6 CTest entries,
+0 failures/skips. Public importer: 26 cases, 29,412 assertions. CLI: four actual
+process cases, including paths with spaces, source preservation, nonregular/missing
+files, sparse oversized source admission, invalid options/data and no extra output.
+Passed: four full unchanged-frigate imports with explicit tangent rebuilding,
+identical summaries; instrumented engine AND dependencies emit no sanitizer error.
+Passed: current strict inspection rejects authored nonorthonormal tangent frames
+with exit 1 rather than silently applying the optional cooking transform.
+Passed: source SHA remains e68cd409c479036556446ed1753b287c0e7a40260109b3cd442abe7f533941fe.
+Passed: mirrored per-corner seam, narrow-angle and degenerate-UV numeric fixtures.
+Passed: all seed truncations/four systematic byte masks, malformed accessor/index/
+numeric/PNG/hierarchy/metadata/URI/cancellation controls under sanitizers.
+Passed: stock public-grid shift-by-32 Red -> namespaced dependency Green; collapsed
+referenced-domain NaN-to-int Red -> admission Green. These are real behavioral
+failures, not missing prerequisites or suppressed diagnostics.
+Passed: CPU-only Debug 4/4, actual simulation/importer link isolation, unchanged
+conan.lock/conan-render.lock; only intended MikkTSpace replacement in asset lock.
+Passed: pinned format 18.1.8; shell/Python/JSON syntax; selected-evidence redacted
+Gitleaks scan. Final staged whitespace/security/policy checks run before commit.
+
+Failed/advisory: three primary Clang AST invocations return 1 on the two retained
+vendor enum-bitmask findings (fastgltf/Catch2); no remaining owned finding reported.
+Unavailable: GCC clang-tidy parsing of actual module-dependency flags. No filtering.
+Unavailable locally: headless/offline namespace execution (sudo requires password).
+Not run locally: Windows MSVC/clang-cl; actual normal-map visual comparison;
+runtime package loading, residency, scene rendering or performance acceptance.
+Hosted first PR workflow 42243728988: actual headless/offline asset CTest passes
+6/6 in Debug and ASan, but the workflow fails on those same vendor findings.
+Follow-up: report policy retains all diagnostics/native status; only the two
+exact known findings in Conan headers are advisory, not clean passes. Owned/new,
+malformed and unavailable AST results remain fatal; three process-boundary tests
+cover those distinctions, including owned diagnostics with native exit zero.
+No checker/argument/warning is disabled. Follow-up workflows remain pending.
+
+Legal notices remain byte-exact; selected log normalization and original hashes
+are explicit. No source asset, decoded textures, cooked package or credentials
+are retained here. Same-session review is not independent/human acceptance.

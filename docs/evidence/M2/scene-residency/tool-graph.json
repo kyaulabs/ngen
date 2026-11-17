@@ -1,0 +1,1208 @@
+[
+  {
+    "context": "host",
+    "license": "Zlib",
+    "options": {
+      "fPIC": "True",
+      "shared": "False"
+    },
+    "package_id": "493772ddc92cb244fdb16d09cebe2fb65e63d555",
+    "prev": "5dce952807f689f086b41df0ae276c94",
+    "ref": "enkits/1.12#66203195b410e9ccba5ac22e3216b7d7",
+    "rrev": "66203195b410e9ccba5ac22e3216b7d7",
+    "settings": {
+      "arch": "x86_64",
+      "build_type": "Debug",
+      "compiler": "clang",
+      "compiler.cppstd": "20",
+      "compiler.libcxx": "libstdc++11",
+      "compiler.version": "23",
+      "os": "Linux"
+    }
+  },
+  {
+    "context": "host",
+    "license": "BSL-1.0",
+    "options": {
+      "console_width": "80",
+      "default_reporter": null,
+      "fPIC": "True",
+      "no_posix_signals": "False",
+      "shared": "False",
+      "thread_safe_assertions": "False",
+      "with_prefix": "False"
+    },
+    "package_id": "dc20cee61e48ba1571251551711c1071b8328750",
+    "prev": "b31c523a131c4b13eadb6a45696aa3c1",
+    "ref": "catch2/3.16.0#95f400ca2fba9f0c5ce5aea6e6fe0055",
+    "rrev": "95f400ca2fba9f0c5ce5aea6e6fe0055",
+    "settings": {
+      "arch": "x86_64",
+      "build_type": "Debug",
+      "compiler": "clang",
+      "compiler.cppstd": "20",
+      "compiler.libcxx": "libstdc++11",
+      "compiler.version": "23",
+      "os": "Linux"
+    }
+  },
+  {
+    "context": "build",
+    "license": "BSD-3-Clause",
+    "options": {},
+    "package_id": "63fead0844576fc02943e16909f08fcdddd6f44b",
+    "prev": "4d4766f0d30bec6434f5b4962831f86b",
+    "ref": "cmake/4.4.4#fec9c7048fae91e03c31e59977cd9c12",
+    "rrev": "fec9c7048fae91e03c31e59977cd9c12",
+    "settings": {
+      "arch": "x86_64",
+      "os": "Linux"
+    }
+  },
+  {
+    "context": "host",
+    "license": "Zlib",
+    "options": {
+      "fPIC": "True",
+      "shared": "False"
+    },
+    "package_id": "598e6a277b8c26506ffb9f7c0c79632d0584457a",
+    "prev": "4ae7294ce0ecf27211402a1d1d4702b1",
+    "ref": "zlib/1.3.2#1cb806da49011867778ffb6ac7190fcb",
+    "rrev": "1cb806da49011867778ffb6ac7190fcb",
+    "settings": {
+      "arch": "x86_64",
+      "build_type": "Debug",
+      "compiler": "clang",
+      "compiler.version": "23",
+      "os": "Linux"
+    }
+  },
+  {
+    "context": "host",
+    "license": "Zlib",
+    "options": {
+      "audio": "False",
+      "camera": "False",
+      "dbus": "False",
+      "dialog": "False",
+      "gpu": "False",
+      "haptic": "False",
+      "hidapi": "False",
+      "joystick": "False",
+      "libiconv": "False",
+      "libudev": "False",
+      "opengl": "False",
+      "opengles": "False",
+      "power": "False",
+      "render": "False",
+      "sensor": "False",
+      "shared": "True",
+      "tray": "False",
+      "video": "True",
+      "vulkan": "True",
+      "wayland": "True",
+      "x11": "False"
+    },
+    "package_id": "81d9c0295208e39a65f28e366b30533ec7340302",
+    "prev": "8c49dd06f2bf70bfbb4a2fb4350a7d63",
+    "ref": "sdl/3.4.16@ngen/wayland#1462763359f081b8fd40be314a673a1d",
+    "rrev": "1462763359f081b8fd40be314a673a1d",
+    "settings": {
+      "arch": "x86_64",
+      "build_type": "Debug",
+      "compiler": "clang",
+      "compiler.version": "23",
+      "os": "Linux"
+    }
+  },
+  {
+    "context": "host",
+    "license": "MIT",
+    "options": {
+      "fPIC": "True",
+      "shared": "False",
+      "with_wayland": "True",
+      "with_x11": "False",
+      "xkbregistry": "True"
+    },
+    "package_id": "7dd712bdf96c57c987f550bb6dfb152a982776c4",
+    "prev": "7520babebe4c7479b85784f4a1ee6c7b",
+    "ref": "xkbcommon/1.6.0#a66a2c7f73998ec9c99b38abc521b145",
+    "rrev": "a66a2c7f73998ec9c99b38abc521b145",
+    "settings": {
+      "arch": "x86_64",
+      "build_type": "Debug",
+      "compiler": "clang",
+      "compiler.version": "23",
+      "os": "Linux"
+    }
+  },
+  {
+    "context": "host",
+    "license": "MIT",
+    "options": {},
+    "package_id": "da39a3ee5e6b4b0d3255bfef95601890afd80709",
+    "prev": "0ba8627bd47edc3a501e8f0eb9a79e5e",
+    "ref": "xkeyboard-config/system#74aea985b91f987b93b220b44963d7ed",
+    "rrev": "74aea985b91f987b93b220b44963d7ed",
+    "settings": {
+      "build_type": "Debug",
+      "compiler": "clang",
+      "compiler.cppstd": "20",
+      "compiler.libcxx": "libstdc++11",
+      "compiler.version": "23",
+      "os": "Linux"
+    }
+  },
+  {
+    "context": "host",
+    "license": "MIT",
+    "options": {
+      "fPIC": "True",
+      "iconv": "True",
+      "icu": "False",
+      "programs": "True",
+      "shared": "False",
+      "zlib": "True"
+    },
+    "package_id": "bca090a3c3106ca9a6f88955f37fc34990cb923e",
+    "prev": "f9e8bc69e07c16e902630c152e9f9861",
+    "ref": "libxml2/2.15.4#9a0c674e87edc8d5bca8ccdb6761e4f8",
+    "rrev": "9a0c674e87edc8d5bca8ccdb6761e4f8",
+    "settings": {
+      "arch": "x86_64",
+      "build_type": "Debug",
+      "compiler": "clang",
+      "compiler.version": "23",
+      "os": "Linux"
+    }
+  },
+  {
+    "context": "host",
+    "license": "LGPL-2.1-or-later",
+    "options": {
+      "fPIC": "True",
+      "shared": "False"
+    },
+    "package_id": "598e6a277b8c26506ffb9f7c0c79632d0584457a",
+    "prev": "c67bab38cc4c206e48371107adffc4a6",
+    "ref": "libiconv/1.17#9923bc6dc6f106646d6967e0039a5ada",
+    "rrev": "9923bc6dc6f106646d6967e0039a5ada",
+    "settings": {
+      "arch": "x86_64",
+      "build_type": "Debug",
+      "compiler": "clang",
+      "compiler.version": "23",
+      "os": "Linux"
+    }
+  },
+  {
+    "context": "build",
+    "license": "BSD-3-Clause",
+    "options": {},
+    "package_id": "63fead0844576fc02943e16909f08fcdddd6f44b",
+    "prev": "4d4766f0d30bec6434f5b4962831f86b",
+    "ref": "cmake/4.4.4#fec9c7048fae91e03c31e59977cd9c12",
+    "rrev": "fec9c7048fae91e03c31e59977cd9c12",
+    "settings": {
+      "arch": "x86_64",
+      "os": "Linux"
+    }
+  },
+  {
+    "context": "host",
+    "license": "MIT",
+    "options": {
+      "enable_dtd_validation": "True",
+      "enable_libraries": "True",
+      "fPIC": "True",
+      "shared": "False"
+    },
+    "package_id": "ef92d77d1465785b069f05800397711b02b19b39",
+    "prev": "8760828a8cbf9ab82364c1edb9840674",
+    "ref": "wayland/1.24.0#ac40d5647b1ce948e185c1a849f63cb6",
+    "rrev": "ac40d5647b1ce948e185c1a849f63cb6",
+    "settings": {
+      "arch": "x86_64",
+      "build_type": "Debug",
+      "compiler": "clang",
+      "compiler.version": "23",
+      "os": "Linux"
+    }
+  },
+  {
+    "context": "host",
+    "license": "MIT",
+    "options": {
+      "fPIC": "True",
+      "shared": "False"
+    },
+    "package_id": "598e6a277b8c26506ffb9f7c0c79632d0584457a",
+    "prev": "ea2f36889d394aa8e74015b46b0adf77",
+    "ref": "libffi/3.4.8#a045c00fb26779635e3bed40e80c5254",
+    "rrev": "a045c00fb26779635e3bed40e80c5254",
+    "settings": {
+      "arch": "x86_64",
+      "build_type": "Debug",
+      "compiler": "clang",
+      "compiler.version": "23",
+      "os": "Linux"
+    }
+  },
+  {
+    "context": "host",
+    "license": "MIT",
+    "options": {
+      "char_type": "char",
+      "fPIC": "True",
+      "large_size": "False",
+      "shared": "False"
+    },
+    "package_id": "2a381af9234132e1fb621b94bd18f9808de67ecf",
+    "prev": "300e8e07b26ec895f75a5b05e6b1eeb7",
+    "ref": "expat/2.10.0#93425119c70db4e470b3d7d9b5daf3e6",
+    "rrev": "93425119c70db4e470b3d7d9b5daf3e6",
+    "settings": {
+      "arch": "x86_64",
+      "build_type": "Debug",
+      "compiler": "clang",
+      "compiler.version": "23",
+      "os": "Linux"
+    }
+  },
+  {
+    "context": "build",
+    "license": "BSD-3-Clause",
+    "options": {},
+    "package_id": "63fead0844576fc02943e16909f08fcdddd6f44b",
+    "prev": "4d4766f0d30bec6434f5b4962831f86b",
+    "ref": "cmake/4.4.4#fec9c7048fae91e03c31e59977cd9c12",
+    "rrev": "fec9c7048fae91e03c31e59977cd9c12",
+    "settings": {
+      "arch": "x86_64",
+      "os": "Linux"
+    }
+  },
+  {
+    "context": "build",
+    "license": "Apache-2.0",
+    "options": {},
+    "package_id": "da39a3ee5e6b4b0d3255bfef95601890afd80709",
+    "prev": "f54fda458a6ea9fa57bcbb5f76c05bd7",
+    "ref": "meson/1.10.2#9d2d10681fe7fe61c788c58626c89b25",
+    "rrev": "9d2d10681fe7fe61c788c58626c89b25",
+    "settings": {}
+  },
+  {
+    "context": "build",
+    "license": "Apache-2.0",
+    "options": {},
+    "package_id": "3593751651824fb813502c69c971267624ced41a",
+    "prev": "004588f111d3688b7e86b7401f49ea16",
+    "ref": "ninja/1.13.2#c8c5dc2a52ed6e4e42a66d75b4717ceb",
+    "rrev": "c8c5dc2a52ed6e4e42a66d75b4717ceb",
+    "settings": {
+      "arch": "x86_64",
+      "build_type": "Release",
+      "compiler": "clang",
+      "compiler.cppstd": "20",
+      "compiler.libcxx": "libstdc++11",
+      "compiler.version": "23",
+      "os": "Linux"
+    }
+  },
+  {
+    "context": "build",
+    "license": "ISC",
+    "options": {
+      "enable_lib": "False"
+    },
+    "package_id": "c0b621fd4b3199fe05075171573398833dba85f4",
+    "prev": "4b04c5ce32e745f87a67c63a747148d2",
+    "ref": "pkgconf/2.5.1#93c2051284cba1279494a43a4fcfeae2",
+    "rrev": "93c2051284cba1279494a43a4fcfeae2",
+    "settings": {
+      "arch": "x86_64",
+      "build_type": "Release",
+      "compiler": "clang",
+      "compiler.version": "23",
+      "os": "Linux"
+    }
+  },
+  {
+    "context": "build",
+    "license": "Apache-2.0",
+    "options": {},
+    "package_id": "da39a3ee5e6b4b0d3255bfef95601890afd80709",
+    "prev": "f54fda458a6ea9fa57bcbb5f76c05bd7",
+    "ref": "meson/1.10.2#9d2d10681fe7fe61c788c58626c89b25",
+    "rrev": "9d2d10681fe7fe61c788c58626c89b25",
+    "settings": {}
+  },
+  {
+    "context": "build",
+    "license": "Apache-2.0",
+    "options": {},
+    "package_id": "3593751651824fb813502c69c971267624ced41a",
+    "prev": "004588f111d3688b7e86b7401f49ea16",
+    "ref": "ninja/1.13.2#c8c5dc2a52ed6e4e42a66d75b4717ceb",
+    "rrev": "c8c5dc2a52ed6e4e42a66d75b4717ceb",
+    "settings": {
+      "arch": "x86_64",
+      "build_type": "Release",
+      "compiler": "clang",
+      "compiler.cppstd": "20",
+      "compiler.libcxx": "libstdc++11",
+      "compiler.version": "23",
+      "os": "Linux"
+    }
+  },
+  {
+    "context": "build",
+    "license": "Apache-2.0",
+    "options": {},
+    "package_id": "da39a3ee5e6b4b0d3255bfef95601890afd80709",
+    "prev": "f54fda458a6ea9fa57bcbb5f76c05bd7",
+    "ref": "meson/1.10.2#9d2d10681fe7fe61c788c58626c89b25",
+    "rrev": "9d2d10681fe7fe61c788c58626c89b25",
+    "settings": {}
+  },
+  {
+    "context": "build",
+    "license": "Apache-2.0",
+    "options": {},
+    "package_id": "3593751651824fb813502c69c971267624ced41a",
+    "prev": "004588f111d3688b7e86b7401f49ea16",
+    "ref": "ninja/1.13.2#c8c5dc2a52ed6e4e42a66d75b4717ceb",
+    "rrev": "c8c5dc2a52ed6e4e42a66d75b4717ceb",
+    "settings": {
+      "arch": "x86_64",
+      "build_type": "Release",
+      "compiler": "clang",
+      "compiler.cppstd": "20",
+      "compiler.libcxx": "libstdc++11",
+      "compiler.version": "23",
+      "os": "Linux"
+    }
+  },
+  {
+    "context": "build",
+    "license": "GPL-3.0-or-later",
+    "options": {
+      "fPIC": "True"
+    },
+    "package_id": "0bac0d80737a1d08ee8e5be908036190475e9b62",
+    "prev": "fbb5b40975087a7630f4e85a51457db6",
+    "ref": "bison/3.8.2#3a45a2c96da8e866d7c3e35855bae257",
+    "rrev": "3a45a2c96da8e866d7c3e35855bae257",
+    "settings": {
+      "arch": "x86_64",
+      "build_type": "Release",
+      "compiler": "clang",
+      "compiler.version": "23",
+      "os": "Linux"
+    }
+  },
+  {
+    "context": "build",
+    "license": "GPL-3.0-only",
+    "options": {},
+    "package_id": "3593751651824fb813502c69c971267624ced41a",
+    "prev": "7ea181d0195a5539b8ca0ca56a0ca297",
+    "ref": "m4/1.4.19#1727f439cf74e83826ec96d0b4904eee",
+    "rrev": "1727f439cf74e83826ec96d0b4904eee",
+    "settings": {
+      "arch": "x86_64",
+      "build_type": "Release",
+      "compiler": "clang",
+      "compiler.cppstd": "20",
+      "compiler.libcxx": "libstdc++11",
+      "compiler.version": "23",
+      "os": "Linux"
+    }
+  },
+  {
+    "context": "build",
+    "license": "BSD-2-Clause",
+    "options": {
+      "fPIC": "True",
+      "shared": "False"
+    },
+    "package_id": "0a137fcc072259808d958414340e026654fe7669",
+    "prev": null,
+    "ref": "flex/2.6.4#efa781fc5088b47c895bd4eef6911f2e",
+    "rrev": "efa781fc5088b47c895bd4eef6911f2e",
+    "settings": {
+      "arch": "x86_64",
+      "build_type": "Release",
+      "compiler": "clang",
+      "compiler.version": "23",
+      "os": "Linux"
+    }
+  },
+  {
+    "context": "build",
+    "license": "GPL-3.0-only",
+    "options": {},
+    "package_id": "3593751651824fb813502c69c971267624ced41a",
+    "prev": "7ea181d0195a5539b8ca0ca56a0ca297",
+    "ref": "m4/1.4.19#1727f439cf74e83826ec96d0b4904eee",
+    "rrev": "1727f439cf74e83826ec96d0b4904eee",
+    "settings": {
+      "arch": "x86_64",
+      "build_type": "Release",
+      "compiler": "clang",
+      "compiler.cppstd": "20",
+      "compiler.libcxx": "libstdc++11",
+      "compiler.version": "23",
+      "os": "Linux"
+    }
+  },
+  {
+    "context": "build",
+    "license": "GPL-3.0-only",
+    "options": {},
+    "package_id": "3593751651824fb813502c69c971267624ced41a",
+    "prev": "7ea181d0195a5539b8ca0ca56a0ca297",
+    "ref": "m4/1.4.19#1727f439cf74e83826ec96d0b4904eee",
+    "rrev": "1727f439cf74e83826ec96d0b4904eee",
+    "settings": {
+      "arch": "x86_64",
+      "build_type": "Release",
+      "compiler": "clang",
+      "compiler.cppstd": "20",
+      "compiler.libcxx": "libstdc++11",
+      "compiler.version": "23",
+      "os": "Linux"
+    }
+  },
+  {
+    "context": "build",
+    "license": [
+      "GPL-3.0-or-later",
+      "autoconf-special-exception"
+    ],
+    "options": {},
+    "package_id": "da39a3ee5e6b4b0d3255bfef95601890afd80709",
+    "prev": "22618e30bd9e326eb95e824dc90cc860",
+    "ref": "gnu-config/cci.20210814#466e9d4d7779e1c142443f7ea44b4284",
+    "rrev": "466e9d4d7779e1c142443f7ea44b4284",
+    "settings": {}
+  },
+  {
+    "context": "build",
+    "license": "ISC",
+    "options": {
+      "enable_lib": "False"
+    },
+    "package_id": "c0b621fd4b3199fe05075171573398833dba85f4",
+    "prev": "4b04c5ce32e745f87a67c63a747148d2",
+    "ref": "pkgconf/2.5.1#93c2051284cba1279494a43a4fcfeae2",
+    "rrev": "93c2051284cba1279494a43a4fcfeae2",
+    "settings": {
+      "arch": "x86_64",
+      "build_type": "Release",
+      "compiler": "clang",
+      "compiler.version": "23",
+      "os": "Linux"
+    }
+  },
+  {
+    "context": "build",
+    "license": "Apache-2.0",
+    "options": {},
+    "package_id": "da39a3ee5e6b4b0d3255bfef95601890afd80709",
+    "prev": "f54fda458a6ea9fa57bcbb5f76c05bd7",
+    "ref": "meson/1.10.2#9d2d10681fe7fe61c788c58626c89b25",
+    "rrev": "9d2d10681fe7fe61c788c58626c89b25",
+    "settings": {}
+  },
+  {
+    "context": "build",
+    "license": "Apache-2.0",
+    "options": {},
+    "package_id": "3593751651824fb813502c69c971267624ced41a",
+    "prev": "004588f111d3688b7e86b7401f49ea16",
+    "ref": "ninja/1.13.2#c8c5dc2a52ed6e4e42a66d75b4717ceb",
+    "rrev": "c8c5dc2a52ed6e4e42a66d75b4717ceb",
+    "settings": {
+      "arch": "x86_64",
+      "build_type": "Release",
+      "compiler": "clang",
+      "compiler.cppstd": "20",
+      "compiler.libcxx": "libstdc++11",
+      "compiler.version": "23",
+      "os": "Linux"
+    }
+  },
+  {
+    "context": "build",
+    "license": "MIT",
+    "options": {
+      "enable_dtd_validation": "True",
+      "enable_libraries": "True",
+      "fPIC": "True",
+      "shared": "False"
+    },
+    "package_id": "47be7962db067f3bc5d13bb7b41cbb92383cbd0a",
+    "prev": "f64b21af823100bf929f7f0ae5c93183",
+    "ref": "wayland/1.24.0#ac40d5647b1ce948e185c1a849f63cb6",
+    "rrev": "ac40d5647b1ce948e185c1a849f63cb6",
+    "settings": {
+      "arch": "x86_64",
+      "build_type": "Release",
+      "compiler": "clang",
+      "compiler.version": "23",
+      "os": "Linux"
+    }
+  },
+  {
+    "context": "build",
+    "license": "MIT",
+    "options": {
+      "fPIC": "True",
+      "shared": "False"
+    },
+    "package_id": "0a137fcc072259808d958414340e026654fe7669",
+    "prev": "660a69e5eeaa4cd6d2ee87032f0745f0",
+    "ref": "libffi/3.4.8#a045c00fb26779635e3bed40e80c5254",
+    "rrev": "a045c00fb26779635e3bed40e80c5254",
+    "settings": {
+      "arch": "x86_64",
+      "build_type": "Release",
+      "compiler": "clang",
+      "compiler.version": "23",
+      "os": "Linux"
+    }
+  },
+  {
+    "context": "build",
+    "license": "MIT",
+    "options": {
+      "fPIC": "True",
+      "iconv": "True",
+      "icu": "False",
+      "programs": "True",
+      "shared": "False",
+      "zlib": "True"
+    },
+    "package_id": "fe9df91ae5c8c1900516f090ca753a8b816a9cef",
+    "prev": "eb5bb4b24df098c885a97cf3d7551142",
+    "ref": "libxml2/2.15.4#9a0c674e87edc8d5bca8ccdb6761e4f8",
+    "rrev": "9a0c674e87edc8d5bca8ccdb6761e4f8",
+    "settings": {
+      "arch": "x86_64",
+      "build_type": "Release",
+      "compiler": "clang",
+      "compiler.version": "23",
+      "os": "Linux"
+    }
+  },
+  {
+    "context": "build",
+    "license": "LGPL-2.1-or-later",
+    "options": {
+      "fPIC": "True",
+      "shared": "False"
+    },
+    "package_id": "0a137fcc072259808d958414340e026654fe7669",
+    "prev": "cba1100e4b1571b445c5d6bf209e8596",
+    "ref": "libiconv/1.17#9923bc6dc6f106646d6967e0039a5ada",
+    "rrev": "9923bc6dc6f106646d6967e0039a5ada",
+    "settings": {
+      "arch": "x86_64",
+      "build_type": "Release",
+      "compiler": "clang",
+      "compiler.version": "23",
+      "os": "Linux"
+    }
+  },
+  {
+    "context": "build",
+    "license": "Zlib",
+    "options": {
+      "fPIC": "True",
+      "shared": "False"
+    },
+    "package_id": "0a137fcc072259808d958414340e026654fe7669",
+    "prev": "83b818cf6f0eb85914994ea6a5120a6b",
+    "ref": "zlib/1.3.2#1cb806da49011867778ffb6ac7190fcb",
+    "rrev": "1cb806da49011867778ffb6ac7190fcb",
+    "settings": {
+      "arch": "x86_64",
+      "build_type": "Release",
+      "compiler": "clang",
+      "compiler.version": "23",
+      "os": "Linux"
+    }
+  },
+  {
+    "context": "build",
+    "license": "BSD-3-Clause",
+    "options": {},
+    "package_id": "63fead0844576fc02943e16909f08fcdddd6f44b",
+    "prev": "4d4766f0d30bec6434f5b4962831f86b",
+    "ref": "cmake/4.4.4#fec9c7048fae91e03c31e59977cd9c12",
+    "rrev": "fec9c7048fae91e03c31e59977cd9c12",
+    "settings": {
+      "arch": "x86_64",
+      "os": "Linux"
+    }
+  },
+  {
+    "context": "build",
+    "license": "MIT",
+    "options": {
+      "char_type": "char",
+      "fPIC": "True",
+      "large_size": "False",
+      "shared": "False"
+    },
+    "package_id": "3989380b4e991542268faca2a764cd84cc513619",
+    "prev": "8f644f8d46bcf37d4cfc65c18c57c51e",
+    "ref": "expat/2.10.0#93425119c70db4e470b3d7d9b5daf3e6",
+    "rrev": "93425119c70db4e470b3d7d9b5daf3e6",
+    "settings": {
+      "arch": "x86_64",
+      "build_type": "Release",
+      "compiler": "clang",
+      "compiler.version": "23",
+      "os": "Linux"
+    }
+  },
+  {
+    "context": "build",
+    "license": "BSD-3-Clause",
+    "options": {},
+    "package_id": "63fead0844576fc02943e16909f08fcdddd6f44b",
+    "prev": "4d4766f0d30bec6434f5b4962831f86b",
+    "ref": "cmake/4.4.4#fec9c7048fae91e03c31e59977cd9c12",
+    "rrev": "fec9c7048fae91e03c31e59977cd9c12",
+    "settings": {
+      "arch": "x86_64",
+      "os": "Linux"
+    }
+  },
+  {
+    "context": "build",
+    "license": "Apache-2.0",
+    "options": {},
+    "package_id": "da39a3ee5e6b4b0d3255bfef95601890afd80709",
+    "prev": "f54fda458a6ea9fa57bcbb5f76c05bd7",
+    "ref": "meson/1.10.2#9d2d10681fe7fe61c788c58626c89b25",
+    "rrev": "9d2d10681fe7fe61c788c58626c89b25",
+    "settings": {}
+  },
+  {
+    "context": "build",
+    "license": "Apache-2.0",
+    "options": {},
+    "package_id": "3593751651824fb813502c69c971267624ced41a",
+    "prev": "004588f111d3688b7e86b7401f49ea16",
+    "ref": "ninja/1.13.2#c8c5dc2a52ed6e4e42a66d75b4717ceb",
+    "rrev": "c8c5dc2a52ed6e4e42a66d75b4717ceb",
+    "settings": {
+      "arch": "x86_64",
+      "build_type": "Release",
+      "compiler": "clang",
+      "compiler.cppstd": "20",
+      "compiler.libcxx": "libstdc++11",
+      "compiler.version": "23",
+      "os": "Linux"
+    }
+  },
+  {
+    "context": "build",
+    "license": "ISC",
+    "options": {
+      "enable_lib": "False"
+    },
+    "package_id": "c0b621fd4b3199fe05075171573398833dba85f4",
+    "prev": "4b04c5ce32e745f87a67c63a747148d2",
+    "ref": "pkgconf/2.5.1#93c2051284cba1279494a43a4fcfeae2",
+    "rrev": "93c2051284cba1279494a43a4fcfeae2",
+    "settings": {
+      "arch": "x86_64",
+      "build_type": "Release",
+      "compiler": "clang",
+      "compiler.version": "23",
+      "os": "Linux"
+    }
+  },
+  {
+    "context": "build",
+    "license": "Apache-2.0",
+    "options": {},
+    "package_id": "da39a3ee5e6b4b0d3255bfef95601890afd80709",
+    "prev": "f54fda458a6ea9fa57bcbb5f76c05bd7",
+    "ref": "meson/1.10.2#9d2d10681fe7fe61c788c58626c89b25",
+    "rrev": "9d2d10681fe7fe61c788c58626c89b25",
+    "settings": {}
+  },
+  {
+    "context": "build",
+    "license": "Apache-2.0",
+    "options": {},
+    "package_id": "3593751651824fb813502c69c971267624ced41a",
+    "prev": "004588f111d3688b7e86b7401f49ea16",
+    "ref": "ninja/1.13.2#c8c5dc2a52ed6e4e42a66d75b4717ceb",
+    "rrev": "c8c5dc2a52ed6e4e42a66d75b4717ceb",
+    "settings": {
+      "arch": "x86_64",
+      "build_type": "Release",
+      "compiler": "clang",
+      "compiler.cppstd": "20",
+      "compiler.libcxx": "libstdc++11",
+      "compiler.version": "23",
+      "os": "Linux"
+    }
+  },
+  {
+    "context": "build",
+    "license": "MIT",
+    "options": {},
+    "package_id": "da39a3ee5e6b4b0d3255bfef95601890afd80709",
+    "prev": "328ec10c9b60a4a06e1e5af0304f3f33",
+    "ref": "wayland-protocols/1.45#79bbdf84ebb0fcc3353686529e0a2322",
+    "rrev": "79bbdf84ebb0fcc3353686529e0a2322",
+    "settings": {
+      "arch": "x86_64",
+      "build_type": "Release",
+      "compiler": "clang",
+      "compiler.cppstd": "20",
+      "compiler.libcxx": "libstdc++11",
+      "compiler.version": "23",
+      "os": "Linux"
+    }
+  },
+  {
+    "context": "build",
+    "license": "Apache-2.0",
+    "options": {},
+    "package_id": "da39a3ee5e6b4b0d3255bfef95601890afd80709",
+    "prev": "f54fda458a6ea9fa57bcbb5f76c05bd7",
+    "ref": "meson/1.10.2#9d2d10681fe7fe61c788c58626c89b25",
+    "rrev": "9d2d10681fe7fe61c788c58626c89b25",
+    "settings": {}
+  },
+  {
+    "context": "build",
+    "license": "Apache-2.0",
+    "options": {},
+    "package_id": "3593751651824fb813502c69c971267624ced41a",
+    "prev": "004588f111d3688b7e86b7401f49ea16",
+    "ref": "ninja/1.13.2#c8c5dc2a52ed6e4e42a66d75b4717ceb",
+    "rrev": "c8c5dc2a52ed6e4e42a66d75b4717ceb",
+    "settings": {
+      "arch": "x86_64",
+      "build_type": "Release",
+      "compiler": "clang",
+      "compiler.cppstd": "20",
+      "compiler.libcxx": "libstdc++11",
+      "compiler.version": "23",
+      "os": "Linux"
+    }
+  },
+  {
+    "context": "host",
+    "license": "MIT",
+    "options": {},
+    "package_id": "da39a3ee5e6b4b0d3255bfef95601890afd80709",
+    "prev": "0ba8627bd47edc3a501e8f0eb9a79e5e",
+    "ref": "egl/system#9d33d024a47d4b3fec1d0fcc7cb2717f",
+    "rrev": "9d33d024a47d4b3fec1d0fcc7cb2717f",
+    "settings": {
+      "arch": "x86_64",
+      "build_type": "Debug",
+      "compiler": "clang",
+      "compiler.cppstd": "20",
+      "compiler.libcxx": "libstdc++11",
+      "compiler.version": "23",
+      "os": "Linux"
+    }
+  },
+  {
+    "context": "build",
+    "license": "BSD-3-Clause",
+    "options": {},
+    "package_id": "63fead0844576fc02943e16909f08fcdddd6f44b",
+    "prev": "4d4766f0d30bec6434f5b4962831f86b",
+    "ref": "cmake/4.4.4#fec9c7048fae91e03c31e59977cd9c12",
+    "rrev": "fec9c7048fae91e03c31e59977cd9c12",
+    "settings": {
+      "arch": "x86_64",
+      "os": "Linux"
+    }
+  },
+  {
+    "context": "build",
+    "license": "ISC",
+    "options": {
+      "enable_lib": "False"
+    },
+    "package_id": "c0b621fd4b3199fe05075171573398833dba85f4",
+    "prev": "4b04c5ce32e745f87a67c63a747148d2",
+    "ref": "pkgconf/2.5.1#93c2051284cba1279494a43a4fcfeae2",
+    "rrev": "93c2051284cba1279494a43a4fcfeae2",
+    "settings": {
+      "arch": "x86_64",
+      "build_type": "Release",
+      "compiler": "clang",
+      "compiler.version": "23",
+      "os": "Linux"
+    }
+  },
+  {
+    "context": "build",
+    "license": "Apache-2.0",
+    "options": {},
+    "package_id": "da39a3ee5e6b4b0d3255bfef95601890afd80709",
+    "prev": "f54fda458a6ea9fa57bcbb5f76c05bd7",
+    "ref": "meson/1.10.2#9d2d10681fe7fe61c788c58626c89b25",
+    "rrev": "9d2d10681fe7fe61c788c58626c89b25",
+    "settings": {}
+  },
+  {
+    "context": "build",
+    "license": "Apache-2.0",
+    "options": {},
+    "package_id": "3593751651824fb813502c69c971267624ced41a",
+    "prev": "004588f111d3688b7e86b7401f49ea16",
+    "ref": "ninja/1.13.2#c8c5dc2a52ed6e4e42a66d75b4717ceb",
+    "rrev": "c8c5dc2a52ed6e4e42a66d75b4717ceb",
+    "settings": {
+      "arch": "x86_64",
+      "build_type": "Release",
+      "compiler": "clang",
+      "compiler.cppstd": "20",
+      "compiler.libcxx": "libstdc++11",
+      "compiler.version": "23",
+      "os": "Linux"
+    }
+  },
+  {
+    "context": "build",
+    "license": "MIT",
+    "options": {
+      "enable_dtd_validation": "True",
+      "enable_libraries": "True",
+      "fPIC": "True",
+      "shared": "False"
+    },
+    "package_id": "47be7962db067f3bc5d13bb7b41cbb92383cbd0a",
+    "prev": "f64b21af823100bf929f7f0ae5c93183",
+    "ref": "wayland/1.24.0#ac40d5647b1ce948e185c1a849f63cb6",
+    "rrev": "ac40d5647b1ce948e185c1a849f63cb6",
+    "settings": {
+      "arch": "x86_64",
+      "build_type": "Release",
+      "compiler": "clang",
+      "compiler.version": "23",
+      "os": "Linux"
+    }
+  },
+  {
+    "context": "build",
+    "license": "MIT",
+    "options": {
+      "fPIC": "True",
+      "shared": "False"
+    },
+    "package_id": "0a137fcc072259808d958414340e026654fe7669",
+    "prev": "660a69e5eeaa4cd6d2ee87032f0745f0",
+    "ref": "libffi/3.4.8#a045c00fb26779635e3bed40e80c5254",
+    "rrev": "a045c00fb26779635e3bed40e80c5254",
+    "settings": {
+      "arch": "x86_64",
+      "build_type": "Release",
+      "compiler": "clang",
+      "compiler.version": "23",
+      "os": "Linux"
+    }
+  },
+  {
+    "context": "build",
+    "license": "MIT",
+    "options": {
+      "fPIC": "True",
+      "iconv": "True",
+      "icu": "False",
+      "programs": "True",
+      "shared": "False",
+      "zlib": "True"
+    },
+    "package_id": "fe9df91ae5c8c1900516f090ca753a8b816a9cef",
+    "prev": "eb5bb4b24df098c885a97cf3d7551142",
+    "ref": "libxml2/2.15.4#9a0c674e87edc8d5bca8ccdb6761e4f8",
+    "rrev": "9a0c674e87edc8d5bca8ccdb6761e4f8",
+    "settings": {
+      "arch": "x86_64",
+      "build_type": "Release",
+      "compiler": "clang",
+      "compiler.version": "23",
+      "os": "Linux"
+    }
+  },
+  {
+    "context": "build",
+    "license": "LGPL-2.1-or-later",
+    "options": {
+      "fPIC": "True",
+      "shared": "False"
+    },
+    "package_id": "0a137fcc072259808d958414340e026654fe7669",
+    "prev": "cba1100e4b1571b445c5d6bf209e8596",
+    "ref": "libiconv/1.17#9923bc6dc6f106646d6967e0039a5ada",
+    "rrev": "9923bc6dc6f106646d6967e0039a5ada",
+    "settings": {
+      "arch": "x86_64",
+      "build_type": "Release",
+      "compiler": "clang",
+      "compiler.version": "23",
+      "os": "Linux"
+    }
+  },
+  {
+    "context": "build",
+    "license": "Zlib",
+    "options": {
+      "fPIC": "True",
+      "shared": "False"
+    },
+    "package_id": "0a137fcc072259808d958414340e026654fe7669",
+    "prev": "83b818cf6f0eb85914994ea6a5120a6b",
+    "ref": "zlib/1.3.2#1cb806da49011867778ffb6ac7190fcb",
+    "rrev": "1cb806da49011867778ffb6ac7190fcb",
+    "settings": {
+      "arch": "x86_64",
+      "build_type": "Release",
+      "compiler": "clang",
+      "compiler.version": "23",
+      "os": "Linux"
+    }
+  },
+  {
+    "context": "build",
+    "license": "BSD-3-Clause",
+    "options": {},
+    "package_id": "63fead0844576fc02943e16909f08fcdddd6f44b",
+    "prev": "4d4766f0d30bec6434f5b4962831f86b",
+    "ref": "cmake/4.4.4#fec9c7048fae91e03c31e59977cd9c12",
+    "rrev": "fec9c7048fae91e03c31e59977cd9c12",
+    "settings": {
+      "arch": "x86_64",
+      "os": "Linux"
+    }
+  },
+  {
+    "context": "build",
+    "license": "MIT",
+    "options": {
+      "char_type": "char",
+      "fPIC": "True",
+      "large_size": "False",
+      "shared": "False"
+    },
+    "package_id": "3989380b4e991542268faca2a764cd84cc513619",
+    "prev": "8f644f8d46bcf37d4cfc65c18c57c51e",
+    "ref": "expat/2.10.0#93425119c70db4e470b3d7d9b5daf3e6",
+    "rrev": "93425119c70db4e470b3d7d9b5daf3e6",
+    "settings": {
+      "arch": "x86_64",
+      "build_type": "Release",
+      "compiler": "clang",
+      "compiler.version": "23",
+      "os": "Linux"
+    }
+  },
+  {
+    "context": "build",
+    "license": "BSD-3-Clause",
+    "options": {},
+    "package_id": "63fead0844576fc02943e16909f08fcdddd6f44b",
+    "prev": "4d4766f0d30bec6434f5b4962831f86b",
+    "ref": "cmake/4.4.4#fec9c7048fae91e03c31e59977cd9c12",
+    "rrev": "fec9c7048fae91e03c31e59977cd9c12",
+    "settings": {
+      "arch": "x86_64",
+      "os": "Linux"
+    }
+  },
+  {
+    "context": "build",
+    "license": "Apache-2.0",
+    "options": {},
+    "package_id": "da39a3ee5e6b4b0d3255bfef95601890afd80709",
+    "prev": "f54fda458a6ea9fa57bcbb5f76c05bd7",
+    "ref": "meson/1.10.2#9d2d10681fe7fe61c788c58626c89b25",
+    "rrev": "9d2d10681fe7fe61c788c58626c89b25",
+    "settings": {}
+  },
+  {
+    "context": "build",
+    "license": "Apache-2.0",
+    "options": {},
+    "package_id": "3593751651824fb813502c69c971267624ced41a",
+    "prev": "004588f111d3688b7e86b7401f49ea16",
+    "ref": "ninja/1.13.2#c8c5dc2a52ed6e4e42a66d75b4717ceb",
+    "rrev": "c8c5dc2a52ed6e4e42a66d75b4717ceb",
+    "settings": {
+      "arch": "x86_64",
+      "build_type": "Release",
+      "compiler": "clang",
+      "compiler.cppstd": "20",
+      "compiler.libcxx": "libstdc++11",
+      "compiler.version": "23",
+      "os": "Linux"
+    }
+  },
+  {
+    "context": "build",
+    "license": "ISC",
+    "options": {
+      "enable_lib": "False"
+    },
+    "package_id": "c0b621fd4b3199fe05075171573398833dba85f4",
+    "prev": "4b04c5ce32e745f87a67c63a747148d2",
+    "ref": "pkgconf/2.5.1#93c2051284cba1279494a43a4fcfeae2",
+    "rrev": "93c2051284cba1279494a43a4fcfeae2",
+    "settings": {
+      "arch": "x86_64",
+      "build_type": "Release",
+      "compiler": "clang",
+      "compiler.version": "23",
+      "os": "Linux"
+    }
+  },
+  {
+    "context": "build",
+    "license": "Apache-2.0",
+    "options": {},
+    "package_id": "da39a3ee5e6b4b0d3255bfef95601890afd80709",
+    "prev": "f54fda458a6ea9fa57bcbb5f76c05bd7",
+    "ref": "meson/1.10.2#9d2d10681fe7fe61c788c58626c89b25",
+    "rrev": "9d2d10681fe7fe61c788c58626c89b25",
+    "settings": {}
+  },
+  {
+    "context": "build",
+    "license": "Apache-2.0",
+    "options": {},
+    "package_id": "3593751651824fb813502c69c971267624ced41a",
+    "prev": "004588f111d3688b7e86b7401f49ea16",
+    "ref": "ninja/1.13.2#c8c5dc2a52ed6e4e42a66d75b4717ceb",
+    "rrev": "c8c5dc2a52ed6e4e42a66d75b4717ceb",
+    "settings": {
+      "arch": "x86_64",
+      "build_type": "Release",
+      "compiler": "clang",
+      "compiler.cppstd": "20",
+      "compiler.libcxx": "libstdc++11",
+      "compiler.version": "23",
+      "os": "Linux"
+    }
+  },
+  {
+    "context": "host",
+    "license": "MIT",
+    "options": {},
+    "package_id": "da39a3ee5e6b4b0d3255bfef95601890afd80709",
+    "prev": "54c9d6d67f9971b448f5a47a878b23bf",
+    "ref": "vulkan-memory-allocator/3.3.0#5393b5bc9a6b8a2fb9612df877706608",
+    "rrev": "5393b5bc9a6b8a2fb9612df877706608",
+    "settings": {
+      "arch": "x86_64",
+      "build_type": "Debug",
+      "compiler": "clang",
+      "compiler.cppstd": "20",
+      "compiler.libcxx": "libstdc++11",
+      "compiler.version": "23",
+      "os": "Linux"
+    }
+  },
+  {
+    "context": "host",
+    "license": "Apache-2.0",
+    "options": {},
+    "package_id": "da39a3ee5e6b4b0d3255bfef95601890afd80709",
+    "prev": "471ebde28e91a7fb21437f3478e03f2f",
+    "ref": "vulkan-headers/1.3.296.0#4ea73880426698c2e903c3e7acd892dc",
+    "rrev": "4ea73880426698c2e903c3e7acd892dc",
+    "settings": {
+      "arch": "x86_64",
+      "build_type": "Debug",
+      "compiler": "clang",
+      "compiler.cppstd": "20",
+      "compiler.libcxx": "libstdc++11",
+      "compiler.version": "23",
+      "os": "Linux"
+    }
+  },
+  {
+    "context": "build",
+    "license": "Apache-2.0 WITH LLVM-exception",
+    "options": {},
+    "package_id": "63fead0844576fc02943e16909f08fcdddd6f44b",
+    "prev": "ac448c984bb95690768a6f32adb9a18f",
+    "ref": "slangc/2026.21@ngen/tools#6e871398eae564c7e6333ddea199e050",
+    "rrev": "6e871398eae564c7e6333ddea199e050",
+    "settings": {
+      "arch": "x86_64",
+      "os": "Linux"
+    }
+  },
+  {
+    "context": "build",
+    "license": "Apache-2.0",
+    "options": {
+      "build_executables": "True",
+      "fPIC": "True",
+      "shared": "False"
+    },
+    "package_id": "609e88e19e5f81480dd09ce2581d77e682c7db05",
+    "prev": "d395957b94c1e334ee7eb83fec58c796",
+    "ref": "spirv-tools/1.4.357.0#b6f5de6ef73ab1887deb9da902f8a719",
+    "rrev": "b6f5de6ef73ab1887deb9da902f8a719",
+    "settings": {
+      "arch": "x86_64",
+      "build_type": "Release",
+      "compiler": "clang",
+      "compiler.cppstd": "20",
+      "compiler.libcxx": "libstdc++11",
+      "compiler.version": "23",
+      "os": "Linux"
+    }
+  },
+  {
+    "context": "build",
+    "license": "MIT-KhronosGroup",
+    "options": {},
+    "package_id": "da39a3ee5e6b4b0d3255bfef95601890afd80709",
+    "prev": "f965ad10aec98410f169509698b1e44c",
+    "ref": "spirv-headers/1.4.357.0#9a9853ce0dd278c90c13c95ac1d02993",
+    "rrev": "9a9853ce0dd278c90c13c95ac1d02993",
+    "settings": {
+      "arch": "x86_64",
+      "build_type": "Release",
+      "compiler": "clang",
+      "compiler.cppstd": "20",
+      "compiler.libcxx": "libstdc++11",
+      "compiler.version": "23",
+      "os": "Linux"
+    }
+  },
+  {
+    "context": "build",
+    "license": "BSD-3-Clause",
+    "options": {},
+    "package_id": "63fead0844576fc02943e16909f08fcdddd6f44b",
+    "prev": "4d4766f0d30bec6434f5b4962831f86b",
+    "ref": "cmake/4.4.4#fec9c7048fae91e03c31e59977cd9c12",
+    "rrev": "fec9c7048fae91e03c31e59977cd9c12",
+    "settings": {
+      "arch": "x86_64",
+      "os": "Linux"
+    }
+  }
+]

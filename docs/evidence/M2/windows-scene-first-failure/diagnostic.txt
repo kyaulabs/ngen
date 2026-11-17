@@ -1,0 +1,19 @@
+Archive SHA256: 9f64be4c03fbcb730b18466fa9b2970474cf29071242408f5b4098b7bf41ce92
+Source: 64faca6be6e2db1eb4392b5bc796d75ca2538f6d
+Working tree: clean
+Configuration: MSVC x64 Debug, toolset 14.44.35207, C++20, /W4 /WX /permissive-
+
+[14/80] Generating shaders/<INPUT-KEY>/manifest.json
+[32/80] Building CXX object CMakeFiles/ngen_render.dir/engine/render/context.cpp.obj
+FAILED: [code=2] CMakeFiles/ngen_render.dir/engine/render/context.cpp.obj
+<REPO>/engine/render/shader_contract.hpp(56): error C2220: the following warning is treated as an error
+<REPO>/engine/render/shader_contract.hpp(56): warning C4324: 'ngen::render::shader::CullConstants': structure was padded due to alignment specifier
+[33/80] Building CXX object CMakeFiles/ngen_render.dir/engine/render/presentation.cpp.obj
+FAILED: [code=2] CMakeFiles/ngen_render.dir/engine/render/presentation.cpp.obj
+<REPO>/engine/render/shader_contract.hpp(56): error C2220: the following warning is treated as an error
+<REPO>/engine/render/shader_contract.hpp(56): warning C4324: 'ngen::render::shader::CullConstants': structure was padded due to alignment specifier
+<REPO>/engine/render/post.hpp(14): warning C4324: 'ngen::render::PostDraw': structure was padded due to alignment specifier
+ninja: build stopped: subcommand failed.
+
+The wrapper stopped on cmake native exit 2 and packaged failure diagnostics.
+No CTest, renderer/resource/shader/scene GPU execution occurred in this run.

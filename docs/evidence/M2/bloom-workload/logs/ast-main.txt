@@ -1,0 +1,4 @@
+inspector-debug apps/scene_workload/main.cpp CMakeFiles/scene_workload.dir/apps/scene_workload/main.cpp.o 0
+inspector-release apps/scene_workload/main.cpp CMakeFiles/scene_workload.dir/apps/scene_workload/main.cpp.o 0
+inspector-asan apps/scene_workload/main.cpp CMakeFiles/scene_workload.dir/apps/scene_workload/main.cpp.o 0
+scene-shipping apps/scene_workload/main.cpp CMakeFiles/scene_workload.dir/apps/scene_workload/main.cpp.o 0

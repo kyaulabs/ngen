@@ -1,0 +1,310 @@
+{
+  "source": "build/cooked-candidate/frigate-charcoal-glazing-v1/scene.ngas",
+  "candidate": "build/cooked-candidate/frigate-charcoal-glazing-v1/scene.ngas",
+  "ray_scope": "Opaque cooked geometry; transparent pane/jet ignored, no author helpers imported",
+  "lods": [
+    {
+      "lod": 0,
+      "windows": [
+        {
+          "window": 0,
+          "origin": [
+            -5.257181439403007,
+            12.74622234626863,
+            -6.654085159301758
+          ],
+          "direction": [
+            0.5143619251316979,
+            -0.857573209688137,
+            -0.0
+          ],
+          "old_opaque_distance": 1.067569186943,
+          "new_opaque_distance": 1.067569186943,
+          "visible_depth_gain": 0.0
+        },
+        {
+          "window": 1,
+          "origin": [
+            -5.257181439403007,
+            12.74622234626863,
+            -4.277626037597656
+          ],
+          "direction": [
+            0.5143619251316979,
+            -0.857573209688137,
+            -0.0
+          ],
+          "old_opaque_distance": 0.5888397651730186,
+          "new_opaque_distance": 0.5888397651730186,
+          "visible_depth_gain": 0.0
+        },
+        {
+          "window": 2,
+          "origin": [
+            -5.257181439403007,
+            12.74622234626863,
+            -1.9011671543121338
+          ],
+          "direction": [
+            0.5143619251316979,
+            -0.857573209688137,
+            -0.0
+          ],
+          "old_opaque_distance": 0.5888397651730186,
+          "new_opaque_distance": 0.5888397651730186,
+          "visible_depth_gain": 0.0
+        },
+        {
+          "window": 3,
+          "origin": [
+            -5.257181439403007,
+            12.74622234626863,
+            1.9011671543121338
+          ],
+          "direction": [
+            0.5143619251316979,
+            -0.857573209688137,
+            -0.0
+          ],
+          "old_opaque_distance": 0.5888397651730188,
+          "new_opaque_distance": 0.5888397651730188,
+          "visible_depth_gain": 0.0
+        },
+        {
+          "window": 4,
+          "origin": [
+            -5.257181439403007,
+            12.74622234626863,
+            4.277626037597656
+          ],
+          "direction": [
+            0.5143619251316979,
+            -0.857573209688137,
+            -0.0
+          ],
+          "old_opaque_distance": 0.5888397651730188,
+          "new_opaque_distance": 0.5888397651730188,
+          "visible_depth_gain": 0.0
+        },
+        {
+          "window": 5,
+          "origin": [
+            -5.257181439403007,
+            12.74622234626863,
+            6.654085159301758
+          ],
+          "direction": [
+            0.5143619251316979,
+            -0.857573209688137,
+            -0.0
+          ],
+          "old_opaque_distance": 1.0675690668535593,
+          "new_opaque_distance": 1.0675690668535593,
+          "visible_depth_gain": 0.0
+        }
+      ]
+    },
+    {
+      "lod": 1,
+      "windows": [
+        {
+          "window": 0,
+          "origin": [
+            -5.257181439403007,
+            12.74622234626863,
+            -6.654085159301758
+          ],
+          "direction": [
+            0.5143619251316979,
+            -0.857573209688137,
+            -0.0
+          ],
+          "old_opaque_distance": 1.0765173405328337,
+          "new_opaque_distance": 1.0765173405328337,
+          "visible_depth_gain": 0.0
+        },
+        {
+          "window": 1,
+          "origin": [
+            -5.257181439403007,
+            12.74622234626863,
+            -4.277626037597656
+          ],
+          "direction": [
+            0.5143619251316979,
+            -0.857573209688137,
+            -0.0
+          ],
+          "old_opaque_distance": 0.608999383800538,
+          "new_opaque_distance": 0.608999383800538,
+          "visible_depth_gain": 0.0
+        },
+        {
+          "window": 2,
+          "origin": [
+            -5.257181439403007,
+            12.74622234626863,
+            -1.9011671543121338
+          ],
+          "direction": [
+            0.5143619251316979,
+            -0.857573209688137,
+            -0.0
+          ],
+          "old_opaque_distance": 0.6089993838005376,
+          "new_opaque_distance": 0.6089993838005376,
+          "visible_depth_gain": 0.0
+        },
+        {
+          "window": 3,
+          "origin": [
+            -5.257181439403007,
+            12.74622234626863,
+            1.9011671543121338
+          ],
+          "direction": [
+            0.5143619251316979,
+            -0.857573209688137,
+            -0.0
+          ],
+          "old_opaque_distance": 0.608999383800538,
+          "new_opaque_distance": 0.608999383800538,
+          "visible_depth_gain": 0.0
+        },
+        {
+          "window": 4,
+          "origin": [
+            -5.257181439403007,
+            12.74622234626863,
+            4.277626037597656
+          ],
+          "direction": [
+            0.5143619251316979,
+            -0.857573209688137,
+            -0.0
+          ],
+          "old_opaque_distance": 0.608999383800538,
+          "new_opaque_distance": 0.608999383800538,
+          "visible_depth_gain": 0.0
+        },
+        {
+          "window": 5,
+          "origin": [
+            -5.257181439403007,
+            12.74622234626863,
+            6.654085159301758
+          ],
+          "direction": [
+            0.5143619251316979,
+            -0.857573209688137,
+            -0.0
+          ],
+          "old_opaque_distance": 1.0765170674061126,
+          "new_opaque_distance": 1.0765170674061126,
+          "visible_depth_gain": 0.0
+        }
+      ]
+    },
+    {
+      "lod": 2,
+      "windows": [
+        {
+          "window": 0,
+          "origin": [
+            -5.257181439403007,
+            12.74622234626863,
+            -6.654085159301758
+          ],
+          "direction": [
+            0.5143619251316979,
+            -0.857573209688137,
+            -0.0
+          ],
+          "old_opaque_distance": 1.0765173405328337,
+          "new_opaque_distance": 1.0765173405328337,
+          "visible_depth_gain": 0.0
+        },
+        {
+          "window": 1,
+          "origin": [
+            -5.257181439403007,
+            12.74622234626863,
+            -4.277626037597656
+          ],
+          "direction": [
+            0.5143619251316979,
+            -0.857573209688137,
+            -0.0
+          ],
+          "old_opaque_distance": 0.608999383800538,
+          "new_opaque_distance": 0.608999383800538,
+          "visible_depth_gain": 0.0
+        },
+        {
+          "window": 2,
+          "origin": [
+            -5.257181439403007,
+            12.74622234626863,
+            -1.9011671543121338
+          ],
+          "direction": [
+            0.5143619251316979,
+            -0.857573209688137,
+            -0.0
+          ],
+          "old_opaque_distance": 0.6089993838005376,
+          "new_opaque_distance": 0.6089993838005376,
+          "visible_depth_gain": 0.0
+        },
+        {
+          "window": 3,
+          "origin": [
+            -5.257181439403007,
+            12.74622234626863,
+            1.9011671543121338
+          ],
+          "direction": [
+            0.5143619251316979,
+            -0.857573209688137,
+            -0.0
+          ],
+          "old_opaque_distance": 0.608999383800538,
+          "new_opaque_distance": 0.608999383800538,
+          "visible_depth_gain": 0.0
+        },
+        {
+          "window": 4,
+          "origin": [
+            -5.257181439403007,
+            12.74622234626863,
+            4.277626037597656
+          ],
+          "direction": [
+            0.5143619251316979,
+            -0.857573209688137,
+            -0.0
+          ],
+          "old_opaque_distance": 0.608999383800538,
+          "new_opaque_distance": 0.608999383800538,
+          "visible_depth_gain": 0.0
+        },
+        {
+          "window": 5,
+          "origin": [
+            -5.257181439403007,
+            12.74622234626863,
+            6.654085159301758
+          ],
+          "direction": [
+            0.5143619251316979,
+            -0.857573209688137,
+            -0.0
+          ],
+          "old_opaque_distance": 1.0765170674061126,
+          "new_opaque_distance": 1.0765170674061126,
+          "visible_depth_gain": 0.0
+        }
+      ]
+    }
+  ]
+}

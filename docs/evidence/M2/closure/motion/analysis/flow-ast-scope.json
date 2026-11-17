@@ -1,0 +1,481 @@
+[
+  {
+    "configuration": "inspector-debug",
+    "selected_invocations": [
+      {
+        "source": "tests/shader_layout.cpp",
+        "object": "CMakeFiles/shader_contract_layout.dir/tests/shader_layout.cpp.o"
+      },
+      {
+        "source": "engine/render/context.cpp",
+        "object": "CMakeFiles/ngen_render.dir/engine/render/context.cpp.o"
+      },
+      {
+        "source": "engine/render/presentation.cpp",
+        "object": "CMakeFiles/ngen_render.dir/engine/render/presentation.cpp.o"
+      },
+      {
+        "source": "engine/render/resources.cpp",
+        "object": "CMakeFiles/ngen_render.dir/engine/render/resources.cpp.o"
+      },
+      {
+        "source": "engine/render/post.cpp",
+        "object": "CMakeFiles/ngen_render.dir/engine/render/post.cpp.o"
+      },
+      {
+        "source": "engine/render/mesh.cpp",
+        "object": "CMakeFiles/ngen_render.dir/engine/render/mesh.cpp.o"
+      },
+      {
+        "source": "engine/render/environment.cpp",
+        "object": "CMakeFiles/ngen_render.dir/engine/render/environment.cpp.o"
+      },
+      {
+        "source": "engine/render/overlay.cpp",
+        "object": "CMakeFiles/ngen_render.dir/engine/render/overlay.cpp.o"
+      },
+      {
+        "source": "apps/probe/presentation.cpp",
+        "object": "CMakeFiles/ngen_probe_support.dir/apps/probe/presentation.cpp.o"
+      },
+      {
+        "source": "apps/probe/capture.cpp",
+        "object": "CMakeFiles/ngen_probe_support.dir/apps/probe/capture.cpp.o"
+      },
+      {
+        "source": "apps/render_probe/main.cpp",
+        "object": "CMakeFiles/render_probe.dir/apps/render_probe/main.cpp.o"
+      },
+      {
+        "source": "apps/resource_probe/main.cpp",
+        "object": "CMakeFiles/resource_probe.dir/apps/resource_probe/main.cpp.o"
+      },
+      {
+        "source": "engine/render/scene.cpp",
+        "object": "CMakeFiles/ngen_scene.dir/engine/render/scene.cpp.o"
+      },
+      {
+        "source": "engine/render/scene_draw.cpp",
+        "object": "CMakeFiles/ngen_scene.dir/engine/render/scene_draw.cpp.o"
+      },
+      {
+        "source": "apps/scene_workload/fixture.cpp",
+        "object": "CMakeFiles/scene_workload_fixture.dir/apps/scene_workload/fixture.cpp.o"
+      },
+      {
+        "source": "engine/tools/ui.cpp",
+        "object": "CMakeFiles/ngen_inspector_ui.dir/engine/tools/ui.cpp.o"
+      },
+      {
+        "source": "apps/scene_workload/main.cpp",
+        "object": "CMakeFiles/scene_workload.dir/apps/scene_workload/main.cpp.o"
+      },
+      {
+        "source": "apps/inspector_probe/main.cpp",
+        "object": "CMakeFiles/inspector_probe.dir/apps/inspector_probe/main.cpp.o"
+      },
+      {
+        "source": "apps/scene_probe/main.cpp",
+        "object": "CMakeFiles/scene_probe.dir/apps/scene_probe/main.cpp.o"
+      },
+      {
+        "source": "apps/scene_probe/draw.cpp",
+        "object": "CMakeFiles/scene_probe.dir/apps/scene_probe/draw.cpp.o"
+      },
+      {
+        "source": "tests/render_environment.cpp",
+        "object": "CMakeFiles/render_environment_tests.dir/tests/render_environment.cpp.o"
+      },
+      {
+        "source": "tests/workload.cpp",
+        "object": "CMakeFiles/scene_workload_tests.dir/tests/workload.cpp.o"
+      },
+      {
+        "source": "tests/shader_gpu.cpp",
+        "object": "CMakeFiles/shader_gpu_probe.dir/tests/shader_gpu.cpp.o"
+      },
+      {
+        "source": "tests/render_startup.cpp",
+        "object": "CMakeFiles/render_startup_tests.dir/tests/render_startup.cpp.o"
+      }
+    ],
+    "dependency_metadata": "actual ninja -t deps plus current complete compile command; no compiler flags removed"
+  },
+  {
+    "configuration": "inspector-release",
+    "selected_invocations": [
+      {
+        "source": "tests/shader_layout.cpp",
+        "object": "CMakeFiles/shader_contract_layout.dir/tests/shader_layout.cpp.o"
+      },
+      {
+        "source": "engine/render/context.cpp",
+        "object": "CMakeFiles/ngen_render.dir/engine/render/context.cpp.o"
+      },
+      {
+        "source": "engine/render/presentation.cpp",
+        "object": "CMakeFiles/ngen_render.dir/engine/render/presentation.cpp.o"
+      },
+      {
+        "source": "engine/render/resources.cpp",
+        "object": "CMakeFiles/ngen_render.dir/engine/render/resources.cpp.o"
+      },
+      {
+        "source": "engine/render/post.cpp",
+        "object": "CMakeFiles/ngen_render.dir/engine/render/post.cpp.o"
+      },
+      {
+        "source": "engine/render/mesh.cpp",
+        "object": "CMakeFiles/ngen_render.dir/engine/render/mesh.cpp.o"
+      },
+      {
+        "source": "engine/render/environment.cpp",
+        "object": "CMakeFiles/ngen_render.dir/engine/render/environment.cpp.o"
+      },
+      {
+        "source": "engine/render/overlay.cpp",
+        "object": "CMakeFiles/ngen_render.dir/engine/render/overlay.cpp.o"
+      },
+      {
+        "source": "apps/probe/presentation.cpp",
+        "object": "CMakeFiles/ngen_probe_support.dir/apps/probe/presentation.cpp.o"
+      },
+      {
+        "source": "apps/probe/capture.cpp",
+        "object": "CMakeFiles/ngen_probe_support.dir/apps/probe/capture.cpp.o"
+      },
+      {
+        "source": "apps/render_probe/main.cpp",
+        "object": "CMakeFiles/render_probe.dir/apps/render_probe/main.cpp.o"
+      },
+      {
+        "source": "apps/resource_probe/main.cpp",
+        "object": "CMakeFiles/resource_probe.dir/apps/resource_probe/main.cpp.o"
+      },
+      {
+        "source": "engine/render/scene.cpp",
+        "object": "CMakeFiles/ngen_scene.dir/engine/render/scene.cpp.o"
+      },
+      {
+        "source": "engine/render/scene_draw.cpp",
+        "object": "CMakeFiles/ngen_scene.dir/engine/render/scene_draw.cpp.o"
+      },
+      {
+        "source": "apps/scene_workload/fixture.cpp",
+        "object": "CMakeFiles/scene_workload_fixture.dir/apps/scene_workload/fixture.cpp.o"
+      },
+      {
+        "source": "engine/tools/ui.cpp",
+        "object": "CMakeFiles/ngen_inspector_ui.dir/engine/tools/ui.cpp.o"
+      },
+      {
+        "source": "apps/scene_workload/main.cpp",
+        "object": "CMakeFiles/scene_workload.dir/apps/scene_workload/main.cpp.o"
+      },
+      {
+        "source": "apps/inspector_probe/main.cpp",
+        "object": "CMakeFiles/inspector_probe.dir/apps/inspector_probe/main.cpp.o"
+      },
+      {
+        "source": "apps/scene_probe/main.cpp",
+        "object": "CMakeFiles/scene_probe.dir/apps/scene_probe/main.cpp.o"
+      },
+      {
+        "source": "apps/scene_probe/draw.cpp",
+        "object": "CMakeFiles/scene_probe.dir/apps/scene_probe/draw.cpp.o"
+      },
+      {
+        "source": "tests/render_environment.cpp",
+        "object": "CMakeFiles/render_environment_tests.dir/tests/render_environment.cpp.o"
+      },
+      {
+        "source": "tests/workload.cpp",
+        "object": "CMakeFiles/scene_workload_tests.dir/tests/workload.cpp.o"
+      },
+      {
+        "source": "tests/shader_gpu.cpp",
+        "object": "CMakeFiles/shader_gpu_probe.dir/tests/shader_gpu.cpp.o"
+      },
+      {
+        "source": "tests/render_startup.cpp",
+        "object": "CMakeFiles/render_startup_tests.dir/tests/render_startup.cpp.o"
+      }
+    ],
+    "dependency_metadata": "actual ninja -t deps plus current complete compile command; no compiler flags removed"
+  },
+  {
+    "configuration": "inspector-asan",
+    "selected_invocations": [
+      {
+        "source": "tests/shader_layout.cpp",
+        "object": "CMakeFiles/shader_contract_layout.dir/tests/shader_layout.cpp.o"
+      },
+      {
+        "source": "engine/render/context.cpp",
+        "object": "CMakeFiles/ngen_render.dir/engine/render/context.cpp.o"
+      },
+      {
+        "source": "engine/render/presentation.cpp",
+        "object": "CMakeFiles/ngen_render.dir/engine/render/presentation.cpp.o"
+      },
+      {
+        "source": "engine/render/resources.cpp",
+        "object": "CMakeFiles/ngen_render.dir/engine/render/resources.cpp.o"
+      },
+      {
+        "source": "engine/render/post.cpp",
+        "object": "CMakeFiles/ngen_render.dir/engine/render/post.cpp.o"
+      },
+      {
+        "source": "engine/render/mesh.cpp",
+        "object": "CMakeFiles/ngen_render.dir/engine/render/mesh.cpp.o"
+      },
+      {
+        "source": "engine/render/environment.cpp",
+        "object": "CMakeFiles/ngen_render.dir/engine/render/environment.cpp.o"
+      },
+      {
+        "source": "engine/render/overlay.cpp",
+        "object": "CMakeFiles/ngen_render.dir/engine/render/overlay.cpp.o"
+      },
+      {
+        "source": "apps/probe/presentation.cpp",
+        "object": "CMakeFiles/ngen_probe_support.dir/apps/probe/presentation.cpp.o"
+      },
+      {
+        "source": "apps/probe/capture.cpp",
+        "object": "CMakeFiles/ngen_probe_support.dir/apps/probe/capture.cpp.o"
+      },
+      {
+        "source": "apps/render_probe/main.cpp",
+        "object": "CMakeFiles/render_probe.dir/apps/render_probe/main.cpp.o"
+      },
+      {
+        "source": "apps/resource_probe/main.cpp",
+        "object": "CMakeFiles/resource_probe.dir/apps/resource_probe/main.cpp.o"
+      },
+      {
+        "source": "engine/render/scene.cpp",
+        "object": "CMakeFiles/ngen_scene.dir/engine/render/scene.cpp.o"
+      },
+      {
+        "source": "engine/render/scene_draw.cpp",
+        "object": "CMakeFiles/ngen_scene.dir/engine/render/scene_draw.cpp.o"
+      },
+      {
+        "source": "apps/scene_workload/fixture.cpp",
+        "object": "CMakeFiles/scene_workload_fixture.dir/apps/scene_workload/fixture.cpp.o"
+      },
+      {
+        "source": "engine/tools/ui.cpp",
+        "object": "CMakeFiles/ngen_inspector_ui.dir/engine/tools/ui.cpp.o"
+      },
+      {
+        "source": "apps/scene_workload/main.cpp",
+        "object": "CMakeFiles/scene_workload.dir/apps/scene_workload/main.cpp.o"
+      },
+      {
+        "source": "apps/inspector_probe/main.cpp",
+        "object": "CMakeFiles/inspector_probe.dir/apps/inspector_probe/main.cpp.o"
+      },
+      {
+        "source": "apps/scene_probe/main.cpp",
+        "object": "CMakeFiles/scene_probe.dir/apps/scene_probe/main.cpp.o"
+      },
+      {
+        "source": "apps/scene_probe/draw.cpp",
+        "object": "CMakeFiles/scene_probe.dir/apps/scene_probe/draw.cpp.o"
+      },
+      {
+        "source": "tests/render_environment.cpp",
+        "object": "CMakeFiles/render_environment_tests.dir/tests/render_environment.cpp.o"
+      },
+      {
+        "source": "tests/workload.cpp",
+        "object": "CMakeFiles/scene_workload_tests.dir/tests/workload.cpp.o"
+      },
+      {
+        "source": "tests/shader_gpu.cpp",
+        "object": "CMakeFiles/shader_gpu_probe.dir/tests/shader_gpu.cpp.o"
+      },
+      {
+        "source": "tests/render_startup.cpp",
+        "object": "CMakeFiles/render_startup_tests.dir/tests/render_startup.cpp.o"
+      }
+    ],
+    "dependency_metadata": "actual ninja -t deps plus current complete compile command; no compiler flags removed"
+  },
+  {
+    "configuration": "scene-shipping",
+    "selected_invocations": [
+      {
+        "source": "tests/shader_layout.cpp",
+        "object": "CMakeFiles/shader_contract_layout.dir/tests/shader_layout.cpp.o"
+      },
+      {
+        "source": "engine/render/context.cpp",
+        "object": "CMakeFiles/ngen_render.dir/engine/render/context.cpp.o"
+      },
+      {
+        "source": "engine/render/presentation.cpp",
+        "object": "CMakeFiles/ngen_render.dir/engine/render/presentation.cpp.o"
+      },
+      {
+        "source": "engine/render/resources.cpp",
+        "object": "CMakeFiles/ngen_render.dir/engine/render/resources.cpp.o"
+      },
+      {
+        "source": "engine/render/post.cpp",
+        "object": "CMakeFiles/ngen_render.dir/engine/render/post.cpp.o"
+      },
+      {
+        "source": "engine/render/mesh.cpp",
+        "object": "CMakeFiles/ngen_render.dir/engine/render/mesh.cpp.o"
+      },
+      {
+        "source": "engine/render/environment.cpp",
+        "object": "CMakeFiles/ngen_render.dir/engine/render/environment.cpp.o"
+      },
+      {
+        "source": "apps/probe/presentation.cpp",
+        "object": "CMakeFiles/ngen_probe_support.dir/apps/probe/presentation.cpp.o"
+      },
+      {
+        "source": "apps/probe/capture.cpp",
+        "object": "CMakeFiles/ngen_probe_support.dir/apps/probe/capture.cpp.o"
+      },
+      {
+        "source": "apps/render_probe/main.cpp",
+        "object": "CMakeFiles/render_probe.dir/apps/render_probe/main.cpp.o"
+      },
+      {
+        "source": "apps/resource_probe/main.cpp",
+        "object": "CMakeFiles/resource_probe.dir/apps/resource_probe/main.cpp.o"
+      },
+      {
+        "source": "engine/render/scene.cpp",
+        "object": "CMakeFiles/ngen_scene.dir/engine/render/scene.cpp.o"
+      },
+      {
+        "source": "engine/render/scene_draw.cpp",
+        "object": "CMakeFiles/ngen_scene.dir/engine/render/scene_draw.cpp.o"
+      },
+      {
+        "source": "apps/scene_workload/fixture.cpp",
+        "object": "CMakeFiles/scene_workload_fixture.dir/apps/scene_workload/fixture.cpp.o"
+      },
+      {
+        "source": "apps/scene_workload/main.cpp",
+        "object": "CMakeFiles/scene_workload.dir/apps/scene_workload/main.cpp.o"
+      },
+      {
+        "source": "apps/scene_probe/main.cpp",
+        "object": "CMakeFiles/scene_probe.dir/apps/scene_probe/main.cpp.o"
+      },
+      {
+        "source": "apps/scene_probe/draw.cpp",
+        "object": "CMakeFiles/scene_probe.dir/apps/scene_probe/draw.cpp.o"
+      },
+      {
+        "source": "tests/render_environment.cpp",
+        "object": "CMakeFiles/render_environment_tests.dir/tests/render_environment.cpp.o"
+      },
+      {
+        "source": "tests/workload.cpp",
+        "object": "CMakeFiles/scene_workload_tests.dir/tests/workload.cpp.o"
+      },
+      {
+        "source": "tests/shader_gpu.cpp",
+        "object": "CMakeFiles/shader_gpu_probe.dir/tests/shader_gpu.cpp.o"
+      },
+      {
+        "source": "tests/render_startup.cpp",
+        "object": "CMakeFiles/render_startup_tests.dir/tests/render_startup.cpp.o"
+      }
+    ],
+    "dependency_metadata": "actual ninja -t deps plus current complete compile command; no compiler flags removed"
+  },
+  {
+    "configuration": "scene-no-shaders",
+    "selected_invocations": [
+      {
+        "source": "engine/render/context.cpp",
+        "object": "CMakeFiles/ngen_render.dir/engine/render/context.cpp.o"
+      },
+      {
+        "source": "engine/render/presentation.cpp",
+        "object": "CMakeFiles/ngen_render.dir/engine/render/presentation.cpp.o"
+      },
+      {
+        "source": "engine/render/resources.cpp",
+        "object": "CMakeFiles/ngen_render.dir/engine/render/resources.cpp.o"
+      },
+      {
+        "source": "engine/render/post.cpp",
+        "object": "CMakeFiles/ngen_render.dir/engine/render/post.cpp.o"
+      },
+      {
+        "source": "engine/render/mesh.cpp",
+        "object": "CMakeFiles/ngen_render.dir/engine/render/mesh.cpp.o"
+      },
+      {
+        "source": "engine/render/environment.cpp",
+        "object": "CMakeFiles/ngen_render.dir/engine/render/environment.cpp.o"
+      },
+      {
+        "source": "apps/probe/presentation.cpp",
+        "object": "CMakeFiles/ngen_probe_support.dir/apps/probe/presentation.cpp.o"
+      },
+      {
+        "source": "apps/probe/capture.cpp",
+        "object": "CMakeFiles/ngen_probe_support.dir/apps/probe/capture.cpp.o"
+      },
+      {
+        "source": "apps/render_probe/main.cpp",
+        "object": "CMakeFiles/render_probe.dir/apps/render_probe/main.cpp.o"
+      },
+      {
+        "source": "apps/resource_probe/main.cpp",
+        "object": "CMakeFiles/resource_probe.dir/apps/resource_probe/main.cpp.o"
+      },
+      {
+        "source": "engine/render/scene.cpp",
+        "object": "CMakeFiles/ngen_scene.dir/engine/render/scene.cpp.o"
+      },
+      {
+        "source": "engine/render/scene_draw.cpp",
+        "object": "CMakeFiles/ngen_scene.dir/engine/render/scene_draw.cpp.o"
+      },
+      {
+        "source": "apps/scene_workload/fixture.cpp",
+        "object": "CMakeFiles/scene_workload_fixture.dir/apps/scene_workload/fixture.cpp.o"
+      },
+      {
+        "source": "apps/scene_probe/main.cpp",
+        "object": "CMakeFiles/scene_probe.dir/apps/scene_probe/main.cpp.o"
+      },
+      {
+        "source": "apps/scene_probe/draw.cpp",
+        "object": "CMakeFiles/scene_probe.dir/apps/scene_probe/draw.cpp.o"
+      },
+      {
+        "source": "tests/render_environment.cpp",
+        "object": "CMakeFiles/render_environment_tests.dir/tests/render_environment.cpp.o"
+      },
+      {
+        "source": "tests/workload.cpp",
+        "object": "CMakeFiles/scene_workload_tests.dir/tests/workload.cpp.o"
+      },
+      {
+        "source": "tests/render_startup.cpp",
+        "object": "CMakeFiles/render_startup_tests.dir/tests/render_startup.cpp.o"
+      }
+    ],
+    "dependency_metadata": "actual ninja -t deps plus current complete compile command; no compiler flags removed"
+  },
+  {
+    "configuration": "inspector-tsan",
+    "selected_invocations": [],
+    "dependency_metadata": "actual ninja -t deps plus current complete compile command; no compiler flags removed"
+  }
+]

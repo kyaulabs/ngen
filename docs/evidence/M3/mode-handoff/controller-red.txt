@@ -1,0 +1,34 @@
+Test project /home/kyau/projects/kyaulabs/ngen/build/flight-debug
+    Start 2: flight
+1/1 Test #2: flight ...........................***Failed    0.87 sec
+Randomness seeded to: 2402775535
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+flight_tests is a Catch2 v3.16.0 host application.
+Run with -? for options
+
+-------------------------------------------------------------------------------
+manual control cancels old autopilot instead of restarting it on tactical
+return
+-------------------------------------------------------------------------------
+/home/kyau/projects/kyaulabs/ngen/tests/flight.cpp:369
+...............................................................................
+
+/home/kyau/projects/kyaulabs/ngen/tests/flight.cpp:382: FAILED:
+  REQUIRE( direct.navigation.goal == Goal::coast )
+with expansion:
+  1 == 0
+
+===============================================================================
+test cases:    19 |    18 passed | 1 failed
+assertions: 93776 | 93775 passed | 1 failed
+
+
+
+0% tests passed, 1 tests failed out of 1
+
+Total Test time (real) =   0.88 sec
+
+The following tests FAILED:
+	  2 - flight (Failed)
+Errors while running CTest

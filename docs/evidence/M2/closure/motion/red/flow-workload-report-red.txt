@@ -1,0 +1,5 @@
+Traceback (most recent call last):
+  File "/home/kyau/projects/kyaulabs/ngen/build/m2-engine-color/check-workload-flow.py", line 5, in <module>
+    assert 'emissive_flow_phase' in rows[0], 'workload does not publish advancing authored-plume flow phase'
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: workload does not publish advancing authored-plume flow phase

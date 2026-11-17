@@ -1,0 +1,14 @@
+stdout marker
+stderr marker
+one argument with spaces
+checks
+--check-validation-callback
+startup
+--check-presentation
+resources
+shaders
+Exception: <REPO>/tests/windows_build.ps1:188
+Line |
+ 188 |                          throw 'Shader reflection was not retained'
+     |                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     | Shader reflection was not retained

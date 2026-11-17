@@ -1,0 +1,1638 @@
+#include <Jolt/Jolt.h>
+
+#include "audio/output.hpp"
+#include "flight/input.hpp"
+#include "flight_demo/app.hpp"
+#include "flight_demo/hud_layout.hpp"
+#include "flight_demo/performance.hpp"
+#include "flight_demo/view.hpp"
+#include "probe/capture.hpp"
+#include "render/environment.hpp"
+#include "scene_workload/allocations.hpp"
+#include "tools/gui.hpp"
+#include <algorithm>
+#include <array>
+#include <chrono>
+#include <cmath>
+#include <cstdio>
+#include <imgui.h>
+#include <limits>
+#include <numbers>
+#include <optional>
+#include <sstream>
+#include <stdexcept>
+#include <vector>
+
+namespace ngen::demo {
+namespace {
+using namespace render;
+using Clock = std::chrono::steady_clock;
+constexpr shader::Matrix identity{{1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1}};
+void require(bool value, const char *message) {
+    if (!value)
+        throw std::runtime_error(message);
+}
+template <class T> T take(std::variant<T, Failure> result) {
+    if (const auto *error = std::get_if<Failure>(&result))
+        throw std::runtime_error(error->message);
+    return std::get<T>(std::move(result));
+}
+template <class T> T game_value(Result<T> result) {
+    if (std::holds_alternative<Error>(result))
+        throw std::runtime_error("flight domain rejected its authored state");
+    return std::get<T>(std::move(result));
+}
+std::uint64_t nanoseconds(Clock::time_point start) {
+    return static_cast<std::uint64_t>(
+        std::chrono::duration_cast<std::chrono::nanoseconds>(Clock::now() - start).count());
+}
+void startup_events() {
+    SDL_Event event{};
+    for (unsigned i = 0; i < 256 && SDL_PollEvent(&event); ++i)
+        require(event.type != SDL_EVENT_QUIT && event.type != SDL_EVENT_WINDOW_CLOSE_REQUESTED,
+                "flight startup cancelled");
+}
+void wait(Context &context, const Submission &submission) {
+    const auto start = SDL_GetTicks();
+    while (!take(context.submission_complete(submission))) {
+        require(SDL_GetTicks() - start < 10000, "flight GPU completion timed out");
+        startup_events();
+        SDL_Delay(1);
+    }
+}
+Buffer buffer(Context &context, std::span<const std::byte> bytes, VkBufferUsageFlags usage) {
+    auto device = take(context.create_buffer(
+        {bytes.size(), usage | VK_BUFFER_USAGE_TRANSFER_DST_BIT, MemoryAccess::device}));
+    auto staging = take(context.create_buffer(
+        {bytes.size(), VK_BUFFER_USAGE_TRANSFER_SRC_BIT, MemoryAccess::upload}));
+    (void)take(staging.write(0, bytes));
+    wait(context, take(context.copy_buffer({staging, device, bytes.size()})));
+    return device;
+}
+void upload(Context &context, const Image &image, std::span<const std::byte> bytes) {
+    auto staging = take(context.create_buffer(
+        {bytes.size(), VK_BUFFER_USAGE_TRANSFER_SRC_BIT, MemoryAccess::upload}));
+    (void)take(staging.write(0, bytes));
+    wait(context, take(context.copy_to_image({staging, image})));
+}
+ScenePin resident(Context &context, assets::PackagePin package) {
+    auto uploading = take(SceneUpload::begin(context, std::move(package)));
+    const auto start = SDL_GetTicks();
+    for (;;) {
+        auto ready = take(uploading->advance(context));
+        if (ready)
+            return std::move(*ready);
+        require(SDL_GetTicks() - start < 60000, "flight asset upload timed out");
+        startup_events();
+        SDL_Delay(1);
+    }
+}
+std::optional<flight::FlightKey> mapped(SDL_Scancode key) {
+    using K = flight::FlightKey;
+    switch (key) {
+    case SDL_SCANCODE_W:
+        return K::forward;
+    case SDL_SCANCODE_S:
+        return K::backward;
+    case SDL_SCANCODE_A:
+        return K::left;
+    case SDL_SCANCODE_D:
+        return K::right;
+    case SDL_SCANCODE_LSHIFT:
+        return K::up;
+    case SDL_SCANCODE_LCTRL:
+        return K::down;
+    case SDL_SCANCODE_UP:
+        return K::pitch_up;
+    case SDL_SCANCODE_DOWN:
+        return K::pitch_down;
+    case SDL_SCANCODE_LEFT:
+        return K::yaw_left;
+    case SDL_SCANCODE_RIGHT:
+        return K::yaw_right;
+    case SDL_SCANCODE_Q:
+        return K::roll_left;
+    case SDL_SCANCODE_E:
+        return K::roll_right;
+    case SDL_SCANCODE_SPACE:
+        return K::brake;
+    case SDL_SCANCODE_LALT:
+    case SDL_SCANCODE_RALT:
+        return K::free_look;
+    default:
+        return {};
+    }
+}
+struct Ray {
+    JPH::DVec3 origin, direction;
+};
+Ray ray(const flight::CameraFrame &camera, std::array<float, 2> pixel, VkExtent2D extent) {
+    const auto scale = std::tan(camera.vertical_fov_degrees * std::numbers::pi_v<float> / 360);
+    const auto x = (2 * pixel[0] / static_cast<float>(extent.width) - 1) * scale *
+                   static_cast<float>(extent.width) / static_cast<float>(extent.height);
+    const auto y = -(2 * pixel[1] / static_cast<float>(extent.height) - 1) * scale;
+    const auto &q = camera.camera.rotation_xyzw;
+    const JPH::Quat rotation(q[0], q[1], q[2], q[3]);
+    const auto direction = rotation * JPH::Vec3{x, y, -1}.Normalized();
+    const auto &p = camera.camera.position_metres;
+    return {{p[0], p[1], p[2]}, JPH::DVec3(direction)};
+}
+std::optional<std::size_t> pick(const Ray &ray, const Preset &preset) {
+    double nearest = 8192;
+    std::optional<std::size_t> selected;
+    for (std::size_t i = 0; i < preset.camera_obstacles.size(); ++i) {
+        const auto &sphere = preset.camera_obstacles[i];
+        const auto &p = sphere.centre_metres;
+        const auto delta = ray.origin - JPH::DVec3{p[0], p[1], p[2]};
+        const auto b = delta.Dot(ray.direction);
+        const auto discriminant =
+            b * b - delta.LengthSq() + sphere.radius_metres * sphere.radius_metres;
+        if (discriminant >= 0) {
+            const auto distance = -b - std::sqrt(discriminant);
+            if (distance > 0 && distance < nearest) {
+                nearest = distance;
+                selected = i;
+            }
+        }
+    }
+    return selected;
+}
+GpuMemoryIdentity gpu_memory_identity(Context &context) {
+    VkPhysicalDeviceIDProperties id{};
+    id.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_ID_PROPERTIES;
+    VkPhysicalDeviceProperties2 properties{};
+    properties.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PROPERTIES_2;
+    properties.pNext = &id;
+    vkGetPhysicalDeviceProperties2(context.physical_device(), &properties);
+    GpuMemoryIdentity result;
+    if (properties.properties.deviceType == VK_PHYSICAL_DEVICE_TYPE_INTEGRATED_GPU)
+        result.kind = GpuMemoryKind::shared;
+    else if (properties.properties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU)
+        result.kind = GpuMemoryKind::dedicated;
+    result.luid_valid = id.deviceLUIDValid != 0;
+    result.node_mask = id.deviceNodeMask;
+    std::copy(std::begin(id.deviceLUID), std::end(id.deviceLUID), result.luid.begin());
+    VkPhysicalDeviceMemoryProperties memory{};
+    vkGetPhysicalDeviceMemoryProperties(context.physical_device(), &memory);
+    if (memory.memoryHeapCount > VK_MAX_MEMORY_HEAPS) {
+        result.kind = GpuMemoryKind::unavailable;
+        return result;
+    }
+    for (std::uint32_t i = 0; i < memory.memoryHeapCount && i < VK_MAX_MEMORY_HEAPS; ++i)
+        if ((memory.memoryHeaps[i].flags & VK_MEMORY_HEAP_DEVICE_LOCAL_BIT) != 0) {
+            if (memory.memoryHeaps[i].size >
+                std::numeric_limits<std::uint64_t>::max() - result.total_bytes) {
+                result.kind = GpuMemoryKind::unavailable;
+                result.total_bytes = 0;
+                break;
+            }
+            result.total_bytes += memory.memoryHeaps[i].size;
+        }
+    return result;
+}
+struct Sample {
+    std::uint64_t frame_ns{}, host_ns{};
+    flight::Snapshot state;
+    flight::CameraFrame camera;
+    audio::Statistics audio;
+    Submission mesh, post;
+    GpuTimings gpu;
+    ResourceStatistics memory;
+    VkExtent2D extent{};
+    float phase{}, power{}, rcs_power{}, rcs_demand{};
+    std::uint32_t rcs_active{};
+    bool gpu_ready{}, focused{}, capture_requested{}, capture_accepted{};
+};
+struct Hud {
+    std::array<float, 240> speed{}, force{};
+    std::size_t cursor{};
+    double frame_ms{};
+    GpuTimings gpu;
+    ResourceStatistics memory;
+    audio::Statistics audio;
+    const char *status{"Flight ready"};
+    bool help{}, data{}, preparing{}, alert{}, performance{}, gpu_ready{}, allocation_probe{};
+    std::uint64_t controls_drawn_frames{}, data_drawn_frames{}, context_menu_drawn_frames{};
+    std::optional<std::size_t> context_target;
+    std::optional<std::array<float, 2>> context_request;
+    GpuMemoryKind gpu_memory{GpuMemoryKind::unavailable};
+    SystemUsageSampler::Sample system;
+    HudRect performance_rect{};
+    std::uint64_t cpp_calls{}, gui_calls{}, performance_drawn_frames{};
+};
+HudRect window_rect() {
+    const auto position = ImGui::GetWindowPos(), size = ImGui::GetWindowSize();
+    return {position.x, position.y, size.x, size.y};
+}
+void panel_surface(tools::GuiPanelMaterials materials) {
+    const auto position = ImGui::GetWindowPos(), size = ImGui::GetWindowSize();
+    if (size.x <= 2 || size.y <= 2)
+        return;
+    auto *draw = ImGui::GetWindowDrawList();
+    const auto rounding = ImGui::GetStyle().WindowRounding;
+    const auto header_bottom = position.y + std::min(32.0F, size.y - 1);
+    // Preserve each supplied material's alpha without compositing the header
+    // over a second translucent full-window background.
+    draw->PushClipRect(position, {position.x + size.x, position.y + size.y});
+    draw->AddRectFilled({position.x + 1, position.y + 1}, {position.x + size.x - 1, header_bottom},
+                        ImGui::GetColorU32(materials.header), rounding,
+                        ImDrawFlags_RoundCornersTop);
+    if (header_bottom < position.y + size.y - 1)
+        draw->AddRectFilled(
+            {position.x + 1, header_bottom}, {position.x + size.x - 1, position.y + size.y - 1},
+            ImGui::GetColorU32(materials.panel), rounding, ImDrawFlags_RoundCornersBottom);
+    // AddRect already aligns its stroke by half a pixel. Keep its inner edge
+    // outside the inset fills so two translucent layers never accumulate.
+    draw->AddRect(position, {position.x + size.x, position.y + size.y},
+                  ImGui::GetColorU32(materials.line), rounding);
+    draw->PopClipRect();
+}
+bool performance_panel(tools::Gui &gui, Hud &metrics) {
+    const auto size = ImGui::GetIO().DisplaySize;
+    const auto panel = hud_layout(size.x, size.y, metrics.help, true).performance;
+    ImGui::SetNextWindowPos({panel.x, panel.y});
+    ImGui::SetNextWindowSize({panel.width, 0});
+    ImGui::SetNextWindowSizeConstraints({panel.width, 0}, {panel.width, panel.height});
+    gui.push_font(tools::GuiFont::mono);
+    ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, {6, 2});
+    constexpr auto flags =
+        static_cast<ImGuiWindowFlags>(static_cast<unsigned>(ImGuiWindowFlags_NoDecoration) |
+                                      static_cast<unsigned>(ImGuiWindowFlags_NoSavedSettings) |
+                                      static_cast<unsigned>(ImGuiWindowFlags_NoMove) |
+                                      static_cast<unsigned>(ImGuiWindowFlags_NoInputs) |
+                                      static_cast<unsigned>(ImGuiWindowFlags_NoBackground) |
+                                      static_cast<unsigned>(ImGuiWindowFlags_AlwaysAutoResize));
+    const auto visible = ImGui::Begin("Flight performance", nullptr, flags);
+    metrics.performance_rect = window_rect();
+    auto *draw = ImGui::GetWindowDrawList();
+    draw->VtxBuffer.reserve(static_cast<int>(overlay_vertex_limit));
+    draw->IdxBuffer.reserve(static_cast<int>(overlay_index_limit));
+    if (visible)
+        panel_surface(gui.panel_materials());
+    if (visible && panel.height < 240) {
+        if (metrics.frame_ms > 0)
+            ImGui::Text("%.1f FPS / %.2f ms", 1000 / metrics.frame_ms, metrics.frame_ms);
+        else
+            ImGui::TextUnformatted("PERFORMANCE");
+        ImGui::TextWrapped("Enlarge window for full OS/device counters");
+    } else if (visible) {
+        ImGui::TextUnformatted("PERFORMANCE");
+        if (metrics.frame_ms > 0)
+            ImGui::Text("FPS %.1f  |  Frame %.2f ms", 1000 / metrics.frame_ms, metrics.frame_ms);
+        else
+            ImGui::TextUnformatted("FPS / Frame: pending");
+        if (metrics.gpu_ready) {
+            ImGui::Text("GPU shadow %.2f | PBR %.2f ms", metrics.gpu.shadow_ns / 1e6,
+                        metrics.gpu.pbr_ns / 1e6);
+            ImGui::Text("GPU post %.2f | UI %.2f ms", metrics.gpu.post_ns / 1e6,
+                        metrics.gpu.ui_ns / 1e6);
+        } else
+            ImGui::TextUnformatted("GPU pass timings: pending / N/A");
+        ImGui::Separator();
+        const auto age = Clock::now() - metrics.system.sampled_at;
+        const auto *usage = metrics.system.sequence && age >= Clock::duration::zero() &&
+                                    age <= std::chrono::seconds(3)
+                                ? &metrics.system.values
+                                : nullptr;
+        if (usage && usage->cpu_percent)
+            ImGui::Text("CPU system busy  %.1f %%", *usage->cpu_percent);
+        else
+            ImGui::TextUnformatted("CPU system busy: N/A / collecting");
+        constexpr auto gib = 1024.0 * 1024 * 1024;
+        constexpr auto mib = 1024.0 * 1024;
+        if (usage && usage->ram)
+            ImGui::Text("RAM system %.2f / %.2f GiB", static_cast<double>(usage->ram->used) / gib,
+                        static_cast<double>(usage->ram->total) / gib);
+        else
+            ImGui::TextUnformatted("RAM system: N/A / collecting");
+        if (metrics.gpu_memory == GpuMemoryKind::shared)
+            ImGui::TextUnformatted("VRAM: shared system memory (UMA)");
+        else if (usage && usage->vram)
+            ImGui::Text("VRAM device %.1f / %.1f MiB", static_cast<double>(usage->vram->used) / mib,
+                        static_cast<double>(usage->vram->total) / mib);
+        else
+            ImGui::TextUnformatted("VRAM device: N/A / collecting");
+        if (metrics.system.collection_failed)
+            ImGui::TextDisabled("OS collector unavailable | missing = N/A");
+        else
+            ImGui::TextDisabled("OS/device ~1 Hz | missing = N/A");
+        ImGui::Separator();
+        ImGui::Text("VMA allocated %.1f MiB",
+                    static_cast<double>(metrics.memory.allocation_bytes) / mib);
+        ImGui::Text("VMA reserved  %.1f MiB",
+                    static_cast<double>(metrics.memory.reserved_bytes) / mib);
+        if (metrics.allocation_probe)
+            ImGui::Text("C++ allocation calls %llu",
+                        static_cast<unsigned long long>(metrics.cpp_calls));
+        else
+            ImGui::TextUnformatted("C++ allocation calls: probe unavailable");
+        ImGui::Text("ImGui allocation calls %llu",
+                    static_cast<unsigned long long>(metrics.gui_calls));
+        ImGui::TextDisabled("VMA != VRAM | C/driver heaps excluded");
+    }
+    ImGui::End();
+    ImGui::PopStyleVar();
+    gui.pop_font();
+    return visible;
+}
+struct Actions {
+    bool mode{}, reset{}, approach{}, orbit{}, focus{}, mute{};
+    std::optional<std::size_t> target;
+};
+void reserve_ui() {
+    auto *draw = ImGui::GetWindowDrawList();
+    draw->VtxBuffer.reserve(static_cast<int>(overlay_vertex_limit));
+    draw->IdxBuffer.reserve(static_cast<int>(overlay_index_limit));
+}
+void centred_text(const char *text) {
+    const auto width = ImGui::CalcTextSize(text).x;
+    ImGui::SetCursorPosX(std::max(0.0F, (ImGui::GetWindowWidth() - width) * .5F));
+    ImGui::TextUnformatted(text);
+}
+Actions hud(tools::Gui &gui, const flight::Snapshot &state, const Preset &preset, Hud &metrics,
+            std::optional<std::size_t> selected, bool replay, bool mute, const FrameView &view) {
+    gui.begin();
+    const auto materials = gui.panel_materials();
+    ImGui::PushStyleColor(ImGuiCol_Border, ImGui::ColorConvertU32ToFloat4(materials.line_strong));
+    ImGui::PushStyleColor(ImGuiCol_Separator, ImGui::ColorConvertU32ToFloat4(materials.line));
+    Actions action;
+    const auto size = ImGui::GetIO().DisplaySize;
+    const auto layout = hud_layout(size.x, size.y, metrics.help, metrics.performance);
+    constexpr auto flags =
+        static_cast<ImGuiWindowFlags>(static_cast<unsigned>(ImGuiWindowFlags_NoDecoration) |
+                                      static_cast<unsigned>(ImGuiWindowFlags_NoSavedSettings) |
+                                      static_cast<unsigned>(ImGuiWindowFlags_NoMove) |
+                                      static_cast<unsigned>(ImGuiWindowFlags_NoNav));
+    constexpr auto utility_flags = static_cast<ImGuiWindowFlags>(
+        static_cast<unsigned>(flags) | static_cast<unsigned>(ImGuiWindowFlags_AlwaysAutoResize) |
+        static_cast<unsigned>(ImGuiWindowFlags_NoBackground));
+    constexpr auto transparent = static_cast<ImGuiWindowFlags>(
+        static_cast<unsigned>(flags) | static_cast<unsigned>(ImGuiWindowFlags_NoBackground));
+    constexpr auto floating = static_cast<ImGuiWindowFlags>(
+        static_cast<unsigned>(transparent) | static_cast<unsigned>(ImGuiWindowFlags_NoInputs));
+    ImGui::SetNextWindowPos({8, 6});
+    ImGui::SetNextWindowSize({60, 62});
+    if (ImGui::Begin("Flight brand", nullptr, floating)) {
+        reserve_ui();
+        gui.mark();
+    }
+    ImGui::End();
+    ImGui::SetNextWindowPos({size.x - 134, 10});
+    ImGui::SetNextWindowSize({126, 38});
+    if (ImGui::Begin("Flight controls hint", nullptr, transparent)) {
+        reserve_ui();
+        ImGui::PushStyleColor(ImGuiCol_Button, {0, 0, 0, 0});
+        ImGui::PushStyleVar(ImGuiStyleVar_FrameBorderSize, 0);
+        if (ImGui::Button("Controls")) {
+            metrics.help = metrics.data || !metrics.help;
+            metrics.data = false;
+        }
+        ImGui::PopStyleVar();
+        ImGui::PopStyleColor();
+    }
+    ImGui::End();
+    const auto &v = state.body.velocity_mps;
+    const auto speed = std::sqrt(v[0] * v[0] + v[1] * v[1] + v[2] * v[2]);
+    const auto active = std::count_if(state.rcs_firing.begin(), state.rcs_firing.end(),
+                                      [](float value) { return value > 0; });
+    ImGui::SetNextWindowPos({layout.readout.x, layout.readout.y});
+    ImGui::SetNextWindowSize({layout.readout.width, layout.readout.height});
+    ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, {4, 2});
+    ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, {4, 2});
+    if (ImGui::Begin("Flight readout", nullptr, floating)) {
+        reserve_ui();
+        gui.push_font(tools::GuiFont::mono);
+        const char *mode =
+            state.mode == flight::Mode::direct                   ? "DIRECT / BOW SENSOR"
+            : state.navigation.goal == flight::Goal::orbit       ? "TACTICAL / ORBIT ACTIVE"
+            : state.navigation.goal == flight::Goal::destination ? "TACTICAL / APPROACH"
+                                                                 : "TACTICAL / COAST";
+        ImGui::PushStyleColor(ImGuiCol_Text, ImGui::GetStyleColorVec4(ImGuiCol_CheckMark));
+        centred_text(mode);
+        ImGui::PopStyleColor();
+        gui.pop_font();
+        char text[96]{};
+        std::snprintf(text, sizeof(text), "%.1f m/s", static_cast<double>(speed));
+        gui.push_font(tools::GuiFont::readout);
+        centred_text(text);
+        gui.pop_font();
+        const auto cursor = ImGui::GetCursorScreenPos();
+        const float bar_width = 124;
+        const ImVec2 start{size.x * .5F - bar_width * .5F, cursor.y + 3};
+        auto *draw = ImGui::GetWindowDrawList();
+        draw->AddLine(start, {start.x + bar_width, start.y},
+                      ImGui::GetColorU32(ImGuiCol_Separator));
+        draw->AddLine(
+            start,
+            {start.x +
+                 bar_width * std::clamp(speed / preset.ship.flight.maximum_speed_mps, 0.0F, 1.0F),
+             start.y},
+            ImGui::GetColorU32(ImGuiCol_CheckMark), 2);
+        for (unsigned tick = 0; tick <= 4; ++tick) {
+            const auto x = start.x + static_cast<float>(tick) * bar_width / 4;
+            draw->AddLine({x, start.y - 2}, {x, start.y + 3},
+                          ImGui::GetColorU32(ImGuiCol_TextDisabled));
+        }
+        ImGui::Dummy({1, 9});
+        gui.push_font(tools::GuiFont::mono);
+        const char *audio_status = metrics.audio.state == audio::State::disconnected
+                                       ? " / AUDIO OFFLINE"
+                                   : metrics.audio.muted ? " / MUTED"
+                                                         : "";
+        std::snprintf(text, sizeof(text), "MAIN %.0f%% / RCS %u/16%s",
+                      static_cast<double>(state.main_drive_level * 100),
+                      static_cast<unsigned>(active), audio_status);
+        centred_text(text);
+        gui.pop_font();
+    }
+    ImGui::End();
+    ImGui::PopStyleVar(2);
+    if (metrics.help || metrics.preparing) {
+        const auto panel = layout.controls;
+        ImGui::SetNextWindowPos({panel.x, panel.y});
+        ImGui::SetNextWindowSize({panel.width, 0});
+        ImGui::SetNextWindowSizeConstraints({panel.width, 0}, {panel.width, panel.height});
+        const auto visible = ImGui::Begin("Flight utility", nullptr, utility_flags);
+        if (visible) {
+            reserve_ui();
+            panel_surface(materials);
+            ImGui::TextUnformatted(metrics.data ? "FLIGHT DATA" : "CONTROLS");
+            ImGui::SameLine();
+            if (ImGui::SmallButton("Close"))
+                metrics.help = false;
+            ImGui::BeginDisabled(replay);
+            ImGui::SetCursorPos({12, 40});
+            action.mode = ImGui::Button("Switch view", {panel.width * .5F - 16, 28});
+            ImGui::SetCursorPos({layout.reset.x - panel.x, layout.reset.y - panel.y});
+            action.reset = ImGui::Button("Reset", {layout.reset.width, layout.reset.height});
+            ImGui::EndDisabled();
+            action.mute = ImGui::Button(mute ? "Unmute" : "Mute", {110, 26});
+            ImGui::SameLine();
+            if (ImGui::Button(metrics.data ? "Controls" : "Flight data"))
+                metrics.data = !metrics.data;
+            if (metrics.data) {
+                ImGui::Separator();
+                if (!metrics.preparing)
+                    ++metrics.data_drawn_frames;
+                gui.push_font(tools::GuiFont::mono);
+                ImGui::Text("MASS %.1f kt  /  SPEED %.2f m/s", state.body.mass_kg / 1e6, speed);
+                ImGui::Text("X %.1f  Y %.1f\nZ %.1f m", state.body.position_metres[0],
+                            state.body.position_metres[1], state.body.position_metres[2]);
+                const auto plot_width = std::max(1.0F, ImGui::GetContentRegionAvail().x);
+                ImGui::PlotLines("##speed", metrics.speed.data(),
+                                 static_cast<int>(metrics.speed.size()),
+                                 static_cast<int>(metrics.cursor), "SPEED / m/s", 0,
+                                 preset.ship.flight.maximum_speed_mps, {plot_width, 68});
+                ImGui::PlotLines(
+                    "##force", metrics.force.data(), static_cast<int>(metrics.force.size()),
+                    static_cast<int>(metrics.cursor), "FORCE / MN", 0,
+                    preset.ship.flight.maximum_force_newtons[2] / 1e6F, {plot_width, 68});
+                ImGui::TextDisabled("Actual snapshot / 100 contacts / 60 Hz");
+                gui.pop_font();
+            } else if (!metrics.preparing) {
+                ++metrics.controls_drawn_frames;
+            }
+            ImGui::Separator();
+            if (selected) {
+                ImGui::Text("SELECTED / ASTEROID %03u", static_cast<unsigned>(*selected));
+            }
+            ImGui::TextWrapped("%s", metrics.status);
+            ImGui::TextDisabled("AUDIO %s", metrics.audio.state == audio::State::disconnected
+                                                ? "OFFLINE / retrying"
+                                                : (metrics.audio.muted ? "MUTED" : "ACTIVE"));
+        }
+        ImGui::End();
+    }
+    if (metrics.performance && performance_panel(gui, metrics) && !metrics.preparing)
+        ++metrics.performance_drawn_frames;
+    auto *draw = ImGui::GetForegroundDrawList();
+    const ImVec2 center{size.x * .5F, size.y * .5F};
+    const auto signal = ImGui::GetColorU32(ImGuiCol_CheckMark, .7F);
+    draw->AddLine({center.x - 7, center.y}, {center.x - 2, center.y}, signal);
+    draw->AddLine({center.x + 2, center.y}, {center.x + 7, center.y}, signal);
+    draw->AddLine({center.x, center.y - 7}, {center.x, center.y - 2}, signal);
+    draw->AddLine({center.x, center.y + 2}, {center.x, center.y + 7}, signal);
+    if (selected) {
+        const auto &point = preset.camera_obstacles[*selected].centre_metres;
+        const auto screen = metrics.preparing
+                                ? std::optional{std::array<float, 2>{size.x * .6F, size.y * .4F}}
+                                : project_target(view, point, {size.x, size.y});
+        if (screen) {
+            const ImVec2 at{(*screen)[0], (*screen)[1]};
+            if (at.x >= 0 && at.x <= size.x && at.y >= 0 && at.y <= size.y) {
+                draw->AddLine({at.x - 14, at.y - 7}, {at.x - 14, at.y - 14}, signal);
+                draw->AddLine({at.x - 14, at.y - 14}, {at.x - 7, at.y - 14}, signal);
+                draw->AddLine({at.x + 14, at.y + 7}, {at.x + 14, at.y + 14}, signal);
+                draw->AddLine({at.x + 14, at.y + 14}, {at.x + 7, at.y + 14}, signal);
+                const auto x = std::clamp(at.x + 18, 4.0F, std::max(4.0F, size.x - 272));
+                const auto y = std::clamp(at.y - 20, 48.0F, std::max(48.0F, size.y - 88));
+                ImGui::SetNextWindowPos({x, y});
+                ImGui::SetNextWindowSize({268, 52});
+                if (ImGui::Begin("Flight target", nullptr, floating)) {
+                    reserve_ui();
+                    const auto &origin = state.body.position_metres;
+                    const auto dx = point[0] - origin[0], dy = point[1] - origin[1],
+                               dz = point[2] - origin[2];
+                    ImGui::Text("Asteroid %03u", static_cast<unsigned>(*selected));
+                    gui.push_font(tools::GuiFont::mono);
+                    ImGui::TextDisabled("%.0f m", std::sqrt(dx * dx + dy * dy + dz * dz));
+                    gui.pop_font();
+                }
+                ImGui::End();
+            }
+        }
+    }
+    if (metrics.preparing && selected) {
+        metrics.context_target = selected;
+        metrics.context_request = std::array<float, 2>{size.x * .6F, size.y * .4F};
+    }
+    if (metrics.context_request) {
+        const auto position = *metrics.context_request;
+        ImGui::SetNextWindowPos({position[0], position[1]});
+        ImGui::OpenPopup("Flight target actions");
+        metrics.context_request.reset();
+    }
+    if (ImGui::BeginPopup("Flight target actions", ImGuiWindowFlags_NoBackground)) {
+        reserve_ui();
+        panel_surface(materials);
+        if (metrics.context_target && *metrics.context_target < preset.camera_obstacles.size()) {
+            if (!metrics.preparing)
+                ++metrics.context_menu_drawn_frames;
+            ImGui::Text("SELECTED / ASTEROID %03u", static_cast<unsigned>(*metrics.context_target));
+            ImGui::Separator();
+            ImGui::BeginDisabled(replay || metrics.preparing);
+            action.approach = ImGui::MenuItem("Approach");
+            action.orbit = ImGui::MenuItem("Orbit");
+            action.focus = ImGui::MenuItem("Focus");
+            ImGui::EndDisabled();
+            if (action.approach || action.orbit || action.focus)
+                action.target = metrics.context_target;
+        } else {
+            ImGui::CloseCurrentPopup();
+        }
+        if (metrics.preparing)
+            ImGui::CloseCurrentPopup();
+        ImGui::EndPopup();
+    }
+    if (metrics.alert) {
+        ImGui::SetNextWindowPos({8, std::max(64.0F, layout.readout.y - 36)});
+        ImGui::SetNextWindowSize({size.x - 16, 36});
+        if (ImGui::Begin("Flight notice", nullptr, floating)) {
+            reserve_ui();
+            ImGui::TextColored(ImGui::GetStyleColorVec4(ImGuiCol_PlotHistogram), "%s",
+                               metrics.status);
+        }
+        ImGui::End();
+    }
+    ImGui::PopStyleColor(2);
+    gui.end();
+    return action;
+}
+} // namespace
+void run(const assets::PackagePin &package, const Preset &preset, const Options &options) {
+    const bool fixed_tick = options.replay || options.walkthrough;
+    auto game = game_value(flight::Flight::create(preset.ship.flight, preset.contacts));
+    auto current = game->snapshot(), previous = current;
+    auto rig = game_value(flight::CameraRig::create(preset.ship_radius));
+    flight::FlightInput input;
+    auto context = take(Context::create({options.validation, true, true, true}));
+    require(SDL_SetWindowMinimumSize(context->window(), 320, 180), "flight minimum size failed");
+    require(SDL_SetWindowTitle(context->window(), "NGEN / Offline Flight"),
+            "flight title update failed");
+    require(SDL_SetWindowSize(context->window(), static_cast<int>(options.extent.width),
+                              static_cast<int>(options.extent.height)),
+            "flight window size failed");
+    auto version = resident(*context, package);
+    auto vertices = buffer(*context, std::as_bytes(std::span(preset.field.vertices)),
+                           VK_BUFFER_USAGE_VERTEX_BUFFER_BIT);
+    auto indices = buffer(*context, std::as_bytes(std::span(preset.field.indices)),
+                          VK_BUFFER_USAGE_INDEX_BUFFER_BIT);
+    auto color = take(
+        context->create_image({options.extent, VK_FORMAT_R16G16B16A16_SFLOAT,
+                               static_cast<VkImageUsageFlags>(VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT) |
+                                   VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_TRANSFER_SRC_BIT}));
+    auto depth = take(context->create_image(
+        {options.extent, VK_FORMAT_D32_SFLOAT, VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT}));
+    auto shadow = take(context->create_image(
+        {{1024, 1024},
+         VK_FORMAT_D32_SFLOAT,
+         static_cast<VkImageUsageFlags>(VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT) |
+             VK_IMAGE_USAGE_SAMPLED_BIT}));
+    auto white = take(context->create_image({{1, 1}, VK_FORMAT_R8G8B8A8_UNORM}));
+    const std::array<std::byte, 4> white_pixel{std::byte{255}, std::byte{255}, std::byte{255},
+                                               std::byte{255}};
+    upload(*context, white, white_pixel);
+    const auto sky = take(generate_environment(Sky{}));
+    std::array<Image, 3> environment;
+    for (std::size_t i = 0; i < environment.size(); ++i) {
+        environment[i] = take(context->create_image(sky.images[i].description));
+        upload(*context, environment[i], sky.images[i].texels);
+    }
+    const SceneTargets targets{color,          depth,          shadow, environment[0],
+                               environment[1], environment[2], white};
+    MeshDraw asteroids{};
+    asteroids.frame.model = asteroids.frame.normalMatrix = identity;
+    asteroids.material.baseColor = {.23F, .19F, .15F, 1};
+    asteroids.material.metallicRoughnessNormalOcclusion = {.05F, .95F, 1, 1};
+    asteroids.material.flags[2] = 1;
+    asteroids.maps.fill(&white);
+    asteroids.index_count = static_cast<std::uint32_t>(preset.field.indices.size());
+    asteroids.vertices = &vertices;
+    asteroids.indices = &indices;
+    SceneRenderer renderer;
+    auto gui = take(tools::Gui::create(*context));
+    const auto gpu_identity = gpu_memory_identity(*context);
+    auto system_usage = std::make_unique<SystemUsageSampler>(gpu_identity);
+    PerformanceControls performance{SDL_GetWindowID(context->window())};
+    std::uint64_t performance_toggles{};
+    audio::Output sound;
+    bool muted = options.mute;
+    (void)sound.mute(muted);
+    Hud metrics;
+    metrics.gpu_memory = gpu_identity.kind;
+    metrics.allocation_probe = workload::allocation_probe_enabled();
+    // Auto-sized tooltip windows skip their first frame. Two unsubmitted cold
+    // frames prepare both the geometry and its rendered draw-data layer, even
+    // when the desktop has not supplied a valid mouse position yet.
+    const auto initial_mouse = ImGui::GetIO().MousePos;
+    for (unsigned pass = 0; pass < 2; ++pass) {
+        // Exercise ImGui's default input queue/trail storage even when no real
+        // mouse event arrives during warmup. These unsubmitted events stay local
+        // to this UI context; no SDL input, flight intent or OS pointer is changed.
+        ImGui::GetIO().AddMousePosEvent(pass == 0 ? 0 : initial_mouse.x,
+                                        pass == 0 ? 0 : initial_mouse.y);
+        gui->begin();
+        ImGui::SetNextWindowPos({32, 32});
+        if (ImGui::BeginTooltip()) {
+            auto *tooltip = ImGui::GetWindowDrawList();
+            tooltip->VtxBuffer.reserve(static_cast<int>(overlay_vertex_limit));
+            tooltip->IdxBuffer.reserve(static_cast<int>(overlay_index_limit));
+            ImGui::TextUnformatted("0: 0.000\n1: 0.000");
+            ImGui::EndTooltip();
+        }
+        (void)performance_panel(*gui, metrics);
+        gui->end();
+    }
+    bool quit = false, captured = false, capture_requested = false, reset_requested = false,
+         sampling_paused = false;
+    bool focused = (SDL_GetWindowFlags(context->window()) & SDL_WINDOW_INPUT_FOCUS) != 0;
+    input.focus(focused);
+    std::optional<std::size_t> selected, camera_target;
+    std::optional<std::array<float, 2>> context_press;
+    Clock::time_point context_pressed_at{};
+    float context_travel{};
+    const auto cancel_context = [&] {
+        context_press.reset();
+        metrics.context_target.reset();
+        metrics.context_request.reset();
+    };
+    const auto camera_only = [] {
+        return ImGui::GetIO().KeyAlt || (static_cast<unsigned>(SDL_GetModState()) &
+                                         static_cast<unsigned>(SDL_KMOD_ALT)) != 0;
+    };
+    std::uint64_t sequence = 0, impact_after_tick = 0;
+    auto pending_mode = flight::Mode::tactical;
+    auto last_camera = game_value(rig.sample({previous, current}, 1, preset.camera_obstacles));
+    std::array<assets::MaterialFactors, 256> materials{};
+    std::array<EmissiveFlow, 256> flows{};
+    for (std::size_t i = 0; i < package->materials.size(); ++i) {
+        const auto &m = package->materials[i];
+        materials[i] = {m.base_color, m.metallic, m.roughness, m.emissive_strength};
+    }
+    const auto send = [&](flight::Intent intent) {
+        const auto target = next(game->snapshot().tick);
+        if (std::holds_alternative<Error>(target))
+            return false;
+        const auto result =
+            game->submit({std::get<Tick>(target), ++sequence, game->snapshot().entity, intent});
+        if (std::holds_alternative<Error>(result)) {
+            metrics.status = "Intent rejected: envelope, generation or queue limit";
+            metrics.alert = true;
+            return false;
+        }
+        return true;
+    };
+    const auto default_orbit = [&] {
+        selected = 0;
+        require(send(flight::Orbit{preset.camera_obstacles[0].centre_metres, 600, 20, false}),
+                "authored default orbit was rejected");
+        metrics.status = "Tactical orbit autopilot / 20 m/s";
+        metrics.alert = false;
+    };
+    default_orbit();
+    {
+        const auto initial_view = take(present(preset, last_camera, options.extent));
+        metrics.preparing = metrics.help = metrics.performance = metrics.alert = true;
+        (void)hud(*gui, current, preset, metrics, selected, options.replay, muted, initial_view);
+        metrics.data = true;
+        (void)hud(*gui, current, preset, metrics, selected, options.replay, muted, initial_view);
+        metrics.preparing = metrics.help = metrics.data = metrics.performance = metrics.alert =
+            false;
+        cancel_context();
+    }
+    const auto change_mode = [&] {
+        cancel_context();
+        const auto wanted =
+            pending_mode == flight::Mode::tactical ? flight::Mode::direct : flight::Mode::tactical;
+        if (send(flight::SetMode{wanted})) {
+            pending_mode = wanted;
+            metrics.alert = false;
+            (void)input.mode(wanted);
+            (void)sound.cue(audio::Cue::confirm);
+            metrics.status = wanted == flight::Mode::direct
+                                 ? "Direct bow sensor"
+                                 : "Tactical coast / navigation inactive";
+        }
+    };
+    const auto reset = [&] {
+        cancel_context();
+        current = game_value(game->reset());
+        previous = current;
+        sequence = 0;
+        (void)sound.reset();
+        (void)sound.cue(audio::Cue::reset);
+        impact_after_tick = 0;
+        input.release();
+        (void)input.mode(flight::Mode::tactical);
+        pending_mode = flight::Mode::tactical;
+        rig = game_value(flight::CameraRig::create(preset.ship_radius));
+        camera_target.reset();
+        default_orbit();
+        metrics.speed.fill(0);
+        metrics.force.fill(0);
+        metrics.cursor = 0;
+        metrics.status = "Preset reset: pose and controls restored; GPU asset remains immutable";
+    };
+    const auto focus = [&] {
+        metrics.alert = false;
+        if (selected && camera_target != selected) {
+            (void)game_value(rig.focus(preset.camera_obstacles[*selected]));
+            camera_target = selected;
+            metrics.status = "Camera focused on the selected asteroid";
+        } else {
+            (void)game_value(rig.focus(std::nullopt));
+            camera_target.reset();
+            metrics.status = "Camera follows the ship; physical motion is unchanged";
+        }
+        (void)sound.cue(audio::Cue::confirm);
+    };
+    const auto approach = [&] {
+        if (!selected)
+            return;
+        const auto &target = preset.camera_obstacles[*selected];
+        const auto &p = current.body.position_metres;
+        JPH::DVec3 delta{p[0] - target.centre_metres[0], p[1] - target.centre_metres[1],
+                         p[2] - target.centre_metres[2]};
+        if (delta.LengthSq() < 1e-8)
+            delta = JPH::DVec3{0, 0, 1};
+        delta = delta.Normalized() * (preset.ship_radius + target.radius_metres + 30);
+        if (send(flight::Destination{{target.centre_metres[0] + delta.GetX(),
+                                      target.centre_metres[1] + delta.GetY(),
+                                      target.centre_metres[2] + delta.GetZ()}}))
+            (void)sound.cue(audio::Cue::confirm);
+    };
+    const auto orbit = [&] {
+        if (!selected)
+            return;
+        const auto &target = preset.camera_obstacles[*selected];
+        const auto acceleration =
+            *std::min_element(preset.ship.flight.maximum_force_newtons.begin(),
+                              preset.ship.flight.maximum_force_newtons.end()) /
+            current.body.mass_kg;
+        const auto radius = static_cast<float>(
+            std::max({600.0, static_cast<double>(preset.ship_radius) * 3.5 + target.radius_metres,
+                      400 / (.4 * acceleration)}));
+        if (send(flight::Orbit{target.centre_metres, radius, 20, false}))
+            (void)sound.cue(audio::Cue::confirm);
+    };
+    const auto walkthrough = [&](std::uint64_t index) {
+        const auto id = SDL_GetWindowID(context->window());
+        const auto push = [](SDL_Event event) {
+            require(SDL_PushEvent(&event), "SDL walkthrough event admission failed");
+        };
+        const auto key = [&](SDL_Scancode scancode, bool down) {
+            SDL_Event event{};
+            event.type = down ? SDL_EVENT_KEY_DOWN : SDL_EVENT_KEY_UP;
+            event.key.windowID = id;
+            event.key.scancode = scancode;
+            event.key.down = down;
+            push(event);
+        };
+        const auto button = [&](std::uint8_t which, bool down) {
+            SDL_Event event{};
+            event.type = down ? SDL_EVENT_MOUSE_BUTTON_DOWN : SDL_EVENT_MOUSE_BUTTON_UP;
+            event.button.windowID = id;
+            event.button.button = which;
+            event.button.down = down;
+            int width = 0, height = 0;
+            require(SDL_GetWindowSize(context->window(), &width, &height),
+                    "walkthrough button window unavailable");
+            const auto reset_button =
+                hud_layout(static_cast<float>(width), static_cast<float>(height), true,
+                           metrics.performance)
+                    .reset;
+            event.button.x = reset_button.x + reset_button.width * .5F;
+            event.button.y = reset_button.y + reset_button.height * .5F;
+            push(event);
+        };
+        const auto focus_event = [&](bool focused) {
+            SDL_Event event{};
+            event.type = focused ? SDL_EVENT_WINDOW_FOCUS_GAINED : SDL_EVENT_WINDOW_FOCUS_LOST;
+            event.window.windowID = id;
+            push(event);
+        };
+        if (index == 10 || index == 200 || index == 260) {
+            key(SDL_SCANCODE_F12, true);
+            key(SDL_SCANCODE_F12, false);
+        }
+        switch (index) {
+        case 0:
+            focus_event(true);
+            key(SDL_SCANCODE_TAB, true);
+            key(SDL_SCANCODE_TAB, false);
+            key(SDL_SCANCODE_W, true);
+            break;
+        case 5:
+        case 15:
+            key(SDL_SCANCODE_F1, true);
+            key(SDL_SCANCODE_F1, false);
+            break;
+        case 30:
+            key(SDL_SCANCODE_W, false);
+            break;
+        case 60:
+            key(SDL_SCANCODE_SPACE, true);
+            break;
+        case 89: {
+            int width = 0, height = 0;
+            require(SDL_GetWindowSize(context->window(), &width, &height),
+                    "walkthrough size failed");
+            SDL_Event event{};
+            event.type = SDL_EVENT_MOUSE_MOTION;
+            event.motion.windowID = id;
+            event.motion.x = static_cast<float>(width) * .5F;
+            event.motion.y = static_cast<float>(height) * .5F;
+            push(event);
+            break;
+        }
+        case 90: {
+            key(SDL_SCANCODE_SPACE, false);
+            SDL_Event button_event{};
+            button_event.type = SDL_EVENT_MOUSE_BUTTON_DOWN;
+            button_event.button.windowID = id;
+            button_event.button.button = SDL_BUTTON_RIGHT;
+            button_event.button.down = true;
+            push(button_event);
+            SDL_Event motion{};
+            motion.type = SDL_EVENT_MOUSE_MOTION;
+            motion.motion.windowID = id;
+            motion.motion.xrel = 100;
+            push(motion);
+            key(SDL_SCANCODE_D, true);
+            break;
+        }
+        case 120:
+            focus_event(false);
+            break;
+        case 150:
+            focus_event(true);
+            break;
+        case 160:
+        case 170: {
+            SDL_Event event{};
+            event.type =
+                index == 160 ? SDL_EVENT_AUDIO_DEVICE_REMOVED : SDL_EVENT_AUDIO_DEVICE_ADDED;
+            event.adevice.recording = false;
+            push(event);
+            break;
+        }
+        case 180:
+            key(SDL_SCANCODE_TAB, true);
+            key(SDL_SCANCODE_TAB, false);
+            break;
+        case 210:
+        case 240:
+            key(SDL_SCANCODE_F, true);
+            key(SDL_SCANCODE_F, false);
+            break;
+        case 270:
+            key(SDL_SCANCODE_R, true);
+            key(SDL_SCANCODE_R, false);
+            break;
+        case 275:
+        case 276: {
+            int width = 0, height = 0;
+            require(SDL_GetWindowSize(context->window(), &width, &height),
+                    "walkthrough context window unavailable");
+            SDL_Event event{};
+            event.type = SDL_EVENT_MOUSE_MOTION;
+            event.motion.windowID = id;
+            event.motion.x = static_cast<float>(width) * .5F;
+            event.motion.y = static_cast<float>(height) * .4F;
+            push(event);
+            event = {};
+            event.type = index == 275 ? SDL_EVENT_MOUSE_BUTTON_DOWN : SDL_EVENT_MOUSE_BUTTON_UP;
+            event.button.windowID = id;
+            event.button.button = SDL_BUTTON_RIGHT;
+            event.button.down = index == 275;
+            event.button.x = static_cast<float>(width) * .5F;
+            event.button.y = static_cast<float>(height) * .4F;
+            push(event);
+            break;
+        }
+        case 279:
+            key(SDL_SCANCODE_ESCAPE, true);
+            key(SDL_SCANCODE_ESCAPE, false);
+            break;
+        case 280:
+        case 290:
+            key(SDL_SCANCODE_F2, true);
+            key(SDL_SCANCODE_F2, false);
+            break;
+        case 296:
+            key(SDL_SCANCODE_F1, true);
+            key(SDL_SCANCODE_F1, false);
+            break;
+        case 299: {
+            int width = 0, height = 0;
+            require(SDL_GetWindowSize(context->window(), &width, &height),
+                    "walkthrough window unavailable");
+            const auto reset_button =
+                hud_layout(static_cast<float>(width), static_cast<float>(height), true,
+                           metrics.performance)
+                    .reset;
+            SDL_Event event{};
+            event.type = SDL_EVENT_MOUSE_MOTION;
+            event.motion.windowID = id;
+            event.motion.x = reset_button.x + reset_button.width * .5F;
+            event.motion.y = reset_button.y + reset_button.height * .5F;
+            push(event);
+            break;
+        }
+        case 300:
+            button(SDL_BUTTON_LEFT, true);
+            break;
+        case 301:
+            button(SDL_BUTTON_LEFT, false);
+            break;
+        case 320:
+        case 325:
+            key(SDL_SCANCODE_M, true);
+            key(SDL_SCANCODE_M, false);
+            break;
+        default:
+            break;
+        }
+    };
+    const auto pump = [&] {
+        SDL_Event event{};
+        for (unsigned n = 0; n < 256 && SDL_PollEvent(&event); ++n) {
+            gui->event(event);
+            (void)sound.event(event);
+            if (performance.event(event)) {
+                ++performance_toggles;
+                metrics.performance = performance.visible();
+                system_usage->enabled(metrics.performance && !sampling_paused);
+                continue;
+            }
+            if (event.type == SDL_EVENT_QUIT || event.type == SDL_EVENT_WINDOW_CLOSE_REQUESTED) {
+                quit = true;
+                continue;
+            }
+            if (event.type == SDL_EVENT_WINDOW_FOCUS_LOST) {
+                cancel_context();
+                focused = false;
+                input.focus(false);
+                (void)sound.mute(true);
+                continue;
+            }
+            if (event.type == SDL_EVENT_WINDOW_FOCUS_GAINED) {
+                focused = true;
+                input.focus(true);
+                continue;
+            }
+            if (event.type == SDL_EVENT_KEY_DOWN || event.type == SDL_EVENT_KEY_UP) {
+                const bool down = event.type == SDL_EVENT_KEY_DOWN;
+                if (!down) {
+                    if (const auto key = mapped(event.key.scancode))
+                        (void)input.key(*key, *key == flight::FlightKey::free_look &&
+                                                  (event.key.mod & SDL_KMOD_ALT) != 0);
+                    continue;
+                }
+                if (event.key.scancode == SDL_SCANCODE_ESCAPE) {
+                    cancel_context();
+                    metrics.help = false;
+                    input.release();
+                    ImGui::SetWindowFocus(nullptr);
+                    continue;
+                }
+                if (event.key.scancode == SDL_SCANCODE_F1 && !event.key.repeat) {
+                    cancel_context();
+                    metrics.help = metrics.data || !metrics.help;
+                    metrics.data = false;
+                    continue;
+                }
+                if (event.key.scancode == SDL_SCANCODE_F2 && !event.key.repeat) {
+                    cancel_context();
+                    metrics.help = !metrics.data || !metrics.help;
+                    metrics.data = true;
+                    continue;
+                }
+                if (event.key.scancode == SDL_SCANCODE_M && !event.key.repeat) {
+                    muted = !muted;
+                    continue;
+                }
+                if (options.replay)
+                    continue;
+                if (!gui->wants_keyboard() || input.capture()) {
+                    if (!event.key.repeat)
+                        switch (event.key.scancode) {
+                        case SDL_SCANCODE_TAB:
+                            change_mode();
+                            break;
+                        case SDL_SCANCODE_R:
+                            reset_requested = true;
+                            break;
+                        case SDL_SCANCODE_F:
+                            focus();
+                            break;
+                        case SDL_SCANCODE_O:
+                            orbit();
+                            break;
+                        case SDL_SCANCODE_G:
+                            approach();
+                            break;
+                        default:
+                            break;
+                        }
+                    if (const auto key = mapped(event.key.scancode))
+                        (void)input.key(*key, true);
+                }
+            } else if (event.type == SDL_EVENT_MOUSE_BUTTON_UP &&
+                       event.button.button == SDL_BUTTON_RIGHT &&
+                       event.button.windowID == SDL_GetWindowID(context->window())) {
+                input.pointer(false);
+                if (context_press && selected && focused && !options.replay && !camera_only() &&
+                    Clock::now() - context_pressed_at <= std::chrono::milliseconds(250)) {
+                    metrics.context_target = selected;
+                    metrics.context_request = context_press;
+                }
+                context_press.reset();
+            } else if (event.type == SDL_EVENT_MOUSE_BUTTON_DOWN && !options.replay &&
+                       event.button.windowID == SDL_GetWindowID(context->window()) &&
+                       !gui->wants_mouse()) {
+                if (event.button.button == SDL_BUTTON_RIGHT) {
+                    context_press.reset();
+                    const auto size = ImGui::GetIO().DisplaySize;
+                    const auto &panel = metrics.performance_rect;
+                    const bool over_performance =
+                        metrics.performance && event.button.x >= panel.x &&
+                        event.button.x < panel.x + panel.width && event.button.y >= panel.y &&
+                        event.button.y < panel.y + panel.height;
+                    if (!over_performance && selected && focused && !camera_only() &&
+                        std::isfinite(event.button.x) && std::isfinite(event.button.y) &&
+                        event.button.x >= 0 && event.button.x < size.x && event.button.y >= 0 &&
+                        event.button.y < size.y) {
+                        context_press = std::array<float, 2>{event.button.x, event.button.y};
+                        context_pressed_at = Clock::now();
+                        context_travel = 0;
+                    }
+                    input.pointer(true);
+                } else if (event.button.button == SDL_BUTTON_LEFT &&
+                           pending_mode == flight::Mode::tactical) {
+                    int w = 0, h = 0;
+                    if (SDL_GetWindowSize(context->window(), &w, &h) && w > 0 && h > 0) {
+                        const auto direction =
+                            ray(last_camera, {event.button.x, event.button.y},
+                                {static_cast<unsigned>(w), static_cast<unsigned>(h)});
+                        selected = pick(direction, preset);
+                        if (!selected && std::abs(direction.direction.GetY()) > 1e-6) {
+                            const auto distance =
+                                (current.body.position_metres[1] - direction.origin.GetY()) /
+                                direction.direction.GetY();
+                            if (distance > 0 && distance < 4096) {
+                                const auto point =
+                                    direction.origin + direction.direction * distance;
+                                (void)send(flight::Destination{
+                                    {point.GetX(), point.GetY(), point.GetZ()}});
+                            }
+                        }
+                    }
+                }
+            } else if (event.type == SDL_EVENT_MOUSE_MOTION && !options.replay) {
+                if (context_press) {
+                    context_travel += std::abs(event.motion.xrel) + std::abs(event.motion.yrel);
+                    if (!std::isfinite(context_travel) ||
+                        context_travel > ImGui::GetIO().MouseDragThreshold)
+                        context_press.reset();
+                }
+                (void)input.motion({event.motion.xrel, event.motion.yrel});
+            } else if (event.type == SDL_EVENT_MOUSE_WHEEL && !options.replay &&
+                       !gui->wants_mouse())
+                (void)input.wheel(std::clamp(event.wheel.direction == SDL_MOUSEWHEEL_FLIPPED
+                                                 ? -event.wheel.y
+                                                 : event.wheel.y,
+                                             -16.0F, 16.0F));
+        }
+        // A context click needs an absolute cursor, not SDL's restore-on-exit
+        // relative mode. Logical pointer input remains immediate; actual capture
+        // begins as soon as this becomes a drag or hold (or camera-only gesture).
+        capture_requested =
+            input.capture() &&
+            (!context_press || Clock::now() - context_pressed_at > std::chrono::milliseconds(250));
+        if (capture_requested != captured) {
+            if (SDL_SetWindowRelativeMouseMode(context->window(), capture_requested))
+                captured = capture_requested;
+            else {
+                input.pointer(false);
+                captured = false;
+                metrics.status = "Pointer capture unavailable";
+            }
+        }
+    };
+    const auto advance = [&] {
+        previous = current;
+        if (!options.replay)
+            (void)send(input.pilot());
+        const auto result = game->step();
+        if (const auto *error = std::get_if<Error>(&result)) {
+            require(*error == Error::invalid, "flight physics stopped; reset is required");
+            metrics.status = "Combined intent rejected before physical publication";
+            return;
+        }
+        current = std::get<flight::Snapshot>(result);
+        pending_mode = current.mode;
+        (void)input.mode(current.mode);
+        const auto &v = current.body.velocity_mps;
+        const auto &f = current.force_newtons;
+        double residual_squared = 0;
+        for (std::size_t axis = 0; axis < 3; ++axis) {
+            const auto residual = static_cast<double>(v[axis]) - previous.body.velocity_mps[axis] -
+                                  static_cast<double>(f[axis]) / previous.body.mass_kg / 60;
+            residual_squared += residual * residual;
+        }
+        // An audible impulse estimate, not a new authoritative contact stream.
+        if (residual_squared > .25 * .25 && current.tick.value >= impact_after_tick) {
+            (void)sound.cue(audio::Cue::impact);
+            impact_after_tick = current.tick.value + 12;
+        }
+        metrics.speed[metrics.cursor] = std::sqrt(v[0] * v[0] + v[1] * v[1] + v[2] * v[2]);
+        metrics.force[metrics.cursor] = std::sqrt(f[0] * f[0] + f[1] * f[1] + f[2] * f[2]) / 1e6F;
+        metrics.cursor = (metrics.cursor + 1) % metrics.speed.size();
+    };
+    const auto scripted = [&] {
+        switch (current.tick.value + 1) {
+        case 1:
+            (void)send(flight::Destination{{0, 0, -600}});
+            break;
+        case 60:
+            (void)rig.orbit({.45F, 0, 0});
+            break;
+        case 120:
+            (void)send(flight::SetMode{flight::Mode::direct});
+            (void)send(flight::Pilot{{0, 0, -1}});
+            break;
+        case 180:
+            (void)send(flight::Pilot{});
+            (void)rig.look({.25F, -.1F, 0});
+            break;
+        case 240:
+            (void)send(flight::Pilot{{}, {}, true});
+            rig.center_look();
+            break;
+        case 300:
+            (void)send(flight::SetMode{flight::Mode::tactical});
+            (void)send(flight::Destination{{0, 0, -600}});
+            break;
+        case 600:
+            selected = 0;
+            focus();
+            break;
+        case 900:
+            orbit();
+            break;
+        case 1800:
+            (void)rig.focus(std::nullopt);
+            camera_target.reset();
+            (void)send(flight::SetMode{flight::Mode::direct});
+            (void)send(flight::Pilot{{0, 0, -1}, {0, .3F, 0}});
+            break;
+        case 1980:
+            (void)send(flight::Pilot{});
+            // Keep the detailed hull in the benchmark after the direct-turn sample.
+            (void)send(flight::SetMode{flight::Mode::tactical});
+            break;
+        case 2400:
+            (void)send(flight::Pilot{{}, {}, true});
+            break;
+        default:
+            break;
+        }
+    };
+    std::vector<Sample> samples(options.frames);
+    std::size_t measured = 0, collected = 0;
+    Submission last;
+    std::array<std::pair<Submission, Submission>, 4> gpu_frames{};
+    std::size_t gpu_cursor{};
+    const auto collect = [&] {
+        while (collected < measured) {
+            auto &sample = samples[collected];
+            if (!take(context->submission_complete(sample.post)))
+                break;
+            const auto mesh = take(context->submission_timings(sample.mesh));
+            const auto post = take(context->submission_timings(sample.post));
+            if (mesh && post) {
+                sample.gpu = {mesh->shadow_ns, mesh->pbr_ns, post->post_ns, post->ui_ns};
+                sample.gpu_ready = true;
+                metrics.gpu = sample.gpu;
+                metrics.gpu_ready = true;
+            }
+            ++collected;
+        }
+    };
+    const auto warmup = options.frames ? options.warmup : 0U;
+    std::uint64_t frame_index = 0;
+    double accumulator = 0;
+    auto time = Clock::now();
+    std::uint64_t allocation_start = 0, ui_start = 0;
+    for (;;) {
+        if (options.frames && measured == options.frames)
+            break;
+        if (quit)
+            break;
+        if (options.frames && frame_index == warmup) {
+            reset();
+            time = Clock::now();
+            accumulator = 0;
+            allocation_start = workload::allocation_count();
+            ui_start = gui->allocation_count();
+        }
+        const auto began = Clock::now();
+        if (options.walkthrough && frame_index >= warmup)
+            walkthrough(frame_index - warmup);
+        pump();
+        if (quit)
+            break;
+        // SDL admission retries and GUI actions may request a reset, but only
+        // this boundary may replace the domain before this frame is frozen.
+        if (reset_requested) {
+            reset();
+            reset_requested = false;
+            accumulator = 0;
+            time = Clock::now();
+        }
+        if (!options.frames &&
+            (SDL_GetWindowFlags(context->window()) & SDL_WINDOW_MINIMIZED) != 0) {
+            input.release();
+            (void)sound.mute(true);
+            system_usage->enabled(false);
+            sampling_paused = true;
+            time = Clock::now();
+            SDL_Delay(16);
+            continue;
+        }
+        if (sampling_paused) {
+            sampling_paused = false;
+            system_usage->enabled(performance.visible());
+        }
+        if (fixed_tick) {
+            if (options.replay && frame_index >= warmup)
+                scripted();
+            advance();
+        } else {
+            const auto now = Clock::now();
+            accumulator += std::min(.25, std::chrono::duration<double>(now - time).count());
+            time = now;
+            while (accumulator >= 1.0 / 60) {
+                advance();
+                accumulator -= 1.0 / 60;
+            }
+        }
+        const auto camera_events = input.take_camera();
+        if (camera_events.center_look)
+            rig.center_look();
+        (void)rig.orbit(camera_events.orbit);
+        (void)rig.look(camera_events.look);
+        auto camera = rig.sample({previous, current},
+                                 fixed_tick ? 1.0F : static_cast<float>(accumulator * 60),
+                                 preset.camera_obstacles);
+        if (const auto *error = std::get_if<Error>(&camera); error && *error == Error::busy) {
+            (void)rig.focus(std::nullopt);
+            camera_target.reset();
+            metrics.status = "Camera clearance: following the ship";
+            metrics.alert = true;
+            camera = rig.sample({previous, current}, 1, preset.camera_obstacles);
+        }
+        last_camera = game_value(camera);
+        int width = 0, height = 0;
+        require(SDL_GetWindowSizeInPixels(context->window(), &width, &height) && width > 0 &&
+                    height > 0,
+                "flight drawable unavailable");
+        const VkExtent2D drawable{static_cast<unsigned>(width), static_cast<unsigned>(height)};
+        auto view = take(present(preset, last_camera, drawable));
+        if (performance.visible()) {
+            metrics.cpp_calls = workload::allocation_count();
+            metrics.gui_calls = gui->allocation_count();
+            metrics.system = system_usage->snapshot();
+        }
+        const auto action =
+            hud(*gui, current, preset, metrics, selected, options.replay, muted, view);
+        if (action.mute)
+            muted = !muted;
+        if (!options.replay) {
+            if (action.target)
+                selected = action.target;
+            if (action.mode)
+                change_mode();
+            if (action.reset)
+                reset_requested = true;
+            if (action.focus)
+                focus();
+            if (action.approach)
+                approach();
+            if (action.orbit)
+                orbit();
+        }
+        auto overlay = take(gui->overlay(drawable));
+        const auto phase =
+            static_cast<float>(static_cast<std::uint32_t>(
+                static_cast<float>(std::fmod(static_cast<double>(current.tick.value) / 60, 16) /
+                                   16) *
+                65536)) /
+            65536;
+        // The published world wrench was applied with the before-tick attitude.
+        const auto &q = previous.body.rotation_xyzw;
+        const auto &force = current.force_newtons;
+        const auto local = JPH::Quat(q[0], q[1], q[2], q[3]).Conjugated() *
+                           JPH::Vec3{force[0], force[1], force[2]};
+        const auto power = current.main_drive_level;
+        const auto &rcs = current.rcs_firing;
+        const auto &limits = preset.ship.flight.maximum_force_newtons;
+        const auto thrust = std::clamp(
+            std::max({std::abs(local.GetX()) / limits[0], std::abs(local.GetY()) / limits[1],
+                      std::abs(local.GetZ()) / limits[2]}),
+            0.0F, 1.0F);
+        const auto &velocity = current.body.velocity_mps;
+        const auto speed = std::sqrt(velocity[0] * velocity[0] + velocity[1] * velocity[1] +
+                                     velocity[2] * velocity[2]);
+        float work = 0;
+        for (std::size_t axis = 0; axis < 3; ++axis)
+            work += force[axis] * previous.body.velocity_mps[axis];
+        (void)sound.mute(muted || !focused);
+        (void)sound.update({.35F, thrust, work < 0 ? thrust : 0,
+                            std::clamp(speed / preset.ship.flight.maximum_speed_mps, 0.0F, 1.0F)});
+        if (preset.drive_material) {
+            const auto i = *preset.drive_material;
+            materials[i].base_color = package->materials[i].base_color;
+            materials[i].base_color[3] *= power;
+            materials[i].emissive_strength = package->materials[i].emissive_strength * power;
+            flows[i] = {phase, power > 0 ? 1.0F : 0.0F};
+        }
+        for (std::size_t bank = 0; bank < rcs_bank_count; ++bank)
+            if (preset.rcs_materials[bank]) {
+                const auto i = *preset.rcs_materials[bank];
+                // Radiance is perceptual, not another physical actuator. Keep small
+                // translation jets visible alongside the much stronger attitude pairs.
+                const auto brightness = std::sqrt(std::sqrt(rcs[bank]));
+                materials[i].base_color = package->materials[i].base_color;
+                materials[i].base_color[3] *= brightness;
+                materials[i].emissive_strength =
+                    package->materials[i].emissive_strength * brightness;
+                flows[i] = {std::fmod(phase + static_cast<float>(bank) / 12.0F, 1.0F),
+                            rcs[bank] > 0 ? 1.0F : 0.0F};
+            }
+        if (preset.drive_material || preset.rcs_materials[0]) {
+            view.scene.material_factors = std::span(materials).first(package->materials.size());
+            view.scene.material_flows = std::span(flows).first(package->materials.size());
+        }
+        asteroids.instances = view.asteroids;
+        const auto admission = SDL_GetTicks();
+        Submission mesh;
+        for (;;) {
+            auto result =
+                renderer.draw(*context, version, view.scene, targets, {}, std::span{&asteroids, 1});
+            const auto *error = std::get_if<Failure>(&result);
+            if (!error || (error->message != "transfer contexts are busy" &&
+                           error->message != "scene frame pins are busy")) {
+                mesh = take(std::move(result));
+                break;
+            }
+            require(SDL_GetTicks() - admission < 10000, "flight draw admission timed out");
+            (void)take(renderer.collect(*context));
+            pump();
+            SDL_Delay(1);
+        }
+        bool presented = false;
+        while (!quit) {
+            const auto result =
+                take(context->render_frame({color, 1, true, overlay ? &*overlay : nullptr, .04F}));
+            if (result.outcome == FrameOutcome::queued) {
+                last = result.resources;
+                presented = true;
+                break;
+            }
+            if (!options.frames &&
+                (SDL_GetWindowFlags(context->window()) & SDL_WINDOW_MINIMIZED) != 0)
+                break;
+            require(SDL_GetTicks() - admission < 10000, "flight presentation admission timed out");
+            pump();
+            SDL_Delay(1);
+        }
+        if (!presented)
+            continue;
+        gpu_frames[gpu_cursor] = {mesh, last};
+        gpu_cursor = (gpu_cursor + 1) % gpu_frames.size();
+        if (performance.visible() && context->gpu_timings_available()) {
+            metrics.gpu_ready = false;
+            for (std::size_t age = 0; age < gpu_frames.size(); ++age) {
+                const auto &pending =
+                    gpu_frames[(gpu_cursor + gpu_frames.size() - 1 - age) % gpu_frames.size()];
+                if (!pending.second.serial())
+                    continue;
+                const auto post = take(context->submission_timings(pending.second));
+                if (!post)
+                    continue;
+                const auto scene = take(context->submission_timings(pending.first));
+                if (scene) {
+                    metrics.gpu = {scene->shadow_ns, scene->pbr_ns, post->post_ns, post->ui_ns};
+                    metrics.gpu_ready = true;
+                    break;
+                }
+            }
+        }
+        metrics.memory = take(context->resource_statistics());
+        metrics.audio = sound.statistics();
+        if (options.frames && frame_index >= warmup) {
+            auto &sample = samples[measured++];
+            sample.state = current;
+            sample.camera = last_camera;
+            sample.audio = metrics.audio;
+            sample.focused = focused;
+            sample.capture_requested = capture_requested;
+            sample.capture_accepted = captured;
+            sample.mesh = mesh;
+            sample.post = last;
+            sample.memory = metrics.memory;
+            sample.extent = context->presentation_state().extent;
+            sample.phase = phase;
+            sample.power = power;
+            sample.rcs_power = *std::max_element(rcs.begin(), rcs.end());
+            sample.rcs_demand = current.rcs_demand_level;
+            sample.rcs_active = static_cast<std::uint32_t>(
+                std::count_if(rcs.begin(), rcs.end(), [](float v) { return v > 0; }));
+            collect();
+            const auto ended = Clock::now();
+            sample.frame_ns = static_cast<std::uint64_t>(
+                std::chrono::duration_cast<std::chrono::nanoseconds>(ended - began).count());
+            sample.host_ns = static_cast<std::uint64_t>(
+                std::chrono::duration_cast<std::chrono::nanoseconds>(ended.time_since_epoch())
+                    .count());
+            metrics.frame_ms = static_cast<double>(sample.frame_ns) / 1e6;
+        } else
+            metrics.frame_ms = static_cast<double>(nanoseconds(began)) / 1e6;
+        ++frame_index;
+    }
+    const auto allocations = options.frames ? workload::allocation_count() - allocation_start : 0;
+    const auto ui_allocations = options.frames ? gui->allocation_count() - ui_start : 0;
+    require(!options.frames || measured == options.frames,
+            "flight replay cancelled before its complete frame set");
+    if (frame_index) {
+        wait(*context, last);
+        collect();
+        require(take(renderer.collect(*context)) == 0, "flight scene pins did not retire");
+    }
+    const auto memory = take(context->resource_statistics());
+    std::size_t lit_pixels = 0;
+    if (frame_index) {
+        auto readback = take(
+            context->create_buffer({VkDeviceSize{options.extent.width} * options.extent.height * 8,
+                                    VK_BUFFER_USAGE_TRANSFER_DST_BIT, MemoryAccess::readback}));
+        wait(*context, take(context->copy_from_image({color, readback})));
+        std::vector<std::uint16_t> hdr(std::size_t{options.extent.width} * options.extent.height *
+                                       4);
+        (void)take(readback.read(0, std::as_writable_bytes(std::span(hdr))));
+        for (std::size_t i = 0; i < hdr.size(); i += 4) {
+            bool lit = false;
+            for (std::size_t channel = 0; channel < 4; ++channel) {
+                require((hdr[i + channel] & 0x7c00U) != 0x7c00U, "flight HDR output is nonfinite");
+                lit = lit || (channel < 3 && hdr[i + channel] != 0);
+            }
+            lit_pixels += lit ? 1U : 0U;
+        }
+        require(!options.replay || lit_pixels > 0, "flight replay produced no lit world pixels");
+    }
+    if (!options.capture.empty() && frame_index) {
+        auto overlay = take(gui->overlay(options.extent));
+        (void)take(probe::capture(*context, color, options.extent, options.capture, 1, true,
+                                  overlay ? &*overlay : nullptr, .04F));
+    }
+    if (!options.report.empty()) {
+        std::ostringstream csv;
+        csv.precision(12);
+        csv << "frame,tick,mode,frame_ns,gpu_shadow_ns,gpu_pbr_ns,gpu_post_ns,gpu_ui_ns,gpu_ready,"
+               "x_m,y_m,z_m,vx_mps,vy_mps,vz_mps,fx_N,fy_N,fz_N,tx_Nm,ty_Nm,tz_Nm,mass_kg,live,"
+               "retiring,allocation_bytes,reserved_bytes,flow_phase,drive_power,present_width,"
+               "present_height,nav_goal,qx,qy,qz,qw,wx_radps,wy_radps,wz_radps,camera_x_m,"
+               "camera_y_m,camera_z_m,camera_qx,camera_qy,camera_qz,camera_qw,camera_fov_deg,"
+               "input_focused,capture_requested,capture_accepted,render_x_m,render_y_m,render_z_m,"
+               "entity_generation,audio_state,audio_gen,audio_losses,audio_queued_frames,audio_"
+               "muted,audio_paused,host_ns,rcs_active,rcs_power,rcs_demand\n";
+        for (std::size_t i = 0; i < measured; ++i) {
+            const auto &s = samples[i];
+            csv << i << ',' << s.state.tick.value << ',' << static_cast<unsigned>(s.state.mode)
+                << ',' << s.frame_ns << ',' << s.gpu.shadow_ns << ',' << s.gpu.pbr_ns << ','
+                << s.gpu.post_ns << ',' << s.gpu.ui_ns << ',' << s.gpu_ready;
+            for (const auto v : s.state.body.position_metres)
+                csv << ',' << v;
+            for (const auto v : s.state.body.velocity_mps)
+                csv << ',' << v;
+            for (const auto v : s.state.force_newtons)
+                csv << ',' << v;
+            for (const auto v : s.state.torque_newton_metres)
+                csv << ',' << v;
+            csv << ',' << s.state.body.mass_kg << ',' << s.memory.live << ',' << s.memory.retiring
+                << ',' << s.memory.allocation_bytes << ',' << s.memory.reserved_bytes << ','
+                << s.phase << ',' << s.power << ',' << s.extent.width << ',' << s.extent.height
+                << ',' << static_cast<unsigned>(s.state.navigation.goal);
+            for (const auto v : s.state.body.rotation_xyzw)
+                csv << ',' << v;
+            for (const auto v : s.state.body.angular_velocity_rps)
+                csv << ',' << v;
+            for (const auto v : s.camera.camera.position_metres)
+                csv << ',' << v;
+            for (const auto v : s.camera.camera.rotation_xyzw)
+                csv << ',' << v;
+            csv << ',' << s.camera.vertical_fov_degrees << ',' << s.focused << ','
+                << s.capture_requested << ',' << s.capture_accepted;
+            for (const auto v : s.camera.ship.position_metres)
+                csv << ',' << v;
+            csv << ',' << s.state.entity.generation << ',' << static_cast<unsigned>(s.audio.state)
+                << ',' << s.audio.generation << ',' << s.audio.losses << ','
+                << s.audio.queued_frames << ',' << s.audio.muted << ',' << s.audio.paused << ','
+                << s.host_ns << ',' << s.rcs_active << ',' << s.rcs_power << ',' << s.rcs_demand
+                << '\n';
+        }
+        const auto text = csv.str();
+        (void)take(probe::write_exclusive(options.report,
+                                          std::as_bytes(std::span(text.data(), text.size()))));
+    }
+    std::printf("flight_hdr_finite=1 flight_lit_pixels=%zu\n", lit_pixels);
+    std::printf("flight_frames=%zu warmup=%u replay=%u walkthrough=%u validation=%u "
+                "allocation_probe=%u triangles=%llu contacts=101 "
+                "camera_mount=bow_sensor "
+                "cpp_new_calls=%llu imgui_calls=%llu gpu_timing_rows=%zu live=%u retiring=%u "
+                "allocation_bytes=%llu reserved_bytes=%llu audio_pending=0\n",
+                measured, warmup, options.replay ? 1U : 0U, options.walkthrough ? 1U : 0U,
+                options.validation ? 1U : 0U, workload::allocation_probe_enabled() ? 1U : 0U,
+                static_cast<unsigned long long>(preset.triangles),
+                static_cast<unsigned long long>(allocations),
+                static_cast<unsigned long long>(ui_allocations),
+                static_cast<std::size_t>(std::count_if(samples.begin(), samples.end(),
+                                                       [](const auto &s) { return s.gpu_ready; })),
+                memory.live, memory.retiring,
+                static_cast<unsigned long long>(memory.allocation_bytes),
+                static_cast<unsigned long long>(memory.reserved_bytes));
+    const auto audio_stats = sound.statistics();
+    std::printf(
+        "audio_state=%s audio_gen=%llu audio_losses=%llu audio_queue_max=%u audio_muted=%u\n",
+        audio_stats.state == audio::State::disconnected ? "offline"
+                                                        : (audio_stats.muted ? "muted" : "playing"),
+        static_cast<unsigned long long>(audio_stats.generation),
+        static_cast<unsigned long long>(audio_stats.losses), audio_stats.maximum_queued_frames,
+        audio_stats.muted ? 1U : 0U);
+    const auto system_sample = system_usage->snapshot();
+    const auto system_ram = system_sample.values.ram.value_or(MemoryBytes{});
+    const auto system_vram = system_sample.values.vram.value_or(MemoryBytes{});
+    std::printf(
+        "hud_controls_visible=%u hud_data_visible=%u hud_controls_drawn_frames=%llu "
+        "hud_data_drawn_frames=%llu hud_context_menu_drawn_frames=%llu brand_window_icon=%u\n",
+        metrics.help && !metrics.data ? 1U : 0U, metrics.help && metrics.data ? 1U : 0U,
+        static_cast<unsigned long long>(metrics.controls_drawn_frames),
+        static_cast<unsigned long long>(metrics.data_drawn_frames),
+        static_cast<unsigned long long>(metrics.context_menu_drawn_frames),
+        gui->window_icon_applied() ? 1U : 0U);
+    std::printf(
+        "performance_visible=%u performance_toggles=%llu performance_drawn_frames=%llu "
+        "scope=system_device os_samples=%llu system_ram_available=%u "
+        "system_ram_used_bytes=%llu system_ram_total_bytes=%llu "
+        "system_cpu_available=%u system_cpu_busy_percent=%.3f gpu_memory_kind=%u "
+        "device_vram_available=%u device_vram_used_bytes=%llu device_vram_total_bytes=%llu "
+        "performance_gpu_ready=%u os_collection_failed=%u\n",
+        performance.visible() ? 1U : 0U, static_cast<unsigned long long>(performance_toggles),
+        static_cast<unsigned long long>(metrics.performance_drawn_frames),
+        static_cast<unsigned long long>(system_sample.sequence), system_sample.values.ram ? 1U : 0U,
+        static_cast<unsigned long long>(system_ram.used),
+        static_cast<unsigned long long>(system_ram.total),
+        system_sample.values.cpu_percent ? 1U : 0U, system_sample.values.cpu_percent.value_or(0.0),
+        static_cast<unsigned>(gpu_identity.kind), system_sample.values.vram ? 1U : 0U,
+        static_cast<unsigned long long>(system_vram.used),
+        static_cast<unsigned long long>(system_vram.total), metrics.gpu_ready ? 1U : 0U,
+        system_sample.collection_failed ? 1U : 0U);
+    (void)SDL_SetWindowRelativeMouseMode(context->window(), false);
+    (void)sound.close();
+    system_usage.reset();
+    gui.reset();
+    require(context->close(), "flight context close failed");
+    require(context->validation_errors() == 0, "flight Vulkan validation reported errors");
+}
+} // namespace ngen::demo

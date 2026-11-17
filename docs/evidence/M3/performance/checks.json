@@ -1,0 +1,53 @@
+{
+  "feature": "Hidden-by-default F12 detailed performance overlay",
+  "native_ctests": {
+    "demo-debug": 23,
+    "demo-release": 23,
+    "demo-asan": 23,
+    "demo-gcc": 23
+  },
+  "sampler_cases": 9,
+  "sampler_assertions": 560,
+  "clang_actual_command_analyses": 9,
+  "clang_scope": "app.cpp, performance.cpp and flight_performance.cpp in Debug, Release and ASan; all native flags retained",
+  "sanitizers": {
+    "asan_ubsan_leaks": "Strict CTests and native hidden/F12 walkthrough pass",
+    "tsan": "Separate owned performance/test target passes; graphics and uninstrumented SDK internals excluded"
+  },
+  "native_ui": {
+    "configurations": ["demo-debug", "demo-release", "demo-asan", "demo-gcc"],
+    "cases_per_configuration": 2,
+    "skipped": 0,
+    "final_strict_asan_rerun_cases": 2,
+    "scope": "Actual SDL F12 events, drawn panel, whole-system RAM, GPU interval availability, mode/focus/reset persistence and hidden/no-poll startup"
+  },
+  "allocation_replays": {
+    "debug_gdb_cases": 2,
+    "scope": "Force-plot hover with panel hidden and visible; public SDK events on discovered owned window",
+    "frames_each": 2400,
+    "extent": [1920, 1080],
+    "warm_cpp_calls_each": 0,
+    "warm_imgui_calls_each": 0,
+    "gpu_rows_each": 2400,
+    "untraced_release_frames": 2400,
+    "untraced_release_warm_calls": [0, 0],
+    "untraced_release_stderr_bytes": 0,
+    "physical_actuation_columns_unchanged": 27,
+    "timing_acceptance": false
+  },
+  "windows": {
+    "strict_real_win64_gcc_cross_compile": "Passed",
+    "native_msvc_clangcl_execution": "Not run for this feature",
+    "whole_device_pdh_readings": "Require native confirmation",
+    "formal_per_process_cim_gate": "Unchanged; repeated MSVC timeout remains open"
+  },
+  "shutdown": {
+    "initial_native_timeout_seconds": 180,
+    "original_blocked_stack_captured": false,
+    "repair": "Request stop while holding the same mutex as the condition-variable predicate; release before notification/join",
+    "disabled_lifecycle_iterations_per_suite": 500,
+    "hard_os_call_deadline_claimed": false
+  },
+  "review": "Same-session C++/code review; not independent review",
+  "remaining": ["Native Windows confirmation", "Required broader UI refinement", "Final M3 budget, owner-review and integration gates"]
+}

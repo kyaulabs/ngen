@@ -1,0 +1,8 @@
+device=Intel(R) Iris(R) Xe Graphics (TGL GT2) api=1.4 driver=109060102 queue=0 display=wayland
+asteroid_instances=100 asteroid_triangles=80 ship_triangles=238080 total_triangles=246080 scene_draws=189 fixture_seed=0x4e47454e fixture_crc32=740711bd package_crc32=04a13010
+workload_frames=600 workload_warmup=60 workload_wsi_queued=600 workload_hdr_finite=1 workload_lit_pixels=31871 workload_capture=1 width=1280 height=720 shadow_extent=1024 validation=0
+post_exposure=1.00 fxaa=1 bloom_strength=0.0400 bloom_kernel=9x9 bloom_samples=25 gpu_post_includes_bloom=1
+frame_ns p50=18644979 p95=33602558 p99=42421569 max=47555295 gpu_timestamps=available allocation_probe=1 warm_cpp_allocations=0 vma_allocation_bytes=211566728 vma_reserved_bytes=214396216
+cpu_prepare_ns p50=3507414 p95=10389278 cpu_present_ns p50=7086291 p95=15446462
+gpu_shadow_ns p50=1761875 p95=1990365 gpu_pbr_ns p50=3714375 p95=4543698 gpu_post_ns p50=1656458 p95=1895208
+inspector_reloads=0 inspector_ui=1 inspector_snapshot_generation=1 inspector_vertices=3150 inspector_draws=10 warm_imgui_allocations=0 ui_prepare_ns_p95=539112 gpu_ui_ns_p95=2046302

@@ -1,0 +1,10 @@
+[1/4] Processing file <repo>/engine/render/mesh.cpp.
+33 warnings generated.
+[2/4] Processing file <repo>/engine/render/resources.cpp.
+76 warnings generated.
+[3/4] Processing file <repo>/engine/render/context.cpp.
+119 warnings generated.
+[4/4] Processing file <repo>/apps/resource_probe/main.cpp.
+164 warnings generated.
+Suppressed 164 warnings (164 in non-user code).
+Use -header-filter=.* or leave it as default to display errors from all non-system headers. Use -system-headers to display errors from system headers as well.

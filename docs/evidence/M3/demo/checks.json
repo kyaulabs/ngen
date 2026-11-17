@@ -1,0 +1,60 @@
+{
+  "graphs": [
+    {
+      "configuration": "demo-debug",
+      "selected": 18,
+      "executed": 18,
+      "skipped": 0,
+      "failed": 0
+    },
+    {
+      "configuration": "demo-release",
+      "selected": 18,
+      "executed": 18,
+      "skipped": 0,
+      "failed": 0
+    },
+    {
+      "configuration": "demo-asan",
+      "selected": 18,
+      "executed": 18,
+      "skipped": 0,
+      "failed": 0
+    },
+    {
+      "configuration": "demo-gcc",
+      "selected": 18,
+      "executed": 18,
+      "skipped": 0,
+      "failed": 0
+    },
+    {
+      "configuration": "scene-shipping",
+      "executed": 11,
+      "failed": 0
+    },
+    {
+      "configuration": "scene-no-shaders",
+      "executed": 10,
+      "failed": 0
+    }
+  ],
+  "parent_ci": {
+    "head": "7b4615dc0031903565a1f65c3241c15513be49da",
+    "run": 42957019450,
+    "jobs": 4,
+    "conclusion": "success",
+    "scope": "parent GUI/contact only, not this new demo source"
+  },
+  "native": "four 330-frame current-source correctness runs; synthetic SDL focus events; actual renderer/relative-mode API and ImGui click",
+  "ast": "18 complete actual commands plus 3 affected implementation reruns; owned headers; no flags removed",
+  "pending": [
+    "audio",
+    "offline package",
+    "current Windows",
+    "three warmed laptop runs",
+    "scoped RTX timing",
+    "recording",
+    "physical control-feel acceptance"
+  ]
+}

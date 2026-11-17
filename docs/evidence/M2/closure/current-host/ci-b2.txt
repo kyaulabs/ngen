@@ -1,0 +1,7 @@
+Workflow 42463832294 at b2fa7da: original Release and TSan passed.
+Original Debug/ASan failed during renderer/checked-scene dependency setup,
+with retained SDL source-download timeout diagnostics. Expected compiler capability
+probes are not independently treated as the root failure.
+Failed jobs were rerun without changing pins, warnings or source.
+Final workflow status: completed/success, confirmed through gh run view.
+This is not exact-head CI for the later corrections.

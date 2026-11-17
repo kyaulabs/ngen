@@ -1,0 +1,24 @@
+{
+  "recorded": "2026-11-08T00:27:07.824286+00:00",
+  "tools": {
+    "clang": "clang version 23.1.4\nTarget: x86_64-pc-linux-gnu\nThread model: posix\nInstalledDir: /usr/bin",
+    "gcc": "g++ (GCC) 16.2.1 20260810\nCopyright (C) 2026 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.",
+    "clang-tidy": "LLVM (http://llvm.org/):\n  LLVM version 23.1.4\n  Optimized build.",
+    "cmake": "cmake version 4.4.5\n\nCMake suite maintained and supported by Kitware (kitware.com/cmake).",
+    "ninja": "1.13.2",
+    "conan": "Conan version 2.34.0"
+  },
+  "source_base": "87fe98c7ed065ab39a287b5da095e11f06520aee",
+  "source_identity": "sources.sha256 identifies the uncommitted implementation over source_base",
+  "ast_invocations": {
+    "inspector-debug": 24,
+    "inspector-release": 24,
+    "inspector-asan": 24,
+    "scene-shipping": 21,
+    "scene-no-shaders": 18
+  },
+  "gcc_ast": "Unavailable with actual module flags; not filtered/reclassified",
+  "third_party_ast": "Packaged SDL backend compiled and sanitized, excluded from owned-policy AST",
+  "timing_scope": "Validation-on trace concurrent with AST; no performance acceptance",
+  "shipping_symbols": "No ngen::tools, ImGui, ImGui_Impl, OverlayPipeline or compiled::overlay matches"
+}

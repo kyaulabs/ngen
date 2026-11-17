@@ -1,0 +1,23 @@
+Test project <REPO>/build/scene-release
+    Start 1: shader_offline
+1/9 Test #1: shader_offline ...................   Passed   32.83 sec
+    Start 2: ngen_tests
+2/9 Test #2: ngen_tests .......................   Passed    0.01 sec
+    Start 3: render_contract_tests
+3/9 Test #3: render_contract_tests ............   Passed    0.01 sec
+    Start 4: asset_package_tests
+4/9 Test #4: asset_package_tests ..............   Passed    0.07 sec
+    Start 5: render_startup_tests
+5/9 Test #5: render_startup_tests .............   Passed    0.02 sec
+    Start 6: wayland_tablet_shutdown
+6/9 Test #6: wayland_tablet_shutdown ..........   Passed    0.07 sec
+    Start 7: wayland_tablet_removal
+7/9 Test #7: wayland_tablet_removal ...........   Passed    0.06 sec
+    Start 8: replay_serial
+8/9 Test #8: replay_serial ....................   Passed    0.01 sec
+    Start 9: replay_workers
+9/9 Test #9: replay_workers ...................   Passed    0.01 sec
+
+100% tests passed out of 9
+
+Total Test time (real) =  33.09 sec

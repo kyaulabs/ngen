@@ -1,0 +1,9 @@
+<MSVC>/include/xutility(5310): warning C4244: '=': conversion from 'const _Ty' to '_Ty', possible loss of data
+game\flight\flight.cpp(288): warning C4456: declaration of 'value' hides previous local declaration
+game\flight\flight.cpp(290): warning C4456: declaration of 'value' hides previous local declaration
+game\flight\flight.cpp(294): warning C4456: declaration of 'value' hides previous local declaration
+game\flight\flight.cpp(299): warning C4456: declaration of 'value' hides previous local declaration
+apps\flight_demo/preset.hpp(9): warning C4324: 'ngen::demo::ShipProfile': structure was padded due to alignment specifier
+apps\flight_demo\view.cpp(27): error C2440: 'return': cannot convert from 'initializer list' to 'JPH::Mat44'
+apps\flight_demo\app.cpp(509): warning C4456: declaration of 'button' hides previous local declaration
+<MSVC>/include/utility(274): warning C4244: 'initializing': conversion from '_Ty' to '_Ty2', possible loss of data

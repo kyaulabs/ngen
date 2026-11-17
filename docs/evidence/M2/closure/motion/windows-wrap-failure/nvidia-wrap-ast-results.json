@@ -1,0 +1,32 @@
+[
+  {
+    "configuration": "inspector-debug",
+    "source": "apps/resource_probe/main.cpp",
+    "status": 0,
+    "flags": "Actual native compile command, unchanged"
+  },
+  {
+    "configuration": "inspector-release",
+    "source": "apps/resource_probe/main.cpp",
+    "status": 0,
+    "flags": "Actual native compile command, unchanged"
+  },
+  {
+    "configuration": "inspector-asan",
+    "source": "apps/resource_probe/main.cpp",
+    "status": 0,
+    "flags": "Actual native compile command, unchanged"
+  },
+  {
+    "configuration": "scene-shipping",
+    "source": "apps/resource_probe/main.cpp",
+    "status": 0,
+    "flags": "Actual native compile command, unchanged"
+  },
+  {
+    "configuration": "scene-no-shaders",
+    "source": "apps/resource_probe/main.cpp",
+    "status": 0,
+    "flags": "Actual native compile command, unchanged"
+  }
+]

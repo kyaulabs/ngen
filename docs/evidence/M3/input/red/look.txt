@@ -1,0 +1,36 @@
+Test project /home/kyau/projects/kyaulabs/ngen/build/flight-debug
+    Start 4: flight_input
+1/1 Test #4: flight_input .....................***Failed    0.00 sec
+Randomness seeded to: 3820198467
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+flight_input_tests is a Catch2 v3.16.0 host application.
+Run with -? for options
+
+-------------------------------------------------------------------------------
+free look releases the steering stick and centers on release without resuming
+stale turns
+-------------------------------------------------------------------------------
+/home/kyau/projects/kyaulabs/ngen/tests/flight_input.cpp:82
+...............................................................................
+
+/home/kyau/projects/kyaulabs/ngen/tests/flight_input.cpp:89: FAILED:
+  REQUIRE( input.pilot().rotation == std::array<float, 3>{} )
+with expansion:
+  { 0.0f, -0.400000006f, 0.0f }
+  ==
+  { 0.0f, 0.0f, 0.0f }
+
+===============================================================================
+test cases:  5 |  4 passed | 1 failed
+assertions: 62 | 61 passed | 1 failed
+
+
+
+0% tests passed, 1 tests failed out of 1
+
+Total Test time (real) =   0.00 sec
+
+The following tests FAILED:
+	  4 - flight_input (Failed)
+Errors while running CTest

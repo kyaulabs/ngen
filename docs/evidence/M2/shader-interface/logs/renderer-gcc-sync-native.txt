@@ -1,0 +1,4 @@
+device=Intel(R) Iris(R) Xe Graphics (TGL GT2) api=1.4 driver=109060102 queue=0 display=wayland
+compute_counts=6 compute_values=1152 cull_boundary_and_guard=1
+pbr_draws=9 matrix_coverage_pixels=4096 srgb_linear=1 metallic_roughness=1 local_light_clamp=1 normal_map=1 alpha_mask=1 emissive=1 shadow_compare=1
+shader_gpu=1 validation_clean=1

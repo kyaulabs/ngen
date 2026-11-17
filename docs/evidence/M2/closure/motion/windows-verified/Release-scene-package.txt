@@ -1,0 +1,11 @@
+device=NVIDIA GeForce RTX 5070 api=1.4 driver=2588573696 queue=0 display=windows
+cancelled_inflight_scene=1 unpublished_version=1 active_pin_preserved=1 submitted_retirement=1
+pinned_versions=2 resident_allocation_bytes=387983040 resident_reserved_bytes=389897920
+resident_verified_mip_bytes=106343076
+scene_extra_geometry=1 extra_scene_view=1 extra_frame_pin=1
+scene_hdr_width=1280 scene_hdr_height=720 scene_wsi_width=1280 scene_wsi_height=720 scene_capture=1 scene_lod=2 scene_triangles=239542 scene_draws=210 scene_primitives=205 scene_materials=17 scene_light_instances=612
+checked_scene_pbr=1 generated_ibl=1 generated_shadow=1 shadow_extent=1024 frame_version_pin=1 frame_versions=2 frame_pin_retired=1 scene_lit_pixels=51772 scene_wsi_queued=1
+checked_scene_upload=1 immutable_version=1 owning_cpu_pin=1 resident_vertex_readback=1 resident_index_readback=1 resident_mip_readback=1 cancelled_replacement=1 close_invalidated=1
+resident_vertices=1328627 resident_indices=3307404 resident_images=9 retained_lights=612
+source_directional=0 source_point=612 source_spot=0 source_uv1_maps=0
+source_opaque=15 source_mask=0 source_blend=2 source_double_sided=17

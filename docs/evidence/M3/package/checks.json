@@ -1,0 +1,53 @@
+{
+  "parent": "28376273e1dc524beab4a2180faf0784403d9a37",
+  "source_files_sha256": {
+    "CMakeLists.txt": "f8e1d41b1736d60294f5c999024154230b4bdf3321fde42cde7a52e6bfa9d887",
+    "conanfile.py": "d812fbeee2272004a7d88558567755064bc61541d6d00e4aaf93710e46affd1c",
+    ".github/workflows/cpu.yml": "623957acf78bb564fa414b5d24ae91334c59b5c36acb2ca4b2b633c3b2c05631",
+    "apps/flight_demo/app.cpp": "14d2979f6bccd18a5b4f96c4a8c2ef170756ff66b9a5eac1b3f72b5a3ffda7c8",
+    "tools/package_demo.py": "ffdd36ce3e4a4222fc7b8639d5e9a92cedd7c103c62125fd6da98904d6c19414",
+    "tools/build-windows.ps1": "c0073c8b841626453e64816df08572ddb51b5eebe39c40ac9873cf68a6d05267",
+    "tests/demo_package.py": "72279e36f3d11c85de62d259ae885f561f04dcbc494c8449d5a75da2e00cd6ca",
+    "tests/windows_build.ps1": "6a31a4916b2f519ffaab9f22eb465646c7c02c8f55c2cbba51ad95a8416444cc",
+    "tests/windows_flight.ps1": "e98b486d9600dbe9de69586bb5f6f32bea6e606787bb8eb8dc9b9eb607815ee8"
+  },
+  "ctest": {
+    "demo-debug": {
+      "selected": 21,
+      "executed": 21,
+      "failed": 0,
+      "skipped": 0
+    },
+    "demo-release": {
+      "selected": 21,
+      "executed": 21,
+      "failed": 0,
+      "skipped": 0
+    },
+    "demo-asan": {
+      "selected": 21,
+      "executed": 21,
+      "failed": 0,
+      "skipped": 0
+    },
+    "demo-gcc": {
+      "selected": 21,
+      "executed": 21,
+      "failed": 0,
+      "skipped": 0
+    },
+    "scene-shipping": {
+      "selected": 11,
+      "executed": 11,
+      "failed": 0,
+      "skipped": 0
+    },
+    "scene-no-shaders": {
+      "selected": 10,
+      "executed": 10,
+      "failed": 0,
+      "skipped": 0
+    }
+  },
+  "scope": "Uncommitted packaging slice over signed audio parent; exact source hashes, not a final bundle or Windows acceptance."
+}

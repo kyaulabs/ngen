@@ -1,0 +1,47 @@
+Same-session review of the candidate package/cooker change, based on 0258bda.
+Not independent/human graphics acceptance; M2 remains open.
+
+Read the runtime package model/reader/file boundary, native source intake,
+material/LOD/mip cooker, private native staging, Python CLI assembly/publication,
+importer-free probe, tests and CMake/Conan/preset/CI changes. Format contract is
+separate from C++ layout. Thirteen actual consumer TUs are analyzed in each three
+Clang configurations; four native graphs and a runtime-only graph execute tests.
+
+Runtime owns all parsed vertices/indices/strings/mips behind const shared pins.
+Input spans and source files expire without invalidating a package. CRC32 uses
+existing Zlib and is explicitly corruption detection, not authentication. Reject
+size/count/stride/overlap/padding/schema/numeric/reference defects before publishing.
+CRC-correct semantic controls ensure this is not merely a checksum test. Complete
+native 2D RGBA8 KTX2 is bounded and validated without a runtime KTX decoder or
+external-resource lookup; image roles constrain material color interpretation.
+
+Cooker input is the owning validated import result. LOD0 remains complete;
+lower LODs use attribute-aware simplification, protect used UV/mirrored seams,
+optimize cache/fetch ordering and retain conservative error bounds. The full
+source revealed nonmonotonic error-limited simplification counts; retaining the
+preceding level fixes publication without loosening the runtime validator.
+Mip tests distinguish linear color/data, opaque alpha, alpha-weighted blend,
+emissive alpha independence, renormalized normals and odd-dimension coverage.
+Capacity/cancellation failures publish no cooked scene. All 612 lights survive.
+
+Assembler uses trusted pinned offline executables with argument arrays, fixed
+bounded staging filenames/counts and no source URI resolution. It refuses
+symlinks/nonempty output, privately stages, validates through the runtime reader,
+checks source identity and publishes only after success. Actual process controls
+cover early failures, late verification rejection, source preservation, repeated
+bytes and native stdout diagnostics that were previously lost. Runtime executable
+exception escape was fixed after the unchanged strict analyzer caught it.
+
+No additional demonstrated task-related correctness defect remained in this
+review. Remaining limits are explicit: canonical environment rather than universal
+cross-OS identity; no authenticated remote transport or hard filesystem/process
+sandbox; no internally interruptible third-party importer/tangent call; no GPU
+residency or draw integration. Full instrumented recook deadline timeouts remain
+reported even though byte-identical assetc full-source success and current reader
+success are separately verified. Vendor AST findings remain advisory/nonzero.
+The archived KTX tool reports a missing-Git-version marker; source/package/binary
+identities are retained, not replaced with an invented version string.
+
+Next: tracked graphics submission/layout/last-use integration, immutable resident
+version pins and fixed rendering passes. Windows, visual/performance and formal
+acceptance remain unverified. No source asset or generated owner package is added.

@@ -1,0 +1,215 @@
+{
+  "scope": "All collected resize diagnostics and fresh clean mixed run; instrumented observations are not clean passes. Aggregate experiment deadline interrupted last case, resumed once with fresh paths. Focus correlation is not proof of exact external cause. No production patch promoted.",
+  "runs": [
+    {
+      "file": "resize-ab-01-baseline.csv",
+      "rows": 600,
+      "frame_ns": {
+        "p50": 50911086,
+        "p95": 51504474,
+        "p99": 69758194,
+        "max": 256272641
+      },
+      "no_frame_over_200ms": false,
+      "all_native_extents": [
+        [
+          "1024",
+          "640"
+        ],
+        [
+          "1280",
+          "720"
+        ]
+      ]
+    },
+    {
+      "file": "resize-ab-01-handoff.csv",
+      "rows": 600,
+      "frame_ns": {
+        "p50": 50680916,
+        "p95": 51571983,
+        "p99": 69948436,
+        "max": 228139462
+      },
+      "no_frame_over_200ms": false,
+      "all_native_extents": [
+        [
+          "1024",
+          "640"
+        ],
+        [
+          "1280",
+          "720"
+        ]
+      ]
+    },
+    {
+      "file": "resize-ab-02-baseline.csv",
+      "rows": 600,
+      "frame_ns": {
+        "p50": 50691424,
+        "p95": 51557927,
+        "p99": 67393627,
+        "max": 231713245
+      },
+      "no_frame_over_200ms": false,
+      "all_native_extents": [
+        [
+          "1024",
+          "640"
+        ],
+        [
+          "1280",
+          "720"
+        ]
+      ]
+    },
+    {
+      "file": "resize-ab-02-handoff.csv",
+      "rows": 600,
+      "frame_ns": {
+        "p50": 50703552,
+        "p95": 51537618,
+        "p99": 106624999,
+        "max": 223151566
+      },
+      "no_frame_over_200ms": false,
+      "all_native_extents": [
+        [
+          "1024",
+          "640"
+        ],
+        [
+          "1280",
+          "720"
+        ]
+      ]
+    },
+    {
+      "file": "resize-ab-03-baseline.csv",
+      "rows": 600,
+      "frame_ns": {
+        "p50": 50806627,
+        "p95": 51493166,
+        "p99": 52234709,
+        "max": 234766277
+      },
+      "no_frame_over_200ms": false,
+      "all_native_extents": [
+        [
+          "1024",
+          "640"
+        ],
+        [
+          "1280",
+          "720"
+        ]
+      ]
+    },
+    {
+      "file": "resize-ab-03-handoff-resume.csv",
+      "rows": 600,
+      "frame_ns": {
+        "p50": 50647837,
+        "p95": 51362491,
+        "p99": 51703541,
+        "max": 253400001
+      },
+      "no_frame_over_200ms": false,
+      "all_native_extents": [
+        [
+          "1024",
+          "640"
+        ],
+        [
+          "1280",
+          "720"
+        ]
+      ]
+    },
+    {
+      "file": "resize-clean-current.csv",
+      "rows": 600,
+      "frame_ns": {
+        "p50": 50619294,
+        "p95": 51390157,
+        "p99": 52038620,
+        "max": 249450524
+      },
+      "no_frame_over_200ms": false,
+      "all_native_extents": [
+        [
+          "1024",
+          "640"
+        ],
+        [
+          "1280",
+          "720"
+        ]
+      ]
+    },
+    {
+      "file": "resize-minimum1.csv",
+      "rows": 600,
+      "frame_ns": {
+        "p50": 50601822,
+        "p95": 51392271,
+        "p99": 51725332,
+        "max": 204368126
+      },
+      "no_frame_over_200ms": false,
+      "all_native_extents": [
+        [
+          "1024",
+          "640"
+        ],
+        [
+          "1280",
+          "720"
+        ]
+      ]
+    },
+    {
+      "file": "resize-timer-state.csv",
+      "rows": 600,
+      "frame_ns": {
+        "p50": 16685287,
+        "p95": 20259614,
+        "p99": 35383322,
+        "max": 105328412
+      },
+      "no_frame_over_200ms": true,
+      "all_native_extents": [
+        [
+          "1024",
+          "640"
+        ],
+        [
+          "1280",
+          "720"
+        ]
+      ]
+    },
+    {
+      "file": "resize-window-state.csv",
+      "rows": 600,
+      "frame_ns": {
+        "p50": 50619905,
+        "p95": 51401893,
+        "p99": 51795253,
+        "max": 245638952
+      },
+      "no_frame_over_200ms": false,
+      "all_native_extents": [
+        [
+          "1024",
+          "640"
+        ],
+        [
+          "1280",
+          "720"
+        ]
+      ]
+    }
+  ]
+}

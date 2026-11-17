@@ -1,0 +1,96 @@
+{
+  "initial": [
+    {
+      "configuration": "flight-debug",
+      "source": "engine/physics/world.cpp",
+      "status": 0,
+      "flags": "Complete actual command; no flags removed"
+    },
+    {
+      "configuration": "flight-debug",
+      "source": "game/flight/flight.cpp",
+      "status": 0,
+      "flags": "Complete actual command; no flags removed"
+    },
+    {
+      "configuration": "flight-debug",
+      "source": "tests/physics.cpp",
+      "status": 0,
+      "flags": "Complete actual command; no flags removed"
+    },
+    {
+      "configuration": "flight-debug",
+      "source": "tests/flight.cpp",
+      "status": 1,
+      "flags": "Complete actual command; no flags removed"
+    },
+    {
+      "configuration": "flight-release",
+      "source": "engine/physics/world.cpp",
+      "status": 0,
+      "flags": "Complete actual command; no flags removed"
+    },
+    {
+      "configuration": "flight-release",
+      "source": "game/flight/flight.cpp",
+      "status": 0,
+      "flags": "Complete actual command; no flags removed"
+    },
+    {
+      "configuration": "flight-release",
+      "source": "tests/physics.cpp",
+      "status": 0,
+      "flags": "Complete actual command; no flags removed"
+    },
+    {
+      "configuration": "flight-release",
+      "source": "tests/flight.cpp",
+      "status": 1,
+      "flags": "Complete actual command; no flags removed"
+    },
+    {
+      "configuration": "flight-asan",
+      "source": "engine/physics/world.cpp",
+      "status": 0,
+      "flags": "Complete actual command; no flags removed"
+    },
+    {
+      "configuration": "flight-asan",
+      "source": "game/flight/flight.cpp",
+      "status": 0,
+      "flags": "Complete actual command; no flags removed"
+    },
+    {
+      "configuration": "flight-asan",
+      "source": "tests/physics.cpp",
+      "status": 0,
+      "flags": "Complete actual command; no flags removed"
+    },
+    {
+      "configuration": "flight-asan",
+      "source": "tests/flight.cpp",
+      "status": 1,
+      "flags": "Complete actual command; no flags removed"
+    }
+  ],
+  "affected_reruns": [
+    {
+      "configuration": "flight-debug",
+      "source": "tests/flight.cpp",
+      "status": 0,
+      "flags": "Complete original native command; no flags removed"
+    },
+    {
+      "configuration": "flight-release",
+      "source": "tests/flight.cpp",
+      "status": 0,
+      "flags": "Complete original native command; no flags removed"
+    },
+    {
+      "configuration": "flight-asan",
+      "source": "tests/flight.cpp",
+      "status": 0,
+      "flags": "Complete original native command; no flags removed"
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+F
+======================================================================
+FAIL: test_compile_pbr_pair_for_minimum_vulkan_profile (__main__.ShaderCompilation.test_compile_pbr_pair_for_minimum_vulkan_profile)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<ROOT>/tests/shaders.py", line 29, in test_compile_pbr_pair_for_minimum_vulkan_profile
+    self.assertEqual({x.name for x in output.glob("*.spv")},
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                     {"cull.spv", "pbr-vertex.spv", "pbr-fragment.spv"})
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Items in the second set but not the first:
+'pbr-vertex.spv'
+'pbr-fragment.spv'
+
+----------------------------------------------------------------------
+Ran 1 test in 1.498s
+
+FAILED (failures=1)

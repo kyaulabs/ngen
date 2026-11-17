@@ -1,0 +1,19 @@
+{
+  "name": "frigate-localized-blue-white-drive-v4",
+  "base_package_sha256": "e0ee6a023900c78b2c313f493f2a0e78c9639c39b6d830a1eaf3a3f6c0a29b6d",
+  "original_source_sha256": "e68cd409c479036556446ed1753b287c0e7a40260109b3cd442abe7f533941fe",
+  "materials": {
+    "F01_DriveRed": {"base_color": [0.01, 0.04, 0.22, 1.0], "emissive": [0.02, 0.22, 1.0]},
+    "F01_Core": {"base_color": [0.32, 0.40, 0.50, 1.0], "emissive": [0.8, 0.92, 1.0]}
+  },
+  "drive_light_color": [0.018, 0.008, 1.0],
+  "core_light_color": [0.035, 0.055, 1.0],
+  "light_groups": {
+    "core": {"intensity_scale": 1.0, "range": 2.5},
+    "inner_coil": {"intensity_scale": 0.01, "range": 4.0},
+    "luminous_collar": {"intensity_scale": 0.01, "range": 0.75}
+  },
+  "drive_light_count": 54,
+  "core_light_count": 6,
+  "scope": "Contain source light influence inside/adjacent to engine bells rather than washing out housings. Preserve core-light intensity/priority with a 2.5m range; soften coil/collar light power and range. All definitions stay positive; geometry/textures, exposure/bloom, bridge/navigation definitions and original asset are unchanged. No plume."
+}

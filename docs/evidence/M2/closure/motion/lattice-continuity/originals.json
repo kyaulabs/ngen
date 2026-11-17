@@ -1,0 +1,101 @@
+{
+  "windows_archive_sha256": "096f9a7751e0cb8e73cb445f5d592c5dec484f4e2f891703b3216d8242c81d9f",
+  "native_text_transforms": "UTF8 BOM/EOL/path/terminal-blank normalization; original and retained hashes explicit",
+  "unread_unextracted_setup_session_payloads": [
+    "Release-conan.txt",
+    "profile-detect.txt",
+    "session.txt",
+    "slang-recipe.txt",
+    "tools-install.txt"
+  ],
+  "native_originals": {
+    "build-profile.txt": {
+      "original_sha256": "356c05aea86b6062ecc0be681ed5e638a3af5bcbd82366c9ce29642db12f8ae8",
+      "retained_sha256": "356c05aea86b6062ecc0be681ed5e638a3af5bcbd82366c9ce29642db12f8ae8"
+    },
+    "cmake-version.txt": {
+      "original_sha256": "90d36654ad4780345f1d3a3d542a7fee869fb70755350c845a5abb692b121bc7",
+      "retained_sha256": "4d92ce18ddf9889d463ac875608423312823ad89e7fd5178b02a21ea26a2bd3d"
+    },
+    "conan-version.txt": {
+      "original_sha256": "5f32b073e26212e1eadcea12fb2b0070d8669890df0ff3a467c14051d29a0f56",
+      "retained_sha256": "b6fc698892d456d228ed0b776370e7f229584bea3bb59d9dea7954c80a746e89"
+    },
+    "failure.txt": {
+      "original_sha256": "a9e6cc0e8e33e94a753393322c920280b3b5a7422663ca026fe988a86485de13",
+      "retained_sha256": "1c23d6f22e20b82a4672c83fb13c8a9c949549ba790073ca0d99da1e6c4a84df"
+    },
+    "host-profile.txt": {
+      "original_sha256": "356c05aea86b6062ecc0be681ed5e638a3af5bcbd82366c9ce29642db12f8ae8",
+      "retained_sha256": "356c05aea86b6062ecc0be681ed5e638a3af5bcbd82366c9ce29642db12f8ae8"
+    },
+    "ninja-version.txt": {
+      "original_sha256": "cc30d39e321dcb24ca5c4c5d5b7730e25ab769876a825616360194c634824754",
+      "retained_sha256": "e2d14d3b09221b66ba4be4e6fcdf0b867181f75109973bd744ba1833d231a543"
+    },
+    "profile.txt": {
+      "original_sha256": "8d60a8abec37a77bc37ec7341b4bc60fc81893b7229a48531447263e3f1c1f3b",
+      "retained_sha256": "924754ab508d53ad1abff18a057e6331813440ff6b0461f7f6e4d6bb2d268a52"
+    },
+    "Release-build.txt": {
+      "original_sha256": "26bb08b1113357ab1c47d6d4b1ed4e4603e5bd295a1244a7dca53acc2d437713",
+      "retained_sha256": "41e27506faa19558ad611140694f138382c86c68ef385d51e9dc1a7178ed2c49"
+    },
+    "Release-configure.txt": {
+      "original_sha256": "f5d82ab51386b859c54e023cce7978ceb2757001f72a98bc75e5d4faeeda40c4",
+      "retained_sha256": "3204b3438bf7a811d0242e74d1ab16139b0f3b682203eaad3cdbc2d267a516b9"
+    },
+    "Release-presentation.txt": {
+      "original_sha256": "010aae97766c34209e3786f2d9b6f14d2eed048186d8803d803c2cb931267e43",
+      "retained_sha256": "7c245123f32f4f54d6c598338cef02f90d7fc455ca084a241f0cec7282ddeee2"
+    },
+    "Release-render-startup.txt": {
+      "original_sha256": "8ad47fadb8e5e7e5874d55f7930295bacabd26677c29007620a659b7bd9dc8e3",
+      "retained_sha256": "17799e7716a6aae8cc3a8b53deac071a33647e90914d54964d6530d6bce921e9"
+    },
+    "Release-resources.txt": {
+      "original_sha256": "c5572f27e62eebed4465f8d28f0390991b4172b243273866bd44d29931663533",
+      "retained_sha256": "d60d8fd47ef08364c92f54e21302bca80fc750956c917f92e0825874661fe9c9"
+    },
+    "Release-serial.txt": {
+      "original_sha256": "388d7c789368e790abc5e2d940a902c253f228ef5f264264d65d516d95ebb9d8",
+      "retained_sha256": "58b2ef5d5a21b2918b5a274ac7180f05428c80420aa263cf98c6082cda0b9ae3"
+    },
+    "Release-test-list.txt": {
+      "original_sha256": "13e521287b60fc5a4dfa5cc8bd6e9855c8c9ea22343962e33ed35748920305e1",
+      "retained_sha256": "9d46cba80d17dac49aec416633b2b12ea07cff42d61129587b921ee6e99260f2"
+    },
+    "Release-tests.txt": {
+      "original_sha256": "81404ce8d7d6d311b6245a736564de702cdb1c02c5c60875bc1f0b8ec0c38bbc",
+      "retained_sha256": "5c914f9bd2688bd86b465cdd7b8b9f0ca6129a907c25ce5bc58897d0a20788d5"
+    },
+    "Release-validation-callback.txt": {
+      "original_sha256": "c6eecfd33ef01a81b7ed77866afe7aabb1c4d5e7e8030641af1a71e26c9eaab8",
+      "retained_sha256": "464cd75ea13e21cd40676318a0ba031a62b4e6fdb9909ad26ca8c56278fe7e47"
+    },
+    "Release-workers.txt": {
+      "original_sha256": "919a939b8175cb618519a01e05f9b7482fb858c3867f1c84a889b1145ea49fff",
+      "retained_sha256": "9284c5ebfd89f4ddffa0be938c8bc8ebc409d5400d341a6949c9310fd570276d"
+    },
+    "revision.txt": {
+      "original_sha256": "d9740a7e5d6850e6eab695b910bddf8b5f711dd7409c55023d8850002491e5cb",
+      "retained_sha256": "8607f2132818aedf9db32bc88fde88eca3ba41b252c5c2c10bd05b889e153915"
+    },
+    "vulkan-sdk.txt": {
+      "original_sha256": "5a69b4d3308bb71bdcc75d9691b07e507ccf2753a7a32427db91f401a3bb314b",
+      "retained_sha256": "3983be00596cb3b3c7358a3ea66c7b97103d313096b8cae5499415c2f9839c9c"
+    },
+    "working-tree.txt": {
+      "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "retained_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  },
+  "source_sha256": {
+    "apps/resource_probe/main.cpp": "1dc7d2c1524350c8c6aed7b4bfb60cb0ff7b43641d901904e3ca78023a23bdb0",
+    "shaders/pbr.slang": "b51d68f28ce5eec2e9335f30499289bd44e3cdae9040e4e241e2dc7a339894f7"
+  },
+  "private_asset_sha256": "a02d5438ad32d9c8fb917ce847d5a822688ca5b51d69125f6da71cf2ba2116ed",
+  "private_artifact_policy": "No model/package/reference/capture bytes retained. BMP digests in measurement analysis describe private local captures only. No returned code executed.",
+  "deliberate_shader_mutation": "if (phase > 0.5) phase += 0.25; inserted immediately after phase decode, detected and removed before final verification.",
+  "scope": "Local fix and replay of actual Windows samples, not post-fix Windows execution or independent human approval."
+}

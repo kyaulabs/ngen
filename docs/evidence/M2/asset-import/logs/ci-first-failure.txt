@@ -1,0 +1,300 @@
+cpu (debug)	Build and test bounded offline asset tools	2026-11-06T15:37:26.7832480Z ^[[36;1mctest --preset "asset-$PRESET" --show-only^[[0m
+cpu (debug)	Build and test bounded offline asset tools	2026-11-06T15:37:26.7832934Z ^[[36;1msudo unshare --net -- runuser -u "$(id -un)" -- env -u DISPLAY -u WAYLAND_DISPLAY "$(command -v ctest)" --preset "asset-$PRESET"^[[0m
+cpu (debug)	Build and test bounded offline asset tools	2026-11-06T15:38:02.0207506Z Test project <CI_REPO>/build/asset-debug
+cpu (debug)	Build and test bounded offline asset tools	2026-11-06T15:38:02.0210274Z   Test #1: ngen_tests
+cpu (debug)	Build and test bounded offline asset tools	2026-11-06T15:38:02.0210590Z   Test #2: render_contract_tests
+cpu (debug)	Build and test bounded offline asset tools	2026-11-06T15:38:02.0210913Z   Test #3: asset_import_tests
+cpu (debug)	Build and test bounded offline asset tools	2026-11-06T15:38:02.0211203Z   Test #4: asset_cli
+cpu (debug)	Build and test bounded offline asset tools	2026-11-06T15:38:02.0211463Z   Test #5: replay_serial
+cpu (debug)	Build and test bounded offline asset tools	2026-11-06T15:38:02.0211741Z   Test #6: replay_workers
+cpu (debug)	Build and test bounded offline asset tools	2026-11-06T15:38:02.0211921Z
+cpu (debug)	Build and test bounded offline asset tools	2026-11-06T15:38:02.0212006Z Total Tests: 6
+cpu (debug)	Build and test bounded offline asset tools	2026-11-06T15:38:02.1599288Z Test project <CI_REPO>/build/asset-debug
+cpu (debug)	Build and test bounded offline asset tools	2026-11-06T15:38:02.1603102Z     Start 1: ngen_tests
+cpu (debug)	Build and test bounded offline asset tools	2026-11-06T15:38:02.1634337Z 1/6 Test #1: ngen_tests .......................   Passed    0.00 sec
+cpu (debug)	Build and test bounded offline asset tools	2026-11-06T15:38:02.1636140Z     Start 2: render_contract_tests
+cpu (debug)	Build and test bounded offline asset tools	2026-11-06T15:38:02.1655129Z 2/6 Test #2: render_contract_tests ............   Passed    0.00 sec
+cpu (debug)	Build and test bounded offline asset tools	2026-11-06T15:38:02.1656328Z     Start 3: asset_import_tests
+cpu (debug)	Build and test bounded offline asset tools	2026-11-06T15:38:02.3773609Z 3/6 Test #3: asset_import_tests ...............   Passed    0.21 sec
+cpu (debug)	Build and test bounded offline asset tools	2026-11-06T15:38:02.3774540Z     Start 4: asset_cli
+cpu (debug)	Build and test bounded offline asset tools	2026-11-06T15:38:02.4455475Z 4/6 Test #4: asset_cli ........................   Passed    0.07 sec
+cpu (debug)	Build and test bounded offline asset tools	2026-11-06T15:38:02.4456935Z     Start 5: replay_serial
+cpu (debug)	Build and test bounded offline asset tools	2026-11-06T15:38:02.4530819Z 5/6 Test #5: replay_serial ....................   Passed    0.01 sec
+cpu (debug)	Build and test bounded offline asset tools	2026-11-06T15:38:02.4532156Z     Start 6: replay_workers
+cpu (debug)	Build and test bounded offline asset tools	2026-11-06T15:38:02.4711401Z 6/6 Test #6: replay_workers ...................   Passed    0.02 sec
+cpu (debug)	Build and test bounded offline asset tools	2026-11-06T15:38:02.4714599Z
+cpu (debug)	Build and test bounded offline asset tools	2026-11-06T15:38:02.4714787Z 100% tests passed out of 6
+cpu (debug)	Build and test bounded offline asset tools	2026-11-06T15:38:02.4714989Z
+cpu (debug)	Build and test bounded offline asset tools	2026-11-06T15:38:02.4715108Z Total Test time (real) =   0.31 sec
+cpu (debug)	Build and test bounded offline asset tools	2026-11-06T15:38:02.4940120Z [1/6] Processing file <CI_REPO>/tools/assetc/import.cpp.
+cpu (debug)	Build and test bounded offline asset tools	2026-11-06T15:38:10.9198161Z 37750 warnings generated.
+cpu (debug)	Build and test bounded offline asset tools	2026-11-06T15:38:10.9223786Z [2/6] Processing file <CI_REPO>/tools/assetc/metadata.cpp.
+cpu (debug)	Build and test bounded offline asset tools	2026-11-06T15:38:18.4714575Z 74576 warnings generated.
+cpu (debug)	Build and test bounded offline asset tools	2026-11-06T15:38:18.4743601Z [3/6] Processing file <CI_REPO>/tools/assetc/png.cpp.
+cpu (debug)	Build and test bounded offline asset tools	2026-11-06T15:38:22.7226127Z 100768 warnings generated.
+cpu (debug)	Build and test bounded offline asset tools	2026-11-06T15:38:22.7241310Z [4/6] Processing file <CI_REPO>/tools/assetc/tangents.cpp.
+cpu (debug)	Build and test bounded offline asset tools	2026-11-06T15:38:27.5425898Z 129186 warnings generated.
+cpu (debug)	Build and test bounded offline asset tools	2026-11-06T15:38:27.5446584Z [5/6] Processing file <CI_REPO>/tools/assetc/main.cpp.
+cpu (debug)	Build and test bounded offline asset tools	2026-11-06T15:38:32.3860492Z 154982 warnings generated.
+cpu (debug)	Build and test bounded offline asset tools	2026-11-06T15:38:32.3874701Z [6/6] Processing file <CI_REPO>/tests/asset_import.cpp.
+cpu (debug)	Build and test bounded offline asset tools	2026-11-06T15:38:45.7220774Z 188298 warnings generated.
+cpu (debug)	Build and test bounded offline asset tools	2026-11-06T15:38:45.7248644Z <CI_HOME>/.conan2/p/b/catch6fc5cd66c2eba/p/include/catch2/internal/catch_result_type.hpp:53:16: error: The value '6' provided to the cast expression is not in the valid range of values for 'Flags' [clang-analyzer-optin.core.EnumCastOutOfRange,-warnings-as-errors]
+cpu (debug)	Build and test bounded offline asset tools	2026-11-06T15:38:45.7250047Z    53 |         return static_cast<ResultDisposition::Flags>( static_cast<int>( lhs ) |
+cpu (debug)	Build and test bounded offline asset tools	2026-11-06T15:38:45.7250490Z       |                ^
+cpu (debug)	Build and test bounded offline asset tools	2026-11-06T15:38:45.7251115Z <CI_HOME>/.conan2/p/b/catch6fc5cd66c2eba/p/include/catch2/internal/catch_result_type.hpp:43:37: note: enum declared here
+cpu (debug)	Build and test bounded offline asset tools	2026-11-06T15:38:45.7251848Z    43 |     struct ResultDisposition { enum Flags {
+cpu (debug)	Build and test bounded offline asset tools	2026-11-06T15:38:45.7252242Z       |                                ~~~~~^~~~~~~
+cpu (debug)	Build and test bounded offline asset tools	2026-11-06T15:38:45.7252568Z    44 |         Normal = 0x01,
+cpu (debug)	Build and test bounded offline asset tools	2026-11-06T15:38:45.7252858Z       |         ~~~~~~~~~~~~~~
+cpu (debug)	Build and test bounded offline asset tools	2026-11-06T15:38:45.7253113Z    45 |
+cpu (debug)	Build and test bounded offline asset tools	2026-11-06T15:38:45.7253496Z    46 |         ContinueOnFailure = 0x02,   // Failures fail test, but execution continues
+cpu (debug)	Build and test bounded offline asset tools	2026-11-06T15:38:45.7254054Z       |         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+cpu (debug)	Build and test bounded offline asset tools	2026-11-06T15:38:45.7254540Z    47 |         FalseTest = 0x04,           // Prefix expression with !
+cpu (debug)	Build and test bounded offline asset tools	2026-11-06T15:38:45.7254984Z       |         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+cpu (debug)	Build and test bounded offline asset tools	2026-11-06T15:38:45.7255490Z    48 |         SuppressFail = 0x08         // Failures are reported but do not fail the test
+cpu (debug)	Build and test bounded offline asset tools	2026-11-06T15:38:45.7256224Z       |         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+cpu (debug)	Build and test bounded offline asset tools	2026-11-06T15:38:45.7256631Z    49 |     }; };
+cpu (debug)	Build and test bounded offline asset tools	2026-11-06T15:38:45.7256867Z       |     ~
+cpu (debug)	Build and test bounded offline asset tools	2026-11-06T15:38:45.7257282Z <CI_REPO>/tests/asset_import.cpp:495:34: note: Assuming the condition is false
+cpu (debug)	Build and test bounded offline asset tools	2026-11-06T15:38:45.7257711Z   495 |     for (std::size_t length = 0; length < seed.size(); ++length) {
+cpu (debug)	Build and test bounded offline asset tools	2026-11-06T15:38:45.7258004Z       |                                  ^~~~~~~~~~~~~~~~~~~~
+cpu (debug)	Build and test bounded offline asset tools	2026-11-06T15:38:45.7258422Z <CI_REPO>/tests/asset_import.cpp:495:5: note: Loop condition is false. Execution continues on line 499
+cpu (debug)	Build and test bounded offline asset tools	2026-11-06T15:38:45.7259256Z   495 |     for (std::size_t length = 0; length < seed.size(); ++length) {
+cpu (debug)	Build and test bounded offline asset tools	2026-11-06T15:38:45.7259516Z       |     ^
+cpu (debug)	Build and test bounded offline asset tools	2026-11-06T15:38:45.7259810Z <CI_REPO>/tests/asset_import.cpp:500:35: note: Assuming the condition is true
+cpu (debug)	Build and test bounded offline asset tools	2026-11-06T15:38:45.7260260Z   500 |     for (std::size_t attempt = 0; attempt < seed.size() * masks.size(); ++attempt) {
+cpu (debug)	Build and test bounded offline asset tools	2026-11-06T15:38:45.7260597Z       |                                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+cpu (debug)	Build and test bounded offline asset tools	2026-11-06T15:38:45.7260994Z <CI_REPO>/tests/asset_import.cpp:500:5: note: Loop condition is true.  Entering loop body
+cpu (debug)	Build and test bounded offline asset tools	2026-11-06T15:38:45.7261459Z   500 |     for (std::size_t attempt = 0; attempt < seed.size() * masks.size(); ++attempt) {
+cpu (debug)	Build and test bounded offline asset tools	2026-11-06T15:38:45.7261751Z       |     ^
+cpu (debug)	Build and test bounded offline asset tools	2026-11-06T15:38:45.7262005Z <CI_REPO>/tests/asset_import.cpp:506:25: note: 'scene' is null
+cpu (debug)	Build and test bounded offline asset tools	2026-11-06T15:38:45.7262359Z   506 |         if (const auto *scene = std::get_if<Scene>(&result)) {
+cpu (debug)	Build and test bounded offline asset tools	2026-11-06T15:38:45.7262632Z       |                         ^~~~~
+cpu (debug)	Build and test bounded offline asset tools	2026-11-06T15:38:45.7262940Z <CI_REPO>/tests/asset_import.cpp:506:9: note: Taking false branch
+cpu (debug)	Build and test bounded offline asset tools	2026-11-06T15:38:45.7263306Z   506 |         if (const auto *scene = std::get_if<Scene>(&result)) {
+cpu (debug)	Build and test bounded offline asset tools	2026-11-06T15:38:45.7263555Z       |         ^
+cpu (debug)	Build and test bounded offline asset tools	2026-11-06T15:38:45.7263969Z <CI_REPO>/tests/asset_import.cpp:522:13: note: Calling 'operator|'
+cpu (debug)	Build and test bounded offline asset tools	2026-11-06T15:38:45.7264365Z   522 |             CHECK_FALSE(std::get<ImportFailure>(result).message.empty());
+cpu (debug)	Build and test bounded offline asset tools	2026-11-06T15:38:45.7264643Z       |             ^
+cpu (debug)	Build and test bounded offline asset tools	2026-11-06T15:38:45.7265058Z <CI_HOME>/.conan2/p/b/catch6fc5cd66c2eba/p/include/catch2/catch_test_macros.hpp:142:66: note: expanded from macro 'CHECK_FALSE'
+cpu (debug)	Build and test bounded offline asset tools	2026-11-06T15:38:45.7265805Z   142 |   #define CHECK_FALSE( ... ) INTERNAL_CATCH_TEST( "CHECK_FALSE", Catch::ResultDisposition::ContinueOnFailure | Catch::ResultDisposition::FalseTest, __VA_ARGS__ )
+cpu (debug)	Build and test bounded offline asset tools	2026-11-06T15:38:45.7266639Z       |                                                                  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+cpu (debug)	Build and test bounded offline asset tools	2026-11-06T15:38:45.7267276Z <CI_HOME>/.conan2/p/b/catch6fc5cd66c2eba/p/include/catch2/internal/catch_test_macro_impl.hpp:52:142: note: expanded from macro 'INTERNAL_CATCH_TEST'
+cpu (debug)	Build and test bounded offline asset tools	2026-11-06T15:38:45.7268087Z    52 |         Catch::AssertionHandler catchAssertionHandler( macroName##_catch_sr, CATCH_INTERNAL_LINEINFO, CATCH_INTERNAL_STRINGIFY(__VA_ARGS__), resultDisposition ); \
+cpu (debug)	Build and test bounded offline asset tools	2026-11-06T15:38:45.7268713Z       |                                                                                                                                              ^~~~~~~~~~~~~~~~~
+cpu (debug)	Build and test bounded offline asset tools	2026-11-06T15:38:45.7269407Z <CI_HOME>/.conan2/p/b/catch6fc5cd66c2eba/p/include/catch2/internal/catch_result_type.hpp:53:16: note: The value '6' provided to the cast expression is not in the valid range of values for 'Flags'
+cpu (debug)	Build and test bounded offline asset tools	2026-11-06T15:38:45.7270090Z    53 |         return static_cast<ResultDisposition::Flags>( static_cast<int>( lhs ) |
+cpu (debug)	Build and test bounded offline asset tools	2026-11-06T15:38:45.7270441Z       |                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+cpu (debug)	Build and test bounded offline asset tools	2026-11-06T15:38:45.7270730Z    54 |                                                       static_cast<int>( rhs ) );
+cpu (debug)	Build and test bounded offline asset tools	2026-11-06T15:38:45.7271011Z       |                                                       ~~~~~~~~~~~~~~~~~~~~~~~~~
+cpu (debug)	Build and test bounded offline asset tools	2026-11-06T15:38:45.7271338Z Suppressed 188410 warnings (188296 in non-user code, 114 NOLINT).
+cpu (debug)	Build and test bounded offline asset tools	2026-11-06T15:38:45.7271853Z Use -header-filter=.* to display errors from all non-system headers. Use -system-headers to display errors from system headers as well.
+cpu (debug)	Build and test bounded offline asset tools	2026-11-06T15:38:45.7272296Z 2 warnings treated as errors
+cpu (debug)	Build and test bounded offline asset tools	2026-11-06T15:38:45.7273045Z <CI_HOME>/.conan2/p/b/fastg302289e5e2b4d/p/include/fastgltf/core.hpp:248:2: error: The value '32832' provided to the cast expression is not in the valid range of values for 'Extensions' [clang-analyzer-optin.core.EnumCastOutOfRange,-warnings-as-errors]
+cpu (debug)	Build and test bounded offline asset tools	2026-11-06T15:38:45.7273872Z   248 |         FASTGLTF_ARITHMETIC_OP_TEMPLATE_MACRO(Extensions, Extensions, |)
+cpu (debug)	Build and test bounded offline asset tools	2026-11-06T15:38:45.7274283Z       |         ^
+cpu (debug)	Build and test bounded offline asset tools	2026-11-06T15:38:45.7274701Z <CI_HOME>/.conan2/p/b/fastg302289e5e2b4d/p/include/fastgltf/util.hpp:365:10: note: expanded from macro 'FASTGLTF_ARITHMETIC_OP_TEMPLATE_MACRO'
+cpu (debug)	Build and test bounded offline asset tools	2026-11-06T15:38:45.7275237Z   365 |                 return static_cast<T1>(to_underlying(a) op to_underlying(b)); \
+cpu (debug)	Build and test bounded offline asset tools	2026-11-06T15:38:45.7275541Z       |                        ^
+cpu (debug)	Build and test bounded offline asset tools	2026-11-06T15:38:45.7275889Z <CI_HOME>/.conan2/p/b/fastg302289e5e2b4d/p/include/fastgltf/core.hpp:140:29: note: enum declared here
+cpu (debug)	Build and test bounded offline asset tools	2026-11-06T15:38:45.7276474Z   140 |         FASTGLTF_EXPORT enum class Extensions : std::uint64_t {
+cpu (debug)	Build and test bounded offline asset tools	2026-11-06T15:38:45.7276761Z       |                         ~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+cpu (debug)	Build and test bounded offline asset tools	2026-11-06T15:38:45.7276985Z   141 |                 None = 0,
+cpu (debug)	Build and test bounded offline asset tools	2026-11-06T15:38:45.7277173Z       |                 ~~~~~~~~~
+cpu (debug)	Build and test bounded offline asset tools	2026-11-06T15:38:45.7277351Z   142 |
+cpu (debug)	Build and test bounded offline asset tools	2026-11-06T15:38:45.7277743Z   143 |                 // See https://github.com/KhronosGroup/glTF/blob/main/extensions/2.0/Khronos/KHR_texture_transform/README.md
+cpu (debug)	Build and test bounded offline asset tools	2026-11-06T15:38:45.7278273Z       |                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+cpu (debug)	Build and test bounded offline asset tools	2026-11-06T15:38:45.7278610Z   144 |                 KHR_texture_transform = 1 << 1,
+cpu (debug)	Build and test bounded offline asset tools	2026-11-06T15:38:45.7278957Z       |                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+cpu (debug)	Build and test bounded offline asset tools	2026-11-06T15:38:45.7279163Z   145 |
+cpu (debug)	Build and test bounded offline asset tools	2026-11-06T15:38:45.7279506Z   146 |                 // See https://github.com/KhronosGroup/glTF/blob/main/extensions/2.0/Khronos/KHR_texture_basisu/README.md
+cpu (debug)	Build and test bounded offline asset tools	2026-11-06T15:38:45.7279988Z       |                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+cpu (debug)	Build and test bounded offline asset tools	2026-11-06T15:38:45.7280314Z   147 |                 KHR_texture_basisu = 1 << 2,
+cpu (debug)	Build and test bounded offline asset tools	2026-11-06T15:38:45.7280537Z       |                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+cpu (debug)	Build and test bounded offline asset tools	2026-11-06T15:38:45.7280740Z   148 |
+cpu (debug)	Build and test bounded offline asset tools	2026-11-06T15:38:45.7281067Z   149 |                 // See https://github.com/KhronosGroup/glTF/blob/main/extensions/2.0/Vendor/MSFT_texture_dds/README.md
+cpu (debug)	Build and test bounded offline asset tools	2026-11-06T15:38:45.7281547Z       |                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+cpu (debug)	Build and test bounded offline asset tools	2026-11-06T15:38:45.7281958Z   150 |                 MSFT_texture_dds = 1 << 3,
+cpu (debug)	Build and test bounded offline asset tools	2026-11-06T15:38:45.7282421Z       |                 ~~~~~~~~~~~~~~~~~~~~~~~~~~
+cpu (debug)	Build and test bounded offline asset tools	2026-11-06T15:38:45.7282715Z   151 |
+cpu (debug)	Build and test bounded offline asset tools	2026-11-06T15:38:45.7290553Z   152 |                 // See https://github.com/KhronosGroup/glTF/blob/main/extensions/2.0/Khronos/KHR_mesh_quantization/README.md
+cpu (debug)	Build and test bounded offline asset tools	2026-11-06T15:38:45.7291122Z       |                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+cpu (debug)	Build and test bounded offline asset tools	2026-11-06T15:38:45.7291475Z   153 |                 KHR_mesh_quantization = 1 << 4,
+cpu (debug)	Build and test bounded offline asset tools	2026-11-06T15:38:45.7291723Z       |                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+cpu (debug)	Build and test bounded offline asset tools	2026-11-06T15:38:45.7291926Z   154 |
+cpu (debug)	Build and test bounded offline asset tools	2026-11-06T15:38:45.7292313Z   155 |                 // See https://github.com/KhronosGroup/glTF/tree/main/extensions/2.0/Vendor/EXT_meshopt_compression/README.md
+cpu (debug)	Build and test bounded offline asset tools	2026-11-06T15:38:45.7292825Z       |                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+cpu (debug)	Build and test bounded offline asset tools	2026-11-06T15:38:45.7293294Z <CI_REPO>/tools/assetc/import.cpp:591:18: note: Assuming the condition is false
+cpu (debug)	Build and test bounded offline asset tools	2026-11-06T15:38:45.7293748Z   591 |         if (auto failure = check_metadata(bytes.subspan(20, u32(bytes, 12))))
+cpu (debug)	Build and test bounded offline asset tools	2026-11-06T15:38:45.7294069Z       |                  ^~~~~~~
+cpu (debug)	Build and test bounded offline asset tools	2026-11-06T15:38:45.7294359Z <CI_REPO>/tools/assetc/import.cpp:591:9: note: Taking false branch
+cpu (debug)	Build and test bounded offline asset tools	2026-11-06T15:38:45.7294743Z   591 |         if (auto failure = check_metadata(bytes.subspan(20, u32(bytes, 12))))
+cpu (debug)	Build and test bounded offline asset tools	2026-11-06T15:38:45.7295015Z       |         ^
+cpu (debug)	Build and test bounded offline asset tools	2026-11-06T15:38:45.7295316Z <CI_REPO>/tools/assetc/import.cpp:594:13: note: Assuming the condition is false
+cpu (debug)	Build and test bounded offline asset tools	2026-11-06T15:38:45.7295887Z   594 |         if (data.error() != fastgltf::Error::None)
+cpu (debug)	Build and test bounded offline asset tools	2026-11-06T15:38:45.7296288Z       |             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+cpu (debug)	Build and test bounded offline asset tools	2026-11-06T15:38:45.7296615Z <CI_REPO>/tools/assetc/import.cpp:594:9: note: Taking false branch
+cpu (debug)	Build and test bounded offline asset tools	2026-11-06T15:38:45.7296968Z   594 |         if (data.error() != fastgltf::Error::None)
+cpu (debug)	Build and test bounded offline asset tools	2026-11-06T15:38:45.7297188Z       |         ^
+cpu (debug)	Build and test bounded offline asset tools	2026-11-06T15:38:45.7297445Z <CI_REPO>/tools/assetc/import.cpp:597:33: note: Calling 'operator|'
+cpu (debug)	Build and test bounded offline asset tools	2026-11-06T15:38:45.7297843Z   597 |         fastgltf::Parser parser(fastgltf::Extensions::KHR_lights_punctual |
+cpu (debug)	Build and test bounded offline asset tools	2026-11-06T15:38:45.7298162Z       |                                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+cpu (debug)	Build and test bounded offline asset tools	2026-11-06T15:38:45.7298637Z   598 |                                 fastgltf::Extensions::KHR_materials_emissive_strength);
+cpu (debug)	Build and test bounded offline asset tools	2026-11-06T15:38:45.7299083Z       |                                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+cpu (debug)	Build and test bounded offline asset tools	2026-11-06T15:38:45.7299976Z <CI_HOME>/.conan2/p/b/fastg302289e5e2b4d/p/include/fastgltf/core.hpp:248:2: note: The value '32832' provided to the cast expression is not in the valid range of values for 'Extensions'
+cpu (debug)	Build and test bounded offline asset tools	2026-11-06T15:38:45.7300953Z   248 |         FASTGLTF_ARITHMETIC_OP_TEMPLATE_MACRO(Extensions, Extensions, |)
+cpu (debug)	Build and test bounded offline asset tools	2026-11-06T15:38:45.7301377Z       |         ^
+cpu (debug)	Build and test bounded offline asset tools	2026-11-06T15:38:45.7302207Z <CI_HOME>/.conan2/p/b/fastg302289e5e2b4d/p/include/fastgltf/util.hpp:365:10: note: expanded from macro 'FASTGLTF_ARITHMETIC_OP_TEMPLATE_MACRO'
+cpu (debug)	Build and test bounded offline asset tools	2026-11-06T15:38:45.7303034Z   365 |                 return static_cast<T1>(to_underlying(a) op to_underlying(b)); \
+cpu (debug)	Build and test bounded offline asset tools	2026-11-06T15:38:45.7303507Z       |                        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+cpu (debug)	Build and test bounded offline asset tools	2026-11-06T15:38:45.7592405Z ##[error]Process completed with exit code 1.
+cpu (asan)	Build and test bounded offline asset tools	2026-11-06T15:37:42.4424867Z ^[[36;1mctest --preset "asset-$PRESET" --show-only^[[0m
+cpu (asan)	Build and test bounded offline asset tools	2026-11-06T15:37:42.4425201Z ^[[36;1msudo unshare --net -- runuser -u "$(id -un)" -- env -u DISPLAY -u WAYLAND_DISPLAY "$(command -v ctest)" --preset "asset-$PRESET"^[[0m
+cpu (asan)	Build and test bounded offline asset tools	2026-11-06T15:38:25.6236625Z Test project <CI_REPO>/build/asset-asan
+cpu (asan)	Build and test bounded offline asset tools	2026-11-06T15:38:25.6238174Z   Test #1: ngen_tests
+cpu (asan)	Build and test bounded offline asset tools	2026-11-06T15:38:25.6238375Z   Test #2: render_contract_tests
+cpu (asan)	Build and test bounded offline asset tools	2026-11-06T15:38:25.6238603Z   Test #3: asset_import_tests
+cpu (asan)	Build and test bounded offline asset tools	2026-11-06T15:38:25.6238809Z   Test #4: asset_cli
+cpu (asan)	Build and test bounded offline asset tools	2026-11-06T15:38:25.6238993Z   Test #5: replay_serial
+cpu (asan)	Build and test bounded offline asset tools	2026-11-06T15:38:25.6239187Z   Test #6: replay_workers
+cpu (asan)	Build and test bounded offline asset tools	2026-11-06T15:38:25.6239472Z
+cpu (asan)	Build and test bounded offline asset tools	2026-11-06T15:38:25.6239543Z Total Tests: 6
+cpu (asan)	Build and test bounded offline asset tools	2026-11-06T15:38:25.8110032Z Test project <CI_REPO>/build/asset-asan
+cpu (asan)	Build and test bounded offline asset tools	2026-11-06T15:38:25.8113631Z     Start 1: ngen_tests
+cpu (asan)	Build and test bounded offline asset tools	2026-11-06T15:38:25.8291889Z 1/6 Test #1: ngen_tests .......................   Passed    0.02 sec
+cpu (asan)	Build and test bounded offline asset tools	2026-11-06T15:38:25.8293375Z     Start 2: render_contract_tests
+cpu (asan)	Build and test bounded offline asset tools	2026-11-06T15:38:25.8471239Z 2/6 Test #2: render_contract_tests ............   Passed    0.02 sec
+cpu (asan)	Build and test bounded offline asset tools	2026-11-06T15:38:25.8471697Z     Start 3: asset_import_tests
+cpu (asan)	Build and test bounded offline asset tools	2026-11-06T15:38:26.6305676Z 3/6 Test #3: asset_import_tests ...............   Passed    0.78 sec
+cpu (asan)	Build and test bounded offline asset tools	2026-11-06T15:38:26.6306713Z     Start 4: asset_cli
+cpu (asan)	Build and test bounded offline asset tools	2026-11-06T15:38:26.7959142Z 4/6 Test #4: asset_cli ........................   Passed    0.16 sec
+cpu (asan)	Build and test bounded offline asset tools	2026-11-06T15:38:26.7960336Z     Start 5: replay_serial
+cpu (asan)	Build and test bounded offline asset tools	2026-11-06T15:38:26.8210821Z 5/6 Test #5: replay_serial ....................   Passed    0.02 sec
+cpu (asan)	Build and test bounded offline asset tools	2026-11-06T15:38:26.8211826Z     Start 6: replay_workers
+cpu (asan)	Build and test bounded offline asset tools	2026-11-06T15:38:26.8537544Z 6/6 Test #6: replay_workers ...................   Passed    0.03 sec
+cpu (asan)	Build and test bounded offline asset tools	2026-11-06T15:38:26.8550402Z
+cpu (asan)	Build and test bounded offline asset tools	2026-11-06T15:38:26.8551104Z 100% tests passed out of 6
+cpu (asan)	Build and test bounded offline asset tools	2026-11-06T15:38:26.8551330Z
+cpu (asan)	Build and test bounded offline asset tools	2026-11-06T15:38:26.8551424Z Total Test time (real) =   1.04 sec
+cpu (asan)	Build and test bounded offline asset tools	2026-11-06T15:38:26.8774728Z [1/6] Processing file <CI_REPO>/tools/assetc/import.cpp.
+cpu (asan)	Build and test bounded offline asset tools	2026-11-06T15:38:33.1896167Z 37751 warnings generated.
+cpu (asan)	Build and test bounded offline asset tools	2026-11-06T15:38:33.1918156Z [2/6] Processing file <CI_REPO>/tools/assetc/metadata.cpp.
+cpu (asan)	Build and test bounded offline asset tools	2026-11-06T15:38:38.7402450Z 74578 warnings generated.
+cpu (asan)	Build and test bounded offline asset tools	2026-11-06T15:38:38.7426215Z [3/6] Processing file <CI_REPO>/tools/assetc/png.cpp.
+cpu (asan)	Build and test bounded offline asset tools	2026-11-06T15:38:41.8971810Z 100771 warnings generated.
+cpu (asan)	Build and test bounded offline asset tools	2026-11-06T15:38:41.8986552Z [4/6] Processing file <CI_REPO>/tools/assetc/tangents.cpp.
+cpu (asan)	Build and test bounded offline asset tools	2026-11-06T15:38:45.7200348Z 129190 warnings generated.
+cpu (asan)	Build and test bounded offline asset tools	2026-11-06T15:38:45.7219862Z [5/6] Processing file <CI_REPO>/tools/assetc/main.cpp.
+cpu (asan)	Build and test bounded offline asset tools	2026-11-06T15:38:49.4163666Z 154987 warnings generated.
+cpu (asan)	Build and test bounded offline asset tools	2026-11-06T15:38:49.4177308Z [6/6] Processing file <CI_REPO>/tests/asset_import.cpp.
+cpu (asan)	Build and test bounded offline asset tools	2026-11-06T15:38:59.5143369Z 188304 warnings generated.
+cpu (asan)	Build and test bounded offline asset tools	2026-11-06T15:38:59.5170784Z <CI_HOME>/.conan2/p/b/catchd93b6eb16e8f3/p/include/catch2/internal/catch_result_type.hpp:53:16: error: The value '6' provided to the cast expression is not in the valid range of values for 'Flags' [clang-analyzer-optin.core.EnumCastOutOfRange,-warnings-as-errors]
+cpu (asan)	Build and test bounded offline asset tools	2026-11-06T15:38:59.5172050Z    53 |         return static_cast<ResultDisposition::Flags>( static_cast<int>( lhs ) |
+cpu (asan)	Build and test bounded offline asset tools	2026-11-06T15:38:59.5172437Z       |                ^
+cpu (asan)	Build and test bounded offline asset tools	2026-11-06T15:38:59.5172935Z <CI_HOME>/.conan2/p/b/catchd93b6eb16e8f3/p/include/catch2/internal/catch_result_type.hpp:43:37: note: enum declared here
+cpu (asan)	Build and test bounded offline asset tools	2026-11-06T15:38:59.5173490Z    43 |     struct ResultDisposition { enum Flags {
+cpu (asan)	Build and test bounded offline asset tools	2026-11-06T15:38:59.5173777Z       |                                ~~~~~^~~~~~~
+cpu (asan)	Build and test bounded offline asset tools	2026-11-06T15:38:59.5174029Z    44 |         Normal = 0x01,
+cpu (asan)	Build and test bounded offline asset tools	2026-11-06T15:38:59.5174238Z       |         ~~~~~~~~~~~~~~
+cpu (asan)	Build and test bounded offline asset tools	2026-11-06T15:38:59.5174469Z    45 |
+cpu (asan)	Build and test bounded offline asset tools	2026-11-06T15:38:59.5174821Z    46 |         ContinueOnFailure = 0x02,   // Failures fail test, but execution continues
+cpu (asan)	Build and test bounded offline asset tools	2026-11-06T15:38:59.5175224Z       |         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+cpu (asan)	Build and test bounded offline asset tools	2026-11-06T15:38:59.5175582Z    47 |         FalseTest = 0x04,           // Prefix expression with !
+cpu (asan)	Build and test bounded offline asset tools	2026-11-06T15:38:59.5175913Z       |         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+cpu (asan)	Build and test bounded offline asset tools	2026-11-06T15:38:59.5176270Z    48 |         SuppressFail = 0x08         // Failures are reported but do not fail the test
+cpu (asan)	Build and test bounded offline asset tools	2026-11-06T15:38:59.5176657Z       |         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+cpu (asan)	Build and test bounded offline asset tools	2026-11-06T15:38:59.5176932Z    49 |     }; };
+cpu (asan)	Build and test bounded offline asset tools	2026-11-06T15:38:59.5177094Z       |     ~
+cpu (asan)	Build and test bounded offline asset tools	2026-11-06T15:38:59.5177415Z <CI_REPO>/tests/asset_import.cpp:495:34: note: Assuming the condition is false
+cpu (asan)	Build and test bounded offline asset tools	2026-11-06T15:38:59.5177861Z   495 |     for (std::size_t length = 0; length < seed.size(); ++length) {
+cpu (asan)	Build and test bounded offline asset tools	2026-11-06T15:38:59.5178172Z       |                                  ^~~~~~~~~~~~~~~~~~~~
+cpu (asan)	Build and test bounded offline asset tools	2026-11-06T15:38:59.5178666Z <CI_REPO>/tests/asset_import.cpp:495:5: note: Loop condition is false. Execution continues on line 499
+cpu (asan)	Build and test bounded offline asset tools	2026-11-06T15:38:59.5179901Z   495 |     for (std::size_t length = 0; length < seed.size(); ++length) {
+cpu (asan)	Build and test bounded offline asset tools	2026-11-06T15:38:59.5188233Z       |     ^
+cpu (asan)	Build and test bounded offline asset tools	2026-11-06T15:38:59.5188578Z <CI_REPO>/tests/asset_import.cpp:500:35: note: Assuming the condition is true
+cpu (asan)	Build and test bounded offline asset tools	2026-11-06T15:38:59.5189478Z   500 |     for (std::size_t attempt = 0; attempt < seed.size() * masks.size(); ++attempt) {
+cpu (asan)	Build and test bounded offline asset tools	2026-11-06T15:38:59.5189843Z       |                                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+cpu (asan)	Build and test bounded offline asset tools	2026-11-06T15:38:59.5190278Z <CI_REPO>/tests/asset_import.cpp:500:5: note: Loop condition is true.  Entering loop body
+cpu (asan)	Build and test bounded offline asset tools	2026-11-06T15:38:59.5190797Z   500 |     for (std::size_t attempt = 0; attempt < seed.size() * masks.size(); ++attempt) {
+cpu (asan)	Build and test bounded offline asset tools	2026-11-06T15:38:59.5191125Z       |     ^
+cpu (asan)	Build and test bounded offline asset tools	2026-11-06T15:38:59.5191403Z <CI_REPO>/tests/asset_import.cpp:506:25: note: 'scene' is null
+cpu (asan)	Build and test bounded offline asset tools	2026-11-06T15:38:59.5191796Z   506 |         if (const auto *scene = std::get_if<Scene>(&result)) {
+cpu (asan)	Build and test bounded offline asset tools	2026-11-06T15:38:59.5192078Z       |                         ^~~~~
+cpu (asan)	Build and test bounded offline asset tools	2026-11-06T15:38:59.5192418Z <CI_REPO>/tests/asset_import.cpp:506:9: note: Taking false branch
+cpu (asan)	Build and test bounded offline asset tools	2026-11-06T15:38:59.5192805Z   506 |         if (const auto *scene = std::get_if<Scene>(&result)) {
+cpu (asan)	Build and test bounded offline asset tools	2026-11-06T15:38:59.5193085Z       |         ^
+cpu (asan)	Build and test bounded offline asset tools	2026-11-06T15:38:59.5193378Z <CI_REPO>/tests/asset_import.cpp:522:13: note: Calling 'operator|'
+cpu (asan)	Build and test bounded offline asset tools	2026-11-06T15:38:59.5193806Z   522 |             CHECK_FALSE(std::get<ImportFailure>(result).message.empty());
+cpu (asan)	Build and test bounded offline asset tools	2026-11-06T15:38:59.5194109Z       |             ^
+cpu (asan)	Build and test bounded offline asset tools	2026-11-06T15:38:59.5194556Z <CI_HOME>/.conan2/p/b/catchd93b6eb16e8f3/p/include/catch2/catch_test_macros.hpp:142:66: note: expanded from macro 'CHECK_FALSE'
+cpu (asan)	Build and test bounded offline asset tools	2026-11-06T15:38:59.5195386Z   142 |   #define CHECK_FALSE( ... ) INTERNAL_CATCH_TEST( "CHECK_FALSE", Catch::ResultDisposition::ContinueOnFailure | Catch::ResultDisposition::FalseTest, __VA_ARGS__ )
+cpu (asan)	Build and test bounded offline asset tools	2026-11-06T15:38:59.5196077Z       |                                                                  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+cpu (asan)	Build and test bounded offline asset tools	2026-11-06T15:38:59.5196750Z <CI_HOME>/.conan2/p/b/catchd93b6eb16e8f3/p/include/catch2/internal/catch_test_macro_impl.hpp:52:142: note: expanded from macro 'INTERNAL_CATCH_TEST'
+cpu (asan)	Build and test bounded offline asset tools	2026-11-06T15:38:59.5197645Z    52 |         Catch::AssertionHandler catchAssertionHandler( macroName##_catch_sr, CATCH_INTERNAL_LINEINFO, CATCH_INTERNAL_STRINGIFY(__VA_ARGS__), resultDisposition ); \
+cpu (asan)	Build and test bounded offline asset tools	2026-11-06T15:38:59.5198336Z       |                                                                                                                                              ^~~~~~~~~~~~~~~~~
+cpu (asan)	Build and test bounded offline asset tools	2026-11-06T15:38:59.5199101Z <CI_HOME>/.conan2/p/b/catchd93b6eb16e8f3/p/include/catch2/internal/catch_result_type.hpp:53:16: note: The value '6' provided to the cast expression is not in the valid range of values for 'Flags'
+cpu (asan)	Build and test bounded offline asset tools	2026-11-06T15:38:59.5199981Z    53 |         return static_cast<ResultDisposition::Flags>( static_cast<int>( lhs ) |
+cpu (asan)	Build and test bounded offline asset tools	2026-11-06T15:38:59.5200373Z       |                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+cpu (asan)	Build and test bounded offline asset tools	2026-11-06T15:38:59.5200694Z    54 |                                                       static_cast<int>( rhs ) );
+cpu (asan)	Build and test bounded offline asset tools	2026-11-06T15:38:59.5201000Z       |                                                       ~~~~~~~~~~~~~~~~~~~~~~~~~
+cpu (asan)	Build and test bounded offline asset tools	2026-11-06T15:38:59.5201375Z Suppressed 188416 warnings (188302 in non-user code, 114 NOLINT).
+cpu (asan)	Build and test bounded offline asset tools	2026-11-06T15:38:59.5201939Z Use -header-filter=.* to display errors from all non-system headers. Use -system-headers to display errors from system headers as well.
+cpu (asan)	Build and test bounded offline asset tools	2026-11-06T15:38:59.5202436Z 2 warnings treated as errors
+cpu (asan)	Build and test bounded offline asset tools	2026-11-06T15:38:59.5203274Z <CI_HOME>/.conan2/p/b/fastgc2b3abbc803bb/p/include/fastgltf/core.hpp:248:2: error: The value '32832' provided to the cast expression is not in the valid range of values for 'Extensions' [clang-analyzer-optin.core.EnumCastOutOfRange,-warnings-as-errors]
+cpu (asan)	Build and test bounded offline asset tools	2026-11-06T15:38:59.5204222Z   248 |         FASTGLTF_ARITHMETIC_OP_TEMPLATE_MACRO(Extensions, Extensions, |)
+cpu (asan)	Build and test bounded offline asset tools	2026-11-06T15:38:59.5204671Z       |         ^
+cpu (asan)	Build and test bounded offline asset tools	2026-11-06T15:38:59.5205136Z <CI_HOME>/.conan2/p/b/fastgc2b3abbc803bb/p/include/fastgltf/util.hpp:365:10: note: expanded from macro 'FASTGLTF_ARITHMETIC_OP_TEMPLATE_MACRO'
+cpu (asan)	Build and test bounded offline asset tools	2026-11-06T15:38:59.5205841Z   365 |                 return static_cast<T1>(to_underlying(a) op to_underlying(b)); \
+cpu (asan)	Build and test bounded offline asset tools	2026-11-06T15:38:59.5206153Z       |                        ^
+cpu (asan)	Build and test bounded offline asset tools	2026-11-06T15:38:59.5206536Z <CI_HOME>/.conan2/p/b/fastgc2b3abbc803bb/p/include/fastgltf/core.hpp:140:29: note: enum declared here
+cpu (asan)	Build and test bounded offline asset tools	2026-11-06T15:38:59.5207010Z   140 |         FASTGLTF_EXPORT enum class Extensions : std::uint64_t {
+cpu (asan)	Build and test bounded offline asset tools	2026-11-06T15:38:59.5207329Z       |                         ~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+cpu (asan)	Build and test bounded offline asset tools	2026-11-06T15:38:59.5207581Z   141 |                 None = 0,
+cpu (asan)	Build and test bounded offline asset tools	2026-11-06T15:38:59.5207782Z       |                 ~~~~~~~~~
+cpu (asan)	Build and test bounded offline asset tools	2026-11-06T15:38:59.5207978Z   142 |
+cpu (asan)	Build and test bounded offline asset tools	2026-11-06T15:38:59.5208424Z   143 |                 // See https://github.com/KhronosGroup/glTF/blob/main/extensions/2.0/Khronos/KHR_texture_transform/README.md
+cpu (asan)	Build and test bounded offline asset tools	2026-11-06T15:38:59.5209014Z       |                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+cpu (asan)	Build and test bounded offline asset tools	2026-11-06T15:38:59.5209508Z   144 |                 KHR_texture_transform = 1 << 1,
+cpu (asan)	Build and test bounded offline asset tools	2026-11-06T15:38:59.5209761Z       |                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+cpu (asan)	Build and test bounded offline asset tools	2026-11-06T15:38:59.5209983Z   145 |
+cpu (asan)	Build and test bounded offline asset tools	2026-11-06T15:38:59.5210349Z   146 |                 // See https://github.com/KhronosGroup/glTF/blob/main/extensions/2.0/Khronos/KHR_texture_basisu/README.md
+cpu (asan)	Build and test bounded offline asset tools	2026-11-06T15:38:59.5210893Z       |                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+cpu (asan)	Build and test bounded offline asset tools	2026-11-06T15:38:59.5211239Z   147 |                 KHR_texture_basisu = 1 << 2,
+cpu (asan)	Build and test bounded offline asset tools	2026-11-06T15:38:59.5211485Z       |                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+cpu (asan)	Build and test bounded offline asset tools	2026-11-06T15:38:59.5211703Z   148 |
+cpu (asan)	Build and test bounded offline asset tools	2026-11-06T15:38:59.5212067Z   149 |                 // See https://github.com/KhronosGroup/glTF/blob/main/extensions/2.0/Vendor/MSFT_texture_dds/README.md
+cpu (asan)	Build and test bounded offline asset tools	2026-11-06T15:38:59.5212603Z       |                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+cpu (asan)	Build and test bounded offline asset tools	2026-11-06T15:38:59.5212950Z   150 |                 MSFT_texture_dds = 1 << 3,
+cpu (asan)	Build and test bounded offline asset tools	2026-11-06T15:38:59.5213195Z       |                 ~~~~~~~~~~~~~~~~~~~~~~~~~~
+cpu (asan)	Build and test bounded offline asset tools	2026-11-06T15:38:59.5213409Z   151 |
+cpu (asan)	Build and test bounded offline asset tools	2026-11-06T15:38:59.5213773Z   152 |                 // See https://github.com/KhronosGroup/glTF/blob/main/extensions/2.0/Khronos/KHR_mesh_quantization/README.md
+cpu (asan)	Build and test bounded offline asset tools	2026-11-06T15:38:59.5214330Z       |                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+cpu (asan)	Build and test bounded offline asset tools	2026-11-06T15:38:59.5214692Z   153 |                 KHR_mesh_quantization = 1 << 4,
+cpu (asan)	Build and test bounded offline asset tools	2026-11-06T15:38:59.5214949Z       |                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+cpu (asan)	Build and test bounded offline asset tools	2026-11-06T15:38:59.5215165Z   154 |
+cpu (asan)	Build and test bounded offline asset tools	2026-11-06T15:38:59.5215535Z   155 |                 // See https://github.com/KhronosGroup/glTF/tree/main/extensions/2.0/Vendor/EXT_meshopt_compression/README.md
+cpu (asan)	Build and test bounded offline asset tools	2026-11-06T15:38:59.5216088Z       |                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+cpu (asan)	Build and test bounded offline asset tools	2026-11-06T15:38:59.5216591Z <CI_REPO>/tools/assetc/import.cpp:591:18: note: Assuming the condition is false
+cpu (asan)	Build and test bounded offline asset tools	2026-11-06T15:38:59.5217077Z   591 |         if (auto failure = check_metadata(bytes.subspan(20, u32(bytes, 12))))
+cpu (asan)	Build and test bounded offline asset tools	2026-11-06T15:38:59.5217397Z       |                  ^~~~~~~
+cpu (asan)	Build and test bounded offline asset tools	2026-11-06T15:38:59.5217724Z <CI_REPO>/tools/assetc/import.cpp:591:9: note: Taking false branch
+cpu (asan)	Build and test bounded offline asset tools	2026-11-06T15:38:59.5218162Z   591 |         if (auto failure = check_metadata(bytes.subspan(20, u32(bytes, 12))))
+cpu (asan)	Build and test bounded offline asset tools	2026-11-06T15:38:59.5218473Z       |         ^
+cpu (asan)	Build and test bounded offline asset tools	2026-11-06T15:38:59.5218809Z <CI_REPO>/tools/assetc/import.cpp:594:13: note: Assuming the condition is false
+cpu (asan)	Build and test bounded offline asset tools	2026-11-06T15:38:59.5219448Z   594 |         if (data.error() != fastgltf::Error::None)
+cpu (asan)	Build and test bounded offline asset tools	2026-11-06T15:38:59.5219847Z       |             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+cpu (asan)	Build and test bounded offline asset tools	2026-11-06T15:38:59.5220194Z <CI_REPO>/tools/assetc/import.cpp:594:9: note: Taking false branch
+cpu (asan)	Build and test bounded offline asset tools	2026-11-06T15:38:59.5220663Z   594 |         if (data.error() != fastgltf::Error::None)
+cpu (asan)	Build and test bounded offline asset tools	2026-11-06T15:38:59.5220897Z       |         ^
+cpu (asan)	Build and test bounded offline asset tools	2026-11-06T15:38:59.5221184Z <CI_REPO>/tools/assetc/import.cpp:597:33: note: Calling 'operator|'
+cpu (asan)	Build and test bounded offline asset tools	2026-11-06T15:38:59.5221625Z   597 |         fastgltf::Parser parser(fastgltf::Extensions::KHR_lights_punctual |
+cpu (asan)	Build and test bounded offline asset tools	2026-11-06T15:38:59.5221985Z       |                                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+cpu (asan)	Build and test bounded offline asset tools	2026-11-06T15:38:59.5222340Z   598 |                                 fastgltf::Extensions::KHR_materials_emissive_strength);
+cpu (asan)	Build and test bounded offline asset tools	2026-11-06T15:38:59.5222709Z       |                                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+cpu (asan)	Build and test bounded offline asset tools	2026-11-06T15:38:59.5223391Z <CI_HOME>/.conan2/p/b/fastgc2b3abbc803bb/p/include/fastgltf/core.hpp:248:2: note: The value '32832' provided to the cast expression is not in the valid range of values for 'Extensions'
+cpu (asan)	Build and test bounded offline asset tools	2026-11-06T15:38:59.5224123Z   248 |         FASTGLTF_ARITHMETIC_OP_TEMPLATE_MACRO(Extensions, Extensions, |)
+cpu (asan)	Build and test bounded offline asset tools	2026-11-06T15:38:59.5224437Z       |         ^
+cpu (asan)	Build and test bounded offline asset tools	2026-11-06T15:38:59.5224901Z <CI_HOME>/.conan2/p/b/fastgc2b3abbc803bb/p/include/fastgltf/util.hpp:365:10: note: expanded from macro 'FASTGLTF_ARITHMETIC_OP_TEMPLATE_MACRO'
+cpu (asan)	Build and test bounded offline asset tools	2026-11-06T15:38:59.5225497Z   365 |                 return static_cast<T1>(to_underlying(a) op to_underlying(b)); \
+cpu (asan)	Build and test bounded offline asset tools	2026-11-06T15:38:59.5225849Z       |                        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+cpu (asan)	Build and test bounded offline asset tools	2026-11-06T15:38:59.5566086Z ##[error]Process completed with exit code 1.

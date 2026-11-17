@@ -1,0 +1,35 @@
+Same-session returned-evidence review, not independent graphics review or personal approval.
+
+Both archives preflighted before extraction: safe relative unique flat paths,
+regular types, no encryption/links, <=256 entries, <=16 MiB per entry, <=256 MiB
+total and <=1000 compression ratio. Extracted only selected native/test/compiler
+metadata plus private captures into fresh ignored directories; redacted-scanned
+before inspection. Session, install/Conan, recipe and detection setup logs stayed
+excluded. No extracted command/script/binary was executed.
+
+Verified clean source 1f0a4b31a3db73f802513eab6edebd319f3c47cb in both archives;
+actual MSVC/clang-cl identity, x64 C++20 configure/runtime overrides; 10/10 CTests
+in all four configurations; native resource/shader/material/IBL/shadow/bloom/UI
+and WSI controls; package identity/readbacks; empty ordinary workload stderr;
+1200-frame two-reload/two-resize inspection with completed generation 3; private
+capture/header/hash checks and equal 16-pixel outer gutters in rendered output.
+
+Independently recomputed 600-frame nearest-rank distributions from each Release
+CSV, checked all extents 1280x720, restored exposure/FXAA/bloom settings and
+scoped timing/residency budgets. Steady C++/ImGui allocations are zero; stream
+allocations remain visible. Four reloads reach generation 5; settled tracked
+allocation/reservation/live/retiring values return after each generation. All
+artifact hash/size records match returned bytes. Reflection confirms two 16-byte
+post fields at offsets 0 and 16; native builds enforce 80-byte PostDraw layout.
+
+No demonstrated execution defect found. Raw detected MSVC profile C++14 is not
+reclassified: actual CLI overrides/configure prove C++20. Windows fixture CRC
+a8bbdbce matches between its compilers but not Linux's float-derived CRC; this
+is recorded rather than claiming cross-platform bit identity. Working set is
+observed process residency; VMA peak 448,107,760 bytes is not whole NVIDIA/driver
+memory. Sampled/high-water observation is not an exact continuous peak.
+
+The new Windows execution gate is complete for this source. Whole-process GPU
+accounting, independent/owner quality and formal milestone acceptance remain
+open. Prior ef984ef evidence remains scoped to that completed earlier tree;
+Linux's recorded resize tail is not retroactively repaired by Windows success.

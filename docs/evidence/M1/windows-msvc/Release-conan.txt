@@ -1,0 +1,470 @@
+Using lockfile: 'D:\Git\kyaulabs\ngen\conan.lock'
+
+======== Input profiles ========
+Profile host:
+[settings]
+arch=x86_64
+build_type=Release
+compiler=msvc
+compiler.cppstd=20
+compiler.runtime=dynamic
+compiler.runtime_type=Release
+compiler.version=194
+os=Windows
+[conf]
+tools.cmake.cmaketoolchain:generator=Ninja
+
+Profile build:
+[settings]
+arch=x86_64
+build_type=Release
+compiler=msvc
+compiler.cppstd=20
+compiler.runtime=dynamic
+compiler.runtime_type=Release
+compiler.version=194
+os=Windows
+[conf]
+tools.cmake.cmaketoolchain:generator=Ninja
+
+
+======== Computing dependency graph ========
+Graph root
+    conanfile.py: D:\Git\kyaulabs\ngen\conanfile.py
+Requirements
+    enkits/1.12#66203195b410e9ccba5ac22e3216b7d7 - Cache
+Test requirements
+    catch2/3.16.0#95f400ca2fba9f0c5ce5aea6e6fe0055 - Cache
+Build requirements
+    cmake/4.4.4#fec9c7048fae91e03c31e59977cd9c12 - Cache
+
+======== Computing necessary packages ========
+Connecting to remote 'conancenter' anonymously
+enkits/1.12: Main binary package '6119fcdeccb25969de15c5fd8a88f617d4396ca6' missing
+enkits/1.12: Checking 7 compatible configurations
+enkits/1.12: Compatible configurations not found in cache, checking servers
+enkits/1.12: '4d8ab52ebb49f51e63d5193ed580b5a7672e23d5': compiler.cppstd=14
+enkits/1.12: Found compatible package '4d8ab52ebb49f51e63d5193ed580b5a7672e23d5': compiler.cppstd=14
+catch2/3.16.0: Main binary package 'd9c548eb2668b980e4cf8d5e617a70868b559bec' missing
+catch2/3.16.0: Checking 1 compatible configurations
+catch2/3.16.0: Compatible configurations not found in cache, checking servers
+catch2/3.16.0: '01dd36a34cb7fd595cdb78cfe50e11dc404fa2a9': compiler.version=193
+catch2/3.16.0: No compatible configuration found
+
+A new experimental approach for binary compatibility detection is available.
+    Enable it by setting the core.graph:compatibility_mode=optimized conf
+    and get improved performance when querying multiple compatible binaries in remotes.
+
+Requirements
+    enkits/1.12#66203195b410e9ccba5ac22e3216b7d7:4d8ab52ebb49f51e63d5193ed580b5a7672e23d5#ad66249a14a6c01633baed61ec6effa7 - Download (conancenter)
+Test requirements
+    catch2/3.16.0#95f400ca2fba9f0c5ce5aea6e6fe0055:d9c548eb2668b980e4cf8d5e617a70868b559bec - Build
+Build requirements
+    cmake/4.4.4#fec9c7048fae91e03c31e59977cd9c12:522dcea5982a3f8a5b624c16477e47195da2f84f#9bdca4f8c6341bd4d9b64aee41c9be05 - Cache
+
+======== Installing packages ========
+
+-------- Downloading 1 package --------
+Downloading binary packages in 1 parallel threads
+enkits/1.12: Retrieving package 4d8ab52ebb49f51e63d5193ed580b5a7672e23d5 from remote 'conancenter'
+enkits/1.12: Package installed 4d8ab52ebb49f51e63d5193ed580b5a7672e23d5
+enkits/1.12: Downloaded package revision ad66249a14a6c01633baed61ec6effa7
+cmake/4.4.4: Already installed! (1 of 3)
+
+-------- Installing package catch2/3.16.0 (3 of 3) --------
+Building from source catch2/3.16.0:d9c548eb2668b980e4cf8d5e617a70868b559bec
+catch2/3.16.0: settings: os=Windows arch=x86_64 compiler=msvc compiler.cppstd=20 compiler.runtime=dynamic compiler.runtime_type=Release compiler.version=194 build_type=Release
+catch2/3.16.0: options: console_width=80 default_reporter=None no_posix_signals=False shared=False thread_safe_assertions=False with_prefix=False
+>>> Source step
+Copying sources to build folder
+Sources in C:\Users\SeanBruen\.conan2\p\b\catch6b231b808e7e3\b\src
+>>> Generate step for catch2/3.16.0
+Generators folder: C:\Users\SeanBruen\.conan2\p\b\catch6b231b808e7e3\b\build\Release\generators
+Calling generate() method in recipe
+CMakeToolchain generated: conan_toolchain.cmake
+CMakeToolchain generated: C:\Users\SeanBruen\.conan2\p\b\catch6b231b808e7e3\b\build\Release\generators\CMakePresets.json
+CMakeToolchain generated: C:\Users\SeanBruen\.conan2\p\b\catch6b231b808e7e3\b\src\CMakeUserPresets.json
+Generating aggregated env files
+Generated aggregated env files: ['conanbuild.bat', 'conanrun.bat']
+Building your package in C:\Users\SeanBruen\.conan2\p\b\catch6b231b808e7e3\b
+>>> Build step for catch2/3.16.0
+Calling build()
+Running CMake.configure()
+RUN: cmake -G "Ninja" -DCMAKE_TOOLCHAIN_FILE="generators/conan_toolchain.cmake" -DCMAKE_INSTALL_PREFIX="C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p" -DCATCH_INSTALL_DOCS="OFF" -DCATCH_INSTALL_EXTRAS="ON" -DCATCH_DEVELOPMENT_BUILD="OFF" -DCMAKE_POLICY_DEFAULT_CMP0091="NEW" -DCMAKE_BUILD_TYPE="Release" -DCMAKE_C_COMPILER="cl" -DCMAKE_CXX_COMPILER="cl" "C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/b/src"
+conanvcvars.bat: Activating environment Visual Studio 17 - amd64 - winsdk_version=None - vcvars_ver=14.4
+[vcvarsall.bat] Environment initialized for: 'x64'
+-- Using Conan toolchain: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/b/build/Release/generators/conan_toolchain.cmake
+-- Conan toolchain: Setting CMAKE_MSVC_RUNTIME_LIBRARY=$<$<CONFIG:Release>:MultiThreadedDLL>
+-- Conan toolchain: C++ Standard 20 with extensions OFF
+-- Conan toolchain: Setting BUILD_SHARED_LIBS = OFF
+-- The CXX compiler identification is MSVC 19.44.35229.0
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: C:/Program Files (x86)/Microsoft Visual Studio/2022/BuildTools/VC/Tools/MSVC/14.44.35207/bin/Hostx64/x64/cl.exe - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- Configuring done (1.4s)
+-- Generating done (0.1s)
+-- Build files have been written to: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/b/build/Release
+
+Running CMake.build()
+RUN: cmake --build "C:\Users\SeanBruen\.conan2\p\b\catch6b231b808e7e3\b\build\Release" -- -j16
+conanvcvars.bat: Activating environment Visual Studio 17 - amd64 - winsdk_version=None - vcvars_ver=14.4
+[vcvarsall.bat] Environment initialized for: 'x64'
+[1/110] Building CXX object src\CMakeFiles\Catch2.dir\catch2\generators\catch_generator_exception.cpp.obj
+[2/110] Building CXX object src\CMakeFiles\Catch2.dir\catch2\generators\catch_generators_throw.cpp.obj
+[3/110] Building CXX object src\CMakeFiles\Catch2.dir\catch2\benchmark\detail\catch_benchmark_function.cpp.obj
+[4/110] Building CXX object src\CMakeFiles\Catch2.dir\catch2\benchmark\detail\catch_run_for_at_least.cpp.obj
+[5/110] Building CXX object src\CMakeFiles\Catch2.dir\catch2\reporters\catch_reporter_automake.cpp.obj
+[6/110] Building CXX object src\CMakeFiles\Catch2.dir\catch2\benchmark\detail\catch_analyse.cpp.obj
+[7/110] Building CXX object src\CMakeFiles\Catch2.dir\catch2\generators\catch_generators.cpp.obj
+[8/110] Building CXX object src\CMakeFiles\Catch2.dir\catch2\benchmark\catch_chronometer.cpp.obj
+[9/110] Building CXX object src\CMakeFiles\Catch2.dir\catch2\benchmark\detail\catch_stats.cpp.obj
+[10/110] Building CXX object src\CMakeFiles\Catch2.dir\catch2\generators\catch_generators_random.cpp.obj
+[11/110] Building CXX object src\CMakeFiles\Catch2.dir\catch2\reporters\catch_reporter_compact.cpp.obj
+[12/110] Building CXX object src\CMakeFiles\Catch2.dir\catch2\benchmark\catch_benchmark.cpp.obj
+[13/110] Building CXX object src\CMakeFiles\Catch2.dir\catch2\reporters\catch_reporter_console.cpp.obj
+[14/110] Building CXX object src\CMakeFiles\Catch2.dir\catch2\reporters\catch_reporter_event_listener.cpp.obj
+[15/110] Building CXX object src\CMakeFiles\Catch2.dir\catch2\reporters\catch_reporter_common_base.cpp.obj
+[16/110] Building CXX object src\CMakeFiles\Catch2.dir\catch2\reporters\catch_reporter_cumulative_base.cpp.obj
+[17/110] Building CXX object src\CMakeFiles\Catch2.dir\catch2\reporters\catch_reporter_registrars.cpp.obj
+[18/110] Building CXX object src\CMakeFiles\Catch2.dir\catch2\interfaces\catch_interfaces_exception.cpp.obj
+[19/110] Building CXX object src\CMakeFiles\Catch2.dir\catch2\interfaces\catch_interfaces_registry_hub.cpp.obj
+[20/110] Building CXX object src\CMakeFiles\Catch2.dir\catch2\reporters\catch_reporter_helpers.cpp.obj
+[21/110] Building CXX object src\CMakeFiles\Catch2.dir\catch2\interfaces\catch_interfaces_capture.cpp.obj
+[22/110] Building CXX object src\CMakeFiles\Catch2.dir\catch2\reporters\catch_reporter_json.cpp.obj
+[23/110] Building CXX object src\CMakeFiles\Catch2.dir\catch2\interfaces\catch_interfaces_reporter_factory.cpp.obj
+[24/110] Building CXX object src\CMakeFiles\Catch2.dir\catch2\interfaces\catch_interfaces_testcase.cpp.obj
+[25/110] Building CXX object src\CMakeFiles\Catch2.dir\catch2\reporters\catch_reporter_streaming_base.cpp.obj
+[26/110] Building CXX object src\CMakeFiles\Catch2.dir\catch2\reporters\catch_reporter_multi.cpp.obj
+[27/110] Building CXX object src\CMakeFiles\Catch2.dir\catch2\interfaces\catch_interfaces_config.cpp.obj
+[28/110] Building CXX object src\CMakeFiles\Catch2.dir\catch2\reporters\catch_reporter_teamcity.cpp.obj
+[29/110] Building CXX object src\CMakeFiles\Catch2.dir\catch2\reporters\catch_reporter_sonarqube.cpp.obj
+[30/110] Building CXX object src\CMakeFiles\Catch2.dir\catch2\reporters\catch_reporter_tap.cpp.obj
+[31/110] Building CXX object src\CMakeFiles\Catch2.dir\catch2\interfaces\catch_interfaces_generatortracker.cpp.obj
+[32/110] Building CXX object src\CMakeFiles\Catch2.dir\catch2\reporters\catch_reporter_junit.cpp.obj
+[33/110] Building CXX object src\CMakeFiles\Catch2.dir\catch2\catch_assertion_result.cpp.obj
+[34/110] Building CXX object src\CMakeFiles\Catch2.dir\catch2\reporters\catch_reporter_xml.cpp.obj
+[35/110] Building CXX object src\CMakeFiles\Catch2.dir\catch2\interfaces\catch_interfaces_reporter.cpp.obj
+[36/110] Building CXX object src\CMakeFiles\Catch2.dir\catch2\catch_totals.cpp.obj
+[37/110] Building CXX object src\CMakeFiles\Catch2.dir\catch2\catch_tag_alias_autoregistrar.cpp.obj
+[38/110] Building CXX object src\CMakeFiles\Catch2.dir\catch2\catch_approx.cpp.obj
+[39/110] Building CXX object src\CMakeFiles\Catch2.dir\catch2\catch_translate_exception.cpp.obj
+[40/110] Building CXX object src\CMakeFiles\Catch2.dir\catch2\catch_get_random_seed.cpp.obj
+[41/110] Building CXX object src\CMakeFiles\Catch2.dir\catch2\internal\catch_case_insensitive_comparisons.cpp.obj
+[42/110] Building CXX object src\CMakeFiles\Catch2.dir\catch2\internal\catch_context.cpp.obj
+[43/110] Building CXX object src\CMakeFiles\Catch2.dir\catch2\catch_version.cpp.obj
+[44/110] Building CXX object src\CMakeFiles\Catch2.dir\catch2\catch_test_case_info.cpp.obj
+[45/110] Building CXX object src\CMakeFiles\Catch2.dir\catch2\catch_config.cpp.obj
+[46/110] Building CXX object src\CMakeFiles\Catch2.dir\catch2\catch_message.cpp.obj
+[47/110] Building CXX object src\CMakeFiles\Catch2.dir\catch2\internal\catch_debugger.cpp.obj
+[48/110] Building CXX object src\CMakeFiles\Catch2.dir\catch2\internal\catch_errno_guard.cpp.obj
+[49/110] Building CXX object src\CMakeFiles\Catch2.dir\catch2\catch_registry_hub.cpp.obj
+[50/110] Building CXX object src\CMakeFiles\Catch2.dir\catch2\internal\catch_getenv.cpp.obj
+[51/110] Building CXX object src\CMakeFiles\Catch2.dir\catch2\catch_timer.cpp.obj
+[52/110] Building CXX object src\CMakeFiles\Catch2.dir\catch2\internal\catch_clara.cpp.obj
+[53/110] Building CXX object src\CMakeFiles\Catch2.dir\catch2\internal\catch_floating_point_helpers.cpp.obj
+[54/110] Building CXX object src\CMakeFiles\Catch2.dir\catch2\catch_tostring.cpp.obj
+[55/110] Building CXX object src\CMakeFiles\Catch2.dir\catch2\internal\catch_assertion_handler.cpp.obj
+[56/110] Building CXX object src\CMakeFiles\Catch2.dir\catch2\catch_test_spec.cpp.obj
+[57/110] Building CXX object src\CMakeFiles\Catch2.dir\catch2\internal\catch_debug_console.cpp.obj
+[58/110] Building CXX object src\CMakeFiles\Catch2.dir\catch2\internal\catch_enum_info.cpp.obj
+[59/110] Building CXX object src\CMakeFiles\Catch2.dir\catch2\internal\catch_enforce.cpp.obj
+[60/110] Building CXX object src\CMakeFiles\Catch2.dir\catch2\catch_session.cpp.obj
+[61/110] Building CXX object src\CMakeFiles\Catch2.dir\catch2\internal\catch_random_number_generator.cpp.obj
+[62/110] Building CXX object src\CMakeFiles\Catch2.dir\catch2\internal\catch_polyfills.cpp.obj
+[63/110] Building CXX object src\CMakeFiles\Catch2.dir\catch2\internal\catch_exception_translator_registry.cpp.obj
+[64/110] Building CXX object src\CMakeFiles\Catch2.dir\catch2\internal\catch_console_colour.cpp.obj
+[65/110] Building CXX object src\CMakeFiles\Catch2.dir\catch2\internal\catch_leak_detector.cpp.obj
+[66/110] Building CXX object src\CMakeFiles\Catch2.dir\catch2\internal\catch_fatal_condition_handler.cpp.obj
+[67/110] Building CXX object src\CMakeFiles\Catch2.dir\catch2\internal\catch_parse_numbers.cpp.obj
+[68/110] Building CXX object src\CMakeFiles\Catch2.dir\catch2\internal\catch_decomposer.cpp.obj
+[69/110] Building CXX object src\CMakeFiles\Catch2.dir\catch2\internal\catch_message_info.cpp.obj
+[70/110] Building CXX object src\CMakeFiles\Catch2.dir\catch2\internal\catch_istream.cpp.obj
+[71/110] Building CXX object src\CMakeFiles\Catch2.dir\catch2\internal\catch_jsonwriter.cpp.obj
+[72/110] Building CXX object src\CMakeFiles\Catch2.dir\catch2\internal\catch_output_redirect.cpp.obj
+[73/110] Building CXX object src\CMakeFiles\Catch2.dir\catch2\internal\catch_commandline.cpp.obj
+[74/110] Building CXX object src\CMakeFiles\Catch2.dir\catch2\internal\catch_random_seed_generation.cpp.obj
+[75/110] Building CXX object src\CMakeFiles\Catch2.dir\catch2\internal\catch_section.cpp.obj
+[76/110] Building CXX object src\CMakeFiles\Catch2.dir\catch2\internal\catch_reusable_string_stream.cpp.obj
+[77/110] Building CXX object src\CMakeFiles\Catch2.dir\catch2\internal\catch_singletons.cpp.obj
+[78/110] Building CXX object src\CMakeFiles\Catch2.dir\catch2\internal\catch_startup_exception_registry.cpp.obj
+[79/110] Building CXX object src\CMakeFiles\Catch2.dir\catch2\internal\catch_lazy_expr.cpp.obj
+[80/110] Building CXX object src\CMakeFiles\Catch2.dir\catch2\internal\catch_source_line_info.cpp.obj
+[81/110] Building CXX object src\CMakeFiles\Catch2.dir\catch2\internal\catch_stdstreams.cpp.obj
+[82/110] Building CXX object src\CMakeFiles\Catch2.dir\catch2\internal\catch_test_case_info_hasher.cpp.obj
+[83/110] Building CXX object src\CMakeFiles\Catch2.dir\catch2\internal\catch_stringref.cpp.obj
+[84/110] Building CXX object src\CMakeFiles\Catch2.dir\catch2\internal\catch_uncaught_exceptions.cpp.obj
+[85/110] Building CXX object src\CMakeFiles\Catch2.dir\catch2\internal\catch_list.cpp.obj
+[86/110] Building CXX object src\CMakeFiles\Catch2.dir\catch2\internal\catch_string_manip.cpp.obj
+[87/110] Building CXX object src\CMakeFiles\Catch2.dir\catch2\internal\catch_tag_alias_registry.cpp.obj
+[88/110] Building CXX object src\CMakeFiles\Catch2.dir\catch2\internal\catch_reporter_registry.cpp.obj
+[89/110] Building CXX object src\CMakeFiles\Catch2.dir\catch2\internal\catch_test_failure_exception.cpp.obj
+[90/110] Building CXX object src\CMakeFiles\Catch2.dir\catch2\internal\catch_test_spec_parser.cpp.obj
+[91/110] Building CXX object src\CMakeFiles\Catch2.dir\catch2\internal\catch_test_registry.cpp.obj
+[92/110] Building CXX object src\CMakeFiles\Catch2.dir\catch2\internal\catch_test_case_tracker.cpp.obj
+[93/110] Building CXX object src\CMakeFiles\Catch2.dir\catch2\internal\catch_reporter_spec_parser.cpp.obj
+[94/110] Building CXX object src\CMakeFiles\Catch2.dir\catch2\internal\catch_textflow.cpp.obj
+[95/110] Building CXX object src\CMakeFiles\Catch2.dir\catch2\internal\catch_run_context.cpp.obj
+[96/110] Building CXX object src\CMakeFiles\Catch2.dir\catch2\internal\catch_wildcard_pattern.cpp.obj
+[97/110] Building CXX object src\CMakeFiles\Catch2.dir\catch2\internal\catch_xmlwriter.cpp.obj
+[98/110] Building CXX object src\CMakeFiles\Catch2.dir\catch2\internal\catch_test_case_registry_impl.cpp.obj
+[99/110] Building CXX object src\CMakeFiles\Catch2.dir\catch2\matchers\catch_matchers_exception.cpp.obj
+[100/110] Building CXX object src\CMakeFiles\Catch2.dir\catch2\matchers\catch_matchers.cpp.obj
+[101/110] Building CXX object src\CMakeFiles\Catch2.dir\catch2\matchers\catch_matchers_container_properties.cpp.obj
+[102/110] Building CXX object src\CMakeFiles\Catch2.dir\catch2\matchers\catch_matchers_floating_point.cpp.obj
+[103/110] Building CXX object src\CMakeFiles\Catch2.dir\catch2\matchers\catch_matchers_predicate.cpp.obj
+[104/110] Building CXX object src\CMakeFiles\Catch2.dir\catch2\matchers\internal\catch_matchers_impl.cpp.obj
+[105/110] Building CXX object src\CMakeFiles\Catch2WithMain.dir\catch2\internal\catch_main.cpp.obj
+[106/110] Building CXX object src\CMakeFiles\Catch2.dir\catch2\matchers\catch_matchers_quantifiers.cpp.obj
+[107/110] Building CXX object src\CMakeFiles\Catch2.dir\catch2\matchers\catch_matchers_templated.cpp.obj
+[108/110] Building CXX object src\CMakeFiles\Catch2.dir\catch2\matchers\catch_matchers_string.cpp.obj
+[109/110] Linking CXX static library src\Catch2.lib
+[110/110] Linking CXX static library src\Catch2Main.lib
+
+catch2/3.16.0: Package 'd9c548eb2668b980e4cf8d5e617a70868b559bec' built
+catch2/3.16.0: Build folder C:\Users\SeanBruen\.conan2\p\b\catch6b231b808e7e3\b\build\Release
+>>> Package step for catch2/3.16.0:d9c548eb2668b980e4cf8d5e617a70868b559bec
+Packaging in folder C:\Users\SeanBruen\.conan2\p\b\catch6b231b808e7e3\p
+Calling package()
+Running CMake.install()
+RUN: cmake --install "C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/b/build/Release" --prefix "C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p"
+conanvcvars.bat: Activating environment Visual Studio 17 - amd64 - winsdk_version=None - vcvars_ver=14.4
+[vcvarsall.bat] Environment initialized for: 'x64'
+-- Install configuration: "Release"
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/lib/Catch2.lib
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/lib/Catch2Main.lib
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/lib/cmake/Catch2/Catch2Targets.cmake
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/lib/cmake/Catch2/Catch2Targets-release.cmake
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/benchmark
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/benchmark/catch_benchmark.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/benchmark/catch_benchmark_all.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/benchmark/catch_chronometer.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/benchmark/catch_clock.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/benchmark/catch_constructor.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/benchmark/catch_environment.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/benchmark/catch_estimate.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/benchmark/catch_execution_plan.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/benchmark/catch_optimizer.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/benchmark/catch_outlier_classification.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/benchmark/catch_sample_analysis.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/benchmark/detail
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/benchmark/detail/catch_analyse.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/benchmark/detail/catch_benchmark_function.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/benchmark/detail/catch_benchmark_stats.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/benchmark/detail/catch_benchmark_stats_fwd.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/benchmark/detail/catch_complete_invoke.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/benchmark/detail/catch_estimate_clock.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/benchmark/detail/catch_measure.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/benchmark/detail/catch_repeat.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/benchmark/detail/catch_run_for_at_least.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/benchmark/detail/catch_stats.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/benchmark/detail/catch_timing.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/catch_all.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/catch_approx.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/catch_assertion_info.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/catch_assertion_result.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/catch_case_sensitive.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/catch_config.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/catch_get_random_seed.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/catch_message.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/catch_section_info.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/catch_session.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/catch_tag_alias.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/catch_tag_alias_autoregistrar.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/catch_template_test_macros.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/catch_test_case_info.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/catch_test_macros.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/catch_test_run_info.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/catch_test_spec.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/catch_timer.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/catch_tostring.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/catch_totals.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/catch_translate_exception.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/catch_version.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/catch_version_macros.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/generators
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/generators/catch_generators.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/generators/catch_generators_adapters.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/generators/catch_generators_all.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/generators/catch_generators_random.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/generators/catch_generators_range.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/generators/catch_generators_throw.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/generators/catch_generator_exception.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/interfaces
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/interfaces/catch_interfaces_all.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/interfaces/catch_interfaces_capture.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/interfaces/catch_interfaces_config.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/interfaces/catch_interfaces_exception.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/interfaces/catch_interfaces_generatortracker.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/interfaces/catch_interfaces_registry_hub.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/interfaces/catch_interfaces_reporter.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/interfaces/catch_interfaces_reporter_factory.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/interfaces/catch_interfaces_tag_alias_registry.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/interfaces/catch_interfaces_testcase.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/interfaces/catch_interfaces_test_invoker.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/internal
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/internal/catch_assertion_handler.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/internal/catch_case_insensitive_comparisons.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/internal/catch_clara.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/internal/catch_commandline.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/internal/catch_compare_traits.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/internal/catch_compiler_capabilities.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/internal/catch_config_android_logwrite.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/internal/catch_config_counter.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/internal/catch_config_prefix_messages.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/internal/catch_config_static_analysis_support.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/internal/catch_config_uncaught_exceptions.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/internal/catch_config_wchar.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/internal/catch_console_colour.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/internal/catch_console_width.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/internal/catch_container_nonmembers.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/internal/catch_context.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/internal/catch_debugger.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/internal/catch_debug_console.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/internal/catch_decomposer.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/internal/catch_deprecation_macro.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/internal/catch_enforce.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/internal/catch_enum_info.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/internal/catch_errno_guard.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/internal/catch_exception_translator_registry.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/internal/catch_fatal_condition_handler.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/internal/catch_floating_point_helpers.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/internal/catch_getenv.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/internal/catch_istream.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/internal/catch_is_permutation.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/internal/catch_jsonwriter.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/internal/catch_lazy_expr.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/internal/catch_leak_detector.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/internal/catch_lifetimebound.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/internal/catch_list.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/internal/catch_logical_traits.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/internal/catch_message_info.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/internal/catch_meta.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/internal/catch_move_and_forward.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/internal/catch_noncopyable.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/internal/catch_optional.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/internal/catch_output_redirect.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/internal/catch_parse_numbers.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/internal/catch_path_filter.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/internal/catch_platform.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/internal/catch_polyfills.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/internal/catch_preprocessor.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/internal/catch_preprocessor_internal_stringify.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/internal/catch_preprocessor_remove_parens.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/internal/catch_random_floating_point_helpers.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/internal/catch_random_integer_helpers.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/internal/catch_random_number_generator.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/internal/catch_random_seed_generation.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/internal/catch_reporter_registry.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/internal/catch_reporter_spec_parser.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/internal/catch_result_type.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/internal/catch_reusable_string_stream.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/internal/catch_run_context.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/internal/catch_section.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/internal/catch_sharding.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/internal/catch_singletons.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/internal/catch_source_line_info.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/internal/catch_startup_exception_registry.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/internal/catch_stdstreams.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/internal/catch_stream_end_stop.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/internal/catch_stringref.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/internal/catch_string_manip.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/internal/catch_tag_alias_registry.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/internal/catch_template_test_registry.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/internal/catch_test_case_info_hasher.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/internal/catch_test_case_registry_impl.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/internal/catch_test_case_tracker.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/internal/catch_test_failure_exception.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/internal/catch_test_macro_impl.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/internal/catch_test_registry.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/internal/catch_test_spec_parser.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/internal/catch_textflow.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/internal/catch_thread_local.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/internal/catch_thread_support.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/internal/catch_to_string.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/internal/catch_uncaught_exceptions.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/internal/catch_uniform_floating_point_distribution.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/internal/catch_uniform_integer_distribution.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/internal/catch_unique_name.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/internal/catch_unique_ptr.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/internal/catch_unreachable.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/internal/catch_void_type.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/internal/catch_wildcard_pattern.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/internal/catch_windows_h_proxy.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/internal/catch_xmlwriter.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/matchers
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/matchers/catch_matchers.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/matchers/catch_matchers_all.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/matchers/catch_matchers_container_properties.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/matchers/catch_matchers_contains.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/matchers/catch_matchers_exception.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/matchers/catch_matchers_floating_point.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/matchers/catch_matchers_predicate.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/matchers/catch_matchers_quantifiers.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/matchers/catch_matchers_range_equals.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/matchers/catch_matchers_string.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/matchers/catch_matchers_templated.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/matchers/catch_matchers_vector.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/matchers/internal
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/matchers/internal/catch_matchers_impl.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/reporters
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/reporters/catch_reporters_all.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/reporters/catch_reporter_automake.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/reporters/catch_reporter_common_base.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/reporters/catch_reporter_compact.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/reporters/catch_reporter_console.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/reporters/catch_reporter_cumulative_base.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/reporters/catch_reporter_event_listener.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/reporters/catch_reporter_helpers.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/reporters/catch_reporter_json.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/reporters/catch_reporter_junit.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/reporters/catch_reporter_multi.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/reporters/catch_reporter_registrars.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/reporters/catch_reporter_sonarqube.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/reporters/catch_reporter_streaming_base.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/reporters/catch_reporter_tap.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/reporters/catch_reporter_teamcity.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/reporters/catch_reporter_xml.hpp
+-- Up-to-date: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/include/catch2/catch_user_config.hpp
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/lib/cmake/Catch2/Catch2Config.cmake
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/lib/cmake/Catch2/Catch2ConfigVersion.cmake
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/lib/cmake/Catch2/ParseAndAddCatchTests.cmake
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/lib/cmake/Catch2/Catch.cmake
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/lib/cmake/Catch2/CatchAddTests.cmake
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/lib/cmake/Catch2/CatchShardTests.cmake
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/lib/cmake/Catch2/CatchShardTestsImpl.cmake
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/share/Catch2/gdbinit
+-- Installing: C:/Users/SeanBruen/.conan2/p/b/catch6b231b808e7e3/p/share/Catch2/lldbinit
+-- DESTDIR:
+-- PREFIX:
+
+package(): Packaged 183 '.hpp' files
+package(): Packaged 2 '.lib' files: Catch2.lib, Catch2Main.lib
+package(): Packaged 4 '.cmake' files: conan-official-catch2-targets.cmake, Catch.cmake, CatchAddTests.cmake, ParseAndAddCatchTests.cmake
+package(): Packaged 1 '.txt' file: LICENSE.txt
+Created package revision f919c87abbcd3bb6be456778ecb422fb
+Package 'd9c548eb2668b980e4cf8d5e617a70868b559bec' created
+Full package reference: catch2/3.16.0#95f400ca2fba9f0c5ce5aea6e6fe0055:d9c548eb2668b980e4cf8d5e617a70868b559bec#f919c87abbcd3bb6be456778ecb422fb
+Package folder C:\Users\SeanBruen\.conan2\p\b\catch6b231b808e7e3\p
+
+======== Finalizing install (deploy, generators) ========
+>>> Generate step for conanfile.py
+Generators folder: D:\git\kyaulabs\ngen\build\windows\20261104-203726-460\Release
+Calling generate() method in recipe
+CMakeDeps necessary find_package() and targets for your CMakeLists.txt
+    find_package(enkiTS)
+    find_package(Catch2)
+    target_link_libraries(... enkiTS::enkiTS Catch2::Catch2WithMain)
+CMakeToolchain generated: conan_toolchain.cmake
+CMakeToolchain: Preset 'conan-release' added to CMakePresets.json.
+    (cmake>=3.23) cmake --preset conan-release
+    (cmake<3.23) cmake <path> -G Ninja
+                 -DCMAKE_TOOLCHAIN_FILE=<output_folder>/conan_toolchain.cmake
+                 -DCMAKE_POLICY_DEFAULT_CMP0091=NEW -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_COMPILER=cl -DCMAKE_CXX_COMPILER=cl
+CMakeToolchain generated: D:\git\kyaulabs\ngen\build\windows\20261104-203726-460\Release\CMakePresets.json
+Generating aggregated env files
+Generated aggregated env files: ['conanbuild.bat', 'conanbuild.ps1', 'conanrun.bat', 'conanrun.ps1']
+Install finished successfully

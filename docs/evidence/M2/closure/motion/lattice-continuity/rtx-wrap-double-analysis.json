@@ -1,0 +1,50 @@
+{
+  "scope": "CPU double analytical field at pixel-center UV, zero lights/black environment/white emissive texture and alpha blend. Does not model device float interpolation, shader arithmetic or R16F blend rounding.",
+  "rows": [
+    {
+      "u": 0.2265625,
+      "v": 0.84375,
+      "linear_double": [
+        0.5993149320688393,
+        0.598282362745204,
+        0.5974133274445903,
+        0.5967102615905623,
+        0.5961757132035387
+      ],
+      "nearest_half": [
+        "38cb",
+        "38c9",
+        "38c8",
+        "38c6",
+        "38c5"
+      ],
+      "wrapped_vs_unwrapped_max": 4.107825191113079e-15
+    },
+    {
+      "u": 0.2265625,
+      "v": 0.15625,
+      "linear_double": [
+        1.0546525667083684,
+        1.0549484904973505,
+        1.05518172146741,
+        1.055350989904757,
+        1.0554550051052436
+      ],
+      "nearest_half": [
+        "3c38",
+        "3c38",
+        "3c39",
+        "3c39",
+        "3c39"
+      ],
+      "wrapped_vs_unwrapped_max": 1.3322676295501878e-15
+    }
+  ],
+  "actual_half": [
+    "38cb",
+    "38c9",
+    "38c6",
+    "38c6",
+    "38c4"
+  ]
+}

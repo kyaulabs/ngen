@@ -1,0 +1,1 @@
+NGEN_BUILD_INSPECTOR=OFF Release: no tool targets, tool translation units or linked tool symbols

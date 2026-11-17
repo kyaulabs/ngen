@@ -1,0 +1,11 @@
+stdout marker
+stderr marker
+one argument with spaces
+checks
+--check-validation-callback
+startup
+Exception: /home/kyau/projects/kyaulabs/ngen/tests/windows_build.ps1:151
+Line |
+ 151 |  …             throw 'Renderer presentation was not exercised and captur …
+     |                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     | Renderer presentation was not exercised and captured

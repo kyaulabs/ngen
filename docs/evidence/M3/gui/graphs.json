@@ -1,0 +1,119 @@
+[
+  {
+    "configuration": "inspector-debug",
+    "build": 0,
+    "selected": 12,
+    "tests": 0,
+    "selected_names": [
+      "shader_offline",
+      "ngen_tests",
+      "render_contract_tests",
+      "render_environment_tests",
+      "scene_workload_tests",
+      "asset_package_tests",
+      "inspector_tests",
+      "render_startup_tests",
+      "wayland_tablet_shutdown",
+      "wayland_tablet_removal",
+      "replay_serial",
+      "replay_workers"
+    ]
+  },
+  {
+    "configuration": "inspector-release",
+    "build": 0,
+    "selected": 12,
+    "tests": 0,
+    "selected_names": [
+      "shader_offline",
+      "ngen_tests",
+      "render_contract_tests",
+      "render_environment_tests",
+      "scene_workload_tests",
+      "asset_package_tests",
+      "inspector_tests",
+      "render_startup_tests",
+      "wayland_tablet_shutdown",
+      "wayland_tablet_removal",
+      "replay_serial",
+      "replay_workers"
+    ]
+  },
+  {
+    "configuration": "inspector-asan",
+    "build": 0,
+    "selected": 12,
+    "tests": 0,
+    "selected_names": [
+      "shader_offline",
+      "ngen_tests",
+      "render_contract_tests",
+      "render_environment_tests",
+      "scene_workload_tests",
+      "asset_package_tests",
+      "inspector_tests",
+      "render_startup_tests",
+      "wayland_tablet_shutdown",
+      "wayland_tablet_removal",
+      "replay_serial",
+      "replay_workers"
+    ]
+  },
+  {
+    "configuration": "inspector-gcc",
+    "build": 0,
+    "selected": 12,
+    "tests": 0,
+    "selected_names": [
+      "shader_offline",
+      "ngen_tests",
+      "render_contract_tests",
+      "render_environment_tests",
+      "scene_workload_tests",
+      "asset_package_tests",
+      "inspector_tests",
+      "render_startup_tests",
+      "wayland_tablet_shutdown",
+      "wayland_tablet_removal",
+      "replay_serial",
+      "replay_workers"
+    ]
+  },
+  {
+    "configuration": "scene-shipping",
+    "build": 0,
+    "selected": 11,
+    "tests": 0,
+    "selected_names": [
+      "shader_offline",
+      "ngen_tests",
+      "render_contract_tests",
+      "render_environment_tests",
+      "scene_workload_tests",
+      "asset_package_tests",
+      "render_startup_tests",
+      "wayland_tablet_shutdown",
+      "wayland_tablet_removal",
+      "replay_serial",
+      "replay_workers"
+    ]
+  },
+  {
+    "configuration": "scene-no-shaders",
+    "build": 0,
+    "selected": 10,
+    "tests": 0,
+    "selected_names": [
+      "ngen_tests",
+      "render_contract_tests",
+      "render_environment_tests",
+      "scene_workload_tests",
+      "asset_package_tests",
+      "render_startup_tests",
+      "wayland_tablet_shutdown",
+      "wayland_tablet_removal",
+      "replay_serial",
+      "replay_workers"
+    ]
+  }
+]

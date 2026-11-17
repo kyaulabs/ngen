@@ -1,0 +1,36 @@
+{
+  "base_sha256": "9b645de103ea92677c3cfe97cb8bd88ede8e7109f34c0f926888ba65c7522e63",
+  "derived_sha256": "a1f70ef7b3e6b7e67341e36b5828a759e9ca3502859d3fc6dba7c9a02688929f",
+  "derived_bytes": 193073603,
+  "positions_normals_uvs_tangents_unchanged": true,
+  "original_indices_materials_textures_images_instances_names_preserved_as_prefixes": true,
+  "all_three_lods_world_models_and_oriented_triangle_multisets_identical": true,
+  "instanced_lod_triangles": [
+    575576,
+    292244,
+    239520
+  ],
+  "visible_workload_triangles": 247520,
+  "draw_records": 210,
+  "accepted_exhaust_data_unchanged": true,
+  "runtime": {
+    "checksum": 3744805548,
+    "images": 9,
+    "indices": 3390150,
+    "instances": 209,
+    "light_instances": 612,
+    "lights": 612,
+    "lod_triangles": [
+      574376,
+      291044,
+      238320
+    ],
+    "materials": 17,
+    "package_valid": 1,
+    "primitives": 204,
+    "texture_bytes": 106343076,
+    "textures": 20,
+    "vertices": 1304579
+  },
+  "scope": "Data-only independent reparse; no reference pixels, generated author script or returned executable executed."
+}

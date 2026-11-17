@@ -1,0 +1,73 @@
+From: NGEN maintainers
+Subject: [PATCH] audio: keep duplicate-handle assertions free of error TLS allocation
+
+SDL_AddAudioDevice asserts that a handle is absent using an error-reporting lookup.
+A normal successful addition thus sets "Device not found" and allocates SDL error
+TLS on a foreign PulseAudio callback thread, which has no SDL thread cleanup.
+LeakSanitizer reports 178 bytes in the native desktop open/play/close regression.
+
+Keep the uniqueness assertion and public lookup error behavior. Use a private
+non-error lookup only for that expected-absence assertion. No diagnostic, TLS
+cleanup, assertion or sanitizer is disabled. This labels a local SDL 3.4.16 change.
+
+--- a/src/audio/SDL_audio.c
++++ b/src/audio/SDL_audio.c
+@@ -693,11 +693,14 @@ static SDL_AudioDevice *CreateAudioPlaybackDevice(const char *name, const SDL_AudioS
+     return CreatePhysicalAudioDevice(name, false, spec, handle, &current_audio.playback_device_count);
+ }
+ 
++/* NGEN: expected absence in an assertion must not allocate foreign-thread error TLS. */
++static SDL_AudioDevice *FindPhysicalAudioDeviceByHandleInternal(void *handle, bool report_error);
++
+ // The audio backends call this when a new device is plugged in.
+ SDL_AudioDevice *SDL_AddAudioDevice(bool recording, const char *name, const SDL_AudioSpec *inspec, void *handle)
+ {
+     // device handles MUST be unique! If the target reuses the same handle for hardware with both recording and playback interfaces, wrap it in a pointer you SDL_malloc'd!
+-    SDL_assert(SDL_FindPhysicalAudioDeviceByHandle(handle) == NULL);
++    SDL_assert(FindPhysicalAudioDeviceByHandleInternal(handle, false) == NULL);
+ 
+     const SDL_AudioFormat default_format = recording ? DEFAULT_AUDIO_RECORDING_FORMAT : DEFAULT_AUDIO_PLAYBACK_FORMAT;
+     const int default_channels = recording ? DEFAULT_AUDIO_RECORDING_CHANNELS : DEFAULT_AUDIO_PLAYBACK_CHANNELS;
+@@ -1554,7 +1557,7 @@ static bool SDLCALL FindAudioDeviceByCallback(void *userdata, const SDL_HashTable *ta
+ }
+ 
+ // !!! FIXME: SDL convention is for userdata to come first in the callback's params. Fix this at some point.
+-SDL_AudioDevice *SDL_FindPhysicalAudioDeviceByCallback(bool (*callback)(SDL_AudioDevice *device, void *userdata), void *userdata)
++static SDL_AudioDevice *FindPhysicalAudioDeviceByCallbackInternal(bool (*callback)(SDL_AudioDevice *device, void *userdata), void *userdata, bool report_error)
+ {
+     if (!SDL_GetCurrentAudioDriver()) {
+         SDL_SetError("Audio subsystem is not initialized");
+@@ -1566,13 +1569,18 @@ SDL_AudioDevice *SDL_FindPhysicalAudioDeviceByCallback(bool (*callback)(SDL_AudioDevi
+     SDL_IterateHashTable(current_audio.device_hash_physical, FindAudioDeviceByCallback, &data);
+     SDL_UnlockRWLock(current_audio.subsystem_rwlock);
+ 
+-    if (!data.retval) {
++    if (!data.retval && report_error) {
+         SDL_SetError("Device not found");
+     }
+ 
+     return data.retval;
+ }
+ 
++SDL_AudioDevice *SDL_FindPhysicalAudioDeviceByCallback(bool (*callback)(SDL_AudioDevice *device, void *userdata), void *userdata)
++{
++    return FindPhysicalAudioDeviceByCallbackInternal(callback, userdata, true);
++}
++
+ static bool TestDeviceHandleCallback(SDL_AudioDevice *device, void *handle)
+ {
+     return device->handle == handle;
+@@ -1580,7 +1588,12 @@ static bool TestDeviceHandleCallback(SDL_AudioDevice *device, void *handle)
+ 
+ SDL_AudioDevice *SDL_FindPhysicalAudioDeviceByHandle(void *handle)
+ {
+-    return SDL_FindPhysicalAudioDeviceByCallback(TestDeviceHandleCallback, handle);
++    return FindPhysicalAudioDeviceByHandleInternal(handle, true);
++}
++
++static SDL_AudioDevice *FindPhysicalAudioDeviceByHandleInternal(void *handle, bool report_error)
++{
++    return FindPhysicalAudioDeviceByCallbackInternal(TestDeviceHandleCallback, handle, report_error);
+ }
+ 
+ const char *SDL_GetAudioDeviceName(SDL_AudioDeviceID devid)

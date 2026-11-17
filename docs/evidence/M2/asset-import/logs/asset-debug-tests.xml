@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="(empty)"
+	tests="6"
+	failures="0"
+	disabled="0"
+	skipped="0"
+	hostname=""
+	time="1"
+	timestamp="2026-11-06T07:14:33"
+	>
+	<testcase name="ngen_tests" classname="ngen_tests" time="0.0289323" status="run">
+		<properties/>
+		<system-out>Randomness seeded to: 270324371
+===============================================================================
+All tests passed (281 assertions in 10 test cases)
+
+</system-out>
+	</testcase>
+	<testcase name="render_contract_tests" classname="render_contract_tests" time="0.012996" status="run">
+		<properties/>
+		<system-out>Randomness seeded to: 4092531484
+===============================================================================
+All tests passed (9 assertions in 1 test case)
+
+</system-out>
+	</testcase>
+	<testcase name="asset_import_tests" classname="asset_import_tests" time="0.645926" status="run">
+		<properties/>
+		<system-out>Randomness seeded to: 406512484
+===============================================================================
+All tests passed (29412 assertions in 26 test cases)
+
+</system-out>
+	</testcase>
+	<testcase name="asset_cli" classname="asset_cli" time="0.300706" status="run">
+		<properties/>
+		<system-out>....
+----------------------------------------------------------------------
+Ran 4 tests in 0.047s
+
+OK
+</system-out>
+	</testcase>
+	<testcase name="replay_serial" classname="replay_serial" time="0.018575" status="run">
+		<properties/>
+		<system-out>seed=0x4e47454e workers=0 ticks=1000 entities=8 commands=32000 sum=11930
+tick_ns p50=10986 p95=21148 p99=23290 allocation_probe=1 new_allocations=0 scheduler_allocations=0
+</system-out>
+	</testcase>
+	<testcase name="replay_workers" classname="replay_workers" time="0.0346255" status="run">
+		<properties/>
+		<system-out>seed=0x4e47454e workers=2 ticks=1000 entities=8 commands=32000 sum=11930
+tick_ns p50=28530 p95=40343 p99=59442 allocation_probe=1 new_allocations=0 scheduler_allocations=0
+</system-out>
+	</testcase>
+</testsuite>
