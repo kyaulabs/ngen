@@ -76,12 +76,13 @@ work, not delivered features. Fleet counts and five-figure concurrency remain
 fixtures or aspirations until measured; no dates, staffing or capacity promise is
 inferred from this roadmap.
 
-The dedicated [NGEN kanban] currently contains the original 56 atomic issues
-across ten milestones. This revision defines 67 remaining tasks across twelve
-milestones, including M7-G and C1/C2; tracker synchronization is authorized and
-in progress. Preserve existing issue IDs and reuse #55 for C1-D. The [tracker index]
-distinguishes actual records from the revised plan. Cards remain Todo, undated and
-unassigned, with no implementation, spending, infrastructure or deployment grant.
+The dedicated [NGEN kanban] now contains 67 remaining issues and 67 unique Todo
+cards across twelve open milestones, verified after explicitly authorized sync.
+Eleven issues and two milestones were added; 25 existing bodies were updated,
+including the retained editor issue #55 as C1-D. Original issue/card IDs, labels,
+assignees and states were preserved. The [tracker index] links actual records to
+the immutable planning source. Milestones remain undated and issues unassigned,
+with no implementation, spending, infrastructure or deployment grant.
 No M4, policing/ownership, SDK or MCP code starts through this documentation. Historical M0/M1 evidence and individual
 ADR statuses are not silently ratified by roadmap maintenance.
 
