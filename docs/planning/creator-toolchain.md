@@ -23,8 +23,10 @@ arbitrary code into the flagship server. Existing first-party scripting limits
 remain until separately reconsidered.
 
 Current evidence supports libraries, an asset/shader pipeline and the bounded
-inspector's queued generation-checked commands. It does not establish an exported
-SDK, reusable project template or general scene editor. Reuse those implementations
+inspector's queued generation-checked commands. The C1-A
+[source-built SDK](../creator-sdk.md) exposes a minimal install boundary. C1-B
+adds one [standalone starter workflow](../creator-project.md), not a general scene
+editor or an execution service. Reuse those implementations
 where appropriate; do not invent a universal plugin ABI, reflection framework or
 second simulation owner before an actual consumer requires one. See
 [ADR 0018](../adr/0018-creator-command-boundary.md).

@@ -75,7 +75,19 @@ After implementation is separately authorized, use the actual configured convent
 
 Only `kyau` performs the formal review, with the required `✔️ Approved by: @kyau` text, after Test Plan completion and required checks. Verify that GitHub's self-review restrictions permit the proposed author/reviewer identity arrangement; if not, resolve policy legitimately rather than impersonating another account. Verify the merge strategy's resulting signatures and author/committer identities: bot squash/rebase can create new commits, so signed feature commits alone do not prove the merged history satisfies NGEN policy. Resolve that rule at M0; never silently substitute a web-flow signature for required authorized signing. Watch workflows, fix failures on the authorized branch, rerun affected gates and record the new evidence. Do not disable signing, hooks, Gitleaks or commitlint to force completion.
 
-This planning task overrides standing defaults that might otherwise create branches, delete stale branches, push changes or merge PRs. None of those operations belongs in this turn.
+The original planning-only assignment did not authorize branch, push or merge
+operations. For separately authorized implementation, follow the repository's
+current Git instructions.
+
+Before a bot merge, assemble the exact proposed subject, blank line, and body in
+one file and run the same pinned commitlint CLI/configuration as CPU CI with
+`commitlint --edit <message-file>`. Pass that checked subject and body to the
+merge command; do not substitute a one-line body or unchecked generated text.
+The PR check does not see the new merge commit, and its push check applies the
+same policy to the merge message. If an already-merged message fails policy,
+record the failed revision and validate the retained implementation through an
+ordinary follow-up. A green descendant cannot turn the prior run green; do not
+rewrite protected history or weaken the policy.
 
 ## Production progression
 

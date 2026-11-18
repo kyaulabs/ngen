@@ -6,10 +6,11 @@ at `03b76c724a556a30944b39072afbee4aa2dfcf8b`, following accepted M2 at `4b554cc
 Exact [post-merge CI] passed all four jobs; merge signature/ancestry verify.
 [0.1.0] is now published as source only at reviewed main `2d1a0539`; public
 source/checksums, release CI and the completed back-merge verify. It does not
-include the private playable scene/bundles/media. Next are parallel M4
-precision/travel and C1 reusable-SDK entry gates; C2 local MCP follows the
-applicable creator operations. No multiplayer or creator implementation is
-implied by the [roadmap].
+include the private playable scene/bundles/media. The source-only
+[0.2.0 release](../releases/0.2.0.md) adds the C1-A/B SDK and starter, and M4-A/B
+split coordinates and live physics transfers. Scene authoring is next in the
+[execution order](execution-order.md); travel, local MCP and multiplayer remain
+future work in the [roadmap].
 
 The working C++20 foundation uses pinned Conan/CMake/Ninja graphs, explicit RAII
 ownership, bounded commands/jobs and immutable owning snapshots. SDL/Vulkan,

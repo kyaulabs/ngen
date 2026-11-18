@@ -5,11 +5,18 @@ into `main`. **Merging that release PR triggers publication.** This is distinct
 from merging implementation into `develop`. Keep release branches; never tag or
 publish an unmerged release branch or bypass signed-commit/review protections.
 
-The first release is the explicitly selected **0.1.0 source baseline** after M3.
-Later bumps follow actual Conventional Commits and compatibility changes, not a
-branch name alone. This automation accepts canonical `X.Y.Z` only: no leading
-zeroes, prerelease suffixes or additional path components. `CMakeLists.txt` is the
-version authority; release branch and source version must agree.
+The first release was the **0.1.0 source baseline** after M3. Review each
+verified checkpoint for a release; a complete, tested feature or useful fix can
+ship without waiting for the whole milestone. Use patch releases for compatible
+fixes, minor releases for new functionality, and explicitly evaluate breaking
+changes against the published compatibility contract and major-zero policy.
+Review the actual Conventional Commits and behavior; confirm the proposed bump
+with `git-cliff --bumped-version --use-branch-tags`. Do not tag intermediate or
+untested work just to increase cadence.
+
+The automation accepts canonical `X.Y.Z` only: no leading zeroes, prerelease
+suffixes or additional path components. `CMakeLists.txt` is the version authority;
+release branch and source version must agree.
 
 Publication contains exactly `ngen-X.Y.Z-source.tar.gz`, its `.sha256` sidecar and
 `ngen-X.Y.Z-SHA256SUMS`. The archive is produced by `git archive` from the exact
@@ -33,15 +40,18 @@ GPG-signed. Published assets and tags are never moved or overwritten.
 3. Generate the tracked changelog with git-cliff, before making a real tag:
 
    ```sh
-   git-cliff --unreleased --use-branch-tags --tag vX.Y.Z --output CHANGELOG.md
+   git-cliff --use-branch-tags --output CHANGELOG.md
    python3 tools/release.py validate release/X.Y.Z
    python3 tools/release.py notes release/X.Y.Z > build/release-notes-preview.md
    PYTHONDONTWRITEBYTECODE=1 python3 -m unittest tests.release_automation -v
    ```
 
-   Review the actual combined notes. The changelog has NGEN commit links, `##`
-   Changelog / `###` version / `####` group headings and handles the initial release.
-   Retry an already-tagged exact checkout with `--current`, never `--latest`.
+   In the tracked changelog, use the new version's linked heading from the
+   release-note preview in place of `### Unreleased`. Make sure every version
+   heading begins on its own line and all previous versions remain. `--unreleased`
+   is for the single-release preview, not the full changelog. Review the NGEN
+   commit links and nested `##` / `###` / `####` headings. Retry an already-tagged
+   exact checkout with `--current`, never `--latest`.
    The tracked changelog is generated before the preparation commit; the final
    publication notes also include any later release metadata/merge commits.
 4. Sign the version/notes/changelog commit normally. Open the templated release PR

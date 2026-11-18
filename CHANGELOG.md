@@ -1,4 +1,49 @@
 ## 📜 Changelog
+### [0.2.0](https://github.com/kyaulabs/ngen/releases/tag/v0.2.0)
+
+#### 🐛 Fixes
+
+- **sdk:** Keep install metadata out of producer package search ([1c7b3f0](https://github.com/kyaulabs/ngen/commit/1c7b3f048017198e31502ac08bf040bf81e9a796))
+
+- **physics:** Keep shape ownership in native body settings ([e120d56](https://github.com/kyaulabs/ngen/commit/e120d56fed976282a68cd7263a30a479b38596fc))
+
+
+#### 📝 Documentation
+
+- **plan:** Record the dependency-checked roadmap execution order ([57af656](https://github.com/kyaulabs/ngen/commit/57af65674b43cb0f94a098aef0700f0dac648ab2))
+
+- **plan:** Add a resumable issue-by-issue execution order (#86) ([7840cb4](https://github.com/kyaulabs/ngen/commit/7840cb49ae558d7d6f30f6ee62582d734d00b162))
+
+- **plan:** Record the verified c1-a sdk checkpoint ([58ba347](https://github.com/kyaulabs/ngen/commit/58ba347becdd021c5f94006a4eae381ed641d2da))
+
+- **plan:** Record the verified c1-a sdk checkpoint (#88) ([124d172](https://github.com/kyaulabs/ngen/commit/124d1722bef5129fb29a4f8c9fc1837671a61cc1))
+
+
+#### 🚀 Features
+
+- **sdk:** Expose source-built engine targets to external projects ([647346e](https://github.com/kyaulabs/ngen/commit/647346e51b9803ec4fb1c7a23ad5e41a52c6c060))
+
+- **sdk:** Expose source-built engine targets to external projects (#87) ([93c7339](https://github.com/kyaulabs/ngen/commit/93c7339e0e4fd9a9f5b9c547b20e6e33a2c6a844))
+
+- **creator:** Add a standalone source project workflow ([05718b8](https://github.com/kyaulabs/ngen/commit/05718b88b1f688a063c9d8bab0d9cec983cb7435))
+
+- **creator:** Add a standalone source project workflow (#89) ([61693cd](https://github.com/kyaulabs/ngen/commit/61693cd56eac5e5b8aedd1f943bae870def7271c))
+
+- **world:** Implement bounded galactic coordinates and frame transforms ([82d3c9f](https://github.com/kyaulabs/ngen/commit/82d3c9f4e48d33ee9ae21bd99756944c96913101))
+
+- **world:** Implement bounded galactic coordinates and frame transforms (#90) ([4db4cb3](https://github.com/kyaulabs/ngen/commit/4db4cb300fe1f6d4da5c95086325f63d36de9b6f))
+
+- **physics:** Translate a live domain at the tick barrier ([4a1527f](https://github.com/kyaulabs/ngen/commit/4a1527fd6a296cbe667d2778c744b8d226025bdb))
+
+- **physics:** Integrate live tick-barrier origin transfers (#91) ([d34f094](https://github.com/kyaulabs/ngen/commit/d34f094f22f434b9d74215083a2d1f6ea9d67fbb))
+
+
+#### 🧪 Tests
+
+- **release:** Check changelog format on untagged integration heads ([9db09fb](https://github.com/kyaulabs/ngen/commit/9db09fb7d2e6509b91497dab5a457901b2af92ce))
+
+- **release:** Support untagged changelog verification (#85) ([7dfe1c2](https://github.com/kyaulabs/ngen/commit/7dfe1c2f529015501f755c898e563b84082676b7))
+
 ### [0.1.1](https://github.com/kyaulabs/ngen/releases/tag/v0.1.1)
 
 #### 📝 Documentation
@@ -7,7 +52,9 @@
 
 - **plan:** Record the synchronized creator and sovereignty backlog ([17a93a2](https://github.com/kyaulabs/ngen/commit/17a93a23829207cb016f7951d790214bf0fabf38))
 
-- **plan:** Integrate creator and security-law roadmap (#82) ([104adbd](https://github.com/kyaulabs/ngen/commit/104adbd7834e03d39d1fd1e6fd34f85083a8382f))### [0.1.0](https://github.com/kyaulabs/ngen/releases/tag/v0.1.0)
+- **plan:** Integrate creator and security-law roadmap (#82) ([104adbd](https://github.com/kyaulabs/ngen/commit/104adbd7834e03d39d1fd1e6fd34f85083a8382f))
+
+### [0.1.0](https://github.com/kyaulabs/ngen/releases/tag/v0.1.0)
 
 #### ♻ Refactoring
 

@@ -1,6 +1,6 @@
 # Milestones and atomic implementation tasks
 
-Current delivery: M1–M3 are accepted and [0.1.0 is published as source only](https://github.com/kyaulabs/ngen/releases/tag/v0.1.0) at reviewed main `2d1a0539`, with completed release/back-merge verification. M3's private preview remains source-bound to `e45ba673`; public source is not a public playable bundle. The next parallel workstreams are **M4's precision/ADR entry gate** and **C1's reusable creator baseline**. C2 adds local MCP authoring/playtests once the relevant C1 operations exist. No implementation starts merely because this plan or its tracker changes. See the [executive brief](executive-brief.md) and [final M3 verification](../evidence/M3/ui/final-verification.md).
+Current delivery: M1–M3 are accepted; [0.2.0](https://github.com/kyaulabs/ngen/releases/tag/v0.2.0) ships the C1-A/B starter SDK and M4-A/B coordinate and physics work as source only. M3's private preview remains source-bound to `e45ba673`; public source is not a public playable bundle. Resume at C1-C in the [execution order](execution-order.md). C2 adds local MCP authoring/playtests once the relevant C1 operations exist. No implementation starts merely because this plan or its tracker changes. See the [executive brief](executive-brief.md) and [final M3 verification](../evidence/M3/ui/final-verification.md).
 
 | Scope | Current state |
 |---|---|
@@ -8,11 +8,11 @@ Current delivery: M1–M3 are accepted and [0.1.0 is published as source only](h
 | M1 | Working CPU foundation integrated into the accepted M2/M3 dependency chain; initial evidence snapshots below are historical. |
 | M2 | Accepted renderer/assets/inspector delivery, normal PR #9 merge `4b554cc`. |
 | M3 | Accepted offline flight/presentation/audio, normal PR #10 merge `03b76c72`; retained verification limits still apply. |
-| M4 | Next, not implemented; precision/ADR entry gate before coordinates or rebasing. |
+| M4 | M4-A checked coordinates and M4-B live physics transfers verified. Presentation continuity, warp, streaming and integrated M4 acceptance remain open. |
 | M5–M10 / M13 | Planned, dependent on preceding integrated acceptance; no delivery or capacity claim. |
 | M11 | Optional selected graphics; individual benefit/platform/content gates remain. Creator tooling is mandatory C1/C2, not an optional visual feature. |
 | M12 | Optional settlement; separate legal/security/custody and explicit execution/release permission required. |
-| C1 | Planned reusable 3D SDK, project/scene/build tools and documented creator acceptance; can start alongside M4. |
+| C1 | C1-A/B SDK and standalone starter verified. Scene authoring, editor workflow, samples and independent creator acceptance remain open. |
 | C2 | Planned local MCP authoring, authorized build/test jobs and owned playtests using C1 operations; no production or unrestricted host access. |
 
 The dedicated [NGEN kanban](https://github.com/orgs/kyaulabs/projects/4/views/3) now contains **67 open atomic issues and 67 unique Todo cards across twelve open milestones**, read back after explicitly authorized synchronization. Eleven issues and two milestones were added; C1-D reuses former M11-F issue #55. [The tracker index](github-tracker.md) links every task and the immutable source revision. Original issue/card IDs, labels, assignees and states were preserved; milestones remain undated and issues unassigned. Historical M0–M3 evidence remains intact. Cards authorize no implementation, spending or deployment.
@@ -20,6 +20,10 @@ The dedicated [NGEN kanban](https://github.com/orgs/kyaulabs/projects/4/views/3)
 The flagship delivery order remains **polished offline flight, miniature offline game, authoritative multiplayer**. The reusable engine/creator track runs alongside it: a consumable baseline precedes M5 expansion, and C1/C2 can ship without waiting for MMO production. Security law, NPC police, property and sovereignty are flagship policies, not mandatory engine assumptions. Commands, stable IDs, clocks, snapshots and dependency boundaries appear early. Sockets, PostgreSQL, distributed ownership and blockchain appear only when their milestones require them. This document proposes source areas; the actual checkout audit must map them to existing paths and retain working implementations.
 
 Read [repository-audit.md](repository-audit.md) and [build-review-infrastructure.md](build-review-infrastructure.md) before executing tasks. The accepted architecture specifications and ADRs determine API details. Numbers below are proposed acceptance budgets, never measured results or player-capacity promises.
+
+For the exact single-stream issue sequence, creator/flagship interleaving and
+resume position, use [execution-order.md](execution-order.md). It preserves the
+requirements and optional gates below; it does not start implementation.
 
 ## Dependency graph
 
@@ -149,7 +153,7 @@ Performance gate: the fixed laptop replay passes the lightweight flight target a
 
 ## M4 — Support astronomical travel and streaming
 
-Next workstream, not implemented. Before M4-A, resolve the precision/normalization/frame-epoch contract in [ADR 0003](../adr/0003-hierarchical-coordinates.md) and accept the declared precision evidence. Do not infer full coordinate-ADR ratification from M3's local-flight acceptance. Start with the existing Jolt/command/snapshot boundaries; no networking, database, galaxy framework or arbitrary new renderer owner is implied.
+M4-A implements the owner-approved [ADR 0003](../adr/0003-hierarchical-coordinates.md) coordinate contract; see the [analytic precision evidence](../evidence/M4/precision-entry.md). M4-B verifies [live origin transfers](../evidence/M4/live-origin-transfer.md) in the three approved fixture sizes, including the 1 km compound. Keep the existing Jolt/command/snapshot boundaries; no networking, database, galaxy framework or new renderer owner is implied.
 
 Deliver connected systems with protected and lawless security sectors, predominantly fixed celestial arrangements and orbital infrastructure; hierarchical coordinates; safe local physics frames; and committed warp with destination prefetch. Every new player starts in protected NPC jurisdiction. Lawless sectors must greatly outnumber protected ones; declare the approved ratio/counting unit in the content fixture before acceptance, not merely a 51/49 majority. Exact balance is not yet selected. This manifest establishes policy data, not M8 policing implementation. Gate/wormhole routes and jump-capable ships use explicit travel permissions. Cinematic travel may conceal bounded preparation; arbitrary network/disk failure cannot be promised invisible.
 

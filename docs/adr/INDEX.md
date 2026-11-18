@@ -6,7 +6,7 @@ This is the authoritative NGEN ADR index. Full records remain **Proposed** unles
 |---|---|---|
 | [0001](0001-engine-game-service-boundaries.md) | Separate engine, game and services | M0/M1 |
 | [0002](0002-vulkan-capability-baseline.md) | Use a Vulkan 1.3 capability baseline | M0/M2 |
-| [0003](0003-hierarchical-coordinates.md) | Use hierarchical coordinates and frame epochs | M1/M4 |
+| [0003](0003-hierarchical-coordinates.md) | Accepted for M4-A canonical coordinates and analytic frame transforms | M4-A |
 | [0004](0004-local-physics-and-flight.md) | Separate astronomical travel from local contacts | M3/M4 |
 | [0005](0005-ownership-memory-ecs-jobs.md) | Keep ownership and scheduling explicit | M1/M3 |
 | [0006](0006-commands-and-time.md) | Make commands and time explicit | M1/M3/M6 |
