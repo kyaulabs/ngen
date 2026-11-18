@@ -21,9 +21,9 @@ engine, game or MCP implementation.
 
 | Field | Value |
 |---|---|
-| Last verified step | **04 — [M4-B #12](https://github.com/kyaulabs/ngen/issues/12)**; one live Jolt domain, tested across 10,000 origin transfers per hull size. |
-| Next step | **05 — [C1-C #74](https://github.com/kyaulabs/ngen/issues/74)** |
-| Next entry decision | Map the bounded scene-edit and versioned save contract to the existing C1 starter; scope the public authoring surface before implementation. |
+| Last verified step | **05 — [C1-C #74](https://github.com/kyaulabs/ngen/issues/74)**; bounded scene edits, undo/redo and versioned saves in the existing starter CLI. |
+| Next step | **06 — [M4-C #13](https://github.com/kyaulabs/ngen/issues/13)** |
+| Next entry decision | Map frame epochs onto the existing previous/current flight snapshots and presentation history; identify the equivalent near/far-origin renderer fixture. |
 | Optional selections | M11 features and M12 settlement are not selected by this schedule. |
 
 Resume request: **“Read `docs/planning/execution-order.md` and continue from the
@@ -72,7 +72,7 @@ asset/build paths. Establish human-usable operations before exposing them to MCP
 | 02 | [x] | [C1-B #73](https://github.com/kyaulabs/ngen/issues/73) | Create, validate, build/cook/test/run/package one standalone project. |
 | 03 | [x] | [M4-A #11](https://github.com/kyaulabs/ngen/issues/11) | Implement canonical cell/offset coordinates and explicit nonrotating frame transforms. |
 | 04 | [x] | [M4-B #12](https://github.com/kyaulabs/ngen/issues/12) | Transfer one local physics domain between origins at a tick barrier. |
-| 05 | [ ] | [C1-C #74](https://github.com/kyaulabs/ngen/issues/74) | Author and save a bounded reusable 3D scene. |
+| 05 | [x] | [C1-C #74](https://github.com/kyaulabs/ngen/issues/74) | Author and save a bounded reusable 3D scene. |
 | 06 | [ ] | [M4-C #13](https://github.com/kyaulabs/ngen/issues/13) | Preserve rendering/prediction history across a frame-epoch change. |
 | 07 | [ ] | [M4-D #14](https://github.com/kyaulabs/ngen/issues/14) | Implement one committed warp trajectory with entry/transit/exit states. |
 | 08 | [ ] | [C1-D #55](https://github.com/kyaulabs/ngen/issues/55) | Connect owned play/inspection/reload and remove one measured authoring bottleneck. |
@@ -279,5 +279,6 @@ work advances. Do not use this log instead of the issue's complete acceptance.
 | 02 — C1-B | [Issue #73](https://github.com/kyaulabs/ngen/issues/73); [starter guide](../creator-project.md) | Linux x86-64/Clang 23 Release: fresh source archive extracted, cooked, configured against an installed SDK, built, tested and run. Malformed schema, asset/build failure and non-overwriting package behavior verified in the native asset suite. Existing asset and runtime limits remain unchanged. No public binary, Windows, or general editor/MCP claim. |
 | 03 — M4-A | [Issue #11](https://github.com/kyaulabs/ngen/issues/11); [ADR 0003](../adr/0003-hierarchical-coordinates.md); [precision evidence](../evidence/M4/precision-entry.md) | Approved coordinate contract exercised in six C++ cases, including 10,000 analytic round trips. Existing contact screening is separate: the 1 km single box was rejected. No live rebase, 1 km contact pass, or renderer change. |
 | 04 — M4-B | [Issue #12](https://github.com/kyaulabs/ngen/issues/12); [live transfer evidence](../evidence/M4/live-origin-transfer.md) | 10,000 translations each for 10 m, 100 m and two-section 1 km hulls. Contact states matched the controls; position, tether length and velocity stayed within the approved limits. No renderer/prediction or inter-world transfer claim. |
+| 05 — C1-C | [Issue #74](https://github.com/kyaulabs/ngen/issues/74); [scene authoring guide](../creator-scene.md) | Linux CLI edits, validates, saves, reloads and exports a bounded scene. Undo/redo and rejected stale, invalid and failed writes verified; the archived scene's referenced asset cooks and runs in the starter. No GUI, runtime scene interpretation, owned play/reload or MCP claim. |
 
 [board]: https://github.com/orgs/kyaulabs/projects/4/views/3

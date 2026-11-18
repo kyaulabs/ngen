@@ -7,11 +7,12 @@ import os
 from pathlib import Path
 import re
 import shutil
-import stat
 import struct
 import sys
 import tarfile
 import tempfile
+
+import creator_scene
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -40,35 +41,13 @@ def create(project, name):
     return {"schema": 1, "name": name}
 
 
-def unique_members(pairs):
-    record = dict(pairs)
-    if len(record) != len(pairs):
-        raise ValueError("manifest contains a duplicate member")
-    return record
-
-
-def project_files(project):
-    directory = os.open(project, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW)
-    try:
-        files = {}
-        for name, limit in LIMITS.items():
-            fd = os.open(name, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK, dir_fd=directory)
-            with os.fdopen(fd, "rb") as stream:
-                entry = os.fstat(stream.fileno())
-                if not stat.S_ISREG(entry.st_mode) or not 0 < entry.st_size <= limit:
-                    raise ValueError(f"{name}: expected a nonempty regular file of at most {limit} bytes")
-                data = stream.read(limit + 1)
-                if len(data) != entry.st_size:
-                    raise ValueError(f"{name}: file size changed during validation")
-                files[name] = data
-        return files
-    finally:
-        os.close(directory)
+def project_files(directory):
+    return {name: creator_scene.read_file(directory, name, limit) for name, limit in LIMITS.items()}
 
 
 def validate(files):
     try:
-        manifest = json.loads(files[MANIFEST].decode("utf-8"), object_pairs_hook=unique_members)
+        manifest = json.loads(files[MANIFEST].decode("utf-8"), object_pairs_hook=creator_scene.unique_members)
     except (UnicodeError, json.JSONDecodeError, RecursionError) as error:
         raise ValueError("invalid manifest JSON") from error
     if not isinstance(manifest, dict) or manifest.keys() != {"schema", "name"}:
@@ -107,16 +86,33 @@ def main():
             command.add_argument("--name", required=True)
         elif operation == "package":
             command.add_argument("--output", required=True, type=Path)
+    scene = commands.add_parser("scene")
+    scene_commands = scene.add_subparsers(dest="action", required=True)
+    for action in ("show", "edit", "undo", "redo"):
+        command = scene_commands.add_parser(action)
+        command.add_argument("project", type=Path)
+        if action != "show":
+            command.add_argument("--expect", required=True, type=int)
     args = parser.parse_args()
     try:
         if args.operation == "new":
             result = create(args.project, args.name)
         else:
-            files = project_files(args.project)
-            result = validate(files)
-            if args.operation == "package":
-                package(files, result, args.output)
-                result["archive"] = str(args.output)
+            directory = os.open(args.project, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW)
+            try:
+                files = project_files(directory)
+                result = validate(files)
+                if args.operation == "scene":
+                    data = sys.stdin.buffer.read(creator_scene.MAX_BYTES + 1) if args.action == "edit" else None
+                    expected = None if args.action == "show" else args.expect
+                    result = creator_scene.run(directory, args.action, expected, data)
+                else:
+                    files.update(creator_scene.authored_files(directory))
+                    if args.operation == "package":
+                        package(files, result, args.output)
+                        result["archive"] = str(args.output)
+            finally:
+                os.close(directory)
     except (OSError, ValueError) as error:
         print(json.dumps({"ok": False, "operation": args.operation, "error": str(error)}), file=sys.stderr)
         return 1
