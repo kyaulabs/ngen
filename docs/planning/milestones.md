@@ -1,6 +1,6 @@
 # Milestones and atomic implementation tasks
 
-Current delivery: M1–M3 are accepted; [0.2.0](https://github.com/kyaulabs/ngen/releases/tag/v0.2.0) ships the C1-A/B starter SDK and M4-A/B coordinate and physics work as source only. M3's private preview remains source-bound to `e45ba673`; public source is not a public playable bundle. Resume at C1-C in the [execution order](execution-order.md). C2 adds local MCP authoring/playtests once the relevant C1 operations exist. No implementation starts merely because this plan or its tracker changes. See the [executive brief](executive-brief.md) and [final M3 verification](../evidence/M3/ui/final-verification.md).
+Current delivery: M1–M3 are accepted; [0.3.0](https://github.com/kyaulabs/ngen/releases/tag/v0.3.0) adds C1-C scene authoring and versioned saves to the C1-A/B starter SDK and M4-A/B coordinate and physics work. M3's private preview remains source-bound to `e45ba673`; public source is not a public playable bundle. Resume at M4-C in the [execution order](execution-order.md). C2 adds local MCP authoring/playtests once the relevant C1 operations exist. No implementation starts merely because this plan or its tracker changes. See the [executive brief](executive-brief.md) and [final M3 verification](../evidence/M3/ui/final-verification.md).
 
 | Scope | Current state |
 |---|---|
@@ -12,7 +12,7 @@ Current delivery: M1–M3 are accepted; [0.2.0](https://github.com/kyaulabs/ngen
 | M5–M10 / M13 | Planned, dependent on preceding integrated acceptance; no delivery or capacity claim. |
 | M11 | Optional selected graphics; individual benefit/platform/content gates remain. Creator tooling is mandatory C1/C2, not an optional visual feature. |
 | M12 | Optional settlement; separate legal/security/custody and explicit execution/release permission required. |
-| C1 | C1-A/B SDK and standalone starter verified. Scene authoring, editor workflow, samples and independent creator acceptance remain open. |
+| C1 | C1-A/B SDK and standalone starter plus C1-C CLI scene authoring verified. Owned play/reload, samples and independent creator acceptance remain open. |
 | C2 | Planned local MCP authoring, authorized build/test jobs and owned playtests using C1 operations; no production or unrestricted host access. |
 
 The dedicated [NGEN kanban](https://github.com/orgs/kyaulabs/projects/4/views/3) now contains **67 open atomic issues and 67 unique Todo cards across twelve open milestones**, read back after explicitly authorized synchronization. Eleven issues and two milestones were added; C1-D reuses former M11-F issue #55. [The tracker index](github-tracker.md) links every task and the immutable source revision. Original issue/card IDs, labels, assignees and states were preserved; milestones remain undated and issues unassigned. Historical M0–M3 evidence remains intact. Cards authorize no implementation, spending or deployment.
