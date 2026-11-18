@@ -90,7 +90,7 @@ option(NGEN_BUILD_ASSETS "Build the checked runtime scene package loader" OFF)
 if(NGEN_BUILD_ASSETS)
   find_package(ZLIB 1.3.2 CONFIG REQUIRED)
   add_library(ngen_assets engine/assets/package.cpp)
-  target_include_directories(ngen_assets PUBLIC engine)
+  target_include_directories(ngen_assets PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/engine>")
   target_link_libraries(ngen_assets PUBLIC ngen_options PRIVATE ZLIB::ZLIB)
   add_executable(asset_package_probe apps/asset_probe/main.cpp)
   target_link_libraries(asset_package_probe PRIVATE ngen_assets)
@@ -406,6 +406,17 @@ if(BUILD_TESTING)
       "NGEN_PACKAGE_FAILURE_PROBE=$<TARGET_FILE:asset_verification_stub>"
       ${Python3_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/tests/asset_cooking.py)
     set_tests_properties(asset_cook_cli PROPERTIES TIMEOUT 180)
+    if(NGEN_INSTALL_SDK AND CMAKE_SYSTEM_NAME STREQUAL "Linux")
+      add_test(NAME creator_project COMMAND ${CMAKE_COMMAND} -E env
+        "NGEN_STARTER_BUILD=${CMAKE_CURRENT_BINARY_DIR}"
+        "NGEN_STARTER_CONFIG=$<CONFIG>"
+        "NGEN_STARTER_TOOLCHAIN=${CMAKE_TOOLCHAIN_FILE}"
+        "NGEN_ASSETC_EXE=$<TARGET_FILE:assetc>"
+        "NGEN_KTX_EXE=${NGEN_KTX_EXECUTABLE}"
+        "NGEN_PACKAGE_PROBE=$<TARGET_FILE:asset_package_probe>"
+        ${Python3_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/tests/creator_project.py)
+      set_tests_properties(creator_project PROPERTIES TIMEOUT 600)
+    endif()
   endif()
   if(NGEN_BUILD_RENDERER)
     if(NGEN_BUILD_SHADERS)
