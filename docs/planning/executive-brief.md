@@ -7,9 +7,10 @@ Exact [post-merge CI] passed all four jobs; merge signature/ancestry verify.
 [0.1.0] is now published as source only at reviewed main `2d1a0539`; public
 source/checksums, release CI and the completed back-merge verify. It does not
 include the private playable scene/bundles/media. The source-only
-[0.2.0 release](../releases/0.2.0.md) adds the C1-A/B SDK and starter, and M4-A/B
-split coordinates and live physics transfers. Scene authoring is next in the
-[execution order](execution-order.md); travel, local MCP and multiplayer remain
+[0.3.0 release](../releases/0.3.0.md) includes CLI scene authoring, the SDK and
+starter, and checked coordinates and live physics transfers. Frame-history
+continuity is next in the [execution order](execution-order.md); travel, local
+MCP and multiplayer remain
 future work in the [roadmap].
 
 The working C++20 foundation uses pinned Conan/CMake/Ninja graphs, explicit RAII
