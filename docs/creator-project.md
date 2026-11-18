@@ -1,6 +1,6 @@
 # Standalone starter project
 
-The C1-B workflow on `develop` creates one small headless C++20 project. It loads
+The C1-B workflow, first shipped in 0.2.0, creates a headless C++20 project. It loads
 an offline-cooked board marker and runs a fixed-tick movement test using the
 [installed SDK](creator-sdk.md). It does not need a window, GPU, private assets,
 or any flagship logic. This is a Linux development workflow, not a project

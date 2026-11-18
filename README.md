@@ -11,7 +11,7 @@ platform and Windows compiler/runtime evidence at recorded revisions. Its first
 showcase is an offline spacecraft flight demonstration; the longer-term goal is
 a reusable engine and creator toolchain, alongside an authoritative PvPvE universe.
 
-**[0.1.1 is available as source only.](https://github.com/kyaulabs/ngen/releases/tag/v0.1.1)**
+**[0.2.0 is available as source only.](https://github.com/kyaulabs/ngen/releases/tag/v0.2.0)**
 It is not a downloadable playable game: the accepted private ship/scene assets,
 runtime bundles and recordings are not public release payloads.
 
@@ -23,15 +23,17 @@ runtime bundles and recordings are not public release payloads.
   cooked assets, PBR/IBL/shadows, post-processing and a development inspector.
 - Double-position Jolt physics, shared tactical/direct flight control, authored
   cameras, physical RCS actuation and snapshot-driven presentation/audio.
+- An opt-in, [source-built CMake SDK](docs/creator-sdk.md) and a Linux
+  [standalone starter](docs/creator-project.md) that cooks and loads its own asset.
+- Checked astronomical coordinates and live origin transfers in one bounded
+  physics domain. Presentation continuity, warp and streaming are still planned.
 - Pinned Conan/CMake/Ninja build graphs, tests/sanitizers and source-release
   verification with reviewed back-merges.
 
-The flight application and inspector are working development tools, **not yet a
-standalone creator SDK or general-purpose scene editor**. Astronomical travel,
-gameplay economy, multiplayer, sovereignty, creator project tools and the MCP
-server are planned—not delivered features of 0.1.1. Historical hardware and
-performance results retain their original sources and limits; see the
-[executive brief](docs/planning/executive-brief.md).
+The SDK and starter are not a general-purpose scene editor or a stable binary
+ABI. Gameplay economy, multiplayer, sovereignty and the MCP server are planned.
+Historical hardware and performance results retain their original source and
+configuration limits; see the [executive brief](docs/planning/executive-brief.md).
 
 ## Get started
 
@@ -45,7 +47,7 @@ your platform; an arbitrary system compiler is not the pinned primary profile.
 CI's Clang 18 compatibility lane is separate.
 
 ```sh
-git clone --branch v0.1.1 --depth 1 https://github.com/kyaulabs/ngen.git
+git clone --branch v0.2.0 --depth 1 https://github.com/kyaulabs/ngen.git
 cd ngen
 
 python3 -m venv .venv
@@ -61,7 +63,7 @@ ctest --preset release --output-on-failure
 ```
 
 The release also provides a checked source tarball and SHA-256 inventory. See the
-[0.1.1 instructions](docs/releases/0.1.1.md) for download verification, graphical
+[0.2.0 instructions](docs/releases/0.2.0.md) for download verification, graphical
 build commands, compatible separately authorized scene requirements and platform
 limits. Graphical execution additionally needs supported Vulkan hardware/drivers
 and the desktop audio path; the private flight scene is not included.
@@ -102,9 +104,10 @@ adapter. No dates, player capacity or deployment commitment is implied.
 - [Release preparation and recovery](docs/releasing.md)
 - [Generated changelog](CHANGELOG.md)
 
-Creator tutorials and API/reference documentation will be added as C1 delivers
-and verifies them. There is no released `ngen new` command or MCP installation
-procedure yet. Repository work follows [AGENTS.md](AGENTS.md); the roadmap is not
+The [SDK guide](docs/creator-sdk.md) and [starter walkthrough](docs/creator-project.md)
+cover the verified source workflow. More creator tutorials and API reference are
+forthcoming; no MCP installation procedure is available. Repository work follows
+[AGENTS.md](AGENTS.md); the roadmap is not
 blanket authorization to implement, purchase services or deploy infrastructure.
 
 ## License

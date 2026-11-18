@@ -1,9 +1,9 @@
 # Source-built creator SDK
 
-The SDK on `develop` is an opt-in CMake install for a project that builds
-against NGEN without adding the flagship or engine checkout to its build tree.
-This is the C1-A boundary. It is not part of the published 0.1.1 release, an
-installable game, a project generator, or a stable cross-toolchain binary ABI.
+The SDK, first shipped in 0.2.0, is an opt-in CMake install for a project
+that builds against NGEN without adding the flagship or engine checkout to its
+build tree. This is the C1-A boundary, not an installable game, a project
+editor, or a stable cross-toolchain binary ABI.
 
 With the [primary toolchain](planning/build-review-infrastructure.md) installed,
 build a headless SDK and install it into a new, user-owned prefix:
