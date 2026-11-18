@@ -14,12 +14,15 @@ were added; 25 existing issue bodies were updated. Original issue/card IDs,
 labels, assignees and states were preserved. Former M11-F issue #55 is now C1-D,
 not a duplicated or completed task.
 
-All milestones remain open/undated and issues open/unassigned. Protected-space
+At that read-back, milestones were open/undated and issues open/unassigned. Protected-space
 crime/police and lawless sovereignty replace event-only PvP; M7-G records property
 rights; C1/C2 are mandatory creator/MCP tracks rather than optional graphics.
 The original 56-task baseline remains available at [its source][original-source].
 Task/milestone dependencies are linked in the issue bodies, not automatically
-enforced by the board. Nothing is marked implemented or complete.
+enforced by the board. The [execution order](execution-order.md) records later progress.
+The owner added M4-F and M4-G as separate implementation issues on the existing
+M4 milestone and this project. Both block M4-C; M11-C's existing motion-vector
+prerequisite now names M4-G. No graphics option was selected by this change.
 
 Use [execution-order.md](execution-order.md) for the numbered working sequence
 and current resume point across these live issues. This index remains the task
@@ -27,7 +30,7 @@ mapping, not a substitute for dependency or integrated-acceptance checks.
 
 | Milestone | GitHub milestone | Atomic task issues |
 |---|---|---|
-| M4 — Coordinates/travel/streaming | [M4](https://github.com/kyaulabs/ngen/milestone/1) | [A #11](https://github.com/kyaulabs/ngen/issues/11), [B #12](https://github.com/kyaulabs/ngen/issues/12), [C #13](https://github.com/kyaulabs/ngen/issues/13), [D #14](https://github.com/kyaulabs/ngen/issues/14), [E #15](https://github.com/kyaulabs/ngen/issues/15) |
+| M4 — Coordinates/travel/streaming | [M4](https://github.com/kyaulabs/ngen/milestone/1) | [A #11](https://github.com/kyaulabs/ngen/issues/11), [B #12](https://github.com/kyaulabs/ngen/issues/12), [C #13](https://github.com/kyaulabs/ngen/issues/13), [D #14](https://github.com/kyaulabs/ngen/issues/14), [E #15](https://github.com/kyaulabs/ngen/issues/15), [F #97](https://github.com/kyaulabs/ngen/issues/97), [G #98](https://github.com/kyaulabs/ngen/issues/98) |
 | M5 — Miniature offline universe | [M5](https://github.com/kyaulabs/ngen/milestone/2) | [A #16](https://github.com/kyaulabs/ngen/issues/16), [B #17](https://github.com/kyaulabs/ngen/issues/17), [C #18](https://github.com/kyaulabs/ngen/issues/18), [D #19](https://github.com/kyaulabs/ngen/issues/19), [E #20](https://github.com/kyaulabs/ngen/issues/20), [F #21](https://github.com/kyaulabs/ngen/issues/21) |
 | M6 — Authoritative multiplayer | [M6](https://github.com/kyaulabs/ngen/milestone/3) | [A #22](https://github.com/kyaulabs/ngen/issues/22), [B #23](https://github.com/kyaulabs/ngen/issues/23), [C #24](https://github.com/kyaulabs/ngen/issues/24), [D #25](https://github.com/kyaulabs/ngen/issues/25), [E #26](https://github.com/kyaulabs/ngen/issues/26), [F #27](https://github.com/kyaulabs/ngen/issues/27) |
 | M7 — Persistence/economy | [M7](https://github.com/kyaulabs/ngen/milestone/4) | [A #28](https://github.com/kyaulabs/ngen/issues/28), [B #29](https://github.com/kyaulabs/ngen/issues/29), [C #30](https://github.com/kyaulabs/ngen/issues/30), [D #31](https://github.com/kyaulabs/ngen/issues/31), [E #32](https://github.com/kyaulabs/ngen/issues/32), [F #33](https://github.com/kyaulabs/ngen/issues/33), [G #71](https://github.com/kyaulabs/ngen/issues/71) |

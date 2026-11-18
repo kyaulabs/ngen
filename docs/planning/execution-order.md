@@ -21,9 +21,9 @@ engine, game or MCP implementation.
 
 | Field | Value |
 |---|---|
-| Last verified step | **05 — [C1-C #74](https://github.com/kyaulabs/ngen/issues/74)**; bounded scene edits, undo/redo and versioned saves in the existing starter CLI. |
-| Next step | **06 — [M4-C #13](https://github.com/kyaulabs/ngen/issues/13)** |
-| Next entry decision | Map frame epochs onto the existing previous/current flight snapshots and presentation history; identify the equivalent near/far-origin renderer fixture. |
+| Last verified step | **05a — [M4-F #97](https://github.com/kyaulabs/ngen/issues/97)**; bounded particle simulation, live frame test and rendered fixture. |
+| Next step | **05b — [M4-G #98](https://github.com/kyaulabs/ngen/issues/98)**; GPU motion vectors. |
+| Next entry decision | Define current-to-previous pixel displacement and invalid history on the existing Vulkan path; verify the attachment through actual GPU readback. |
 | Optional selections | M11 features and M12 settlement are not selected by this schedule. |
 
 Resume request: **“Read `docs/planning/execution-order.md` and continue from the
@@ -73,7 +73,9 @@ asset/build paths. Establish human-usable operations before exposing them to MCP
 | 03 | [x] | [M4-A #11](https://github.com/kyaulabs/ngen/issues/11) | Implement canonical cell/offset coordinates and explicit nonrotating frame transforms. |
 | 04 | [x] | [M4-B #12](https://github.com/kyaulabs/ngen/issues/12) | Transfer one local physics domain between origins at a tick barrier. |
 | 05 | [x] | [C1-C #74](https://github.com/kyaulabs/ngen/issues/74) | Author and save a bounded reusable 3D scene. |
-| 06 | [ ] | [M4-C #13](https://github.com/kyaulabs/ngen/issues/13) | Preserve rendering/prediction history across a frame-epoch change. |
+| 05a | [x] | [M4-F #97](https://github.com/kyaulabs/ngen/issues/97) | Simulate and render a bounded cosmetic particle fixture across a live origin transfer. |
+| 05b | [ ] | [M4-G #98](https://github.com/kyaulabs/ngen/issues/98) | Produce and read back GPU motion vectors across frame epochs. |
+| 06 | [ ] | [M4-C #13](https://github.com/kyaulabs/ngen/issues/13) | Verify combined rendering and prediction history after M4-F/G. |
 | 07 | [ ] | [M4-D #14](https://github.com/kyaulabs/ngen/issues/14) | Implement one committed warp trajectory with entry/transit/exit states. |
 | 08 | [ ] | [C1-D #55](https://github.com/kyaulabs/ngen/issues/55) | Connect owned play/inspection/reload and remove one measured authoring bottleneck. |
 | 09 | [ ] | [C2-A #77](https://github.com/kyaulabs/ngen/issues/77) | Select/pin a local MCP protocol/SDK and expose scoped discovery/read operations. |
@@ -84,6 +86,8 @@ proposals or build a speculative universal plugin/command framework.
 **Before 03:** the owner accepted the scoped ADR 0003 arithmetic contract and
 entry model. **Before 04:** agree on contact tolerances and the representative
 1 km fixture. The analytic evidence does not accept live origin transfers.
+**Before 06:** finish and verify both M4-F and M4-G. Keep their rendering
+and GPU readback separate from the existing CPU-projected motion evidence.
 **After 10:** close M4's integrated two-system traversal, origin/history, streaming
 failure and budget gates. Declare the protected/lawless distribution and protected
 starts; this is manifest data, not an assertion that M8 police are implemented.
@@ -280,5 +284,6 @@ work advances. Do not use this log instead of the issue's complete acceptance.
 | 03 — M4-A | [Issue #11](https://github.com/kyaulabs/ngen/issues/11); [ADR 0003](../adr/0003-hierarchical-coordinates.md); [precision evidence](../evidence/M4/precision-entry.md) | Approved coordinate contract exercised in six C++ cases, including 10,000 analytic round trips. Existing contact screening is separate: the 1 km single box was rejected. No live rebase, 1 km contact pass, or renderer change. |
 | 04 — M4-B | [Issue #12](https://github.com/kyaulabs/ngen/issues/12); [live transfer evidence](../evidence/M4/live-origin-transfer.md) | 10,000 translations each for 10 m, 100 m and two-section 1 km hulls. Contact states matched the controls; position, tether length and velocity stayed within the approved limits. No renderer/prediction or inter-world transfer claim. |
 | 05 — C1-C | [Issue #74](https://github.com/kyaulabs/ngen/issues/74); [scene authoring guide](../creator-scene.md) | Linux CLI edits, validates, saves, reloads and exports a bounded scene. Undo/redo and rejected stale, invalid and failed writes verified; the archived scene's referenced asset cooks and runs in the starter. No GUI, runtime scene interpretation, owned play/reload or MCP claim. |
+| 05a — M4-F | [Issue #97](https://github.com/kyaulabs/ngen/issues/97); [particle evidence](../evidence/M4/cosmetic-particles.md) | The bounded pool followed live Jolt frames, and the synthetic GPU fixture matched fixed-origin/default HDR readbacks on Intel. The accepted flight preset and its mesh exhaust are unchanged. |
 
 [board]: https://github.com/orgs/kyaulabs/projects/4/views/3

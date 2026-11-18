@@ -1,4 +1,5 @@
 #include "draw.hpp"
+#include "effects/particles.hpp"
 #include "probe/capture.hpp"
 #include "render/environment.hpp"
 #include <algorithm>
@@ -64,7 +65,7 @@ class DrawGate {
 };
 } // namespace
 bool draw_scene(render::Context &context, render::ScenePin &version, const render::ScenePin &active,
-                const std::filesystem::path &capture) {
+                const std::filesystem::path &capture, bool particle_fixture) {
     using namespace render;
     const auto package = version->package();
     const VkExtent2D extent = capture.empty() ? VkExtent2D{256, 128} : VkExtent2D{1280, 720};
@@ -172,14 +173,68 @@ bool draw_scene(render::Context &context, render::ScenePin &version, const rende
         const auto marker_bytes = VkDeviceSize{extent.width} * extent.height * 8;
         auto marker_readback = take(context.create_buffer(
             {marker_bytes, VK_BUFFER_USAGE_TRANSFER_DST_BIT, MemoryAccess::readback}));
-        wait(context, take(context.copy_from_image({color, marker_readback})));
-        std::vector<std::uint16_t> marker_pixels(std::size_t{extent.width} * extent.height * 4);
-        (void)take(marker_readback.read(0, std::as_writable_bytes(std::span(marker_pixels))));
+        const auto read_pixels = [&] {
+            wait(context, take(context.copy_from_image({color, marker_readback})));
+            std::vector<std::uint16_t> pixels(std::size_t{extent.width} * extent.height * 4);
+            (void)take(marker_readback.read(0, std::as_writable_bytes(std::span(pixels))));
+            return pixels;
+        };
+        const auto marker_pixels = read_pixels();
         const auto marker_x = extent.width * 4 / 100, marker_y = extent.height * 12 / 100;
         const auto at = (std::size_t{marker_y} * extent.width + marker_x) * 4;
         require(marker_pixels[at] >= 0x4400 && marker_pixels[at + 2] >= 0x4400,
                 "scene extra geometry/view was not submitted");
         std::puts("scene_extra_geometry=1 extra_scene_view=1 extra_frame_pin=1");
+        if (particle_fixture) {
+            wait(context, take(renderer.draw(context, version, view, targets)));
+            const auto plain = read_pixels();
+            const coordinates::Frame basis{.stamp = {1, 1, {}},
+                                           .origin = {{{145'000'000'000, 0x1p31 - 128}, {}, {}}}};
+            auto control = std::get<effects::Particles>(effects::Particles::create(basis));
+            auto shifted = std::get<effects::Particles>(effects::Particles::create(basis));
+            for (auto *pool : {&control, &shifted})
+                require(std::holds_alternative<std::monostate>(
+                            pool->emit({basis.stamp, {}, {radius * 6.0, 0, 0}}, 4)),
+                        "particle emission failed");
+            auto target = basis;
+            ++target.stamp.epoch;
+            target.origin[0] = {145'000'000'001, -0x1p31 + 128};
+            require(std::holds_alternative<std::monostate>(shifted.rebase(target)),
+                    "particle origin transfer failed");
+            for (auto *pool : {&control, &shifted})
+                require(pool->step() == Result<Tick>{Tick{1}}, "particle tick failed");
+            const auto render_particles = [&](const effects::ParticleSnapshot &snapshot) {
+                const auto particles = snapshot.particles();
+                require(particles.size() == 1, "unexpected particle count");
+                auto output_basis = basis;
+                output_basis.stamp.tick = snapshot.frame.stamp.tick;
+                const auto local = std::get<coordinates::Sample>(
+                    coordinates::transform({snapshot.frame.stamp, particles.front().position_metres,
+                                            particles.front().velocity_mps},
+                                           snapshot.frame, output_basis));
+                shader::InstanceTransform instance{identity, identity};
+                for (std::size_t axis = 0; axis < 3; ++axis)
+                    instance.model.columns[12 + axis] =
+                        static_cast<float>(local.position_metres[axis]);
+                auto draw = extra;
+                draw.instances = std::span{&instance, 1};
+                wait(context,
+                     take(renderer.draw(context, version, view, targets, {}, std::span{&draw, 1})));
+                return read_pixels();
+            };
+            const auto moved = render_particles(control.snapshot());
+            const auto rebased = render_particles(shifted.snapshot());
+            std::size_t lit_particles = 0;
+            for (std::size_t i = 0; i < moved.size(); i += 4)
+                if (moved[i] >= 0x4400 && moved[i + 2] >= 0x4400)
+                    ++lit_particles;
+            require(lit_particles > 0 && moved != marker_pixels && rebased == moved,
+                    "particle motion or origin-transfer HDR readback differs");
+            wait(context, take(renderer.draw(context, version, view, targets)));
+            require(read_pixels() == plain, "particle draw changed the default scene output");
+            std::printf("particle_rebase_hdr_equal=1 particle_lit_pixels=%zu default_hdr_equal=1\n",
+                        lit_particles);
+        }
     }
     DrawGate gate(context);
     const std::weak_ptr<const SceneVersion> weak = version;
