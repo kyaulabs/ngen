@@ -75,6 +75,14 @@ select executables, arguments, or host roots. This is not a sandbox or a grant
 for an MCP client to invoke a build. No editor API or new execution service is
 introduced.
 
+## C1-C review scope
+
+The Linux project CLI uses one [scene authoring boundary](../creator-scene.md)
+for bounded edits and explicit revision checks. A same-directory atomic save
+publishes the current scene with its undo/redo state. Source packages contain
+only the active scene and admitted references, not local history. No editor,
+active runtime snapshot mutation, MCP capability or execution service is added.
+
 ## Evidence
 
 [Creator scope and acceptance](../planning/creator-toolchain.md), the current

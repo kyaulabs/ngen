@@ -8,6 +8,7 @@
 # Native build outputs (planning policy unchanged)
 /build/
 /CMakeUserPresets.json
+/tools/__pycache__/
 
 # Logs
 *.log
