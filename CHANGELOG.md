@@ -1,4 +1,12 @@
 ## 📜 Changelog
+### [0.3.0](https://github.com/kyaulabs/ngen/releases/tag/v0.3.0)
+
+#### 🚀 Features
+
+- **creator:** Author and save bounded starter scenes ([1b076e7](https://github.com/kyaulabs/ngen/commit/1b076e7051e610a1495cf6ee90105af63a6c5602))
+
+- **creator:** Integrate bounded scene authoring and saves (#94) ([d39dd65](https://github.com/kyaulabs/ngen/commit/d39dd65cd3e27e286e1055c2ea990dd325a2b2c8))
+
 ### [0.2.0](https://github.com/kyaulabs/ngen/releases/tag/v0.2.0)
 
 #### 🐛 Fixes

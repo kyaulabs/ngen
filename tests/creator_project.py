@@ -1,5 +1,6 @@
 """Exercise the standalone starter through the public project CLI."""
 
+import fcntl
 import json
 import os
 from pathlib import Path
@@ -13,11 +14,12 @@ import unittest
 
 ROOT = Path(__file__).resolve().parents[1]
 CLI = ROOT / "tools/project.py"
+IDENTITY = {"position_m": [0, 0, 0], "rotation_xyzw": [0, 0, 0, 1], "scale": [1, 1, 1]}
 
 
-def command(*args):
+def command(*args, payload=None):
     return subprocess.run([sys.executable, str(CLI), *map(str, args)], capture_output=True,
-                          text=True, timeout=30, check=False)
+                          input=payload, text=True, timeout=30, check=False)
 
 
 class CreatorProject(unittest.TestCase):
@@ -28,6 +30,147 @@ class CreatorProject(unittest.TestCase):
         self.project = self.root / "starter project"
         result = command("new", self.project, "--name", "starter")
         self.assertEqual(result.returncode, 0, result.stderr)
+
+    def scene(self, operation, *, revision=None, edit=None):
+        args = ("scene", operation, self.project)
+        if revision is not None:
+            args += ("--expect", revision)
+        payload = json.dumps(edit) if edit is not None else None
+        return command(*args, payload=payload)
+
+    def scene_ok(self, operation, **args):
+        result = self.scene(operation, **args)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        return json.loads(result.stdout)
+
+    def test_author_entities_and_reload_components_from_versioned_save(self):
+        def pose(position):
+            return {"position_m": position, "rotation_xyzw": [0, 0, 0, 1], "scale": [1, 1, 1]}
+
+        entities = {
+            "board": {"transform": pose([1, 0, 0]), "asset": "marker.glb",
+                      "material": {"base_color": [1, 0.25, 0, 1], "metallic": 0, "roughness": 0.5}},
+            "view": {"transform": pose([0, 2, 4]), "camera": {"vertical_fov_deg": 55,
+                                                             "near_m": 0.1, "far_m": 100}},
+            "key": {"transform": pose([3, 3, 2]), "light": {"color": [1, 0.8, 0.6], "lumens": 500}},
+        }
+        self.assertEqual(self.scene_ok("show")["revision"], 0)
+        self.assertEqual(self.scene_ok("edit", revision=0, edit=entities)["revision"], 1)
+        saved = self.scene_ok("show")
+        self.assertEqual(saved["schema"], 1)
+        self.assertEqual(saved["entities"], entities)
+        board = {**entities["board"], "transform": pose([2, 0, -4])}
+        edited = self.scene_ok("edit", revision=1, edit={"key": None, "board": board})
+        self.assertEqual(edited["revision"], 2)
+        self.assertEqual(self.scene_ok("show")["entities"], {"board": board, "view": entities["view"]})
+
+    def test_undo_and_redo_survive_restart_and_branch_on_new_edit(self):
+        original = {"transform": IDENTITY}
+        self.scene_ok("edit", revision=0, edit={"board": original})
+        self.scene_ok("edit", revision=1, edit={"board": None})
+        undone = self.scene_ok("undo", revision=2)
+        self.assertEqual(undone["revision"], 3)
+        self.assertEqual(self.scene_ok("show")["entities"], {"board": original})
+        redone = self.scene_ok("redo", revision=3)
+        self.assertEqual(redone["revision"], 4)
+        self.assertEqual(redone["entities"], {})
+        self.scene_ok("undo", revision=4)
+        self.scene_ok("edit", revision=5, edit={"new-board": original})
+        rejected = self.scene("redo", revision=6)
+        self.assertEqual(rejected.returncode, 1, rejected.stdout + rejected.stderr)
+        self.assertIn("nothing to redo", json.loads(rejected.stderr)["error"])
+        self.assertEqual(self.scene_ok("show")["revision"], 6)
+
+    def test_authored_archive_reloads_scene_and_only_current_embedded_references(self):
+        marker = (self.project / "marker.glb").read_bytes()
+        for name in ("asset-board.glb", "asset-retired.glb", "asset-untracked.glb"):
+            (self.project / name).write_bytes(marker)
+        entity = {"transform": IDENTITY, "asset": "asset-retired.glb"}
+        self.scene_ok("edit", revision=0, edit={"board": entity})
+        entity["asset"] = "asset-board.glb"
+        self.scene_ok("edit", revision=1, edit={"board": entity})
+        archive = self.root / "authored.tar.gz"
+        result = command("package", self.project, "--output", archive)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        with tarfile.open(archive) as source:
+            self.assertEqual({member.name for member in source}, {
+                "starter/" + name for name in ("CMakeLists.txt", "main.cpp", "marker.glb",
+                                               "ngen-project.json", "LICENSE", "ngen-scene.json",
+                                               "asset-board.glb")})
+            source.extractall(self.root / "authored", filter="data")
+        self.project = self.root / "authored" / "starter"
+        reloaded = self.scene_ok("show")
+        self.assertEqual(reloaded["revision"], 2)
+        self.assertEqual(reloaded["entities"], {"board": entity})
+        self.assertIn("nothing to undo", self.scene("undo", revision=2).stderr)
+
+    def test_invalid_scene_edits_preserve_the_committed_bytes(self):
+        self.scene_ok("edit", revision=0, edit={"board": {"transform": IDENTITY}})
+        path = self.project / "ngen-scene.json"
+        original = path.read_bytes()
+        reference = self.project / "asset-local.glb"
+        entity = {"transform": IDENTITY, "asset": reference.name}
+
+        def rejected(result, message):
+            self.assertEqual(result.returncode, 1, result.stdout + result.stderr)
+            self.assertIn(message, json.loads(result.stderr)["error"])
+            self.assertEqual(path.read_bytes(), original)
+
+        rejected(self.scene("edit", revision=0, edit={"stale": entity}), "stale scene revision")
+        rejected(self.scene("undo", revision=0), "stale scene revision")
+        rejected(self.scene("edit", revision=1, edit={"bad": {**entity, "asset": "../asset-bad.glb"}}),
+                 "invalid asset reference")
+        rejected(self.scene("edit", revision=1, edit={"bad": entity}), "referenced asset is missing")
+        reference.symlink_to(self.project / "marker.glb")
+        rejected(self.scene("edit", revision=1, edit={"bad": entity}), "asset-local.glb")
+        reference.unlink()
+        os.mkfifo(reference)
+        rejected(self.scene("edit", revision=1, edit={"bad": entity}), "expected a nonempty regular file")
+        reference.unlink()
+        reference.write_bytes(struct.pack("<4sII", b"glTF", 2, 20) + bytes(8))
+        rejected(self.scene("edit", revision=1, edit={"good": {"transform": IDENTITY}, "bad": entity}),
+                 "expected an embedded GLB")
+        marker = (self.project / "marker.glb").read_bytes()
+        length, = struct.unpack_from("<I", marker, 12)
+        gltf = json.loads(marker[20:20 + length])
+        gltf["buffers"][0]["uri"] = "outside.bin"
+        embedded = json.dumps(gltf).encode()
+        embedded += b" " * (-len(embedded) % 4)
+        chunks = struct.pack("<I4s", len(embedded), b"JSON") + embedded + marker[20 + length:]
+        reference.write_bytes(struct.pack("<4sII", b"glTF", 2, len(chunks) + 12) + chunks)
+        rejected(self.scene("edit", revision=1, edit={"bad": entity}), "expected an embedded GLB")
+        invalid_entity = {"transform": {**IDENTITY, "position_m": [float("nan"), 0, 0]}}
+        rejected(self.scene("edit", revision=1, edit={"bad": invalid_entity}), "invalid position")
+        rejected(command("scene", "edit", self.project, "--expect", 1, payload='{"id":{},"id":{}}'),
+                 "invalid scene JSON")
+        rejected(command("scene", "edit", self.project, "--expect", 1, payload=" " * (256 * 1024 + 1)),
+                 "invalid edit byte count")
+
+        directory = os.open(self.project, os.O_RDONLY | os.O_DIRECTORY)
+        try:
+            fcntl.flock(directory, fcntl.LOCK_EX | fcntl.LOCK_NB)
+            rejected(self.scene("edit", revision=1, edit={"board": None}), "scene is busy")
+            self.assertEqual(self.scene_ok("show")["revision"], 1)
+        finally:
+            os.close(directory)
+        self.assertFalse(list(self.project.glob(".ngen-scene-*")))
+
+    @unittest.skipIf(os.geteuid() == 0, "root can write the read-only failure fixture")
+    def test_failed_scene_save_keeps_last_committed_revision(self):
+        entity = {"transform": IDENTITY}
+        self.scene_ok("edit", revision=0, edit={"board": entity})
+        path = self.project / "ngen-scene.json"
+        original = path.read_bytes()
+        self.project.chmod(0o500)
+        try:
+            failed = self.scene("edit", revision=1, edit={"board": None})
+            self.assertEqual(failed.returncode, 1, failed.stdout + failed.stderr)
+            self.assertIn("Permission denied", json.loads(failed.stderr)["error"])
+        finally:
+            self.project.chmod(0o700)
+        self.assertEqual(path.read_bytes(), original)
+        self.assertEqual(self.scene_ok("show")["revision"], 1)
+        self.assertEqual(self.scene_ok("edit", revision=1, edit={"board": None})["revision"], 2)
 
     def test_version_and_shape_are_validated(self):
         valid = command("validate", self.project)
@@ -96,6 +239,9 @@ class CreatorProject(unittest.TestCase):
         configuration = os.environ["NGEN_STARTER_CONFIG"]
         prefix = self.root / "engine prefix"
         run("cmake", "--install", build, "--config", configuration, "--prefix", prefix)
+        (self.project / "asset-board.glb").write_bytes((self.project / "marker.glb").read_bytes())
+        entity = {"transform": IDENTITY, "asset": "asset-board.glb"}
+        self.scene_ok("edit", revision=0, edit={"board": entity})
         archive = self.root / "starter.tar.gz"
         run(sys.executable, CLI, "package", self.project, "--output", archive)
         original = archive.read_bytes()
@@ -104,6 +250,11 @@ class CreatorProject(unittest.TestCase):
             source.extractall(extracted, filter="data")
         project = extracted / "starter"
         run(sys.executable, CLI, "validate", project)
+        saved = json.loads(run(sys.executable, CLI, "scene", "show", project).stdout)
+        self.assertEqual(saved["entities"], {"board": entity})
+        asset = project / saved["entities"]["board"]["asset"]
+        report = json.loads(run(os.environ["NGEN_ASSETC_EXE"], "inspect", asset).stdout)
+        self.assertEqual(report["triangles"], 1)
 
         def cook(src, output, success=True):
             return run(sys.executable, ROOT / "tools/assetc/cook.py", "--assetc", os.environ["NGEN_ASSETC_EXE"],
@@ -112,7 +263,7 @@ class CreatorProject(unittest.TestCase):
 
         cooked = self.root / "cooked board"
         scene = cooked / "scene.ngas"
-        cook(project / "marker.glb", cooked)
+        cook(asset, cooked)
         expected = scene.read_bytes()
         invalid = self.root / "invalid.glb"
         invalid.write_bytes(b"not GLB")

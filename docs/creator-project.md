@@ -69,9 +69,11 @@ packaging do not run project code. Only build or run a project you trust.
 
 Use separate build and cook directories for new outputs. The cooker rejects
 nonempty output; `package` publishes a new archive and refuses to replace an
-existing file. The source archive contains the manifest, CMake file, C++ source,
-original GLB and AGPL license, but no cooked package, executable, dependency,
-cache or other project file. A recipient needs a matching local SDK and cooker
+existing file. The baseline source archive contains the manifest, CMake file, C++ source,
+original GLB and AGPL license. A project edited with the [scene commands](creator-scene.md)
+also includes the current authored scene and its explicitly referenced assets.
+Archives omit cooked packages, executables, dependencies, caches and unrelated
+workspace files. A recipient needs a matching local SDK and cooker
 to repeat the steps. Packaging does not grant redistribution rights to inputs
 you substitute. Use an owned, non-concurrently edited workspace; this is not a
 filesystem sandbox or a service for untrusted tenants.
