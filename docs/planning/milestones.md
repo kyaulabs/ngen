@@ -8,7 +8,7 @@ Current delivery: M1–M3 are accepted and [0.1.0 is published as source only](h
 | M1 | Working CPU foundation integrated into the accepted M2/M3 dependency chain; initial evidence snapshots below are historical. |
 | M2 | Accepted renderer/assets/inspector delivery, normal PR #9 merge `4b554cc`. |
 | M3 | Accepted offline flight/presentation/audio, normal PR #10 merge `03b76c72`; retained verification limits still apply. |
-| M4 | Next, not implemented; precision/ADR entry gate before coordinates or rebasing. |
+| M4 | M4-A checked coordinates and analytic transforms verified; live rebasing and the rest of M4 remain open. |
 | M5–M10 / M13 | Planned, dependent on preceding integrated acceptance; no delivery or capacity claim. |
 | M11 | Optional selected graphics; individual benefit/platform/content gates remain. Creator tooling is mandatory C1/C2, not an optional visual feature. |
 | M12 | Optional settlement; separate legal/security/custody and explicit execution/release permission required. |
@@ -153,7 +153,7 @@ Performance gate: the fixed laptop replay passes the lightweight flight target a
 
 ## M4 — Support astronomical travel and streaming
 
-Next workstream, not implemented. Before M4-A, resolve the precision/normalization/frame-epoch contract in [ADR 0003](../adr/0003-hierarchical-coordinates.md) and accept the declared precision evidence. Do not infer full coordinate-ADR ratification from M3's local-flight acceptance. Start with the existing Jolt/command/snapshot boundaries; no networking, database, galaxy framework or arbitrary new renderer owner is implied.
+M4-A implements the owner-approved [ADR 0003](../adr/0003-hierarchical-coordinates.md) coordinate contract; see the [analytic precision evidence](../evidence/M4/precision-entry.md). M4-B still needs separately agreed contact tolerances and a representative 1 km fixture before accepting live transfers. Keep the existing Jolt/command/snapshot boundaries; no networking, database, galaxy framework or new renderer owner is implied.
 
 Deliver connected systems with protected and lawless security sectors, predominantly fixed celestial arrangements and orbital infrastructure; hierarchical coordinates; safe local physics frames; and committed warp with destination prefetch. Every new player starts in protected NPC jurisdiction. Lawless sectors must greatly outnumber protected ones; declare the approved ratio/counting unit in the content fixture before acceptance, not merely a 51/49 majority. Exact balance is not yet selected. This manifest establishes policy data, not M8 policing implementation. Gate/wormhole routes and jump-capable ships use explicit travel permissions. Cinematic travel may conceal bounded preparation; arbitrary network/disk failure cannot be promised invisible.
 

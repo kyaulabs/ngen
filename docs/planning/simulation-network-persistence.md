@@ -42,13 +42,13 @@ An ECS entity index is not a durable identity. Use engine-owned persistent IDs a
 
 ## Astronomical coordinates and frames
 
-Use SI meters, seconds, radians and kilograms internally. Kilometers, AU and light-years are presentation units. The concrete provisional representation is `GalacticPosition { int64 cell[3]; double localMeters[3]; }`, with cell width `L = 2^32` meters. Normalize each local coordinate into `[-L/2, L/2)` and adjust the corresponding signed cell index with checked arithmetic. This is a proposed serialization contract, pending the precision experiment and ADR acceptance.
+Use SI meters, seconds, radians and kilograms internally. Kilometers, AU and light-years are presentation units. [ADR 0003](../adr/0003-hierarchical-coordinates.md) accepts three signed 64-bit cells and three binary64 offsets for M4-A, with cell width `L = 2^32` meters. Normalize each offset into `[-L/2, L/2)` using a checked signed carry. No serialization or wire layout has been accepted.
 
 Local systems carry a frame ID, frame epoch and CPU double offsets. Never flatten galaxy-scale positions into one global double vector. Compute bounded relative positions on the CPU before converting to local GPU floats; world rendering never requires GPU FP64. Far-field selection works from cells, hierarchical bounds and coarse distances without requesting contact-level precision across the whole galaxy.
 
 A frame records its parent, translation, velocity, orientation policy and epoch. Initially allow translated, nonrotating physics frames; render celestial rotation separately. Any later rotating frame requires correct angular-velocity transforms and fictitious-force handling. Hiding a coordinate change behind a new origin without transforming velocities creates false momentum.
 
-For nonrotating frames, the contract is `p_B = (O_A - O_B) + p_A` and `v_B = (V_A - V_B) + v_A`. Subtract integer cells before converting the bounded relative displacement to floating point, check subtraction/normalization bounds, and reject invalid coordinates. Record seeded random streams per system and stable command/event order so scheduling changes do not silently change gameplay outcomes.
+For nonrotating frames, the contract is `p_B = (O_A - O_B) + p_A` and `v_B = (V_A - V_B) + v_A`. Subtract only after checking cell adjacency. The M4-A transform rejects noncanonical origins, conflicting frame state at the same stamp, and any evaluated local coordinate or origin displacement beyond `2^20 m` per axis. Record seeded random streams per system and stable command/event order so scheduling changes do not silently change gameplay outcomes.
 
 At an origin shift or frame transfer, perform one tick-boundary transaction: transform positions and velocities; preserve global trajectory; update physics proxies, constraints and query offsets; transform previous and current render snapshots; update prediction history and temporal-render history; increment the frame epoch. A consumer must never combine a pose from one epoch with an origin from another. Collision queries carry an explicit frame and use an origin near the expected hit.
 
