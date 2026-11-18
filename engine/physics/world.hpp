@@ -1,5 +1,6 @@
 #pragma once
 #include "core/values.hpp"
+#include "world/coordinates/position.hpp"
 #include <array>
 #include <cstddef>
 #include <memory>
@@ -23,6 +24,7 @@ struct BodyState {
     std::array<float, 4> rotation_xyzw{0, 0, 0, 1};
     std::array<float, 3> velocity_mps{}, angular_velocity_rps{};
     double mass_kg{};
+    coordinates::FrameStamp frame;
 };
 // One owner thread, bounded CPU-only local contact domain. Returned states own
 // their values; native handles and mutable body storage never escape.
@@ -30,11 +32,18 @@ class World {
   public:
     static constexpr std::size_t body_capacity = 128;
     static constexpr unsigned ticks_per_second = 60;
-    [[nodiscard]] static Result<std::unique_ptr<World>> create();
+    [[nodiscard]] static Result<std::unique_ptr<World>> create(coordinates::Position origin = {});
     ~World();
     World(const World &) = delete;
     World &operator=(const World &) = delete;
     [[nodiscard]] Result<BodyId> add_box(const Box &description);
+    // Two identical touching box sections along X, one rigid body. The box
+    // position and mass identify the whole hull; a section is at most 500 m long.
+    [[nodiscard]] Result<BodyId> add_two_section_hull(const Box &section);
+    // Keep two centers of mass at the declared distance. Owned by the World.
+    [[nodiscard]] Result<std::monostate> constrain_distance(BodyId a, BodyId b, float metres);
+    // Native pair contact from the last successful physics step.
+    [[nodiscard]] Result<bool> in_contact(BodyId a, BodyId b) const;
     // Accumulate a next-step wrench. Reject commands that would hit native
     // speed/spin clamps, rather than silently discarding accepted impulse.
     [[nodiscard]] Result<std::monostate> apply(BodyId id, std::array<float, 3> force_newtons,
@@ -45,11 +54,17 @@ class World {
     // A native update-capacity failure closes this domain; it is not rolled
     // back or published as a successful step.
     [[nodiscard]] Result<Tick> step();
+    [[nodiscard]] Result<coordinates::Frame> frame() const;
+    // A synchronous translation at the current owner-thread tick barrier. No
+    // simulation step, frame velocity change or native body replacement.
+    [[nodiscard]] Result<coordinates::Frame> rebase(coordinates::FrameStamp expected,
+                                                    coordinates::Position origin);
     [[nodiscard]] Result<BodyState> state(BodyId id) const;
 
   private:
     struct Impl;
     explicit World(std::unique_ptr<Impl> impl);
+    [[nodiscard]] Result<BodyId> add_shape(const Box &description, bool two_sections);
     std::unique_ptr<Impl> impl_;
 };
 } // namespace ngen::physics
