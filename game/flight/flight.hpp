@@ -70,6 +70,7 @@ struct Snapshot {
     std::array<float, 3> force_newtons{}, torque_newton_metres{};
     RcsLevels rcs_firing{};
     float main_drive_level{}, rcs_demand_level{};
+    coordinates::Frame frame;
 };
 // Owner-thread-only. Copies of snapshots may cross threads; the Flight may not.
 // Tick-indexed intent only: no wall clock, window, renderer, audio or services.

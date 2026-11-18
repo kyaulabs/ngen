@@ -384,6 +384,7 @@ Result<std::unique_ptr<Flight>> Flight::create(const ShipDefinition &definition,
     impl->body = std::get<physics::BodyId>(admitted);
     impl->published.entity = {0, 1};
     impl->published.body = std::get<physics::BodyState>(impl->world->state(impl->body));
+    impl->published.frame = std::get<coordinates::Frame>(impl->world->frame());
     impl->published.flight_camera = definition.flight_camera;
     return std::unique_ptr<Flight>(new Flight(std::move(impl)));
 }
@@ -488,6 +489,7 @@ Result<Snapshot> Flight::step() {
     result.force_newtons = wrench.force;
     result.torque_newton_metres = wrench.torque;
     result.body = std::get<physics::BodyState>(impl_->world->state(impl_->body));
+    result.frame = std::get<coordinates::Frame>(impl_->world->frame());
     result.rcs_firing = actuation.firing;
     result.main_drive_level = actuation.main;
     result.rcs_demand_level = actuation.demand;

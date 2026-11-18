@@ -33,7 +33,8 @@ class CameraRig {
     [[nodiscard]] Result<std::monostate> look(CameraMotion motion);
     // Input adapters call this on free-look release/focus loss; no ship is steered.
     void center_look() noexcept;
-    // Interpolate consecutive snapshots only; resets/gaps snap. Borrow at most
+    // Interpolate consecutive snapshots in the current origin; resets/gaps
+    // snap and an unresolved epoch change is stale. Borrow at most
     // World::body_capacity external sphere proxies for this call. A focused
     // tactical view also protects the controlled hull. Never displace an authored
     // first-person eye; return busy if eight bounded tactical booms are unsafe.

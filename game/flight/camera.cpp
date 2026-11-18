@@ -97,11 +97,36 @@ Result<CameraFrame> CameraRig::sample(FrameSamples samples, float fraction,
     const auto &previous = samples.previous;
     if (previous.entity == state.entity && state.tick.value > previous.tick.value &&
         state.tick.value - previous.tick.value == 1) {
+        if (previous.body.frame.id != state.body.frame.id)
+            return Error::stale;
         if (!valid_transform(previous.body.position_metres, previous.body.rotation_xyzw))
             return Error::invalid;
+        auto previous_position = previous.body.position_metres;
+        if (previous.body.frame.epoch != state.body.frame.epoch) {
+            if (previous.frame.stamp != previous.body.frame ||
+                state.frame.stamp != state.body.frame ||
+                previous.frame.stamp.tick != previous.tick || state.frame.stamp.tick != state.tick)
+                return Error::stale;
+            // An M4-B origin is stationary: express the current origin at the
+            // previous pose tick, then use the checked same-tick transform.
+            constexpr std::array<double, 3> stationary{};
+            if (previous.frame.origin_velocity_mps != stationary ||
+                state.frame.origin_velocity_mps != stationary)
+                return Error::invalid;
+            auto basis = state.frame;
+            basis.stamp.tick = previous.tick;
+            const auto transformed = coordinates::transform(
+                {.stamp = previous.body.frame, .position_metres = previous_position},
+                previous.frame, basis);
+            if (const auto *error = std::get_if<Error>(&transformed))
+                return *error;
+            previous_position = std::get<coordinates::Sample>(transformed).position_metres;
+            if (!valid_transform(previous_position, previous.body.rotation_xyzw))
+                return Error::invalid;
+        }
         for (std::size_t i = 0; i < frame.ship.position_metres.size(); ++i)
-            frame.ship.position_metres[i] = std::lerp(previous.body.position_metres[i],
-                                                      state.body.position_metres[i], fraction);
+            frame.ship.position_metres[i] =
+                std::lerp(previous_position[i], state.body.position_metres[i], fraction);
         frame.ship.rotation_xyzw =
             components(quaternion(previous.body.rotation_xyzw)
                            .SLERP(quaternion(state.body.rotation_xyzw), fraction)

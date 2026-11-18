@@ -59,6 +59,46 @@ TEST_CASE(
     REQUIRE(before.body.position_metres[0] == 0);
 }
 
+TEST_CASE("consecutive snapshots cannot interpolate across an unresolved origin change",
+          "[frame-history]") {
+    auto rig = std::get<CameraRig>(CameraRig::create(3));
+    Snapshot previous, current;
+    previous.entity = current.entity = {0, 1};
+    previous.mode = current.mode = Mode::direct;
+    previous.tick = previous.body.tick = Tick{10};
+    current.tick = current.body.tick = Tick{11};
+    previous.body.frame = {1, 1, previous.tick};
+    current.body.frame = {1, 2, current.tick};
+    previous.body.position_metres = {2, 0, 0};
+    current.body.position_metres = {-4090, 0, 0};
+    const auto result = rig.sample({previous, current}, .5F);
+    REQUIRE(std::holds_alternative<Error>(result));
+    CHECK(std::get<Error>(result) == Error::stale);
+}
+
+TEST_CASE("presentation re-expresses the previous local pose before blending epochs",
+          "[frame-history]") {
+    auto rig = std::get<CameraRig>(CameraRig::create(3));
+    Snapshot previous, current;
+    previous.entity = current.entity = {0, 1};
+    previous.mode = current.mode = Mode::direct;
+    previous.tick = previous.body.tick = Tick{10};
+    current.tick = current.body.tick = Tick{11};
+    previous.body.frame = {1, 1, previous.tick};
+    current.body.frame = {1, 2, current.tick};
+    previous.frame = {previous.body.frame, {{{145'000'000'000, 0x1p31 - 2048}, {}, {}}}};
+    current.frame = {current.body.frame, {{{145'000'000'001, -0x1p31 + 2048}, {}, {}}}};
+    previous.body.position_metres = {2, 0, 0};
+    current.body.position_metres = {-4090, 0, 0};
+    current.flight_camera.position_metres = {1, 2, 3};
+    const auto result = rig.sample({previous, current}, .5F);
+    REQUIRE(std::holds_alternative<CameraFrame>(result));
+    const auto &view = std::get<CameraFrame>(result);
+    CHECK(view.ship.position_metres == std::array{-4092.0, 0.0, 0.0});
+    CHECK(view.camera.position_metres == std::array{-4091.0, 2.0, 3.0});
+    CHECK(previous.body.position_metres == std::array{2.0, 0.0, 0.0});
+}
+
 TEST_CASE("the default tactical orbit looks at the ship without inheriting hull attitude") {
     auto rig = std::get<CameraRig>(CameraRig::create(3));
     Snapshot state;
