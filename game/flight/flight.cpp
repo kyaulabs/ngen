@@ -345,6 +345,7 @@ Actuation actuate(const ShipDefinition &ship, const physics::BodyState &body,
 struct Flight::Impl {
     std::unique_ptr<physics::World> world;
     ShipDefinition ship;
+    coordinates::Frame authored_frame;
     physics::BodyId body;
     Snapshot published;
     std::array<Command, command_capacity> commands{};
@@ -358,13 +359,14 @@ struct Flight::Impl {
 Flight::Flight(std::unique_ptr<Impl> impl) : impl_(std::move(impl)) {}
 Flight::~Flight() = default;
 Result<std::unique_ptr<Flight>> Flight::create(const ShipDefinition &definition,
-                                               std::span<const physics::Box> static_obstacles) {
+                                               std::span<const physics::Box> static_obstacles,
+                                               coordinates::Position authored_origin) {
     if (static_obstacles.size() >= physics::World::body_capacity)
         return Error::capacity;
     if (!valid(definition) || std::any_of(static_obstacles.begin(), static_obstacles.end(),
                                           [](const auto &box) { return box.dynamic; }))
         return Error::invalid;
-    auto created = physics::World::create();
+    auto created = physics::World::create(authored_origin);
     if (const auto *error = std::get_if<Error>(&created))
         return *error;
     auto world = std::get<std::unique_ptr<physics::World>>(std::move(created));
@@ -385,10 +387,40 @@ Result<std::unique_ptr<Flight>> Flight::create(const ShipDefinition &definition,
     impl->published.entity = {0, 1};
     impl->published.body = std::get<physics::BodyState>(impl->world->state(impl->body));
     impl->published.frame = std::get<coordinates::Frame>(impl->world->frame());
+    impl->authored_frame = impl->published.frame;
     impl->published.flight_camera = definition.flight_camera;
     return std::unique_ptr<Flight>(new Flight(std::move(impl)));
 }
 Snapshot Flight::snapshot() const { return impl_->published; }
+Result<Snapshot> Flight::rebase(coordinates::FrameStamp expected, coordinates::Position origin) {
+    if (owner_ != std::this_thread::get_id())
+        return Error::order;
+    if (impl_->failed)
+        return Error::closed;
+    if (expected != impl_->published.frame.stamp)
+        return Error::stale;
+    auto authored = impl_->authored_frame;
+    authored.stamp.tick = expected.tick;
+    auto target = impl_->published.frame;
+    const auto epoch = next_generation(expected.epoch);
+    if (const auto *error = std::get_if<Error>(&epoch))
+        return *error;
+    target.stamp.epoch = std::get<std::uint64_t>(epoch);
+    target.origin = origin;
+    // Future positional intents still use the shipped authored envelope.
+    const auto offset = coordinates::transform({.stamp = authored.stamp}, authored, target);
+    if (const auto *error = std::get_if<Error>(&offset))
+        return *error;
+    const auto &delta = std::get<coordinates::Sample>(offset).position_metres;
+    if (std::any_of(delta.begin(), delta.end(), [](double v) { return std::abs(v) > 4096; }))
+        return Error::invalid;
+    const auto changed = impl_->world->rebase(expected, origin);
+    if (const auto *error = std::get_if<Error>(&changed))
+        return *error;
+    impl_->published.frame = std::get<coordinates::Frame>(changed);
+    impl_->published.body = std::get<physics::BodyState>(impl_->world->state(impl_->body));
+    return impl_->published;
+}
 Result<Snapshot> Flight::reset() {
     if (owner_ != std::this_thread::get_id())
         return Error::order;
@@ -396,7 +428,8 @@ Result<Snapshot> Flight::reset() {
     if (const auto *error = std::get_if<Error>(&generation))
         return *error;
     auto created =
-        Flight::create(impl_->ship, std::span(impl_->obstacles).first(impl_->obstacle_count));
+        Flight::create(impl_->ship, std::span(impl_->obstacles).first(impl_->obstacle_count),
+                       impl_->authored_frame.origin);
     if (const auto *error = std::get_if<Error>(&created))
         return *error;
     auto replacement = std::get<std::unique_ptr<Flight>>(std::move(created));
@@ -461,6 +494,18 @@ Result<Snapshot> Flight::step() {
         impl_->command_count = 0;
         return Error::invalid;
     }
+    auto local_navigation = navigation;
+    const auto &frame = impl_->published.frame;
+    if (navigation.goal != Goal::coast && frame.stamp.epoch != impl_->authored_frame.stamp.epoch) {
+        auto authored = impl_->authored_frame;
+        authored.stamp.tick = frame.stamp.tick;
+        const auto local = coordinates::transform(
+            {.stamp = authored.stamp, .position_metres = navigation.target_metres}, authored,
+            frame);
+        if (const auto *error = std::get_if<Error>(&local))
+            return *error;
+        local_navigation.target_metres = std::get<coordinates::Sample>(local).position_metres;
+    }
     if (body.mass_kg != impl_->published.body.mass_kg) {
         const auto changed = impl_->world->set_mass(impl_->body, body.mass_kg);
         if (const auto *error = std::get_if<Error>(&changed)) {
@@ -468,7 +513,7 @@ Result<Snapshot> Flight::step() {
             return *error;
         }
     }
-    const auto requested = control_wrench(impl_->ship, body, pilot, mode, navigation);
+    const auto requested = control_wrench(impl_->ship, body, pilot, mode, local_navigation);
     auto staged_pulses = impl_->pulses;
     const auto actuation = actuate(impl_->ship, body, requested, staged_pulses);
     const auto &wrench = actuation.wrench;

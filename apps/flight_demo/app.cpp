@@ -593,6 +593,7 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
     const bool fixed_tick = options.replay || options.walkthrough;
     auto game = game_value(flight::Flight::create(preset.ship.flight, preset.contacts));
     auto current = game->snapshot(), previous = current;
+    auto scene_basis = current.frame;
     auto rig = game_value(flight::CameraRig::create(preset.ship_radius));
     flight::FlightInput input;
     auto context = take(Context::create({options.validation, true, true, true}));
@@ -692,7 +693,8 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
     };
     std::uint64_t sequence = 0, impact_after_tick = 0;
     auto pending_mode = flight::Mode::tactical;
-    auto last_camera = game_value(rig.sample({previous, current}, 1, preset.camera_obstacles));
+    auto last_camera =
+        game_value(rig.sample({previous, current, &scene_basis}, 1, preset.camera_obstacles));
     std::array<assets::MaterialFactors, 256> materials{};
     std::array<EmissiveFlow, 256> flows{};
     for (std::size_t i = 0; i < package->materials.size(); ++i) {
@@ -748,6 +750,7 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
         cancel_context();
         current = game_value(game->reset());
         previous = current;
+        scene_basis = current.frame;
         sequence = 0;
         (void)sound.reset();
         (void)sound.cue(audio::Cue::reset);
@@ -1313,7 +1316,7 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
             rig.center_look();
         (void)rig.orbit(camera_events.orbit);
         (void)rig.look(camera_events.look);
-        auto camera = rig.sample({previous, current},
+        auto camera = rig.sample({previous, current, &scene_basis},
                                  fixed_tick ? 1.0F : static_cast<float>(accumulator * 60),
                                  preset.camera_obstacles);
         if (const auto *error = std::get_if<Error>(&camera); error && *error == Error::busy) {
@@ -1321,7 +1324,7 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
             camera_target.reset();
             metrics.status = "Camera clearance: following the ship";
             metrics.alert = true;
-            camera = rig.sample({previous, current}, 1, preset.camera_obstacles);
+            camera = rig.sample({previous, current, &scene_basis}, 1, preset.camera_obstacles);
         }
         last_camera = game_value(camera);
         int width = 0, height = 0;

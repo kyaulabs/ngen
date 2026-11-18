@@ -33,6 +33,23 @@ bool valid_sphere(const CameraSphere &sphere) {
            std::all_of(sphere.centre_metres.begin(), sphere.centre_metres.end(),
                        [](double v) { return std::isfinite(v) && std::abs(v) <= 16384; });
 }
+Result<std::array<double, 3>> in_basis(const Snapshot &snapshot, const coordinates::Frame &basis) {
+    if (snapshot.frame.stamp != snapshot.body.frame || snapshot.frame.stamp.tick != snapshot.tick ||
+        snapshot.frame.stamp.id != basis.stamp.id || basis.stamp.id == 0)
+        return Error::stale;
+    constexpr std::array<double, 3> stationary{};
+    if (snapshot.frame.origin_velocity_mps != stationary || basis.origin_velocity_mps != stationary)
+        return Error::invalid;
+    // Stationary origins can be compared at the pose tick without extrapolation.
+    auto target = basis;
+    target.stamp.tick = snapshot.tick;
+    const auto sample = coordinates::transform(
+        {.stamp = snapshot.body.frame, .position_metres = snapshot.body.position_metres},
+        snapshot.frame, target);
+    if (const auto *error = std::get_if<Error>(&sample))
+        return *error;
+    return std::get<coordinates::Sample>(sample).position_metres;
+}
 bool valid_motion(CameraMotion motion) {
     return std::isfinite(motion.yaw_radians) && std::isfinite(motion.pitch_radians) &&
            std::isfinite(motion.zoom_steps) &&
@@ -92,8 +109,17 @@ Result<CameraFrame> CameraRig::sample(FrameSamples samples, float fraction,
         state.flight_camera.vertical_fov_degrees > 110 ||
         (state.mode != Mode::direct && state.mode != Mode::tactical))
         return Error::invalid;
+    auto position = state.body.position_metres;
+    if (samples.basis) {
+        const auto translated = in_basis(state, *samples.basis);
+        if (const auto *error = std::get_if<Error>(&translated))
+            return *error;
+        position = std::get<std::array<double, 3>>(translated);
+        if (!valid_transform(position, state.body.rotation_xyzw))
+            return Error::invalid;
+    }
     CameraFrame frame;
-    frame.ship = {state.body.position_metres, components(quaternion(state.body.rotation_xyzw))};
+    frame.ship = {position, components(quaternion(state.body.rotation_xyzw))};
     const auto &previous = samples.previous;
     if (previous.entity == state.entity && state.tick.value > previous.tick.value &&
         state.tick.value - previous.tick.value == 1) {
@@ -102,31 +128,20 @@ Result<CameraFrame> CameraRig::sample(FrameSamples samples, float fraction,
         if (!valid_transform(previous.body.position_metres, previous.body.rotation_xyzw))
             return Error::invalid;
         auto previous_position = previous.body.position_metres;
-        if (previous.body.frame.epoch != state.body.frame.epoch) {
-            if (previous.frame.stamp != previous.body.frame ||
-                state.frame.stamp != state.body.frame ||
-                previous.frame.stamp.tick != previous.tick || state.frame.stamp.tick != state.tick)
+        if (samples.basis || previous.body.frame.epoch != state.body.frame.epoch) {
+            if (!samples.basis &&
+                (state.frame.stamp != state.body.frame || state.frame.stamp.tick != state.tick))
                 return Error::stale;
-            // An M4-B origin is stationary: express the current origin at the
-            // previous pose tick, then use the checked same-tick transform.
-            constexpr std::array<double, 3> stationary{};
-            if (previous.frame.origin_velocity_mps != stationary ||
-                state.frame.origin_velocity_mps != stationary)
-                return Error::invalid;
-            auto basis = state.frame;
-            basis.stamp.tick = previous.tick;
-            const auto transformed = coordinates::transform(
-                {.stamp = previous.body.frame, .position_metres = previous_position},
-                previous.frame, basis);
-            if (const auto *error = std::get_if<Error>(&transformed))
+            const auto translated =
+                in_basis(previous, samples.basis ? *samples.basis : state.frame);
+            if (const auto *error = std::get_if<Error>(&translated))
                 return *error;
-            previous_position = std::get<coordinates::Sample>(transformed).position_metres;
+            previous_position = std::get<std::array<double, 3>>(translated);
             if (!valid_transform(previous_position, previous.body.rotation_xyzw))
                 return Error::invalid;
         }
         for (std::size_t i = 0; i < frame.ship.position_metres.size(); ++i)
-            frame.ship.position_metres[i] =
-                std::lerp(previous_position[i], state.body.position_metres[i], fraction);
+            frame.ship.position_metres[i] = std::lerp(previous_position[i], position[i], fraction);
         frame.ship.rotation_xyzw =
             components(quaternion(previous.body.rotation_xyzw)
                            .SLERP(quaternion(state.body.rotation_xyzw), fraction)

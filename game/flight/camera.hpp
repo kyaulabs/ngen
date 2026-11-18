@@ -16,6 +16,9 @@ struct CameraFrame {
 struct FrameSamples {
     const Snapshot &previous;
     const Snapshot &current;
+    // An optional stationary presentation basis from this domain. Focus and
+    // obstacle positions are expressed in the selected output basis.
+    const coordinates::Frame *basis{};
 };
 struct CameraSphere {
     std::array<double, 3> centre_metres{};

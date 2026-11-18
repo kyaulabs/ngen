@@ -99,6 +99,26 @@ TEST_CASE("presentation re-expresses the previous local pose before blending epo
     CHECK(previous.body.position_metres == std::array{2.0, 0.0, 0.0});
 }
 
+TEST_CASE("live flight history can be sampled in the unchanged authored scene basis",
+          "[frame-history]") {
+    constexpr coordinates::Position origin{{{145'000'000'000, 0x1p31 - 128}, {}, {}}};
+    constexpr coordinates::Position shifted{{{145'000'000'001, -0x1p31 + 128}, {}, {}}};
+    auto flight = std::get<std::unique_ptr<Flight>>(Flight::create({}, {}, origin));
+    auto rig = std::get<CameraRig>(CameraRig::create(3));
+    const auto previous = flight->snapshot();
+    const auto basis = previous.frame;
+    REQUIRE(std::holds_alternative<Snapshot>(flight->rebase(previous.body.frame, shifted)));
+    const auto current = std::get<Snapshot>(flight->step());
+    const auto unshifted = std::get<CameraFrame>(rig.sample({previous, previous, &basis}, .5F));
+    const auto translated = std::get<CameraFrame>(rig.sample({previous, current, &basis}, .5F));
+    CHECK(translated.ship.position_metres == unshifted.ship.position_metres);
+    CHECK(translated.camera.position_metres == unshifted.camera.position_metres);
+    CHECK(translated.camera.rotation_xyzw == unshifted.camera.rotation_xyzw);
+    auto foreign = basis;
+    ++foreign.stamp.id;
+    CHECK(rig.sample({previous, current, &foreign}, .5F).index() == 1);
+}
+
 TEST_CASE("the default tactical orbit looks at the ship without inheriting hull attitude") {
     auto rig = std::get<CameraRig>(CameraRig::create(3));
     Snapshot state;
