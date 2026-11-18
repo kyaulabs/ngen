@@ -197,23 +197,25 @@ Result<BodyId> World::add_shape(const Box &description, bool two_sections) {
     if (at == impl_->slots.end())
         return Error::capacity;
     const auto &p = description.position_metres;
-    // A section is a child of one native rigid body, not an independently moved
-    // collider. Retain the shape until body creation takes its own reference.
-    JPH::RefConst<JPH::Shape> shape = new JPH::BoxShape(vector(description.half_extent_metres));
+    const auto half = vector(description.half_extent_metres);
+    JPH::BodyCreationSettings settings;
+    settings.mPosition = {p[0], p[1], p[2]};
+    settings.mMotionType =
+        description.dynamic ? JPH::EMotionType::Dynamic : JPH::EMotionType::Static;
+    settings.mObjectLayer = description.dynamic ? 1 : 0;
+    // The native body settings own the shape from construction to admission.
+    // The compound's children are colliders of that one body, not separate bodies.
     if (two_sections) {
-        const auto x = description.half_extent_metres[0];
-        JPH::StaticCompoundShapeSettings sections;
-        sections.AddShape({-x, 0, 0}, JPH::Quat::sIdentity(), shape.GetPtr());
-        sections.AddShape({x, 0, 0}, JPH::Quat::sIdentity(), shape.GetPtr());
-        const auto created = sections.Create();
-        if (created.HasError())
+        const auto x = half.GetX();
+        auto *sections = new JPH::StaticCompoundShapeSettings;
+        settings.SetShapeSettings(sections);
+        sections->AddShape({-x, 0, 0}, JPH::Quat::sIdentity(), new JPH::BoxShape(half));
+        sections->AddShape({x, 0, 0}, JPH::Quat::sIdentity(), new JPH::BoxShape(half));
+        if (!settings.ConvertShapeSettings().IsValid())
             return Error::invalid;
-        shape = created.Get();
+    } else {
+        settings.SetShape(new JPH::BoxShape(half));
     }
-    JPH::BodyCreationSettings settings(shape.GetPtr(), {p[0], p[1], p[2]}, JPH::Quat::sIdentity(),
-                                       description.dynamic ? JPH::EMotionType::Dynamic
-                                                           : JPH::EMotionType::Static,
-                                       description.dynamic ? 1 : 0);
     settings.mOverrideMassProperties = JPH::EOverrideMassProperties::CalculateInertia;
     settings.mMassPropertiesOverride.mMass = static_cast<float>(description.mass_kg);
     settings.mLinearDamping = settings.mAngularDamping = 0;

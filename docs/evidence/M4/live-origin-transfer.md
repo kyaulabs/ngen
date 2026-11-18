@@ -51,6 +51,14 @@ and the existing `conan-physics.lock` double-position Jolt 5.6.0 recipe. The
 four headless flight test executables had no graphics dependencies in their ELF
 needed entries. The standalone M4-A screen still rejects the 1 km single box.
 
+The first hosted CPU runs ([push](https://github.com/kyaulabs/ngen/actions/runs/44238733491),
+[PR](https://github.com/kyaulabs/ngen/actions/runs/44238740123)) passed the
+physical tests but failed clang-tidy 18's lifetime analysis across separate
+local Jolt intrusive references to the same shapes. The revised construction
+uses Jolt's `BodyCreationSettings` as the shape owner and its checked
+`ConvertShapeSettings` interface for the compound. Local native results above
+were repeated on the revision without disabling any analyzer or sanitizer.
+
 After preparing the locked dependencies and configuring a `flight-*` build
 with `NGEN_BUILD_PHYSICS=ON`, reproduce with:
 
