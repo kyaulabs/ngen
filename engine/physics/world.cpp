@@ -7,6 +7,8 @@
 #include <Jolt/Physics/Body/BodyCreationSettings.h>
 #include <Jolt/Physics/Body/BodyLock.h>
 #include <Jolt/Physics/Collision/Shape/BoxShape.h>
+#include <Jolt/Physics/Collision/Shape/StaticCompoundShape.h>
+#include <Jolt/Physics/Constraints/DistanceConstraint.h>
 #include <Jolt/Physics/PhysicsSystem.h>
 #include <Jolt/RegisterTypes.h>
 #include <algorithm>
@@ -52,6 +54,10 @@ class ObjectPair final : public JPH::ObjectLayerPairFilter {
     }
 };
 JPH::Vec3 vector(std::array<float, 3> value) { return {value[0], value[1], value[2]}; }
+bool position_fits(const std::array<double, 3> &position) {
+    return std::all_of(position.begin(), position.end(),
+                       [](double x) { return std::abs(x) <= 8192; });
+}
 struct Wrench {
     JPH::Vec3 force, torque;
 };
@@ -82,18 +88,24 @@ struct World::Impl {
     ObjectBroadphase object_broadphase;
     ObjectPair object_pair;
     std::thread::id owner{std::this_thread::get_id()};
-    std::uint64_t domain{};
-    Tick tick{};
+    coordinates::Frame frame;
     JPH::TempAllocatorImpl temporary{std::size_t{8} * 1024 * 1024};
     std::array<Slot, body_capacity> slots{};
+    std::array<JPH::Ref<JPH::TwoBodyConstraint>, body_capacity> constraints{};
+    std::size_t constraint_count{};
     bool failed{};
     // Destroy the system before its borrowed filters, scratch and job owner.
     JPH::PhysicsSystem physics;
-    explicit Impl(std::uint64_t id) : domain(id) {
+    Impl(std::uint64_t id, const coordinates::Position &origin)
+        : frame{.stamp = {id, 1, {}}, .origin = origin} {
         physics.Init(body_capacity, 0, 8192, 4096, broadphase, object_broadphase, object_pair);
         physics.SetGravity(JPH::Vec3::sZero());
     }
     ~Impl() {
+        for (std::size_t i = 0; i < constraint_count; ++i) {
+            physics.RemoveConstraint(constraints[i].GetPtr());
+            constraints[i] = nullptr;
+        }
         auto &bodies = physics.GetBodyInterface();
         for (const auto &slot : slots)
             if (slot.live) {
@@ -103,13 +115,18 @@ struct World::Impl {
     }
     bool owns_thread() const { return owner == std::this_thread::get_id(); }
     bool valid(BodyId id) const {
-        return id.world == domain && id.slot < slots.size() && slots[id.slot].live &&
+        return id.world == frame.stamp.id && id.slot < slots.size() && slots[id.slot].live &&
                slots[id.slot].generation == id.generation;
     }
 };
 World::World(std::unique_ptr<Impl> impl) : impl_(std::move(impl)) {}
 World::~World() = default;
-Result<std::unique_ptr<World>> World::create() {
+Result<std::unique_ptr<World>> World::create(coordinates::Position origin) {
+    const auto canonical = coordinates::normalize(origin);
+    if (const auto *error = std::get_if<Error>(&canonical))
+        return *error;
+    if (std::get<coordinates::Position>(canonical) != origin)
+        return Error::invalid;
     try {
         static Runtime runtime;
         static std::atomic<std::uint64_t> domains{};
@@ -118,32 +135,82 @@ Result<std::unique_ptr<World>> World::create() {
             if (domain == std::numeric_limits<std::uint64_t>::max())
                 return Error::overflow;
         } while (!domains.compare_exchange_weak(domain, domain + 1));
-        return std::unique_ptr<World>(new World(std::make_unique<Impl>(domain + 1)));
+        return std::unique_ptr<World>(new World(std::make_unique<Impl>(domain + 1, origin)));
     } catch (const std::bad_alloc &) {
         return Error::capacity;
     }
 }
-Result<BodyId> World::add_box(const Box &description) {
+Result<BodyId> World::add_two_section_hull(const Box &section) { return add_shape(section, true); }
+Result<std::monostate> World::constrain_distance(BodyId a, BodyId b, float metres) {
+    if (!impl_->owns_thread())
+        return Error::order;
+    if (impl_->failed)
+        return Error::closed;
+    if (!impl_->valid(a) || !impl_->valid(b))
+        return Error::stale;
+    const auto &first = impl_->slots[a.slot];
+    const auto &second = impl_->slots[b.slot];
+    if (a == b || (!first.dynamic && !second.dynamic) || !(metres >= 0.1F && metres <= 8192))
+        return Error::invalid;
+    if (impl_->constraint_count == impl_->constraints.size())
+        return Error::capacity;
+
+    JPH::DistanceConstraintSettings settings;
+    settings.mSpace = JPH::EConstraintSpace::LocalToBodyCOM;
+    settings.mMinDistance = metres;
+    settings.mMaxDistance = metres;
+    auto &bodies = impl_->physics.GetBodyInterface();
+    JPH::Ref<JPH::TwoBodyConstraint> constraint =
+        bodies.CreateConstraint(&settings, first.native, second.native);
+    if (constraint == nullptr)
+        return Error::invalid;
+    impl_->physics.AddConstraint(constraint.GetPtr());
+    impl_->constraints[impl_->constraint_count++] = constraint;
+    return std::monostate{};
+}
+Result<bool> World::in_contact(BodyId a, BodyId b) const {
+    if (!impl_->owns_thread())
+        return Error::order;
+    if (impl_->failed)
+        return Error::closed;
+    if (!impl_->valid(a) || !impl_->valid(b))
+        return Error::stale;
+    if (a == b)
+        return Error::invalid;
+    return impl_->physics.WereBodiesInContact(impl_->slots[a.slot].native,
+                                              impl_->slots[b.slot].native);
+}
+Result<BodyId> World::add_box(const Box &description) { return add_shape(description, false); }
+Result<BodyId> World::add_shape(const Box &description, bool two_sections) {
     if (!impl_->owns_thread())
         return Error::order;
     if (impl_->failed)
         return Error::closed;
     if (!std::all_of(description.half_extent_metres.begin(), description.half_extent_metres.end(),
-                     [](float v) { return std::isfinite(v) && v >= .1F && v <= 256; }) ||
-        !std::all_of(description.position_metres.begin(), description.position_metres.end(),
-                     [](double v) { return std::isfinite(v) && std::abs(v) <= 8192; }) ||
-        !std::isfinite(description.mass_kg) || description.mass_kg < 1 ||
-        description.mass_kg > 1e12)
+                     [](float v) { return v >= .1F && v <= 256; }) ||
+        (two_sections && description.half_extent_metres[0] > 250) ||
+        !position_fits(description.position_metres) || !std::isfinite(description.mass_kg) ||
+        description.mass_kg < 1 || description.mass_kg > 1e12)
         return Error::invalid;
     auto at = std::find_if(impl_->slots.begin(), impl_->slots.end(),
                            [](const Impl::Slot &s) { return !s.live; });
     if (at == impl_->slots.end())
         return Error::capacity;
     const auto &p = description.position_metres;
-    // Extents are validated above. Give the settings one explicit shape owner;
-    // the native body retains it on success, and settings releases it on failure.
-    JPH::BodyCreationSettings settings(new JPH::BoxShape(vector(description.half_extent_metres)),
-                                       {p[0], p[1], p[2]}, JPH::Quat::sIdentity(),
+    // A section is a child of one native rigid body, not an independently moved
+    // collider. Retain the shape until body creation takes its own reference.
+    JPH::RefConst<JPH::Shape> shape = new JPH::BoxShape(vector(description.half_extent_metres));
+    if (two_sections) {
+        const auto x = description.half_extent_metres[0];
+        JPH::StaticCompoundShapeSettings sections;
+        sections.AddShape({-x, 0, 0}, JPH::Quat::sIdentity(), shape.GetPtr());
+        sections.AddShape({x, 0, 0}, JPH::Quat::sIdentity(), shape.GetPtr());
+        const auto created = sections.Create();
+        if (created.HasError())
+            return Error::invalid;
+        shape = created.Get();
+    }
+    JPH::BodyCreationSettings settings(shape.GetPtr(), {p[0], p[1], p[2]}, JPH::Quat::sIdentity(),
                                        description.dynamic ? JPH::EMotionType::Dynamic
                                                            : JPH::EMotionType::Static,
                                        description.dynamic ? 1 : 0);
@@ -164,7 +231,7 @@ Result<BodyId> World::add_box(const Box &description) {
     at->dynamic = description.dynamic;
     at->live = true;
     return BodyId{static_cast<std::uint32_t>(at - impl_->slots.begin()), at->generation,
-                  impl_->domain};
+                  impl_->frame.stamp.id};
 }
 Result<std::monostate> World::apply(BodyId id, std::array<float, 3> force,
                                     std::array<float, 3> torque) {
@@ -218,7 +285,7 @@ Result<Tick> World::step() {
         return Error::order;
     if (impl_->failed)
         return Error::closed;
-    const auto upcoming = next(impl_->tick);
+    const auto upcoming = next(impl_->frame.stamp.tick);
     if (const auto *error = std::get_if<Error>(&upcoming))
         return *error;
     if (impl_->physics.Update(1.0F / ticks_per_second, 1, &impl_->temporary, &impl_->jobs) !=
@@ -226,8 +293,61 @@ Result<Tick> World::step() {
         impl_->failed = true;
         return Error::capacity;
     }
-    impl_->tick = std::get<Tick>(upcoming);
-    return impl_->tick;
+    impl_->frame.stamp.tick = std::get<Tick>(upcoming);
+    return impl_->frame.stamp.tick;
+}
+Result<coordinates::Frame> World::frame() const {
+    if (!impl_->owns_thread())
+        return Error::order;
+    if (impl_->failed)
+        return Error::closed;
+    return impl_->frame;
+}
+Result<coordinates::Frame> World::rebase(coordinates::FrameStamp expected,
+                                         coordinates::Position origin) {
+    if (!impl_->owns_thread())
+        return Error::order;
+    if (impl_->failed)
+        return Error::closed;
+    const auto &source = impl_->frame;
+    if (expected != source.stamp)
+        return Error::stale;
+    if (origin == source.origin)
+        return Error::invalid;
+    const auto epoch = next_generation(source.stamp.epoch);
+    if (const auto *error = std::get_if<Error>(&epoch))
+        return *error;
+    auto target = source;
+    target.stamp.epoch = std::get<std::uint64_t>(epoch);
+    target.origin = origin;
+    const auto moved_origin = coordinates::transform({.stamp = expected}, source, target);
+    if (const auto *error = std::get_if<Error>(&moved_origin))
+        return *error;
+    const auto &delta = std::get<coordinates::Sample>(moved_origin).position_metres;
+
+    // Preflight every live slot before mutating native state. Body identity,
+    // velocities, accumulated forces and local constraint anchors stay native.
+    std::array<std::array<double, 3>, body_capacity> positions{};
+    auto &bodies = impl_->physics.GetBodyInterface();
+    for (std::size_t index = 0; index < impl_->slots.size(); ++index) {
+        const auto &slot = impl_->slots[index];
+        if (!slot.live)
+            continue;
+        const auto p = bodies.GetPosition(slot.native);
+        auto &out = positions[index];
+        out = {p.GetX() + delta[0], p.GetY() + delta[1], p.GetZ() + delta[2]};
+        if (!position_fits(out))
+            return Error::invalid;
+    }
+    for (std::size_t index = 0; index < impl_->slots.size(); ++index) {
+        const auto &slot = impl_->slots[index];
+        if (!slot.live)
+            continue;
+        const auto &p = positions[index];
+        bodies.SetPosition(slot.native, {p[0], p[1], p[2]}, JPH::EActivation::DontActivate);
+    }
+    impl_->frame = target;
+    return target;
 }
 Result<BodyState> World::state(BodyId id) const {
     if (!impl_->owns_thread())
@@ -243,11 +363,12 @@ Result<BodyState> World::state(BodyId id) const {
     const auto v = bodies.GetLinearVelocity(slot.native);
     const auto w = bodies.GetAngularVelocity(slot.native);
     return BodyState{id,
-                     impl_->tick,
+                     impl_->frame.stamp.tick,
                      {p.GetX(), p.GetY(), p.GetZ()},
                      {q.GetX(), q.GetY(), q.GetZ(), q.GetW()},
                      {v.GetX(), v.GetY(), v.GetZ()},
                      {w.GetX(), w.GetY(), w.GetZ()},
-                     slot.mass};
+                     slot.mass,
+                     impl_->frame.stamp};
 }
 } // namespace ngen::physics

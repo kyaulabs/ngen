@@ -21,9 +21,9 @@ engine, game or MCP implementation.
 
 | Field | Value |
 |---|---|
-| Last verified step | **03 — [M4-A #11](https://github.com/kyaulabs/ngen/issues/11)**; checked coordinates and same-tick transforms. |
-| Next step | **04 — [M4-B #12](https://github.com/kyaulabs/ngen/issues/12)** |
-| Next entry decision | Agree on physical contact tolerances and the representative 1 km hull fixture before live transfer verification; preserve current World admission. |
+| Last verified step | **04 — [M4-B #12](https://github.com/kyaulabs/ngen/issues/12)**; one live Jolt domain, tested across 10,000 origin transfers per hull size. |
+| Next step | **05 — [C1-C #74](https://github.com/kyaulabs/ngen/issues/74)** |
+| Next entry decision | Map the bounded scene-edit and versioned save contract to the existing C1 starter; scope the public authoring surface before implementation. |
 | Optional selections | M11 features and M12 settlement are not selected by this schedule. |
 
 Resume request: **“Read `docs/planning/execution-order.md` and continue from the
@@ -71,7 +71,7 @@ asset/build paths. Establish human-usable operations before exposing them to MCP
 | 01 | [x] | [C1-A #72](https://github.com/kyaulabs/ngen/issues/72) | Expose the minimal consumable engine SDK boundary. |
 | 02 | [x] | [C1-B #73](https://github.com/kyaulabs/ngen/issues/73) | Create, validate, build/cook/test/run/package one standalone project. |
 | 03 | [x] | [M4-A #11](https://github.com/kyaulabs/ngen/issues/11) | Implement canonical cell/offset coordinates and explicit nonrotating frame transforms. |
-| 04 | [ ] | [M4-B #12](https://github.com/kyaulabs/ngen/issues/12) | Transfer one local physics domain between origins at a tick barrier. |
+| 04 | [x] | [M4-B #12](https://github.com/kyaulabs/ngen/issues/12) | Transfer one local physics domain between origins at a tick barrier. |
 | 05 | [ ] | [C1-C #74](https://github.com/kyaulabs/ngen/issues/74) | Author and save a bounded reusable 3D scene. |
 | 06 | [ ] | [M4-C #13](https://github.com/kyaulabs/ngen/issues/13) | Preserve rendering/prediction history across a frame-epoch change. |
 | 07 | [ ] | [M4-D #14](https://github.com/kyaulabs/ngen/issues/14) | Implement one committed warp trajectory with entry/transit/exit states. |
@@ -278,5 +278,6 @@ work advances. Do not use this log instead of the issue's complete acceptance.
 | 01 — C1-A | [PR #87](https://github.com/kyaulabs/ngen/pull/87), `93c7339`; [SDK guide](../creator-sdk.md) | Relocated headless and graphical consumer tests passed; validated Wayland first light passed. Push and PR checks passed on the feature tip. The [integration push](https://github.com/kyaulabs/ngen/actions/runs/44173501462) failed the merge-body line-length rule; the [manual workflow on the same SDK merge](https://github.com/kyaulabs/ngen/actions/runs/44174740056) passed 4/4 with its normal dispatch range. This does not clear the original message failure. No release or Windows SDK claim. |
 | 02 — C1-B | [Issue #73](https://github.com/kyaulabs/ngen/issues/73); [starter guide](../creator-project.md) | Linux x86-64/Clang 23 Release: fresh source archive extracted, cooked, configured against an installed SDK, built, tested and run. Malformed schema, asset/build failure and non-overwriting package behavior verified in the native asset suite. Existing asset and runtime limits remain unchanged. No public binary, Windows, or general editor/MCP claim. |
 | 03 — M4-A | [Issue #11](https://github.com/kyaulabs/ngen/issues/11); [ADR 0003](../adr/0003-hierarchical-coordinates.md); [precision evidence](../evidence/M4/precision-entry.md) | Approved coordinate contract exercised in six C++ cases, including 10,000 analytic round trips. Existing contact screening is separate: the 1 km single box was rejected. No live rebase, 1 km contact pass, or renderer change. |
+| 04 — M4-B | [Issue #12](https://github.com/kyaulabs/ngen/issues/12); [live transfer evidence](../evidence/M4/live-origin-transfer.md) | 10,000 translations each for 10 m, 100 m and two-section 1 km hulls. Contact states matched the controls; position, tether length and velocity stayed within the approved limits. No renderer/prediction or inter-world transfer claim. |
 
 [board]: https://github.com/orgs/kyaulabs/projects/4/views/3
