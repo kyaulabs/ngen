@@ -46,6 +46,10 @@ int main() {
     report(
         "CullConstants", sizeof(CullConstants), alignof(CullConstants),
         {{"planes", offsetof(CullConstants, planes)}, {"count", offsetof(CullConstants, count)}});
+    report("MotionConstants", sizeof(MotionConstants), alignof(MotionConstants),
+           {{"currentClipFromLocal", offsetof(MotionConstants, currentClipFromLocal)},
+            {"previousClipFromLocal", offsetof(MotionConstants, previousClipFromLocal)},
+            {"viewportAndHistory", offsetof(MotionConstants, viewportAndHistory)}});
     report("PostConstants", sizeof(PostConstants), alignof(PostConstants),
            {{"exposureFxaaTexel", offsetof(PostConstants, exposureFxaaTexel)},
             {"bloom", offsetof(PostConstants, bloom)}});

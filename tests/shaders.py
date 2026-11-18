@@ -38,7 +38,7 @@ class ShaderCompilation(unittest.TestCase):
 
     def test_compile_and_validate_finite_shader_set(self):
         self.assertEqual({x.name for x in self.output.glob("*.spv")},
-                         {"cull.spv", "pbr-vertex.spv", "pbr-fragment.spv", "shadow-vertex.spv", "shadow-fragment.spv", "post-vertex.spv", "post-fragment.spv", "overlay-vertex.spv", "overlay-fragment.spv"})
+                         {"cull.spv", "pbr-vertex.spv", "pbr-fragment.spv", "shadow-vertex.spv", "shadow-fragment.spv", "post-vertex.spv", "post-fragment.spv", "overlay-vertex.spv", "overlay-fragment.spv", "motion-vertex.spv", "motion-fragment.spv"})
         for name, stage, entry in (("cull", "compute", "cullMain"),
                                    ("pbr-vertex", "vertex", "vertexMain"),
                                    ("pbr-fragment", "fragment", "fragmentMain"),
@@ -57,6 +57,21 @@ class ShaderCompilation(unittest.TestCase):
                     [str(VALIDATOR), "--target-env", "vulkan1.3", str(self.output / (name + ".spv"))],
                     capture_output=True, text=True, timeout=30, check=False,
                 )
+                self.assertEqual(validated.returncode, 0, validated.stdout + validated.stderr)
+
+    def test_motion_stages_are_validated_and_have_own_history_binding(self):
+        for name, stage, entry in (("motion-vertex", "vertex", "motionVertex"),
+                                   ("motion-fragment", "fragment", "motionFragment")):
+            with self.subTest(stage=stage):
+                module = self.output / (name + ".spv")
+                self.assertTrue(module.is_file(), "offline motion stage is missing")
+                reflection = json.loads((self.output / (name + ".reflection.json")).read_text())
+                self.assertEqual([(x["stage"], x["name"]) for x in reflection["entryPoints"]], [(stage, entry)])
+                bindings = {p["name"]: (p["binding"].get("space", 0), p["binding"]["index"])
+                            for p in reflection["parameters"]}
+                self.assertEqual(bindings, {"history": (0, 0)})
+                validated = subprocess.run([str(VALIDATOR), "--target-env", "vulkan1.3", str(module)],
+                                           capture_output=True, text=True, timeout=30, check=False)
                 self.assertEqual(validated.returncode, 0, validated.stdout + validated.stderr)
 
     def test_descriptor_contract(self):
@@ -113,12 +128,12 @@ class ShaderCompilation(unittest.TestCase):
                     self.assertEqual(element["uniformStride"], layouts[element["elementType"]["name"]]["size"])
             checked.add(name)
 
-        for name in ("cull", "pbr-vertex", "pbr-fragment", "shadow-vertex", "shadow-fragment", "post-vertex", "post-fragment", "overlay-vertex", "overlay-fragment"):
+        for name in ("cull", "pbr-vertex", "pbr-fragment", "shadow-vertex", "shadow-fragment", "post-vertex", "post-fragment", "overlay-vertex", "overlay-fragment", "motion-vertex", "motion-fragment"):
             reflected = json.loads((self.output / (name + ".reflection.json")).read_text())
             for parameter in reflected["parameters"]:
                 if parameter["type"]["kind"] == "constantBuffer":
                     check_struct(parameter["type"]["elementType"])
-        self.assertEqual(checked, {"FrameConstants", "InstanceConstants", "InstanceTransform", "LightConstants", "LocalLight", "MaterialConstants", "CullConstants", "PostConstants", "OverlayConstants"})
+        self.assertEqual(checked, {"FrameConstants", "InstanceConstants", "InstanceTransform", "LightConstants", "LocalLight", "MaterialConstants", "CullConstants", "PostConstants", "OverlayConstants", "MotionConstants"})
         vertex = json.loads((self.output / "pbr-vertex.reflection.json").read_text())
         fields = vertex["entryPoints"][0]["parameters"][0]["type"]["fields"]
         self.assertEqual([(x["name"], x["binding"]["index"], x["type"]["elementCount"]) for x in fields],
@@ -144,7 +159,7 @@ class ShaderCompilation(unittest.TestCase):
         self.assertTrue(metadata["libraries"])
         for library in metadata["libraries"]:
             self.assertEqual(library["sha256"], hashlib.sha256((SLANG / library["file"]).read_bytes()).hexdigest())
-        sources = {"cull": "cull", "pbr": "pbr", "shadow": "pbr", "post": "post", "overlay": "overlay"}
+        sources = {"cull": "cull", "pbr": "pbr", "shadow": "pbr", "post": "post", "overlay": "overlay", "motion": "motion"}
         for shader in metadata["shaders"]:
             source = ROOT / "shaders" / (sources[shader["name"].split("-")[0]] + ".slang")
             self.assertEqual(shader["source_sha256"], hashlib.sha256(source.read_bytes()).hexdigest())
