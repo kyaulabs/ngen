@@ -13,6 +13,12 @@ struct MeshSampler {
     bool operator==(const MeshSampler &) const = default;
 };
 enum class MeshFacing : std::uint8_t { both, clockwise, counter_clockwise };
+struct MeshHistory {
+    // Previous camera and object transform, already in the admitted local basis.
+    shader::Matrix clip_from_local;
+    // One previous model per current instance; empty for a non-instanced draw.
+    std::span<const shader::Matrix> instances{};
+};
 struct MeshDraw {
     shader::FrameConstants frame;
     shader::MaterialConstants material;
@@ -29,6 +35,7 @@ struct MeshDraw {
     // Optional paired geometry override for another mesh in this fixed batch.
     const Buffer *vertices{};
     const Buffer *indices{};
+    const MeshHistory *history{};
 };
 struct MeshPass {
     // Owner-thread borrowing for this call only. Geometry content is trusted:
@@ -48,5 +55,8 @@ struct MeshPass {
     // Requires a distinct sampled D32 depth attachment; blend draws do not cast.
     bool generate_shadow{false};
     std::array<std::byte, 15> shadow_padding{};
+    // Optional matching RGBA16F output: previous minus current pixels in XY,
+    // reserved zero in Z and valid history in W. Empty history writes zero.
+    const Image *motion_vectors{};
 };
 } // namespace ngen::render

@@ -158,6 +158,7 @@ struct SceneRenderer::Impl {
     Context *owner{};
     std::array<Frame, 2> frames;
     std::array<MeshDraw, draw_limit> draws, ordered;
+    std::array<MeshHistory, draw_limit> histories;
     std::array<std::size_t, draw_limit> order{};
     std::array<double, draw_limit> depths{};
 };
@@ -195,6 +196,10 @@ std::variant<Submission, Failure> SceneRenderer::draw(Context &context, ScenePin
         return Failure{"scene view must be finite"};
     if (!finite(view.root_transform.columns) || !rigid(view.root_transform))
         return Failure{"scene root must be a finite proper rigid local transform"};
+    const auto *history = targets.motion_vectors ? view.history : nullptr;
+    if (history && (!finite(history->view_projection.columns) ||
+                    !finite(history->root_transform.columns) || !rigid(history->root_transform)))
+        return Failure{"scene history must have a finite view and proper rigid root"};
     const auto collected = collect(context);
     if (const auto *failure = std::get_if<Failure>(&collected))
         return *failure;
@@ -252,6 +257,16 @@ std::variant<Submission, Failure> SceneRenderer::draw(Context &context, ScenePin
         if (!model)
             return Failure{"rooted scene model is not representable"};
         draw.frame.model = *model;
+        if (history) {
+            const auto previous_model = compose_root(history->root_transform, instance.transform);
+            if (!previous_model)
+                return Failure{"history scene model is not representable"};
+            const auto clip = compose_root(history->view_projection, previous_model->columns);
+            if (!clip)
+                return Failure{"history scene clip transform is not representable"};
+            impl_->histories[i] = {*clip};
+            draw.history = &impl_->histories[i];
+        }
         const auto determinant = normal(draw.frame.model.columns, draw.frame.normalMatrix);
         if (!determinant)
             return Failure{"scene model normal transform is not representable"};
@@ -357,7 +372,9 @@ std::variant<Submission, Failure> SceneRenderer::draw(Context &context, ScenePin
                         point_lights,
                         std::span(impl_->ordered).first(count),
                         wait,
-                        true};
+                        true,
+                        {},
+                        targets.motion_vectors};
     auto result = context.draw_mesh(pass);
     if (const auto *submission = std::get_if<Submission>(&result)) {
         impl_->owner = &context;

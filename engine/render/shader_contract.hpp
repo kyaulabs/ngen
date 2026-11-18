@@ -65,6 +65,12 @@ struct alignas(16) MotionConstants {
     Float4 viewportAndHistory{};
 };
 
+struct alignas(16) MotionDrawConstants {
+    Matrix previousClipFromLocal;
+    Float4 viewportAndHistory{};
+    std::array<Matrix, instance_capacity> previousInstances{};
+};
+
 struct alignas(16) PostConstants {
     Float4 exposureFxaaTexel{1, 1, 1, 1};
     Float4 bloom{}; // x: restrained linear HDR strength; remaining components reserved.
@@ -99,6 +105,7 @@ static_assert(sizeof(LocalLight) == 32);
 static_assert(sizeof(LightConstants) == 528);
 static_assert(sizeof(MaterialConstants) == 64);
 static_assert(sizeof(MotionConstants) == 144 && alignof(MotionConstants) == 16);
+static_assert(sizeof(MotionDrawConstants) == 6480 && alignof(MotionDrawConstants) == 16);
 static_assert(sizeof(CullConstants) == 112);
 static_assert(offsetof(CullConstants, count) == 96 && offsetof(CullConstants, reserved) == 100);
 static_assert(sizeof(PostConstants) == 32);

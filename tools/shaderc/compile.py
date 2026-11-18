@@ -19,7 +19,9 @@ ENTRIES = (("cull", "cull", "compute", "cullMain"),
            ("overlay-vertex", "overlay", "vertex", "overlayVertex"),
            ("overlay-fragment", "overlay", "fragment", "overlayFragment"),
            ("motion-vertex", "motion", "vertex", "motionVertex"),
-           ("motion-fragment", "motion", "fragment", "motionFragment"))
+           ("motion-fragment", "motion", "fragment", "motionFragment"),
+           ("history-vertex", "pbr", "vertex", "historyVertex"),
+           ("history-fragment", "pbr", "fragment", "historyFragment"))
 MAX_ARTIFACT_BYTES = 4 * 1024 * 1024
 
 

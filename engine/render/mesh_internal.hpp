@@ -20,12 +20,12 @@ struct MeshRecording {
 class MeshPipeline {
   public:
     static constexpr std::size_t draw_limit = 256;
-    MeshPipeline(VkDevice device, VkPhysicalDevice physical);
+    MeshPipeline(VkDevice device, VkPhysicalDevice physical, bool motion = false);
     ~MeshPipeline();
     MeshPipeline(const MeshPipeline &) = delete;
     MeshPipeline &operator=(const MeshPipeline &) = delete;
     [[nodiscard]] VkDeviceSize uniform_bytes() const { return scratch_.size(); }
-    [[nodiscard]] std::span<const std::byte> prepare(const MeshPass &pass);
+    [[nodiscard]] std::span<const std::byte> prepare(const MeshPass &pass, VkExtent2D extent);
     // Update each slot's sets once, before either pass binds them.
     void descriptors(const MeshRecording &recording);
     void record(const MeshRecording &recording);
@@ -48,6 +48,7 @@ class MeshPipeline {
     std::size_t sampler_count_{};
     VkDeviceSize frame_stride_{}, light_offset_{}, material_offset_{}, material_stride_{};
     VkDeviceSize instance_offset_{}, instance_stride_{};
+    VkDeviceSize motion_offset_{}, motion_stride_{};
     std::vector<std::byte> scratch_;
 };
 } // namespace ngen::render

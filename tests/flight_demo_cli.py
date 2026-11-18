@@ -42,6 +42,14 @@ class FlightAdmission(unittest.TestCase):
                 self.assertEqual(result.stdout, "")
                 self.assertEqual(path.read_bytes(), original)
 
+    def test_motion_vectors_select_runtime_without_changing_headless_verify(self):
+        runtime = invoke("missing-flight-asset.ngas", "--motion-vectors")
+        self.assertEqual(runtime.returncode, 1, runtime.stdout + runtime.stderr)
+        self.assertIn("Flight demo:", runtime.stderr)
+        conflict = invoke("missing-flight-asset.ngas", "--verify", "--motion-vectors")
+        self.assertEqual(conflict.returncode, 2, conflict.stdout + conflict.stderr)
+        self.assertIn("runtime rendering", conflict.stderr)
+
     def test_bad_package_rejects_without_a_display_or_device(self):
         with tempfile.TemporaryDirectory(prefix="ngen flight invalid ") as directory:
             package = Path(directory) / "invalid.ngas"

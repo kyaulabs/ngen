@@ -7,6 +7,10 @@ struct EmissiveFlow {
     float phase{};  // Normalized visual cycle [0,1), not simulation time.
     float amount{}; // [0,1]; zero preserves authored static rendering.
 };
+struct SceneHistory {
+    shader::Matrix view_projection;
+    shader::Matrix root_transform;
+};
 struct SceneView {
     shader::Matrix view_projection;
     shader::Matrix light_view_projection;
@@ -27,6 +31,8 @@ struct SceneView {
     // unit/orthogonal rotation within 1e-4, local translation within +/-16384m.
     // Extras remain in their own world frame; constants are copied by draw().
     shader::Matrix root_transform{{1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1}};
+    // Same scene version and camera-relative convention. Null invalidates history.
+    const SceneHistory *history{};
 };
 struct SceneTargets {
     const Image &color;
@@ -36,6 +42,7 @@ struct SceneTargets {
     const Image &prefiltered;
     const Image &brdf;
     const Image &default_texture;
+    const Image *motion_vectors{};
 };
 // Owner-thread bounded scene/version bridge. Constants are copied, while two
 // successful frame pins retain immutable CPU/GPU scene metadata until completion.
