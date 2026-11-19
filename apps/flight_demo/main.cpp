@@ -45,6 +45,8 @@ ngen::demo::Options options(int argc, char **argv) {
             output.validation = true;
         else if (arg == "--mute")
             output.mute = true;
+        else if (arg == "--motion-vectors")
+            output.motion_vectors = true;
         else if (arg.starts_with("--frames=")) {
             output.frames = number(arg.substr(9), 3600);
             require(output.frames > 0, "explicit frame count must be positive");
@@ -67,6 +69,7 @@ ngen::demo::Options options(int argc, char **argv) {
     require(!(output.replay || output.walkthrough) || output.frames > 0,
             "fixed-tick replay or SDL walkthrough requires a bounded frame count");
     require(output.report.empty() || output.frames > 0, "frame report requires a bounded run");
+    require(!output.verify || !output.motion_vectors, "motion vectors require runtime rendering");
     for (const auto &path : {output.report, output.capture})
         require(path.empty() || !std::filesystem::exists(std::filesystem::symlink_status(path)),
                 "flight output must be a new path");
@@ -188,7 +191,7 @@ int main(int argc, char **argv) try {
     if (argc < 2 || std::string_view(argv[1]) == "--help") {
         std::fputs("Usage: flight_demo scene.ngas [--verify] [--replay|--walkthrough --frames=N] "
                    "[--warmup=N] "
-                   "[--validation] [--mute] [--width=N --height=N] "
+                   "[--validation] [--mute] [--motion-vectors] [--width=N --height=N] "
                    "[--report=new.csv] [--capture=new.bmp]\n",
                    stdout);
         return argc < 2 ? 2 : 0;

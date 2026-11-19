@@ -1,3 +1,4 @@
+#include "effects/particles.hpp"
 #include "physics/world.hpp"
 #include <algorithm>
 #include <catch2/catch_approx.hpp>
@@ -8,6 +9,33 @@
 #include <thread>
 using namespace ngen;
 using namespace ngen::physics;
+
+TEST_CASE("cosmetic particles follow a live physics frame without changing the hull trajectory",
+          "[particles]") {
+    auto world = std::get<std::unique_ptr<World>>(World::create());
+    const auto hull = std::get<BodyId>(world->add_box({}));
+    const auto frame = std::get<coordinates::Frame>(world->frame());
+    auto pool = std::get<effects::Particles>(effects::Particles::create(frame));
+    REQUIRE(pool.emit({frame.stamp, {2, 0, 0}, {60, 0, 0}}, 16) ==
+            Result<std::monostate>{std::monostate{}});
+    for (unsigned tick = 1; tick <= 10; ++tick) {
+        const auto current = std::get<coordinates::Frame>(world->frame());
+        const double offset = tick % 2 ? 256 : 0;
+        const auto shifted = world->rebase(current.stamp, {{{0, offset}, {}, {}}});
+        REQUIRE(std::holds_alternative<coordinates::Frame>(shifted));
+        REQUIRE(pool.rebase(std::get<coordinates::Frame>(shifted)) ==
+                Result<std::monostate>{std::monostate{}});
+        REQUIRE(world->step() == Result<Tick>{Tick{tick}});
+        REQUIRE(pool.step() == Result<Tick>{Tick{tick}});
+        const auto view = pool.snapshot();
+        const auto body = std::get<BodyState>(world->state(hull));
+        CHECK(view.frame.stamp == body.frame);
+        REQUIRE(view.particles().size() == 1);
+        CHECK(view.particles().front().position_metres[0] - body.position_metres[0] == 2.0 + tick);
+        CHECK(body.position_metres[0] == -offset);
+        CHECK(body.velocity_mps == std::array<float, 3>{});
+    }
+}
 
 TEST_CASE("origin transfer moves all live bodies together without consuming a tick", "[rebase]") {
     auto world = std::get<std::unique_ptr<World>>(World::create());

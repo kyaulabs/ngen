@@ -67,12 +67,12 @@ struct Resources::Impl {
         std::uint64_t submitted{};
     };
     std::unique_ptr<PostPipeline> post_pipeline;
-    std::unique_ptr<MeshPipeline> mesh_pipeline;
+    std::unique_ptr<MeshPipeline> mesh_pipeline, motion_mesh_pipeline;
 #if defined(NGEN_INSPECTOR_OVERLAY)
     std::unique_ptr<OverlayPipeline> overlay_pipeline;
     std::array<std::array<Buffer, 2>, 4> overlay_buffers;
 #endif
-    std::array<Buffer, 2> mesh_uniforms;
+    std::array<Buffer, 2> mesh_uniforms, motion_mesh_uniforms;
     VmaAllocator allocator{};
     VkDevice device{};
     VkPhysicalDevice physical{};
@@ -1017,6 +1017,14 @@ std::variant<Submission, Failure> Resources::mesh(MeshPass description) {
         description.color.key_.slot == description.depth.key_.slot)
         return Failure{"mesh attachments must be distinct live same-context images"};
     const auto color_key = description.color.key_, depth_key = description.depth.key_;
+    auto *motion = static_cast<Impl::Entry *>(nullptr);
+    if (description.motion_vectors) {
+        const auto &target = *description.motion_vectors;
+        if (!owned_image(target) || target.key_.slot == color_key.slot ||
+            target.key_.slot == depth_key.slot)
+            return Failure{"motion attachment must be a distinct live same-context image"};
+        motion = &impl_->entries[target.key_.slot];
+    }
     auto &color = impl_->entries[color_key.slot];
     auto &depth = impl_->entries[depth_key.slot];
     if (color.format != VK_FORMAT_R16G16B16A16_SFLOAT || color.mip_levels != 1 ||
@@ -1027,13 +1035,24 @@ std::variant<Submission, Failure> Resources::mesh(MeshPass description) {
         depth.image_extent.width != color.image_extent.width ||
         depth.image_extent.height != color.image_extent.height)
         return Failure{"mesh requires matching single-mip HDR/depth attachments"};
+    constexpr auto motion_usage =
+        static_cast<VkImageUsageFlags>(VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT) |
+        VK_IMAGE_USAGE_SAMPLED_BIT;
+    if (motion && (motion->format != VK_FORMAT_R16G16B16A16_SFLOAT || motion->mip_levels != 1 ||
+                   motion->layers != 1 || (motion->image_usage & motion_usage) != motion_usage ||
+                   motion->image_extent.width != color.image_extent.width ||
+                   motion->image_extent.height != color.image_extent.height))
+        return Failure{"motion attachment requires matching single-mip sampled RGBA16F"};
     std::array<bool, Impl::capacity> used{};
     used[vertex_key.slot] = used[index_key.slot] = used[color_key.slot] = used[depth_key.slot] =
         true;
+    if (motion)
+        used[description.motion_vectors->key_.slot] = true;
     const auto sampled = [&](const Image &image, std::uint32_t layers, VkImageAspectFlags aspect,
                              bool filterable) {
         if (!owned_image(image) || image.key_.slot == color_key.slot ||
-            image.key_.slot == depth_key.slot)
+            image.key_.slot == depth_key.slot ||
+            (motion && image.key_.slot == description.motion_vectors->key_.slot))
             return false;
         const auto &entry = impl_->entries[image.key_.slot];
         if (entry.layers != layers || entry.aspect != aspect ||
@@ -1087,6 +1106,12 @@ std::variant<Submission, Failure> Resources::mesh(MeshPass description) {
         if (draw.instances.size() > shader::instance_capacity || count > 512 - instance_count)
             return Failure{"mesh instance count exceeds the fixed 100/draw or 512/frame profile"};
         instance_count += count;
+        if (motion && draw.history &&
+            (draw.history->instances.size() != draw.instances.size() ||
+             !finite(draw.history->clip_from_local.columns) ||
+             !std::all_of(draw.history->instances.begin(), draw.history->instances.end(),
+                          [&](const auto &matrix) { return finite(matrix.columns); })))
+            return Failure{"mesh history must be finite and match the current instance count"};
         for (const auto &instance : draw.instances)
             if (!finite(instance.model.columns) || !finite(instance.normalMatrix.columns))
                 return Failure{"mesh instance transforms must be finite"};
@@ -1140,12 +1165,15 @@ std::variant<Submission, Failure> Resources::mesh(MeshPass description) {
             bindings[i].maps[map] = impl_->entries[draw.maps[map]->key_.slot].view;
         }
     }
-    if (!impl_->mesh_pipeline)
-        impl_->mesh_pipeline = std::make_unique<MeshPipeline>(impl_->device, impl_->physical);
-    for (auto &uniform : impl_->mesh_uniforms)
+    auto &pipeline = motion ? impl_->motion_mesh_pipeline : impl_->mesh_pipeline;
+    auto &uniforms = motion ? impl_->motion_mesh_uniforms : impl_->mesh_uniforms;
+    if (!pipeline)
+        pipeline =
+            std::make_unique<MeshPipeline>(impl_->device, impl_->physical, motion != nullptr);
+    for (auto &uniform : uniforms)
         if (!uniform.native()) {
-            auto created = create({impl_->mesh_pipeline->uniform_bytes(),
-                                   VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, MemoryAccess::upload});
+            auto created = create({pipeline->uniform_bytes(), VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
+                                   MemoryAccess::upload});
             if (const auto *failure = std::get_if<Failure>(&created))
                 return *failure;
             uniform = std::get<Buffer>(std::move(created));
@@ -1155,8 +1183,8 @@ std::variant<Submission, Failure> Resources::mesh(MeshPass description) {
         return *failure;
     auto &frame = *std::get<Impl::Frame *>(recording);
     const auto slot = static_cast<std::size_t>(&frame - impl_->frames.data());
-    auto &uniform = impl_->mesh_uniforms[slot];
-    const auto written = uniform.write(0, impl_->mesh_pipeline->prepare(description));
+    auto &uniform = uniforms[slot];
+    const auto written = uniform.write(0, pipeline->prepare(description, color.image_extent));
     if (const auto *failure = std::get_if<Failure>(&written))
         return *failure;
     used[uniform.key_.slot] = true;
@@ -1172,17 +1200,18 @@ std::variant<Submission, Failure> Resources::mesh(MeshPass description) {
     dependency.memoryBarrierCount = 1;
     dependency.pMemoryBarriers = &host;
     vkCmdPipelineBarrier2(frame.commands, &dependency);
-    impl_->mesh_pipeline->descriptors(
-        {frame.commands, slot, uniform.native(), vertices.buffer, indices.buffer,
-         color.image_extent, description.shadow.view(), description.irradiance.view(),
-         description.prefiltered.view(), description.brdf.view(), description.draws,
-         std::span(bindings).first(description.draws.size())});
+    pipeline->descriptors({frame.commands, slot, uniform.native(), vertices.buffer, indices.buffer,
+                           color.image_extent, description.shadow.view(),
+                           description.irradiance.view(), description.prefiltered.view(),
+                           description.brdf.view(), description.draws,
+                           std::span(bindings).first(description.draws.size())});
     impl_->begin_timing(frame.commands, slot,
                         description.generate_shadow ? Impl::TimingKind::shadow_pbr
                                                     : Impl::TimingKind::pbr);
     for (std::size_t i = 0; i < used.size(); ++i) {
         const auto &entry = impl_->entries[i];
         if (!used[i] || !entry.image || i == color_key.slot || i == depth_key.slot ||
+            (motion && i == description.motion_vectors->key_.slot) ||
             (description.generate_shadow && i == description.shadow.key_.slot))
             continue;
         VkImageMemoryBarrier2 barrier{};
@@ -1236,11 +1265,11 @@ std::variant<Submission, Failure> Resources::mesh(MeshPass description) {
         rendering.pDepthAttachment = &shadow_info;
         impl_->stamp(frame.commands, slot, 0, VK_PIPELINE_STAGE_2_TOP_OF_PIPE_BIT);
         vkCmdBeginRendering(frame.commands, &rendering);
-        impl_->mesh_pipeline->record({frame.commands, slot, uniform.native(), vertices.buffer,
-                                      indices.buffer, shadow.image_extent, shadow.view,
-                                      description.irradiance.view(), description.prefiltered.view(),
-                                      description.brdf.view(), description.draws,
-                                      std::span(bindings).first(description.draws.size()), true});
+        pipeline->record({frame.commands, slot, uniform.native(), vertices.buffer, indices.buffer,
+                          shadow.image_extent, shadow.view, description.irradiance.view(),
+                          description.prefiltered.view(), description.brdf.view(),
+                          description.draws, std::span(bindings).first(description.draws.size()),
+                          true});
         vkCmdEndRendering(frame.commands);
         impl_->stamp(frame.commands, slot, 1, VK_PIPELINE_STAGE_2_BOTTOM_OF_PIPE_BIT);
         VkImageMemoryBarrier2 readable{};
@@ -1258,13 +1287,20 @@ std::variant<Submission, Failure> Resources::mesh(MeshPass description) {
     }
     attachment(color, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL);
     attachment(depth, VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL);
-    VkRenderingAttachmentInfo color_info{};
+    std::array<VkRenderingAttachmentInfo, 2> outputs{};
+    auto &color_info = outputs[0];
     color_info.sType = VK_STRUCTURE_TYPE_RENDERING_ATTACHMENT_INFO;
     color_info.imageView = color.view;
     color_info.imageLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
     color_info.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
     color_info.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
     color_info.clearValue.color.float32[3] = 1;
+    if (motion) {
+        attachment(*motion, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL);
+        outputs[1] = color_info;
+        outputs[1].imageView = motion->view;
+        outputs[1].clearValue = {};
+    }
     VkRenderingAttachmentInfo depth_info{};
     depth_info.sType = VK_STRUCTURE_TYPE_RENDERING_ATTACHMENT_INFO;
     depth_info.imageView = depth.view;
@@ -1276,16 +1312,15 @@ std::variant<Submission, Failure> Resources::mesh(MeshPass description) {
     rendering.sType = VK_STRUCTURE_TYPE_RENDERING_INFO;
     rendering.renderArea.extent = color.image_extent;
     rendering.layerCount = 1;
-    rendering.colorAttachmentCount = 1;
-    rendering.pColorAttachments = &color_info;
+    rendering.colorAttachmentCount = motion ? 2U : 1U;
+    rendering.pColorAttachments = outputs.data();
     rendering.pDepthAttachment = &depth_info;
     impl_->stamp(frame.commands, slot, 2, VK_PIPELINE_STAGE_2_TOP_OF_PIPE_BIT);
     vkCmdBeginRendering(frame.commands, &rendering);
-    impl_->mesh_pipeline->record({frame.commands, slot, uniform.native(), vertices.buffer,
-                                  indices.buffer, color.image_extent, description.shadow.view(),
-                                  description.irradiance.view(), description.prefiltered.view(),
-                                  description.brdf.view(), description.draws,
-                                  std::span(bindings).first(description.draws.size())});
+    pipeline->record({frame.commands, slot, uniform.native(), vertices.buffer, indices.buffer,
+                      color.image_extent, description.shadow.view(), description.irradiance.view(),
+                      description.prefiltered.view(), description.brdf.view(), description.draws,
+                      std::span(bindings).first(description.draws.size())});
     vkCmdEndRendering(frame.commands);
     impl_->stamp(frame.commands, slot, 3, VK_PIPELINE_STAGE_2_BOTTOM_OF_PIPE_BIT);
     VkImageMemoryBarrier2 output{};
@@ -1299,11 +1334,17 @@ std::variant<Submission, Failure> Resources::mesh(MeshPass description) {
     output.dstStageMask = VK_PIPELINE_STAGE_2_ALL_COMMANDS_BIT;
     output.dstAccessMask = VK_ACCESS_2_SHADER_SAMPLED_READ_BIT;
     Impl::image_barrier(frame, output, 1);
+    if (motion) {
+        output.image = motion->image;
+        Impl::image_barrier(frame, output, 1);
+    }
     const auto next = impl_->submit(frame, description.wait);
     for (std::size_t i = 0; i < used.size(); ++i)
         if (used[i])
             impl_->entries[i].last_use = next;
     color.image_layout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+    if (motion)
+        motion->image_layout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
     depth.image_layout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
     if (description.generate_shadow)
         impl_->entries[description.shadow.key_.slot].image_layout =
@@ -1475,7 +1516,12 @@ void Resources::close() noexcept {
         impl_->mesh_pipeline->close();
         impl_->mesh_pipeline.reset();
     }
+    if (impl_->motion_mesh_pipeline) {
+        impl_->motion_mesh_pipeline->close();
+        impl_->motion_mesh_pipeline.reset();
+    }
     impl_->mesh_uniforms = {};
+    impl_->motion_mesh_uniforms = {};
 #if defined(NGEN_INSPECTOR_OVERLAY)
     if (impl_->overlay_pipeline) {
         impl_->overlay_pipeline->close();

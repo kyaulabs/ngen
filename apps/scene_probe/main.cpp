@@ -302,7 +302,7 @@ int main(int argc, char **argv) try {
     std::printf("resident_verified_mip_bytes=%llu\n",
                 static_cast<unsigned long long>(verified_mip_bytes));
     std::fflush(stdout);
-    if (!ngen::probe::draw_scene(*context, next, version, argc == 3 ? argv[2] : ""))
+    if (!ngen::probe::draw_scene(*context, next, version, argc == 3 ? argv[2] : "", argc == 1))
         return 1;
     if (!context->close() || version->vertices().native() || version->indices().native() ||
         version->images()[0].native())

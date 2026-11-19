@@ -628,8 +628,23 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
         environment[i] = take(context->create_image(sky.images[i].description));
         upload(*context, environment[i], sky.images[i].texels);
     }
+    std::optional<Image> motion;
+    if (options.motion_vectors)
+        motion.emplace(take(context->create_image(
+            {options.extent, VK_FORMAT_R16G16B16A16_SFLOAT,
+             static_cast<VkImageUsageFlags>(VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT) |
+                 VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_TRANSFER_SRC_BIT})));
     const SceneTargets targets{color,          depth,          shadow, environment[0],
-                               environment[1], environment[2], white};
+                               environment[1], environment[2], white,  motion ? &*motion : nullptr};
+    struct MotionFrame {
+        SceneHistory scene;
+        std::array<shader::Matrix, 100> asteroids;
+        VkExtent2D drawable;
+        Entity entity;
+        flight::Mode mode;
+    };
+    std::optional<MotionFrame> motion_history;
+    bool motion_cut = false;
     MeshDraw asteroids{};
     asteroids.frame.model = asteroids.frame.normalMatrix = identity;
     asteroids.material.baseColor = {.23F, .19F, .15F, 1};
@@ -748,6 +763,8 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
         cancel_context();
         current = game_value(game->reset());
         previous = current;
+        motion_history.reset();
+        motion_cut = true;
         sequence = 0;
         (void)sound.reset();
         (void)sound.cue(audio::Cue::reset);
@@ -764,6 +781,7 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
         metrics.status = "Preset reset: pose and controls restored; GPU asset remains immutable";
     };
     const auto focus = [&] {
+        motion_cut = true;
         metrics.alert = false;
         if (selected && camera_target != selected) {
             (void)game_value(rig.focus(preset.camera_obstacles[*selected]));
@@ -1212,6 +1230,7 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
             orbit();
             break;
         case 1800:
+            motion_cut = true;
             (void)rig.focus(std::nullopt);
             camera_target.reset();
             (void)send(flight::SetMode{flight::Mode::direct});
@@ -1287,6 +1306,7 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
             (void)sound.mute(true);
             system_usage->enabled(false);
             sampling_paused = true;
+            motion_cut = true;
             time = Clock::now();
             SDL_Delay(16);
             continue;
@@ -1319,6 +1339,7 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
         if (const auto *error = std::get_if<Error>(&camera); error && *error == Error::busy) {
             (void)rig.focus(std::nullopt);
             camera_target.reset();
+            motion_cut = true;
             metrics.status = "Camera clearance: following the ship";
             metrics.alert = true;
             camera = rig.sample({previous, current}, 1, preset.camera_obstacles);
@@ -1406,6 +1427,22 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
             view.scene.material_flows = std::span(flows).first(package->materials.size());
         }
         asteroids.instances = view.asteroids;
+        // The draw/retry loop pumps input; retain an owning copy so that a
+        // reset or camera cut cannot invalidate the borrowed mesh histories.
+        const auto history =
+            !motion_cut && motion_history && motion_history->drawable.width == drawable.width &&
+                    motion_history->drawable.height == drawable.height &&
+                    motion_history->entity == current.entity && motion_history->mode == current.mode
+                ? motion_history
+                : std::nullopt;
+        motion_cut = false;
+        MeshHistory asteroid_history{};
+        if (history) {
+            view.scene.history = &history->scene;
+            // Asteroids already carry the old ship-relative translation.
+            asteroid_history = {history->scene.view_projection, history->asteroids};
+        }
+        asteroids.history = history ? &asteroid_history : nullptr;
         const auto admission = SDL_GetTicks();
         Submission mesh;
         for (;;) {
@@ -1438,8 +1475,19 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
             pump();
             SDL_Delay(1);
         }
-        if (!presented)
+        if (!presented) {
+            motion_cut = true;
             continue;
+        }
+        if (motion && !motion_cut) {
+            auto &saved = motion_history.emplace();
+            saved.scene = {view.scene.view_projection, view.scene.root_transform};
+            saved.drawable = drawable;
+            saved.entity = current.entity;
+            saved.mode = current.mode;
+            for (std::size_t i = 0; i < view.asteroids.size(); ++i)
+                saved.asteroids[i] = view.asteroids[i].model;
+        }
         gpu_frames[gpu_cursor] = {mesh, last};
         gpu_cursor = (gpu_cursor + 1) % gpu_frames.size();
         if (performance.visible() && context->gpu_timings_available()) {

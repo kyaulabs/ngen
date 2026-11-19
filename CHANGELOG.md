@@ -1,4 +1,18 @@
 ## 📜 Changelog
+### [0.4.0](https://github.com/kyaulabs/ngen/releases/tag/v0.4.0)
+
+#### 🚀 Features
+
+- **render:** Verify bounded cosmetic particles across origin transfers ([b12d806](https://github.com/kyaulabs/ngen/commit/b12d8068c769548558c930d0cfbdb7d86b6e774f))
+
+- **render:** Integrate bounded cosmetic particle simulation (#99) ([541ceb9](https://github.com/kyaulabs/ngen/commit/541ceb911e847e8616f91fbbce717839975273a4))
+
+- **render:** Verify motion-vector shader output on device ([ba983a7](https://github.com/kyaulabs/ngen/commit/ba983a71a9abc412b1e7d6d998b2b7fddfc12d82))
+
+- **render:** Own motion-vector output in the flight mesh pass ([ede90a7](https://github.com/kyaulabs/ngen/commit/ede90a75a89aa6d8c286598179dc78dd6756078a))
+
+- **render:** Integrate optional gpu motion-vector output (#100) ([60ee7ce](https://github.com/kyaulabs/ngen/commit/60ee7cee005ead788af4e5d0978a3e12a3fcd15e))
+
 ### [0.3.0](https://github.com/kyaulabs/ngen/releases/tag/v0.3.0)
 
 #### 🚀 Features

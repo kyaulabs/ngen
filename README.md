@@ -11,7 +11,7 @@ platform and Windows compiler/runtime evidence at recorded revisions. Its first
 showcase is an offline spacecraft flight demonstration; the longer-term goal is
 a reusable engine and creator toolchain, alongside an authoritative PvPvE universe.
 
-**[0.3.0 is available as source only.](https://github.com/kyaulabs/ngen/releases/tag/v0.3.0)**
+**[0.4.0 is available as source only.](https://github.com/kyaulabs/ngen/releases/tag/v0.4.0)**
 It is not a downloadable playable game: the accepted private ship/scene assets,
 runtime bundles and recordings are not public release payloads.
 
@@ -27,6 +27,8 @@ runtime bundles and recordings are not public release payloads.
   [standalone starter](docs/creator-project.md) that cooks and loads its own asset.
 - Linux CLI [scene authoring](docs/creator-scene.md) with versioned saves,
   undo/redo and source packaging. The authored scene is not yet rendered.
+- Bounded cosmetic particles with a synthetic GPU fixture, and opt-in Vulkan
+  motion vectors for opaque and alpha-masked geometry.
 - Checked astronomical coordinates and live origin transfers in one bounded
   physics domain. Presentation continuity, warp and streaming are still planned.
 - Pinned Conan/CMake/Ninja build graphs, tests/sanitizers and source-release
@@ -49,7 +51,7 @@ your platform; an arbitrary system compiler is not the pinned primary profile.
 CI's Clang 18 compatibility lane is separate.
 
 ```sh
-git clone --branch v0.3.0 --depth 1 https://github.com/kyaulabs/ngen.git
+git clone --branch v0.4.0 --depth 1 https://github.com/kyaulabs/ngen.git
 cd ngen
 
 python3 -m venv .venv
@@ -65,7 +67,7 @@ ctest --preset release --output-on-failure
 ```
 
 The release also provides a checked source tarball and SHA-256 inventory. See the
-[0.3.0 instructions](docs/releases/0.3.0.md) for download verification, graphical
+[0.4.0 instructions](docs/releases/0.4.0.md) for download verification, graphical
 build commands, compatible separately authorized scene requirements and platform
 limits. Graphical execution additionally needs supported Vulkan hardware/drivers
 and the desktop audio path; the private flight scene is not included.

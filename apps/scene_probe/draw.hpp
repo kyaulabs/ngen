@@ -4,5 +4,5 @@
 namespace ngen::probe {
 // Consumes the caller's second version to verify owning frame publication.
 bool draw_scene(render::Context &context, render::ScenePin &version, const render::ScenePin &active,
-                const std::filesystem::path &capture = {});
+                const std::filesystem::path &capture = {}, bool particle_fixture = false);
 } // namespace ngen::probe
