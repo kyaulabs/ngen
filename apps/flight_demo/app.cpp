@@ -530,7 +530,7 @@ Actions hud(tools::Gui &gui, const flight::Snapshot &state, const Preset &preset
                 ImGui::SetNextWindowSize({268, 52});
                 if (ImGui::Begin("Flight target", nullptr, floating)) {
                     reserve_ui();
-                    const auto &origin = state.body.position_metres;
+                    const auto &origin = view.origin_metres;
                     const auto dx = point[0] - origin[0], dy = point[1] - origin[1],
                                dz = point[2] - origin[2];
                     ImGui::Text("Asteroid %03u", static_cast<unsigned>(*selected));
@@ -593,6 +593,7 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
     const bool fixed_tick = options.replay || options.walkthrough;
     auto game = game_value(flight::Flight::create(preset.ship.flight, preset.contacts));
     auto current = game->snapshot(), previous = current;
+    auto scene_basis = current.frame;
     auto rig = game_value(flight::CameraRig::create(preset.ship_radius));
     flight::FlightInput input;
     auto context = take(Context::create({options.validation, true, true, true}));
@@ -707,7 +708,8 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
     };
     std::uint64_t sequence = 0, impact_after_tick = 0;
     auto pending_mode = flight::Mode::tactical;
-    auto last_camera = game_value(rig.sample({previous, current}, 1, preset.camera_obstacles));
+    auto last_camera =
+        game_value(rig.sample({previous, current, &scene_basis}, 1, preset.camera_obstacles));
     std::array<assets::MaterialFactors, 256> materials{};
     std::array<EmissiveFlow, 256> flows{};
     for (std::size_t i = 0; i < package->materials.size(); ++i) {
@@ -763,6 +765,7 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
         cancel_context();
         current = game_value(game->reset());
         previous = current;
+        scene_basis = current.frame;
         motion_history.reset();
         motion_cut = true;
         sequence = 0;
@@ -794,11 +797,19 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
         }
         (void)sound.cue(audio::Cue::confirm);
     };
+    const auto authored_position = [&] {
+        auto basis = scene_basis;
+        basis.stamp.tick = current.tick;
+        return game_value(
+                   coordinates::transform({current.body.frame, current.body.position_metres, {}},
+                                          current.frame, basis))
+            .position_metres;
+    };
     const auto approach = [&] {
         if (!selected)
             return;
         const auto &target = preset.camera_obstacles[*selected];
-        const auto &p = current.body.position_metres;
+        const auto p = authored_position();
         JPH::DVec3 delta{p[0] - target.centre_metres[0], p[1] - target.centre_metres[1],
                          p[2] - target.centre_metres[2]};
         if (delta.LengthSq() < 1e-8)
@@ -1126,7 +1137,7 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
                         selected = pick(direction, preset);
                         if (!selected && std::abs(direction.direction.GetY()) > 1e-6) {
                             const auto distance =
-                                (current.body.position_metres[1] - direction.origin.GetY()) /
+                                (authored_position()[1] - direction.origin.GetY()) /
                                 direction.direction.GetY();
                             if (distance > 0 && distance < 4096) {
                                 const auto point =
@@ -1333,7 +1344,7 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
             rig.center_look();
         (void)rig.orbit(camera_events.orbit);
         (void)rig.look(camera_events.look);
-        auto camera = rig.sample({previous, current},
+        auto camera = rig.sample({previous, current, &scene_basis},
                                  fixed_tick ? 1.0F : static_cast<float>(accumulator * 60),
                                  preset.camera_obstacles);
         if (const auto *error = std::get_if<Error>(&camera); error && *error == Error::busy) {
@@ -1342,7 +1353,7 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
             motion_cut = true;
             metrics.status = "Camera clearance: following the ship";
             metrics.alert = true;
-            camera = rig.sample({previous, current}, 1, preset.camera_obstacles);
+            camera = rig.sample({previous, current, &scene_basis}, 1, preset.camera_obstacles);
         }
         last_camera = game_value(camera);
         int width = 0, height = 0;

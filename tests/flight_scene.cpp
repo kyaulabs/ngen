@@ -5,6 +5,7 @@
 #include <algorithm>
 #include <catch2/catch_test_macros.hpp>
 #include <cmath>
+#include <cstdio>
 #include <limits>
 #include <stdexcept>
 #include <string>
@@ -265,6 +266,80 @@ TEST_CASE("visible target markers use GUI-local pixels without moving the shared
     if (left)
         REQUIRE((*left)[0] < 640);
     REQUIRE(frame.origin_metres == camera.ship.position_metres);
+}
+
+TEST_CASE("live near and far frame histories preserve projected motion and shadow inputs",
+          "[frame-history]") {
+    const auto package =
+        std::get<assets::PackagePin>(assets::load_package(package_fixture::encode()));
+    demo::ShipProfile profile;
+    profile.flight.hull.half_extent_metres = {10, 10, 10};
+    const auto admitted = demo::make_preset(package, profile);
+    REQUIRE(std::holds_alternative<demo::Preset>(admitted));
+    const auto &preset = std::get<demo::Preset>(admitted);
+    constexpr coordinates::Position far{{{145'000'000'000, 0x1p31 - 128}, {}, {}}};
+    constexpr coordinates::Position shifted{{{145'000'000'001, -0x1p31 + 128}, {}, {}}};
+    auto control = std::get<std::unique_ptr<flight::Flight>>(
+        flight::Flight::create(preset.ship.flight, preset.contacts));
+    auto rebased = std::get<std::unique_ptr<flight::Flight>>(
+        flight::Flight::create(preset.ship.flight, preset.contacts, far));
+    auto rig = std::get<flight::CameraRig>(flight::CameraRig::create(preset.ship_radius));
+    auto before = control->snapshot(), old = rebased->snapshot();
+    const auto control_basis = before.frame, scene_basis = old.frame;
+    for (auto *game : {control.get(), rebased.get()})
+        REQUIRE(std::holds_alternative<std::monostate>(
+            game->submit({Tick{1}, 1, game->snapshot().entity, flight::Destination{{2, 0, 0}}})));
+    std::array<float, 2> previous_pixel{}, previous_rebased{};
+    constexpr std::array<float, 2> resolution{1920, 1080};
+    constexpr std::array<double, 3> marker{0, 0, 0};
+    float worst_pixel = 0, worst_motion = 0, actual_motion = 0;
+    for (unsigned tick = 1; tick <= 120; ++tick) {
+        CAPTURE(tick);
+        const auto current_stamp = rebased->snapshot().frame.stamp;
+        const auto change = rebased->rebase(current_stamp, tick % 2 ? shifted : far);
+        REQUIRE(std::holds_alternative<flight::Snapshot>(change));
+        const auto fixed = std::get<flight::Snapshot>(control->step());
+        const auto moved = std::get<flight::Snapshot>(rebased->step());
+        const auto a = std::get<flight::CameraFrame>(
+            rig.sample({before, fixed, &control_basis}, .5F, preset.camera_obstacles));
+        const auto b = std::get<flight::CameraFrame>(
+            rig.sample({old, moved, &scene_basis}, .5F, preset.camera_obstacles));
+        const auto plain = std::get<demo::FrameView>(demo::present(preset, a, {1920, 1080}));
+        const auto shifted_view = std::get<demo::FrameView>(demo::present(preset, b, {1920, 1080}));
+        const auto l = demo::project_target(plain, marker, resolution);
+        const auto r = demo::project_target(shifted_view, marker, resolution);
+        if (!l || !r) {
+            FAIL("authored marker must be visible in both histories");
+            return;
+        }
+        const auto left = *l, right = *r;
+        const auto difference = std::hypot(left[0] - right[0], left[1] - right[1]);
+        worst_pixel = std::max(worst_pixel, difference);
+        REQUIRE(difference <= .25F);
+        if (tick > 1) {
+            const auto motion =
+                std::hypot((left[0] - previous_pixel[0]) - (right[0] - previous_rebased[0]),
+                           (left[1] - previous_pixel[1]) - (right[1] - previous_rebased[1]));
+            worst_motion = std::max(worst_motion, motion);
+            actual_motion = std::max(actual_motion, std::hypot(left[0] - previous_pixel[0],
+                                                               left[1] - previous_pixel[1]));
+            REQUIRE(motion <= .25F);
+        }
+        CHECK(plain.scene.light_view_projection.columns ==
+              shifted_view.scene.light_view_projection.columns);
+        CHECK(plain.scene.root_transform.columns == shifted_view.scene.root_transform.columns);
+        for (std::size_t i = 0; i < plain.asteroids.size(); ++i)
+            REQUIRE(plain.asteroids[i].model.columns == shifted_view.asteroids[i].model.columns);
+        previous_pixel = left;
+        previous_rebased = right;
+        before = fixed;
+        old = moved;
+    }
+    CHECK(actual_motion > .1F);
+    std::printf("M4-C 1920x1080: max position %.9g px, projected motion difference %.9g px, "
+                "control motion %.9g px/tick\n",
+                static_cast<double>(worst_pixel), static_cast<double>(worst_motion),
+                static_cast<double>(actual_motion));
 }
 
 TEST_CASE("invalid marker viewport and homogeneous coordinates publish no pixel") {
