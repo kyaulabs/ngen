@@ -18,6 +18,47 @@ std::array<double, 3> body_force(const std::array<float, 4> &q, const std::array
 }
 } // namespace
 
+TEST_CASE("a live flight rebase preserves motion and authored navigation across queued intents",
+          "[frame-history]") {
+    constexpr coordinates::Position authored{{{145'000'000'000, 0x1p31 - 128}, {}, {}}};
+    constexpr coordinates::Position shifted{{{145'000'000'001, -0x1p31 + 128}, {}, {}}};
+    auto fixed = std::get<std::unique_ptr<Flight>>(Flight::create({}, {}, authored));
+    auto moving = std::get<std::unique_ptr<Flight>>(Flight::create({}, {}, authored));
+    for (auto *flight : {fixed.get(), moving.get()}) {
+        const auto start = flight->snapshot();
+        REQUIRE(flight->submit({Tick{1}, 1, start.entity, Destination{{0, 0, -50}}}) ==
+                Result<std::monostate>{std::monostate{}});
+        REQUIRE(std::holds_alternative<Snapshot>(flight->step()));
+        REQUIRE(flight->submit({Tick{2}, 2, start.entity, Destination{{0, 0, -80}}}) ==
+                Result<std::monostate>{std::monostate{}});
+    }
+    const auto last = moving->snapshot();
+    const auto result = moving->rebase(last.body.frame, shifted);
+    REQUIRE(std::holds_alternative<Snapshot>(result));
+    const auto &changed = std::get<Snapshot>(result);
+    CHECK(changed.tick == last.tick);
+    CHECK(changed.body.id == last.body.id);
+    CHECK(changed.body.frame.epoch == last.body.frame.epoch + 1);
+    CHECK(changed.frame.stamp == changed.body.frame);
+    CHECK(changed.frame.origin == shifted);
+    CHECK(changed.body.position_metres[0] == last.body.position_metres[0] - 256);
+    CHECK(changed.body.velocity_mps == last.body.velocity_mps);
+    CHECK(changed.navigation.target_metres == last.navigation.target_metres);
+    CHECK(std::get<Error>(moving->rebase(last.body.frame, authored)) == Error::stale);
+    for (unsigned i = 0; i < 20; ++i) {
+        const auto control = std::get<Snapshot>(fixed->step());
+        const auto sample = std::get<Snapshot>(moving->step());
+        CHECK(sample.navigation.target_metres == std::array<double, 3>{0, 0, -80});
+        CHECK(sample.body.velocity_mps == control.body.velocity_mps);
+        CHECK(sample.force_newtons == control.force_newtons);
+        CHECK(sample.body.position_metres[0] + 256 == control.body.position_metres[0]);
+        CHECK(sample.body.position_metres[2] == control.body.position_metres[2]);
+    }
+    const auto reset = std::get<Snapshot>(moving->reset());
+    CHECK(reset.frame.origin == authored);
+    CHECK(reset.frame.stamp.id != changed.frame.stamp.id);
+}
+
 TEST_CASE("direct pilot thrust reaches the fixed-step physical hull at the next boundary") {
     const ShipDefinition definition;
     auto created = Flight::create(definition);

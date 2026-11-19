@@ -1,5 +1,8 @@
 #include "draw.hpp"
 #include "effects/particles.hpp"
+#if defined(NGEN_SCENE_PROBE_FLIGHT_HISTORY)
+#include "flight_demo/view.hpp"
+#endif
 #if defined(NGEN_SCENE_PROBE_PHYSICS)
 #include "physics/world.hpp"
 #endif
@@ -93,11 +96,14 @@ bool draw_scene(render::Context &context, render::ScenePin &version, const rende
                                    VK_FORMAT_R8G8B8A8_UNORM,
                                    static_cast<VkImageUsageFlags>(VK_IMAGE_USAGE_SAMPLED_BIT) |
                                        VK_IMAGE_USAGE_TRANSFER_DST_BIT}));
-    auto shadow =
-        take(context.create_image({{1024, 1024},
-                                   VK_FORMAT_D32_SFLOAT,
-                                   static_cast<VkImageUsageFlags>(VK_IMAGE_USAGE_SAMPLED_BIT) |
-                                       VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT}));
+    constexpr VkExtent2D shadow_extent{1024, 1024};
+    auto shadow_usage = static_cast<VkImageUsageFlags>(VK_IMAGE_USAGE_SAMPLED_BIT) |
+                        VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT;
+#if defined(NGEN_SCENE_PROBE_FLIGHT_HISTORY)
+    if (particle_fixture)
+        shadow_usage |= VK_IMAGE_USAGE_TRANSFER_SRC_BIT;
+#endif
+    auto shadow = take(context.create_image({shadow_extent, VK_FORMAT_D32_SFLOAT, shadow_usage}));
     const auto upload = [&](const Image &target, std::span<const std::byte> bytes) {
         auto staging = take(context.create_buffer(
             {bytes.size(), VK_BUFFER_USAGE_TRANSFER_SRC_BIT, MemoryAccess::upload}));
@@ -311,6 +317,114 @@ bool draw_scene(render::Context &context, render::ScenePin &version, const rende
                     "live transferred and control motion attachments differ");
             std::printf("mesh_motion_live_rebase_equal=1 valid_pixels=%zu peak_error_px=%.9g\n",
                         occupied, static_cast<double>(peak_error));
+#endif
+#if defined(NGEN_SCENE_PROBE_FLIGHT_HISTORY)
+            demo::ShipProfile profile;
+            profile.flight.hull.half_extent_metres = {1, 1, 1};
+            for (std::size_t axis = 0; axis < 3; ++axis)
+                profile.asset_to_body.columns[12 + axis] = -center[axis];
+            const auto preset = take(demo::make_preset(package, profile));
+            const auto shadow_bytes = VkDeviceSize{shadow_extent.width} * shadow_extent.height * 4;
+            auto shadow_readback = take(context.create_buffer(
+                {shadow_bytes, VK_BUFFER_USAGE_TRANSFER_DST_BIT, MemoryAccess::readback}));
+            struct ViewPixels {
+                std::vector<std::uint16_t> color, motion;
+                std::vector<float> shadow;
+            };
+            const auto history_pixels = [&](bool transfer) {
+                constexpr coordinates::Position far{{{145'000'000'000, 0x1p31 - 128}, {}, {}}};
+                constexpr coordinates::Position shifted{{{145'000'000'001, -0x1p31 + 128}, {}, {}}};
+                auto flight = std::get<std::unique_ptr<flight::Flight>>(flight::Flight::create(
+                    preset.ship.flight, preset.contacts, transfer ? far : coordinates::Position{}));
+                auto camera =
+                    std::get<flight::CameraRig>(flight::CameraRig::create(preset.ship_radius));
+                auto initial = flight->snapshot();
+                const auto basis = initial.frame;
+                auto particles = std::get<effects::Particles>(effects::Particles::create(basis));
+                require(std::holds_alternative<std::monostate>(
+                            particles.emit({basis.stamp, {-1.5, 0, 0}, {-1, 0, 0}}, 32)) &&
+                            std::holds_alternative<std::monostate>(flight->submit(
+                                {Tick{1}, 1, initial.entity, flight::Destination{{2, 0, 0}}})),
+                        "combined flight history inputs rejected");
+                for (std::uint64_t tick = 1; tick <= 12; ++tick) {
+                    initial = std::get<flight::Snapshot>(flight->step());
+                    require(particles.step() == Result<Tick>{Tick{tick}},
+                            "combined particle tick mismatch");
+                }
+                const auto sample = [&](const flight::Snapshot &before,
+                                        const flight::Snapshot &after) {
+                    return take(
+                        demo::present(preset,
+                                      std::get<flight::CameraFrame>(camera.sample(
+                                          {before, after, &basis}, .5F, preset.camera_obstacles)),
+                                      extent));
+                };
+                const auto prior = sample(initial, initial);
+                if (transfer) {
+                    const auto rebase =
+                        std::get<flight::Snapshot>(flight->rebase(initial.frame.stamp, shifted));
+                    require(
+                        rebase.frame.stamp.epoch == initial.frame.stamp.epoch + 1 &&
+                            std::holds_alternative<std::monostate>(particles.rebase(rebase.frame)),
+                        "combined rebase did not move both live histories");
+                }
+                const auto current = std::get<flight::Snapshot>(flight->step());
+                require(particles.step() == Result<Tick>{current.tick} &&
+                            std::holds_alternative<std::monostate>(camera.orbit({.12F, .04F, 0})),
+                        "combined camera/particle update failed");
+                auto frame = sample(initial, current);
+                const SceneHistory history{prior.scene.view_projection, prior.scene.root_transform};
+                frame.scene.history = &history;
+                const auto particle_view = particles.snapshot();
+                require(particle_view.frame.stamp == current.frame.stamp &&
+                            particle_view.particles().size() == 1,
+                        "combined particle and flight stamps differ");
+                auto target_basis = basis;
+                target_basis.stamp.tick = current.tick;
+                const auto position = std::get<coordinates::Sample>(coordinates::transform(
+                    {particle_view.frame.stamp, particle_view.particles().front().position_metres},
+                    particle_view.frame, target_basis));
+                auto particle = extra;
+                particle.frame.model = identity;
+                for (std::size_t axis = 0; axis < 3; ++axis)
+                    particle.frame.model.columns[12 + axis] = static_cast<float>(
+                        position.position_metres[axis] - frame.origin_metres[axis] - center[axis]);
+                wait(context, take(renderer.draw(context, version, frame.scene, motion_targets, {},
+                                                 std::span{&particle, 1})));
+                ViewPixels pixels{read_pixels(color), read_pixels(motion),
+                                  std::vector<float>(shadow_bytes / 4)};
+                wait(context, take(context.copy_from_image({shadow, shadow_readback})));
+                (void)take(
+                    shadow_readback.read(0, std::as_writable_bytes(std::span(pixels.shadow))));
+                return pixels;
+            };
+            const auto control_views = history_pixels(false);
+            const auto shifted_views = history_pixels(true);
+            require(control_views.color == shifted_views.color &&
+                        std::ranges::equal(std::as_bytes(std::span(control_views.shadow)),
+                                           std::as_bytes(std::span(shifted_views.shadow))) &&
+                        control_views.motion == shifted_views.motion,
+                    "combined near/far HDR, shadows or GPU vectors differ");
+            require(std::ranges::any_of(control_views.shadow, [](auto z) { return z < 1; }),
+                    "combined shadow pass did not write depth");
+            std::size_t motion_count = 0, particle_count = 0;
+            float largest_motion = 0;
+            for (std::size_t i = 0; i < control_views.motion.size(); i += 4) {
+                if (control_views.motion[i + 3] == 0x3c00) {
+                    ++motion_count;
+                    const auto length = std::hypot(half_value(control_views.motion[i]),
+                                                   half_value(control_views.motion[i + 1]));
+                    largest_motion = std::max(largest_motion, length);
+                }
+                if (control_views.color[i] >= 0x4400 && control_views.color[i + 2] >= 0x4400 &&
+                    control_views.motion[i + 3] == 0)
+                    ++particle_count;
+            }
+            require(motion_count > 0 && particle_count > 0 && largest_motion > .25F,
+                    "combined fixture lacks visible moving surfaces or invalid particle pixels");
+            std::printf("flight_history_gpu_equal=1 valid_motion_pixels=%zu particle_pixels=%zu "
+                        "control_peak_px=%.9g\n",
+                        motion_count, particle_count, static_cast<double>(largest_motion));
 #endif
             const VkExtent2D smaller{extent.width / 2, extent.height / 2};
             auto small_color = take(context.create_image(

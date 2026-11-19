@@ -70,6 +70,7 @@ struct Snapshot {
     std::array<float, 3> force_newtons{}, torque_newton_metres{};
     RcsLevels rcs_firing{};
     float main_drive_level{}, rcs_demand_level{};
+    coordinates::Frame frame;
 };
 // Owner-thread-only. Copies of snapshots may cross threads; the Flight may not.
 // Tick-indexed intent only: no wall clock, window, renderer, audio or services.
@@ -79,7 +80,8 @@ class Flight {
     // Copy at most127 static contact proxies into the same bounded domain.
     // Failed preparation publishes no Flight; reset preserves the copied preset.
     [[nodiscard]] static Result<std::unique_ptr<Flight>>
-    create(const ShipDefinition &definition, std::span<const physics::Box> static_obstacles = {});
+    create(const ShipDefinition &definition, std::span<const physics::Box> static_obstacles = {},
+           coordinates::Position authored_origin = {});
     ~Flight();
     Flight(const Flight &) = delete;
     Flight &operator=(const Flight &) = delete;
@@ -88,6 +90,10 @@ class Flight {
     // Infeasible staged orbit/mass combinations drop the whole batch without
     // advancing or changing native state. Native failures close until reset.
     [[nodiscard]] Result<Snapshot> step();
+    // Translate the live physics domain without consuming intent or a tick.
+    // Navigation and positional commands remain in the initial authored basis.
+    [[nodiscard]] Result<Snapshot> rebase(coordinates::FrameStamp expected,
+                                          coordinates::Position origin);
     // Replace the physical scene only after successful preparation, advance the
     // entity generation and discard queued intents and prior pilot input.
     [[nodiscard]] Result<Snapshot> reset();
