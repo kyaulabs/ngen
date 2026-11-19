@@ -1,6 +1,6 @@
 # Milestones and atomic implementation tasks
 
-Current delivery: M1–M3 are accepted; [0.5.0](https://github.com/kyaulabs/ngen/releases/tag/v0.5.0) adds M4-C flight frame history as source only. M3's private preview remains source-bound to `e45ba673`; public source is not a playable bundle. Resume at M4-D committed travel in the [execution order](execution-order.md). C2 adds local MCP authoring/playtests once the relevant C1 operations exist. No implementation starts merely because this plan or its tracker changes. See the [executive brief](executive-brief.md) and [final M3 verification](../evidence/M3/ui/final-verification.md).
+Current delivery: M1–M3 are accepted; [0.6.0](https://github.com/kyaulabs/ngen/releases/tag/v0.6.0) adds M4-D bounded headless warp as source only. M3's private preview remains source-bound to `e45ba673`; public source is not a playable bundle. Resume at C1-D owned play, inspection and reload in the [execution order](execution-order.md). C2 adds local MCP authoring/playtests once the relevant C1 operations exist. No implementation starts merely because this plan or its tracker changes. See the [executive brief](executive-brief.md) and [final M3 verification](../evidence/M3/ui/final-verification.md).
 
 | Scope | Current state |
 |---|---|
@@ -8,7 +8,7 @@ Current delivery: M1–M3 are accepted; [0.5.0](https://github.com/kyaulabs/ngen
 | M1 | Working CPU foundation integrated into the accepted M2/M3 dependency chain; initial evidence snapshots below are historical. |
 | M2 | Accepted renderer/assets/inspector delivery, normal PR #9 merge `4b554cc`. |
 | M3 | Accepted offline flight/presentation/audio, normal PR #10 merge `03b76c72`; retained verification limits still apply. |
-| M4 | M4-A/B checked coordinates and live physics transfers; M4-C/F/G combined flight history, particles and motion verified. Warp, streaming and integrated M4 acceptance remain open. |
+| M4 | M4-A/B checked coordinates and live physics transfers; M4-C/F/G combined history, particles and motion; M4-D bounded headless warp. Streaming and integrated M4 acceptance remain open. |
 | M5–M10 / M13 | Planned, dependent on preceding integrated acceptance; no delivery or capacity claim. |
 | M11 | Optional selected graphics; individual benefit/platform/content gates remain. Creator tooling is mandatory C1/C2, not an optional visual feature. |
 | M12 | Optional settlement; separate legal/security/custody and explicit execution/release permission required. |

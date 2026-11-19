@@ -1,4 +1,12 @@
 ## 📜 Changelog
+### [0.6.0](https://github.com/kyaulabs/ngen/releases/tag/v0.6.0)
+
+#### 🚀 Features
+
+- **travel:** Add a bounded warp with gated local arrival ([d65508c](https://github.com/kyaulabs/ngen/commit/d65508c25720d3d137cf103a17ad3355ff629a4f))
+
+- **travel:** Integrate bounded warp with gated local arrival (#106) ([7b217ed](https://github.com/kyaulabs/ngen/commit/7b217edb36492f676d7b6fa73703bae82650068c))
+
 ### [0.5.0](https://github.com/kyaulabs/ngen/releases/tag/v0.5.0)
 
 #### 🚀 Features

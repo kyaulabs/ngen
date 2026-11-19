@@ -360,13 +360,14 @@ Flight::Flight(std::unique_ptr<Impl> impl) : impl_(std::move(impl)) {}
 Flight::~Flight() = default;
 Result<std::unique_ptr<Flight>> Flight::create(const ShipDefinition &definition,
                                                std::span<const physics::Box> static_obstacles,
-                                               coordinates::Position authored_origin) {
+                                               coordinates::Position authored_origin,
+                                               Tick initial_tick) {
     if (static_obstacles.size() >= physics::World::body_capacity)
         return Error::capacity;
     if (!valid(definition) || std::any_of(static_obstacles.begin(), static_obstacles.end(),
                                           [](const auto &box) { return box.dynamic; }))
         return Error::invalid;
-    auto created = physics::World::create(authored_origin);
+    auto created = physics::World::create(authored_origin, initial_tick);
     if (const auto *error = std::get_if<Error>(&created))
         return *error;
     auto world = std::get<std::unique_ptr<physics::World>>(std::move(created));
@@ -385,6 +386,7 @@ Result<std::unique_ptr<Flight>> Flight::create(const ShipDefinition &definition,
     impl->obstacle_count = static_obstacles.size();
     impl->body = std::get<physics::BodyId>(admitted);
     impl->published.entity = {0, 1};
+    impl->published.tick = initial_tick;
     impl->published.body = std::get<physics::BodyState>(impl->world->state(impl->body));
     impl->published.frame = std::get<coordinates::Frame>(impl->world->frame());
     impl->authored_frame = impl->published.frame;

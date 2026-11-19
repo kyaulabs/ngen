@@ -7,9 +7,10 @@ Exact [post-merge CI] passed all four jobs; merge signature/ancestry verify.
 [0.1.0] is now published as source only at reviewed main `2d1a0539`; public
 source/checksums, release CI and the completed back-merge verify. It does not
 include the private playable scene/bundles/media. The source-only
-[0.5.0 release](../releases/0.5.0.md) adds checked local flight history across
-origin transfers. Bounded travel is next in the [execution order](execution-order.md);
-streaming, local MCP and multiplayer remain future work in the [roadmap].
+[0.6.0 release](../releases/0.6.0.md) adds bounded headless warp with collision
+checks before arrival. Owned play, inspection and reload are next in the
+[execution order](execution-order.md); streaming, local MCP and multiplayer
+remain future work in the [roadmap].
 
 The working C++20 foundation uses pinned Conan/CMake/Ninja graphs, explicit RAII
 ownership, bounded commands/jobs and immutable owning snapshots. SDL/Vulkan,
