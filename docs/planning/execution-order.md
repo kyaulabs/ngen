@@ -21,9 +21,9 @@ engine, game or MCP implementation.
 
 | Field | Value |
 |---|---|
-| Last verified step | **05b — [M4-G #98](https://github.com/kyaulabs/ngen/issues/98)**; owned GPU motion attachment and live-origin readback. |
-| Next step | **06 — [M4-C #13](https://github.com/kyaulabs/ngen/issues/13)**; combined history verification. |
-| Next entry decision | Integrate the live flight frame-history branch with the verified particle and motion paths; compare equivalent near/far-origin views end to end. |
+| Last verified step | **06 — [M4-C #13](https://github.com/kyaulabs/ngen/issues/13)**; combined flight history and near/far GPU readback. |
+| Next step | **07 — [M4-D #14](https://github.com/kyaulabs/ngen/issues/14)**; bounded travel. |
+| Next entry decision | Define the bounded travel command, tick ownership, and arrival handoff before adding its state machine. |
 | Optional selections | M11 features and M12 settlement are not selected by this schedule. |
 
 Resume request: **“Read `docs/planning/execution-order.md` and continue from the
@@ -75,7 +75,7 @@ asset/build paths. Establish human-usable operations before exposing them to MCP
 | 05 | [x] | [C1-C #74](https://github.com/kyaulabs/ngen/issues/74) | Author and save a bounded reusable 3D scene. |
 | 05a | [x] | [M4-F #97](https://github.com/kyaulabs/ngen/issues/97) | Simulate and render a bounded cosmetic particle fixture across a live origin transfer. |
 | 05b | [x] | [M4-G #98](https://github.com/kyaulabs/ngen/issues/98) | Produce and read back GPU motion vectors across frame epochs. |
-| 06 | [ ] | [M4-C #13](https://github.com/kyaulabs/ngen/issues/13) | Verify combined rendering and prediction history after M4-F/G. |
+| 06 | [x] | [M4-C #13](https://github.com/kyaulabs/ngen/issues/13) | Verify combined rendering and prediction history after M4-F/G. |
 | 07 | [ ] | [M4-D #14](https://github.com/kyaulabs/ngen/issues/14) | Implement one committed warp trajectory with entry/transit/exit states. |
 | 08 | [ ] | [C1-D #55](https://github.com/kyaulabs/ngen/issues/55) | Connect owned play/inspection/reload and remove one measured authoring bottleneck. |
 | 09 | [ ] | [C2-A #77](https://github.com/kyaulabs/ngen/issues/77) | Select/pin a local MCP protocol/SDK and expose scoped discovery/read operations. |
@@ -286,5 +286,6 @@ work advances. Do not use this log instead of the issue's complete acceptance.
 | 05 — C1-C | [Issue #74](https://github.com/kyaulabs/ngen/issues/74); [scene authoring guide](../creator-scene.md) | Linux CLI edits, validates, saves, reloads and exports a bounded scene. Undo/redo and rejected stale, invalid and failed writes verified; the archived scene's referenced asset cooks and runs in the starter. No GUI, runtime scene interpretation, owned play/reload or MCP claim. |
 | 05a — M4-F | [Issue #97](https://github.com/kyaulabs/ngen/issues/97); [particle evidence](../evidence/M4/cosmetic-particles.md) | The bounded pool followed live Jolt frames, and the synthetic GPU fixture matched fixed-origin/default HDR readbacks on Intel. The accepted flight preset and its mesh exhaust are unchanged. |
 | 05b — M4-G | [Issue #98](https://github.com/kyaulabs/ngen/issues/98); [motion attachment evidence](../evidence/M4/motion-vector-attachment.md) | Opt-in Vulkan output shares mesh depth and mask tests. A live Jolt rebase matched the fixed-origin GPU bytes; all valid pixels stayed within 0.25 px. No upscaler or combined M4-C acceptance. |
+| 06 — M4-C | [Issue #13](https://github.com/kyaulabs/ngen/issues/13); [combined history evidence](../evidence/M4/combined-frame-history.md) | Aligned poses and retained physical navigation across 120 live rebases. Near/far HDR, shadow and motion readbacks matched in a separate combined GPU fixture, including visible particles. No automatic origin scheduling, warp or network prediction. |
 
 [board]: https://github.com/orgs/kyaulabs/projects/4/views/3

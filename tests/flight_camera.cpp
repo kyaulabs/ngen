@@ -99,6 +99,25 @@ TEST_CASE("presentation re-expresses the previous local pose before blending epo
     CHECK(previous.body.position_metres == std::array{2.0, 0.0, 0.0});
 }
 
+TEST_CASE("one stationary frame epoch cannot describe two origins", "[frame-history]") {
+    auto rig = std::get<CameraRig>(CameraRig::create(3));
+    Snapshot previous, current;
+    previous.entity = current.entity = {0, 1};
+    previous.tick = previous.body.tick = Tick{10};
+    current.tick = current.body.tick = Tick{11};
+    previous.body.frame = {1, 2, previous.tick};
+    current.body.frame = {1, 2, current.tick};
+    previous.frame = {previous.body.frame, {}};
+    current.frame = {current.body.frame, {{{0, 256}, {}, {}}}};
+    const coordinates::Frame authored{{1, 1, Tick{9}}, {}};
+    const coordinates::Frame *basis = nullptr;
+    SECTION("implicit current basis") {}
+    SECTION("explicit earlier epoch") { basis = &authored; }
+    const auto result = rig.sample({previous, current, basis}, .5F);
+    REQUIRE(std::holds_alternative<Error>(result));
+    CHECK(std::get<Error>(result) == Error::invalid);
+}
+
 TEST_CASE("live flight history can be sampled in the unchanged authored scene basis",
           "[frame-history]") {
     constexpr coordinates::Position origin{{{145'000'000'000, 0x1p31 - 128}, {}, {}}};

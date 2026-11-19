@@ -110,8 +110,8 @@ Result<CameraFrame> CameraRig::sample(FrameSamples samples, float fraction,
         (state.mode != Mode::direct && state.mode != Mode::tactical))
         return Error::invalid;
     auto position = state.body.position_metres;
-    if (samples.basis) {
-        const auto translated = in_basis(state, *samples.basis);
+    if (samples.basis || state.body.frame.id != 0 || state.frame.stamp.id != 0) {
+        const auto translated = in_basis(state, samples.basis ? *samples.basis : state.frame);
         if (const auto *error = std::get_if<Error>(&translated))
             return *error;
         position = std::get<std::array<double, 3>>(translated);
@@ -125,10 +125,15 @@ Result<CameraFrame> CameraRig::sample(FrameSamples samples, float fraction,
         state.tick.value - previous.tick.value == 1) {
         if (previous.body.frame.id != state.body.frame.id)
             return Error::stale;
+        if (state.body.frame.id != 0 && previous.body.frame.epoch == state.body.frame.epoch &&
+            (previous.frame.origin != state.frame.origin ||
+             previous.frame.origin_velocity_mps != state.frame.origin_velocity_mps))
+            return Error::invalid;
         if (!valid_transform(previous.body.position_metres, previous.body.rotation_xyzw))
             return Error::invalid;
         auto previous_position = previous.body.position_metres;
-        if (samples.basis || previous.body.frame.epoch != state.body.frame.epoch) {
+        if (samples.basis || state.body.frame.id != 0 || previous.frame.stamp.id != 0 ||
+            previous.body.frame.epoch != state.body.frame.epoch) {
             if (!samples.basis &&
                 (state.frame.stamp != state.body.frame || state.frame.stamp.tick != state.tick))
                 return Error::stale;

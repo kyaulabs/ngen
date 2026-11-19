@@ -530,7 +530,7 @@ Actions hud(tools::Gui &gui, const flight::Snapshot &state, const Preset &preset
                 ImGui::SetNextWindowSize({268, 52});
                 if (ImGui::Begin("Flight target", nullptr, floating)) {
                     reserve_ui();
-                    const auto &origin = state.body.position_metres;
+                    const auto &origin = view.origin_metres;
                     const auto dx = point[0] - origin[0], dy = point[1] - origin[1],
                                dz = point[2] - origin[2];
                     ImGui::Text("Asteroid %03u", static_cast<unsigned>(*selected));
@@ -797,11 +797,19 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
         }
         (void)sound.cue(audio::Cue::confirm);
     };
+    const auto authored_position = [&] {
+        auto basis = scene_basis;
+        basis.stamp.tick = current.tick;
+        return game_value(
+                   coordinates::transform({current.body.frame, current.body.position_metres, {}},
+                                          current.frame, basis))
+            .position_metres;
+    };
     const auto approach = [&] {
         if (!selected)
             return;
         const auto &target = preset.camera_obstacles[*selected];
-        const auto &p = current.body.position_metres;
+        const auto p = authored_position();
         JPH::DVec3 delta{p[0] - target.centre_metres[0], p[1] - target.centre_metres[1],
                          p[2] - target.centre_metres[2]};
         if (delta.LengthSq() < 1e-8)
@@ -1129,7 +1137,7 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
                         selected = pick(direction, preset);
                         if (!selected && std::abs(direction.direction.GetY()) > 1e-6) {
                             const auto distance =
-                                (current.body.position_metres[1] - direction.origin.GetY()) /
+                                (authored_position()[1] - direction.origin.GetY()) /
                                 direction.direction.GetY();
                             if (distance > 0 && distance < 4096) {
                                 const auto point =
