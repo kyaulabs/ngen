@@ -312,16 +312,17 @@ TEST_CASE("live near and far frame histories preserve projected motion and shado
             FAIL("authored marker must be visible in both histories");
             return;
         }
-        const auto difference = std::hypot((*l)[0] - (*r)[0], (*l)[1] - (*r)[1]);
+        const auto left = *l, right = *r;
+        const auto difference = std::hypot(left[0] - right[0], left[1] - right[1]);
         worst_pixel = std::max(worst_pixel, difference);
         REQUIRE(difference <= .25F);
         if (tick > 1) {
             const auto motion =
-                std::hypot(((*l)[0] - previous_pixel[0]) - ((*r)[0] - previous_rebased[0]),
-                           ((*l)[1] - previous_pixel[1]) - ((*r)[1] - previous_rebased[1]));
+                std::hypot((left[0] - previous_pixel[0]) - (right[0] - previous_rebased[0]),
+                           (left[1] - previous_pixel[1]) - (right[1] - previous_rebased[1]));
             worst_motion = std::max(worst_motion, motion);
-            actual_motion = std::max(actual_motion, std::hypot((*l)[0] - previous_pixel[0],
-                                                               (*l)[1] - previous_pixel[1]));
+            actual_motion = std::max(actual_motion, std::hypot(left[0] - previous_pixel[0],
+                                                               left[1] - previous_pixel[1]));
             REQUIRE(motion <= .25F);
         }
         CHECK(plain.scene.light_view_projection.columns ==
@@ -329,8 +330,8 @@ TEST_CASE("live near and far frame histories preserve projected motion and shado
         CHECK(plain.scene.root_transform.columns == shifted_view.scene.root_transform.columns);
         for (std::size_t i = 0; i < plain.asteroids.size(); ++i)
             REQUIRE(plain.asteroids[i].model.columns == shifted_view.asteroids[i].model.columns);
-        previous_pixel = *l;
-        previous_rebased = *r;
+        previous_pixel = left;
+        previous_rebased = right;
         before = fixed;
         old = moved;
     }

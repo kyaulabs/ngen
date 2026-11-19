@@ -40,7 +40,10 @@ enabled on an isolated Wayland session:
 - The separate M4-F and M4-G GPU controls still passed without Vulkan errors.
 
 Clang 23.1.4 Release and strict ASan/UBSan/LSan demo graphs passed 27/27 CTests
-each. Only the GPU fixture above was run under Vulkan validation; the sanitizer
-CTest result is a different check. This is local prediction/interpolation and
+each. The initial hosted Debug and sanitizer checks flagged optional pixel
+accesses after Catch assertions under Clang 18. The fixture now copies both
+coordinates immediately after its presence check, with no analyzer suppression
+or change to the pixel gate. Only the GPU fixture above was run under Vulkan
+validation; the sanitizer CTest result is a different check. This is local prediction/interpolation and
 translation-only presentation evidence, not cross-platform performance,
 rotating frames, arbitrary contact worlds, or integrated M4 acceptance.
