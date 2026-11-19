@@ -1,4 +1,8 @@
 #include "draw.hpp"
+#include "effects/particles.hpp"
+#if defined(NGEN_SCENE_PROBE_PHYSICS)
+#include "physics/world.hpp"
+#endif
 #include "probe/capture.hpp"
 #include "render/environment.hpp"
 #include <algorithm>
@@ -14,6 +18,16 @@ using namespace render;
 void require(bool value, const char *message) {
     if (!value)
         throw std::runtime_error(message);
+}
+float half_value(std::uint16_t encoded) {
+    const auto bits = static_cast<unsigned>(encoded);
+    const auto exponent = static_cast<int>((bits >> 10U) & 31U);
+    if (exponent == 31)
+        return std::numeric_limits<float>::quiet_NaN();
+    const auto significand = static_cast<float>(bits & 1023U);
+    const auto value = exponent == 0 ? std::ldexp(significand, -24)
+                                     : std::ldexp(1 + significand / 1024, exponent - 15);
+    return (bits & 0x8000U) != 0 ? -value : value;
 }
 template <class T> T take(std::variant<T, Failure> value) {
     if (const auto *failure = std::get_if<Failure>(&value))
@@ -64,7 +78,7 @@ class DrawGate {
 };
 } // namespace
 bool draw_scene(render::Context &context, render::ScenePin &version, const render::ScenePin &active,
-                const std::filesystem::path &capture) {
+                const std::filesystem::path &capture, bool particle_fixture) {
     using namespace render;
     const auto package = version->package();
     const VkExtent2D extent = capture.empty() ? VkExtent2D{256, 128} : VkExtent2D{1280, 720};
@@ -130,6 +144,12 @@ bool draw_scene(render::Context &context, render::ScenePin &version, const rende
     view.light_view_projection = view.view_projection;
     view.key_direction_intensity = {-1, -1, -1, 1};
     SceneRenderer renderer;
+    if (particle_fixture) {
+        auto aliased = targets;
+        aliased.motion_vectors = &color;
+        require(std::holds_alternative<Failure>(renderer.draw(context, version, view, aliased)),
+                "motion output must reject aliasing the color attachment");
+    }
     auto invalid = view;
     invalid.view_projection.columns[0] = std::numeric_limits<float>::quiet_NaN();
     require(std::holds_alternative<Failure>(renderer.draw(context, version, invalid, targets)) &&
@@ -172,14 +192,198 @@ bool draw_scene(render::Context &context, render::ScenePin &version, const rende
         const auto marker_bytes = VkDeviceSize{extent.width} * extent.height * 8;
         auto marker_readback = take(context.create_buffer(
             {marker_bytes, VK_BUFFER_USAGE_TRANSFER_DST_BIT, MemoryAccess::readback}));
-        wait(context, take(context.copy_from_image({color, marker_readback})));
-        std::vector<std::uint16_t> marker_pixels(std::size_t{extent.width} * extent.height * 4);
-        (void)take(marker_readback.read(0, std::as_writable_bytes(std::span(marker_pixels))));
+        const auto read_pixels = [&](const Image &source) {
+            wait(context, take(context.copy_from_image({source, marker_readback})));
+            std::vector<std::uint16_t> pixels(std::size_t{extent.width} * extent.height * 4);
+            (void)take(marker_readback.read(0, std::as_writable_bytes(std::span(pixels))));
+            return pixels;
+        };
+        const auto marker_pixels = read_pixels(color);
         const auto marker_x = extent.width * 4 / 100, marker_y = extent.height * 12 / 100;
         const auto at = (std::size_t{marker_y} * extent.width + marker_x) * 4;
         require(marker_pixels[at] >= 0x4400 && marker_pixels[at + 2] >= 0x4400,
                 "scene extra geometry/view was not submitted");
         std::puts("scene_extra_geometry=1 extra_scene_view=1 extra_frame_pin=1");
+        if (particle_fixture) {
+            auto motion = take(context.create_image(
+                {extent, VK_FORMAT_R16G16B16A16_SFLOAT,
+                 static_cast<VkImageUsageFlags>(VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT) |
+                     VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_TRANSFER_SRC_BIT}));
+            auto motion_targets = targets;
+            motion_targets.motion_vectors = &motion;
+            const auto draw_motion = [&] {
+                wait(context, take(renderer.draw(context, version, view, motion_targets, {},
+                                                 std::span{&extra, 1})));
+                return read_pixels(motion);
+            };
+            const auto invalid_motion = draw_motion();
+            require(std::all_of(invalid_motion.begin(), invalid_motion.end(),
+                                [](auto v) { return v == 0; }),
+                    "invalid motion history did not clear the attachment");
+            MeshHistory history{view.view_projection};
+            extra.history = &history;
+            auto stationary = draw_motion();
+            require(stationary[at + 3] == 0x3c00 &&
+                        std::hypot(half_value(stationary[at]), half_value(stationary[at + 1])) <=
+                            .25F,
+                    "stationary geometry did not publish valid zero motion");
+            history.clip_from_local.columns[12] -= 16.0F / static_cast<float>(extent.width);
+            history.clip_from_local.columns[13] += 8.0F / static_cast<float>(extent.height);
+            const auto motion_pixels = draw_motion();
+            const auto dx = half_value(motion_pixels[at]), dy = half_value(motion_pixels[at + 1]);
+            const auto motion_error = std::hypot(dx + 8, dy - 4);
+            require(motion_error <= .25F && motion_pixels[at + 2] == 0 &&
+                        motion_pixels[at + 3] == 0x3c00,
+                    "mesh motion readback differs from -8,+4 pixels");
+            require(read_pixels(color) == marker_pixels,
+                    "motion attachment changed the color draw");
+            extra.material.flags[0] = 1;
+            extra.material.baseColor[3] = 0;
+            const auto masked_motion = draw_motion();
+            require(masked_motion[at + 3] == 0, "alpha-masked geometry published invalid coverage");
+            extra.material.flags[0] = 0;
+            extra.material.baseColor[3] = 1;
+            extra.history = nullptr;
+            require(draw_motion() == invalid_motion,
+                    "missing history did not invalidate old vectors");
+            std::printf("mesh_motion_readback=1 stationary=1 current_to_previous=%.9g,%.9g "
+                        "error_px=%.9g mask=1 reset=1 color_equal=1\n",
+                        static_cast<double>(dx), static_cast<double>(dy),
+                        static_cast<double>(motion_error));
+#if defined(NGEN_SCENE_PROBE_PHYSICS)
+            const auto live_motion = [&](bool transfer) {
+                constexpr coordinates::Position far{{{145'000'000'000, 0x1p31 - 128}, {}, {}}};
+                constexpr coordinates::Position shifted{{{145'000'000'001, -0x1p31 + 128}, {}, {}}};
+                auto world = std::get<std::unique_ptr<physics::World>>(
+                    physics::World::create(transfer ? far : coordinates::Position{}));
+                const auto hull = std::get<physics::BodyId>(world->add_box({{1, 1, 1}, {}, 1}));
+                auto basis = std::get<coordinates::Frame>(world->frame());
+                const auto before = std::get<physics::BodyState>(world->state(hull));
+                if (transfer) {
+                    const auto result = world->rebase(before.frame, shifted);
+                    require(std::holds_alternative<coordinates::Frame>(result) &&
+                                std::get<coordinates::Frame>(result).stamp.epoch ==
+                                    before.frame.epoch + 1,
+                            "motion fixture did not perform a live Jolt rebase");
+                }
+                require(std::holds_alternative<std::monostate>(world->apply(hull, {360, 0, 0})) &&
+                            world->step() == Result<Tick>{Tick{1}},
+                        "motion fixture body update failed");
+                const auto after = std::get<physics::BodyState>(world->state(hull));
+                basis.stamp.tick = after.tick;
+                const auto source = std::get<coordinates::Frame>(world->frame());
+                const auto current = std::get<coordinates::Sample>(coordinates::transform(
+                    {after.frame, after.position_metres, {}}, source, basis));
+                require(std::abs(current.position_metres[0] - .1) < 1e-6,
+                        "motion fixture did not follow independently expected physical motion");
+                const std::array past{identity};
+                shader::InstanceTransform instance{identity, identity};
+                instance.model.columns[12] = static_cast<float>(current.position_metres[0]);
+                const MeshHistory live_history{view.view_projection, past};
+                auto live_draw = extra;
+                live_draw.instances = std::span{&instance, 1};
+                live_draw.history = &live_history;
+                wait(context, take(renderer.draw(context, version, view, motion_targets, {},
+                                                 std::span{&live_draw, 1})));
+                return read_pixels(motion);
+            };
+            const auto fixed_motion = live_motion(false);
+            const auto transferred_motion = live_motion(true);
+            const auto expected_x =
+                -.1F * view.view_projection.columns[0] * static_cast<float>(extent.width) * .5F;
+            const auto expected_y =
+                -.1F * view.view_projection.columns[1] * static_cast<float>(extent.height) * .5F;
+            require(std::hypot(expected_x, expected_y) > 1,
+                    "live motion fixture lacks significant screen-space motion");
+            std::size_t occupied = 0;
+            float peak_error = 0;
+            for (std::size_t i = 0; i < transferred_motion.size(); i += 4) {
+                if (transferred_motion[i + 3] == 0)
+                    continue;
+                require(transferred_motion[i + 3] == 0x3c00, "invalid motion validity value");
+                const auto error = std::hypot(half_value(transferred_motion[i]) - expected_x,
+                                              half_value(transferred_motion[i + 1]) - expected_y);
+                require(error <= .25F, "live rebased motion exceeds the pixel gate");
+                peak_error = std::max(peak_error, error);
+                ++occupied;
+            }
+            require(occupied > 0 && transferred_motion == fixed_motion,
+                    "live transferred and control motion attachments differ");
+            std::printf("mesh_motion_live_rebase_equal=1 valid_pixels=%zu peak_error_px=%.9g\n",
+                        occupied, static_cast<double>(peak_error));
+#endif
+            const VkExtent2D smaller{extent.width / 2, extent.height / 2};
+            auto small_color = take(context.create_image(
+                {smaller, VK_FORMAT_R16G16B16A16_SFLOAT,
+                 static_cast<VkImageUsageFlags>(VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT) |
+                     VK_IMAGE_USAGE_SAMPLED_BIT}));
+            auto small_depth = take(context.create_image(
+                {smaller, VK_FORMAT_D32_SFLOAT, VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT}));
+            SceneTargets resized{small_color,    small_depth,    shadow, environment[0],
+                                 environment[1], environment[2], white,  &motion};
+            require(std::holds_alternative<Failure>(renderer.draw(context, version, view, resized)),
+                    "resized draw accepted the old motion extent");
+            auto small_motion = take(context.create_image(
+                {smaller, VK_FORMAT_R16G16B16A16_SFLOAT,
+                 static_cast<VkImageUsageFlags>(VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT) |
+                     VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_TRANSFER_SRC_BIT}));
+            resized.motion_vectors = &small_motion;
+            wait(context, take(renderer.draw(context, version, view, resized)));
+            const auto resized_pixels = read_pixels(small_motion);
+            const auto resized_count = std::size_t{smaller.width} * smaller.height * 4;
+            require(std::ranges::all_of(std::span(resized_pixels).first(resized_count),
+                                        [](auto v) { return v == 0; }),
+                    "new motion image after resize was not invalidated");
+            std::puts("mesh_motion_resize_invalid=1");
+            wait(context, take(renderer.draw(context, version, view, targets)));
+            const auto plain = read_pixels(color);
+            const coordinates::Frame basis{.stamp = {1, 1, {}},
+                                           .origin = {{{145'000'000'000, 0x1p31 - 128}, {}, {}}}};
+            auto control = std::get<effects::Particles>(effects::Particles::create(basis));
+            auto shifted = std::get<effects::Particles>(effects::Particles::create(basis));
+            for (auto *pool : {&control, &shifted})
+                require(std::holds_alternative<std::monostate>(
+                            pool->emit({basis.stamp, {}, {radius * 6.0, 0, 0}}, 4)),
+                        "particle emission failed");
+            auto target = basis;
+            ++target.stamp.epoch;
+            target.origin[0] = {145'000'000'001, -0x1p31 + 128};
+            require(std::holds_alternative<std::monostate>(shifted.rebase(target)),
+                    "particle origin transfer failed");
+            for (auto *pool : {&control, &shifted})
+                require(pool->step() == Result<Tick>{Tick{1}}, "particle tick failed");
+            const auto render_particles = [&](const effects::ParticleSnapshot &snapshot) {
+                const auto particles = snapshot.particles();
+                require(particles.size() == 1, "unexpected particle count");
+                auto output_basis = basis;
+                output_basis.stamp.tick = snapshot.frame.stamp.tick;
+                const auto local = std::get<coordinates::Sample>(
+                    coordinates::transform({snapshot.frame.stamp, particles.front().position_metres,
+                                            particles.front().velocity_mps},
+                                           snapshot.frame, output_basis));
+                shader::InstanceTransform instance{identity, identity};
+                for (std::size_t axis = 0; axis < 3; ++axis)
+                    instance.model.columns[12 + axis] =
+                        static_cast<float>(local.position_metres[axis]);
+                auto draw = extra;
+                draw.instances = std::span{&instance, 1};
+                wait(context,
+                     take(renderer.draw(context, version, view, targets, {}, std::span{&draw, 1})));
+                return read_pixels(color);
+            };
+            const auto moved = render_particles(control.snapshot());
+            const auto rebased = render_particles(shifted.snapshot());
+            std::size_t lit_particles = 0;
+            for (std::size_t i = 0; i < moved.size(); i += 4)
+                if (moved[i] >= 0x4400 && moved[i + 2] >= 0x4400)
+                    ++lit_particles;
+            require(lit_particles > 0 && moved != marker_pixels && rebased == moved,
+                    "particle motion or origin-transfer HDR readback differs");
+            wait(context, take(renderer.draw(context, version, view, targets)));
+            require(read_pixels(color) == plain, "particle draw changed the default scene output");
+            std::printf("particle_rebase_hdr_equal=1 particle_lit_pixels=%zu default_hdr_equal=1\n",
+                        lit_particles);
+        }
     }
     DrawGate gate(context);
     const std::weak_ptr<const SceneVersion> weak = version;

@@ -26,9 +26,11 @@ VkShaderModule module(VkDevice device, std::span<const std::uint32_t> words) {
 }
 #endif
 } // namespace
-MeshPipeline::MeshPipeline(VkDevice device, VkPhysicalDevice physical) : device_(device) {
+MeshPipeline::MeshPipeline(VkDevice device, VkPhysicalDevice physical, bool motion)
+    : device_(device) {
 #if !defined(NGEN_COMPILED_SHADERS)
     (void)physical;
+    (void)motion;
     device_ = VK_NULL_HANDLE;
     throw std::runtime_error("mesh shaders unavailable; enable the offline shader build");
 #else
@@ -51,7 +53,13 @@ MeshPipeline::MeshPipeline(VkDevice device, VkPhysicalDevice physical) : device_
             throw std::runtime_error("mesh instance constants exceed the uniform range");
         instance_offset_ = material_offset_ + material_stride_ * draw_limit;
         instance_stride_ = aligned(sizeof(shader::InstanceConstants));
-        scratch_.resize(static_cast<std::size_t>(instance_offset_ + instance_stride_ * draw_limit));
+        motion_offset_ = instance_offset_ + instance_stride_ * draw_limit;
+        if (motion) {
+            if (sizeof(shader::MotionDrawConstants) > properties.limits.maxUniformBufferRange)
+                throw std::runtime_error("mesh motion constants exceed the uniform range");
+            motion_stride_ = aligned(sizeof(shader::MotionDrawConstants));
+        }
+        scratch_.resize(static_cast<std::size_t>(motion_offset_ + motion_stride_ * draw_limit));
         const std::array frame_bindings{
             VkDescriptorSetLayoutBinding{0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, 1,
                                          VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT,
@@ -63,7 +71,10 @@ MeshPipeline::MeshPipeline(VkDevice device, VkPhysicalDevice physical) : device_
             VkDescriptorSetLayoutBinding{3, VK_DESCRIPTOR_TYPE_SAMPLER, 1,
                                          VK_SHADER_STAGE_FRAGMENT_BIT, nullptr},
             VkDescriptorSetLayoutBinding{4, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, 1,
-                                         VK_SHADER_STAGE_VERTEX_BIT, nullptr}};
+                                         VK_SHADER_STAGE_VERTEX_BIT, nullptr},
+            VkDescriptorSetLayoutBinding{5, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, 1,
+                                         VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT,
+                                         nullptr}};
         std::array<VkDescriptorSetLayoutBinding, 11> material_bindings{};
         for (std::uint32_t i = 0; i < material_bindings.size(); ++i)
             material_bindings[i] = {i,
@@ -72,7 +83,9 @@ MeshPipeline::MeshPipeline(VkDevice device, VkPhysicalDevice physical) : device_
                                                                 : VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE),
                                     i == 6 ? 5U : 1U, VK_SHADER_STAGE_FRAGMENT_BIT, nullptr};
         const std::array<std::span<const VkDescriptorSetLayoutBinding>, 2> bindings{
-            frame_bindings, material_bindings};
+            std::span(frame_bindings)
+                .first(motion ? frame_bindings.size() : frame_bindings.size() - 1),
+            material_bindings};
         for (std::size_t i = 0; i < bindings.size(); ++i) {
             VkDescriptorSetLayoutCreateInfo info{};
             info.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
@@ -88,9 +101,10 @@ MeshPipeline::MeshPipeline(VkDevice device, VkPhysicalDevice physical) : device_
         check(vkCreatePipelineLayout(device_, &layout, nullptr, &layout_),
               "create mesh pipeline layout");
         constexpr auto records = static_cast<std::uint32_t>(2 * draw_limit);
-        const std::array sizes{VkDescriptorPoolSize{VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, records * 4},
-                               VkDescriptorPoolSize{VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE, records * 9},
-                               VkDescriptorPoolSize{VK_DESCRIPTOR_TYPE_SAMPLER, records * 7}};
+        const std::array sizes{
+            VkDescriptorPoolSize{VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, records * (motion ? 5U : 4U)},
+            VkDescriptorPoolSize{VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE, records * 9},
+            VkDescriptorPoolSize{VK_DESCRIPTOR_TYPE_SAMPLER, records * 7}};
         VkDescriptorPoolCreateInfo pool{};
         pool.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
         pool.maxSets = records * 2;
@@ -126,8 +140,10 @@ MeshPipeline::MeshPipeline(VkDevice device, VkPhysicalDevice physical) : device_
         sampler_info.maxLod = VK_LOD_CLAMP_NONE;
         check(vkCreateSampler(device_, &sampler_info, nullptr, &environment_sampler_),
               "create mesh environment sampler");
-        modules[0] = module(device_, compiled::pbr_vertex);
-        modules[1] = module(device_, compiled::pbr_fragment);
+        modules[0] = motion ? module(device_, compiled::history_vertex)
+                            : module(device_, compiled::pbr_vertex);
+        modules[1] = motion ? module(device_, compiled::history_fragment)
+                            : module(device_, compiled::pbr_fragment);
         modules[2] = module(device_, compiled::shadow_vertex);
         modules[3] = module(device_, compiled::shadow_fragment);
         std::array stages{VkPipelineShaderStageCreateInfo{
@@ -199,11 +215,13 @@ MeshPipeline::MeshPipeline(VkDevice device, VkPhysicalDevice physical) : device_
         dynamic.sType = VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO;
         dynamic.dynamicStateCount = static_cast<std::uint32_t>(dynamic_states.size());
         dynamic.pDynamicStates = dynamic_states.data();
-        const VkFormat color_format = VK_FORMAT_R16G16B16A16_SFLOAT;
+        const std::array color_formats{VK_FORMAT_R16G16B16A16_SFLOAT,
+                                       VK_FORMAT_R16G16B16A16_SFLOAT};
+        std::array<VkPipelineColorBlendAttachmentState, 2> color_blends{};
         VkPipelineRenderingCreateInfo rendering{};
         rendering.sType = VK_STRUCTURE_TYPE_PIPELINE_RENDERING_CREATE_INFO;
         rendering.colorAttachmentCount = 1;
-        rendering.pColorAttachmentFormats = &color_format;
+        rendering.pColorAttachmentFormats = color_formats.data();
         rendering.depthAttachmentFormat = VK_FORMAT_D32_SFLOAT;
         VkGraphicsPipelineCreateInfo info{};
         info.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
@@ -228,13 +246,16 @@ MeshPipeline::MeshPipeline(VkDevice device, VkPhysicalDevice physical) : device_
                 static_cast<std::uint32_t>(shadow ? shadow_attributes.size() : attributes.size());
             vertex.pVertexAttributeDescriptions =
                 shadow ? shadow_attributes.data() : attributes.data();
-            rendering.colorAttachmentCount = blend.attachmentCount = shadow ? 0U : 1U;
-            rendering.pColorAttachmentFormats = shadow ? nullptr : &color_format;
+            rendering.colorAttachmentCount = blend.attachmentCount =
+                shadow ? 0U : (motion ? 2U : 1U);
+            rendering.pColorAttachmentFormats = shadow ? nullptr : color_formats.data();
             raster.cullMode = facing == 0 ? VK_CULL_MODE_NONE : VK_CULL_MODE_BACK_BIT;
             raster.frontFace =
                 facing == 1 ? VK_FRONT_FACE_CLOCKWISE : VK_FRONT_FACE_COUNTER_CLOCKWISE;
             depth.depthWriteEnable = transparent ? VK_FALSE : VK_TRUE;
             attachment.blendEnable = transparent ? VK_TRUE : VK_FALSE;
+            color_blends.fill(attachment);
+            blend.pAttachments = color_blends.data();
             check(vkCreateGraphicsPipelines(device_, VK_NULL_HANDLE, 1, &info, nullptr,
                                             &pipelines_[i]),
                   "create prewarmed mesh pipeline");
@@ -296,7 +317,7 @@ VkSampler MeshPipeline::sampler(const MeshSampler &description) {
     samplers_[sampler_count_++] = {description, native};
     return native;
 }
-std::span<const std::byte> MeshPipeline::prepare(const MeshPass &pass) {
+std::span<const std::byte> MeshPipeline::prepare(const MeshPass &pass, VkExtent2D extent) {
     std::memcpy(scratch_.data() + light_offset_, &pass.lights, sizeof(pass.lights));
     for (std::size_t i = 0; i < pass.draws.size(); ++i) {
         std::memcpy(scratch_.data() + i * frame_stride_, &pass.draws[i].frame,
@@ -311,6 +332,23 @@ std::span<const std::byte> MeshPipeline::prepare(const MeshPass &pass) {
         } else {
             std::memcpy(target, pass.draws[i].instances.data(),
                         pass.draws[i].instances.size_bytes());
+        }
+        if (motion_stride_ != 0) {
+            shader::MotionDrawConstants motion{};
+            if (const auto *history = pass.draws[i].history) {
+                motion.previousClipFromLocal = history->clip_from_local;
+                motion.viewportAndHistory = {static_cast<float>(extent.width),
+                                             static_cast<float>(extent.height), 1, 0};
+                if (history->instances.empty()) {
+                    motion.previousInstances[0] =
+                        shader::Matrix{{1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1}};
+                } else {
+                    std::copy(history->instances.begin(), history->instances.end(),
+                              motion.previousInstances.begin());
+                }
+            }
+            std::memcpy(scratch_.data() + motion_offset_ + i * motion_stride_, &motion,
+                        sizeof(motion));
         }
     }
     return scratch_;
@@ -328,7 +366,9 @@ void MeshPipeline::descriptors(const MeshRecording &recording) {
             VkDescriptorBufferInfo{recording.uniform, material_offset_ + i * material_stride_,
                                    sizeof(shader::MaterialConstants)},
             VkDescriptorBufferInfo{recording.uniform, instance_offset_ + i * instance_stride_,
-                                   sizeof(shader::InstanceConstants)}};
+                                   sizeof(shader::InstanceConstants)},
+            VkDescriptorBufferInfo{recording.uniform, motion_offset_ + i * motion_stride_,
+                                   sizeof(shader::MotionDrawConstants)}};
         std::array<VkDescriptorImageInfo, 9> images{};
         images[0] = {VK_NULL_HANDLE, recording.shadow, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL};
         constexpr std::array<std::size_t, 5> slots{0, 2, 1, 3, 4};
@@ -345,7 +385,7 @@ void MeshPipeline::descriptors(const MeshRecording &recording) {
         samplers[6].sampler = environment_sampler_;
         for (std::size_t map = 0; map < 5; ++map)
             samplers[map + 1].sampler = sampler(draw.samplers[map]);
-        std::array<VkWriteDescriptorSet, 16> writes{};
+        std::array<VkWriteDescriptorSet, 17> writes{};
         std::size_t count = 0;
         const auto add = [&](VkDescriptorSet set, std::uint32_t binding, VkDescriptorType type,
                              std::uint32_t size, const VkDescriptorBufferInfo *buffer,
@@ -364,6 +404,8 @@ void MeshPipeline::descriptors(const MeshRecording &recording) {
         add(sets[0], 2, VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE, 1, nullptr, &images[0]);
         add(sets[0], 3, VK_DESCRIPTOR_TYPE_SAMPLER, 1, nullptr, &samplers[0]);
         add(sets[0], 4, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, 1, &buffers[3], nullptr);
+        if (motion_stride_ != 0)
+            add(sets[0], 5, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, 1, &buffers[4], nullptr);
         add(sets[1], 0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, 1, &buffers[2], nullptr);
         for (std::uint32_t map = 0; map < 5; ++map)
             add(sets[1], map + 1, VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE, 1, nullptr, &images[map + 1]);

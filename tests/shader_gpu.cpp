@@ -742,10 +742,9 @@ class Fixture {
             buffer({.size = VkDeviceSize{dimension} * dimension * sizeof(shader::Float4),
                     .usage = VK_BUFFER_USAGE_TRANSFER_DST_BIT});
         bool initialized = false;
-        const auto draw = [&] {
-            write(frame_buffer, frame);
-            write(light_buffer, lights);
-            write(material_buffer, material);
+        const auto draw_to_target = [&](VkPipeline drawn, VkPipelineLayout draw_layout,
+                                        std::span<const VkDescriptorSet> draw_sets,
+                                        VkClearColorValue clear_color) {
             begin();
             barrier({.srcStageMask = VK_PIPELINE_STAGE_2_HOST_BIT,
                      .srcAccessMask = VK_ACCESS_2_HOST_WRITE_BIT,
@@ -766,7 +765,7 @@ class Fixture {
             color.imageLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
             color.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
             color.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
-            color.clearValue.color = {{0.03125F, 0.0625F, 0.125F, 0}};
+            color.clearValue.color = clear_color;
             VkRenderingInfo pass{};
             pass.sType = VK_STRUCTURE_TYPE_RENDERING_INFO;
             pass.renderArea = scissor;
@@ -774,10 +773,10 @@ class Fixture {
             pass.colorAttachmentCount = 1;
             pass.pColorAttachments = &color;
             vkCmdBeginRendering(commands, &pass);
-            vkCmdBindPipeline(commands, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline);
-            vkCmdBindDescriptorSets(commands, VK_PIPELINE_BIND_POINT_GRAPHICS, layout, 0,
-                                    static_cast<std::uint32_t>(sets.size()), sets.data(), 0,
-                                    nullptr);
+            vkCmdBindPipeline(commands, VK_PIPELINE_BIND_POINT_GRAPHICS, drawn);
+            vkCmdBindDescriptorSets(commands, VK_PIPELINE_BIND_POINT_GRAPHICS, draw_layout, 0,
+                                    static_cast<std::uint32_t>(draw_sets.size()), draw_sets.data(),
+                                    0, nullptr);
             const VkDeviceSize offset = 0;
             vkCmdBindVertexBuffers(commands, 0, 1, &vertex_buffer.handle, &offset);
             vkCmdDraw(commands, 6, 1, 0, 0);
@@ -800,6 +799,12 @@ class Fixture {
             submit();
             initialized = true;
             invalidate(readback);
+        };
+        const auto draw = [&] {
+            write(frame_buffer, frame);
+            write(light_buffer, lights);
+            write(material_buffer, material);
+            draw_to_target(pipeline, layout, sets, {{0.03125F, 0.0625F, 0.125F, 0}});
         };
         const auto pixel = [&](std::size_t x, std::size_t y) {
             shader::Float4 value{};
@@ -979,6 +984,43 @@ class Fixture {
                      "srgb_linear=1 "
                      "metallic_roughness=1 "
                      "local_light_clamp=1 normal_map=1 alpha_mask=1 emissive=1 shadow_compare=1\n";
+
+        const std::array motion_layouts{set_layout(std::span(frame_bindings).first(1))};
+        const auto motion_layout = pipeline_layout(motion_layouts);
+        const std::array motion_sets{descriptor_set(motion_layouts[0])};
+        stages[0].module = module(package / "motion-vertex.spv");
+        stages[1].module = module(package / "motion-fragment.spv");
+        vertex_info.vertexAttributeDescriptionCount = 1;
+        info.layout = motion_layout;
+        VkPipeline motion_pipeline{};
+        const auto motion_result = vkCreateGraphicsPipelines(device(), VK_NULL_HANDLE, 1, &info,
+                                                             nullptr, &motion_pipeline);
+        if (motion_pipeline)
+            pipelines.push_back(motion_pipeline);
+        check(motion_result, "create motion fixture pipeline");
+        shader::MotionConstants motion{
+            identity,
+            identity,
+            {static_cast<float>(dimension), static_cast<float>(dimension), 1, 0}};
+        const auto motion_buffer =
+            buffer({.size = sizeof(motion), .usage = VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT});
+        descriptor(motion_sets[0], 0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, motion_buffer);
+        const auto measure_motion = [&](shader::Float4 expected) {
+            write(motion_buffer, motion);
+            draw_to_target(motion_pipeline, motion_layout, motion_sets, {});
+            equal_pixel(pixel(32, 32), expected, .001F);
+            equal_pixel(pixel(0, 0), {}, .001F);
+        };
+        measure_motion({0, 0, 0, 1});
+        motion.previousClipFromLocal.columns[12] = -.25F;
+        motion.previousClipFromLocal.columns[13] = .125F;
+        measure_motion({-8, 4, 0, 1});
+        motion.viewportAndHistory[2] = 0;
+        measure_motion({});
+        motion.viewportAndHistory[2] = 1;
+        motion.previousClipFromLocal.columns[15] = -1;
+        measure_motion({});
+        std::cout << "motion_shader_readback=1 stationary=1 current_to_previous=-8,4 invalid=1\n";
     }
     std::unique_ptr<Context> context;
     VkCommandBuffer commands{};

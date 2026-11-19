@@ -1,3 +1,5 @@
+#include "motion_vector.slangh"
+
 struct FrameConstants
 {
     float4x4 viewProjection;
@@ -35,6 +37,13 @@ struct MaterialConstants
     // w: emissive blend flow, normalized phase(low16), amount(high16); zero disables.
     uint4 flags; // x: alpha; y: UV1 bits; z: low2 normal/facing, high16 stable flow seed.
 };
+struct MotionDrawConstants
+{
+    float4x4 previousClipFromLocal;
+    float4 viewportAndHistory;
+    float4x4 previousInstances[100];
+};
+[[vk::binding(5, 0)]] ConstantBuffer<MotionDrawConstants> motionDraw;
 [[vk::binding(0, 0)]] ConstantBuffer<FrameConstants> frame;
 [[vk::binding(1, 0)]] ConstantBuffer<LightConstants> localLights;
 [[vk::binding(2, 0)]] Texture2D<float> shadowMap;
@@ -70,8 +79,7 @@ struct Varying
     float4 shadowPosition : TEXCOORD4;
     float2 uv1 : TEXCOORD5;
 };
-[shader("vertex")]
-Varying vertexMain(Vertex input, uint instanceId : SV_VulkanInstanceID)
+Varying meshVertex(Vertex input, uint instanceId)
 {
     Varying output;
     InstanceTransform instance = instances.transforms[instanceId];
@@ -85,6 +93,26 @@ Varying vertexMain(Vertex input, uint instanceId : SV_VulkanInstanceID)
     output.uv = input.uv;
     output.uv1 = input.uv1;
     output.shadowPosition = mul(frame.lightViewProjection, world);
+    return output;
+}
+
+[shader("vertex")]
+Varying vertexMain(Vertex input, uint instanceId : SV_VulkanInstanceID)
+{
+    return meshVertex(input, instanceId);
+}
+struct HistoryVarying
+{
+    Varying current;
+    float4 previousClip : TEXCOORD6;
+};
+[shader("vertex")]
+HistoryVarying historyVertex(Vertex input, uint instanceId : SV_VulkanInstanceID)
+{
+    HistoryVarying output;
+    output.current = meshVertex(input, instanceId);
+    output.previousClip = mul(motionDraw.previousClipFromLocal,
+                              mul(motionDraw.previousInstances[instanceId], float4(input.position, 1)));
     return output;
 }
 
@@ -208,8 +236,7 @@ float2 emissiveFlow(float2 guide)
     float transverse = tail * 0.04 * (jetNoise(float2(advected * 0.125, guide.y * 3), 63u) - 0.5);
     return float2(transverse, density);
 }
-[shader("fragment")]
-float4 fragmentMain(Varying input, bool frontFace : SV_IsFrontFace) : SV_Target0
+float4 shadeMesh(Varying input, bool frontFace)
 {
     float2 flow = emissiveFlow(input.uv);
     float2 flowOffset = float2(0, flow.x);
@@ -263,4 +290,25 @@ float4 fragmentMain(Varying input, bool frontFace : SV_IsFrontFace) : SV_Target0
     color += ((1 - f) * (1 - metal) * diffuse + prefiltered * (f * brdf.x + brdf.y)) * occlusion;
     color += emissiveMap.Sample(materialSamplers[4], textureUv(input, 4) + flowOffset).rgb * material.emissiveAlphaCutoff.rgb * flow.y;
     return float4(color, albedo.a); // Linear HDR; tone mapping belongs to the post pass.
+}
+[shader("fragment")]
+float4 fragmentMain(Varying input, bool frontFace : SV_IsFrontFace) : SV_Target0
+{
+    return shadeMesh(input, frontFace);
+}
+struct HistoryOutput
+{
+    float4 color : SV_Target0;
+    float4 motion : SV_Target1;
+};
+[shader("fragment")]
+HistoryOutput historyFragment(HistoryVarying input, bool frontFace : SV_IsFrontFace)
+{
+    HistoryOutput output;
+    output.color = shadeMesh(input.current, frontFace);
+    // Identical blend state on both attachments: zero alpha preserves the
+    // underlying opaque history without requiring independentBlend.
+    output.motion = material.flags.x == 2 ? float4(0) :
+        motionVector(input.previousClip, input.current.position.xy, motionDraw.viewportAndHistory);
+    return output;
 }

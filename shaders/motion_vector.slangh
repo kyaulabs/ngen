@@ -1,0 +1,11 @@
+// Previous minus current pixels in a positive-height Vulkan viewport.
+float4 motionVector(float4 previous, float2 currentPixel, float4 viewportAndHistory)
+{
+    if (viewportAndHistory.z != 1.0 || !all(isfinite(previous)) || previous.w <= 1e-6)
+        return 0;
+    const float3 ndc = previous.xyz / previous.w;
+    if (any(abs(ndc.xy) > 1) || ndc.z < 0 || ndc.z > 1)
+        return 0;
+    const float2 pixel = (ndc.xy * 0.5 + 0.5) * viewportAndHistory.xy;
+    return float4(pixel - currentPixel, 0, 1);
+}
