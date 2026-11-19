@@ -1,4 +1,26 @@
 ## 📜 Changelog
+### [0.5.0](https://github.com/kyaulabs/ngen/releases/tag/v0.5.0)
+
+#### 🚀 Features
+
+- **flight:** Align camera pose history across origin epochs ([20140fb](https://github.com/kyaulabs/ngen/commit/20140fb06fef8e8b6e50240134a8b53f51d3a988))
+
+- **flight:** Preserve authored navigation and views during rebases ([2f22ab6](https://github.com/kyaulabs/ngen/commit/2f22ab6d8f9b414d4a735d24f4dda86bf7e330af))
+
+- **flight:** Verify combined presentation history across rebases ([9540468](https://github.com/kyaulabs/ngen/commit/95404680ccd5e40911a1639155c5977660ea9061))
+
+- **flight:** Integrate combined frame history across rebases (#102) ([0db7a9a](https://github.com/kyaulabs/ngen/commit/0db7a9a731ff394aed609fce05c946b2fd337cc2))
+
+
+#### 🛠 Maintenance
+
+- **flight:** Reconcile frame history with the motion attachment ([b7e5142](https://github.com/kyaulabs/ngen/commit/b7e51424b235011e12786a699ccaaff526e66636))
+
+
+#### 🧪 Tests
+
+- **flight:** Retain checked projection coordinates for history checks ([fe9f31d](https://github.com/kyaulabs/ngen/commit/fe9f31dd6ac98dd89efdab4bfc1b80bc5f8826fb))
+
 ### [0.4.0](https://github.com/kyaulabs/ngen/releases/tag/v0.4.0)
 
 #### 🚀 Features
