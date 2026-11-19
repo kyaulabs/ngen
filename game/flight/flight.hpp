@@ -81,7 +81,7 @@ class Flight {
     // Failed preparation publishes no Flight; reset preserves the copied preset.
     [[nodiscard]] static Result<std::unique_ptr<Flight>>
     create(const ShipDefinition &definition, std::span<const physics::Box> static_obstacles = {},
-           coordinates::Position authored_origin = {});
+           coordinates::Position authored_origin = {}, Tick initial_tick = {});
     ~Flight();
     Flight(const Flight &) = delete;
     Flight &operator=(const Flight &) = delete;

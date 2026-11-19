@@ -96,8 +96,8 @@ struct World::Impl {
     bool failed{};
     // Destroy the system before its borrowed filters, scratch and job owner.
     JPH::PhysicsSystem physics;
-    Impl(std::uint64_t id, const coordinates::Position &origin)
-        : frame{.stamp = {id, 1, {}}, .origin = origin} {
+    Impl(std::uint64_t id, const coordinates::Position &origin, Tick initial_tick)
+        : frame{.stamp = {id, 1, initial_tick}, .origin = origin} {
         physics.Init(body_capacity, 0, 8192, 4096, broadphase, object_broadphase, object_pair);
         physics.SetGravity(JPH::Vec3::sZero());
     }
@@ -121,7 +121,7 @@ struct World::Impl {
 };
 World::World(std::unique_ptr<Impl> impl) : impl_(std::move(impl)) {}
 World::~World() = default;
-Result<std::unique_ptr<World>> World::create(coordinates::Position origin) {
+Result<std::unique_ptr<World>> World::create(coordinates::Position origin, Tick initial_tick) {
     const auto canonical = coordinates::normalize(origin);
     if (const auto *error = std::get_if<Error>(&canonical))
         return *error;
@@ -135,7 +135,8 @@ Result<std::unique_ptr<World>> World::create(coordinates::Position origin) {
             if (domain == std::numeric_limits<std::uint64_t>::max())
                 return Error::overflow;
         } while (!domains.compare_exchange_weak(domain, domain + 1));
-        return std::unique_ptr<World>(new World(std::make_unique<Impl>(domain + 1, origin)));
+        return std::unique_ptr<World>(
+            new World(std::make_unique<Impl>(domain + 1, origin, initial_tick)));
     } catch (const std::bad_alloc &) {
         return Error::capacity;
     }

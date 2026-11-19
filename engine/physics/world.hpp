@@ -32,7 +32,8 @@ class World {
   public:
     static constexpr std::size_t body_capacity = 128;
     static constexpr unsigned ticks_per_second = 60;
-    [[nodiscard]] static Result<std::unique_ptr<World>> create(coordinates::Position origin = {});
+    [[nodiscard]] static Result<std::unique_ptr<World>> create(coordinates::Position origin = {},
+                                                               Tick initial_tick = {});
     ~World();
     World(const World &) = delete;
     World &operator=(const World &) = delete;
