@@ -1,6 +1,6 @@
 # Milestones and atomic implementation tasks
 
-Current delivery: M1–M3 are accepted; [0.6.0](https://github.com/kyaulabs/ngen/releases/tag/v0.6.0) adds M4-D bounded headless warp as source only. M3's private preview remains source-bound to `e45ba673`; public source is not a playable bundle. Resume at C1-D owned play, inspection and reload in the [execution order](execution-order.md). C2 adds local MCP authoring/playtests once the relevant C1 operations exist. No implementation starts merely because this plan or its tracker changes. See the [executive brief](executive-brief.md) and [final M3 verification](../evidence/M3/ui/final-verification.md).
+Current delivery: M1–M3 are accepted; [0.7.0](https://github.com/kyaulabs/ngen/releases/tag/v0.7.0) adds C1-D owned headless board play, inspection and reload as source only. M3's private preview remains source-bound to `e45ba673`; public source is not a playable bundle. Resume at C2-A local read-only MCP discovery in the [execution order](execution-order.md). Later C2 steps add authoring and owned playtest operations. No implementation starts merely because this plan or its tracker changes. See the [executive brief](executive-brief.md) and [final M3 verification](../evidence/M3/ui/final-verification.md).
 
 | Scope | Current state |
 |---|---|
