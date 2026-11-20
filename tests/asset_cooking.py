@@ -17,6 +17,7 @@ EXE = os.environ["NGEN_ASSETC_EXE"]
 KTX = os.environ["NGEN_KTX_EXE"]
 PROBE = os.environ["NGEN_PACKAGE_PROBE"]
 FAILURE_PROBE = Path(os.environ["NGEN_PACKAGE_FAILURE_PROBE"])
+PLAYER = os.environ["NGEN_CREATOR_PLAYER"]
 COOK = Path(__file__).resolve().parents[1] / "tools/assetc/cook.py"
 
 
@@ -132,6 +133,31 @@ class SceneCooking(unittest.TestCase):
                                     capture_output=True, text=True, timeout=20, check=False)
             self.assertEqual(result.returncode, 0, result.stderr)
             self.assertEqual(json.loads(result.stdout)["package_valid"], 1)
+
+    def test_owned_board_player_keeps_snapshot_on_bad_reload(self):
+        with tempfile.TemporaryDirectory(prefix="ngen board player ") as directory:
+            root = Path(directory)
+            source = root / "triangle.glb"
+            source.write_bytes(triangle())
+            cooked = cook(source, root / "package")
+            self.assertEqual(cooked.returncode, 0, cooked.stderr)
+            package = root / "package/scene.ngas"
+            shutil.copyfile(package, root / "r1.ngas")
+            (root / "r2.ngas").write_bytes(b"bad package")
+            shutil.copyfile(package, root / "r3.ngas")
+            player = subprocess.run([PLAYER], cwd=root, capture_output=True, text=True,
+                                    input="load 0 1 1000\ninspect\nload 1 2 2000\ninspect\n"
+                                          "load 0 3 3000\ninspect\nload 1 3 3000\ninspect\nstop\n",
+                                    timeout=20, check=False)
+            self.assertEqual(player.returncode, 0, player.stderr)
+            rows = [json.loads(line) for line in player.stdout.splitlines()]
+            self.assertEqual(len(rows), 9, rows)
+            first = {"ok": True, "generation": 1, "revision": 1, "tick": 1,
+                     "marker_mm": 1042, "instances": 1}
+            second = {**first, "generation": 2, "revision": 3, "marker_mm": 3042}
+            self.assertEqual(rows, [first, first, {"ok": False, "error": "package"}, first,
+                                    {"ok": False, "error": "stale"}, first, second, second,
+                                    {"ok": True, "stopped": True}])
 
     def test_stage_retains_source_and_emits_typed_geometry_sections(self):
         with tempfile.TemporaryDirectory(prefix="ngen scene cooking ") as directory:

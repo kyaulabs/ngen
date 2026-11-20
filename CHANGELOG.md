@@ -1,4 +1,12 @@
 ## 📜 Changelog
+### [0.7.0](https://github.com/kyaulabs/ngen/releases/tag/v0.7.0)
+
+#### 🚀 Features
+
+- **creator:** Add an owned headless board playtest ([4bb6527](https://github.com/kyaulabs/ngen/commit/4bb652745628fe50f4ff4cdd80341ecf3f2487bc))
+
+- **creator:** Integrate owned headless board playtest (#108) ([3ad3f2a](https://github.com/kyaulabs/ngen/commit/3ad3f2a5cf1ab83279db8ab2c39330bae7c9f14b))
+
 ### [0.6.0](https://github.com/kyaulabs/ngen/releases/tag/v0.6.0)
 
 #### 🚀 Features

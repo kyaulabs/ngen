@@ -180,6 +180,7 @@ jobs:
           sudo unshare --net -- runuser -u "$(id -un)" -- env -u DISPLAY -u WAYLAND_DISPLAY "$(command -v ctest)" --preset "asset-$PRESET"
           python3 tests/asset_tidy.py
           python3 tools/assetc/check_tidy.py --build "build/asset-$PRESET" --tidy clang-tidy-18
+          clang-tidy-18 -p "build/asset-$PRESET" apps/creator_player/main.cpp
       - name: Check whitespace and offline runtime
         env:
           PRESET: ${{ matrix.preset }}

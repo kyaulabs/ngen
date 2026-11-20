@@ -82,5 +82,6 @@ board marker with the installed starter SDK. It verifies observable edit/reload,
 undo/redo across processes, stale and invalid input, and non-overwriting package
 behavior. Clang 23.1.4 Release and strict Debug ASan/UBSan with leak detection on
 Linux passed the 10-test asset/SDK suites. The native consumer reads the cooked
-mesh, not the authoring document. Owned play/inspection/reload remains C1-D;
-MCP, GUI authoring and independent C1 acceptance are separate.
+mesh, not the authoring document. The optional [headless board playtest](creator-play.md)
+consumes a saved scene through the same validators. MCP, GUI authoring and
+independent C1 acceptance are separate.

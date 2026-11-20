@@ -83,6 +83,14 @@ publishes the current scene with its undo/redo state. Source packages contain
 only the active scene and admitted references, not local history. No editor,
 active runtime snapshot mutation, MCP capability or execution service is added.
 
+## C1-D review scope
+
+The [owned board playtest](../creator-play.md) starts trusted tools in Linux
+namespaces with staged data only. It does not build or execute project code.
+The CLI uses the saved scene revision and its own play generation. Native
+publication follows a checked cook and a deterministic simulation tick.
+No MCP grant, arbitrary execution, GUI editor, or broader status change.
+
 ## Evidence
 
 [Creator scope and acceptance](../planning/creator-toolchain.md), the current
