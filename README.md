@@ -11,7 +11,7 @@ platform and Windows compiler/runtime evidence at recorded revisions. Its first
 showcase is an offline spacecraft flight demonstration; the longer-term goal is
 a reusable engine and creator toolchain, alongside an authoritative PvPvE universe.
 
-**[0.7.0 is available as source only.](https://github.com/kyaulabs/ngen/releases/tag/v0.7.0)**
+**[0.8.0 is available as source only.](https://github.com/kyaulabs/ngen/releases/tag/v0.8.0)**
 It is not a downloadable playable game: the accepted private ship/scene assets,
 runtime bundles and recordings are not public release payloads.
 
@@ -39,7 +39,8 @@ runtime bundles and recordings are not public release payloads.
   verification with reviewed back-merges.
 
 The SDK and starter are not a general-purpose scene editor or a stable binary
-ABI. Gameplay economy, multiplayer, sovereignty and the MCP server are planned.
+ABI. The optional [MCP companion](docs/creator-mcp.md) provides read-only local
+project discovery. MCP authoring, gameplay economy, multiplayer and sovereignty are planned.
 Historical hardware and performance results retain their original source and
 configuration limits; see the [executive brief](docs/planning/executive-brief.md).
 
@@ -55,7 +56,7 @@ your platform; an arbitrary system compiler is not the pinned primary profile.
 CI's Clang 18 compatibility lane is separate.
 
 ```sh
-git clone --branch v0.7.0 --depth 1 https://github.com/kyaulabs/ngen.git
+git clone --branch v0.8.0 --depth 1 https://github.com/kyaulabs/ngen.git
 cd ngen
 
 python3 -m venv .venv
@@ -71,8 +72,8 @@ ctest --preset release --output-on-failure
 ```
 
 The release also provides a checked source tarball and SHA-256 inventory. See the
-[0.7.0 instructions](docs/releases/0.7.0.md) for download verification and the
-headless board playtest. Graphical execution additionally needs supported Vulkan
+[0.8.0 instructions](docs/releases/0.8.0.md) for download verification and
+local read-only MCP setup. Graphical execution additionally needs supported Vulkan
 hardware/drivers, the desktop audio path and a separately authorized compatible
 scene; the private flight scene is not included.
 

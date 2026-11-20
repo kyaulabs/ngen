@@ -1,4 +1,12 @@
 ## 📜 Changelog
+### [0.8.0](https://github.com/kyaulabs/ngen/releases/tag/v0.8.0)
+
+#### 🚀 Features
+
+- **creator:** Expose read-only project discovery over mcp ([ffeca5d](https://github.com/kyaulabs/ngen/commit/ffeca5d52ec92a4216d09f44e2df199ecff59e4e))
+
+- **creator:** Integrate read-only project discovery over mcp (#112) ([26df6d5](https://github.com/kyaulabs/ngen/commit/26df6d5095f82fc68a156657b79164d822d908a8))
+
 ### [0.7.0](https://github.com/kyaulabs/ngen/releases/tag/v0.7.0)
 
 #### 🚀 Features
