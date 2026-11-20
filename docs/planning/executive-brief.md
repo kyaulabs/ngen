@@ -9,9 +9,10 @@ source/checksums, release CI and the completed back-merge verify. It does not
 include the private playable scene/bundles/media. The source-only
 [0.6.0 release](../releases/0.6.0.md) adds bounded headless warp with collision
 checks before arrival. The source-only [0.7.0 release](../releases/0.7.0.md)
-adds owned headless board play, inspection and reload. Local read-only MCP
-is next in the [execution order](execution-order.md); streaming and multiplayer
-remain future work in the [roadmap].
+adds owned headless board play, inspection and reload. The source-only
+[0.8.0 release](../releases/0.8.0.md) adds local read-only MCP discovery.
+Two-system streaming is next in the [execution order](execution-order.md);
+MCP authoring and multiplayer remain future work in the [roadmap].
 
 The working C++20 foundation uses pinned Conan/CMake/Ninja graphs, explicit RAII
 ownership, bounded commands/jobs and immutable owning snapshots. SDL/Vulkan,
