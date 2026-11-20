@@ -91,6 +91,17 @@ The CLI uses the saved scene revision and its own play generation. Native
 publication follows a checked cook and a deterministic simulation tick.
 No MCP grant, arbitrary execution, GUI editor, or broader status change.
 
+## C2-A review scope
+
+The optional [creator MCP companion](../creator-mcp.md) pins the official
+Python SDK 2.3.0 and uses Linux stdio. The existing creator operations already
+run in Python; this avoids duplicating validation or implementing a protocol
+stack. The launcher grants one directory before the session starts. The client
+can discover its handle and request validated metadata, but cannot grant
+another root, read files by path, write, or execute project code. No network
+transport or engine dependency is added. This slice does not ratify the broader
+proposal or authorize later C2 capabilities.
+
 ## Evidence
 
 [Creator scope and acceptance](../planning/creator-toolchain.md), the current

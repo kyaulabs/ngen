@@ -17,12 +17,13 @@ import creator_scene
 
 ROOT = Path(__file__).resolve().parents[1]
 MANIFEST = "ngen-project.json"
+PROJECT_NAME = r"^[a-z][a-z0-9-]{0,39}$"
 LIMITS = {MANIFEST: 4096, "CMakeLists.txt": 64 * 1024, "main.cpp": 256 * 1024,
           "marker.glb": 16 * 1024**2, "LICENSE": 64 * 1024}
 
 
 def project_name(name):
-    if not isinstance(name, str) or not re.fullmatch(r"[a-z][a-z0-9-]{0,39}", name):
+    if not isinstance(name, str) or not re.fullmatch(PROJECT_NAME, name):
         raise ValueError("name must be a lowercase project slug of 1–40 characters")
     return name
 
