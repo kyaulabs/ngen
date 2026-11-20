@@ -23,7 +23,7 @@ engine, game or MCP implementation.
 |---|---|
 | Last verified step | **09 — [C2-A #77](https://github.com/kyaulabs/ngen/issues/77)**; local read-only MCP discovery. |
 | Next step | **10 — [M4-E #15](https://github.com/kyaulabs/ngen/issues/15)**; connected-system streaming. |
-| Next entry decision | Fix the two-system manifests, traversal and residency budgets; map upload readiness to the existing arrival gate. |
+| Next entry decision | Use one protected NPC starter system and one lawless system, with no sector overrides. Fix the manifests, traversal and residency budgets; map upload readiness to the existing arrival gate. |
 | Optional selections | M11 features and M12 settlement are not selected by this schedule. |
 
 Resume request: **“Read `docs/planning/execution-order.md` and continue from the
@@ -89,8 +89,9 @@ entry model. **Before 04:** agree on contact tolerances and the representative
 **Before 06:** finish and verify both M4-F and M4-G. Keep their rendering
 and GPU readback separate from the existing CPU-projected motion evidence.
 **After 10:** close M4's integrated two-system traversal, origin/history, streaming
-failure and budget gates. Declare the protected/lawless distribution and protected
-starts; this is manifest data, not an assertion that M8 police are implemented.
+failure and budget gates. Verify the fixture’s one protected system and one lawless
+system, including protected NPC starts and no sector overrides. This is manifest
+data, not an assertion that M8 police are implemented.
 
 ## 11–22: Miniature offline game, usable creators and complete local MCP
 
