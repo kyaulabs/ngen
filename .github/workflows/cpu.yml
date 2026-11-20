@@ -25,6 +25,12 @@ jobs:
           python3 -m venv "$RUNNER_TEMP/tools"
           "$RUNNER_TEMP/tools/bin/pip" install conan==2.34.0 cmake==4.4.4 ninja==1.13.2
           echo "$RUNNER_TEMP/tools/bin" >> "$GITHUB_PATH"
+      - name: Test optional creator MCP over stdio
+        if: matrix.preset == 'release'
+        run: |
+          python3 -m venv "$RUNNER_TEMP/creator-mcp"
+          "$RUNNER_TEMP/creator-mcp/bin/pip" install -r tools/creator-mcp-requirements.txt
+          PYTHONDONTWRITEBYTECODE=1 "$RUNNER_TEMP/creator-mcp/bin/python" -m unittest tests.creator_mcp -v
       - name: Test Windows script boundaries (no Windows build)
         shell: pwsh
         run: ./tests/windows_build.ps1

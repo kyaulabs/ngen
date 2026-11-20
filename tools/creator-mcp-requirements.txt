@@ -1,0 +1,3 @@
+# Optional local companion only; not installed by CMake or the runtime SDK.
+mcp==2.3.0
+mcp-types==2.3.0
