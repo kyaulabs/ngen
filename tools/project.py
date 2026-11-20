@@ -93,6 +93,11 @@ def main():
         command.add_argument("project", type=Path)
         if action != "show":
             command.add_argument("--expect", required=True, type=int)
+    play = commands.add_parser("play")
+    play.add_argument("project", type=Path)
+    play.add_argument("--expect", required=True, type=int)
+    for tool in ("assetc", "ktx", "probe", "player"):
+        play.add_argument(f"--{tool}", required=True, type=Path)
     args = parser.parse_args()
     try:
         if args.operation == "new":
@@ -100,6 +105,10 @@ def main():
         else:
             directory = os.open(args.project, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW)
             try:
+                if args.operation == "play":
+                    import creator_play
+                    creator_play.run(directory, lambda fd: validate(project_files(fd)), args)
+                    return 0
                 files = project_files(directory)
                 result = validate(files)
                 if args.operation == "scene":
@@ -113,7 +122,7 @@ def main():
                         result["archive"] = str(args.output)
             finally:
                 os.close(directory)
-    except (OSError, ValueError) as error:
+    except (OSError, RuntimeError, ValueError) as error:
         print(json.dumps({"ok": False, "operation": args.operation, "error": str(error)}), file=sys.stderr)
         return 1
     print(json.dumps({"ok": True, "operation": args.operation, **result}))

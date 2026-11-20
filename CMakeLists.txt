@@ -126,6 +126,8 @@ if(NGEN_BUILD_ASSET_TOOLS)
   target_link_libraries(ngen_asset_cook PUBLIC ngen_asset_import ngen_assets PRIVATE meshoptimizer::meshoptimizer)
   add_executable(assetc tools/assetc/main.cpp)
   target_link_libraries(assetc PRIVATE ngen_asset_cook)
+  add_executable(creator_player apps/creator_player/main.cpp)
+  target_link_libraries(creator_player PRIVATE ngen_assets ngen_simulation)
 endif()
 option(NGEN_BUILD_SHADERS "Build offline shader interface verification" OFF)
 if(NGEN_BUILD_SHADERS)
@@ -421,6 +423,7 @@ if(BUILD_TESTING)
       "NGEN_KTX_EXE=${NGEN_KTX_EXECUTABLE}"
       "NGEN_PACKAGE_PROBE=$<TARGET_FILE:asset_package_probe>"
       "NGEN_PACKAGE_FAILURE_PROBE=$<TARGET_FILE:asset_verification_stub>"
+      "NGEN_CREATOR_PLAYER=$<TARGET_FILE:creator_player>"
       ${Python3_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/tests/asset_cooking.py)
     set_tests_properties(asset_cook_cli PROPERTIES TIMEOUT 180)
     if(NGEN_INSTALL_SDK AND CMAKE_SYSTEM_NAME STREQUAL "Linux")
@@ -431,6 +434,8 @@ if(BUILD_TESTING)
         "NGEN_ASSETC_EXE=$<TARGET_FILE:assetc>"
         "NGEN_KTX_EXE=${NGEN_KTX_EXECUTABLE}"
         "NGEN_PACKAGE_PROBE=$<TARGET_FILE:asset_package_probe>"
+        "NGEN_CREATOR_PLAYER=$<TARGET_FILE:creator_player>"
+        "PYTHONDONTWRITEBYTECODE=1"
         ${Python3_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/tests/creator_project.py)
       set_tests_properties(creator_project PROPERTIES TIMEOUT 600)
     endif()

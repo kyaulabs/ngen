@@ -4,6 +4,7 @@ import fcntl
 import json
 import os
 from pathlib import Path
+import select
 import struct
 import subprocess
 import sys
@@ -15,6 +16,14 @@ import unittest
 ROOT = Path(__file__).resolve().parents[1]
 CLI = ROOT / "tools/project.py"
 IDENTITY = {"position_m": [0, 0, 0], "rotation_xyzw": [0, 0, 0, 1], "scale": [1, 1, 1]}
+
+
+def play_args(project, revision):
+    arguments = [sys.executable, str(CLI), "play", str(project), "--expect", str(revision)]
+    for tool, variable in (("assetc", "NGEN_ASSETC_EXE"), ("ktx", "NGEN_KTX_EXE"),
+                           ("probe", "NGEN_PACKAGE_PROBE"), ("player", "NGEN_CREATOR_PLAYER")):
+        arguments += [f"--{tool}", os.environ[variable]]
+    return arguments
 
 
 def command(*args, payload=None):
@@ -42,6 +51,79 @@ class CreatorProject(unittest.TestCase):
         result = self.scene(operation, **args)
         self.assertEqual(result.returncode, 0, result.stderr)
         return json.loads(result.stdout)
+
+    @unittest.skipUnless(os.environ.get("NGEN_PLAY_SANDBOX_TEST"), "requires Linux bubblewrap")
+    def test_owned_play_reports_a_checked_board_snapshot_and_stops(self):
+        board = {"asset": "marker.glb", "transform": {**IDENTITY, "position_m": [1, 0, 0]}}
+        self.scene_ok("edit", revision=0, edit={"board": board})
+        result = subprocess.run(play_args(self.project, 1), capture_output=True, text=True,
+                                input='{"op":"inspect"}\n{"op":"stop"}\n', timeout=30)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        rows = [json.loads(line) for line in result.stdout.splitlines()]
+        first = {"ok": True, "generation": 1, "revision": 1, "tick": 1,
+                 "marker_mm": 1042, "instances": 1, "asset_cooks": 1}
+        self.assertEqual(rows, [first, first, {"ok": True, "stopped": True}])
+
+    @unittest.skipUnless(os.environ.get("NGEN_PLAY_SANDBOX_TEST"), "requires Linux bubblewrap")
+    def test_owned_reload_reuses_geometry_and_keeps_active_state_on_failure(self):
+        def board(x, asset="marker.glb"):
+            return {"board": {"asset": asset, "transform": {**IDENTITY, "position_m": [x, 0, 0]}}}
+
+        self.scene_ok("edit", revision=0, edit=board(0))
+        with subprocess.Popen(play_args(self.project, 1), stdin=subprocess.PIPE, stdout=subprocess.PIPE,
+                              stderr=subprocess.DEVNULL, bufsize=0) as session:
+            def reply(command=None):
+                if command is not None:
+                    session.stdin.write(json.dumps(command).encode() + b"\n")
+                self.assertTrue(select.select([session.stdout], [], [], 20)[0], "no owned play reply")
+                return json.loads(session.stdout.readline())
+
+            try:
+                first = reply()
+                self.assertEqual(first["marker_mm"], 42)
+                for x in range(1, 4):
+                    self.scene_ok("edit", revision=x, edit=board(x))
+                    active = reply({"op": "reload", "expect": x, "revision": x + 1})
+                    self.assertEqual(active["marker_mm"], 1000 * x + 42)
+                self.assertEqual(active["asset_cooks"], 1, "the four transform-only revisions reuse one cook")
+                self.assertEqual(reply({"op": "inspect"}), active)
+                stale = reply({"op": "reload", "expect": 1, "revision": 5})
+                self.assertFalse(stale["ok"])
+                self.assertEqual(stale["asset_cooks"], 1)
+
+                valid = (self.project / "marker.glb").read_bytes()
+                chunk_size = struct.unpack_from("<I", valid, 12)[0]
+                metadata = json.loads(valid[20:20 + chunk_size])
+                metadata["accessors"][0]["bufferView"] = 999
+                text = json.dumps(metadata).encode()
+                text += b" " * (-len(text) % 4)
+                tail = valid[20 + chunk_size:]
+                malformed = struct.pack("<5I", 0x46546c67, 2, 20 + len(text) + len(tail),
+                                        len(text), 0x4e4f534a) + text + tail
+                (self.project / "asset-broken.glb").write_bytes(malformed)
+                self.scene_ok("edit", revision=4, edit=board(7, "asset-broken.glb"))
+                rejected = reply({"op": "reload", "expect": 4, "revision": 5})
+                self.assertFalse(rejected["ok"])
+                self.assertIn("cook failed", rejected["error"])
+                self.assertEqual(reply({"op": "inspect"}), {**active, "asset_cooks": 2})
+                self.assertEqual(self.scene_ok("show")["revision"], 5)
+                self.scene_ok("undo", revision=5)
+                restored = reply({"op": "reload", "expect": 4, "revision": 6})
+                self.assertEqual(restored, {**active, "asset_cooks": 2, "revision": 6, "generation": 5})
+                invalid = self.scene("edit", revision=6, edit=board(10000))
+                self.assertNotEqual(invalid.returncode, 0)
+                self.assertEqual(self.scene_ok("show")["revision"], 6)
+                self.assertEqual(reply({"op": "inspect"}), restored)
+                self.assertEqual(reply({"op": "stop"}), {"ok": True, "stopped": True})
+                self.assertEqual(session.wait(timeout=20), 0)
+            finally:
+                if session.poll() is None:
+                    session.stdin.close()
+                    try:
+                        session.wait(timeout=20)
+                    except subprocess.TimeoutExpired:
+                        session.kill()
+                        session.wait(timeout=10)
 
     def test_author_entities_and_reload_components_from_versioned_save(self):
         def pose(position):
