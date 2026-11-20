@@ -1,4 +1,5 @@
 #include "travel/journey.hpp"
+#include "travel/system_manifest.hpp"
 #include <catch2/catch_test_macros.hpp>
 #include <limits>
 #include <stdexcept>
@@ -17,6 +18,26 @@ TEST_CASE("a committed path crosses astronomical cells without flattening the or
     CHECK(path.sample(4) == Result<coordinates::Position>{halfway});
     CHECK(path.sample(8) == Result<coordinates::Position>{destination});
     CHECK(std::get<Error>(path.sample(9)) == Error::order);
+}
+
+TEST_CASE("the streaming fixture starts in a protected system and connects to lawless space") {
+    const auto fixture = travel::streaming_fixture(19);
+    const auto &starter = fixture.systems[0];
+    const auto &frontier = fixture.systems[1];
+    CHECK(fixture.starter_system == starter.id);
+    CHECK(starter.security == travel::Security::protected_space);
+    CHECK(frontier.security == travel::Security::lawless);
+    CHECK(frontier.celestial == travel::streaming_fixture(19).systems[1].celestial);
+    CHECK(frontier.celestial != travel::streaming_fixture(20).systems[1].celestial);
+    const auto gate = std::get<travel::Route>(fixture.gate(starter.id, frontier.id, true));
+    CHECK(gate.source == starter.berth);
+    CHECK(gate.destination == frontier.berth);
+    CHECK(gate.collision_revision == frontier.collision_revision);
+    CHECK_FALSE(std::get<travel::Route>(fixture.gate(starter.id, frontier.id, false)).jump_capable);
+    CHECK(std::get<Error>(fixture.gate(starter.id, starter.id, true)) == Error::invalid);
+    CHECK(std::get<Error>(fixture.gate(starter.id, 999, true)) == Error::invalid);
+    REQUIRE(std::holds_alternative<std::unique_ptr<travel::Journey>>(
+        travel::Journey::create(gate, {})));
 }
 
 TEST_CASE("warp coordinate bounds are independent of local physics bounds") {
