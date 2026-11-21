@@ -42,4 +42,18 @@ class SceneUpload {
     struct Impl;
     std::unique_ptr<Impl> impl_;
 };
+// One owner-thread destination candidate. A resident proxy remains selected
+// until the existing upload path returns a complete version.
+class ScenePrefetch {
+  public:
+    explicit ScenePrefetch(ScenePin proxy) : selected_(std::move(proxy)) {}
+    [[nodiscard]] std::optional<Failure> begin(Context &context, assets::PackagePin package);
+    [[nodiscard]] std::optional<Failure> advance(Context &context,
+                                                 const std::stop_token &stop = {});
+    [[nodiscard]] ScenePin selected() const { return selected_; }
+
+  private:
+    ScenePin selected_;
+    std::unique_ptr<SceneUpload> pending_;
+};
 } // namespace ngen::render
