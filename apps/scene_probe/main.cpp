@@ -1,11 +1,17 @@
 #include "draw.hpp"
 #include "package_fixture.hpp"
 #include "render/scene.hpp"
+#ifdef NGEN_SCENE_PROBE_PHYSICS
+#include "tools/reload.hpp"
+#include "travel/destination.hpp"
+#include "travel/system_manifest.hpp"
+#endif
 #include <algorithm>
 #include <cstdio>
 #include <exception>
 #include <fstream>
 #include <stdexcept>
+#include <string_view>
 
 namespace {
 bool failed(const auto &result, const char *operation) {
@@ -118,6 +124,96 @@ bool cancel_inflight(ngen::render::Context &context, const ngen::render::ScenePi
               "submitted_retirement=1");
     return true;
 }
+#ifdef NGEN_SCENE_PROBE_PHYSICS
+using CrossingFiles = std::array<std::filesystem::path, 3>;
+
+ngen::assets::PackageResult read_destination(const std::filesystem::path &path) {
+    using namespace ngen;
+    tools::PackageReloader worker(path);
+    if (!std::holds_alternative<std::monostate>(worker.request(1)))
+        throw std::runtime_error("destination read was not admitted");
+    const auto start = SDL_GetTicks();
+    for (;;) {
+        if (auto result = worker.poll())
+            return std::move(result->package);
+        if (SDL_GetTicks() - start >= 2000)
+            throw std::runtime_error("destination read did not respond");
+        SDL_Delay(1);
+    }
+}
+
+bool crossing(ngen::render::Context &context, const ngen::render::ScenePin &proxy,
+              const std::optional<CrossingFiles> &files) {
+    using namespace ngen;
+    const auto systems = travel::streaming_fixture(19);
+    const auto route = std::get<travel::Route>(systems.gate(systems.starter_system, 2, true));
+    auto journey = std::get<std::unique_ptr<travel::Journey>>(travel::Journey::create(route, {}));
+    travel::DestinationCollision destination(route);
+    render::ScenePrefetch prefetch(proxy);
+    const auto departure = journey->snapshot();
+    if (!std::holds_alternative<travel::Snapshot>(
+            journey->begin({departure.vessel, departure.tick, 1})))
+        return false;
+    if (!files && (prefetch.begin(context, std::get<assets::PackagePin>(
+                                               assets::load_package(package_fixture::encode()))) ||
+                   prefetch.advance(context)))
+        return false;
+    for (std::uint32_t tick = 0; tick <= route.duration_ticks; ++tick) {
+        if (!std::holds_alternative<travel::Snapshot>(journey->step()))
+            return false;
+    }
+    const auto exit = journey->snapshot();
+    const travel::Command command{exit.vessel, exit.tick, 2};
+    const auto arrive = [&]() -> Result<travel::Snapshot> {
+        if (prefetch.selected() == proxy)
+            return destination.arrive(*journey, command, exit.trip);
+        const std::array obstacles{physics::Box{{1, 1, 1}, {5, 0, 0}, 1000, false}};
+        auto staged = destination.publish({route.destination, route.collision_revision, obstacles});
+        if (const auto *error = std::get_if<Error>(&staged))
+            return *error;
+        return destination.arrive(*journey, command, exit.trip);
+    };
+    const auto waiting = arrive();
+    const auto *error = std::get_if<Error>(&waiting);
+    if (exit.phase != travel::Phase::exit || !error || *error != Error::busy ||
+        journey->snapshot().local || prefetch.selected() != proxy) {
+        std::fputs("Crossing did not wait for GPU residency\n", stderr);
+        return false;
+    }
+    if (files) {
+        constexpr std::array issues{assets::Issue::io, assets::Issue::invalid};
+        for (std::size_t i = 0; i < issues.size(); ++i) {
+            const auto rejected = read_destination((*files)[i]);
+            const auto *failure = std::get_if<assets::Failure>(&rejected);
+            const auto waiting_again = arrive();
+            const auto *still_busy = std::get_if<Error>(&waiting_again);
+            if (!failure || failure->issue != issues[i] || !still_busy ||
+                *still_busy != Error::busy || journey->snapshot().local ||
+                prefetch.selected() != proxy)
+                return false;
+        }
+        auto ready = read_destination(files->back());
+        auto *package = std::get_if<assets::PackagePin>(&ready);
+        if (!package || prefetch.begin(context, std::move(*package)))
+            return false;
+        std::puts("destination_missing_rejected=1 destination_corrupt_rejected=1 file_retry=1");
+    }
+    const auto start = SDL_GetTicks();
+    while (prefetch.selected() == proxy) {
+        if (prefetch.advance(context) || SDL_GetTicks() - start >= 2000)
+            return false;
+        SDL_Delay(1);
+    }
+    const auto completed = arrive();
+    if (const auto *landed = std::get_if<travel::Snapshot>(&completed);
+        landed && landed->local && landed->phase == travel::Phase::arrived &&
+        landed->tick == exit.tick && landed->local->frame.origin == route.destination) {
+        std::puts("crossing_waited_for_gpu=1 destination_resident=1 arrival_tick_preserved=1");
+        return true;
+    }
+    return false;
+}
+#endif
 ngen::assets::PackageResult fixture() {
     const auto texture_path = std::filesystem::path{NGEN_TEST_FIXTURES} / "rgba8-srgb.ktx2";
     const auto length = std::filesystem::file_size(texture_path);
@@ -134,8 +230,19 @@ ngen::assets::PackageResult fixture() {
 }
 } // namespace
 int main(int argc, char **argv) try {
+#ifdef NGEN_SCENE_PROBE_PHYSICS
+    std::optional<CrossingFiles> files;
+    if (argc == 5 && std::string_view(argv[1]) == "--crossing-files") {
+        files = CrossingFiles{argv[2], argv[3], argv[4]};
+        argc = 1;
+    }
+#endif
     if (argc > 3) {
         std::fputs("Usage: scene_probe [scene.ngas [capture.bmp]]\n", stderr);
+#ifdef NGEN_SCENE_PROBE_PHYSICS
+        std::fputs("   or: scene_probe --crossing-files missing.ngas corrupt.ngas valid.ngas\n",
+                   stderr);
+#endif
         return 2;
     }
     if (argc == 3 && (std::filesystem::exists(std::filesystem::symlink_status(argv[2])) ||
@@ -167,6 +274,12 @@ int main(int argc, char **argv) try {
     upload.reset();
     if (!cancel_inflight(*context, version))
         return 1;
+#ifdef NGEN_SCENE_PROBE_PHYSICS
+    if (argc == 1 && !crossing(*context, version, files)) {
+        std::fputs("Two-system crossing failed\n", stderr);
+        return 1;
+    }
+#endif
     {
         ngen::render::ScenePrefetch prefetch(version);
         if (prefetch.begin(*context, version->package()) || prefetch.advance(*context) ||
