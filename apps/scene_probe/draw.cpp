@@ -10,6 +10,7 @@
 #include "render/environment.hpp"
 #include <algorithm>
 #include <array>
+#include <chrono>
 #include <cmath>
 #include <cstdio>
 #include <limits>
@@ -100,7 +101,8 @@ class DrawGate {
 };
 } // namespace
 bool draw_scene(render::Context &context, render::ScenePin &version, const render::ScenePin &active,
-                const std::filesystem::path &capture, bool particle_fixture) {
+                const std::filesystem::path &capture, bool particle_fixture,
+                const std::function<bool()> &upload_pending) {
     using namespace render;
     const auto package = version->package();
     const VkExtent2D extent = capture.empty() ? VkExtent2D{256, 128} : VkExtent2D{1280, 720};
@@ -174,6 +176,36 @@ bool draw_scene(render::Context &context, render::ScenePin &version, const rende
         const auto lit = count_lit_pixels(context, color, extent);
         require(lit > 0, "single scene draw produced no lit pixels");
         std::printf("single_scene_lit_pixels=%zu\n", lit);
+        if (upload_pending) {
+            using Clock = std::chrono::steady_clock;
+            require(SDL_ShowWindow(context.window()), "crossing window did not show");
+            const auto deadline = Clock::now() + std::chrono::seconds(2);
+            std::size_t queued = 0;
+            double maximum_ms = 0;
+            auto previous = Clock::now();
+            while (upload_pending()) {
+                wait(context, take(renderer.draw(context, version, view, targets)));
+                for (;;) {
+                    require(Clock::now() < deadline, "crossing frame admission timed out");
+                    SDL_PumpEvents();
+                    const auto frame = take(context.render_frame(ImageFrame{color}));
+                    if (frame.outcome == FrameOutcome::queued) {
+                        const auto now = Clock::now();
+                        maximum_ms = std::max(
+                            maximum_ms,
+                            std::chrono::duration<double, std::milli>(now - previous).count());
+                        previous = now;
+                        ++queued;
+                        wait(context, frame.resources);
+                        break;
+                    }
+                    SDL_Delay(1);
+                }
+            }
+            require(queued > 0, "destination uploaded without queuing a proxy frame");
+            std::printf("upload_proxy_frames_queued=%zu queue_interval_max_ms=%.3f\n", queued,
+                        maximum_ms);
+        }
         return true;
     }
     if (particle_fixture) {
