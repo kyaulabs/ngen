@@ -7,11 +7,14 @@
 #include "travel/system_manifest.hpp"
 #endif
 #include <algorithm>
+#include <atomic>
+#include <chrono>
 #include <cstdio>
 #include <exception>
 #include <fstream>
 #include <stdexcept>
 #include <string_view>
+#include <thread>
 
 namespace {
 bool failed(const auto &result, const char *operation) {
@@ -127,11 +130,7 @@ bool cancel_inflight(ngen::render::Context &context, const ngen::render::ScenePi
 #ifdef NGEN_SCENE_PROBE_PHYSICS
 using CrossingFiles = std::array<std::filesystem::path, 3>;
 
-ngen::assets::PackageResult read_destination(const std::filesystem::path &path) {
-    using namespace ngen;
-    tools::PackageReloader worker(path);
-    if (!std::holds_alternative<std::monostate>(worker.request(1)))
-        throw std::runtime_error("destination read was not admitted");
+ngen::assets::PackageResult collect_destination(ngen::tools::PackageReloader &worker) {
     const auto start = SDL_GetTicks();
     for (;;) {
         if (auto result = worker.poll())
@@ -150,6 +149,17 @@ bool crossing(ngen::render::Context &context, const ngen::render::ScenePin &prox
     auto journey = std::get<std::unique_ptr<travel::Journey>>(travel::Journey::create(route, {}));
     travel::DestinationCollision destination(route);
     render::ScenePrefetch prefetch(proxy);
+    std::atomic<bool> release_read{false};
+    std::optional<tools::PackageReloader> first_read;
+    if (files) {
+        first_read.emplace(files->front(), [&](const auto &path, const std::stop_token &stop) {
+            while (!release_read.load() && !stop.stop_requested())
+                std::this_thread::sleep_for(std::chrono::milliseconds(1));
+            return assets::load_package_file(path, stop);
+        });
+        if (!std::holds_alternative<std::monostate>(first_read->request(1)))
+            return false;
+    }
     const auto departure = journey->snapshot();
     if (!std::holds_alternative<travel::Snapshot>(
             journey->begin({departure.vessel, departure.tick, 1})))
@@ -181,9 +191,18 @@ bool crossing(ngen::render::Context &context, const ngen::render::ScenePin &prox
         return false;
     }
     if (files) {
+        if (first_read->poll())
+            return false;
+        release_read.store(true);
+        const auto retry = [](const std::filesystem::path &path) {
+            tools::PackageReloader worker(path);
+            if (!std::holds_alternative<std::monostate>(worker.request(1)))
+                throw std::runtime_error("destination read was not admitted");
+            return collect_destination(worker);
+        };
         constexpr std::array issues{assets::Issue::io, assets::Issue::invalid};
         for (std::size_t i = 0; i < issues.size(); ++i) {
-            const auto rejected = read_destination((*files)[i]);
+            const auto rejected = i == 0 ? collect_destination(*first_read) : retry((*files)[i]);
             const auto *failure = std::get_if<assets::Failure>(&rejected);
             const auto waiting_again = arrive();
             const auto *still_busy = std::get_if<Error>(&waiting_again);
@@ -192,11 +211,12 @@ bool crossing(ngen::render::Context &context, const ngen::render::ScenePin &prox
                 prefetch.selected() != proxy)
                 return false;
         }
-        auto ready = read_destination(files->back());
+        auto ready = retry(files->back());
         auto *package = std::get_if<assets::PackagePin>(&ready);
         if (!package || prefetch.begin(context, std::move(*package)))
             return false;
-        std::puts("destination_missing_rejected=1 destination_corrupt_rejected=1 file_retry=1");
+        std::puts("departure_prefetch_pending_at_exit=1 destination_missing_rejected=1 "
+                  "destination_corrupt_rejected=1 file_retry=1");
     }
     const auto start = SDL_GetTicks();
     while (prefetch.selected() == proxy) {
