@@ -153,4 +153,28 @@ std::variant<std::optional<ScenePin>, Failure> SceneUpload::advance(Context &con
         return fail({error.what()});
     }
 }
+std::optional<Failure> ScenePrefetch::begin(Context &context, assets::PackagePin package) {
+    if (pending_)
+        return Failure{"destination upload already pending"};
+    auto upload = SceneUpload::begin(context, std::move(package));
+    if (auto *failure = std::get_if<Failure>(&upload))
+        return std::move(*failure);
+    pending_ = std::get<std::unique_ptr<SceneUpload>>(std::move(upload));
+    return {};
+}
+
+std::optional<Failure> ScenePrefetch::advance(Context &context, const std::stop_token &stop) {
+    if (!pending_)
+        return {};
+    auto progress = pending_->advance(context, stop);
+    if (auto *failure = std::get_if<Failure>(&progress)) {
+        pending_.reset();
+        return std::move(*failure);
+    }
+    if (auto &ready = std::get<std::optional<ScenePin>>(progress); ready) {
+        selected_ = std::move(*ready);
+        pending_.reset();
+    }
+    return {};
+}
 } // namespace ngen::render

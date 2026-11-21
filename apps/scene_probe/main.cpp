@@ -167,6 +167,29 @@ int main(int argc, char **argv) try {
     upload.reset();
     if (!cancel_inflight(*context, version))
         return 1;
+    {
+        ngen::render::ScenePrefetch prefetch(version);
+        if (prefetch.begin(*context, version->package()) || prefetch.advance(*context) ||
+            prefetch.selected() != version || !prefetch.begin(*context, version->package())) {
+            std::fputs("Prefetch did not retain its proxy during a bounded upload\n", stderr);
+            return 1;
+        }
+        std::stop_source stop_prefetch;
+        (void)stop_prefetch.request_stop();
+        if (!prefetch.advance(*context, stop_prefetch.get_token()) ||
+            prefetch.selected() != version || prefetch.begin(*context, version->package())) {
+            std::fputs("Cancelled prefetch changed its proxy or prevented retry\n", stderr);
+            return 1;
+        }
+        const auto prefetch_start = SDL_GetTicks();
+        while (prefetch.selected() == version) {
+            if (prefetch.advance(*context) || SDL_GetTicks() - prefetch_start >= 2000) {
+                std::fputs("Prefetch failed to publish its completed scene\n", stderr);
+                return 1;
+            }
+            SDL_Delay(1);
+        }
+    }
     auto replacement_created = ngen::render::SceneUpload::begin(*context, version->package());
     if (failed(replacement_created, "replacement while active version is pinned"))
         return 1;
