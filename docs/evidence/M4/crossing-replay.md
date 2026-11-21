@@ -18,4 +18,6 @@ Observed on Linux Clang 23.1.5, Intel Iris Xe (TGL GT2), Vulkan 1.4, driver `109
 | Highest sampled allocation during destination upload | 6,756,024 bytes |
 | Settled tracked allocation after each crossing | 6,755,652 bytes |
 
+A follow-up replay on the same host exercised resource-record pressure. Before destination upload, the probe occupied all but one of the 64 tracked records. Destination admission failed partway through setup, kept the proxy selected and left arrival blocked. Releasing the fixture buffers restored the pre-pressure allocation and record counts, and the valid retry completed. The warmup and all 20 measured crossings passed. This is record exhaustion, not exhaustion of physical GPU memory.
+
 The timing includes file waits, proxy draw setup and synchronous readback, not startup and teardown. It is **not** a presented-frame or hitch measurement. Memory samples cover tracked allocations at upload poll points, not transient readback, driver/WSI memory or whole-process peaks. This does not close M4's flight-frame and memory acceptance gates.

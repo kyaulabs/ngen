@@ -226,8 +226,41 @@ bool crossing(ngen::render::Context &context, const ngen::render::ScenePin &prox
         }
         auto ready = retry(files->back());
         auto *package = std::get_if<assets::PackagePin>(&ready);
-        if (!package || prefetch.begin(context, std::move(*package)))
+        if (!package)
             return false;
+        const auto baseline_result = context.resource_statistics();
+        if (failed(baseline_result, "crossing pressure baseline"))
+            return false;
+        const auto baseline = std::get<render::ResourceStatistics>(baseline_result);
+        if (baseline.retiring != 0 || baseline.live >= render::resource_record_limit)
+            return false;
+        {
+            std::vector<render::Buffer> fillers;
+            for (auto slots = baseline.live + baseline.retiring + 1;
+                 slots < render::resource_record_limit; ++slots) {
+                auto buffer = context.create_buffer({16, VK_BUFFER_USAGE_TRANSFER_SRC_BIT});
+                if (failed(buffer, "crossing pressure allocation"))
+                    return false;
+                fillers.push_back(std::get<render::Buffer>(std::move(buffer)));
+            }
+            const auto pressure = prefetch.begin(context, *package);
+            const auto blocked = arrive();
+            const auto *busy = std::get_if<Error>(&blocked);
+            if (!pressure || pressure->message != "resource slot capacity exhausted" || !busy ||
+                *busy != Error::busy || prefetch.selected() != proxy || journey->snapshot().local) {
+                std::fputs("Resource pressure did not preserve the crossing gate\n", stderr);
+                return false;
+            }
+        }
+        const auto reclaimed = context.resource_statistics();
+        if (failed(reclaimed, "crossing pressure reclaim"))
+            return false;
+        const auto after = std::get<render::ResourceStatistics>(reclaimed);
+        if (after.live != baseline.live || after.retiring != 0 ||
+            after.allocation_bytes != baseline.allocation_bytes ||
+            prefetch.begin(context, std::move(*package)))
+            return false;
+        std::puts("crossing_slot_pressure=1 partial_upload_reclaimed=1 proxy_preserved=1");
         std::puts("departure_prefetch_pending_at_exit=1 destination_missing_rejected=1 "
                   "destination_corrupt_rejected=1 file_retry=1");
     }
