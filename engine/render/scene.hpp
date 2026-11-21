@@ -46,13 +46,16 @@ class SceneUpload {
 // until the existing upload path returns a complete version.
 class ScenePrefetch {
   public:
-    explicit ScenePrefetch(ScenePin proxy) : selected_(std::move(proxy)) {}
+    explicit ScenePrefetch(ScenePin proxy) : proxy_(proxy), selected_(std::move(proxy)) {}
+    // Drop the destination cache pin; submitted frames keep their own pins.
+    void evict();
     [[nodiscard]] std::optional<Failure> begin(Context &context, assets::PackagePin package);
     [[nodiscard]] std::optional<Failure> advance(Context &context,
                                                  const std::stop_token &stop = {});
     [[nodiscard]] ScenePin selected() const { return selected_; }
 
   private:
+    ScenePin proxy_;
     ScenePin selected_;
     std::unique_ptr<SceneUpload> pending_;
 };
