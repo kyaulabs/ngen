@@ -283,7 +283,7 @@ if(NGEN_BUILD_RENDERER AND NGEN_BUILD_ASSETS)
     target_compile_definitions(scene_probe PRIVATE NGEN_TEST_FIXTURES="${CMAKE_CURRENT_SOURCE_DIR}/tests/fixtures")
     target_link_libraries(scene_probe PRIVATE ngen_scene ngen_probe_support ngen_particles ZLIB::ZLIB)
     if(TARGET ngen_physics)
-      target_link_libraries(scene_probe PRIVATE ngen_physics)
+      target_link_libraries(scene_probe PRIVATE ngen_travel)
       target_compile_definitions(scene_probe PRIVATE NGEN_SCENE_PROBE_PHYSICS=1)
     endif()
     # Physical scene/resource verification runs explicitly, not as headless CTest.

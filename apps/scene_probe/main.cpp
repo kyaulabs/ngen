@@ -1,6 +1,10 @@
 #include "draw.hpp"
 #include "package_fixture.hpp"
 #include "render/scene.hpp"
+#ifdef NGEN_SCENE_PROBE_PHYSICS
+#include "travel/destination.hpp"
+#include "travel/system_manifest.hpp"
+#endif
 #include <algorithm>
 #include <cstdio>
 #include <exception>
@@ -118,6 +122,60 @@ bool cancel_inflight(ngen::render::Context &context, const ngen::render::ScenePi
               "submitted_retirement=1");
     return true;
 }
+#ifdef NGEN_SCENE_PROBE_PHYSICS
+bool crossing(ngen::render::Context &context, const ngen::render::ScenePin &proxy) {
+    using namespace ngen;
+    const auto systems = travel::streaming_fixture(19);
+    const auto route = std::get<travel::Route>(systems.gate(systems.starter_system, 2, true));
+    auto journey = std::get<std::unique_ptr<travel::Journey>>(travel::Journey::create(route, {}));
+    travel::DestinationCollision destination(route);
+    render::ScenePrefetch prefetch(proxy);
+    const auto departure = journey->snapshot();
+    if (!std::holds_alternative<travel::Snapshot>(
+            journey->begin({departure.vessel, departure.tick, 1})))
+        return false;
+    auto bytes = package_fixture::encode();
+    if (prefetch.begin(context, std::get<assets::PackagePin>(assets::load_package(bytes))) ||
+        prefetch.advance(context))
+        return false;
+    for (std::uint32_t tick = 0; tick <= route.duration_ticks; ++tick) {
+        if (!std::holds_alternative<travel::Snapshot>(journey->step()))
+            return false;
+    }
+    const auto exit = journey->snapshot();
+    const travel::Command command{exit.vessel, exit.tick, 2};
+    const auto arrive = [&]() -> Result<travel::Snapshot> {
+        if (prefetch.selected() == proxy)
+            return destination.arrive(*journey, command, exit.trip);
+        const std::array obstacles{physics::Box{{1, 1, 1}, {5, 0, 0}, 1000, false}};
+        auto staged = destination.publish({route.destination, route.collision_revision, obstacles});
+        if (const auto *error = std::get_if<Error>(&staged))
+            return *error;
+        return destination.arrive(*journey, command, exit.trip);
+    };
+    const auto waiting = arrive();
+    const auto *error = std::get_if<Error>(&waiting);
+    if (exit.phase != travel::Phase::exit || !error || *error != Error::busy ||
+        journey->snapshot().local || prefetch.selected() != proxy) {
+        std::fputs("Crossing did not wait for GPU residency\n", stderr);
+        return false;
+    }
+    const auto start = SDL_GetTicks();
+    while (prefetch.selected() == proxy) {
+        if (prefetch.advance(context) || SDL_GetTicks() - start >= 2000)
+            return false;
+        SDL_Delay(1);
+    }
+    const auto completed = arrive();
+    if (const auto *landed = std::get_if<travel::Snapshot>(&completed);
+        landed && landed->local && landed->phase == travel::Phase::arrived &&
+        landed->tick == exit.tick && landed->local->frame.origin == route.destination) {
+        std::puts("crossing_waited_for_gpu=1 destination_resident=1 arrival_tick_preserved=1");
+        return true;
+    }
+    return false;
+}
+#endif
 ngen::assets::PackageResult fixture() {
     const auto texture_path = std::filesystem::path{NGEN_TEST_FIXTURES} / "rgba8-srgb.ktx2";
     const auto length = std::filesystem::file_size(texture_path);
@@ -167,6 +225,12 @@ int main(int argc, char **argv) try {
     upload.reset();
     if (!cancel_inflight(*context, version))
         return 1;
+#ifdef NGEN_SCENE_PROBE_PHYSICS
+    if (argc == 1 && !crossing(*context, version)) {
+        std::fputs("Two-system crossing failed\n", stderr);
+        return 1;
+    }
+#endif
     {
         ngen::render::ScenePrefetch prefetch(version);
         if (prefetch.begin(*context, version->package()) || prefetch.advance(*context) ||
