@@ -153,6 +153,11 @@ std::variant<std::optional<ScenePin>, Failure> SceneUpload::advance(Context &con
         return fail({error.what()});
     }
 }
+void ScenePrefetch::evict() {
+    pending_.reset();
+    selected_ = proxy_;
+}
+
 std::optional<Failure> ScenePrefetch::begin(Context &context, assets::PackagePin package) {
     if (pending_)
         return Failure{"destination upload already pending"};

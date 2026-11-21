@@ -189,6 +189,22 @@ int main(int argc, char **argv) try {
             }
             SDL_Delay(1);
         }
+        auto frame_pin = prefetch.selected();
+        const std::weak_ptr<const ngen::render::SceneVersion> retired = frame_pin;
+        if (prefetch.begin(*context, version->package()))
+            return 1;
+        prefetch.evict();
+        if (prefetch.selected() != version || retired.expired() ||
+            !frame_pin->vertices().native()) {
+            std::fputs("Eviction lost the proxy or invalidated a retained version\n", stderr);
+            return 1;
+        }
+        frame_pin.reset();
+        if (!retired.expired() || prefetch.begin(*context, version->package())) {
+            std::fputs("Eviction kept a cache pin or left a pending upload\n", stderr);
+            return 1;
+        }
+        std::puts("destination_eviction=1 proxy_restored=1 retained_version_valid=1 retry=1");
     }
     auto replacement_created = ngen::render::SceneUpload::begin(*context, version->package());
     if (failed(replacement_created, "replacement while active version is pinned"))
