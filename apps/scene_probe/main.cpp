@@ -264,11 +264,21 @@ bool crossing(ngen::render::Context &context, const ngen::render::ScenePin &prox
         std::puts("departure_prefetch_pending_at_exit=1 destination_missing_rejected=1 "
                   "destination_corrupt_rejected=1 file_retry=1");
     }
-    const auto start = SDL_GetTicks();
-    while (prefetch.selected() == proxy) {
-        if (!sample() || prefetch.advance(context) || SDL_GetTicks() - start >= 2000)
+    if (sampled_bytes) {
+        const auto advance = [&] {
+            if (!sample() || prefetch.advance(context))
+                throw std::runtime_error("crossing upload failed during queued frame probe");
+            return prefetch.selected() == proxy;
+        };
+        if (!probe::draw_scene(context, visible_proxy, {}, {}, false, advance))
             return false;
-        SDL_Delay(1);
+    } else {
+        const auto start = SDL_GetTicks();
+        while (prefetch.selected() == proxy) {
+            if (prefetch.advance(context) || SDL_GetTicks() - start >= 2000)
+                return false;
+            SDL_Delay(1);
+        }
     }
     const auto completed = arrive();
     if (const auto *landed = std::get_if<travel::Snapshot>(&completed);
