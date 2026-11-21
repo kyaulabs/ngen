@@ -142,7 +142,17 @@ ngen::assets::PackageResult collect_destination(ngen::tools::PackageReloader &wo
 }
 
 bool crossing(ngen::render::Context &context, const ngen::render::ScenePin &proxy,
-              const std::optional<CrossingFiles> &files) {
+              const std::optional<CrossingFiles> &files, std::uint64_t *sampled_bytes = nullptr) {
+    const auto sample = [&] {
+        if (!sampled_bytes)
+            return true;
+        const auto stats = context.resource_statistics();
+        if (failed(stats, "crossing resource sample"))
+            return false;
+        const auto bytes = std::get<ngen::render::ResourceStatistics>(stats).allocation_bytes;
+        *sampled_bytes = std::max(*sampled_bytes, bytes);
+        return bytes <= ngen::render::resource_allocation_limit;
+    };
     using namespace ngen;
     const auto systems = travel::streaming_fixture(19);
     const auto route = std::get<travel::Route>(systems.gate(systems.starter_system, 2, true));
@@ -223,7 +233,7 @@ bool crossing(ngen::render::Context &context, const ngen::render::ScenePin &prox
     }
     const auto start = SDL_GetTicks();
     while (prefetch.selected() == proxy) {
-        if (prefetch.advance(context) || SDL_GetTicks() - start >= 2000)
+        if (!sample() || prefetch.advance(context) || SDL_GetTicks() - start >= 2000)
             return false;
         SDL_Delay(1);
     }
@@ -232,9 +242,54 @@ bool crossing(ngen::render::Context &context, const ngen::render::ScenePin &prox
         landed && landed->local && landed->phase == travel::Phase::arrived &&
         landed->tick == exit.tick && landed->local->frame.origin == route.destination) {
         std::puts("crossing_waited_for_gpu=1 destination_resident=1 arrival_tick_preserved=1");
-        return true;
+        return sample();
     }
     return false;
+}
+
+bool replay_crossing(ngen::render::Context &context, const ngen::render::ScenePin &proxy,
+                     const std::optional<CrossingFiles> &files) {
+    using Clock = std::chrono::steady_clock;
+    if (!crossing(context, proxy, files))
+        return false;
+    const auto settle = [&] {
+        const auto deadline = Clock::now() + std::chrono::seconds(2);
+        do {
+            const auto result = context.resource_statistics();
+            if (failed(result, "crossing retirement"))
+                break;
+            const auto stats = std::get<ngen::render::ResourceStatistics>(result);
+            if (stats.retiring == 0)
+                return std::optional{stats};
+            SDL_Delay(1);
+        } while (Clock::now() < deadline);
+        return std::optional<ngen::render::ResourceStatistics>{};
+    };
+    const auto baseline = settle();
+    if (!baseline)
+        return false;
+    std::array<double, 20> samples{};
+    std::uint64_t sampled_bytes = 0;
+    for (auto &sample : samples) {
+        const auto start = Clock::now();
+        if (!crossing(context, proxy, files, &sampled_bytes))
+            return false;
+        sample = std::chrono::duration<double, std::milli>(Clock::now() - start).count();
+        const auto settled = settle();
+        if (!settled || settled->live != baseline->live ||
+            settled->allocation_bytes != baseline->allocation_bytes) {
+            std::fputs("Crossing did not return to the settled resource baseline\n", stderr);
+            return false;
+        }
+    }
+    std::ranges::sort(samples);
+    std::printf("warm_crossings=%zu crossing_ms_p50=%.3f crossing_ms_p95=%.3f "
+                "crossing_ms_max=%.3f sampled_upload_allocation_bytes=%llu "
+                "settled_bytes=%llu\n",
+                samples.size(), (samples[9] + samples[10]) / 2, samples[18], samples.back(),
+                static_cast<unsigned long long>(sampled_bytes),
+                static_cast<unsigned long long>(baseline->allocation_bytes));
+    return true;
 }
 #endif
 ngen::assets::PackageResult fixture() {
@@ -255,7 +310,8 @@ ngen::assets::PackageResult fixture() {
 int main(int argc, char **argv) try {
 #ifdef NGEN_SCENE_PROBE_PHYSICS
     std::optional<CrossingFiles> files;
-    if (argc == 5 && std::string_view(argv[1]) == "--crossing-files") {
+    const bool replay = argc == 5 && std::string_view(argv[1]) == "--crossing-replay";
+    if (argc == 5 && (replay || std::string_view(argv[1]) == "--crossing-files")) {
         files = CrossingFiles{argv[2], argv[3], argv[4]};
         argc = 1;
     }
@@ -263,7 +319,8 @@ int main(int argc, char **argv) try {
     if (argc > 3) {
         std::fputs("Usage: scene_probe [scene.ngas [capture.bmp]]\n", stderr);
 #ifdef NGEN_SCENE_PROBE_PHYSICS
-        std::fputs("   or: scene_probe --crossing-files missing.ngas corrupt.ngas valid.ngas\n",
+        std::fputs("   or: scene_probe --crossing-files|--crossing-replay "
+                   "missing.ngas corrupt.ngas valid.ngas\n",
                    stderr);
 #endif
         return 2;
@@ -298,7 +355,8 @@ int main(int argc, char **argv) try {
     if (!cancel_inflight(*context, version))
         return 1;
 #ifdef NGEN_SCENE_PROBE_PHYSICS
-    if (argc == 1 && !crossing(*context, version, files)) {
+    if (argc == 1 && !(replay ? replay_crossing(*context, version, files)
+                              : crossing(*context, version, files))) {
         std::fputs("Two-system crossing failed\n", stderr);
         return 1;
     }
