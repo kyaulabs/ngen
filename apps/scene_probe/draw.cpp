@@ -44,6 +44,25 @@ void wait(Context &context, const Submission &submission) {
         SDL_Delay(1);
     }
 }
+std::size_t count_lit_pixels(Context &context, const Image &color, VkExtent2D extent) {
+    const auto bytes = VkDeviceSize{extent.width} * extent.height * 8;
+    auto readback = take(
+        context.create_buffer({bytes, VK_BUFFER_USAGE_TRANSFER_DST_BIT, MemoryAccess::readback}));
+    wait(context, take(context.copy_from_image({color, readback})));
+    std::vector<std::uint16_t> actual(std::size_t{extent.width} * extent.height * 4);
+    (void)take(readback.read(0, std::as_writable_bytes(std::span(actual))));
+    std::size_t lit = 0;
+    for (std::size_t i = 0; i < actual.size(); i += 4) {
+        bool nonzero = false;
+        for (std::size_t channel = 0; channel < 3; ++channel) {
+            require((actual[i + channel] & 0x7c00U) != 0x7c00U, "scene HDR output is nonfinite");
+            nonzero = nonzero || actual[i + channel] != 0;
+        }
+        if (nonzero)
+            ++lit;
+    }
+    return lit;
+}
 class DrawGate {
   public:
     explicit DrawGate(Context &context) : context_(context) {
@@ -150,6 +169,13 @@ bool draw_scene(render::Context &context, render::ScenePin &version, const rende
     view.light_view_projection = view.view_projection;
     view.key_direction_intensity = {-1, -1, -1, 1};
     SceneRenderer renderer;
+    if (!active) {
+        wait(context, take(renderer.draw(context, version, view, targets)));
+        const auto lit = count_lit_pixels(context, color, extent);
+        require(lit > 0, "single scene draw produced no lit pixels");
+        std::printf("single_scene_lit_pixels=%zu\n", lit);
+        return true;
+    }
     if (particle_fixture) {
         auto aliased = targets;
         aliased.motion_vectors = &color;
@@ -521,22 +547,7 @@ bool draw_scene(render::Context &context, render::ScenePin &version, const rende
     gate.completed = true;
     require(take(renderer.collect(context)) == 0 && weak.expired(),
             "completed frame version did not release its owning pin");
-    const auto bytes = VkDeviceSize{extent.width} * extent.height * 8;
-    auto readback = take(
-        context.create_buffer({bytes, VK_BUFFER_USAGE_TRANSFER_DST_BIT, MemoryAccess::readback}));
-    wait(context, take(context.copy_from_image({color, readback})));
-    std::vector<std::uint16_t> actual(std::size_t{extent.width} * extent.height * 4);
-    (void)take(readback.read(0, std::as_writable_bytes(std::span(actual))));
-    std::size_t lit = 0;
-    for (std::size_t i = 0; i < actual.size(); i += 4) {
-        bool nonzero = false;
-        for (std::size_t channel = 0; channel < 3; ++channel) {
-            require((actual[i + channel] & 0x7c00U) != 0x7c00U, "scene HDR output is nonfinite");
-            nonzero = nonzero || actual[i + channel] != 0;
-        }
-        if (nonzero)
-            ++lit;
-    }
+    const auto lit = count_lit_pixels(context, color, extent);
     require(lit > 0, "scene geometry did not draw any material pixels");
     if (!capture.empty()) {
         (void)take(ngen::probe::capture(context, color, extent, capture));

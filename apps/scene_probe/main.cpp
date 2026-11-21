@@ -190,6 +190,9 @@ bool crossing(ngen::render::Context &context, const ngen::render::ScenePin &prox
         std::fputs("Crossing did not wait for GPU residency\n", stderr);
         return false;
     }
+    auto visible_proxy = prefetch.selected();
+    if (!probe::draw_scene(context, visible_proxy, {}))
+        return false;
     if (files) {
         if (first_read->poll())
             return false;
