@@ -35,10 +35,61 @@ class FlightRcs(unittest.TestCase):
         self.assertIn("flight_rcs_geometry_verified=1", text)
         self.assertIn("triangles=249942", text)
 
+    def test_crossing_prefetches_a_destination_file(self):
+        text = self.run_demo("--crossing", "--replay", "--mute", "--frames=120", "--warmup=12",
+                             "--destination=" + str(self.asset))
+        self.assertIn("flight_crossing_arrived=1", text)
+        self.assertIn("destination_file_ready=1", text)
+
+    def test_crossing_draws_distinct_destination_geometry(self):
+        landmark = os.environ.get("NGEN_CROSSING_LANDMARK")
+        if not landmark:
+            self.skipTest("set cooked public starter marker as NGEN_CROSSING_LANDMARK")
+        with tempfile.TemporaryDirectory(prefix="ngen-landmark-") as directory:
+            capture = Path(directory) / "destination.bmp"
+            text = self.run_demo("--crossing", "--replay", "--mute", "--frames=120",
+                                 "--warmup=12", "--destination=" + landmark,
+                                 "--capture=" + str(capture))
+            self.assertIn("flight_crossing_arrived=1", text)
+            self.assertIn("destination_file_ready=1", text)
+            self.assertRegex(text, r"destination_landmark_frames=[1-9][0-9]*")
+            raw = capture.read_bytes()
+            offset = struct.unpack_from("<I", raw, 10)[0]
+            width, height = struct.unpack_from("<ii", raw, 18)
+            self.assertEqual(struct.unpack_from("<H", raw, 28)[0], 32)
+            self.assertTrue(any(green > 120 and green > 2 * red and green > 2 * blue
+                                for blue, green, red, _ in
+                                struct.iter_unpack("4B", raw[offset:offset + width * abs(height) * 4])),
+                            "final flight capture did not contain the green destination landmark")
+
+    def test_crossing_retries_after_a_corrupt_destination(self):
+        landmark = os.environ.get("NGEN_CROSSING_LANDMARK")
+        if not landmark:
+            self.skipTest("set cooked public starter marker as NGEN_CROSSING_LANDMARK")
+        with tempfile.TemporaryDirectory(prefix="ngen-crossing-retry-") as directory:
+            corrupt = Path(directory) / "corrupt.ngas"
+            corrupt.write_bytes(b"not a checked package\n")
+            text = self.run_demo("--crossing", "--replay", "--mute", "--frames=120",
+                                 "--warmup=12", "--destination=" + str(corrupt),
+                                 "--destination-retry=" + landmark)
+            self.assertIn("flight_crossing_arrived=1", text)
+            self.assertIn("destination_rejected_queued_frames=6 destination_retried=1", text)
+            self.assertRegex(text, r"destination_landmark_frames=[1-9][0-9]*")
+
+    def test_crossing_keeps_queuing_when_destination_is_missing(self):
+        with tempfile.TemporaryDirectory(prefix="ngen-missing-") as directory:
+            result = subprocess.run([str(self.executable), str(self.asset), "--crossing", "--replay",
+                                     "--mute", "--frames=32", "--warmup=4",
+                                     "--destination=" + str(Path(directory) / "missing.ngas")],
+                                    capture_output=True, text=True, timeout=180, check=False)
+            self.assertEqual(result.returncode, 1, result.stdout + result.stderr)
+            self.assertIn("flight_crossing_arrived=0 queued_blocked_exit_frames=24", result.stdout)
+            self.assertIn("destination file rejected", result.stderr)
+
     def test_crossing_queues_blocked_exit_and_resumes_local_ticks(self):
         with tempfile.TemporaryDirectory(prefix="ngen-crossing-") as directory:
             report = Path(directory) / "crossing.csv"
-            text = self.run_demo("--crossing", "--replay", "--mute", "--frames=60",
+            text = self.run_demo("--crossing", "--crossing-hold", "--replay", "--mute", "--frames=60",
                                  "--warmup=12", "--report=" + str(report))
             self.assertIn("flight_crossing_arrived=1", text)
             with report.open(newline="") as stream:
@@ -47,7 +98,17 @@ class FlightRcs(unittest.TestCase):
             ticks = [int(row["tick"]) for row in rows]
             queues = [int(row["queue_ns"]) for row in rows]
             self.assertTrue(all(a < b for a, b in zip(queues, queues[1:])))
-            self.assertGreaterEqual(ticks.count(ticks[0]), 6)
+            fields = dict(word.split("=", 1) for line in text.splitlines()
+                          if line.startswith(("flight_crossing_arrived=", "crossing_first_exit_frame="))
+                          for word in line.split())
+            start = int(fields["crossing_first_exit_frame"])
+            count = int(fields["queued_blocked_exit_frames"])
+            self.assertGreaterEqual(count, 6)
+            self.assertIn("crossing_collision_blocked_frames=6", text)
+            self.assertEqual(int(fields["crossing_arrival_frame"]), start + count)
+            self.assertGreater(int(fields["crossing_transit_upload_polls"]), 0)
+            self.assertTrue(all(tick == ticks[0] for tick in ticks[start:start + count]))
+            self.assertGreater(ticks[start + count], ticks[start + count - 1])
             self.assertEqual(ticks[-1] - ticks[-2], 1)
 
     def test_replay_reports_host_queue_timestamps(self):

@@ -10,6 +10,7 @@
 #include "render/environment.hpp"
 #include "scene_workload/allocations.hpp"
 #include "tools/gui.hpp"
+#include "tools/reload.hpp"
 #include "travel/destination.hpp"
 #include "travel/system_manifest.hpp"
 #include <algorithm>
@@ -44,6 +45,21 @@ template <class T> T game_value(Result<T> result) {
         throw std::runtime_error("flight domain rejected its authored state");
     return std::get<T>(std::move(result));
 }
+// The crossing fixture accepts one small, untextured, identity-placed landmark.
+// It is separate from the frigate package and its authored material/RCS tables.
+bool destination_landmark(const assets::Scene &scene) {
+    if (scene.instances.size() != 1 || scene.primitives.size() != 1 ||
+        scene.vertices.size() > 4096 || scene.indices.size() > 12288 || !scene.materials.empty() ||
+        !scene.images.empty() || !scene.light_instances.empty())
+        return false;
+    const auto &instance = scene.instances.front();
+    return instance.primitive == 0 && instance.transform == identity.columns &&
+           std::ranges::all_of(scene.vertices, [](const assets::Vertex &vertex) {
+               return std::ranges::all_of(vertex.position,
+                                          [](float axis) { return std::abs(axis) <= 2; });
+           });
+}
+
 std::uint64_t nanoseconds(Clock::time_point start) {
     return static_cast<std::uint64_t>(
         std::chrono::duration_cast<std::chrono::nanoseconds>(Clock::now() - start).count());
@@ -642,6 +658,7 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
     struct MotionFrame {
         SceneHistory scene;
         std::array<shader::Matrix, 100> asteroids;
+        std::optional<shader::Matrix> landmark;
         VkExtent2D drawable;
         Entity entity;
         flight::Mode mode;
@@ -1288,8 +1305,22 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
     std::unique_ptr<travel::Journey> crossing;
     std::optional<travel::DestinationCollision> destination;
     std::optional<ScenePrefetch> crossing_scene;
+    std::optional<tools::PackageReloader> destination_reader;
+    ScenePin landmark;
+    bool destination_ready = false, destination_rejected = false, distinct_destination = false;
+    bool destination_retried = false, upload_retried = false, collision_published = false;
+    std::size_t collision_blocked_frames = 0;
+    assets::PackagePin upload_candidate;
+    std::optional<Failure> upload_failure;
+    std::optional<Error> collision_failure;
+    std::size_t rejected_frames = 0, upload_failed_frames = 0, transit_upload_polls = 0;
+    std::optional<std::size_t> first_exit_frame, arrival_frame;
+    std::size_t queued_blocked_frames = 0, landmark_frames = 0;
     std::uint64_t destination_revision = 0;
-    std::size_t blocked_frames = 0, queued_blocked_frames = 0;
+    const auto start_upload = [&](ScenePrefetch &prefetch) {
+        upload_failure = prefetch.begin(*context, upload_candidate);
+        destination_ready = !upload_failure;
+    };
     double accumulator = 0;
     auto time = Clock::now();
     std::uint64_t allocation_start = 0, ui_start = 0;
@@ -1350,31 +1381,104 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
                 destination.emplace(route);
                 destination_revision = route.collision_revision;
                 crossing_scene.emplace(version);
-                if (const auto failure = crossing_scene->begin(*context, package))
-                    throw std::runtime_error(failure->message);
+                if (options.destination.empty()) {
+                    upload_candidate = package;
+                    start_upload(*crossing_scene);
+                } else {
+                    destination_reader.emplace(options.destination);
+                    (void)game_value(destination_reader->request(1));
+                }
+            }
+            if (destination_reader && crossing_scene && !upload_candidate &&
+                !destination_rejected) {
+                if (auto result = destination_reader->poll()) {
+                    auto *candidate = std::get_if<assets::PackagePin>(&result->package);
+                    // Matching packages exercise a compatible ship reload. A distinct
+                    // package must be a checked landmark, not a replacement ship.
+                    const bool compatible =
+                        candidate && (*candidate)->checksum == package->checksum &&
+                        (*candidate)->materials.size() == package->materials.size();
+                    distinct_destination =
+                        !compatible && candidate && destination_landmark(**candidate);
+                    if (!compatible && !distinct_destination) {
+                        destination_rejected = true;
+                    } else if (candidate) {
+                        upload_candidate = std::move(*candidate);
+                        start_upload(*crossing_scene);
+                    }
+                }
             }
             if (crossing) {
                 const auto state = game_value(crossing->step());
+                if (crossing_scene && destination_ready && crossing_scene->selected() == version) {
+                    if (state.phase == travel::Phase::transit)
+                        ++transit_upload_polls;
+                    upload_failure = crossing_scene->advance(*context);
+                    destination_ready = !upload_failure;
+                }
                 if (state.phase == travel::Phase::exit && destination && crossing_scene) {
+                    if (!first_exit_frame)
+                        first_exit_frame = measured;
                     blocked_exit = true;
-                    if (++blocked_frames > 6) {
-                        if (const auto failure = crossing_scene->advance(*context))
-                            throw std::runtime_error(failure->message);
-                        if (crossing_scene->selected() != version) {
-                            (void)game_value(destination->publish(
-                                {state.route_position, destination_revision, preset.contacts}));
-                            const auto arrived = game_value(destination->arrive(
-                                *crossing, {state.vessel, state.tick, 2}, state.trip));
-                            current = previous = arrived.local.value();
-                            scene_basis = current.frame;
-                            version = crossing_scene->selected();
-                            crossing_scene.reset();
-                            blocked_exit = false;
-                            metrics.status = "Arrived in the lawless system";
+                    if (destination_rejected && rejected_frames >= 6 && !destination_retried &&
+                        !options.destination_retry.empty()) {
+                        destination_reader.emplace(options.destination_retry);
+                        (void)game_value(destination_reader->request(1));
+                        destination_rejected = false;
+                        destination_retried = true;
+                    }
+                    if (upload_failure && upload_failed_frames >= 6 && !upload_retried) {
+                        start_upload(*crossing_scene);
+                        upload_retried = true;
+                    }
+                    if (crossing_scene->selected() != version) {
+                        const bool occupied = options.crossing_hold && collision_blocked_frames < 6;
+                        const bool corrected = options.crossing_hold &&
+                                               collision_blocked_frames == 6 &&
+                                               collision_failure == Error::busy;
+                        if (!collision_published || corrected) {
+                            std::array<physics::Box, 101> contacts;
+                            std::ranges::copy(preset.contacts, contacts.begin());
+                            contacts.back() = {{1, 1, 1}, {}, 1000, false};
+                            const auto staged = destination->publish(
+                                {state.route_position, destination_revision,
+                                 std::span{contacts}.first(preset.contacts.size() +
+                                                           (occupied ? 1U : 0U))});
+                            collision_published = std::holds_alternative<std::monostate>(staged);
+                            if (const auto *error = std::get_if<Error>(&staged))
+                                collision_failure = *error;
+                        }
+                        if (collision_published) {
+                            const auto arrival = destination->arrive(
+                                *crossing, {state.vessel, state.tick, 2}, state.trip);
+                            if (const auto *arrived = std::get_if<travel::Snapshot>(&arrival);
+                                arrived && arrived->local) {
+                                current = previous = arrived->local.value();
+                                scene_basis = current.frame;
+                                if (distinct_destination)
+                                    landmark = crossing_scene->selected();
+                                else
+                                    version = crossing_scene->selected();
+                                crossing_scene.reset();
+                                upload_candidate.reset();
+                                blocked_exit = false;
+                                arrival_frame = measured;
+                                metrics.status = "Arrived in the lawless system";
+                            } else if (const auto *error = std::get_if<Error>(&arrival)) {
+                                collision_failure = *error;
+                            }
                         }
                     }
-                    if (blocked_exit)
-                        metrics.status = "Warp exit: waiting for destination upload";
+                    if (blocked_exit) {
+                        if (collision_failure)
+                            metrics.status = "Warp exit: destination collision unavailable";
+                        else if (upload_failure)
+                            metrics.status = "Warp exit: destination upload rejected";
+                        else if (destination_rejected)
+                            metrics.status = "Warp exit: destination file rejected";
+                        else
+                            metrics.status = "Warp exit: waiting for destination upload";
+                    }
                 } else if (state.local) {
                     previous = current;
                     current = state.local.value();
@@ -1514,11 +1618,47 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
             asteroid_history = {history->scene.view_projection, history->asteroids};
         }
         asteroids.history = history ? &asteroid_history : nullptr;
+        std::array extras{asteroids, MeshDraw{}};
+        MeshHistory landmark_history{};
+        if (landmark) {
+            auto &draw = extras.back();
+            const auto &primitive = landmark->package()->primitives.front();
+            const auto &lod = primitive.lods.front();
+            draw.frame.model = draw.frame.normalMatrix = identity;
+            constexpr std::array<double, 3> anchor{-140, 100, 0};
+            for (std::size_t axis = 0; axis < anchor.size(); ++axis) {
+                draw.frame.model.columns[axis * 5] = 32;
+                draw.frame.normalMatrix.columns[axis * 5] = 1.0F / 32;
+                draw.frame.model.columns[12 + axis] =
+                    static_cast<float>(anchor[axis] - view.origin_metres[axis]);
+            }
+            draw.material.baseColor = {.15F, .8F, .2F, 1};
+            draw.material.emissiveAlphaCutoff = {.05F, 2, .1F, .5F};
+            draw.material.metallicRoughnessNormalOcclusion = {0, 1, 1, 1};
+            draw.material.flags[2] = 1;
+            draw.maps.fill(&white);
+            draw.facing = MeshFacing::both;
+            draw.first_index = lod.first_index;
+            draw.index_count = lod.index_count;
+            draw.vertex_offset = static_cast<std::int32_t>(primitive.first_vertex);
+            draw.vertices = &landmark->vertices();
+            draw.indices = &landmark->indices();
+            if (history && history->landmark) {
+                auto &old = landmark_history.clip_from_local.columns;
+                const auto &camera = history->scene.view_projection.columns;
+                const auto &model = history->landmark.value().columns;
+                for (std::size_t column = 0; column < 4; ++column)
+                    for (std::size_t row = 0; row < 4; ++row)
+                        for (std::size_t k = 0; k < 4; ++k)
+                            old[column * 4 + row] += camera[k * 4 + row] * model[column * 4 + k];
+                draw.history = &landmark_history;
+            }
+        }
         const auto admission = SDL_GetTicks();
         Submission mesh;
         for (;;) {
-            auto result =
-                renderer.draw(*context, version, view.scene, targets, {}, std::span{&asteroids, 1});
+            auto result = renderer.draw(*context, version, view.scene, targets, {},
+                                        std::span{extras}.first(landmark ? 2 : 1));
             const auto *error = std::get_if<Failure>(&result);
             if (!error || (error->message != "transfer contexts are busy" &&
                            error->message != "scene frame pins are busy")) {
@@ -1541,8 +1681,17 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
                         std::chrono::duration_cast<std::chrono::nanoseconds>(
                             Clock::now().time_since_epoch())
                             .count());
-                if (blocked_exit)
+                if (blocked_exit) {
                     ++queued_blocked_frames;
+                    if (destination_rejected)
+                        ++rejected_frames;
+                    if (upload_failure)
+                        ++upload_failed_frames;
+                    if (collision_failure == Error::busy)
+                        ++collision_blocked_frames;
+                }
+                if (landmark)
+                    ++landmark_frames;
                 last = result.resources;
                 presented = true;
                 break;
@@ -1564,6 +1713,8 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
             saved.drawable = drawable;
             saved.entity = current.entity;
             saved.mode = current.mode;
+            if (landmark)
+                saved.landmark = extras.back().frame.model;
             for (std::size_t i = 0; i < view.asteroids.size(); ++i)
                 saved.asteroids[i] = view.asteroids[i].model;
         }
@@ -1621,11 +1772,29 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
         ++frame_index;
     }
     if (options.crossing) {
-        require(crossing && crossing->snapshot().phase == travel::Phase::arrived &&
-                    queued_blocked_frames >= 6,
-                "crossing did not queue the held exit and reach the destination");
-        std::printf("flight_crossing_arrived=1 queued_blocked_exit_frames=%zu\n",
-                    queued_blocked_frames);
+        const bool arrived = crossing && crossing->snapshot().phase == travel::Phase::arrived;
+        std::printf(
+            "flight_crossing_arrived=%u queued_blocked_exit_frames=%zu destination_file_ready=%u\n",
+            arrived ? 1U : 0U, queued_blocked_frames,
+            destination_reader && destination_ready ? 1U : 0U);
+        if (rejected_frames || destination_retried)
+            std::printf("destination_rejected_queued_frames=%zu destination_retried=%u\n",
+                        rejected_frames, destination_retried ? 1U : 0U);
+        if (distinct_destination)
+            std::printf("destination_landmark_frames=%zu\n", landmark_frames);
+        if (first_exit_frame && arrival_frame)
+            std::printf("crossing_first_exit_frame=%zu crossing_arrival_frame=%zu "
+                        "crossing_transit_upload_polls=%zu\n",
+                        *first_exit_frame, *arrival_frame, transit_upload_polls);
+        require(!destination_rejected, "destination file rejected");
+        if (upload_failure)
+            throw std::runtime_error("destination upload rejected: " + upload_failure->message);
+        require(arrived, collision_failure ? "destination collision unavailable"
+                                           : "crossing did not reach the destination");
+        if (options.crossing_hold)
+            std::printf("crossing_collision_blocked_frames=%zu\n", collision_blocked_frames);
+        require(!options.crossing_hold || collision_blocked_frames == 6,
+                "crossing did not queue and recover from the injected berth obstruction");
     }
     const auto allocations = options.frames ? workload::allocation_count() - allocation_start : 0;
     const auto ui_allocations = options.frames ? gui->allocation_count() - ui_start : 0;
