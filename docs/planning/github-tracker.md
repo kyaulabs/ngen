@@ -3,8 +3,8 @@
 The owner selected a dedicated NGEN organization Project and the full remaining
 atomic backlog. [NGEN Roadmap — Kanban][board] is Project **#4**, linked to
 `kyaulabs/ngen`, with Status columns **Todo / In Progress / Done** and visible
-milestones. It retains the default private visibility; the existing shared
-KYAU Labs Kanban Project #3 is unchanged.
+milestones. Project #4 is public; the existing shared KYAU Labs Kanban Project #3
+is unchanged.
 
 The owner explicitly authorized synchronizing the 2026-11-17 revision. All
 **twelve milestones, 67 atomic task issues and 67 unique Todo cards** now exist
@@ -43,7 +43,15 @@ mapping, not a substitute for dependency or integrated-acceptance checks.
 | M12 — Optional settlement | [M12](https://github.com/kyaulabs/ngen/milestone/9) | [A #56](https://github.com/kyaulabs/ngen/issues/56), [B #57](https://github.com/kyaulabs/ngen/issues/57), [C #58](https://github.com/kyaulabs/ngen/issues/58), [D #59](https://github.com/kyaulabs/ngen/issues/59), [E #60](https://github.com/kyaulabs/ngen/issues/60) |
 | M13 — Production hardening/release | [M13](https://github.com/kyaulabs/ngen/milestone/10) | [A #61](https://github.com/kyaulabs/ngen/issues/61), [B #62](https://github.com/kyaulabs/ngen/issues/62), [C #63](https://github.com/kyaulabs/ngen/issues/63), [D #64](https://github.com/kyaulabs/ngen/issues/64), [E #65](https://github.com/kyaulabs/ngen/issues/65), [F #66](https://github.com/kyaulabs/ngen/issues/66) |
 
-The revised next entries are **M4's coordinate/precision evidence** before
+Five handoff issues are listed separately from the atomic tasks. They appear in
+their GitHub milestones and on Project #4: [M6 repo start #131], [M6 multiplayer
+adoption #132], [M7 durable economy adoption #133], [M12 optional settlement
+boundary #134], and [M13 release ownership #135]. The runnable Space MMO repo
+starts after M5 and full C1/C2 acceptance. M12 repo placement stays open until
+feasibility; the card does not select blockchain or authorize external transfers.
+The [execution order](execution-order.md) places each handoff at its gate.
+
+The original next entries were **M4's coordinate/precision evidence** before
 [M4-A #11] and **C1's reusable creator baseline**; C2 follows applicable C1 work.
 Do not infer coordinate-ADR ratification or SDK/MCP readiness from local flight.
 M11 graphics remain individually selected; creator tooling is no longer optional
@@ -62,6 +70,11 @@ run or artifact relabelling was requested. See the [executive brief] and [roadma
 [board]: https://github.com/orgs/kyaulabs/projects/4/views/3
 [source]: https://github.com/kyaulabs/ngen/blob/5f6ce3bef93dc2801ca9c476eea21b2b06d36888/docs/planning/milestones.md
 [original-source]: https://github.com/kyaulabs/ngen/blob/469f5c661e09909e65f2ebb5be8b9009289d6e3b/docs/planning/milestones.md
+[M6 repo start #131]: https://github.com/kyaulabs/ngen/issues/131
+[M6 multiplayer adoption #132]: https://github.com/kyaulabs/ngen/issues/132
+[M7 durable economy adoption #133]: https://github.com/kyaulabs/ngen/issues/133
+[M12 optional settlement boundary #134]: https://github.com/kyaulabs/ngen/issues/134
+[M13 release ownership #135]: https://github.com/kyaulabs/ngen/issues/135
 [M4-A #11]: https://github.com/kyaulabs/ngen/issues/11
 [PR #10]: https://github.com/kyaulabs/ngen/pull/10
 [post-merge CI]: https://github.com/kyaulabs/ngen/actions/runs/43961359680

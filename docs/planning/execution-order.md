@@ -3,6 +3,9 @@
 Use this file when asked to continue the roadmap. It gives one single-stream
 order for every remaining issue on [NGEN Roadmap Project #4][board], with creator
 work interleaved into the flagship milestones rather than postponed until the end.
+**Handoff** rows mark work moving into the Space MMO repo or an independently
+deployed service. Letter suffixes insert those checkpoints without renumbering
+existing steps.
 
 Reference snapshot: **2026-11-17**, repository baseline `7dfe1c2f`, twelve open
 milestones and **67 open issues / 67 Todo cards**. Membership was checked against
@@ -113,6 +116,7 @@ validation path or a shortcut to host/production authority.
 | 20 | [ ] | [C1-F #76](https://github.com/kyaulabs/ngen/issues/76) | Accept an independently used creator workflow and packaged non-space game. |
 | 21 | [ ] | [C2-D #80](https://github.com/kyaulabs/ngen/issues/80) | Inspect/control only an owned development playtest. |
 | 22 | [ ] | [C2-E #81](https://github.com/kyaulabs/ngen/issues/81) | Prove game creation and abuse containment through real MCP messages. |
+| 22a | [ ] | [M6 handoff #131](https://github.com/kyaulabs/ngen/issues/131) | Start runnable Space MMO development in its own repo against a pinned NGEN release. |
 
 **Before 17/21:** establish explicit project execution authority, proven host
 isolation, bounded owned jobs and development sessions. No credential inheritance,
@@ -127,8 +131,10 @@ C1/C2 releases can ship independently of MMO production, when separately authori
 
 ## 23–28: Authoritative multiplayer
 
-Enter only after M5 acceptance; this schedule also completes C1/C2 first. Do not
-introduce transport/database dependencies into the offline or generic engine path.
+After M5 and full C1/C2 acceptance, finish **22a before 23**: prove the offline
+slice from a clean Space MMO checkout before assembling its server. Game design
+and website work can start earlier. Keep transport and database dependencies out
+of the offline game and generic engine path.
 
 | Step | Done | Issue | Outcome |
 |---|---|---|---|
@@ -138,10 +144,11 @@ introduce transport/database dependencies into the offline or generic engine pat
 | 26 | [ ] | [M6-D #25](https://github.com/kyaulabs/ngen/issues/25) | Predict and reconcile the locally controlled ship. |
 | 27 | [ ] | [M6-E #26](https://github.com/kyaulabs/ngen/issues/26) | Replicate interest-filtered state within explicit per-client budgets. |
 | 28 | [ ] | [M6-F #27](https://github.com/kyaulabs/ngen/issues/27) | Execute the 32-client adverse-network scenario and retain a reproducible harness. |
+| 28a | [ ] | [M6 handoff #132](https://github.com/kyaulabs/ngen/issues/132) | Verify the Space MMO client and headless server adopt M6 on the same NGEN version. |
 
 **After 28:** accept the integrated headless/authority, session, reconciliation and
 adverse-network scenario with its declared rates/budgets; do not infer cross-platform
-physics determinism or larger-player capacity.
+physics determinism or larger-player capacity. Finish **28a before 29**.
 
 ## 29–35: Durable economy, property and faction simulation
 
@@ -158,10 +165,12 @@ server process's authority to write state.
 | 33 | [ ] | [M7-D #31](https://github.com/kyaulabs/ngen/issues/31) | Complete one offline manufacturing job from reserved inputs. |
 | 34 | [ ] | [M7-E #32](https://github.com/kyaulabs/ngen/issues/32) | Convert one fleet/factory between strategic and detailed representation. |
 | 35 | [ ] | [M7-F #33](https://github.com/kyaulabs/ngen/issues/33) | Run one bounded NPC faction decision loop that commits a durable territory transition. |
+| 35a | [ ] | [M7 handoff #133](https://github.com/kyaulabs/ngen/issues/133) | Adopt the durable economy and prove a trade survives restore in game-owned staging. |
 
 **After 35:** close M7's generated-command conservation, crash/retry, restore,
 industry-clock and title/resource gates. State actual durability guarantees; no
-simulation-thread DB waits or presumed host-loss protection.
+simulation-thread DB waits or presumed host-loss protection. Finish **35a before
+36**; the offline game and NGEN SDK still do not require PostgreSQL.
 
 ## 36–40: Protected-space law, NPC police and lawless sovereignty
 
@@ -240,14 +249,17 @@ remains separate. Earlier authorized feasibility research is possible, not assum
 | Step | Done | Issue | Outcome |
 |---|---|---|---|
 | 57 | [ ] | [M12-A #56](https://github.com/kyaulabs/ngen/issues/56) | Obtain a written feasibility decision for the exact token and custody model. |
+| 57a | [ ] | [M12 handoff #134](https://github.com/kyaulabs/ngen/issues/134) | Record the optional settlement service boundary and decide its repo placement at M12. |
 | 58 | [ ] | [M12-B #57](https://github.com/kyaulabs/ngen/issues/57) | Specify one deposit/withdrawal state machine against the accepted ledger. |
 | 59 | [ ] | [M12-C #58](https://github.com/kyaulabs/ngen/issues/58) | Execute one pinned chain/token adapter in an isolated test environment. |
 | 60 | [ ] | [M12-D #59](https://github.com/kyaulabs/ngen/issues/59) | Validate the selected signer/custody boundary and emergency procedure. |
 | 61 | [ ] | [M12-E #60](https://github.com/kyaulabs/ngen/issues/60) | Assemble independent contract/custody/legal findings into a release decision. |
 
 **Before 57:** verify the required M0 policy/rights facts and authority for legal
-work/costs. **Before 58–61:** M7 acceptance and the applicable legal/security/
-experiment gates must be satisfied. Public funds/transfers are never authorized
+work/costs. **Before 57a:** verify M7 acceptance and M12-A feasibility. **Before
+58–61:** if separately selected, record the service/repo boundary and pass the
+applicable legal, security and experiment gates. A no-go or deferral does not block
+the game-only path. Public funds/transfers are never authorized
 by a checked planning box. Record no-transfer scope or accepted selected-M12
 findings before the M13 entry checkpoint.
 
@@ -264,10 +276,12 @@ scope; do not let optional experiments drift into it without acceptance.
 | 64 | [ ] | [M13-C #63](https://github.com/kyaulabs/ngen/issues/63) | Prove recovery within the selected durability and availability objectives. |
 | 65 | [ ] | [M13-D #64](https://github.com/kyaulabs/ngen/issues/64) | Establish capacity and cost for the first launch population. |
 | 66 | [ ] | [M13-E #65](https://github.com/kyaulabs/ngen/issues/65) | Rehearse monitoring, staged rollout and rollback with the release candidate. |
+| 66a | [ ] | [M13 handoff #135](https://github.com/kyaulabs/ngen/issues/135) | Record the MMO project's release and rollback owner, pinned engine version and transfer scope. |
 | 67 | [ ] | [M13-F #66](https://github.com/kyaulabs/ngen/issues/66) | Approve the exact release scope and perform only the authorized rollout. |
 
-**Before 67:** obtain the existing independent reviews, operating budget/coverage,
-explicit rollout authorization and M12 public-transfer permission if applicable.
+**Before 67:** finish **66a** and obtain the existing independent reviews,
+operating budget/coverage, explicit rollout authorization and M12 public-transfer
+permission if applicable.
 A plan, successful rehearsal or target population is not permission to deploy or
 claim measured capacity. Close M13 only with its actual release/operations evidence.
 
