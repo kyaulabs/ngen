@@ -658,6 +658,7 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
     struct MotionFrame {
         SceneHistory scene;
         std::array<shader::Matrix, 100> asteroids;
+        std::optional<shader::Matrix> landmark;
         VkExtent2D drawable;
         Entity entity;
         flight::Mode mode;
@@ -1307,10 +1308,18 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
     std::optional<tools::PackageReloader> destination_reader;
     ScenePin landmark;
     bool destination_ready = false, destination_rejected = false, distinct_destination = false;
-    bool destination_retried = false;
-    std::size_t rejected_frames = 0;
+    bool destination_retried = false, upload_retried = false, collision_published = false;
+    assets::PackagePin upload_candidate;
+    std::optional<Failure> upload_failure;
+    std::optional<Error> collision_failure;
+    std::size_t rejected_frames = 0, upload_failed_frames = 0, transit_upload_polls = 0;
+    std::optional<std::size_t> first_exit_frame, arrival_frame;
+    std::size_t queued_blocked_frames = 0, landmark_frames = 0;
     std::uint64_t destination_revision = 0;
-    std::size_t blocked_frames = 0, queued_blocked_frames = 0, landmark_frames = 0;
+    const auto start_upload = [&](ScenePrefetch &prefetch) {
+        upload_failure = prefetch.begin(*context, upload_candidate);
+        destination_ready = !upload_failure;
+    };
     double accumulator = 0;
     auto time = Clock::now();
     std::uint64_t allocation_start = 0, ui_start = 0;
@@ -1372,15 +1381,14 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
                 destination_revision = route.collision_revision;
                 crossing_scene.emplace(version);
                 if (options.destination.empty()) {
-                    if (const auto failure = crossing_scene->begin(*context, package))
-                        throw std::runtime_error(failure->message);
-                    destination_ready = true;
+                    upload_candidate = package;
+                    start_upload(*crossing_scene);
                 } else {
                     destination_reader.emplace(options.destination);
                     (void)game_value(destination_reader->request(1));
                 }
             }
-            if (destination_reader && crossing_scene && !destination_ready &&
+            if (destination_reader && crossing_scene && !upload_candidate &&
                 !destination_rejected) {
                 if (auto result = destination_reader->poll()) {
                     auto *candidate = std::get_if<assets::PackagePin>(&result->package);
@@ -1394,15 +1402,22 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
                     if (!compatible && !distinct_destination) {
                         destination_rejected = true;
                     } else if (candidate) {
-                        destination_rejected =
-                            crossing_scene->begin(*context, std::move(*candidate)).has_value();
-                        destination_ready = !destination_rejected;
+                        upload_candidate = std::move(*candidate);
+                        start_upload(*crossing_scene);
                     }
                 }
             }
             if (crossing) {
                 const auto state = game_value(crossing->step());
+                if (crossing_scene && destination_ready && crossing_scene->selected() == version) {
+                    if (state.phase == travel::Phase::transit)
+                        ++transit_upload_polls;
+                    upload_failure = crossing_scene->advance(*context);
+                    destination_ready = !upload_failure;
+                }
                 if (state.phase == travel::Phase::exit && destination && crossing_scene) {
+                    if (!first_exit_frame)
+                        first_exit_frame = measured;
                     blocked_exit = true;
                     if (destination_rejected && rejected_frames >= 6 && !destination_retried &&
                         !options.destination_retry.empty()) {
@@ -1411,31 +1426,51 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
                         destination_rejected = false;
                         destination_retried = true;
                     }
-                    if (++blocked_frames > 6 && destination_ready) {
-                        if (crossing_scene->advance(*context)) {
-                            destination_ready = false;
-                            destination_rejected = true;
-                        }
-                        if (crossing_scene->selected() != version) {
-                            (void)game_value(destination->publish(
-                                {state.route_position, destination_revision, preset.contacts}));
-                            const auto arrived = game_value(destination->arrive(
-                                *crossing, {state.vessel, state.tick, 2}, state.trip));
-                            current = previous = arrived.local.value();
-                            scene_basis = current.frame;
-                            if (distinct_destination)
-                                landmark = crossing_scene->selected();
+                    if (upload_failure && upload_failed_frames >= 6 && !upload_retried) {
+                        start_upload(*crossing_scene);
+                        upload_retried = true;
+                    }
+                    const bool held = options.crossing_hold && queued_blocked_frames < 6;
+                    if (!held && crossing_scene->selected() != version) {
+                        if (!collision_published) {
+                            const auto staged = destination->publish(
+                                {state.route_position, destination_revision, preset.contacts});
+                            if (const auto *error = std::get_if<Error>(&staged))
+                                collision_failure = *error;
                             else
-                                version = crossing_scene->selected();
-                            crossing_scene.reset();
-                            blocked_exit = false;
-                            metrics.status = "Arrived in the lawless system";
+                                collision_published = true;
+                        }
+                        if (collision_published) {
+                            const auto arrival = destination->arrive(
+                                *crossing, {state.vessel, state.tick, 2}, state.trip);
+                            if (const auto *arrived = std::get_if<travel::Snapshot>(&arrival);
+                                arrived && arrived->local) {
+                                current = previous = arrived->local.value();
+                                scene_basis = current.frame;
+                                if (distinct_destination)
+                                    landmark = crossing_scene->selected();
+                                else
+                                    version = crossing_scene->selected();
+                                crossing_scene.reset();
+                                upload_candidate.reset();
+                                blocked_exit = false;
+                                arrival_frame = measured;
+                                metrics.status = "Arrived in the lawless system";
+                            } else if (const auto *error = std::get_if<Error>(&arrival)) {
+                                collision_failure = *error;
+                            }
                         }
                     }
-                    if (blocked_exit)
-                        metrics.status = destination_rejected
-                                             ? "Warp exit: destination file rejected"
-                                             : "Warp exit: waiting for destination upload";
+                    if (blocked_exit) {
+                        if (collision_failure)
+                            metrics.status = "Warp exit: destination collision unavailable";
+                        else if (upload_failure)
+                            metrics.status = "Warp exit: destination upload rejected";
+                        else if (destination_rejected)
+                            metrics.status = "Warp exit: destination file rejected";
+                        else
+                            metrics.status = "Warp exit: waiting for destination upload";
+                    }
                 } else if (state.local) {
                     previous = current;
                     current = state.local.value();
@@ -1576,6 +1611,7 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
         }
         asteroids.history = history ? &asteroid_history : nullptr;
         std::array extras{asteroids, MeshDraw{}};
+        MeshHistory landmark_history{};
         if (landmark) {
             auto &draw = extras.back();
             const auto &primitive = landmark->package()->primitives.front();
@@ -1599,6 +1635,16 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
             draw.vertex_offset = static_cast<std::int32_t>(primitive.first_vertex);
             draw.vertices = &landmark->vertices();
             draw.indices = &landmark->indices();
+            if (history && history->landmark) {
+                auto &old = landmark_history.clip_from_local.columns;
+                const auto &camera = history->scene.view_projection.columns;
+                const auto &model = history->landmark.value().columns;
+                for (std::size_t column = 0; column < 4; ++column)
+                    for (std::size_t row = 0; row < 4; ++row)
+                        for (std::size_t k = 0; k < 4; ++k)
+                            old[column * 4 + row] += camera[k * 4 + row] * model[column * 4 + k];
+                draw.history = &landmark_history;
+            }
         }
         const auto admission = SDL_GetTicks();
         Submission mesh;
@@ -1631,6 +1677,8 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
                     ++queued_blocked_frames;
                     if (destination_rejected)
                         ++rejected_frames;
+                    if (upload_failure)
+                        ++upload_failed_frames;
                 }
                 if (landmark)
                     ++landmark_frames;
@@ -1655,6 +1703,8 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
             saved.drawable = drawable;
             saved.entity = current.entity;
             saved.mode = current.mode;
+            if (landmark)
+                saved.landmark = extras.back().frame.model;
             for (std::size_t i = 0; i < view.asteroids.size(); ++i)
                 saved.asteroids[i] = view.asteroids[i].model;
         }
@@ -1722,9 +1772,17 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
                         rejected_frames, destination_retried ? 1U : 0U);
         if (distinct_destination)
             std::printf("destination_landmark_frames=%zu\n", landmark_frames);
+        if (first_exit_frame && arrival_frame)
+            std::printf("crossing_first_exit_frame=%zu crossing_arrival_frame=%zu "
+                        "crossing_transit_upload_polls=%zu\n",
+                        *first_exit_frame, *arrival_frame, transit_upload_polls);
         require(!destination_rejected, "destination file rejected");
-        require(arrived && queued_blocked_frames >= 6,
-                "crossing did not queue the held exit and reach the destination");
+        if (upload_failure)
+            throw std::runtime_error("destination upload rejected: " + upload_failure->message);
+        require(arrived, collision_failure ? "destination collision unavailable"
+                                           : "crossing did not reach the destination");
+        require(!options.crossing_hold || queued_blocked_frames >= 6,
+                "crossing did not queue the injected exit hold");
     }
     const auto allocations = options.frames ? workload::allocation_count() - allocation_start : 0;
     const auto ui_allocations = options.frames ? gui->allocation_count() - ui_start : 0;

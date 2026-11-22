@@ -89,7 +89,7 @@ class FlightRcs(unittest.TestCase):
     def test_crossing_queues_blocked_exit_and_resumes_local_ticks(self):
         with tempfile.TemporaryDirectory(prefix="ngen-crossing-") as directory:
             report = Path(directory) / "crossing.csv"
-            text = self.run_demo("--crossing", "--replay", "--mute", "--frames=60",
+            text = self.run_demo("--crossing", "--crossing-hold", "--replay", "--mute", "--frames=60",
                                  "--warmup=12", "--report=" + str(report))
             self.assertIn("flight_crossing_arrived=1", text)
             with report.open(newline="") as stream:
@@ -98,7 +98,16 @@ class FlightRcs(unittest.TestCase):
             ticks = [int(row["tick"]) for row in rows]
             queues = [int(row["queue_ns"]) for row in rows]
             self.assertTrue(all(a < b for a, b in zip(queues, queues[1:])))
-            self.assertGreaterEqual(ticks.count(ticks[0]), 6)
+            fields = dict(word.split("=", 1) for line in text.splitlines()
+                          if line.startswith(("flight_crossing_arrived=", "crossing_first_exit_frame="))
+                          for word in line.split())
+            start = int(fields["crossing_first_exit_frame"])
+            count = int(fields["queued_blocked_exit_frames"])
+            self.assertGreaterEqual(count, 6)
+            self.assertEqual(int(fields["crossing_arrival_frame"]), start + count)
+            self.assertGreater(int(fields["crossing_transit_upload_polls"]), 0)
+            self.assertTrue(all(tick == ticks[0] for tick in ticks[start:start + count]))
+            self.assertGreater(ticks[start + count], ticks[start + count - 1])
             self.assertEqual(ticks[-1] - ticks[-2], 1)
 
     def test_replay_reports_host_queue_timestamps(self):
