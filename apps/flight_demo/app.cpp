@@ -10,6 +10,8 @@
 #include "render/environment.hpp"
 #include "scene_workload/allocations.hpp"
 #include "tools/gui.hpp"
+#include "travel/destination.hpp"
+#include "travel/system_manifest.hpp"
 #include <algorithm>
 #include <array>
 #include <chrono>
@@ -736,7 +738,8 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
         metrics.status = "Tactical orbit autopilot / 20 m/s";
         metrics.alert = false;
     };
-    default_orbit();
+    if (!options.crossing)
+        default_orbit();
     {
         const auto initial_view = take(present(preset, last_camera, options.extent));
         metrics.preparing = metrics.help = metrics.performance = metrics.alert = true;
@@ -1282,6 +1285,11 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
     };
     const auto warmup = options.frames ? options.warmup : 0U;
     std::uint64_t frame_index = 0;
+    std::unique_ptr<travel::Journey> crossing;
+    std::optional<travel::DestinationCollision> destination;
+    std::optional<ScenePrefetch> crossing_scene;
+    std::uint64_t destination_revision = 0;
+    std::size_t blocked_frames = 0, queued_blocked_frames = 0;
     double accumulator = 0;
     auto time = Clock::now();
     std::uint64_t allocation_start = 0, ui_start = 0;
@@ -1291,7 +1299,8 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
         if (quit)
             break;
         if (options.frames && frame_index == warmup) {
-            reset();
+            if (!options.crossing)
+                reset();
             time = Clock::now();
             accumulator = 0;
             allocation_start = workload::allocation_count();
@@ -1326,7 +1335,58 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
             sampling_paused = false;
             system_usage->enabled(performance.visible());
         }
-        if (fixed_tick) {
+        bool blocked_exit = false;
+        if (options.crossing) {
+            if (frame_index == warmup) {
+                const auto systems = travel::streaming_fixture(19);
+                const auto route = game_value(systems.gate(systems.starter_system, 2, true));
+                crossing =
+                    game_value(travel::Journey::create(route, preset.ship.flight, preset.contacts));
+                game.reset();
+                const auto initial = crossing->snapshot();
+                current = previous = initial.local.value();
+                scene_basis = current.frame;
+                (void)game_value(crossing->begin({initial.vessel, initial.tick, 1}));
+                destination.emplace(route);
+                destination_revision = route.collision_revision;
+                crossing_scene.emplace(version);
+                if (const auto failure = crossing_scene->begin(*context, package))
+                    throw std::runtime_error(failure->message);
+            }
+            if (crossing) {
+                const auto state = game_value(crossing->step());
+                if (state.phase == travel::Phase::exit && destination && crossing_scene) {
+                    blocked_exit = true;
+                    if (++blocked_frames > 6) {
+                        if (const auto failure = crossing_scene->advance(*context))
+                            throw std::runtime_error(failure->message);
+                        if (crossing_scene->selected() != version) {
+                            (void)game_value(destination->publish(
+                                {state.route_position, destination_revision, preset.contacts}));
+                            const auto arrived = game_value(destination->arrive(
+                                *crossing, {state.vessel, state.tick, 2}, state.trip));
+                            current = previous = arrived.local.value();
+                            scene_basis = current.frame;
+                            version = crossing_scene->selected();
+                            crossing_scene.reset();
+                            blocked_exit = false;
+                            metrics.status = "Arrived in the lawless system";
+                        }
+                    }
+                    if (blocked_exit)
+                        metrics.status = "Warp exit: waiting for destination upload";
+                } else if (state.local) {
+                    previous = current;
+                    current = state.local.value();
+                } else {
+                    metrics.status = "Warp transit";
+                }
+                if (!state.local || blocked_exit) {
+                    motion_cut = true;
+                    motion_history.reset();
+                }
+            }
+        } else if (fixed_tick) {
             if (options.replay && frame_index >= warmup)
                 scripted();
             advance();
@@ -1481,6 +1541,8 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
                         std::chrono::duration_cast<std::chrono::nanoseconds>(
                             Clock::now().time_since_epoch())
                             .count());
+                if (blocked_exit)
+                    ++queued_blocked_frames;
                 last = result.resources;
                 presented = true;
                 break;
@@ -1557,6 +1619,13 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
         } else
             metrics.frame_ms = static_cast<double>(nanoseconds(began)) / 1e6;
         ++frame_index;
+    }
+    if (options.crossing) {
+        require(crossing && crossing->snapshot().phase == travel::Phase::arrived &&
+                    queued_blocked_frames >= 6,
+                "crossing did not queue the held exit and reach the destination");
+        std::printf("flight_crossing_arrived=1 queued_blocked_exit_frames=%zu\n",
+                    queued_blocked_frames);
     }
     const auto allocations = options.frames ? workload::allocation_count() - allocation_start : 0;
     const auto ui_allocations = options.frames ? gui->allocation_count() - ui_start : 0;

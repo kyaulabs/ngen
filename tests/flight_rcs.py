@@ -35,6 +35,21 @@ class FlightRcs(unittest.TestCase):
         self.assertIn("flight_rcs_geometry_verified=1", text)
         self.assertIn("triangles=249942", text)
 
+    def test_crossing_queues_blocked_exit_and_resumes_local_ticks(self):
+        with tempfile.TemporaryDirectory(prefix="ngen-crossing-") as directory:
+            report = Path(directory) / "crossing.csv"
+            text = self.run_demo("--crossing", "--replay", "--mute", "--frames=60",
+                                 "--warmup=12", "--report=" + str(report))
+            self.assertIn("flight_crossing_arrived=1", text)
+            with report.open(newline="") as stream:
+                rows = list(csv.DictReader(stream))
+            self.assertEqual(len(rows), 60)
+            ticks = [int(row["tick"]) for row in rows]
+            queues = [int(row["queue_ns"]) for row in rows]
+            self.assertTrue(all(a < b for a, b in zip(queues, queues[1:])))
+            self.assertGreaterEqual(ticks.count(ticks[0]), 6)
+            self.assertEqual(ticks[-1] - ticks[-2], 1)
+
     def test_replay_reports_host_queue_timestamps(self):
         with tempfile.TemporaryDirectory(prefix="ngen-queue-") as directory:
             report = Path(directory) / "queue.csv"
