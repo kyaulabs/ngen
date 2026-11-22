@@ -1,6 +1,6 @@
 # Milestones and atomic implementation tasks
 
-Current delivery: M1–M3 are accepted; [0.8.0](https://github.com/kyaulabs/ngen/releases/tag/v0.8.0) adds C2-A local read-only MCP discovery as source only. M3's private preview remains source-bound to `e45ba673`; public source is not a playable bundle. Resume at M4-E two-system streaming in the [execution order](execution-order.md). Later C2 steps add authoring and owned playtest operations. No implementation starts merely because this plan or its tracker changes. See the [executive brief](executive-brief.md) and [final M3 verification](../evidence/M3/ui/final-verification.md).
+Current delivery: M1–M4 are accepted at their declared scope. [0.9.0](https://github.com/kyaulabs/ngen/releases/tag/v0.9.0) adds the bounded two-system flight replay as source only. M3's private preview remains source-bound to `e45ba673`; public source is not a playable bundle. Resume at M5-A inventory and currency transfer in the [execution order](execution-order.md). Later C2 steps add authoring and owned playtest operations. No implementation starts merely because this plan or its tracker changes. See the [executive brief](executive-brief.md) and [final M3 verification](../evidence/M3/ui/final-verification.md).
 
 | Scope | Current state |
 |---|---|
@@ -168,6 +168,8 @@ Deliver connected systems with predominantly fixed celestial arrangements and or
 | M4-G: produce GPU motion vectors across frame epochs | M3, M4-B | Existing Vulkan/Slang renderer, bounded motion attachment | Define direction, units and validity; verify actual GPU readback for known motion, origin changes and invalidated history. No upscaler or TAA dependency. |
 
 Performance gate: preserve flight-frame targets during the fixed crossing replay, with no warmed streaming hitch above 200 ms in the declared workload. Exceeding storage capacity changes admission/prefetch policy, not the test fixture silently. Precision loss, frame-induced velocity changes, dangling assets or collision-domain splits block closure. Review physics and rendering independently, then accept a continuous two-system traversal with fault evidence.
+
+Acceptance: [bounded two-system flight evidence](../evidence/M4/flight-acceptance.md) records the native replay, injected failures, times, memory scope and independent physics and renderer findings. This accepts the declared fixture, not arbitrary world content or asynchronous device/disk failure guarantees.
 
 ## M5 — Complete the miniature offline universe
 
