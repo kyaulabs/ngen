@@ -312,7 +312,7 @@ if(NGEN_BUILD_FLIGHT_DEMO)
     target_compile_definitions(scene_probe PRIVATE NGEN_SCENE_PROBE_FLIGHT_HISTORY=1)
   endif()
   add_executable(flight_demo apps/flight_demo/main.cpp apps/flight_demo/app.cpp apps/scene_workload/allocations.cpp)
-  target_link_libraries(flight_demo PRIVATE ngen_flight_demo_scene ngen_flight_demo_layout ngen_flight_demo_performance ngen_gui ngen_audio_output ngen_probe_support imgui::imgui Jolt::Jolt)
+  target_link_libraries(flight_demo PRIVATE ngen_flight_demo_scene ngen_flight_demo_layout ngen_flight_demo_performance ngen_gui ngen_audio_output ngen_probe_support ngen_travel imgui::imgui Jolt::Jolt)
   if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/.git")
     # Bind successful links to the source snapshot, even after a clean branch switch.
     # An extracted corresponding-source archive remains buildable without Git metadata.
