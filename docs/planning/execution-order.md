@@ -21,9 +21,9 @@ engine, game or MCP implementation.
 
 | Field | Value |
 |---|---|
-| Last verified step | **09 — [C2-A #77](https://github.com/kyaulabs/ngen/issues/77)**; local read-only MCP discovery. |
-| Next step | **10 — [M4-E #15](https://github.com/kyaulabs/ngen/issues/15)**; connected-system streaming. |
-| Next entry decision | Fix the two-system manifests, traversal and residency budgets; map upload readiness to the existing arrival gate. |
+| Last verified step | **10 — [M4-E #15](https://github.com/kyaulabs/ngen/issues/15)**; M4 accepted for the bounded two-system crossing. |
+| Next step | **11 — [M5-A #16](https://github.com/kyaulabs/ngen/issues/16)**; local inventory/currency transfer. |
+| Next entry decision | Identify the owner of the offline transaction state and lock its conservation, replay and failure contract before implementation. |
 | Optional selections | M11 features and M12 settlement are not selected by this schedule. |
 
 Resume request: **“Read `docs/planning/execution-order.md` and continue from the
@@ -79,7 +79,7 @@ asset/build paths. Establish human-usable operations before exposing them to MCP
 | 07 | [x] | [M4-D #14](https://github.com/kyaulabs/ngen/issues/14) | Implement one committed warp trajectory with entry/transit/exit states. |
 | 08 | [x] | [C1-D #55](https://github.com/kyaulabs/ngen/issues/55) | Connect owned play/inspection/reload and remove one measured authoring bottleneck. |
 | 09 | [x] | [C2-A #77](https://github.com/kyaulabs/ngen/issues/77) | Select/pin a local MCP protocol/SDK and expose scoped discovery/read operations. |
-| 10 | [ ] | [M4-E #15](https://github.com/kyaulabs/ngen/issues/15) | Stream connected authored/procedural system manifests with prefetch, proxies and bounded eviction. |
+| 10 | [x] | [M4-E #15](https://github.com/kyaulabs/ngen/issues/15) | Stream connected authored/procedural system manifests with prefetch, proxies and bounded eviction. |
 
 **Before 01/02/09:** record the scoped ADR 0018 decisions; do not ratify unrelated
 proposals or build a speculative universal plugin/command framework.
@@ -89,8 +89,9 @@ entry model. **Before 04:** agree on contact tolerances and the representative
 **Before 06:** finish and verify both M4-F and M4-G. Keep their rendering
 and GPU readback separate from the existing CPU-projected motion evidence.
 **After 10:** close M4's integrated two-system traversal, origin/history, streaming
-failure and budget gates. Declare the protected/lawless distribution and protected
-starts; this is manifest data, not an assertion that M8 police are implemented.
+failure and budget gates. Verify the fixture’s one protected system and one lawless
+system, including protected NPC starts and no sector overrides. This is manifest
+data, not an assertion that M8 police are implemented.
 
 ## 11–22: Miniature offline game, usable creators and complete local MCP
 
@@ -290,5 +291,6 @@ work advances. Do not use this log instead of the issue's complete acceptance.
 | 07 — M4-D | [Issue #14](https://github.com/kyaulabs/ngen/issues/14); [bounded warp evidence](../evidence/M4/bounded-warp.md) | A headless one-way journey crossed 36 cells and resumed real Jolt contacts only at the prepared, clear destination. Entry cancels before commitment; repeated arrivals preserve the existing body. No streaming or interactive warp. |
 | 08 — C1-D | [Issue #55](https://github.com/kyaulabs/ngen/issues/55); [board playtest](../creator-play.md) | Owned Linux play/inspect/reload preserves the active snapshot on failed cooks and shares saved revision checks. Four transform edits use one cook instead of four. No project code executes. |
 | 09 — C2-A | [PR #112](https://github.com/kyaulabs/ngen/pull/112); [creator MCP guide](../creator-mcp.md) | Real Linux stdio client read SDK/schema resources and metadata for one launcher-granted project. No writes, execution or listener. |
+| 10 — M4-E | [PR #128](https://github.com/kyaulabs/ngen/pull/128); [flight acceptance](../evidence/M4/flight-acceptance.md) | File-backed two-system flight kept queuing frames through faults. GPU residency and corrected collision preceded arrival. Healthy and recovered runs stayed within the fixed frame gate; no production catalog or interactive warp. |
 
 [board]: https://github.com/orgs/kyaulabs/projects/4/views/3

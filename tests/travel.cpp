@@ -1,4 +1,6 @@
+#include "travel/destination.hpp"
 #include "travel/journey.hpp"
+#include "travel/system_manifest.hpp"
 #include <catch2/catch_test_macros.hpp>
 #include <limits>
 #include <stdexcept>
@@ -17,6 +19,78 @@ TEST_CASE("a committed path crosses astronomical cells without flattening the or
     CHECK(path.sample(4) == Result<coordinates::Position>{halfway});
     CHECK(path.sample(8) == Result<coordinates::Position>{destination});
     CHECK(std::get<Error>(path.sample(9)) == Error::order);
+}
+
+TEST_CASE("the streaming fixture starts in a protected system and connects to lawless space") {
+    const auto fixture = travel::streaming_fixture(19);
+    const auto &starter = fixture.systems[0];
+    const auto &frontier = fixture.systems[1];
+    CHECK(fixture.starter_system == starter.id);
+    CHECK(starter.security == travel::Security::protected_space);
+    CHECK(frontier.security == travel::Security::lawless);
+    CHECK(frontier.celestial == travel::streaming_fixture(19).systems[1].celestial);
+    CHECK(frontier.celestial != travel::streaming_fixture(20).systems[1].celestial);
+    const auto gate = std::get<travel::Route>(fixture.gate(starter.id, frontier.id, true));
+    CHECK(gate.source == starter.berth);
+    CHECK(gate.destination == frontier.berth);
+    CHECK(gate.collision_revision == frontier.collision_revision);
+    CHECK_FALSE(std::get<travel::Route>(fixture.gate(starter.id, frontier.id, false)).jump_capable);
+    CHECK(std::get<Error>(fixture.gate(starter.id, starter.id, true)) == Error::invalid);
+    CHECK(std::get<Error>(fixture.gate(starter.id, 999, true)) == Error::invalid);
+    REQUIRE(std::holds_alternative<std::unique_ptr<travel::Journey>>(
+        travel::Journey::create(gate, {})));
+}
+
+TEST_CASE("the connected route waits for an owning collision handoff") {
+    const auto fixture = travel::streaming_fixture(19);
+    const auto route = std::get<travel::Route>(fixture.gate(1, 2, true));
+    auto journey = std::get<std::unique_ptr<travel::Journey>>(travel::Journey::create(route, {}));
+    travel::DestinationCollision destination(route);
+    const auto initial = journey->snapshot();
+    REQUIRE(std::holds_alternative<travel::Snapshot>(
+        journey->begin({initial.vessel, initial.tick, 1})));
+    for (std::uint32_t i = 0; i <= route.duration_ticks; ++i)
+        REQUIRE(std::holds_alternative<travel::Snapshot>(journey->step()));
+    const auto exit = journey->snapshot();
+    REQUIRE(exit.phase == travel::Phase::exit);
+    const travel::Command arrive{exit.vessel, exit.tick, 2};
+    CHECK(std::get<Error>(destination.arrive(*journey, arrive, exit.trip)) == Error::busy);
+    CHECK(std::get<Error>(destination.publish(
+              {route.destination, route.collision_revision + 1, {}})) == Error::stale);
+    CHECK(std::get<Error>(destination.arrive(*journey, arrive, exit.trip)) == Error::busy);
+    CHECK_FALSE(journey->snapshot().local);
+    const std::array<physics::Box, physics::World::body_capacity> oversized{};
+    CHECK(std::get<Error>(destination.publish(
+              {route.destination, route.collision_revision, oversized})) == Error::capacity);
+    CHECK(std::get<Error>(destination.arrive(*journey, arrive, exit.trip)) == Error::busy);
+    {
+        std::array obstacles{physics::Box{{1, 1, 1}, {5, 0, 0}, 1000, false}};
+        REQUIRE(std::holds_alternative<std::monostate>(
+            destination.publish({route.destination, route.collision_revision, obstacles})));
+        obstacles.front().position_metres = {};
+        obstacles.front().dynamic = true;
+        CHECK(std::get<Error>(destination.publish(
+                  {route.destination, route.collision_revision, obstacles})) == Error::invalid);
+    }
+    const auto arrived =
+        std::get<travel::Snapshot>(destination.arrive(*journey, arrive, exit.trip));
+    CHECK(arrived.phase == travel::Phase::arrived);
+    CHECK(arrived.tick == exit.tick);
+    if (!arrived.local)
+        FAIL("arrival did not create a local contact body");
+    else
+        CHECK(arrived.local->frame.origin == route.destination);
+    REQUIRE(std::holds_alternative<std::monostate>(journey->submit(
+        {Tick{exit.tick.value + 1}, 3, exit.vessel, flight::Destination{{20, 0, 0}}})));
+    for (unsigned i = 0; i < 240; ++i)
+        REQUIRE(std::holds_alternative<travel::Snapshot>(journey->step()));
+    const auto contact = journey->snapshot();
+    if (!contact.local)
+        FAIL("arrival contact body disappeared");
+    else {
+        CHECK(contact.local->body.position_metres[0] > 1.9);
+        CHECK(contact.local->body.position_metres[0] < 2.1);
+    }
 }
 
 TEST_CASE("warp coordinate bounds are independent of local physics bounds") {

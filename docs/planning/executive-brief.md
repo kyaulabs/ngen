@@ -11,8 +11,10 @@ include the private playable scene/bundles/media. The source-only
 checks before arrival. The source-only [0.7.0 release](../releases/0.7.0.md)
 adds owned headless board play, inspection and reload. The source-only
 [0.8.0 release](../releases/0.8.0.md) adds local read-only MCP discovery.
-Two-system streaming is next in the [execution order](execution-order.md);
-MCP authoring and multiplayer remain future work in the [roadmap].
+The source-only [0.9.0 release](../releases/0.9.0.md) adds the measured
+[two-system crossing](../evidence/M4/flight-acceptance.md). M5 inventory and
+currency transfer is next in the [execution order](execution-order.md). MCP
+authoring and multiplayer remain future work in the [roadmap].
 
 The working C++20 foundation uses pinned Conan/CMake/Ninja graphs, explicit RAII
 ownership, bounded commands/jobs and immutable owning snapshots. SDL/Vulkan,
@@ -50,11 +52,10 @@ See the [creator plan].
 
 The flagship delivery sequence remains:
 
-1. **M4:** accept the coordinate/precision decision and bounded precision evidence;
-   then canonical cell/offset coordinates, tick-barrier local-frame transfer,
-   coherent render history, committed warp and two-system residency/prefetch.
-   Security manifests establish protected starts and a greatly larger lawless
-   region. C1-A/B's consumable creator baseline proceeds alongside M4.
+1. **M4:** accepted for the bounded fixture: checked coordinates, tick-barrier
+   local-frame transfer, coherent render history, committed warp and destination
+   prefetch. One protected starter system and one lawless system exercise
+   system-wide policy without setting production balance.
 2. **M5:** finish a small offline game: conserved inventory, mining, two weapon
    types, loss/wreck/recovery, docking/trading and one saved first-party quest.
 3. **M6–M7:** make that same simulation authoritative, then add crash-safe

@@ -39,6 +39,10 @@ ngen::demo::Options options(int argc, char **argv) {
             output.verify = true;
         else if (arg == "--replay")
             output.replay = true;
+        else if (arg == "--crossing")
+            output.crossing = true;
+        else if (arg == "--crossing-hold")
+            output.crossing_hold = true;
         else if (arg == "--walkthrough")
             output.walkthrough = true;
         else if (arg == "--validation")
@@ -56,7 +60,13 @@ ngen::demo::Options options(int argc, char **argv) {
             output.extent.width = number(arg.substr(8), 3840);
         else if (arg.starts_with("--height="))
             output.extent.height = number(arg.substr(9), 2160);
-        else if (arg.starts_with("--report="))
+        else if (arg.starts_with("--destination=")) {
+            require(arg.size() > 14, "destination package path is empty");
+            output.destination = arg.substr(14);
+        } else if (arg.starts_with("--destination-retry=")) {
+            require(arg.size() > 20, "destination retry package path is empty");
+            output.destination_retry = arg.substr(20);
+        } else if (arg.starts_with("--report="))
             output.report = arg.substr(9);
         else if (arg.starts_with("--capture="))
             output.capture = arg.substr(10);
@@ -68,6 +78,12 @@ ngen::demo::Options options(int argc, char **argv) {
     require(!(output.replay && output.walkthrough), "choose replay or SDL walkthrough, not both");
     require(!(output.replay || output.walkthrough) || output.frames > 0,
             "fixed-tick replay or SDL walkthrough requires a bounded frame count");
+    require(!output.crossing || (output.replay && !output.verify && output.frames >= 32),
+            "crossing requires a runtime replay of at least 32 frames");
+    require((output.destination.empty() && !output.crossing_hold) || output.crossing,
+            "destination and injected hold require --crossing");
+    require(output.destination_retry.empty() || !output.destination.empty(),
+            "destination retry requires a first destination package");
     require(output.report.empty() || output.frames > 0, "frame report requires a bounded run");
     require(!output.verify || !output.motion_vectors, "motion vectors require runtime rendering");
     for (const auto &path : {output.report, output.capture})
@@ -190,7 +206,8 @@ void verify(const ngen::demo::Preset &preset, const ngen::assets::Scene &package
 int main(int argc, char **argv) try {
     if (argc < 2 || std::string_view(argv[1]) == "--help") {
         std::fputs("Usage: flight_demo scene.ngas [--verify] [--replay|--walkthrough --frames=N] "
-                   "[--warmup=N] "
+                   "[--warmup=N] [--crossing [--crossing-hold] [--destination=scene.ngas "
+                   "[--destination-retry=scene.ngas]]] "
                    "[--validation] [--mute] [--motion-vectors] [--width=N --height=N] "
                    "[--report=new.csv] [--capture=new.bmp]\n",
                    stdout);

@@ -10,6 +10,7 @@
 #include "render/environment.hpp"
 #include <algorithm>
 #include <array>
+#include <chrono>
 #include <cmath>
 #include <cstdio>
 #include <limits>
@@ -43,6 +44,25 @@ void wait(Context &context, const Submission &submission) {
         require(SDL_GetTicks() - start < 5000, "scene draw completion timed out");
         SDL_Delay(1);
     }
+}
+std::size_t count_lit_pixels(Context &context, const Image &color, VkExtent2D extent) {
+    const auto bytes = VkDeviceSize{extent.width} * extent.height * 8;
+    auto readback = take(
+        context.create_buffer({bytes, VK_BUFFER_USAGE_TRANSFER_DST_BIT, MemoryAccess::readback}));
+    wait(context, take(context.copy_from_image({color, readback})));
+    std::vector<std::uint16_t> actual(std::size_t{extent.width} * extent.height * 4);
+    (void)take(readback.read(0, std::as_writable_bytes(std::span(actual))));
+    std::size_t lit = 0;
+    for (std::size_t i = 0; i < actual.size(); i += 4) {
+        bool nonzero = false;
+        for (std::size_t channel = 0; channel < 3; ++channel) {
+            require((actual[i + channel] & 0x7c00U) != 0x7c00U, "scene HDR output is nonfinite");
+            nonzero = nonzero || actual[i + channel] != 0;
+        }
+        if (nonzero)
+            ++lit;
+    }
+    return lit;
 }
 class DrawGate {
   public:
@@ -81,7 +101,8 @@ class DrawGate {
 };
 } // namespace
 bool draw_scene(render::Context &context, render::ScenePin &version, const render::ScenePin &active,
-                const std::filesystem::path &capture, bool particle_fixture) {
+                const std::filesystem::path &capture, bool particle_fixture,
+                const std::function<bool()> &upload_pending) {
     using namespace render;
     const auto package = version->package();
     const VkExtent2D extent = capture.empty() ? VkExtent2D{256, 128} : VkExtent2D{1280, 720};
@@ -150,6 +171,43 @@ bool draw_scene(render::Context &context, render::ScenePin &version, const rende
     view.light_view_projection = view.view_projection;
     view.key_direction_intensity = {-1, -1, -1, 1};
     SceneRenderer renderer;
+    if (!active) {
+        wait(context, take(renderer.draw(context, version, view, targets)));
+        const auto lit = count_lit_pixels(context, color, extent);
+        require(lit > 0, "single scene draw produced no lit pixels");
+        std::printf("single_scene_lit_pixels=%zu\n", lit);
+        if (upload_pending) {
+            using Clock = std::chrono::steady_clock;
+            require(SDL_ShowWindow(context.window()), "crossing window did not show");
+            const auto deadline = Clock::now() + std::chrono::seconds(2);
+            std::size_t queued = 0;
+            double maximum_ms = 0;
+            auto previous = Clock::now();
+            while (upload_pending()) {
+                wait(context, take(renderer.draw(context, version, view, targets)));
+                for (;;) {
+                    require(Clock::now() < deadline, "crossing frame admission timed out");
+                    SDL_PumpEvents();
+                    const auto frame = take(context.render_frame(ImageFrame{color}));
+                    if (frame.outcome == FrameOutcome::queued) {
+                        const auto now = Clock::now();
+                        maximum_ms = std::max(
+                            maximum_ms,
+                            std::chrono::duration<double, std::milli>(now - previous).count());
+                        previous = now;
+                        ++queued;
+                        wait(context, frame.resources);
+                        break;
+                    }
+                    SDL_Delay(1);
+                }
+            }
+            require(queued > 0, "destination uploaded without queuing a proxy frame");
+            std::printf("upload_proxy_frames_queued=%zu queue_interval_max_ms=%.3f\n", queued,
+                        maximum_ms);
+        }
+        return true;
+    }
     if (particle_fixture) {
         auto aliased = targets;
         aliased.motion_vectors = &color;
@@ -521,22 +579,7 @@ bool draw_scene(render::Context &context, render::ScenePin &version, const rende
     gate.completed = true;
     require(take(renderer.collect(context)) == 0 && weak.expired(),
             "completed frame version did not release its owning pin");
-    const auto bytes = VkDeviceSize{extent.width} * extent.height * 8;
-    auto readback = take(
-        context.create_buffer({bytes, VK_BUFFER_USAGE_TRANSFER_DST_BIT, MemoryAccess::readback}));
-    wait(context, take(context.copy_from_image({color, readback})));
-    std::vector<std::uint16_t> actual(std::size_t{extent.width} * extent.height * 4);
-    (void)take(readback.read(0, std::as_writable_bytes(std::span(actual))));
-    std::size_t lit = 0;
-    for (std::size_t i = 0; i < actual.size(); i += 4) {
-        bool nonzero = false;
-        for (std::size_t channel = 0; channel < 3; ++channel) {
-            require((actual[i + channel] & 0x7c00U) != 0x7c00U, "scene HDR output is nonfinite");
-            nonzero = nonzero || actual[i + channel] != 0;
-        }
-        if (nonzero)
-            ++lit;
-    }
+    const auto lit = count_lit_pixels(context, color, extent);
     require(lit > 0, "scene geometry did not draw any material pixels");
     if (!capture.empty()) {
         (void)take(ngen::probe::capture(context, color, extent, capture));
