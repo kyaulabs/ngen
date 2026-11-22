@@ -1309,6 +1309,7 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
     ScenePin landmark;
     bool destination_ready = false, destination_rejected = false, distinct_destination = false;
     bool destination_retried = false, upload_retried = false, collision_published = false;
+    std::size_t collision_blocked_frames = 0;
     assets::PackagePin upload_candidate;
     std::optional<Failure> upload_failure;
     std::optional<Error> collision_failure;
@@ -1430,15 +1431,22 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
                         start_upload(*crossing_scene);
                         upload_retried = true;
                     }
-                    const bool held = options.crossing_hold && queued_blocked_frames < 6;
-                    if (!held && crossing_scene->selected() != version) {
-                        if (!collision_published) {
+                    if (crossing_scene->selected() != version) {
+                        const bool occupied = options.crossing_hold && collision_blocked_frames < 6;
+                        const bool corrected = options.crossing_hold &&
+                                               collision_blocked_frames == 6 &&
+                                               collision_failure == Error::busy;
+                        if (!collision_published || corrected) {
+                            std::array<physics::Box, 101> contacts;
+                            std::ranges::copy(preset.contacts, contacts.begin());
+                            contacts.back() = {{1, 1, 1}, {}, 1000, false};
                             const auto staged = destination->publish(
-                                {state.route_position, destination_revision, preset.contacts});
+                                {state.route_position, destination_revision,
+                                 std::span{contacts}.first(preset.contacts.size() +
+                                                           (occupied ? 1U : 0U))});
+                            collision_published = std::holds_alternative<std::monostate>(staged);
                             if (const auto *error = std::get_if<Error>(&staged))
                                 collision_failure = *error;
-                            else
-                                collision_published = true;
                         }
                         if (collision_published) {
                             const auto arrival = destination->arrive(
@@ -1679,6 +1687,8 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
                         ++rejected_frames;
                     if (upload_failure)
                         ++upload_failed_frames;
+                    if (collision_failure == Error::busy)
+                        ++collision_blocked_frames;
                 }
                 if (landmark)
                     ++landmark_frames;
@@ -1781,8 +1791,10 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
             throw std::runtime_error("destination upload rejected: " + upload_failure->message);
         require(arrived, collision_failure ? "destination collision unavailable"
                                            : "crossing did not reach the destination");
-        require(!options.crossing_hold || queued_blocked_frames >= 6,
-                "crossing did not queue the injected exit hold");
+        if (options.crossing_hold)
+            std::printf("crossing_collision_blocked_frames=%zu\n", collision_blocked_frames);
+        require(!options.crossing_hold || collision_blocked_frames == 6,
+                "crossing did not queue and recover from the injected berth obstruction");
     }
     const auto allocations = options.frames ? workload::allocation_count() - allocation_start : 0;
     const auto ui_allocations = options.frames ? gui->allocation_count() - ui_start : 0;

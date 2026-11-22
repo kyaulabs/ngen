@@ -104,6 +104,7 @@ class FlightRcs(unittest.TestCase):
             start = int(fields["crossing_first_exit_frame"])
             count = int(fields["queued_blocked_exit_frames"])
             self.assertGreaterEqual(count, 6)
+            self.assertIn("crossing_collision_blocked_frames=6", text)
             self.assertEqual(int(fields["crossing_arrival_frame"]), start + count)
             self.assertGreater(int(fields["crossing_transit_upload_polls"]), 0)
             self.assertTrue(all(tick == ticks[0] for tick in ticks[start:start + count]))
