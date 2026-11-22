@@ -10,6 +10,7 @@
 #include "render/environment.hpp"
 #include "scene_workload/allocations.hpp"
 #include "tools/gui.hpp"
+#include "tools/reload.hpp"
 #include "travel/destination.hpp"
 #include "travel/system_manifest.hpp"
 #include <algorithm>
@@ -1288,6 +1289,8 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
     std::unique_ptr<travel::Journey> crossing;
     std::optional<travel::DestinationCollision> destination;
     std::optional<ScenePrefetch> crossing_scene;
+    std::optional<tools::PackageReloader> destination_reader;
+    bool destination_ready = false, destination_rejected = false;
     std::uint64_t destination_revision = 0;
     std::size_t blocked_frames = 0, queued_blocked_frames = 0;
     double accumulator = 0;
@@ -1350,14 +1353,36 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
                 destination.emplace(route);
                 destination_revision = route.collision_revision;
                 crossing_scene.emplace(version);
-                if (const auto failure = crossing_scene->begin(*context, package))
-                    throw std::runtime_error(failure->message);
+                if (options.destination.empty()) {
+                    if (const auto failure = crossing_scene->begin(*context, package))
+                        throw std::runtime_error(failure->message);
+                    destination_ready = true;
+                } else {
+                    destination_reader.emplace(options.destination);
+                    (void)game_value(destination_reader->request(1));
+                }
+            }
+            if (destination_reader && crossing_scene && !destination_ready &&
+                !destination_rejected) {
+                if (auto result = destination_reader->poll()) {
+                    auto *candidate = std::get_if<assets::PackagePin>(&result->package);
+                    // This fixture still uses the source ship's material indices and contacts.
+                    if (!candidate || (*candidate)->checksum != package->checksum ||
+                        (*candidate)->materials.size() != package->materials.size()) {
+                        destination_rejected = true;
+                    } else {
+                        if (const auto failure =
+                                crossing_scene->begin(*context, std::move(*candidate)))
+                            throw std::runtime_error(failure->message);
+                        destination_ready = true;
+                    }
+                }
             }
             if (crossing) {
                 const auto state = game_value(crossing->step());
                 if (state.phase == travel::Phase::exit && destination && crossing_scene) {
                     blocked_exit = true;
-                    if (++blocked_frames > 6) {
+                    if (++blocked_frames > 6 && destination_ready) {
                         if (const auto failure = crossing_scene->advance(*context))
                             throw std::runtime_error(failure->message);
                         if (crossing_scene->selected() != version) {
@@ -1374,7 +1399,9 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
                         }
                     }
                     if (blocked_exit)
-                        metrics.status = "Warp exit: waiting for destination upload";
+                        metrics.status = destination_rejected
+                                             ? "Warp exit: destination file rejected"
+                                             : "Warp exit: waiting for destination upload";
                 } else if (state.local) {
                     previous = current;
                     current = state.local.value();
@@ -1621,11 +1648,14 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
         ++frame_index;
     }
     if (options.crossing) {
-        require(crossing && crossing->snapshot().phase == travel::Phase::arrived &&
-                    queued_blocked_frames >= 6,
+        const bool arrived = crossing && crossing->snapshot().phase == travel::Phase::arrived;
+        std::printf(
+            "flight_crossing_arrived=%u queued_blocked_exit_frames=%zu destination_file_ready=%u\n",
+            arrived ? 1U : 0U, queued_blocked_frames,
+            destination_reader && destination_ready ? 1U : 0U);
+        require(!destination_rejected, "destination file rejected");
+        require(arrived && queued_blocked_frames >= 6,
                 "crossing did not queue the held exit and reach the destination");
-        std::printf("flight_crossing_arrived=1 queued_blocked_exit_frames=%zu\n",
-                    queued_blocked_frames);
     }
     const auto allocations = options.frames ? workload::allocation_count() - allocation_start : 0;
     const auto ui_allocations = options.frames ? gui->allocation_count() - ui_start : 0;

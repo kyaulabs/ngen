@@ -58,7 +58,10 @@ ngen::demo::Options options(int argc, char **argv) {
             output.extent.width = number(arg.substr(8), 3840);
         else if (arg.starts_with("--height="))
             output.extent.height = number(arg.substr(9), 2160);
-        else if (arg.starts_with("--report="))
+        else if (arg.starts_with("--destination=")) {
+            require(arg.size() > 14, "destination package path is empty");
+            output.destination = arg.substr(14);
+        } else if (arg.starts_with("--report="))
             output.report = arg.substr(9);
         else if (arg.starts_with("--capture="))
             output.capture = arg.substr(10);
@@ -72,6 +75,7 @@ ngen::demo::Options options(int argc, char **argv) {
             "fixed-tick replay or SDL walkthrough requires a bounded frame count");
     require(!output.crossing || (output.replay && !output.verify && output.frames >= 32),
             "crossing requires a runtime replay of at least 32 frames");
+    require(output.destination.empty() || output.crossing, "destination requires --crossing");
     require(output.report.empty() || output.frames > 0, "frame report requires a bounded run");
     require(!output.verify || !output.motion_vectors, "motion vectors require runtime rendering");
     for (const auto &path : {output.report, output.capture})
@@ -194,7 +198,7 @@ void verify(const ngen::demo::Preset &preset, const ngen::assets::Scene &package
 int main(int argc, char **argv) try {
     if (argc < 2 || std::string_view(argv[1]) == "--help") {
         std::fputs("Usage: flight_demo scene.ngas [--verify] [--replay|--walkthrough --frames=N] "
-                   "[--warmup=N] [--crossing] "
+                   "[--warmup=N] [--crossing [--destination=scene.ngas]] "
                    "[--validation] [--mute] [--motion-vectors] [--width=N --height=N] "
                    "[--report=new.csv] [--capture=new.bmp]\n",
                    stdout);

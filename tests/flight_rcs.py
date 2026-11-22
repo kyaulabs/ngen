@@ -35,6 +35,22 @@ class FlightRcs(unittest.TestCase):
         self.assertIn("flight_rcs_geometry_verified=1", text)
         self.assertIn("triangles=249942", text)
 
+    def test_crossing_prefetches_a_destination_file(self):
+        text = self.run_demo("--crossing", "--replay", "--mute", "--frames=120", "--warmup=12",
+                             "--destination=" + str(self.asset))
+        self.assertIn("flight_crossing_arrived=1", text)
+        self.assertIn("destination_file_ready=1", text)
+
+    def test_crossing_keeps_queuing_when_destination_is_missing(self):
+        with tempfile.TemporaryDirectory(prefix="ngen-missing-") as directory:
+            result = subprocess.run([str(self.executable), str(self.asset), "--crossing", "--replay",
+                                     "--mute", "--frames=32", "--warmup=4",
+                                     "--destination=" + str(Path(directory) / "missing.ngas")],
+                                    capture_output=True, text=True, timeout=180, check=False)
+            self.assertEqual(result.returncode, 1, result.stdout + result.stderr)
+            self.assertIn("flight_crossing_arrived=0 queued_blocked_exit_frames=24", result.stdout)
+            self.assertIn("destination file rejected", result.stderr)
+
     def test_crossing_queues_blocked_exit_and_resumes_local_ticks(self):
         with tempfile.TemporaryDirectory(prefix="ngen-crossing-") as directory:
             report = Path(directory) / "crossing.csv"
