@@ -1,4 +1,81 @@
 ## 📜 Changelog
+### [0.9.0](https://github.com/kyaulabs/ngen/releases/tag/v0.9.0)
+
+#### 🐛 Fixes
+
+- **flight:** Keep crossing prefetch and arrival failures bounded ([d81a1bf](https://github.com/kyaulabs/ngen/commit/d81a1bfddb7347481b267c9127077a1a2425d11f))
+
+
+#### 📝 Documentation
+
+- **world:** Define system-wide security for the streaming fixture ([3d2cf35](https://github.com/kyaulabs/ngen/commit/3d2cf354160969b163374d699d29724fed94e07f))
+
+- **world:** Record system-wide streaming security (#115) ([7a3d666](https://github.com/kyaulabs/ngen/commit/7a3d66697ee01a4f1295767ae5a56204ebdff5d6))
+
+
+#### 🚀 Features
+
+- **travel:** Define a connected two-system fixture ([62d0cd1](https://github.com/kyaulabs/ngen/commit/62d0cd1417089f48aca7526cd4654c4fc439c65b))
+
+- **travel:** Integrate the connected two-system fixture (#116) ([ed77354](https://github.com/kyaulabs/ngen/commit/ed77354c933e68dae1e76658976259697b1ecbc0))
+
+- **travel:** Stage bounded destination collision data ([5ef13a6](https://github.com/kyaulabs/ngen/commit/5ef13a6d6941fae689521a7a20627bb52d031f31))
+
+- **travel:** Integrate destination collision staging (#117) ([d1433c1](https://github.com/kyaulabs/ngen/commit/d1433c1a295bd622ff7145b08e6c330959a57ab2))
+
+- **render:** Retain a scene proxy during destination upload ([a6aa6cd](https://github.com/kyaulabs/ngen/commit/a6aa6cd6a475ede11d1de3d9fdf5cce274e20201))
+
+- **render:** Integrate scene proxy retention during upload (#118) ([beab91f](https://github.com/kyaulabs/ngen/commit/beab91ffc8686bef3780b5ca46ad97650c0f246c))
+
+- **render:** Evict a cached destination scene ([92476f7](https://github.com/kyaulabs/ngen/commit/92476f7e433abe4057dd73bc83c4345bc8181942))
+
+- **render:** Integrate cached destination eviction (#119) ([af68c36](https://github.com/kyaulabs/ngen/commit/af68c36b705aed82fde770ff834920a858a23bd0))
+
+- **flight:** Record host presentation queue timestamps ([de9aecb](https://github.com/kyaulabs/ngen/commit/de9aecb7cecbefc47b7f54a09456888f77243607))
+
+- **flight:** Integrate host presentation queue timestamps (#126) ([7ff9412](https://github.com/kyaulabs/ngen/commit/7ff9412e3608c37e30761e1485e3d00fcaa452b9))
+
+- **flight:** Run a bounded crossing in the flight replay ([ee3d3ab](https://github.com/kyaulabs/ngen/commit/ee3d3abcce8a572cb3505045100a4580512dc4d2))
+
+- **flight:** Integrate a bounded flight crossing replay (#127) ([c10c68e](https://github.com/kyaulabs/ngen/commit/c10c68ec6436c0b2271dc0be9d4ca0c29a37627e))
+
+- **flight:** Prefetch a destination file during crossing replay ([b418e59](https://github.com/kyaulabs/ngen/commit/b418e59fd5c8368bac97ef3365faa4e158385a89))
+
+- **flight:** Render a distinct streamed destination landmark ([6db65b2](https://github.com/kyaulabs/ngen/commit/6db65b2f4f8ec77765f10d2800ee5b67025703e9))
+
+- **flight:** Integrate file-backed destination streaming (#128) ([26eaa35](https://github.com/kyaulabs/ngen/commit/26eaa3520f03fc8f60962e660974c2ffcdf62da0))
+
+
+#### 🧪 Tests
+
+- **travel:** Gate the native crossing on destination upload ([2416633](https://github.com/kyaulabs/ngen/commit/2416633f3e37c20f19323035d9a047c583a71fbf))
+
+- **travel:** Exercise file failures at the crossing gate ([2ce192f](https://github.com/kyaulabs/ngen/commit/2ce192f5ef904c065bcf7071e4c69191ded607cd))
+
+- **travel:** Integrate the file-backed crossing probe (#120) ([cc7c655](https://github.com/kyaulabs/ngen/commit/cc7c6554efcf40b463de3d6429e5d317cf0d9e4e))
+
+- **travel:** Hold a departure prefetch through warp transit ([a691ab4](https://github.com/kyaulabs/ngen/commit/a691ab493e8e41751940f531108cd588247a5c28))
+
+- **travel:** Integrate delayed departure prefetch (#121) ([d46a61f](https://github.com/kyaulabs/ngen/commit/d46a61fd5e51da8f054d6a68184824358a00d00a))
+
+- **render:** Read back the proxy while warp arrival waits ([d41c4c2](https://github.com/kyaulabs/ngen/commit/d41c4c2f0a6a22ebed8c851491799a91484419d7))
+
+- **render:** Integrate the blocked-crossing proxy readback (#122) ([fa3d5bc](https://github.com/kyaulabs/ngen/commit/fa3d5bc0ea8877c0a4d81fa1d4cd18be8720a7ac))
+
+- **travel:** Measure a warmed destination crossing replay ([8d1aa56](https://github.com/kyaulabs/ngen/commit/8d1aa56b580faf8155f8a6fc0f7e2a95ad65f7eb))
+
+- **travel:** Integrate the warmed crossing replay (#123) ([f2d1a82](https://github.com/kyaulabs/ngen/commit/f2d1a8255b2b76d987187ecb040fa03f441c10e9))
+
+- **travel:** Exercise resource pressure before warp arrival ([3a93f70](https://github.com/kyaulabs/ngen/commit/3a93f7017752df1b48e6d31643be907ec9b05fbc))
+
+- **travel:** Integrate crossing resource pressure checks (#124) ([78dc20b](https://github.com/kyaulabs/ngen/commit/78dc20bcd3f14303878bb30f57749542912264d3))
+
+- **render:** Time proxy frames during destination upload ([19e8ef7](https://github.com/kyaulabs/ngen/commit/19e8ef783906971a4a27f06c7676e1a848d560fc))
+
+- **render:** Integrate proxy frame queue timing (#125) ([145976e](https://github.com/kyaulabs/ngen/commit/145976eade0aa51a11b6e777b79bbeda9d44a6c5))
+
+- **flight:** Recover after an occupied destination berth ([9cbc604](https://github.com/kyaulabs/ngen/commit/9cbc60435ec03dffef8022f4c06f781870e5dc27))
+
 ### [0.8.0](https://github.com/kyaulabs/ngen/releases/tag/v0.8.0)
 
 #### 🚀 Features
