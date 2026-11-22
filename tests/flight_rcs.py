@@ -35,6 +35,24 @@ class FlightRcs(unittest.TestCase):
         self.assertIn("flight_rcs_geometry_verified=1", text)
         self.assertIn("triangles=249942", text)
 
+    def test_replay_reports_host_queue_timestamps(self):
+        with tempfile.TemporaryDirectory(prefix="ngen-queue-") as directory:
+            report = Path(directory) / "queue.csv"
+            self.run_demo("--replay", "--mute", "--frames=12", "--warmup=4",
+                          "--report=" + str(report))
+            with report.open(newline="") as stream:
+                rows = list(csv.DictReader(stream))
+            self.assertEqual(len(rows), 12)
+            previous = 0
+            for row in rows:
+                queued = int(row["queue_ns"])
+                ended = int(row["host_ns"])
+                self.assertGreater(queued, previous)
+                self.assertLessEqual(ended - int(row["frame_ns"]), queued)
+                self.assertLessEqual(queued, ended)
+                self.assertLessEqual(len(row), 64)
+                previous = queued
+
     def test_native_replay_renders_physical_braking_and_quiet_coast(self):
         with tempfile.TemporaryDirectory(prefix="ngen-rcs-") as directory:
             report = Path(directory) / "replay.csv"
