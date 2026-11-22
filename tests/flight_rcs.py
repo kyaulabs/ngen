@@ -41,6 +41,41 @@ class FlightRcs(unittest.TestCase):
         self.assertIn("flight_crossing_arrived=1", text)
         self.assertIn("destination_file_ready=1", text)
 
+    def test_crossing_draws_distinct_destination_geometry(self):
+        landmark = os.environ.get("NGEN_CROSSING_LANDMARK")
+        if not landmark:
+            self.skipTest("set cooked public starter marker as NGEN_CROSSING_LANDMARK")
+        with tempfile.TemporaryDirectory(prefix="ngen-landmark-") as directory:
+            capture = Path(directory) / "destination.bmp"
+            text = self.run_demo("--crossing", "--replay", "--mute", "--frames=120",
+                                 "--warmup=12", "--destination=" + landmark,
+                                 "--capture=" + str(capture))
+            self.assertIn("flight_crossing_arrived=1", text)
+            self.assertIn("destination_file_ready=1", text)
+            self.assertRegex(text, r"destination_landmark_frames=[1-9][0-9]*")
+            raw = capture.read_bytes()
+            offset = struct.unpack_from("<I", raw, 10)[0]
+            width, height = struct.unpack_from("<ii", raw, 18)
+            self.assertEqual(struct.unpack_from("<H", raw, 28)[0], 32)
+            self.assertTrue(any(green > 120 and green > 2 * red and green > 2 * blue
+                                for blue, green, red, _ in
+                                struct.iter_unpack("4B", raw[offset:offset + width * abs(height) * 4])),
+                            "final flight capture did not contain the green destination landmark")
+
+    def test_crossing_retries_after_a_corrupt_destination(self):
+        landmark = os.environ.get("NGEN_CROSSING_LANDMARK")
+        if not landmark:
+            self.skipTest("set cooked public starter marker as NGEN_CROSSING_LANDMARK")
+        with tempfile.TemporaryDirectory(prefix="ngen-crossing-retry-") as directory:
+            corrupt = Path(directory) / "corrupt.ngas"
+            corrupt.write_bytes(b"not a checked package\n")
+            text = self.run_demo("--crossing", "--replay", "--mute", "--frames=120",
+                                 "--warmup=12", "--destination=" + str(corrupt),
+                                 "--destination-retry=" + landmark)
+            self.assertIn("flight_crossing_arrived=1", text)
+            self.assertIn("destination_rejected_queued_frames=6 destination_retried=1", text)
+            self.assertRegex(text, r"destination_landmark_frames=[1-9][0-9]*")
+
     def test_crossing_keeps_queuing_when_destination_is_missing(self):
         with tempfile.TemporaryDirectory(prefix="ngen-missing-") as directory:
             result = subprocess.run([str(self.executable), str(self.asset), "--crossing", "--replay",
