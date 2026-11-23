@@ -1,6 +1,6 @@
 """Bounded scene authoring for an owned Linux project; no runtime or tool execution."""
 
-from contextlib import suppress
+from contextlib import contextmanager, suppress
 import fcntl
 import json
 import os
@@ -19,12 +19,37 @@ MAX_HISTORY = 8
 MAX_REVISION = (1 << 63) - 1
 
 
+class Busy(ValueError):
+    pass
+
+
+class StaleRevision(ValueError):
+    pass
+
+
+@contextmanager
+def locked(directory, mode):
+    # A separate open description is required for flock to serialize callers
+    # that share the launcher's directory descriptor.
+    fd = os.open(".", os.O_RDONLY | os.O_DIRECTORY, dir_fd=directory)
+    try:
+        try:
+            fcntl.flock(fd, mode | fcntl.LOCK_NB)
+        except BlockingIOError as error:
+            raise Busy("scene is busy") from error
+        yield fd
+    finally:
+        os.close(fd)
+
+
 def read_file(directory, name, limit):
     fd = os.open(name, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK, dir_fd=directory)
     with os.fdopen(fd, "rb") as stream:
         entry = os.fstat(stream.fileno())
         if not stat.S_ISREG(entry.st_mode) or not 0 < entry.st_size <= limit:
             raise ValueError(f"{name}: expected a nonempty regular file of at most {limit} bytes")
+        if entry.st_nlink != 1:
+            raise ValueError(f"{name}: hard-linked files are not admitted")
         data = stream.read(limit + 1)
         if len(data) != entry.st_size:
             raise ValueError(f"{name}: file size changed during validation")
@@ -133,19 +158,22 @@ def serialize(document):
     return payload
 
 
-def save(directory, document):
-    payload = serialize(document)
-    name = ".ngen-scene-" + secrets.token_hex(12)
+def atomic_replace(directory, destination, payload):
+    name = ".ngen-edit-" + secrets.token_hex(12)
     fd = os.open(name, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600, dir_fd=directory)
     try:
         with os.fdopen(fd, "wb") as stream:
             stream.write(payload)
             stream.flush()
             os.fsync(stream.fileno())
-        os.replace(name, SCENE, src_dir_fd=directory, dst_dir_fd=directory)
+        os.replace(name, destination, src_dir_fd=directory, dst_dir_fd=directory)
     finally:
         with suppress(FileNotFoundError):
             os.unlink(name, dir_fd=directory)
+
+
+def save(directory, document):
+    atomic_replace(directory, SCENE, serialize(document))
 
 
 def view(document):
@@ -231,17 +259,12 @@ def authored_files(directory):
     return files
 
 
-def run(directory, operation, expected, data):
-    if operation == "show":
-        return view(load(directory))
-    try:
-        fcntl.flock(directory, fcntl.LOCK_EX | fcntl.LOCK_NB)
-    except BlockingIOError as error:
-        raise ValueError("scene is busy") from error
+def prepare(directory, operation, expected, data):
+    """Prepare a save under the caller's project lock without publishing it."""
     document = load(directory)
     revision = document["revision"]
     if revision != expected:
-        raise ValueError("stale scene revision")
+        raise StaleRevision("stale scene revision")
     if revision == MAX_REVISION:
         raise ValueError("scene revision exhausted")
     current, undo, redo = (document[key] for key in ("entities", "undo", "redo"))
@@ -258,5 +281,4 @@ def run(directory, operation, expected, data):
         destination.append(current)
     assets(directory, entities)
     document.update(revision=revision + 1, entities=entities)
-    save(directory, document)
-    return view(document)
+    return current, document
