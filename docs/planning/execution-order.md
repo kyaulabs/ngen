@@ -24,9 +24,9 @@ engine, game or MCP implementation.
 
 | Field | Value |
 |---|---|
-| Last verified step | **11 — [M5-A #16](https://github.com/kyaulabs/ngen/issues/16)**; local inventory and GameCredit transfers. |
-| Next step | **12 — [M5-B #17](https://github.com/kyaulabs/ngen/issues/17)**; bounded mining yield. |
-| Next entry decision | Define mining claim ownership, cargo admission and the explicit replenishment event. |
+| Last verified step | **12 — [M5-B #17](https://github.com/kyaulabs/ngen/issues/17)**; bounded mining yield. |
+| Next step | **13 — [M5-C #18](https://github.com/kyaulabs/ngen/issues/18)**; two fixture weapons through one damage path. |
+| Next entry decision | Define damage ownership, fitted component hit regions and the shot admission bound. |
 | Optional selections | M11 features and M12 settlement are not selected by this schedule. |
 
 Resume request: **“Read `docs/planning/execution-order.md` and continue from the
@@ -105,7 +105,7 @@ validation path or a shortcut to host/production authority.
 | Step | Done | Issue | Outcome |
 |---|---|---|---|
 | 11 | [x] | [M5-A #16](https://github.com/kyaulabs/ngen/issues/16) | Apply one local inventory/currency transfer through an idempotent transaction kernel. |
-| 12 | [ ] | [M5-B #17](https://github.com/kyaulabs/ngen/issues/17) | Make a mining command reserve and transfer a bounded resource yield. |
+| 12 | [x] | [M5-B #17](https://github.com/kyaulabs/ngen/issues/17) | Make a mining command reserve and transfer a bounded resource yield. |
 | 13 | [ ] | [M5-C #18](https://github.com/kyaulabs/ngen/issues/18) | Resolve the two fixture weapons against hull/component health through one damage path. |
 | 14 | [ ] | [C2-B #78](https://github.com/kyaulabs/ngen/issues/78) | Apply project/source/scene edits through validated creator operations. |
 | 15 | [ ] | [M5-D #19](https://github.com/kyaulabs/ngen/issues/19) | Transition a destroyed fixture ship into one wreck and one repeatable starter recovery entitlement. |
@@ -307,5 +307,6 @@ work advances. Do not use this log instead of the issue's complete acceptance.
 | 09 — C2-A | [PR #112](https://github.com/kyaulabs/ngen/pull/112); [creator MCP guide](../creator-mcp.md) | Real Linux stdio client read SDK/schema resources and metadata for one launcher-granted project. No writes, execution or listener. |
 | 10 — M4-E | [PR #128](https://github.com/kyaulabs/ngen/pull/128); [flight acceptance](../evidence/M4/flight-acceptance.md) | File-backed two-system flight kept queuing frames through faults. GPU residency and corrected collision preceded arrival. Healthy and recovered runs stayed within the fixed frame gate; no production catalog or interactive warp. |
 | 11 — M5-A | [PR #137](https://github.com/kyaulabs/ngen/pull/137); [local market evidence](../evidence/M5/local-market.md) | The offline buy/sell fixture conserved inventory and credits; replay, conflict, rejection and saturation passed. [Integration CPU](https://github.com/kyaulabs/ngen/actions/runs/45096798487) covered the signed merge. No persistence or integrated M5 acceptance. |
+| 12 — M5-B | [PR #140](https://github.com/kyaulabs/ngen/pull/140); [bounded mining evidence](../evidence/M5/bounded-mining.md) | Concurrent and repeated claims preserved ore and cargo bounds. The explicit finite replenishment fixture conserved 13 units. See [integration CPU](https://github.com/kyaulabs/ngen/actions/runs/45119163774). No persistence or integrated M5 acceptance. |
 
 [board]: https://github.com/orgs/kyaulabs/projects/4/views/3
