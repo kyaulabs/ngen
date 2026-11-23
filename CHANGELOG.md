@@ -1,4 +1,19 @@
 ## 📜 Changelog
+### [0.10.0](https://github.com/kyaulabs/ngen/releases/tag/v0.10.0)
+
+#### 📝 Documentation
+
+- **roadmap:** Mark the Space MMO project handoffs ([21fde81](https://github.com/kyaulabs/ngen/commit/21fde81d557a08f77b473856aeed2a903e4dd2df))
+
+- **roadmap:** Integrate Space MMO handoff checkpoints (#136) ([7f0ab37](https://github.com/kyaulabs/ngen/commit/7f0ab3770abed4e3ec82787ec2aa8ab0d022f304))
+
+
+#### 🚀 Features
+
+- **economy:** Add local idempotent inventory and credit transfers ([a9346d8](https://github.com/kyaulabs/ngen/commit/a9346d8683eab92da359db9523c6d36142fbb7aa))
+
+- **economy:** Merge the local offline market fixture (#137) ([322b1c4](https://github.com/kyaulabs/ngen/commit/322b1c4cee5ec094c73f022325f72292ec60655b))
+
 ### [0.9.0](https://github.com/kyaulabs/ngen/releases/tag/v0.9.0)
 
 #### 🐛 Fixes
