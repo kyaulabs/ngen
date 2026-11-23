@@ -1,4 +1,12 @@
 ## 📜 Changelog
+### [0.11.0](https://github.com/kyaulabs/ngen/releases/tag/v0.11.0)
+
+#### 🚀 Features
+
+- **mining:** Reserve and transfer bounded offline ore yields ([1b4bd67](https://github.com/kyaulabs/ngen/commit/1b4bd67a4f6d49ded042638753635b3b51dd6ca7))
+
+- **mining:** Integrate bounded offline ore yields (#140) ([6853861](https://github.com/kyaulabs/ngen/commit/68538616ac68fea949e5e7742277a7b0789f33e8))
+
 ### [0.10.0](https://github.com/kyaulabs/ngen/releases/tag/v0.10.0)
 
 #### 📝 Documentation
