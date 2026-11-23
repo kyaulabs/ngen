@@ -232,10 +232,11 @@ class CreatorProject(unittest.TestCase):
         try:
             fcntl.flock(directory, fcntl.LOCK_EX | fcntl.LOCK_NB)
             rejected(self.scene("edit", revision=1, edit={"board": None}), "scene is busy")
-            self.assertEqual(self.scene_ok("show")["revision"], 1)
+            rejected(self.scene("show"), "scene is busy")
         finally:
             os.close(directory)
-        self.assertFalse(list(self.project.glob(".ngen-scene-*")))
+        self.assertEqual(self.scene_ok("show")["revision"], 1)
+        self.assertFalse(list(self.project.glob(".ngen-edit-*")))
 
     @unittest.skipIf(os.geteuid() == 0, "root can write the read-only failure fixture")
     def test_failed_scene_save_keeps_last_committed_revision(self):

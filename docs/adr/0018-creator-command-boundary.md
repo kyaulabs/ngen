@@ -102,6 +102,16 @@ another root, read files by path, write, or execute project code. No network
 transport or engine dependency is added. This slice does not ratify the broader
 proposal or authorize later C2 capabilities.
 
+## C2-B review scope
+
+The [creator MCP companion](../creator-mcp.md) stays read-only unless the
+launcher grants edits to its one opened project. MCP and the CLI share bounded
+manifest rename, fixed `main.cpp` replacement, and scene edit operations. Preview
+returns a structural diff; a save rechecks the expected revision and atomically
+replaces one file. Source is text only at this boundary, not compiled or executed.
+The grant does not include arbitrary paths, asset writes, live snapshots, new
+roots, or build/play. No other ADR is ratified by this slice.
+
 ## Evidence
 
 [Creator scope and acceptance](../planning/creator-toolchain.md), the current
