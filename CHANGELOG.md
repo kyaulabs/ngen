@@ -1,4 +1,12 @@
 ## 📜 Changelog
+### [0.13.0](https://github.com/kyaulabs/ngen/releases/tag/v0.13.0)
+
+#### 🚀 Features
+
+- **creator:** Grant bounded revision-checked MCP edits ([2c057d5](https://github.com/kyaulabs/ngen/commit/2c057d5c722b9770577d3a308a10fb1fbd906ca4))
+
+- **creator:** Integrate revision-checked MCP edits (#146) ([fe598fe](https://github.com/kyaulabs/ngen/commit/fe598feb0707ab4b119588bc4d674b58043446b6))
+
 ### [0.12.0](https://github.com/kyaulabs/ngen/releases/tag/v0.12.0)
 
 #### 🚀 Features
