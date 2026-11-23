@@ -1,4 +1,12 @@
 ## 📜 Changelog
+### [0.12.0](https://github.com/kyaulabs/ngen/releases/tag/v0.12.0)
+
+#### 🚀 Features
+
+- **combat:** Resolve both fixture weapons through one damage path ([bf54bef](https://github.com/kyaulabs/ngen/commit/bf54bef22cac8857e6ac5b0f15103147293ef072))
+
+- **combat:** Integrate shared fixture weapon damage (#143) ([0908e50](https://github.com/kyaulabs/ngen/commit/0908e50f3c5b19f3aecdf99004bfe4b94ed69d33))
+
 ### [0.11.0](https://github.com/kyaulabs/ngen/releases/tag/v0.11.0)
 
 #### 🚀 Features
