@@ -24,9 +24,9 @@ engine, game or MCP implementation.
 
 | Field | Value |
 |---|---|
-| Last verified step | **15 — [M5-D #19](https://github.com/kyaulabs/ngen/issues/19)**; wreck ownership and starter recovery. |
-| Next step | **16 — [M5-E #20](https://github.com/kyaulabs/ngen/issues/20)**; docking-gated market access. |
-| Next entry decision | Define the berth admission, approach/abort rules and the vessel identity that authorizes a trade. |
+| Last verified step | **16 — [M5-E #20](https://github.com/kyaulabs/ngen/issues/20)**; docking-gated market access. |
+| Next step | **17 — [C2-C #79](https://github.com/kyaulabs/ngen/issues/79)**; bounded build/cook/test/package jobs. |
+| Next entry decision | Define the explicit job grants, host isolation, resource limits and cancellation contract. |
 | Optional selections | M11 features and M12 settlement are not selected by this schedule. |
 
 Resume request: **“Read `docs/planning/execution-order.md` and continue from the
@@ -109,7 +109,7 @@ validation path or a shortcut to host/production authority.
 | 13 | [x] | [M5-C #18](https://github.com/kyaulabs/ngen/issues/18) | Resolve the two fixture weapons against hull/component health through one damage path. |
 | 14 | [x] | [C2-B #78](https://github.com/kyaulabs/ngen/issues/78) | Apply project/source/scene edits through validated creator operations. |
 | 15 | [x] | [M5-D #19](https://github.com/kyaulabs/ngen/issues/19) | Transition a destroyed fixture ship into one wreck and one repeatable starter recovery entitlement. |
-| 16 | [ ] | [M5-E #20](https://github.com/kyaulabs/ngen/issues/20) | Permit the fixture market transaction through a docking state machine. |
+| 16 | [x] | [M5-E #20](https://github.com/kyaulabs/ngen/issues/20) | Permit the fixture market transaction through a docking state machine. |
 | 17 | [ ] | [C2-C #79](https://github.com/kyaulabs/ngen/issues/79) | Run bounded authorized build/cook/test/package jobs. |
 | 18 | [ ] | [M5-F #21](https://github.com/kyaulabs/ngen/issues/21) | Run and save one bounded first-party faction/career quest through the playable loop. |
 | 19 | [ ] | [C1-E #75](https://github.com/kyaulabs/ngen/issues/75) | Publish redistributable space/non-space samples and task-oriented SDK documentation. |
@@ -311,5 +311,6 @@ work advances. Do not use this log instead of the issue's complete acceptance.
 | 13 — M5-C | [PR #143](https://github.com/kyaulabs/ngen/pull/143); [fixture combat evidence](../evidence/M5/fixture-combat.md) | Both weapons used the same first-contact damage path. All accepted projectiles resolved through saturation and shooter loss. See [integration CPU](https://github.com/kyaulabs/ngen/actions/runs/45222049044). No moving-target or integrated M5 acceptance. |
 | 14 — C2-B | [PR #146](https://github.com/kyaulabs/ngen/pull/146); [validated edit evidence](../evidence/C2/validated-edits.md) | Real stdio preview and apply shared CLI operations and rejected stale, malformed and out-of-scope edits. See [integration CPU](https://github.com/kyaulabs/ngen/actions/runs/45270750062). No build/play grant or full C2 acceptance. |
 | 15 — M5-D | [PR #149](https://github.com/kyaulabs/ngen/pull/149); [wreck/recovery evidence](../evidence/M5/wreck-recovery.md) | Loss and salvage kept surviving cargo with one owner under contention. Repeated recovery granted empty starters without sellable items. See [integration CPU](https://github.com/kyaulabs/ngen/actions/runs/45311770489). No durable wrecks or integrated M5 acceptance. |
+| 16 — M5-E | [PR #152](https://github.com/kyaulabs/ngen/pull/152); [docking market evidence](../evidence/M5/docking-market.md) | The current docked ticket alone admitted trade. Abort and departure closed access; re-docking preserved vessel, cargo and receipts. See [integration CPU](https://github.com/kyaulabs/ngen/actions/runs/45343735796). No live contacts or integrated M5 acceptance. |
 
 [board]: https://github.com/orgs/kyaulabs/projects/4/views/3
