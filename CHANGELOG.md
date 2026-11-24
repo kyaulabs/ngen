@@ -1,4 +1,12 @@
 ## 📜 Changelog
+### [0.14.0](https://github.com/kyaulabs/ngen/releases/tag/v0.14.0)
+
+#### 🚀 Features
+
+- **lifecycle:** Preserve wreck cargo and grant empty starter recovery ([a86f416](https://github.com/kyaulabs/ngen/commit/a86f41625384ee70f5031cf06658973c40fc0023))
+
+- **lifecycle:** Integrate wreck ownership and recovery (#149) ([83345f4](https://github.com/kyaulabs/ngen/commit/83345f4d7597ada74d099d250fa03ad7ed09365a))
+
 ### [0.13.0](https://github.com/kyaulabs/ngen/releases/tag/v0.13.0)
 
 #### 🚀 Features
