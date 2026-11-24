@@ -1,4 +1,12 @@
 ## 📜 Changelog
+### [0.15.0](https://github.com/kyaulabs/ngen/releases/tag/v0.15.0)
+
+#### 🚀 Features
+
+- **docking:** Gate fixture market trades on berth capture ([d2a9d51](https://github.com/kyaulabs/ngen/commit/d2a9d51379a54e797e865f95d05b29f8837c458b))
+
+- **docking:** Integrate berth-gated market access (#152) ([058348d](https://github.com/kyaulabs/ngen/commit/058348d0aed76e001805fa07dc8546b09c6f4f08))
+
 ### [0.14.0](https://github.com/kyaulabs/ngen/releases/tag/v0.14.0)
 
 #### 🚀 Features
