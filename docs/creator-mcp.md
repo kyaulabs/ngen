@@ -1,6 +1,6 @@
 # Creator MCP
 
-The optional Linux companion serves one locally granted starter project over stdio. It is read-only by default and does not install with the engine SDK or listen on the network. It cannot run builds, start playtests, or read arbitrary paths.
+The optional Linux companion serves one locally granted starter project over stdio. It is read-only by default and does not install with the engine SDK or listen on the network. It cannot read arbitrary paths or start playtests. A separate launcher grant enables bounded offline jobs on a supported Linux host.
 
 ```sh
 python3 -m venv .venv-mcp
@@ -35,6 +35,10 @@ Preview is the default and does not reserve a revision. To save, send the same r
 The CLI `tools/project.py edit-revisions` and `tools/project.py edit --operation … --expect …` use the same operations. The CLI reads the change from stdin and saves by default; use `--preview` for its diff alone. Scene edit, undo and redo keep the same revision/history model. The lock coordinates the creator tools, not arbitrary filesystem editors. Saves replace a single file atomically with an owner-only file; they are not a power-loss durability or multi-file transaction guarantee. The tools reject symlinked or hard-linked project inputs. The launcher and direct workspace users must be trusted.
 
 The adapter does not edit CMake files, write assets or active snapshots, or compile, run or validate the semantics of user source code. GLB metadata is data, not instructions. The per-operation limits apply after SDK framing; the local SDK transport has no NGEN pre-parse frame cap. Do not expose this stdio service to untrusted processes or remote callers.
+
+## Opt-in offline jobs
+
+See the [creator jobs guide](creator-jobs.md) for the separate `--allow-jobs` grant, host prerequisites, fixed job operations, and cancellation. `--allow-edits` does not grant execution, and a job grant does not grant edits or playtest control.
 
 The [official Python MCP SDK 2.3.0](https://github.com/modelcontextprotocol/python-sdk/releases/tag/v2.3.0) handles stdio and negotiation. The integration tests use revision `2026-07-28`. A separate SDK-only probe exercised `2025-11-25` over stdio; this is not a claim about any particular MCP host.
 
