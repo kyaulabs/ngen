@@ -6,13 +6,14 @@ import json
 import os
 from pathlib import Path
 import secrets
-from typing import Literal, TypedDict
+from typing import Annotated, Literal, TypedDict
 
 from pydantic import BaseModel, ConfigDict, Field
 
 from mcp.server.mcpserver import MCPServer
 from mcp.types import ToolAnnotations
 
+import creator_jobs
 import creator_scene
 import project
 
@@ -76,7 +77,16 @@ def denied(code: str) -> Inspection:
     return {"ok": False, "project": None, "scene": None, "error": code}
 
 
-def serve(directory: int, allow_edits: bool) -> None:
+class JobRevision(TypedDict):
+    revision: str | None
+    error: str | None
+
+
+Token = Annotated[str, Field(max_length=32)]
+Revision = Annotated[str, Field(max_length=64)]
+
+
+def serve(directory: int, allow_edits: bool, jobs: creator_jobs.Runner | None) -> None:
     granted_handle = secrets.token_hex(16)
     server = MCPServer("ngen-creator", subscriptions=False)
     read_only = ToolAnnotations(readOnlyHint=True, destructiveHint=False, openWorldHint=False)
@@ -153,6 +163,43 @@ def serve(directory: int, allow_edits: bool) -> None:
             except (OSError, ValueError):
                 return edit_denied("invalid_edit")
 
+    if jobs is not None:
+        job_write = ToolAnnotations(readOnlyHint=False, destructiveHint=True, openWorldHint=False)
+
+        @server.tool(annotations=read_only)
+        def job_revision(handle: Token) -> JobRevision:
+            """Fingerprint the saved source and assets eligible for a job."""
+            if handle != granted_handle:
+                return {"revision": None, "error": "unknown_project"}
+            try:
+                revision, _ = creator_jobs.snapshot(directory)
+                return {"revision": revision, "error": None}
+            except creator_scene.Busy:
+                return {"revision": None, "error": "project_busy"}
+            except (OSError, ValueError):
+                return {"revision": None, "error": "invalid_project"}
+
+        @server.tool(annotations=job_write)
+        def start_job(handle: Token, kind: creator_jobs.JobKind, expected: Revision) -> creator_jobs.JobReply:
+            """Run a fixed offline creator job at the expected saved revision."""
+            if handle != granted_handle:
+                return creator_jobs.denied("unknown_project")
+            return jobs.start(directory, kind, expected)
+
+        @server.tool(annotations=read_only)
+        def job_status(handle: Token, job: Token) -> creator_jobs.JobReply:
+            """Report status without logging or returning project-controlled output."""
+            if handle != granted_handle:
+                return creator_jobs.denied("unknown_project")
+            return jobs.status(job)
+
+        @server.tool(annotations=job_write)
+        def cancel_job(handle: Token, job: Token) -> creator_jobs.JobReply:
+            """Request cancellation of the one owned job; poll for its terminal outcome."""
+            if handle != granted_handle:
+                return creator_jobs.denied("unknown_project")
+            return jobs.status(job, cancel=True)
+
     server.run(transport="stdio")
 
 
@@ -160,6 +207,11 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--project", type=Path, required=True, help="one absolute, explicitly granted starter root")
     parser.add_argument("--allow-edits", action="store_true", help="grant bounded local edits")
+    parser.add_argument("--allow-jobs", action="store_true", help="grant bounded isolated jobs")
+    parser.add_argument("--job-sdk", type=Path, help="audited, relocatable local SDK/dependency prefix")
+    parser.add_argument("--job-tools", type=Path, help="audited directory with assetc, ktx and probe")
+    parser.add_argument("--job-output", type=Path, help="existing directory for local source archives")
+    parser.add_argument("--job-seconds", type=int, help="job deadline, 1–90 seconds (default: 90)")
     args = parser.parse_args()
     if not args.project.is_absolute():
         parser.error("--project requires an absolute directory")
@@ -167,9 +219,23 @@ def main() -> None:
         directory = os.open(args.project, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW)
     except OSError:
         parser.error("could not open the granted project directory")
+    jobs = None
     try:
-        serve(directory, args.allow_edits)
+        profile = (args.job_sdk, args.job_tools, args.job_output)
+        if args.allow_jobs:
+            if not all(profile):
+                parser.error("--allow-jobs requires --job-sdk, --job-tools and --job-output")
+            try:
+                jobs = creator_jobs.Runner(sdk=args.job_sdk, tools=args.job_tools, output=args.job_output,
+                                           seconds=90 if args.job_seconds is None else args.job_seconds)
+            except (OSError, ValueError):
+                parser.error("could not establish the local creator job profile")
+        elif any(profile) or args.job_seconds is not None:
+            parser.error("job profile options require --allow-jobs")
+        serve(directory, args.allow_edits, jobs)
     finally:
+        if jobs is not None:
+            jobs.close()
         os.close(directory)
 
 

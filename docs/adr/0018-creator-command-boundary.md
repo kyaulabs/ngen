@@ -112,6 +112,17 @@ replaces one file. Source is text only at this boundary, not compiled or execute
 The grant does not include arbitrary paths, asset writes, live snapshots, new
 roots, or build/play. No other ADR is ratified by this slice.
 
+## C2-C review scope
+
+A separate [local job grant](../creator-jobs.md) starts one fixed offline job
+at a time for a captured project revision. The Linux worker verifies its cgroup
+limits before the owner releases it into Bubblewrap; it cannot inherit the
+launcher environment or use host sockets. Cancellation stops and checks the
+owned cgroup before reporting completion. Only the source packager publishes a
+local archive, and it never runs project code. There is no dependency download,
+public release, shell access or playtest authority. The broader ADR is still
+Proposed.
+
 ## Evidence
 
 [Creator scope and acceptance](../planning/creator-toolchain.md), the current

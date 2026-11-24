@@ -43,6 +43,7 @@ class CreatorMcp(unittest.IsolatedAsyncioTestCase):
                     self.assertEqual(tools['inspect_project'].input_schema['required'], ['handle'])
                     self.assertTrue(tools['inspect_project'].annotations.read_only_hint)
                     self.assertTrue((await client.call_tool('edit_project', {'request': {}})).is_error)
+                    self.assertTrue((await client.call_tool('start_job', {})).is_error)
                     self.assertFalse((board / 'ngen-scene.json').exists())
                     listed = (await client.call_tool('list_projects', {})).structured_content
                     handle, = listed['handles']
