@@ -1,4 +1,12 @@
 ## 📜 Changelog
+### [0.16.0](https://github.com/kyaulabs/ngen/releases/tag/v0.16.0)
+
+#### 🚀 Features
+
+- **creator:** Run bounded offline jobs with explicit authority ([148e3bf](https://github.com/kyaulabs/ngen/commit/148e3bfd5079bc17e1cba203a6466c436c81a0b9))
+
+- **creator:** Integrate isolated offline jobs (#155) ([1c0bb88](https://github.com/kyaulabs/ngen/commit/1c0bb889469a28b99542847c0d00977e2703e801))
+
 ### [0.15.0](https://github.com/kyaulabs/ngen/releases/tag/v0.15.0)
 
 #### 🚀 Features
