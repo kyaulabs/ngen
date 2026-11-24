@@ -24,9 +24,9 @@ engine, game or MCP implementation.
 
 | Field | Value |
 |---|---|
-| Last verified step | **13 — [M5-C #18](https://github.com/kyaulabs/ngen/issues/18)**; two fixture weapons through one damage path. |
-| Next step | **14 — [C2-B #78](https://github.com/kyaulabs/ngen/issues/78)**; validated creator edits. |
-| Next entry decision | Define the bounded edit operations, expected revisions, and project-scoped write authority. |
+| Last verified step | **14 — [C2-B #78](https://github.com/kyaulabs/ngen/issues/78)**; validated creator edits. |
+| Next step | **15 — [M5-D #19](https://github.com/kyaulabs/ngen/issues/19)**; wreck ownership and starter recovery. |
+| Next entry decision | Define cargo ownership on loss, salvage admission, and a recovery entitlement that cannot generate repeatable sellable value. |
 | Optional selections | M11 features and M12 settlement are not selected by this schedule. |
 
 Resume request: **“Read `docs/planning/execution-order.md` and continue from the
@@ -107,7 +107,7 @@ validation path or a shortcut to host/production authority.
 | 11 | [x] | [M5-A #16](https://github.com/kyaulabs/ngen/issues/16) | Apply one local inventory/currency transfer through an idempotent transaction kernel. |
 | 12 | [x] | [M5-B #17](https://github.com/kyaulabs/ngen/issues/17) | Make a mining command reserve and transfer a bounded resource yield. |
 | 13 | [x] | [M5-C #18](https://github.com/kyaulabs/ngen/issues/18) | Resolve the two fixture weapons against hull/component health through one damage path. |
-| 14 | [ ] | [C2-B #78](https://github.com/kyaulabs/ngen/issues/78) | Apply project/source/scene edits through validated creator operations. |
+| 14 | [x] | [C2-B #78](https://github.com/kyaulabs/ngen/issues/78) | Apply project/source/scene edits through validated creator operations. |
 | 15 | [ ] | [M5-D #19](https://github.com/kyaulabs/ngen/issues/19) | Transition a destroyed fixture ship into one wreck and one repeatable starter recovery entitlement. |
 | 16 | [ ] | [M5-E #20](https://github.com/kyaulabs/ngen/issues/20) | Permit the fixture market transaction through a docking state machine. |
 | 17 | [ ] | [C2-C #79](https://github.com/kyaulabs/ngen/issues/79) | Run bounded authorized build/cook/test/package jobs. |
@@ -309,5 +309,6 @@ work advances. Do not use this log instead of the issue's complete acceptance.
 | 11 — M5-A | [PR #137](https://github.com/kyaulabs/ngen/pull/137); [local market evidence](../evidence/M5/local-market.md) | The offline buy/sell fixture conserved inventory and credits; replay, conflict, rejection and saturation passed. [Integration CPU](https://github.com/kyaulabs/ngen/actions/runs/45096798487) covered the signed merge. No persistence or integrated M5 acceptance. |
 | 12 — M5-B | [PR #140](https://github.com/kyaulabs/ngen/pull/140); [bounded mining evidence](../evidence/M5/bounded-mining.md) | Concurrent and repeated claims preserved ore and cargo bounds. The explicit finite replenishment fixture conserved 13 units. See [integration CPU](https://github.com/kyaulabs/ngen/actions/runs/45119163774). No persistence or integrated M5 acceptance. |
 | 13 — M5-C | [PR #143](https://github.com/kyaulabs/ngen/pull/143); [fixture combat evidence](../evidence/M5/fixture-combat.md) | Both weapons used the same first-contact damage path. All accepted projectiles resolved through saturation and shooter loss. See [integration CPU](https://github.com/kyaulabs/ngen/actions/runs/45222049044). No moving-target or integrated M5 acceptance. |
+| 14 — C2-B | [PR #146](https://github.com/kyaulabs/ngen/pull/146); [validated edit evidence](../evidence/C2/validated-edits.md) | Real stdio preview and apply shared CLI operations and rejected stale, malformed and out-of-scope edits. See [integration CPU](https://github.com/kyaulabs/ngen/actions/runs/45270750062). No build/play grant or full C2 acceptance. |
 
 [board]: https://github.com/orgs/kyaulabs/projects/4/views/3
