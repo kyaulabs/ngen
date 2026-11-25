@@ -41,7 +41,7 @@ class Journey {
   public:
     [[nodiscard]] static Result<std::unique_ptr<Journey>>
     create(const Route &route, const flight::ShipDefinition &ship,
-           std::span<const physics::Box> source_obstacles = {});
+           std::span<const physics::Box> source_obstacles = {}, Tick initial_tick = {});
     Journey(const Journey &) = delete;
     Journey &operator=(const Journey &) = delete;
     [[nodiscard]] Snapshot snapshot() const;

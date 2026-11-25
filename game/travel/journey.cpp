@@ -47,7 +47,8 @@ Journey::Journey(Route route, flight::ShipDefinition ship, Trajectory path,
 
 Result<std::unique_ptr<Journey>> Journey::create(const Route &route,
                                                  const flight::ShipDefinition &ship,
-                                                 std::span<const physics::Box> obstacles) {
+                                                 std::span<const physics::Box> obstacles,
+                                                 Tick initial_tick) {
     if (!route.collision_revision || ship.hull.position_metres != std::array<double, 3>{})
         return Error::invalid;
     const auto clear = clear_berth(ship.hull, obstacles);
@@ -57,7 +58,7 @@ Result<std::unique_ptr<Journey>> Journey::create(const Route &route,
     if (const auto *error = std::get_if<Error>(&path))
         return *error;
     try {
-        auto local = flight::Flight::create(ship, obstacles, route.source);
+        auto local = flight::Flight::create(ship, obstacles, route.source, initial_tick);
         if (const auto *error = std::get_if<Error>(&local))
             return *error;
         return std::unique_ptr<Journey>(

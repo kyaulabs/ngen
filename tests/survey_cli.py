@@ -18,7 +18,10 @@ with tempfile.TemporaryDirectory(prefix='ngen-survey-') as folder:
         if not condition:
             raise AssertionError(detail)
 
+    voyage = sys.argv[2:] == ['voyage']
     opening = call('status')
+    if voyage:
+        require('committed_system=protected' in opening, opening)
     require('Protected space' in opening and 'police' in opening and 'self-defense' in opening, opening)
     require('revision=0' in opening, opening)
     require('wrong_stage' in call('step', 0, 'venture', code=1), 'entered lawless space before the lesson')
@@ -27,10 +30,18 @@ with tempfile.TemporaryDirectory(prefix='ngen-survey-') as folder:
     for revision, action in enumerate(actions):
         checkpoint = call('step', revision, action)
         require(f'revision={revision + 1} ' in checkpoint, checkpoint)
-        require(f'revision={revision + 1} ' in call('status'), action)
+        restored = call('status')
+        require(f'revision={revision + 1} ' in restored, action)
+        if voyage and action in ('venture', 'sell'):
+            system = 'lawless' if action == 'venture' else 'protected'
+            require(f'native_arrival={system}' in checkpoint, checkpoint)
+            require(f'committed_system={system}' in restored, restored)
     final = call('status')
     require('vessel=2 ' in final and 'credits=40 ' in final and 'completed=2' in final, final)
-    require('receipt=8' in call('step', 7, 'sell'), 'missing historical receipt')
+    replay = call('step', 7, 'sell')
+    require('receipt=8' in replay, 'missing historical receipt')
+    if voyage:
+        require('native_arrival=' not in replay, 'replay repeated an already committed trip')
     require(call('status') == final, 'retry changed the committed save')
     require('conflict' in call('step', 7, 'mine', code=1), 'reused revision accepted another action')
     require(call('status') == final, 'conflict changed the committed save')
