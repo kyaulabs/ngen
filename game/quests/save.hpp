@@ -2,10 +2,14 @@
 #include "quests/survey.hpp"
 #include <filesystem>
 #include <memory>
+#include <optional>
 
 namespace ngen::quests {
 enum class SaveError : std::uint8_t { io, busy, invalid, uncertain };
 using SavedOutcome = std::variant<Receipt, Rejection, SaveError>;
+struct SaveTimings {
+    std::optional<std::uint64_t> market_ns, persistence_ns;
+};
 
 // Linux offline store for one private owner directory. Opening holds the save
 // lock until destruction. Never expose the working campaign before publication.
@@ -19,7 +23,7 @@ class Save {
 
     [[nodiscard]] State snapshot() const { return survey_.snapshot(); }
     [[nodiscard]] std::uint32_t revision() const { return survey_.revision(); }
-    [[nodiscard]] SavedOutcome step(Command command);
+    [[nodiscard]] SavedOutcome step(Command command, SaveTimings *timings = nullptr);
 
   private:
     friend class Voyage;

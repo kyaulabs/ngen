@@ -124,8 +124,9 @@ unrestricted shell, live shard or implicit network/spending/publication grant.
 **After 18:** close M5's saved one-hour offline loop, recovery/progression/invariant
 gates and recorded owner playthrough. The [windowed voyage checkpoint](../evidence/M5/windowed-voyage.md)
 uses live controls and a streamed frontier landmark over the
-[saved native voyage](../evidence/M5/saved-voyage.md). The one-hour B4 soak,
-separate market timings, independent review and owner playthrough remain open.
+[saved native voyage](../evidence/M5/saved-voyage.md). The [one-hour B4 result](../evidence/M5/b4-soak-results.md)
+met the flight, memory and separate market-latency budgets. Independent
+gameplay/economy review and the recorded owner playthrough still gate M5.
 Teaching security rules is not a substitute for M8 enforcement.
 **After 20:** accept the independently used C1 workflow and supported sample/package
 results. **After 22:** accept C2's real protocol/authoring/build/play and abuse/cleanup

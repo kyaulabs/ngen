@@ -163,8 +163,14 @@ TEST_CASE("the return sale needs a fresh native arrival if save publication fail
     const auto home = exit(*voyage);
     CHECK(home.origin == travel::streaming_fixture(19).systems[0].berth);
     const travel::CollisionSite home_site{home.origin, home.revision, {}};
+    SaveTimings failed_timings;
+    CHECK(std::get<Error>(voyage->arrive(nullptr, &failed_timings)) == Error::busy);
+    CHECK_FALSE(failed_timings.market_ns);
+    CHECK_FALSE(failed_timings.persistence_ns);
     REQUIRE(std::filesystem::create_directory(workspace.root / ".ngen-voyage.pending"));
-    CHECK(std::get<SaveError>(voyage->arrive(&home_site)) == SaveError::io);
+    CHECK(std::get<SaveError>(voyage->arrive(&home_site, &failed_timings)) == SaveError::io);
+    CHECK(failed_timings.market_ns.has_value());
+    CHECK(failed_timings.persistence_ns.has_value());
     CHECK(voyage->snapshot() == returnable.after);
     CHECK_FALSE(voyage->native());
     CHECK_FALSE(voyage->destination());
@@ -175,8 +181,11 @@ TEST_CASE("the return sale needs a fresh native arrival if save publication fail
     CHECK(voyage->snapshot() == returnable.after);
     REQUIRE(std::holds_alternative<InTransit>(arm(*voyage, inbound)));
     CHECK(exit(*voyage).origin == home.origin);
-    const auto result = voyage->arrive(&home_site);
+    SaveTimings sold_timings;
+    const auto result = voyage->arrive(&home_site, &sold_timings);
     REQUIRE(std::holds_alternative<Receipt>(result));
+    CHECK(sold_timings.market_ns.has_value());
+    CHECK(sold_timings.persistence_ns.has_value());
     const auto sold = std::get<Receipt>(result);
     CHECK(sold.after.credits == 27);
     CHECK(sold.after.cargo == 0);

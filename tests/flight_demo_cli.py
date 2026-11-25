@@ -73,6 +73,28 @@ class FlightAdmission(unittest.TestCase):
             else:
                 self.assertIn("flight demo was built without Surveyors", result.stderr)
 
+    @unittest.skipUnless(os.environ.get("NGEN_SURVEY_TEST") == "1", "opt-in Surveyors build")
+    def test_soak_has_a_wall_clock_budget_and_never_reuses_an_owner_directory(self):
+        with tempfile.TemporaryDirectory(prefix="ngen soak admission ") as directory:
+            root = Path(directory)
+            original = root / "owner-save"
+            original.write_bytes(b"preserve owner bytes")
+            dest = "--destination=missing-marker.ngas"
+            conflict = invoke("missing-flight-asset.ngas", f"--survey={root}", dest,
+                              "--soak-seconds=3600")
+            self.assertEqual(conflict.returncode, 2, conflict.stdout + conflict.stderr)
+            self.assertIn("new scratch directory", conflict.stderr)
+            self.assertEqual(original.read_bytes(), b"preserve owner bytes")
+            survey = f"--survey={root / 'fresh'}"
+            for flags in [("--soak-seconds=0",), ("--soak-seconds=3601",),
+                          ("--soak-seconds=3600", "--frames=10")]:
+                with self.subTest(flags=flags):
+                    result = invoke("missing-flight-asset.ngas", survey, dest, *flags)
+                    self.assertEqual(result.returncode, 2, result.stdout + result.stderr)
+            result = invoke("missing-flight-asset.ngas", survey, dest, "--soak-seconds=3600")
+            self.assertEqual(result.returncode, 1, result.stdout + result.stderr)
+            self.assertFalse((root / "fresh").exists())
+
     def test_bad_package_rejects_without_a_display_or_device(self):
         with tempfile.TemporaryDirectory(prefix="ngen flight invalid ") as directory:
             package = Path(directory) / "invalid.ngas"
