@@ -121,9 +121,9 @@ jobs:
           printf 'Name: Lua\nDescription: pinned Lua C library\nVersion: 5.5.1\nLibs: -L%s/lib -llua -lm\nCflags: -I%s/include\n' "$lua/prefix" "$lua/prefix" > "$lua/prefix/lib/pkgconfig/lua5.5.pc"
           PKG_CONFIG_PATH="$lua/prefix/lib/pkgconfig" cmake --preset release -B build/quest-release \
             -DCMAKE_TOOLCHAIN_FILE="$PWD/build/release/conan_toolchain.cmake" -DNGEN_BUILD_QUEST_SCRIPT=ON
-          cmake --build build/quest-release --target quest_script_tests -j2
-          ctest --test-dir build/quest-release -R '^quest_script$' --output-on-failure --no-tests=error
-          clang-tidy-18 -p build/quest-release engine/script/lua_rule.cpp tests/quest_script.cpp
+          cmake --build build/quest-release --target quest_script_tests survey_quest_tests survey_save_tests quest_survey -j2
+          ctest --test-dir build/quest-release -R '^(quest_script|survey_quest|survey_save|survey_cli)$' --output-on-failure --no-tests=error
+          clang-tidy-18 '-header-filter=.*/(engine/script|game/quests)/.*' -p build/quest-release engine/script/lua_rule.cpp game/quests/survey.cpp game/quests/save.cpp apps/quest_survey/main.cpp tests/quest_script.cpp tests/survey_quest.cpp tests/survey_save.cpp
       - name: Build and test headless local flight physics
         if: matrix.preset != 'tsan'
         env:
@@ -207,7 +207,7 @@ jobs:
         env:
           PRESET: ${{ matrix.preset }}
         run: |
-          clang-format-18 --dry-run --Werror engine/world/coordinates/*pp tools/project_template/*.cpp engine/core/*pp engine/jobs/*pp engine/simulation/*pp engine/script/*pp engine/physics/*pp engine/audio/*pp engine/render/*pp engine/assets/*pp engine/tools/*pp tests/*.cpp tests/*.hpp apps/sim_harness/*.cpp apps/render_probe/*.cpp apps/resource_probe/*.cpp apps/probe/*pp apps/asset_probe/*.cpp apps/scene_probe/*.cpp apps/scene_workload/*pp apps/inspector_probe/*.cpp apps/flight_demo/*pp game/flight/*pp game/economy/*pp game/mining/*pp game/combat/*pp game/lifecycle/*pp game/docking/*pp recipes/joltphysics/test_package/*.cpp tools/assetc/*pp tools/gpu_memory/*pp
+          clang-format-18 --dry-run --Werror engine/world/coordinates/*pp tools/project_template/*.cpp engine/core/*pp engine/jobs/*pp engine/simulation/*pp engine/script/*pp engine/physics/*pp engine/audio/*pp engine/render/*pp engine/assets/*pp engine/tools/*pp tests/*.cpp tests/*.hpp apps/sim_harness/*.cpp apps/quest_survey/*.cpp apps/render_probe/*.cpp apps/resource_probe/*.cpp apps/probe/*pp apps/asset_probe/*.cpp apps/scene_probe/*.cpp apps/scene_workload/*pp apps/inspector_probe/*.cpp apps/flight_demo/*pp game/flight/*pp game/economy/*pp game/mining/*pp game/combat/*pp game/lifecycle/*pp game/docking/*pp game/quests/*pp recipes/joltphysics/test_package/*.cpp tools/assetc/*pp tools/gpu_memory/*pp
           clang-tidy-18 -p "build/$PRESET" engine/core/values.cpp engine/core/entities.cpp engine/jobs/jobs.cpp engine/simulation/simulation.cpp engine/world/coordinates/position.cpp engine/effects/particles.cpp game/economy/local_market.cpp game/mining/site.cpp game/combat/arena.cpp game/lifecycle/session.cpp game/docking/berth.cpp tests/core.cpp tests/jobs.cpp tests/simulation.cpp tests/coordinates.cpp tests/particles.cpp tests/economy.cpp tests/mining.cpp tests/combat.cpp tests/lifecycle.cpp tests/docking.cpp apps/sim_harness/main.cpp
           # Ubuntu restricts unprivileged user namespaces. Create only the
           # network namespace with sudo, then drop back to the runner identity.
