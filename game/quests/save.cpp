@@ -65,7 +65,7 @@ std::optional<SaveError> load(int directory, Survey &survey) {
         return errno == ELOOP ? SaveError::invalid : SaveError::io;
     }
     const Descriptor file(fd);
-    struct stat identity{};
+    struct stat identity = {};
     if (fstat(file.get(), &identity) != 0)
         return SaveError::io;
     if (!S_ISREG(identity.st_mode) || identity.st_uid != geteuid() || identity.st_nlink != 1)
@@ -127,7 +127,7 @@ std::variant<std::unique_ptr<Save>, SaveError> Save::open(const std::filesystem:
     Descriptor directory(::open(path.c_str(), O_RDONLY | O_DIRECTORY | O_NOFOLLOW | O_CLOEXEC));
     if (directory.get() < 0)
         return SaveError::io;
-    struct stat identity{};
+    struct stat identity = {};
     if (fstat(directory.get(), &identity) != 0)
         return SaveError::io;
     if (identity.st_uid != geteuid() || (identity.st_mode & 0777U) != 0700U)
