@@ -25,6 +25,16 @@ Interpreter quotas do not interrupt a blocking native call. Script failures cann
 
 M5 runaway-loop, allocation-failure, native-error and malformed-bytecode tests prove bounded failure and RAII cleanup. Save migration tests cover script version changes. Reassess only when concrete authoring needs exceed the chosen VM.
 
+## M5-F review scope
+
+The [saved Surveyors fixture](../evidence/M5/saved-survey.md) compiles trusted
+first-party text inside an opt-in Lua 5.5.1 C VM. It opens no standard libraries,
+admits no external bytecode, and exposes no native gameplay callbacks. Protected
+trampolines keep Lua error jumps clear of C++ owners. The game saves versioned
+commands and reconstructs explicit progress, holdings and receipts without VM
+state. It rejects unknown save/campaign versions; migration and future native
+callback limits still require evidence. This does not ratify the broader proposal.
+
 ## Evidence
 
 See the [detailed specification and primary sources](../planning/simulation-network-persistence.md). This record contains a proposed NGEN decision, not a claim that its tests passed. Record accepted/rejected status, approver, revision and test evidence only after the stated gate.
