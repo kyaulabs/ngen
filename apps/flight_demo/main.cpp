@@ -60,7 +60,14 @@ ngen::demo::Options options(int argc, char **argv) {
             output.extent.width = number(arg.substr(8), 3840);
         else if (arg.starts_with("--height="))
             output.extent.height = number(arg.substr(9), 2160);
-        else if (arg.starts_with("--destination=")) {
+        else if (arg.starts_with("--survey=")) {
+#if defined(NGEN_FLIGHT_SURVEY)
+            require(arg.size() > 9, "survey save directory is empty");
+            output.survey = arg.substr(9);
+#else
+            throw std::runtime_error("flight demo was built without Surveyors");
+#endif
+        } else if (arg.starts_with("--destination=")) {
             require(arg.size() > 14, "destination package path is empty");
             output.destination = arg.substr(14);
         } else if (arg.starts_with("--destination-retry=")) {
@@ -80,8 +87,17 @@ ngen::demo::Options options(int argc, char **argv) {
             "fixed-tick replay or SDL walkthrough requires a bounded frame count");
     require(!output.crossing || (output.replay && !output.verify && output.frames >= 32),
             "crossing requires a runtime replay of at least 32 frames");
-    require((output.destination.empty() && !output.crossing_hold) || output.crossing,
-            "destination and injected hold require --crossing");
+    const bool survey = !output.survey.empty();
+    require(!survey || (!output.verify && !output.crossing && !output.walkthrough),
+            "survey requires runtime flight without crossing replay or walkthrough");
+    require(!survey || !output.destination.empty(), "survey requires a destination landmark");
+    require(!survey || !output.replay || output.frames >= 600,
+            "survey replay requires at least 600 measured frames and a scratch save directory");
+    require(output.destination.empty() || output.crossing || survey,
+            "destination requires --crossing or --survey");
+    require(!output.crossing_hold || output.crossing, "injected hold requires --crossing");
+    require(output.destination_retry.empty() || output.crossing || (survey && output.replay),
+            "file retry requires a crossing or survey replay");
     require(output.destination_retry.empty() || !output.destination.empty(),
             "destination retry requires a first destination package");
     require(output.report.empty() || output.frames > 0, "frame report requires a bounded run");
@@ -208,6 +224,9 @@ int main(int argc, char **argv) try {
         std::fputs("Usage: flight_demo scene.ngas [--verify] [--replay|--walkthrough --frames=N] "
                    "[--warmup=N] [--crossing [--crossing-hold] [--destination=scene.ngas "
                    "[--destination-retry=scene.ngas]]] "
+#if defined(NGEN_FLIGHT_SURVEY)
+                   "[--survey=private-dir --destination=landmark.ngas] "
+#endif
                    "[--validation] [--mute] [--motion-vectors] [--width=N --height=N] "
                    "[--report=new.csv] [--capture=new.bmp]\n",
                    stdout);

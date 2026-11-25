@@ -44,11 +44,45 @@ std::optional<SiteTarget> Voyage::destination() const {
 }
 
 std::optional<VoyageFrame> Voyage::native() const {
-    if (active_)
-        return VoyageFrame{snapshot().vessel, active_->journey->snapshot()};
-    if (parked_)
-        return VoyageFrame{snapshot().vessel, parked_->snapshot()};
+    if (journey_)
+        return VoyageFrame{snapshot().vessel, journey_->snapshot()};
     return {};
+}
+
+Result<travel::Route> Voyage::route() const {
+    const std::size_t source = at_starter(snapshot().stage) ? 0 : 1;
+    return catalog_.gate(catalog_.systems[source].id, catalog_.systems[1 - source].id, true);
+}
+
+Result<VoyageFrame> Voyage::prepare_local(const travel::CollisionSite &site) {
+    if (journey_ || snapshot().stage == Stage::lost)
+        return Error::busy;
+    const auto expected = departure();
+    if (site.origin != expected.origin || site.revision != expected.revision)
+        return Error::stale;
+    const auto planned = route();
+    if (const auto *error = std::get_if<Error>(&planned))
+        return *error;
+    auto result =
+        travel::Journey::create(std::get<travel::Route>(planned), ship_, site.obstacles, tick_);
+    if (const auto *error = std::get_if<Error>(&result))
+        return *error;
+    journey_ = std::get<std::unique_ptr<travel::Journey>>(std::move(result));
+    return VoyageFrame{snapshot().vessel, journey_->snapshot()};
+}
+
+Result<std::monostate> Voyage::submit(flight::Intent intent) {
+    if (!journey_ || active_)
+        return Error::busy;
+    const auto admission = envelope();
+    const auto upcoming = next(admission.expected);
+    if (const auto *error = std::get_if<Error>(&upcoming))
+        return *error;
+    const auto submitted =
+        journey_->submit({std::get<Tick>(upcoming), admission.sequence, admission.vessel, intent});
+    if (std::holds_alternative<std::monostate>(submitted))
+        ++sequence_;
+    return submitted;
 }
 
 VoyageOutcome Voyage::request(Command command, const travel::CollisionSite *site) {
@@ -59,7 +93,7 @@ VoyageOutcome Voyage::request(Command command, const travel::CollisionSite *site
         const auto result = save_->step(command);
         if (revision() != prior &&
             (command.action == Action::lose_ship || command.action == Action::recover))
-            parked_.reset();
+            journey_.reset();
         return compose(result);
     }
     const auto proposal = save_->preview(command);
@@ -67,33 +101,38 @@ VoyageOutcome Voyage::request(Command command, const travel::CollisionSite *site
         return *rejection;
 
     const auto expected = departure();
-    if (!site)
-        return Error::busy;
-    if (site->origin != expected.origin || site->revision != expected.revision)
+    if (site && (site->origin != expected.origin || site->revision != expected.revision))
         return Error::stale;
-    const std::size_t source = at_starter(snapshot().stage) ? 0 : 1;
-    const auto route =
-        catalog_.gate(catalog_.systems[source].id, catalog_.systems[1 - source].id, true);
-    if (const auto *error = std::get_if<Error>(&route))
+    if (!journey_ && !site)
+        return Error::busy;
+    const auto planned = route();
+    if (const auto *error = std::get_if<Error>(&planned))
         return *error;
-    const auto &path = std::get<travel::Route>(route);
-    auto prepared = travel::Journey::create(path, ship_, site->obstacles, tick_);
-    if (const auto *error = std::get_if<Error>(&prepared))
-        return *error;
-    auto journey = std::get<std::unique_ptr<travel::Journey>>(std::move(prepared));
-    const auto start = journey->snapshot();
-    const auto armed = journey->begin({start.vessel, start.tick, 1});
+    const auto &path = std::get<travel::Route>(planned);
+    std::unique_ptr<travel::Journey> prepared;
+    auto *local = journey_.get();
+    if (!local) {
+        auto created = travel::Journey::create(path, ship_, site->obstacles, tick_);
+        if (const auto *error = std::get_if<Error>(&created))
+            return *error;
+        prepared = std::get<std::unique_ptr<travel::Journey>>(std::move(created));
+        local = prepared.get();
+    }
+    const auto start = local->snapshot();
+    const auto armed = local->begin_from_berth({start.vessel, start.tick, sequence_ + 1}, path);
     if (const auto *error = std::get_if<Error>(&armed))
         return *error;
-    active_ = Active{command, {path.destination, path.collision_revision}, std::move(journey)};
+    ++sequence_;
+    if (prepared)
+        journey_ = std::move(prepared);
+    active_ = Active{command, {path.destination, path.collision_revision}};
     return InTransit{};
 }
 
 Result<VoyageFrame> Voyage::advance() {
-    auto *journey = active_ ? active_->journey.get() : parked_.get();
-    if (!journey)
+    if (!journey_)
         return Error::busy;
-    const auto result = journey->step();
+    const auto result = journey_->step();
     if (const auto *error = std::get_if<Error>(&result))
         return *error;
     const auto &state = std::get<travel::Snapshot>(result);
@@ -101,13 +140,18 @@ Result<VoyageFrame> Voyage::advance() {
     return VoyageFrame{snapshot().vessel, state};
 }
 
+travel::Command Voyage::envelope() const {
+    const auto state = journey_->snapshot();
+    return {state.vessel, state.tick, sequence_ + 1};
+}
+
 Result<std::monostate> Voyage::cancel() {
     if (!active_)
         return Error::busy;
-    const auto state = active_->journey->snapshot();
-    const auto result = active_->journey->cancel({state.vessel, state.tick, 2}, state.trip);
+    const auto result = journey_->cancel(envelope(), journey_->snapshot().trip);
     if (const auto *error = std::get_if<Error>(&result))
         return *error;
+    ++sequence_;
     active_.reset();
     return std::monostate{};
 }
@@ -115,19 +159,17 @@ Result<std::monostate> Voyage::cancel() {
 VoyageOutcome Voyage::arrive(const travel::CollisionSite *site) {
     if (!active_)
         return Error::busy;
-    const auto state = active_->journey->snapshot();
-    const auto arrival = active_->journey->arrive({state.vessel, state.tick, 2}, state.trip, site);
+    const auto arrival = journey_->arrive(envelope(), journey_->snapshot().trip, site);
     if (const auto *error = std::get_if<Error>(&arrival))
         return *error;
+    ++sequence_;
 
     const auto command = active_->command;
     const auto result = save_->step(command);
     // A post-rename sync error can report uncertainty after advancing the
     // published revision. Keep that arrival and let an exact retry resync.
-    if (revision() != command.expected)
-        parked_ = std::move(active_->journey);
-    else
-        parked_.reset(); // Do not expose the older native tick after elapsed transit.
+    if (revision() == command.expected)
+        journey_.reset(); // Do not expose an arrival that did not publish.
     active_.reset();
     return compose(result);
 }

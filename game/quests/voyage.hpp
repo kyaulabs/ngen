@@ -31,10 +31,15 @@ class Voyage {
     [[nodiscard]] travel::Security security() const;
     [[nodiscard]] SiteTarget departure() const;
     [[nodiscard]] std::optional<SiteTarget> destination() const;
-    // No contact snapshot is exposed after a failed save until a new leg starts.
+    // No contact snapshot is exposed after a failed save until local preparation.
     [[nodiscard]] std::optional<VoyageFrame> native() const;
-    // New travel requires the owner's prepared source. A pending trip excludes
-    // all quest commands, including historical replays, until settled/cancelled.
+    // Materialize the committed system after opening or recovering. Never
+    // replace a live contact domain as a shortcut to parking.
+    [[nodiscard]] Result<VoyageFrame> prepare_local(const travel::CollisionSite &site);
+    [[nodiscard]] Result<std::monostate> submit(flight::Intent intent);
+    // If no local domain exists, the headless owner can supply source contacts
+    // at departure. Existing local contacts are never replaced on request.
+    // A pending trip excludes all quest commands until settled/cancelled.
     [[nodiscard]] VoyageOutcome request(Command command,
                                         const travel::CollisionSite *source = nullptr);
     [[nodiscard]] Result<VoyageFrame> advance();
@@ -49,10 +54,12 @@ class Voyage {
     struct Active {
         Command command;
         SiteTarget target;
-        std::unique_ptr<travel::Journey> journey;
     };
+    [[nodiscard]] Result<travel::Route> route() const;
+    [[nodiscard]] travel::Command envelope() const;
     std::optional<Active> active_;
-    std::unique_ptr<travel::Journey> parked_;
+    std::unique_ptr<travel::Journey> journey_;
     Tick tick_;
+    std::uint64_t sequence_{};
 };
 } // namespace ngen::quests

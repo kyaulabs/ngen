@@ -2,6 +2,7 @@
 #include "travel/journey.hpp"
 #include "travel/system_manifest.hpp"
 #include <catch2/catch_test_macros.hpp>
+#include <cmath>
 #include <limits>
 #include <stdexcept>
 
@@ -174,6 +175,30 @@ TEST_CASE("entry cancellation keeps the original body but commitment retires it"
     CHECK(exit.route_position == route.destination);
     CHECK(exit.tick == Tick{5});
     CHECK_FALSE(exit.local.has_value());
+}
+
+TEST_CASE("live berth capture does not cut a powered approach") {
+    const auto route = route_fixture();
+    flight::ShipDefinition ship;
+    ship.maximum_force_newtons = {10800, 6000, 6000};
+    auto journey = std::get<std::unique_ptr<travel::Journey>>(travel::Journey::create(route, ship));
+    const auto ship_id = journey->snapshot().vessel;
+    REQUIRE(std::holds_alternative<std::monostate>(
+        journey->submit({Tick{1}, 1, ship_id, flight::SetMode{flight::Mode::direct}})));
+    REQUIRE(std::holds_alternative<std::monostate>(
+        journey->submit({Tick{1}, 2, ship_id, flight::Pilot{{1, 0, 0}}})));
+    REQUIRE(std::holds_alternative<travel::Snapshot>(journey->step()));
+    REQUIRE(std::holds_alternative<std::monostate>(
+        journey->submit({Tick{2}, 3, ship_id, flight::SetMode{flight::Mode::tactical}})));
+    REQUIRE(std::holds_alternative<std::monostate>(
+        journey->submit({Tick{2}, 4, ship_id, flight::Destination{{}}})));
+    const auto approaching = local_flight(std::get<travel::Snapshot>(journey->step()));
+    REQUIRE(std::abs(approaching.body.position_metres[0]) < .5);
+    REQUIRE(std::abs(approaching.body.velocity_mps[0]) < .2F);
+    REQUIRE(std::abs(approaching.force_newtons[0]) / approaching.body.mass_kg > .25);
+    CHECK(std::holds_alternative<Error>(journey->begin_from_berth({ship_id, Tick{2}, 5}, route)));
+    CHECK(journey->snapshot().phase == travel::Phase::local);
+    CHECK(local_flight(journey->snapshot()).body.id == approaching.body.id);
 }
 
 TEST_CASE("only a prepared destination can republish the vessel, exactly once") {

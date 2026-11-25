@@ -32,7 +32,7 @@ struct Snapshot {
     std::optional<flight::Snapshot> local;
 };
 
-// Single owner thread, one vessel and one authored, one-way route. Entry is
+// Single owner thread, one vessel and one authored route at a time. Entry is
 // cancellable at the current tick barrier; the next step commits the trip.
 // No local contact body survives committed transit. Arrival prepares a fresh
 // contact domain before publication and does not reset the session tick. Callers
@@ -47,6 +47,9 @@ class Journey {
     [[nodiscard]] Snapshot snapshot() const;
     [[nodiscard]] Result<std::monostate> submit(const flight::Command &command);
     [[nodiscard]] Result<Snapshot> begin(const Command &command);
+    // Admit an authored berth capture in the current local domain. Unlike the
+    // exact parked fixture, this permits a slow tactical approach to the anchor.
+    [[nodiscard]] Result<Snapshot> begin_from_berth(const Command &command, const Route &route);
     [[nodiscard]] Result<Snapshot> cancel(const Command &command, std::uint64_t trip);
     [[nodiscard]] Result<Snapshot> step();
     // Null means not ready. Borrow a same-owner prepared site only for this call.
@@ -57,6 +60,7 @@ class Journey {
     Journey(Route route, flight::ShipDefinition ship, Trajectory path,
             std::unique_ptr<flight::Flight> local);
     [[nodiscard]] Result<std::monostate> check(const Command &command) const;
+    [[nodiscard]] Result<Snapshot> arm(const Command &command, const Route &route, bool capture);
     const std::thread::id owner_{std::this_thread::get_id()};
     Route route_;
     flight::ShipDefinition ship_;
