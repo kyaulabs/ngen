@@ -122,7 +122,9 @@ validation path or a shortcut to host/production authority.
 isolation, bounded owned jobs and development sessions. No credential inheritance,
 unrestricted shell, live shard or implicit network/spending/publication grant.
 **After 18:** close M5's saved one-hour offline loop, recovery/progression/invariant
-gates and recorded owner playthrough. Teaching security rules is not a substitute
+gates and recorded owner playthrough. The [saved native voyage checkpoint](../evidence/M5/saved-voyage.md)
+requires arrival before publishing either travel action. It uses headless contacts,
+not live flight controls or scenes. Teaching security rules is not a substitute
 for M8 enforcement.
 **After 20:** accept the independently used C1 workflow and supported sample/package
 results. **After 22:** accept C2's real protocol/authoring/build/play and abuse/cleanup
