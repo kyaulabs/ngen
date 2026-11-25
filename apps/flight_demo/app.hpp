@@ -5,7 +5,7 @@
 namespace ngen::demo {
 struct Options {
     VkExtent2D extent{1280, 720};
-    std::uint32_t frames{}, warmup{60};
+    std::uint32_t frames{}, warmup{60}, soak_seconds{};
     bool verify{}, replay{}, walkthrough{}, validation{}, mute{}, motion_vectors{}, crossing{},
         crossing_hold{};
     std::filesystem::path report, capture, destination, destination_retry, survey;

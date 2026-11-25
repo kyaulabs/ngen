@@ -44,7 +44,8 @@ class Voyage {
                                         const travel::CollisionSite *source = nullptr);
     [[nodiscard]] Result<VoyageFrame> advance();
     [[nodiscard]] Result<std::monostate> cancel();
-    [[nodiscard]] VoyageOutcome arrive(const travel::CollisionSite *site);
+    [[nodiscard]] VoyageOutcome arrive(const travel::CollisionSite *site,
+                                       SaveTimings *timings = nullptr);
 
   private:
     Voyage(std::unique_ptr<Save> save, const flight::ShipDefinition &ship);

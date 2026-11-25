@@ -67,6 +67,13 @@ ngen::demo::Options options(int argc, char **argv) {
 #else
             throw std::runtime_error("flight demo was built without Surveyors");
 #endif
+        } else if (arg.starts_with("--soak-seconds=")) {
+#if defined(NGEN_FLIGHT_SURVEY)
+            output.soak_seconds = number(arg.substr(15), 3600);
+            require(output.soak_seconds > 0, "soak duration must be positive");
+#else
+            throw std::runtime_error("flight demo was built without Surveyors");
+#endif
         } else if (arg.starts_with("--destination=")) {
             require(arg.size() > 14, "destination package path is empty");
             output.destination = arg.substr(14);
@@ -93,6 +100,13 @@ ngen::demo::Options options(int argc, char **argv) {
     require(!survey || !output.destination.empty(), "survey requires a destination landmark");
     require(!survey || !output.replay || output.frames >= 600,
             "survey replay requires at least 600 measured frames and a scratch save directory");
+    if (output.soak_seconds) {
+        require(survey && !output.replay && !output.frames && output.capture.empty(),
+                "soak requires Surveyors without frame-driven replay or capture");
+        require(!std::filesystem::exists(std::filesystem::symlink_status(output.survey)),
+                "soak requires a new scratch directory");
+        output.mute = true;
+    }
     require(output.destination.empty() || output.crossing || survey,
             "destination requires --crossing or --survey");
     require(!output.crossing_hold || output.crossing, "injected hold requires --crossing");
@@ -225,7 +239,7 @@ int main(int argc, char **argv) try {
                    "[--warmup=N] [--crossing [--crossing-hold] [--destination=scene.ngas "
                    "[--destination-retry=scene.ngas]]] "
 #if defined(NGEN_FLIGHT_SURVEY)
-                   "[--survey=private-dir --destination=landmark.ngas] "
+                   "[--survey=private-dir --destination=landmark.ngas [--soak-seconds=N]] "
 #endif
                    "[--validation] [--mute] [--motion-vectors] [--width=N --height=N] "
                    "[--report=new.csv] [--capture=new.bmp]\n",

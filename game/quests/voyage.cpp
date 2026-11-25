@@ -156,7 +156,9 @@ Result<std::monostate> Voyage::cancel() {
     return std::monostate{};
 }
 
-VoyageOutcome Voyage::arrive(const travel::CollisionSite *site) {
+VoyageOutcome Voyage::arrive(const travel::CollisionSite *site, SaveTimings *timings) {
+    if (timings)
+        *timings = {};
     if (!active_)
         return Error::busy;
     const auto arrival = journey_->arrive(envelope(), journey_->snapshot().trip, site);
@@ -165,7 +167,7 @@ VoyageOutcome Voyage::arrive(const travel::CollisionSite *site) {
     ++sequence_;
 
     const auto command = active_->command;
-    const auto result = save_->step(command);
+    const auto result = save_->step(command, timings);
     // A post-rename sync error can report uncertainty after advancing the
     // published revision. Keep that arrival and let an exact retry resync.
     if (revision() == command.expected)

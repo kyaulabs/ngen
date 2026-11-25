@@ -5,6 +5,7 @@
 #include "mining/site.hpp"
 #include "script/lua_rule.hpp"
 
+#include <chrono>
 #include <optional>
 
 namespace ngen::quests {
@@ -88,7 +89,7 @@ bool recover_or_salvage(State &state, Action action) {
     return true;
 }
 
-bool sell(State &state) {
+bool sell(State &state, std::optional<std::uint64_t> *market_ns) {
     const docking::Vessel ship{state.vessel};
     docking::Berth berth(
         ship, docking::Facility::station,
@@ -97,8 +98,13 @@ bool sell(State &state) {
     const auto *ticket = std::get_if<docking::Ticket>(&admitted);
     if (!ticket || berth.capture(*ticket, {}))
         return false;
+    using Clock = std::chrono::steady_clock;
+    const auto started = market_ns ? Clock::now() : Clock::time_point{};
     const auto outcome =
         berth.trade(*ticket, {{1}, economy::Account::station, {state.cargo}, {ore_price}});
+    if (market_ns)
+        *market_ns = static_cast<std::uint64_t>(
+            std::chrono::duration_cast<std::chrono::nanoseconds>(Clock::now() - started).count());
     const auto *market = std::get_if<economy::Outcome>(&outcome);
     const auto *receipt = market ? std::get_if<economy::Receipt>(market) : nullptr;
     if (!receipt || berth.depart(*ticket) || berth.clear(*ticket, {2000, 0, 0}))
@@ -118,7 +124,8 @@ bool sell(State &state) {
     return true;
 }
 
-std::optional<Rejection> transition(State &state, Action action) {
+std::optional<Rejection> transition(State &state, Action action,
+                                    std::optional<std::uint64_t> *market_ns) {
     switch (action) {
     case Action::learn_law:
         if (state.stage != Stage::training)
@@ -177,7 +184,7 @@ std::optional<Rejection> transition(State &state, Action action) {
         break;
     case Action::dock_and_sell:
         if (state.stage == Stage::returning) {
-            if (!sell(state))
+            if (!sell(state, market_ns))
                 return Rejection::fixture_failure;
             return {};
         }
@@ -191,7 +198,9 @@ std::optional<Rejection> transition(State &state, Action action) {
 
 std::span<const Action> Survey::history() const & { return std::span{history_}.first(used_); }
 
-Outcome Survey::step(Command command) {
+Outcome Survey::step(Command command, std::optional<std::uint64_t> *market_ns) {
+    if (market_ns)
+        market_ns->reset();
     if (command.expected > used_)
         return Rejection::order;
     if (command.expected < used_) {
@@ -202,7 +211,7 @@ Outcome Survey::step(Command command) {
     if (used_ == history_.size())
         return Rejection::exhausted;
     auto next = state_;
-    if (const auto rejection = transition(next, command.action))
+    if (const auto rejection = transition(next, command.action, market_ns))
         return *rejection;
     history_[used_] = command.action;
     results_[used_++] = next;
