@@ -1,4 +1,12 @@
 ## 📜 Changelog
+### [0.18.0](https://github.com/kyaulabs/ngen/releases/tag/v0.18.0)
+
+#### 🚀 Features
+
+- **quest:** Gate saved voyages on native arrival ([c6f050a](https://github.com/kyaulabs/ngen/commit/c6f050aabefbf18e15c1ed987867f93fa80760d1))
+
+- **quest:** Gate saved voyages on native arrival (#162) ([e278b84](https://github.com/kyaulabs/ngen/commit/e278b8410bce300cd3c4724951aa46ab8139afe8))
+
 ### [0.17.0](https://github.com/kyaulabs/ngen/releases/tag/v0.17.0)
 
 #### 🎨 Style
