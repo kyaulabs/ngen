@@ -1,4 +1,12 @@
 ## 📜 Changelog
+### [0.19.0](https://github.com/kyaulabs/ngen/releases/tag/v0.19.0)
+
+#### 🚀 Features
+
+- **flight:** Play the saved Surveyors voyage in the window ([54db3b8](https://github.com/kyaulabs/ngen/commit/54db3b85d63ea42eff6df35665149d044acf192a))
+
+- **flight:** Play the saved Surveyors voyage in the window (#165) ([a43084a](https://github.com/kyaulabs/ngen/commit/a43084a06e9e5b819b0df1b7ca46381250b806ca))
+
 ### [0.18.0](https://github.com/kyaulabs/ngen/releases/tag/v0.18.0)
 
 #### 🚀 Features
