@@ -53,6 +53,12 @@ in each window. Late p95 may grow by at most 32 MiB RSS and 8 MiB each in tracke
 GPU allocation/reservation, with no growth in p95 live records. These are
 fixture-specific drift budgets, not proof that no leak is possible.
 
+Use the existing B1 flight ceilings over the same hour, after the first 60
+queued frames: CPU frame median 50 ms, p95 66.7 ms, p99 100 ms, and maximum
+host queue gap 200 ms. Frame quantiles are conservative upper bounds from
+100 µs bins; keep the exact longest frame and queue gap. This is host timing,
+not display scan-out. The queue budget includes streaming, save and reload.
+
 Keep the raw log, checker JSON, exit status, source/executable/dependency and
 asset identities, device/driver, OS/CPU/memory, power/thermal observations,
 and the standalone invalid-save and invalid-script checks. A technical pass

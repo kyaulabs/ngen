@@ -7,6 +7,8 @@ MIB = 1024 ** 2
 HOUR_MS = 3_600_000
 MIN_SALES = 100
 MARKET_P95_NS = 20_000_000
+FRAME_BUCKET_NS = 100_000
+FRAME_BUCKET_MAX = 2000
 SALE_REVISIONS = (8, 12, 18, 22)
 
 
@@ -24,9 +26,38 @@ def latency(samples):
     return {f"p{p}": quantile(samples, p) for p in (50, 95, 99)} | {"max": max(samples)}
 
 
+def flight_timing(histogram, footer, present, elapsed):
+    require(footer is not None and present is not None and histogram, "missing flight timing")
+    frames, max_frame, max_queue_gap, first_ms, last_ms = footer
+    queued, warmup = present
+    require(warmup == 60 and 0 < first_ms <= 5000 and first_ms < last_ms and
+            0 <= elapsed - last_ms <= 200, "incomplete flight timing span")
+    require(frames >= 36_000 and frames == queued - warmup == sum(histogram.values()) and
+            max_queue_gap > 0 and max(histogram) == min(
+                (max_frame + FRAME_BUCKET_NS - 1) // FRAME_BUCKET_NS, FRAME_BUCKET_MAX),
+            "incomplete flight timing histogram")
+    timing = {"frames": frames, "first_queue_ms": first_ms, "last_queue_ms": last_ms,
+              "max": max_frame, "max_queue_gap": max_queue_gap}
+    for percent in (50, 95, 99):
+        rank = (frames * percent + 99) // 100
+        cumulative = 0
+        for bucket, count in sorted(histogram.items()):
+            cumulative += count
+            if cumulative >= rank:
+                timing[f"p{percent}_upper"] = (max_frame if bucket == FRAME_BUCKET_MAX
+                                               else bucket * FRAME_BUCKET_NS)
+                break
+    require(timing["p50_upper"] <= 50_000_000 and timing["p95_upper"] <= 66_700_000 and
+            timing["p99_upper"] <= 100_000_000 and max_queue_gap <= 200_000_000,
+            f"flight frame or queue budget exceeded: {timing}")
+    return timing
+
+
 def summarize(lines):
     memory, sales, end = [], [], None
-    sizes = {"b4_mem": 7, "b4_sale": 6, "b4_end": 7}
+    histogram, frame_end, present = {}, None, None
+    sizes = {"b4_mem": 7, "b4_sale": 6, "b4_present": 2, "b4_frame": 2,
+             "b4_frame_end": 5, "b4_end": 7}
     for line in lines:
         tag, *fields = line.rstrip().split(",")
         if tag == "b4_sale_failed" or line.startswith("Flight demo:"):
@@ -41,6 +72,17 @@ def summarize(lines):
             memory.append(values)
         elif tag == "b4_sale":
             sales.append(values)
+        elif tag == "b4_present":
+            require(present is None, "duplicate successful queue count")
+            present = values
+        elif tag == "b4_frame":
+            bucket, count = values
+            require(frame_end is None and 1 <= bucket <= FRAME_BUCKET_MAX and count > 0 and
+                    bucket not in histogram, "invalid flight timing bucket")
+            histogram[bucket] = count
+        elif tag == "b4_frame_end":
+            require(frame_end is None, "duplicate flight timing footer")
+            frame_end = values
         else:
             end = values
     require(end is not None, "no B4 completion record")
@@ -89,6 +131,7 @@ def summarize(lines):
         "peak_gpu_retiring": max(row[3] for row in memory),
         "gpu_allocation_bytes": settled_metrics(4, 8 * MIB),
         "gpu_reserved_bytes": settled_metrics(5, 8 * MIB),
+        "flight_frame_ns": flight_timing(histogram, frame_end, present, elapsed),
         "market_ns": market, "persistence_ns": latency([row[5] for row in sales]),
     }
 

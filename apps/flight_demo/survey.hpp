@@ -3,6 +3,7 @@
 #include "quests/voyage.hpp"
 #include "render/scene.hpp"
 #include "tools/reload.hpp"
+#include <array>
 #include <chrono>
 
 namespace ngen::demo {
@@ -23,6 +24,10 @@ class SurveyFlight {
     void report(bool replay, std::size_t landmark_frames) const;
     void begin_soak(std::chrono::steady_clock::time_point start);
     void sample_soak(std::uint64_t elapsed_ms, const render::ResourceStatistics &memory);
+    struct FrameTiming {
+        std::uint64_t frame_ns{}, queue_ns{};
+    };
+    void sample_frame(FrameTiming timing);
     void finish_soak(std::uint32_t seconds, std::uint64_t elapsed_ms) const;
     [[nodiscard]] bool in_transit() const { return voyage_->destination().has_value(); }
     [[nodiscard]] render::ScenePin landmark() const { return landmark_; }
@@ -42,6 +47,10 @@ class SurveyFlight {
         std::optional<Issued> departure;
         unsigned charter{}, exhausted{}, sales{}, wins{}, losses{}, reopens{}, samples{};
         std::uint64_t last_sale_ms{}, last_sample_ms{};
+        // 100 us ceiling buckets, with 200 ms and above in the last bucket.
+        std::array<std::uint64_t, 2001> frames{};
+        std::uint64_t frame_count{}, max_frame_ns{}, first_queue_ns{}, last_queue_ns{},
+            max_queue_gap_ns{};
     };
     void reopen();
     void next_charter();

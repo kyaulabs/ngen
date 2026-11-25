@@ -1783,7 +1783,7 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
             const auto result =
                 take(context->render_frame({color, 1, true, overlay ? &*overlay : nullptr, .04F}));
             if (result.outcome == FrameOutcome::queued) {
-                if (options.frames && frame_index >= warmup)
+                if (options.soak_seconds || (options.frames && frame_index >= warmup))
                     queue_ns = static_cast<std::uint64_t>(
                         std::chrono::duration_cast<std::chrono::nanoseconds>(
                             Clock::now().time_since_epoch())
@@ -1846,10 +1846,6 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
             }
         }
         metrics.memory = take(context->resource_statistics());
-#if defined(NGEN_FLIGHT_SURVEY)
-        if (survey && options.soak_seconds)
-            survey->sample_soak(soak_elapsed_ms(), metrics.memory);
-#endif
         metrics.audio = sound.statistics();
         if (options.frames && frame_index >= warmup) {
             auto &sample = samples[measured++];
@@ -1878,8 +1874,19 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
                 std::chrono::duration_cast<std::chrono::nanoseconds>(ended.time_since_epoch())
                     .count());
             metrics.frame_ms = static_cast<double>(sample.frame_ns) / 1e6;
-        } else
-            metrics.frame_ms = static_cast<double>(nanoseconds(began)) / 1e6;
+        } else {
+            const auto frame_ns = nanoseconds(began);
+            metrics.frame_ms = static_cast<double>(frame_ns) / 1e6;
+#if defined(NGEN_FLIGHT_SURVEY)
+            if (survey && options.soak_seconds) {
+                // This point is reached only after a successful queue; skipped
+                // submissions contribute to the next queue gap, not its histogram.
+                if (frame_index >= options.warmup)
+                    survey->sample_frame({.frame_ns = frame_ns, .queue_ns = queue_ns});
+                survey->sample_soak(soak_elapsed_ms(), metrics.memory);
+            }
+#endif
+        }
         ++frame_index;
     }
 #if defined(NGEN_FLIGHT_SURVEY)
@@ -1887,6 +1894,8 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
         survey->report(options.replay, landmark_frames);
         if (options.soak_seconds) {
             require(!quit, "B4 soak was cancelled");
+            std::printf("b4_present,%llu,%u\n", static_cast<unsigned long long>(frame_index),
+                        options.warmup);
             survey->finish_soak(options.soak_seconds, soak_elapsed_ms());
         }
     }

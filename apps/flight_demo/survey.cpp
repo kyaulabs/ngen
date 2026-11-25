@@ -1,4 +1,5 @@
 #include "flight_demo/survey.hpp"
+#include <algorithm>
 #include <cmath>
 #include <cstdio>
 #include <fcntl.h>
@@ -482,10 +483,53 @@ void SurveyFlight::sample_soak(std::uint64_t elapsed_ms, const render::ResourceS
     ++soak.samples;
 }
 
+void SurveyFlight::sample_frame(FrameTiming timing) {
+    if (!soak_)
+        return;
+    auto &soak = *soak_;
+    const auto [frame_ns, queue_ns] = timing;
+    if (queue_ns <= soak.last_queue_ns)
+        throw std::runtime_error("B4 frame timing did not observe a new queued frame");
+    if (!soak.first_queue_ns)
+        soak.first_queue_ns = queue_ns;
+    constexpr std::uint64_t bucket_ns = 100'000;
+    const auto bucket =
+        std::min<std::uint64_t>((frame_ns + bucket_ns - 1) / bucket_ns, soak.frames.size() - 1);
+    ++soak.frames[bucket];
+    ++soak.frame_count;
+    soak.max_frame_ns = std::max(soak.max_frame_ns, frame_ns);
+    if (soak.last_queue_ns) {
+        const auto gap = queue_ns - soak.last_queue_ns;
+        soak.max_queue_gap_ns = std::max(soak.max_queue_gap_ns, gap);
+        if (gap > 200'000'000)
+            std::printf("flight_soak_gap frame=%llu gap_ns=%llu charter=%u revision=%u phase=%u\n",
+                        static_cast<unsigned long long>(soak.frame_count),
+                        static_cast<unsigned long long>(gap), soak.charter, voyage_->revision(),
+                        static_cast<unsigned>(voyage_->snapshot().stage));
+    }
+    soak.last_queue_ns = queue_ns;
+}
+
 void SurveyFlight::finish_soak(std::uint32_t seconds, std::uint64_t elapsed_ms) const {
     if (!soak_)
         return;
     const auto &soak = *soak_;
+    for (std::size_t bin = 0; bin < soak.frames.size(); ++bin)
+        if (soak.frames[bin])
+            std::printf("b4_frame,%zu,%llu\n", bin,
+                        static_cast<unsigned long long>(soak.frames[bin]));
+    const auto epoch_ns = static_cast<std::uint64_t>(
+        std::chrono::duration_cast<std::chrono::nanoseconds>(soak.start.time_since_epoch())
+            .count());
+    const auto queue_ms = [epoch_ns](std::uint64_t queue) {
+        return static_cast<unsigned long long>(queue > epoch_ns ? (queue - epoch_ns) / 1'000'000
+                                                                : 0);
+    };
+    std::printf("b4_frame_end,%llu,%llu,%llu,%llu,%llu\n",
+                static_cast<unsigned long long>(soak.frame_count),
+                static_cast<unsigned long long>(soak.max_frame_ns),
+                static_cast<unsigned long long>(soak.max_queue_gap_ns),
+                queue_ms(soak.first_queue_ns), queue_ms(soak.last_queue_ns));
     std::printf("b4_end,%llu,%u,%u,%u,%u,%u,%u\n", static_cast<unsigned long long>(elapsed_ms),
                 soak.exhausted, soak.sales, soak.wins, soak.losses, soak.reopens, soak.samples);
     if (elapsed_ms < static_cast<std::uint64_t>(seconds) * 1000 || !soak.exhausted ||
