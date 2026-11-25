@@ -11,13 +11,16 @@
 
 namespace ngen::quests {
 namespace {
-constexpr auto committed = "ngen-survey.save";
-constexpr auto staged = ".ngen-survey.pending";
-// Magic, save format version, campaign/rule version. Never reinterpret a
-// different campaign's actions with the current economy or story rules.
-constexpr std::array<std::uint8_t, 6> header{'N', 'Q', 'S', 'V', 1, 1};
+struct Slot {
+    const char *committed;
+    const char *staged;
+    // Slot magic, save format version, campaign/rule version.
+    std::array<std::uint8_t, 6> header;
+};
+constexpr Slot headless{"ngen-survey.save", ".ngen-survey.pending", {'N', 'Q', 'S', 'V', 1, 1}};
+constexpr Slot flight{"ngen-voyage.save", ".ngen-voyage.pending", {'N', 'Q', 'S', 'F', 1, 1}};
 constexpr std::size_t checksum_bytes = 4;
-using Buffer = std::array<std::uint8_t, header.size() + Survey::capacity + checksum_bytes>;
+using Buffer = std::array<std::uint8_t, headless.header.size() + Survey::capacity + checksum_bytes>;
 
 class Descriptor {
   public:
@@ -57,8 +60,10 @@ bool write_all(int fd, std::span<const std::uint8_t> data) {
     return true;
 }
 
-std::optional<SaveError> load(int directory, Survey &survey) {
-    const int fd = openat(directory, committed, O_RDONLY | O_CLOEXEC | O_NOFOLLOW | O_NONBLOCK);
+std::optional<SaveError> load(int directory, const Slot &slot, Survey &survey) {
+    const auto &header = slot.header;
+    const int fd =
+        openat(directory, slot.committed, O_RDONLY | O_CLOEXEC | O_NOFOLLOW | O_NONBLOCK);
     if (fd < 0) {
         if (errno == ENOENT)
             return {};
@@ -98,7 +103,9 @@ std::optional<SaveError> load(int directory, Survey &survey) {
     return {};
 }
 
-bool publish(int directory, std::span<const Action> actions) {
+bool publish(int directory, const Slot &slot, std::span<const Action> actions) {
+    const auto &header = slot.header;
+    const auto *staged = slot.staged;
     Buffer bytes{};
     std::ranges::copy(header, bytes.begin());
     const auto content = std::span{bytes}.first(header.size() + actions.size());
@@ -114,7 +121,7 @@ bool publish(int directory, std::span<const Action> actions) {
         return false;
     if (fchmod(file.get(), 0600) == 0 &&
         write_all(file.get(), std::span{bytes}.first(content.size() + checksum_bytes)) &&
-        fsync(file.get()) == 0 && renameat(directory, staged, directory, committed) == 0)
+        fsync(file.get()) == 0 && renameat(directory, staged, directory, slot.committed) == 0)
         return true;
     unlinkat(directory, staged, 0);
     return false;
@@ -122,6 +129,11 @@ bool publish(int directory, std::span<const Action> actions) {
 } // namespace
 
 std::variant<std::unique_ptr<Save>, SaveError> Save::open(const std::filesystem::path &path) {
+    return open_slot(path, false);
+}
+
+std::variant<std::unique_ptr<Save>, SaveError> Save::open_slot(const std::filesystem::path &path,
+                                                               bool flight_slot) {
     if (path.native().find('\0') != std::string::npos)
         return SaveError::invalid;
     Descriptor directory(::open(path.c_str(), O_RDONLY | O_DIRECTORY | O_NOFOLLOW | O_CLOEXEC));
@@ -134,13 +146,18 @@ std::variant<std::unique_ptr<Save>, SaveError> Save::open(const std::filesystem:
         return SaveError::invalid;
     if (flock(directory.get(), LOCK_EX | LOCK_NB) != 0)
         return errno == EWOULDBLOCK ? SaveError::busy : SaveError::io;
-    auto save = std::unique_ptr<Save>(new Save(directory.release()));
-    if (const auto error = load(save->directory_, save->survey_))
+    auto save = std::unique_ptr<Save>(new Save(directory.release(), flight_slot));
+    if (const auto error = load(save->directory_, flight_slot ? flight : headless, save->survey_))
         return *error;
     return save;
 }
 
 Save::~Save() { close(directory_); }
+
+Outcome Save::preview(Command command) const {
+    auto candidate = survey_;
+    return candidate.step(command);
+}
 
 SavedOutcome Save::step(Command command) {
     auto candidate = survey_;
@@ -148,7 +165,7 @@ SavedOutcome Save::step(Command command) {
     if (const auto *rejected = std::get_if<Rejection>(&outcome))
         return *rejected;
     if (candidate.revision() != survey_.revision()) {
-        if (!publish(directory_, candidate.history()))
+        if (!publish(directory_, flight_slot_ ? flight : headless, candidate.history()))
             return SaveError::io;
         survey_ = candidate;
     }
