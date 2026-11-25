@@ -1,6 +1,6 @@
 # Milestones and atomic implementation tasks
 
-Current delivery: M1–M4 are accepted at their declared scope. [0.9.0](https://github.com/kyaulabs/ngen/releases/tag/v0.9.0) adds the bounded two-system flight replay as source only. M3's private preview remains source-bound to `e45ba673`; public source is not a playable bundle. Resume at M5-A inventory and currency transfer in the [execution order](execution-order.md). Later C2 steps add authoring and owned playtest operations. No implementation starts merely because this plan or its tracker changes. See the [executive brief](executive-brief.md) and [final M3 verification](../evidence/M3/ui/final-verification.md).
+M1–M4 are accepted at their declared scope. The [saved headless Surveyors campaign](../evidence/M5/saved-survey.md) completes the M5-F fixture, not M5's integrated acceptance. Resume at the remaining gate in the [execution order](execution-order.md). M3's private preview remains source-bound to `e45ba673`; public source is not a playable bundle.
 
 | Scope | Current state |
 |---|---|
@@ -8,12 +8,13 @@ Current delivery: M1–M4 are accepted at their declared scope. [0.9.0](https://
 | M1 | Working CPU foundation integrated into the accepted M2/M3 dependency chain; initial evidence snapshots below are historical. |
 | M2 | Accepted renderer/assets/inspector delivery, normal PR #9 merge `4b554cc`. |
 | M3 | Accepted offline flight/presentation/audio, normal PR #10 merge `03b76c72`; retained verification limits still apply. |
-| M4 | M4-A/B checked coordinates and live physics transfers; M4-C/F/G combined history, particles and motion; M4-D bounded headless warp. Streaming and integrated M4 acceptance remain open. |
-| M5–M10 / M13 | Planned, dependent on preceding integrated acceptance; no delivery or capacity claim. |
+| M4 | Accepted for the [bounded two-system crossing](../evidence/M4/flight-acceptance.md). |
+| M5 | Headless solo campaign and saves verified. Integrated flight, one-hour soak, invariant review and recorded owner playthrough remain open. |
+| M6–M10 / M13 | Planned, dependent on preceding integrated acceptance; no delivery or capacity claim. |
 | M11 | Optional selected graphics; individual benefit/platform/content gates remain. Creator tooling is mandatory C1/C2, not an optional visual feature. |
 | M12 | Optional settlement; separate legal/security/custody and explicit execution/release permission required. |
-| C1 | C1-A/B SDK and standalone starter plus C1-C CLI scene authoring verified. Owned play/reload, samples and independent creator acceptance remain open. |
-| C2 | Planned local MCP authoring, authorized build/test jobs and owned playtests using C1 operations; no production or unrestricted host access. |
+| C1 | SDK, starter, CLI authoring and owned play/reload verified; samples and independent creator acceptance remain open. |
+| C2 | Local discovery, scoped authoring and isolated jobs verified. Owned MCP playtest control and full workflow acceptance remain open. |
 
 The initial revised [NGEN kanban](https://github.com/orgs/kyaulabs/projects/4/views/3) contained **67 atomic issues and 67 unique cards across twelve milestones**. M4 now also includes particles (#97) and GPU motion vectors (#98). Eleven issues and two milestones were added; C1-D reuses former M11-F issue #55. [The tracker index](github-tracker.md) links every task and the immutable source revision. Original issue/card IDs, labels, assignees and states were preserved; milestones remain undated and issues unassigned. Historical M0–M3 evidence remains intact. Cards authorize no implementation, spending or deployment.
 

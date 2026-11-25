@@ -1,4 +1,18 @@
 ## 📜 Changelog
+### [0.17.0](https://github.com/kyaulabs/ngen/releases/tag/v0.17.0)
+
+#### 🎨 Style
+
+- **quests:** Align save initializers with hosted formatting ([2c11503](https://github.com/kyaulabs/ngen/commit/2c115038ebaa2ecb0784b578c6ddef2c460e232e))
+
+#### 🚀 Features
+
+- **script:** Evaluate bounded first-party Lua quest rules ([75dc02e](https://github.com/kyaulabs/ngen/commit/75dc02eeabd98a0ca968acfe5b0df99194b5a9de))
+
+- **quests:** Play and save the bounded Surveyors career ([9ea5bf3](https://github.com/kyaulabs/ngen/commit/9ea5bf3300033e413434c5499795932258dbc216))
+
+- **quests:** Integrate the saved Surveyors campaign (#158) ([1e3aec5](https://github.com/kyaulabs/ngen/commit/1e3aec5fb0518812d88c179efc7e5aac77dab317))
+
 ### [0.16.0](https://github.com/kyaulabs/ngen/releases/tag/v0.16.0)
 
 #### 🚀 Features
