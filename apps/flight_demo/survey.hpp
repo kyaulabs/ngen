@@ -38,11 +38,11 @@ class SurveyFlight {
         quests::Receipt receipt;
     };
     struct Soak {
-        Soak() = default;
+        explicit Soak(int descriptor) noexcept : root(descriptor) {}
         ~Soak();
         Soak(const Soak &) = delete;
         Soak &operator=(const Soak &) = delete;
-        int root{-1};
+        const int root;
         std::chrono::steady_clock::time_point start;
         std::optional<Issued> departure;
         unsigned charter{}, exhausted{}, sales{}, wins{}, losses{}, reopens{}, samples{};

@@ -60,17 +60,15 @@ ngen::demo::Options options(int argc, char **argv) {
             output.extent.width = number(arg.substr(8), 3840);
         else if (arg.starts_with("--height="))
             output.extent.height = number(arg.substr(9), 2160);
-        else if (arg.starts_with("--survey=")) {
+        else if (arg.starts_with("--survey=") || arg.starts_with("--soak-seconds=")) {
 #if defined(NGEN_FLIGHT_SURVEY)
-            require(arg.size() > 9, "survey save directory is empty");
-            output.survey = arg.substr(9);
-#else
-            throw std::runtime_error("flight demo was built without Surveyors");
-#endif
-        } else if (arg.starts_with("--soak-seconds=")) {
-#if defined(NGEN_FLIGHT_SURVEY)
-            output.soak_seconds = number(arg.substr(15), 3600);
-            require(output.soak_seconds > 0, "soak duration must be positive");
+            if (arg.starts_with("--survey=")) {
+                require(arg.size() > 9, "survey save directory is empty");
+                output.survey = arg.substr(9);
+            } else {
+                output.soak_seconds = number(arg.substr(15), 3600);
+                require(output.soak_seconds > 0, "soak duration must be positive");
+            }
 #else
             throw std::runtime_error("flight demo was built without Surveyors");
 #endif

@@ -14,10 +14,7 @@ namespace ngen::demo {
 using quests::Action;
 using quests::Stage;
 
-SurveyFlight::Soak::~Soak() {
-    if (root >= 0)
-        close(root);
-}
+SurveyFlight::Soak::~Soak() { close(root); }
 
 SurveyFlight::SurveyFlight(const Options &options, const Preset &preset, render::ScenePin scene)
     : path_(options.destination), retry_path_(options.destination_retry),
@@ -26,20 +23,21 @@ SurveyFlight::SurveyFlight(const Options &options, const Preset &preset, render:
     if (options.soak_seconds) {
         const auto parent_path = directory_.parent_path();
         const auto name = directory_.filename();
-        auto &soak = soak_.emplace();
         constexpr int flags = O_RDONLY | O_DIRECTORY | O_NOFOLLOW | O_CLOEXEC;
         const int parent = ::open(parent_path.empty() ? "." : parent_path.c_str(), flags);
         if (parent < 0)
             throw std::runtime_error("cannot open B4 scratch parent");
         struct stat status = {};
         constexpr mode_t shared_write = S_IWGRP + S_IWOTH;
+        int root = -1;
         if (fstat(parent, &status) == 0 && status.st_uid == geteuid() &&
             !(status.st_mode & shared_write) && mkdirat(parent, name.c_str(), 0700) == 0)
-            soak.root = openat(parent, name.c_str(), flags);
+            root = openat(parent, name.c_str(), flags);
         close(parent);
-        if (soak.root < 0)
+        if (root < 0)
             throw std::runtime_error(
                 "B4 scratch must be new under an owned, non-writable-by-others parent");
+        soak_.emplace(root);
         next_charter();
         return;
     }
