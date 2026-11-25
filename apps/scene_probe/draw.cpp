@@ -267,7 +267,16 @@ bool draw_scene(render::Context &context, render::ScenePin &version, const rende
         const auto at = (std::size_t{marker_y} * extent.width + marker_x) * 4;
         require(marker_pixels[at] >= 0x4400 && marker_pixels[at + 2] >= 0x4400,
                 "scene extra geometry/view was not submitted");
-        std::puts("scene_extra_geometry=1 extra_scene_view=1 extra_frame_pin=1");
+        const auto full_scene_pixels = count_lit_pixels(context, color, extent);
+        auto scenery_only = view;
+        scenery_only.show_package = false;
+        wait(context, take(renderer.draw(context, version, scenery_only, targets, {},
+                                         std::span{&extra, 1})));
+        const auto held_view = read_pixels(color);
+        require(held_view[at] >= 0x4400 && held_view[at + 2] >= 0x4400 &&
+                    count_lit_pixels(context, color, extent) < full_scene_pixels,
+                "held view did not hide the package while keeping the extra geometry");
+        std::puts("scene_extra_geometry=1 extra_scene_view=1 extra_frame_pin=1 held_view=1");
         if (particle_fixture) {
             auto motion = take(context.create_image(
                 {extent, VK_FORMAT_R16G16B16A16_SFLOAT,

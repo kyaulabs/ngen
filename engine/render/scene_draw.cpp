@@ -211,9 +211,10 @@ std::variant<Submission, Failure> SceneRenderer::draw(Context &context, ScenePin
     if (!package || package->instances.empty() || package->instances.size() > draw_limit ||
         view.lod > 2)
         return Failure{"scene draw exceeds the fixed instance/LOD profile"};
-    if (extras.size() > draw_limit - package->instances.size())
+    const auto instance_count = view.show_package ? package->instances.size() : 0U;
+    if (extras.size() > draw_limit - instance_count)
         return Failure{"scene extras exceed the fixed draw profile"};
-    const auto count = package->instances.size() + extras.size();
+    const auto count = instance_count + extras.size();
     if (!view.material_factors.empty() && view.material_factors.size() != package->materials.size())
         return Failure{"scene material factor table must match the immutable package"};
     if (!view.material_flows.empty() && view.material_flows.size() != package->materials.size())
@@ -231,15 +232,18 @@ std::variant<Submission, Failure> SceneRenderer::draw(Context &context, ScenePin
         if (flow.amount > 0 && package->materials[i].alpha != 2)
             return Failure{"scene emissive flow requires a blend material"};
     }
-    for (const auto &light : package->lights)
-        if (light.type != 1)
-            return Failure{"scene forward tier currently requires point-light definitions"};
-    const auto selected_lights = lights(*package, view.root_transform);
-    if (const auto *failure = std::get_if<Failure>(&selected_lights))
-        return *failure;
-    const auto &point_lights = std::get<shader::LightConstants>(selected_lights);
+    shader::LightConstants point_lights{};
+    if (view.show_package) {
+        for (const auto &light : package->lights)
+            if (light.type != 1)
+                return Failure{"scene forward tier currently requires point-light definitions"};
+        const auto selected_lights = lights(*package, view.root_transform);
+        if (const auto *failure = std::get_if<Failure>(&selected_lights))
+            return *failure;
+        point_lights = std::get<shader::LightConstants>(selected_lights);
+    }
     const assets::Material default_material{};
-    for (std::size_t i = 0; i < package->instances.size(); ++i) {
+    for (std::size_t i = 0; i < instance_count; ++i) {
         const auto &instance = package->instances[i];
         const auto &primitive = package->primitives[instance.primitive];
         const auto &material = primitive.material == UINT32_MAX
@@ -338,7 +342,7 @@ std::variant<Submission, Failure> SceneRenderer::draw(Context &context, ScenePin
         const auto &extra = extras[i];
         if (!extra.vertices || !extra.indices || extra.material.flags[0] > 1)
             return Failure{"scene extras require explicit opaque/masked geometry"};
-        const auto slot_index = package->instances.size() + i;
+        const auto slot_index = instance_count + i;
         auto &draw = impl_->draws[slot_index];
         draw = extra;
         draw.frame.viewProjection = view.view_projection;

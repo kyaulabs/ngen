@@ -5,6 +5,9 @@
 #include "flight_demo/app.hpp"
 #include "flight_demo/hud_layout.hpp"
 #include "flight_demo/performance.hpp"
+#if defined(NGEN_FLIGHT_SURVEY)
+#include "flight_demo/survey.hpp"
+#endif
 #include "flight_demo/view.hpp"
 #include "probe/capture.hpp"
 #include "render/environment.hpp"
@@ -27,6 +30,7 @@
 #include <vector>
 
 namespace ngen::demo {
+class SurveyFlight;
 namespace {
 using namespace render;
 using Clock = std::chrono::steady_clock;
@@ -45,7 +49,8 @@ template <class T> T game_value(Result<T> result) {
         throw std::runtime_error("flight domain rejected its authored state");
     return std::get<T>(std::move(result));
 }
-// The crossing fixture accepts one small, untextured, identity-placed landmark.
+} // namespace
+// Both routes accept one small, untextured, identity-placed landmark.
 // It is separate from the frigate package and its authored material/RCS tables.
 bool destination_landmark(const assets::Scene &scene) {
     if (scene.instances.size() != 1 || scene.primitives.size() != 1 ||
@@ -60,6 +65,7 @@ bool destination_landmark(const assets::Scene &scene) {
            });
 }
 
+namespace {
 std::uint64_t nanoseconds(Clock::time_point start) {
     return static_cast<std::uint64_t>(
         std::chrono::duration_cast<std::chrono::nanoseconds>(Clock::now() - start).count());
@@ -368,7 +374,8 @@ void centred_text(const char *text) {
     ImGui::TextUnformatted(text);
 }
 Actions hud(tools::Gui &gui, const flight::Snapshot &state, const Preset &preset, Hud &metrics,
-            std::optional<std::size_t> selected, bool replay, bool mute, const FrameView &view) {
+            std::optional<std::size_t> selected, bool replay, bool mute, const FrameView &view,
+            bool local_visible = true, [[maybe_unused]] SurveyFlight *survey = nullptr) {
     gui.begin();
     const auto materials = gui.panel_materials();
     ImGui::PushStyleColor(ImGuiCol_Border, ImGui::ColorConvertU32ToFloat4(materials.line_strong));
@@ -410,7 +417,7 @@ Actions hud(tools::Gui &gui, const flight::Snapshot &state, const Preset &preset
     }
     ImGui::End();
     const auto &v = state.body.velocity_mps;
-    const auto speed = std::sqrt(v[0] * v[0] + v[1] * v[1] + v[2] * v[2]);
+    const auto speed = local_visible ? std::sqrt(v[0] * v[0] + v[1] * v[1] + v[2] * v[2]) : 0.0F;
     const auto active = std::count_if(state.rcs_firing.begin(), state.rcs_firing.end(),
                                       [](float value) { return value > 0; });
     ImGui::SetNextWindowPos({layout.readout.x, layout.readout.y});
@@ -421,7 +428,8 @@ Actions hud(tools::Gui &gui, const flight::Snapshot &state, const Preset &preset
         reserve_ui();
         gui.push_font(tools::GuiFont::mono);
         const char *mode =
-            state.mode == flight::Mode::direct                   ? "DIRECT / BOW SENSOR"
+            !local_visible                                       ? "HELD VIEW / NO LOCAL VESSEL"
+            : state.mode == flight::Mode::direct                 ? "DIRECT / BOW SENSOR"
             : state.navigation.goal == flight::Goal::orbit       ? "TACTICAL / ORBIT ACTIVE"
             : state.navigation.goal == flight::Goal::destination ? "TACTICAL / APPROACH"
                                                                  : "TACTICAL / COAST";
@@ -431,6 +439,8 @@ Actions hud(tools::Gui &gui, const flight::Snapshot &state, const Preset &preset
         gui.pop_font();
         char text[96]{};
         std::snprintf(text, sizeof(text), "%.1f m/s", static_cast<double>(speed));
+        if (!local_visible)
+            std::snprintf(text, sizeof(text), "-- m/s");
         gui.push_font(tools::GuiFont::readout);
         centred_text(text);
         gui.pop_font();
@@ -460,7 +470,7 @@ Actions hud(tools::Gui &gui, const flight::Snapshot &state, const Preset &preset
         std::snprintf(text, sizeof(text), "MAIN %.0f%% / RCS %u/16%s",
                       static_cast<double>(state.main_drive_level * 100),
                       static_cast<unsigned>(active), audio_status);
-        centred_text(text);
+        centred_text(local_visible ? text : "LOCAL CONTROLS UNAVAILABLE");
         gui.pop_font();
     }
     ImGui::End();
@@ -478,7 +488,7 @@ Actions hud(tools::Gui &gui, const flight::Snapshot &state, const Preset &preset
             ImGui::SameLine();
             if (ImGui::SmallButton("Close"))
                 metrics.help = false;
-            ImGui::BeginDisabled(replay);
+            ImGui::BeginDisabled(replay || !local_visible);
             ImGui::SetCursorPos({12, 40});
             action.mode = ImGui::Button("Switch view", {panel.width * .5F - 16, 28});
             ImGui::SetCursorPos({layout.reset.x - panel.x, layout.reset.y - panel.y});
@@ -488,7 +498,9 @@ Actions hud(tools::Gui &gui, const flight::Snapshot &state, const Preset &preset
             ImGui::SameLine();
             if (ImGui::Button(metrics.data ? "Controls" : "Flight data"))
                 metrics.data = !metrics.data;
-            if (metrics.data) {
+            if (metrics.data && !local_visible) {
+                ImGui::TextUnformatted("No local flight telemetry");
+            } else if (metrics.data) {
                 ImGui::Separator();
                 if (!metrics.preparing)
                     ++metrics.data_drawn_frames;
@@ -603,12 +615,17 @@ Actions hud(tools::Gui &gui, const flight::Snapshot &state, const Preset &preset
         ImGui::End();
     }
     ImGui::PopStyleColor(2);
+#if defined(NGEN_FLIGHT_SURVEY)
+    if (survey)
+        survey->panel(replay);
+#endif
     gui.end();
     return action;
 }
 } // namespace
 void run(const assets::PackagePin &package, const Preset &preset, const Options &options) {
     const bool fixed_tick = options.replay || options.walkthrough;
+    const bool survey_mode = !options.survey.empty();
     auto game = game_value(flight::Flight::create(preset.ship.flight, preset.contacts));
     auto current = game->snapshot(), previous = current;
     auto scene_basis = current.frame;
@@ -622,6 +639,19 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
                               static_cast<int>(options.extent.height)),
             "flight window size failed");
     auto version = resident(*context, package);
+    SurveyFlight *survey_panel = nullptr;
+#if defined(NGEN_FLIGHT_SURVEY)
+    std::optional<SurveyFlight> survey;
+    if (survey_mode) {
+        survey.emplace(options, preset, version);
+        survey_panel = &*survey;
+        if (const auto local = survey->local()) {
+            current = previous = *local;
+            scene_basis = current.frame;
+        }
+        game.reset();
+    }
+#endif
     auto vertices = buffer(*context, std::as_bytes(std::span(preset.field.vertices)),
                            VK_BUFFER_USAGE_VERTEX_BUFFER_BIT);
     auto indices = buffer(*context, std::as_bytes(std::span(preset.field.indices)),
@@ -736,6 +766,13 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
         materials[i] = {m.base_color, m.metallic, m.roughness, m.emissive_strength};
     }
     const auto send = [&](flight::Intent intent) {
+#if defined(NGEN_FLIGHT_SURVEY)
+        if (survey) {
+            if (survey->in_transit() || !survey->local())
+                return false;
+            return std::holds_alternative<std::monostate>(survey->submit(intent));
+        }
+#endif
         const auto target = next(game->snapshot().tick);
         if (std::holds_alternative<Error>(target))
             return false;
@@ -755,7 +792,7 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
         metrics.status = "Tactical orbit autopilot / 20 m/s";
         metrics.alert = false;
     };
-    if (!options.crossing)
+    if (!options.crossing && !survey_mode)
         default_orbit();
     {
         const auto initial_view = take(present(preset, last_camera, options.extent));
@@ -782,6 +819,10 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
         }
     };
     const auto reset = [&] {
+        if (survey_mode) {
+            metrics.status = "Surveyors: use the Approach berth control";
+            return;
+        }
         cancel_context();
         current = game_value(game->reset());
         previous = current;
@@ -1199,19 +1240,49 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
             }
         }
     };
+    const auto publish_local = [&](const flight::Snapshot &local) {
+        const bool new_domain = survey_mode && local.body.id.world != current.body.id.world;
+        current = local;
+        if (new_domain) {
+            previous = current;
+            scene_basis = current.frame;
+            rig = game_value(flight::CameraRig::create(preset.ship_radius));
+            camera_target.reset();
+            cancel_context();
+            input.release();
+            motion_history.reset();
+            motion_cut = true;
+        }
+        pending_mode = current.mode;
+        (void)input.mode(current.mode);
+    };
     const auto advance = [&] {
         previous = current;
+#if defined(NGEN_FLIGHT_SURVEY)
+        if (survey)
+            survey->apply_action(); // Establish the barrier before queuing this tick's pilot input.
+#endif
         if (!options.replay)
             (void)send(input.pilot());
-        const auto result = game->step();
+        const auto result = [&]() -> Result<flight::Snapshot> {
+#if defined(NGEN_FLIGHT_SURVEY)
+            if (survey) {
+                survey->tick();
+                if (const auto frame = survey->local())
+                    return *frame;
+                return Error::busy;
+            }
+#endif
+            return game->step();
+        }();
         if (const auto *error = std::get_if<Error>(&result)) {
+            if (survey_mode && *error == Error::busy)
+                return; // Hold the last rendered pose with no active local vessel.
             require(*error == Error::invalid, "flight physics stopped; reset is required");
             metrics.status = "Combined intent rejected before physical publication";
             return;
         }
-        current = std::get<flight::Snapshot>(result);
-        pending_mode = current.mode;
-        (void)input.mode(current.mode);
+        publish_local(std::get<flight::Snapshot>(result));
         const auto &v = current.body.velocity_mps;
         const auto &f = current.force_newtons;
         double residual_squared = 0;
@@ -1330,7 +1401,7 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
         if (quit)
             break;
         if (options.frames && frame_index == warmup) {
-            if (!options.crossing)
+            if (!options.crossing && !survey_mode)
                 reset();
             time = Clock::now();
             accumulator = 0;
@@ -1491,8 +1562,14 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
                 }
             }
         } else if (fixed_tick) {
-            if (options.replay && frame_index >= warmup)
-                scripted();
+            if (options.replay && frame_index >= warmup) {
+#if defined(NGEN_FLIGHT_SURVEY)
+                if (survey)
+                    survey->replay();
+                else
+#endif
+                    scripted();
+            }
             advance();
         } else {
             const auto now = Clock::now();
@@ -1503,6 +1580,21 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
                 accumulator -= 1.0 / 60;
             }
         }
+        bool local_visible = true;
+#if defined(NGEN_FLIGHT_SURVEY)
+        if (survey) {
+            survey->stream(*context);
+            landmark = survey->landmark();
+            if (const auto local = survey->local()) {
+                if (local->body.id.world != current.body.id.world)
+                    publish_local(*local);
+            } else {
+                local_visible = false;
+                motion_history.reset();
+                motion_cut = true;
+            }
+        }
+#endif
         const auto camera_events = input.take_camera();
         if (camera_events.center_look)
             rig.center_look();
@@ -1526,13 +1618,14 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
                 "flight drawable unavailable");
         const VkExtent2D drawable{static_cast<unsigned>(width), static_cast<unsigned>(height)};
         auto view = take(present(preset, last_camera, drawable));
+        view.scene.show_package = local_visible;
         if (performance.visible()) {
             metrics.cpp_calls = workload::allocation_count();
             metrics.gui_calls = gui->allocation_count();
             metrics.system = system_usage->snapshot();
         }
-        const auto action =
-            hud(*gui, current, preset, metrics, selected, options.replay, muted, view);
+        const auto action = hud(*gui, current, preset, metrics, selected, options.replay, muted,
+                                view, local_visible, survey_panel);
         if (action.mute)
             muted = !muted;
         if (!options.replay) {
@@ -1574,10 +1667,12 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
         float work = 0;
         for (std::size_t axis = 0; axis < 3; ++axis)
             work += force[axis] * previous.body.velocity_mps[axis];
-        (void)sound.mute(muted || !focused);
-        (void)sound.update({.35F, thrust, work < 0 ? thrust : 0,
-                            std::clamp(speed / preset.ship.flight.maximum_speed_mps, 0.0F, 1.0F)});
-        if (preset.drive_material) {
+        (void)sound.mute(muted || !focused || !local_visible);
+        if (local_visible && !(survey_mode && muted))
+            (void)sound.update(
+                {.35F, thrust, work < 0 ? thrust : 0,
+                 std::clamp(speed / preset.ship.flight.maximum_speed_mps, 0.0F, 1.0F)});
+        if (local_visible && preset.drive_material) {
             const auto i = *preset.drive_material;
             materials[i].base_color = package->materials[i].base_color;
             materials[i].base_color[3] *= power;
@@ -1585,7 +1680,7 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
             flows[i] = {phase, power > 0 ? 1.0F : 0.0F};
         }
         for (std::size_t bank = 0; bank < rcs_bank_count; ++bank)
-            if (preset.rcs_materials[bank]) {
+            if (local_visible && preset.rcs_materials[bank]) {
                 const auto i = *preset.rcs_materials[bank];
                 // Radiance is perceptual, not another physical actuator. Keep small
                 // translation jets visible alongside the much stronger attitude pairs.
@@ -1597,7 +1692,7 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
                 flows[i] = {std::fmod(phase + static_cast<float>(bank) / 12.0F, 1.0F),
                             rcs[bank] > 0 ? 1.0F : 0.0F};
             }
-        if (preset.drive_material || preset.rcs_materials[0]) {
+        if (local_visible && (preset.drive_material || preset.rcs_materials[0])) {
             view.scene.material_factors = std::span(materials).first(package->materials.size());
             view.scene.material_flows = std::span(flows).first(package->materials.size());
         }
@@ -1771,6 +1866,10 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
             metrics.frame_ms = static_cast<double>(nanoseconds(began)) / 1e6;
         ++frame_index;
     }
+#if defined(NGEN_FLIGHT_SURVEY)
+    if (survey)
+        survey->report(options.replay, landmark_frames);
+#endif
     if (options.crossing) {
         const bool arrived = crossing && crossing->snapshot().phase == travel::Phase::arrived;
         std::printf(
@@ -1935,6 +2034,9 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
     (void)SDL_SetWindowRelativeMouseMode(context->window(), false);
     (void)sound.close();
     system_usage.reset();
+#if defined(NGEN_FLIGHT_SURVEY)
+    survey.reset();
+#endif
     gui.reset();
     require(context->close(), "flight context close failed");
     require(context->validation_errors() == 0, "flight Vulkan validation reported errors");
