@@ -1,4 +1,8 @@
+#if defined(NGEN_SURVEY_VOYAGE)
+#include "quests/voyage.hpp"
+#else
 #include "quests/save.hpp"
+#endif
 #include <algorithm>
 #include <array>
 #include <charconv>
@@ -94,12 +98,59 @@ std::optional<Command> parse(Input input) {
     return Command{expected, static_cast<Action>(match - commands.begin())};
 }
 
-void show(const Save &save) {
+#if defined(NGEN_SURVEY_VOYAGE)
+using Campaign = Voyage;
+constexpr auto usage = "usage: quest_voyage PRIVATE_DIRECTORY status | step REVISION ACTION\n";
+
+std::string_view label(ngen::travel::Security security) {
+    return security == ngen::travel::Security::protected_space ? "protected" : "lawless";
+}
+
+auto open(const std::filesystem::path &directory) { return Voyage::open(directory, {}); }
+
+VoyageOutcome apply(Campaign &campaign, Command command) {
+    const auto from = campaign.departure();
+    // The CLI owns two fixed empty contact profiles; a graphical producer
+    // must pass its prepared source and destination instead.
+    const ngen::travel::CollisionSite source{from.origin, from.revision, {}};
+    const auto result = campaign.request(command, &source);
+    if (!std::holds_alternative<InTransit>(result))
+        return result;
+    const auto target = campaign.destination();
+    if (!target)
+        return ngen::Error::order;
+    for (unsigned tick = 0; tick < 16; ++tick) {
+        const auto crossed = campaign.advance();
+        if (const auto *error = std::get_if<ngen::Error>(&crossed))
+            return *error;
+        if (std::get<VoyageFrame>(crossed).journey.phase != ngen::travel::Phase::exit)
+            continue;
+        const ngen::travel::CollisionSite site{target->origin, target->revision, {}};
+        const auto arrival = campaign.arrive(&site);
+        if (std::holds_alternative<Receipt>(arrival))
+            std::cout << "native_arrival=" << label(campaign.security()) << '\n';
+        return arrival;
+    }
+    return ngen::Error::order;
+}
+#else
+using Campaign = Save;
+constexpr auto usage = "usage: quest_survey PRIVATE_DIRECTORY status | step REVISION ACTION\n";
+
+auto open(const std::filesystem::path &directory) { return Save::open(directory); }
+
+SavedOutcome apply(Campaign &campaign, Command command) { return campaign.step(command); }
+#endif
+
+void show(const Campaign &save) {
     const auto state = save.snapshot();
     std::cout << "revision=" << save.revision() << " vessel=" << state.vessel
               << " credits=" << state.credits << " cargo=" << state.cargo
               << " wreck=" << state.wreck << " deposit=" << state.deposit
               << " completed=" << state.completed_runs << '\n';
+#if defined(NGEN_SURVEY_VOYAGE)
+    std::cout << "committed_system=" << label(save.security()) << '\n';
+#endif
     if (!state.deposit && state.stage == Stage::protected_port)
         std::cout << "Survey complete: the bounded deposit is exhausted.\n";
     else
@@ -110,18 +161,24 @@ void show(const Save &save) {
 int main(int argc, char **argv) try {
     if (!((argc == 3 && std::string_view(argv[2]) == "status") ||
           (argc == 5 && std::string_view(argv[2]) == "step"))) {
-        std::cerr << "usage: quest_survey PRIVATE_DIRECTORY status | step REVISION ACTION\n";
+        std::cerr << usage;
         return 2;
     }
     const auto command = argc == 5 ? parse({argv[3], argv[4]}) : std::nullopt;
     if (argc == 5 && !command)
         return reject("invalid_command");
-    auto opened = Save::open(argv[1]);
+    auto opened = open(argv[1]);
     if (const auto *error = std::get_if<SaveError>(&opened))
         return reject(code(*error));
-    auto &save = *std::get<std::unique_ptr<Save>>(opened);
+    auto &save = *std::get<std::unique_ptr<Campaign>>(opened);
     if (command) {
-        const auto outcome = save.step(*command);
+        const auto outcome = apply(save, *command);
+#if defined(NGEN_SURVEY_VOYAGE)
+        if (const auto *error = std::get_if<ngen::Error>(&outcome)) {
+            std::cerr << "flight_error=" << static_cast<unsigned>(*error) << '\n';
+            return 1;
+        }
+#endif
         if (const auto *error = std::get_if<SaveError>(&outcome))
             return reject(code(*error));
         if (const auto *rejection = std::get_if<Rejection>(&outcome))
@@ -131,6 +188,6 @@ int main(int argc, char **argv) try {
     show(save);
     return 0;
 } catch (const std::exception &) {
-    std::fputs("quest_survey: unexpected host error\n", stderr);
+    std::fputs("Surveyors: unexpected host error\n", stderr);
     return 1;
 }

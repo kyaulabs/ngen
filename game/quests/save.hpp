@@ -22,8 +22,13 @@ class Save {
     [[nodiscard]] SavedOutcome step(Command command);
 
   private:
-    explicit Save(int directory) : directory_(directory) {}
+    friend class Voyage;
+    [[nodiscard]] static std::variant<std::unique_ptr<Save>, SaveError>
+    open_slot(const std::filesystem::path &directory, bool flight_slot);
+    [[nodiscard]] Outcome preview(Command command) const;
+    Save(int directory, bool flight_slot) : directory_(directory), flight_slot_(flight_slot) {}
     const int directory_;
+    const bool flight_slot_;
     Survey survey_;
 };
 } // namespace ngen::quests
