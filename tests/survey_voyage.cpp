@@ -151,6 +151,7 @@ TEST_CASE("the return sale needs a fresh native arrival if save publication fail
         recovered = true;
         act(*voyage, Action::lose_ship);
         CHECK_FALSE(voyage->native());
+        CHECK(std::get<Error>(voyage->prepare_local(frontier_site)) == Error::busy);
         act(*voyage, Action::recover);
     }
     const auto returnable = act(*voyage, recovered ? Action::salvage : Action::defeat_rival);
@@ -189,6 +190,72 @@ TEST_CASE("the return sale needs a fresh native arrival if save publication fail
     CHECK(std::get<Receipt>(voyage->request(inbound)) == sold);
     CHECK_FALSE(voyage->destination());
     CHECK(voyage->snapshot() == sold.after);
+}
+
+TEST_CASE("return entry and cancellation keep the landed contact body", "[survey-voyage]") {
+    Workspace workspace;
+    auto voyage = open(workspace);
+    act(*voyage, Action::learn_law);
+    act(*voyage, Action::join_survey);
+    REQUIRE(std::holds_alternative<InTransit>(arm(*voyage, {2, Action::accept_risk})));
+    const auto frontier = exit(*voyage);
+    const travel::CollisionSite frontier_site{frontier.origin, frontier.revision, {}};
+    REQUIRE(std::holds_alternative<Receipt>(voyage->arrive(&frontier_site)));
+    const auto landed = present(present(voyage->native()).journey.local);
+    act(*voyage, Action::mine);
+    const auto clear = act(*voyage, Action::defeat_rival);
+    const quests::Command home{clear.revision, Action::dock_and_sell};
+    REQUIRE(std::holds_alternative<InTransit>(arm(*voyage, home)));
+    CHECK(present(present(voyage->native()).journey.local).body.id == landed.body.id);
+    CHECK(std::holds_alternative<std::monostate>(voyage->cancel()));
+    CHECK(present(present(voyage->native()).journey.local).body.id == landed.body.id);
+    CHECK(voyage->snapshot() == clear.after);
+}
+
+TEST_CASE("pilot commands cannot be bypassed by recreating a parked departure body",
+          "[survey-voyage]") {
+    Workspace workspace;
+    auto voyage = open(workspace);
+    const auto source = voyage->departure();
+    const travel::CollisionSite wrong{source.origin, source.revision + 1, {}};
+    CHECK(std::get<Error>(voyage->prepare_local(wrong)) == Error::stale);
+    const travel::CollisionSite site{source.origin, source.revision, {}};
+    const auto prepared = voyage->prepare_local(site);
+    REQUIRE(std::holds_alternative<VoyageFrame>(prepared));
+    const auto original = present(std::get<VoyageFrame>(prepared).journey.local);
+    act(*voyage, Action::learn_law);
+    const auto charter = act(*voyage, Action::join_survey);
+    const quests::Command outbound{charter.revision, Action::accept_risk};
+    REQUIRE(
+        std::holds_alternative<std::monostate>(voyage->submit(flight::Destination{{0, 0, -10}})));
+    CHECK(std::get<Error>(voyage->request(outbound)) == Error::busy);
+    for (int tick = 0; tick < 150; ++tick)
+        REQUIRE(std::holds_alternative<VoyageFrame>(voyage->advance()));
+    const auto outside = present(present(voyage->native()).journey.local);
+    REQUIRE(outside.body.position_metres[2] < -3);
+    CHECK(std::get<Error>(voyage->request(outbound, &site)) == Error::invalid);
+    CHECK(std::get<Error>(voyage->prepare_local(site)) == Error::busy);
+    CHECK(present(present(voyage->native()).journey.local).body.position_metres ==
+          outside.body.position_metres);
+    CHECK(voyage->snapshot() == charter.after);
+    REQUIRE(std::holds_alternative<std::monostate>(voyage->submit(flight::Destination{{}})));
+    for (int tick = 0; tick < 600; ++tick)
+        REQUIRE(std::holds_alternative<VoyageFrame>(voyage->advance()));
+    const auto berth = present(present(voyage->native()).journey.local);
+    REQUIRE(berth.body.position_metres != original.body.position_metres);
+    REQUIRE(std::holds_alternative<InTransit>(voyage->request(outbound)));
+    CHECK(std::get<Error>(voyage->submit(flight::SetMass{1200})) == Error::busy);
+    const auto entry = present(present(voyage->native()).journey.local);
+    CHECK(entry.body.id == original.body.id);
+    CHECK(entry.body.position_metres == berth.body.position_metres);
+    CHECK(entry.tick == berth.tick);
+    REQUIRE(std::holds_alternative<std::monostate>(voyage->cancel()));
+    CHECK(present(present(voyage->native()).journey.local).body.position_metres ==
+          berth.body.position_metres);
+    REQUIRE(std::holds_alternative<std::monostate>(voyage->submit(flight::SetMass{1200})));
+    const auto resumed = std::get<VoyageFrame>(voyage->advance());
+    CHECK(present(resumed.journey.local).body.id == original.body.id);
+    CHECK(present(resumed.journey.local).body.mass_kg == 1200);
 }
 
 TEST_CASE("a text save is neither a voyage checkpoint nor proof of arrival", "[survey-voyage]") {

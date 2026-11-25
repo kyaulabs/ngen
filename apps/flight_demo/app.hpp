@@ -8,7 +8,7 @@ struct Options {
     std::uint32_t frames{}, warmup{60};
     bool verify{}, replay{}, walkthrough{}, validation{}, mute{}, motion_vectors{}, crossing{},
         crossing_hold{};
-    std::filesystem::path report, capture, destination, destination_retry;
+    std::filesystem::path report, capture, destination, destination_retry, survey;
 };
 void run(const assets::PackagePin &package, const Preset &preset, const Options &options);
 } // namespace ngen::demo

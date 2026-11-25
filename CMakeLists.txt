@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.28)
-project(NGEN VERSION 0.18.0 LANGUAGES CXX)
+project(NGEN VERSION 0.19.0 LANGUAGES CXX)
 include(CTest)
 find_package(enkiTS CONFIG REQUIRED)
 find_package(Threads REQUIRED)
@@ -359,6 +359,14 @@ if(NGEN_BUILD_FLIGHT_DEMO)
   endif()
   add_executable(flight_demo apps/flight_demo/main.cpp apps/flight_demo/app.cpp apps/scene_workload/allocations.cpp)
   target_link_libraries(flight_demo PRIVATE ngen_flight_demo_scene ngen_flight_demo_layout ngen_flight_demo_performance ngen_gui ngen_audio_output ngen_probe_support ngen_travel ngen_package_io imgui::imgui Jolt::Jolt)
+  if(TARGET ngen_survey_voyage)
+    target_sources(flight_demo PRIVATE apps/flight_demo/survey.cpp)
+    target_link_libraries(flight_demo PRIVATE ngen_survey_voyage)
+    target_compile_definitions(flight_demo PRIVATE NGEN_FLIGHT_SURVEY=1)
+    set(ngen_flight_survey_test 1)
+  else()
+    set(ngen_flight_survey_test 0)
+  endif()
   if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/.git")
     # Bind successful links to the source snapshot, even after a clean branch switch.
     # An extracted corresponding-source archive remains buildable without Git metadata.
@@ -403,7 +411,7 @@ if(NGEN_BUILD_FLIGHT_DEMO)
     target_link_libraries(rcs_pulse_tests PRIVATE ngen_flight_demo_scene Catch2::Catch2WithMain)
     add_test(NAME flight_rcs_pulses COMMAND rcs_pulse_tests)
     add_test(NAME flight_demo_cli COMMAND ${CMAKE_COMMAND} -E env
-      "NGEN_FLIGHT_DEMO=$<TARGET_FILE:flight_demo>"
+      "NGEN_FLIGHT_DEMO=$<TARGET_FILE:flight_demo>" "NGEN_SURVEY_TEST=${ngen_flight_survey_test}"
       ${Python3_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/tests/flight_demo_cli.py)
     add_test(NAME demo_package COMMAND ${Python3_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/tests/demo_package.py)
     add_test(NAME flight_recording_policy COMMAND ${CMAKE_COMMAND} -E env "PYTHONDONTWRITEBYTECODE=1"

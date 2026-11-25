@@ -1,4 +1,5 @@
 #include "travel/journey.hpp"
+#include <algorithm>
 #include <cmath>
 #include <new>
 #include <utility>
@@ -16,6 +17,25 @@ bool parked(const ngen::flight::Snapshot &local) {
            body.angular_velocity_rps == std::array<float, 3>{} &&
            local.force_newtons == std::array<float, 3>{} &&
            local.torque_newton_metres == std::array<float, 3>{};
+}
+bool at_berth(const ngen::flight::Snapshot &local, const ngen::flight::ShipDefinition &ship) {
+    const auto &body = local.body;
+    // The berth aligns the parked hull for transit. Allow only the docking
+    // fixture's half-metre box and low relative speed, with a low rotation cap.
+    const auto &nav = local.navigation;
+    return local.mode == ngen::flight::Mode::tactical &&
+           (nav.goal == ngen::flight::Goal::coast ||
+            (nav.goal == ngen::flight::Goal::destination &&
+             nav.target_metres == std::array<double, 3>{})) &&
+           std::ranges::all_of(body.position_metres, [](double v) { return std::abs(v) <= .5; }) &&
+           std::hypot(body.velocity_mps[0], body.velocity_mps[1], body.velocity_mps[2]) <= .2F &&
+           std::hypot(body.angular_velocity_rps[0], body.angular_velocity_rps[1],
+                      body.angular_velocity_rps[2]) <= .05F &&
+           std::hypot(local.force_newtons[0], local.force_newtons[1], local.force_newtons[2]) <=
+               body.mass_kg * .25 &&
+           std::hypot(local.torque_newton_metres[0], local.torque_newton_metres[1],
+                      local.torque_newton_metres[2]) <=
+               .05F * std::ranges::min(ship.maximum_torque_newton_metres);
 }
 // Only stationary axis-aligned proxy boxes are admitted by Flight. Test the
 // authored arrival berth before constructing or publishing the destination.
@@ -81,15 +101,30 @@ Result<std::monostate> Journey::check(const Command &command) const {
     return std::monostate{};
 }
 
-Result<Snapshot> Journey::begin(const Command &command) {
+Result<Snapshot> Journey::begin(const Command &command) { return arm(command, route_, false); }
+
+Result<Snapshot> Journey::begin_from_berth(const Command &command, const Route &route) {
+    return arm(command, route, true);
+}
+
+Result<Snapshot> Journey::arm(const Command &command, const Route &route, bool capture) {
     const auto checked = check(command);
     if (const auto *error = std::get_if<Error>(&checked))
         return *error;
-    if (state_.phase != Phase::local || pending_)
+    if ((state_.phase != Phase::local && state_.phase != Phase::arrived) || pending_)
         return Error::busy;
     const auto local = flight_->snapshot();
-    if (!route_.jump_capable || !route_.route_allowed || !route_.security_allowed || !parked(local))
+    if (local.frame.origin != route.source)
+        return Error::stale;
+    if (!route.collision_revision || !route.jump_capable || !route.route_allowed ||
+        !route.security_allowed || !(capture ? at_berth(local, ship_) : parked(local)))
         return Error::invalid;
+    const auto path = Trajectory::create(route.source, route.destination, route.duration_ticks);
+    if (const auto *error = std::get_if<Error>(&path))
+        return *error;
+    route_ = route;
+    path_ = std::get<Trajectory>(path);
+    elapsed_ = 0;
     ship_.hull.mass_kg = local.body.mass_kg;
     sequence_ = command.sequence;
     state_.phase = Phase::entry;

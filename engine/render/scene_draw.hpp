@@ -33,6 +33,8 @@ struct SceneView {
     shader::Matrix root_transform{{1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1}};
     // Same scene version and camera-relative convention. Null invalidates history.
     const SceneHistory *history{};
+    // Hide the immutable package's models and lights without dropping extras.
+    bool show_package{true};
 };
 struct SceneTargets {
     const Image &color;

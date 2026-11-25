@@ -50,6 +50,29 @@ class FlightAdmission(unittest.TestCase):
         self.assertEqual(conflict.returncode, 2, conflict.stdout + conflict.stderr)
         self.assertIn("runtime rendering", conflict.stderr)
 
+    def test_saved_survey_requires_opt_in_build_and_destination(self):
+        with tempfile.TemporaryDirectory(prefix="ngen live survey admission ") as directory:
+            survey = "--survey=" + directory
+            result = invoke("missing-flight-asset.ngas", survey)
+            self.assertEqual(result.returncode, 2, result.stdout + result.stderr)
+            if os.environ.get("NGEN_SURVEY_TEST") == "1":
+                self.assertIn("survey requires a destination landmark", result.stderr)
+                runtime = invoke("missing-flight-asset.ngas", survey,
+                                 "--destination=missing-marker.ngas")
+                self.assertEqual(runtime.returncode, 1, runtime.stdout + runtime.stderr)
+                self.assertEqual(list(Path(directory).iterdir()), [])
+                conflict = invoke("missing-flight-asset.ngas", survey, "--verify",
+                                  "--destination=missing-marker.ngas")
+                self.assertEqual(conflict.returncode, 2, conflict.stdout + conflict.stderr)
+                self.assertIn("survey requires runtime flight", conflict.stderr)
+                short = invoke("missing-flight-asset.ngas", survey, "--frames=10", "--replay",
+                               "--destination=missing-marker.ngas")
+                self.assertEqual(short.returncode, 2, short.stdout + short.stderr)
+                self.assertIn("scratch save directory", short.stderr)
+                self.assertEqual(list(Path(directory).iterdir()), [])
+            else:
+                self.assertIn("flight demo was built without Surveyors", result.stderr)
+
     def test_bad_package_rejects_without_a_display_or_device(self):
         with tempfile.TemporaryDirectory(prefix="ngen flight invalid ") as directory:
             package = Path(directory) / "invalid.ngas"
