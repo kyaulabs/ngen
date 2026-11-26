@@ -38,6 +38,25 @@ committed arrival and rejects replays that change the historical action. Reopen
 the same directory to continue from the last committed system and berth. In-flight
 pose and pending travel are not saved.
 
+## Record the owner playthrough
+
+On KDE Wayland, the [private window recorder](../../../tools/record_flight/README.md)
+can launch the charter and capture its window automatically. It does not pilot
+or select charter actions for you.
+
+```sh
+python3 tools/record_survey.py --flight-demo=build/demo-release/flight_demo \
+  --frigate="$frigate" --landmark="$marker"
+```
+
+Wait for `RECORDING` before taking control. The launcher creates a private
+charter and captures only the launched game window, with no microphone or
+system audio. Close the window to finalize `recording.webm`. At the default
+20-minute limit the recorder finalizes the clip and closes the launched game;
+your committed save is retained. Run the same command with `--save` set to the
+printed charter directory to record a separate reload clip. Both clips stay
+under `build/`. Recording alone does not close the milestone.
+
 ## Verification
 
 For a bounded physical replay, use a fresh scratch directory. An interrupted
