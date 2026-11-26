@@ -1,4 +1,26 @@
 ## 📜 Changelog
+### [0.20.0](https://github.com/kyaulabs/ngen/releases/tag/v0.20.0)
+
+#### 📝 Documentation
+
+- **roadmap:** Record the one-hour B4 technical result ([4ad3b76](https://github.com/kyaulabs/ngen/commit/4ad3b76ca5acc3e88767242dd56cdce4d84056a6))
+
+#### 🚀 Features
+
+- **tools:** Record the interactive Surveyors playthrough ([ce76cd1](https://github.com/kyaulabs/ngen/commit/ce76cd1b63ec6c8f28008e99e1b8c51175b28eec))
+
+- **tools:** Record the interactive Surveyors playthrough (#169) ([39b689b](https://github.com/kyaulabs/ngen/commit/39b689bbbdb9d83d98f6f6d05225a6deb273d26d))
+
+#### 🧪 Tests
+
+- **flight:** Measure the one-hour B4 voyage ([707fe1a](https://github.com/kyaulabs/ngen/commit/707fe1a584e962764b06ffe8520d24e411f32f22))
+
+- **flight:** Gate the B4 soak on flight timing ([05771b0](https://github.com/kyaulabs/ngen/commit/05771b04c13395d4290ac043e9a5ee23e09dcb22))
+
+- **flight:** Keep the soak compatible with clang 18 ([80b3a79](https://github.com/kyaulabs/ngen/commit/80b3a79af9946b7f1734ff0c70661d096d1b2635))
+
+- **flight:** Verify the one-hour B4 voyage (#168) ([73509f5](https://github.com/kyaulabs/ngen/commit/73509f5ea3669791446e4dcd85b7fbcef9811b04))
+
 ### [0.19.0](https://github.com/kyaulabs/ngen/releases/tag/v0.19.0)
 
 #### 🚀 Features
