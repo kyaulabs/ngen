@@ -1,4 +1,12 @@
 ## 📜 Changelog
+### [0.20.2](https://github.com/kyaulabs/ngen/releases/tag/v0.20.2)
+
+#### 🐛 Fixes
+
+- **flight:** Drain the newest GPU submission on close ([f72c7d2](https://github.com/kyaulabs/ngen/commit/f72c7d2ec378dcf8e452d2d2f14c4dc81ce2c595))
+
+- **flight:** Drain the newest GPU submission on close (#175) ([7dffd12](https://github.com/kyaulabs/ngen/commit/7dffd12cc8f86e7425f593f7fdacf7a92c6039fc))
+
 ### [0.20.1](https://github.com/kyaulabs/ngen/releases/tag/v0.20.1)
 
 #### 🐛 Fixes
