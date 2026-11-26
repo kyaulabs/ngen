@@ -625,6 +625,7 @@ Actions hud(tools::Gui &gui, const flight::Snapshot &state, const Preset &preset
 } // namespace
 void run(const assets::PackagePin &package, const Preset &preset, const Options &options) {
     const bool fixed_tick = options.replay || options.walkthrough;
+    const bool automated = options.replay || options.soak_seconds != 0;
     const bool survey_mode = !options.survey.empty();
     auto game = game_value(flight::Flight::create(preset.ship.flight, preset.contacts));
     auto current = game->snapshot(), previous = current;
@@ -1132,7 +1133,7 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
                     muted = !muted;
                     continue;
                 }
-                if (options.replay)
+                if (automated)
                     continue;
                 if (!gui->wants_keyboard() || input.capture()) {
                     if (!event.key.repeat)
@@ -1162,13 +1163,13 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
                        event.button.button == SDL_BUTTON_RIGHT &&
                        event.button.windowID == SDL_GetWindowID(context->window())) {
                 input.pointer(false);
-                if (context_press && selected && focused && !options.replay && !camera_only() &&
+                if (context_press && selected && focused && !automated && !camera_only() &&
                     Clock::now() - context_pressed_at <= std::chrono::milliseconds(250)) {
                     metrics.context_target = selected;
                     metrics.context_request = context_press;
                 }
                 context_press.reset();
-            } else if (event.type == SDL_EVENT_MOUSE_BUTTON_DOWN && !options.replay &&
+            } else if (event.type == SDL_EVENT_MOUSE_BUTTON_DOWN && !automated &&
                        event.button.windowID == SDL_GetWindowID(context->window()) &&
                        !gui->wants_mouse()) {
                 if (event.button.button == SDL_BUTTON_RIGHT) {
@@ -1209,7 +1210,7 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
                         }
                     }
                 }
-            } else if (event.type == SDL_EVENT_MOUSE_MOTION && !options.replay) {
+            } else if (event.type == SDL_EVENT_MOUSE_MOTION && !automated) {
                 if (context_press) {
                     context_travel += std::abs(event.motion.xrel) + std::abs(event.motion.yrel);
                     if (!std::isfinite(context_travel) ||
@@ -1217,8 +1218,7 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
                         context_press.reset();
                 }
                 (void)input.motion({event.motion.xrel, event.motion.yrel});
-            } else if (event.type == SDL_EVENT_MOUSE_WHEEL && !options.replay &&
-                       !gui->wants_mouse())
+            } else if (event.type == SDL_EVENT_MOUSE_WHEEL && !automated && !gui->wants_mouse())
                 (void)input.wheel(std::clamp(event.wheel.direction == SDL_MOUSEWHEEL_FLIPPED
                                                  ? -event.wheel.y
                                                  : event.wheel.y,
@@ -1259,10 +1259,14 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
     const auto advance = [&] {
         previous = current;
 #if defined(NGEN_FLIGHT_SURVEY)
-        if (survey)
-            survey->apply_action(); // Establish the barrier before queuing this tick's pilot input.
+        if (survey) {
+            if (options.soak_seconds)
+                survey->replay();
+            // Establish the barrier before queuing this tick's pilot input.
+            survey->apply_action();
+        }
 #endif
-        if (!options.replay)
+        if (!automated)
             (void)send(input.pilot());
         const auto result = [&]() -> Result<flight::Snapshot> {
 #if defined(NGEN_FLIGHT_SURVEY)
@@ -1394,8 +1398,16 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
     };
     double accumulator = 0;
     auto time = Clock::now();
+    const auto began_soak = time;
+#if defined(NGEN_FLIGHT_SURVEY)
+    if (survey && options.soak_seconds)
+        survey->begin_soak(began_soak);
+#endif
+    const auto soak_elapsed_ms = [&] { return nanoseconds(began_soak) / 1'000'000; };
     std::uint64_t allocation_start = 0, ui_start = 0;
     for (;;) {
+        if (options.soak_seconds && soak_elapsed_ms() >= std::uint64_t{options.soak_seconds} * 1000)
+            break;
         if (options.frames && measured == options.frames)
             break;
         if (quit)
@@ -1624,11 +1636,11 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
             metrics.gui_calls = gui->allocation_count();
             metrics.system = system_usage->snapshot();
         }
-        const auto action = hud(*gui, current, preset, metrics, selected, options.replay, muted,
-                                view, local_visible, survey_panel);
-        if (action.mute)
+        const auto action = hud(*gui, current, preset, metrics, selected, automated, muted, view,
+                                local_visible, survey_panel);
+        if (action.mute && !options.soak_seconds)
             muted = !muted;
-        if (!options.replay) {
+        if (!automated) {
             if (action.target)
                 selected = action.target;
             if (action.mode)
@@ -1771,7 +1783,7 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
             const auto result =
                 take(context->render_frame({color, 1, true, overlay ? &*overlay : nullptr, .04F}));
             if (result.outcome == FrameOutcome::queued) {
-                if (options.frames && frame_index >= warmup)
+                if (options.soak_seconds || (options.frames && frame_index >= warmup))
                     queue_ns = static_cast<std::uint64_t>(
                         std::chrono::duration_cast<std::chrono::nanoseconds>(
                             Clock::now().time_since_epoch())
@@ -1862,13 +1874,31 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
                 std::chrono::duration_cast<std::chrono::nanoseconds>(ended.time_since_epoch())
                     .count());
             metrics.frame_ms = static_cast<double>(sample.frame_ns) / 1e6;
-        } else
-            metrics.frame_ms = static_cast<double>(nanoseconds(began)) / 1e6;
+        } else {
+            const auto frame_ns = nanoseconds(began);
+            metrics.frame_ms = static_cast<double>(frame_ns) / 1e6;
+#if defined(NGEN_FLIGHT_SURVEY)
+            if (survey && options.soak_seconds) {
+                // This point is reached only after a successful queue; skipped
+                // submissions contribute to the next queue gap, not its histogram.
+                if (frame_index >= options.warmup)
+                    survey->sample_frame({.frame_ns = frame_ns, .queue_ns = queue_ns});
+                survey->sample_soak(soak_elapsed_ms(), metrics.memory);
+            }
+#endif
+        }
         ++frame_index;
     }
 #if defined(NGEN_FLIGHT_SURVEY)
-    if (survey)
+    if (survey) {
         survey->report(options.replay, landmark_frames);
+        if (options.soak_seconds) {
+            require(!quit, "B4 soak was cancelled");
+            std::printf("b4_present,%llu,%u\n", static_cast<unsigned long long>(frame_index),
+                        options.warmup);
+            survey->finish_soak(options.soak_seconds, soak_elapsed_ms());
+        }
+    }
 #endif
     if (options.crossing) {
         const bool arrived = crossing && crossing->snapshot().phase == travel::Phase::arrived;

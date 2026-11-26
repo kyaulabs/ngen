@@ -3,6 +3,7 @@
 #include <compare>
 #include <cstddef>
 #include <cstdint>
+#include <optional>
 #include <span>
 #include <variant>
 
@@ -58,7 +59,8 @@ class Survey {
     // Borrowed view; its length is fixed at the time of the call.
     [[nodiscard]] std::span<const Action> history() const &;
     [[nodiscard]] std::span<const Action> history() const && = delete;
-    [[nodiscard]] Outcome step(Command command);
+    // An optional diagnostic observes the actual berth trade, not a replay.
+    [[nodiscard]] Outcome step(Command command, std::optional<std::uint64_t> *market_ns = nullptr);
 
   private:
     State state_;

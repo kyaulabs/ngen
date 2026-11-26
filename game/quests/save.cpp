@@ -1,6 +1,7 @@
 #include "quests/save.hpp"
 #include <algorithm>
 #include <cerrno>
+#include <chrono>
 #include <cstdio>
 #include <fcntl.h>
 #include <optional>
@@ -159,20 +160,30 @@ Outcome Save::preview(Command command) const {
     return candidate.step(command);
 }
 
-SavedOutcome Save::step(Command command) {
+SavedOutcome Save::step(Command command, SaveTimings *timings) {
+    if (timings)
+        *timings = {};
     auto candidate = survey_;
-    const auto outcome = candidate.step(command);
+    const auto outcome = candidate.step(command, timings ? &timings->market_ns : nullptr);
     if (const auto *rejected = std::get_if<Rejection>(&outcome))
         return *rejected;
-    if (candidate.revision() != survey_.revision()) {
-        if (!publish(directory_, flight_slot_ ? flight : headless, candidate.history()))
-            return SaveError::io;
-        survey_ = candidate;
-    }
-    // A failed directory sync after rename is ambiguous across power loss.
-    // Retrying the same revision/action observes old or new without a double payout.
-    if (fsync(directory_) != 0)
-        return SaveError::uncertain;
-    return std::get<Receipt>(outcome);
+    using Clock = std::chrono::steady_clock;
+    const auto started = timings ? Clock::now() : Clock::time_point{};
+    const auto persisted = [&]() -> SavedOutcome {
+        if (candidate.revision() != survey_.revision()) {
+            if (!publish(directory_, flight_slot_ ? flight : headless, candidate.history()))
+                return SaveError::io;
+            survey_ = candidate;
+        }
+        // A failed directory sync after rename is ambiguous across power loss.
+        // Retrying the same revision/action observes old or new without a double payout.
+        if (fsync(directory_) != 0)
+            return SaveError::uncertain;
+        return std::get<Receipt>(outcome);
+    }();
+    if (timings)
+        timings->persistence_ns = static_cast<std::uint64_t>(
+            std::chrono::duration_cast<std::chrono::nanoseconds>(Clock::now() - started).count());
+    return persisted;
 }
 } // namespace ngen::quests
