@@ -64,7 +64,8 @@ def capture(args):
 
     helper_build = BUILD / "record-flight-helper-clang"
     subprocess.run(["cmake", "-S", str(ROOT / "tools/record_flight"), "-B", str(helper_build),
-                    "-G", "Ninja", "-DCMAKE_CXX_COMPILER=clang++", "-DCMAKE_BUILD_TYPE=Release"],
+                    "-G", "Ninja", "-DCMAKE_BUILD_TYPE=Release", "-DCMAKE_C_COMPILER=clang",
+                    "-DCMAKE_CXX_COMPILER=clang++"],
                    check=True, timeout=90)
     subprocess.run(["cmake", "--build", str(helper_build), "-j", "2"], check=True, timeout=120)
     helper = regular(helper_build / "ngen_window_capture", 16 * 1024**2, root=BUILD)
@@ -211,7 +212,7 @@ def main():
     args = parser.parse_args()
     if sys.platform != "linux" or not 5 <= args.seconds <= 1800:
         parser.error("the KDE Wayland recorder requires Linux and 5..1800 seconds")
-    for name in ("cmake", "ninja", "clang++", "unshare", "qdbus6", "ffprobe"):
+    for name in ("cmake", "ninja", "clang", "clang++", "unshare", "qdbus6", "ffprobe"):
         if not shutil.which(name):
             parser.error("missing recording tool: " + name)
 
