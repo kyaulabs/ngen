@@ -1,4 +1,5 @@
 """Public recorder policy contracts; desktop APIs are exercised separately."""
+from contextlib import contextmanager
 import importlib.util
 import hashlib
 import json
@@ -18,6 +19,31 @@ sys.path.insert(0, str(ROOT / "tools"))
 SPEC = importlib.util.spec_from_file_location("ngen_record_flight", ROOT / "tools/record_flight.py")
 record = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(record)
+from record_survey import capture_window, checked_directory
+
+
+@contextmanager
+def request_window_close(directory, info, pid):
+    # Close only the exact owned compositor window. SIGTERM can interrupt SDL
+    # before the renderer has handled a normal window-close event.
+    window = record.owned_window(json.dumps(info["window"]), pid)["uuid"]
+    script = Path(directory) / "request-close.js"
+    script.write_text(f"const w = workspace.windowList().find(w => w.pid === {pid} && "
+                      f"w.internalId.toString().replace(/[{{}}]/g, '') === '{window}');\n"
+                      "if (w) w.closeWindow();\n")
+    plugin = "ngen-survey-test-close-" + Path(directory).name
+    dbus = ["qdbus6", "org.kde.KWin"]
+    script_id = int(subprocess.check_output(dbus + ["/Scripting", "org.kde.kwin.Scripting.loadScript",
+                    str(script), plugin], text=True, timeout=5))
+    if script_id < 0:
+        raise RuntimeError("cannot load the owned close-request test script")
+    try:
+        subprocess.run(dbus + [f"/Scripting/Script{script_id}", "org.kde.kwin.Script.run"],
+                       check=True, timeout=5)
+        yield
+    finally:
+        subprocess.run(dbus + ["/Scripting", "org.kde.kwin.Scripting.unloadScript", plugin],
+                       check=True, timeout=5)
 
 
 class Recording(unittest.TestCase):
@@ -37,6 +63,21 @@ class Recording(unittest.TestCase):
         for changed in ({"pid": 999}, {"width": 0}, {"height": 99999}, {"uuid": "screen"}):
             with self.subTest(changed=changed), self.assertRaises(ValueError):
                 record.owned_window(json.dumps(dict(target, **changed)), 123)
+
+    def test_interactive_capture_requires_a_started_owned_video_only_stream(self):
+        window = {"pid": 123, "uuid": "86e00497-277e-4446-88ec-80fc2756a820",
+                  "width": 1280, "height": 720}
+        recording = {"state": "recording", "target_pid": 123, "window": window,
+                     "recording_started_ns": 10, "microphone": False, "system_audio": False}
+        self.assertEqual(capture_window(recording, 123), window)
+        for changed in ({"target_pid": 999}, {"microphone": True}, {"system_audio": True},
+                        {"recording_started_ns": 0}, {"state": "waiting_for_owned_window"}):
+            with self.subTest(changed=changed), self.assertRaises(ValueError):
+                capture_window(dict(recording, **changed), 123)
+
+    def test_recording_directory_is_not_allowed_to_escape_its_parent(self):
+        with self.assertRaisesRegex(ValueError, "unsafe recording"):
+            checked_directory(ROOT / "build" / ".." / "new-capture")
 
     def test_audio_monitor_is_the_owned_sink_monitor_without_default_input_fallback(self):
         sinks = [{"index": 0, "monitor_source": "desktop.monitor"},
@@ -89,9 +130,65 @@ class Recording(unittest.TestCase):
                     with self.assertRaisesRegex(ValueError, "required bundle"):
                         record.admitted_bundle(root)
 
+    @unittest.skipUnless(all(os.getenv(name) for name in ("NGEN_SURVEY_FLIGHT_DEMO",
+                         "NGEN_SURVEY_FRIGATE", "NGEN_SURVEY_LANDMARK")),
+                         "Opt-in KDE Surveyors recorder integration")
+    def test_interactive_capture_finishes_on_close_and_at_the_time_limit(self):
+        for finish in ("window_closed", "time_limit"):
+            with self.subTest(finish=finish):
+                self.check_interactive_finish(finish)
+
+    def check_interactive_finish(self, finish):
+        executable = Path(os.environ["NGEN_SURVEY_FLIGHT_DEMO"]).resolve(strict=True)
+        with tempfile.TemporaryDirectory(prefix="survey-record-test-", dir=ROOT / "build") as directory:
+            output = Path(directory) / "recording"
+            logs = Path(directory) / "launcher.log"
+            with logs.open("wb") as log:
+                process = subprocess.Popen([sys.executable, str(ROOT / "tools/record_survey.py"),
+                    "--flight-demo", str(executable), "--frigate", os.environ["NGEN_SURVEY_FRIGATE"],
+                    "--landmark", os.environ["NGEN_SURVEY_LANDMARK"], "--output", str(output),
+                    "--seconds", "60" if finish == "window_closed" else "5"],
+                    stdout=log, stderr=subprocess.STDOUT)
+            try:
+                build_deadline = time.monotonic() + 215
+                while not output.is_dir() and time.monotonic() < build_deadline:
+                    self.assertIsNone(process.poll(), logs.read_text())
+                    time.sleep(.1)
+                self.assertTrue(output.is_dir(), "capture never completed native setup")
+                deadline = time.monotonic() + 55
+                status = output / "capture-status.json"
+                while time.monotonic() < deadline:
+                    if status.exists() and "RECORDING — play now" in logs.read_text():
+                        info = json.loads(status.read_text())
+                        break
+                    self.assertIsNone(process.poll(), logs.read_text())
+                    time.sleep(.1)
+                else:
+                    self.fail("interactive recorder did not report readiness\n" + logs.read_text())
+                pid = info["target_pid"]
+                self.assertEqual(record.owned_app_pid(process, executable), pid)
+                self.assertEqual(capture_window(info, pid)["pid"], pid)
+                if finish == "window_closed":
+                    time.sleep(1.5)
+                    with request_window_close(directory, info, pid):
+                        self.assertEqual(process.wait(timeout=20), 0, logs.read_text())
+                else:
+                    self.assertEqual(process.wait(timeout=35), 0, logs.read_text())
+                result = json.loads((output / "recording.json").read_text())
+                self.assertEqual(result["status"], "recorded")
+                self.assertEqual(result["finish_reason"], finish)
+                self.assertFalse(Path(f"/proc/{pid}").exists(), "Owned window survived finalization")
+                self.assertTrue((output / "recording.webm").is_file())
+                self.assertEqual([s["codec_type"] for s in result["media"]["streams"]], ["video"])
+                self.assertFalse((output / "charter/ngen-voyage.save").exists())
+            finally:
+                if process.poll() is None:
+                    process.terminate()
+                    process.wait(timeout=25)
+
     @unittest.skipUnless(os.getenv("NGEN_RECORDING_BUNDLE"), "Opt-in KDE/Pulse recorder integration")
-    def test_sigterm_retains_failure_metadata_and_reaps_the_owned_app(self):
-        for phase in ("startup", "recording"):
+    def test_legacy_recorder_rejects_interruption_and_early_window_close(self):
+        for phase in ("startup", "recording", "window-close"):
             with self.subTest(phase=phase), tempfile.TemporaryDirectory(prefix="record-cancel-", dir=ROOT / "build") as directory:
                 output = Path(directory) / "private"
                 with (Path(directory) / "stdout").open("wb") as stdout, (Path(directory) / "stderr").open("wb") as stderr:
@@ -104,14 +201,23 @@ class Recording(unittest.TestCase):
                             status = output / "capture-status.json"
                             if phase == "startup" and (output / "flight.txt").exists():
                                 break
-                            if phase == "recording" and status.exists() and json.loads(status.read_text()).get("state") == "recording":
-                                break
+                            if phase != "startup" and status.exists():
+                                info = json.loads(status.read_text())
+                                if info.get("state") == "recording":
+                                    break
                             self.assertIsNone(process.poll(), "Recorder exited before cancellation phase")
                             time.sleep(.01)
                         else:
                             self.fail("Recorder did not reach cancellation phase")
-                        process.send_signal(signal.SIGTERM)
-                        self.assertNotEqual(process.wait(timeout=30), 0)
+                        if phase == "window-close":
+                            executable = Path(os.environ["NGEN_RECORDING_BUNDLE"]).resolve() / "flight_demo"
+                            pid = record.owned_app_pid(process, executable)
+                            self.assertEqual(pid, info["target_pid"])
+                            with request_window_close(directory, info, pid):
+                                self.assertNotEqual(process.wait(timeout=30), 0)
+                        else:
+                            process.send_signal(signal.SIGTERM)
+                            self.assertNotEqual(process.wait(timeout=30), 0)
                         metadata = json.loads((output / "recording.json").read_text())
                         self.assertEqual(metadata["status"], "failed")
                         target = metadata["target_pid"]

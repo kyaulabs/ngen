@@ -62,7 +62,8 @@ class Capture final : public QObject, protected QDBusContext {
     Q_OBJECT
     Q_CLASSINFO("D-Bus Interface", "org.kyaulabs.NgenCapture")
     int pid_, seconds_, script_id_{-1};
-    QString output_, status_, plugin_, service_, kwin_owner_;
+    bool until_close_;
+    QString output_, status_, plugin_, service_, kwin_owner_, stop_reason_;
     QJsonObject window_;
     wl_display *display_{};
     wl_registry *registry_{};
@@ -81,6 +82,7 @@ class Capture final : public QObject, protected QDBusContext {
                          {"plugin", plugin_},
                          {"recording_started_ns", began_},
                          {"recording_stopped_ns", ended_},
+                         {"stop_reason", stop_reason_},
                          {"timestamp_ns", now_ns()},
                          {"system_audio", recorder_->recordSystemAudio()},
                          {"microphone", recorder_->recordMicrophone()},
@@ -100,11 +102,20 @@ class Capture final : public QObject, protected QDBusContext {
         report("failed", error.left(1024));
         QCoreApplication::exit(1);
     }
-    void stop() {
+    void complete() {
+        report(failed_ ? "failed" : "complete");
+        QCoreApplication::exit(failed_ ? 1 : 0);
+    }
+    void stop(const QString &reason) {
         if (stopping_)
             return;
         stopping_ = true;
+        stop_reason_ = reason;
         ended_ = now_ns();
+        if (recorder_->state() == PipeWireBaseEncodedStream::Idle) {
+            complete();
+            return;
+        }
         recorder_->stop();
         QTimer::singleShot(15000, this, [this] { fail("encoder shutdown deadline"); });
     }
@@ -112,11 +123,13 @@ class Capture final : public QObject, protected QDBusContext {
   public:
     struct Options {
         int pid{}, seconds{};
+        bool until_close{};
         QString output, status, plugin;
     };
     explicit Capture(Options options)
-        : pid_(options.pid), seconds_(options.seconds), output_(std::move(options.output)),
-          status_(std::move(options.status)), plugin_(std::move(options.plugin)),
+        : pid_(options.pid), seconds_(options.seconds), until_close_(options.until_close),
+          output_(std::move(options.output)), status_(std::move(options.status)),
+          plugin_(std::move(options.plugin)),
           service_("org.kyaulabs.NgenCapture.p" + QString::number(getpid())),
           recorder_(std::make_unique<PipeWireRecord>()) {}
     ~Capture() override {
@@ -186,10 +199,10 @@ class Capture final : public QObject, protected QDBusContext {
             if (recorder_->state() == PipeWireBaseEncodedStream::Recording && !began_) {
                 began_ = now_ns();
                 report("recording");
-                QTimer::singleShot(seconds_ * 1000, this, [this] { stop(); });
+                QTimer::singleShot(seconds_ * 1000, Qt::PreciseTimer, this,
+                                   [this] { stop("time_limit"); });
             } else if (stopping_ && recorder_->state() == PipeWireBaseEncodedStream::Idle) {
-                report(failed_ ? "failed" : "complete");
-                QCoreApplication::exit(failed_ ? 1 : 0);
+                complete();
             }
         });
         notifier_ =
@@ -262,7 +275,11 @@ reportOwned();
             cast_, identifier.constData(), ZKDE_SCREENCAST_UNSTABLE_V1_POINTER_HIDDEN);
         static const zkde_screencast_stream_unstable_v1_listener listener{
             [](void *data, zkde_screencast_stream_unstable_v1 *) {
-                static_cast<Capture *>(data)->fail("owned window stream closed");
+                auto &self = *static_cast<Capture *>(data);
+                if (self.until_close_ && self.began_)
+                    self.stop("window_closed");
+                else
+                    self.fail("owned window stream closed");
             },
             [](void *, zkde_screencast_stream_unstable_v1 *, std::uint32_t) {},
             [](void *data, zkde_screencast_stream_unstable_v1 *, const char *error) {
@@ -289,6 +306,7 @@ int main(int argc, char **argv) {
     parser.addHelpOption();
     parser.addOptions({{"pid", "Owned NGEN process", "pid"},
                        {"seconds", "Bounded recording seconds", "seconds"},
+                       {"until-close", "Complete when the owned window closes"},
                        {"output", "Fresh video path", "output"},
                        {"status", "Private status path", "status"},
                        {"script-name", "Owned temporary KWin script identifier", "name"}});
@@ -297,12 +315,14 @@ int main(int argc, char **argv) {
     const auto pid = parser.value("pid").toInt(&pid_ok);
     const auto seconds = parser.value("seconds").toInt(&seconds_ok);
     const auto output = parser.value("output"), status = parser.value("status");
-    if (!pid_ok || pid <= 0 || !seconds_ok || seconds < 1 || seconds > 90 || output.isEmpty() ||
-        status.isEmpty() || QFileInfo::exists(output) || QFileInfo::exists(status) ||
-        parser.value("script-name").isEmpty())
+    const bool until_close = parser.isSet("until-close");
+    if (!pid_ok || pid <= 0 || !seconds_ok || seconds < 1 || seconds > (until_close ? 1800 : 90) ||
+        output.isEmpty() || status.isEmpty() || QFileInfo::exists(output) ||
+        QFileInfo::exists(status) || parser.value("script-name").isEmpty())
         return 2;
     Capture capture({.pid = pid,
                      .seconds = seconds,
+                     .until_close = until_close,
                      .output = output,
                      .status = status,
                      .plugin = parser.value("script-name")});
