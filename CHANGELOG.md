@@ -1,4 +1,12 @@
 ## 📜 Changelog
+### [0.20.1](https://github.com/kyaulabs/ngen/releases/tag/v0.20.1)
+
+#### 🐛 Fixes
+
+- **tools:** Select clang for the recorder protocol build ([fb449eb](https://github.com/kyaulabs/ngen/commit/fb449eb5d27ea8c666f85d97e747926f666202ee))
+
+- **tools:** Select clang for the recorder protocol build (#172) ([b4cd91c](https://github.com/kyaulabs/ngen/commit/b4cd91c80328d7dd4ad2ac34ba6736509e9ae9b3))
+
 ### [0.20.0](https://github.com/kyaulabs/ngen/releases/tag/v0.20.0)
 
 #### 📝 Documentation
