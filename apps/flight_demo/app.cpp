@@ -1356,7 +1356,7 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
     };
     std::vector<Sample> samples(options.frames);
     std::size_t measured = 0, collected = 0;
-    Submission last;
+    Submission last_submission;
     std::array<std::pair<Submission, Submission>, 4> gpu_frames{};
     std::size_t gpu_cursor{};
     const auto collect = [&] {
@@ -1770,6 +1770,7 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
             if (!error || (error->message != "transfer contexts are busy" &&
                            error->message != "scene frame pins are busy")) {
                 mesh = take(std::move(result));
+                last_submission = mesh;
                 break;
             }
             require(SDL_GetTicks() - admission < 10000, "flight draw admission timed out");
@@ -1782,6 +1783,10 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
         while (!quit) {
             const auto result =
                 take(context->render_frame({color, 1, true, overlay ? &*overlay : nullptr, .04F}));
+            // An out-of-date present can still use GPU resources. Retirement
+            // follows submission order, not the last successfully queued frame.
+            if (result.resources.serial())
+                last_submission = result.resources;
             if (result.outcome == FrameOutcome::queued) {
                 if (options.soak_seconds || (options.frames && frame_index >= warmup))
                     queue_ns = static_cast<std::uint64_t>(
@@ -1799,7 +1804,6 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
                 }
                 if (landmark)
                     ++landmark_frames;
-                last = result.resources;
                 presented = true;
                 break;
             }
@@ -1825,7 +1829,7 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
             for (std::size_t i = 0; i < view.asteroids.size(); ++i)
                 saved.asteroids[i] = view.asteroids[i].model;
         }
-        gpu_frames[gpu_cursor] = {mesh, last};
+        gpu_frames[gpu_cursor] = {mesh, last_submission};
         gpu_cursor = (gpu_cursor + 1) % gpu_frames.size();
         if (performance.visible() && context->gpu_timings_available()) {
             metrics.gpu_ready = false;
@@ -1857,7 +1861,7 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
             sample.capture_requested = capture_requested;
             sample.capture_accepted = captured;
             sample.mesh = mesh;
-            sample.post = last;
+            sample.post = last_submission;
             sample.memory = metrics.memory;
             sample.extent = context->presentation_state().extent;
             sample.phase = phase;
@@ -1890,13 +1894,23 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
         ++frame_index;
     }
 #if defined(NGEN_FLIGHT_SURVEY)
+    const auto ended_soak_ms = soak_elapsed_ms();
+#endif
+    // Drain before reporting or rejecting an incomplete run. A close can
+    // interrupt the first frame after its mesh was submitted.
+    if (last_submission.serial()) {
+        wait(*context, last_submission);
+        collect();
+        require(take(renderer.collect(*context)) == 0, "flight scene pins did not retire");
+    }
+#if defined(NGEN_FLIGHT_SURVEY)
     if (survey) {
         survey->report(options.replay, landmark_frames);
         if (options.soak_seconds) {
             require(!quit, "B4 soak was cancelled");
             std::printf("b4_present,%llu,%u\n", static_cast<unsigned long long>(frame_index),
                         options.warmup);
-            survey->finish_soak(options.soak_seconds, soak_elapsed_ms());
+            survey->finish_soak(options.soak_seconds, ended_soak_ms);
         }
     }
 #endif
@@ -1929,11 +1943,6 @@ void run(const assets::PackagePin &package, const Preset &preset, const Options 
     const auto ui_allocations = options.frames ? gui->allocation_count() - ui_start : 0;
     require(!options.frames || measured == options.frames,
             "flight replay cancelled before its complete frame set");
-    if (frame_index) {
-        wait(*context, last);
-        collect();
-        require(take(renderer.collect(*context)) == 0, "flight scene pins did not retire");
-    }
     const auto memory = take(context->resource_statistics());
     std::size_t lit_pixels = 0;
     if (frame_index) {
