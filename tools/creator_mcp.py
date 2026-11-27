@@ -1,4 +1,4 @@
-"""Serve NGEN creator discovery and opt-in bounded edits over local stdio."""
+"""Serve NGEN creator discovery and separately granted local operations over stdio."""
 
 import argparse
 import fcntl
@@ -14,6 +14,7 @@ from mcp.server.mcpserver import MCPServer
 from mcp.types import ToolAnnotations
 
 import creator_jobs
+import creator_play_session
 import creator_scene
 import project
 
@@ -86,7 +87,28 @@ Token = Annotated[str, Field(max_length=32)]
 Revision = Annotated[str, Field(max_length=64)]
 
 
-def serve(directory: int, allow_edits: bool, jobs: creator_jobs.Runner | None) -> None:
+SceneRevision = Annotated[int, Field(ge=1, le=creator_scene.MAX_REVISION)]
+
+
+class StartPlaytest(BaseModel):
+    model_config = ConfigDict(extra="forbid", strict=True)
+    handle: Token
+    revision: SceneRevision
+
+
+class PlaytestRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid", strict=True)
+    handle: Token
+    session: Token
+    generation: int = Field(ge=1, le=creator_scene.MAX_REVISION)
+
+
+class ReloadPlaytest(PlaytestRequest):
+    revision: SceneRevision
+
+
+def serve(directory: int, allow_edits: bool, jobs: creator_jobs.Runner | None,
+          play: creator_play_session.Runner | None) -> None:
     granted_handle = secrets.token_hex(16)
     server = MCPServer("ngen-creator", subscriptions=False)
     read_only = ToolAnnotations(readOnlyHint=True, destructiveHint=False, openWorldHint=False)
@@ -200,6 +222,37 @@ def serve(directory: int, allow_edits: bool, jobs: creator_jobs.Runner | None) -
                 return creator_jobs.denied("unknown_project")
             return jobs.status(job, cancel=True)
 
+    if play is not None:
+        play_write = ToolAnnotations(readOnlyHint=False, destructiveHint=False, openWorldHint=False)
+
+        @server.tool(annotations=play_write)
+        def start_playtest(request: StartPlaytest) -> creator_play_session.Reply:
+            """Start the one granted board playtest at a saved scene revision."""
+            if request.handle != granted_handle:
+                return creator_play_session.denied("unknown_project")
+            return play.start(request.revision)
+
+        @server.tool(annotations=read_only)
+        def inspect_playtest(request: PlaytestRequest) -> creator_play_session.Reply:
+            """Inspect the active generation of this process's owned board playtest."""
+            if request.handle != granted_handle:
+                return creator_play_session.denied("unknown_project")
+            return play.command(request.session, request.generation, "inspect")
+
+        @server.tool(annotations=play_write)
+        def reload_playtest(request: ReloadPlaytest) -> creator_play_session.Reply:
+            """Advance the owned playtest to a newer saved board revision."""
+            if request.handle != granted_handle:
+                return creator_play_session.denied("unknown_project")
+            return play.command(request.session, request.generation, "reload", request.revision)
+
+        @server.tool(annotations=play_write)
+        def stop_playtest(request: PlaytestRequest) -> creator_play_session.Reply:
+            """Stop and reap this process's owned board playtest."""
+            if request.handle != granted_handle:
+                return creator_play_session.denied("unknown_project")
+            return play.command(request.session, request.generation, "stop")
+
     server.run(transport="stdio")
 
 
@@ -212,6 +265,9 @@ def main() -> None:
     parser.add_argument("--job-tools", type=Path, help="audited directory with assetc, ktx and probe")
     parser.add_argument("--job-output", type=Path, help="existing directory for local source archives")
     parser.add_argument("--job-seconds", type=int, help="job deadline, 1–90 seconds (default: 90)")
+    parser.add_argument("--allow-play", action="store_true", help="grant one isolated board playtest")
+    for name in creator_play_session.TOOLS:
+        parser.add_argument(f"--play-{name}", type=Path, help=f"trusted absolute board tool path: {name}")
     args = parser.parse_args()
     if not args.project.is_absolute():
         parser.error("--project requires an absolute directory")
@@ -219,7 +275,7 @@ def main() -> None:
         directory = os.open(args.project, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW)
     except OSError:
         parser.error("could not open the granted project directory")
-    jobs = None
+    jobs = play = None
     try:
         profile = (args.job_sdk, args.job_tools, args.job_output)
         if args.allow_jobs:
@@ -232,11 +288,27 @@ def main() -> None:
                 parser.error("could not establish the local creator job profile")
         elif any(profile) or args.job_seconds is not None:
             parser.error("job profile options require --allow-jobs")
-        serve(directory, args.allow_edits, jobs)
+        tools = {name: getattr(args, f"play_{name}") for name in creator_play_session.TOOLS}
+        if args.allow_play:
+            if not all(tools.values()):
+                parser.error("--allow-play requires all four --play-* tool paths")
+            try:
+                play = creator_play_session.Runner(directory, tools)
+            except (OSError, ValueError):
+                parser.error("could not establish the local board playtest profile")
+        elif any(tools.values()):
+            parser.error("board playtest tool paths require --allow-play")
+        serve(directory, args.allow_edits, jobs, play)
     finally:
-        if jobs is not None:
-            jobs.close()
-        os.close(directory)
+        try:
+            if play is not None:
+                play.close()
+        finally:
+            try:
+                if jobs is not None:
+                    jobs.close()
+            finally:
+                os.close(directory)
 
 
 if __name__ == "__main__":
