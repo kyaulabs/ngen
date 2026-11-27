@@ -1,0 +1,11 @@
+# C1-F creator acceptance
+
+The owner accepted a separate Pi session as the C1-F developer walkthrough. This is evidence from a fresh workspace and a separate agent (`gpt-6.2-astra`), not independent human sign-off. It does not supply the separate M5 gameplay/economy review.
+
+The walkthrough verified the public v0.21.0 source archive against its published checksums, then used its bundled guides on Arch Linux x86-64. It used a new Python environment, an initially empty Conan cache, a separate SDK prefix and no display. The pinned executables were Clang 23.1.4, Conan 2.34.0, CMake/CTest 4.4.5 and Ninja 1.13.2, with Python 3.14.10 and GCC 16.2.1 libstdc++. This was not a new OS install or a Windows test.
+
+The developer created the non-space board, cooked its public marker and ran the baseline 42 mm move. They changed only the project's `main.cpp`; after rebuild the native test passed and the simulation reported a 64 mm move. The source package contained six regular files: manifest, CMake file, modified C++ source, marker, original license and exported scene. A fresh recipient validated the extracted project, recooked it, built it against the installed SDK, passed its test and reproduced 64 mm. No private assets, binaries or cooked output were packaged. No engine files changed.
+
+The published setup had two usability blockers: it installed a Ninja wheel whose executable version failed the strict guard, and it sent readers to stale or proposed setup instructions. [PR #181](https://github.com/kyaulabs/ngen/pull/181) documents the verified native Ninja archive and links to the setup in the same source version. On fixed `0da716f`, the separate session created another fresh venv and empty Conan cache, verified the archive hash and executable on `PATH`, and completed `prepare.sh asset-release` without a workaround. That retest stopped at the generated Conan toolchain. The implementing session separately ran both sample projects through build, test, execution and source packaging under the corrected instructions; it did not substitute for the separate session's board walkthrough.
+
+The report, logs and modified board package remain local. This accepts only the documented source-built creator workflow and packaged headless non-space sample; it does not claim a stable binary ABI, graphical creator acceptance, or MCP playtest authority.
