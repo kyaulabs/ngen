@@ -54,8 +54,9 @@ class CreatorProject(unittest.TestCase):
 
     @unittest.skipUnless(os.environ.get("NGEN_PLAY_SANDBOX_TEST"), "requires Linux bubblewrap")
     def test_owned_play_reports_a_checked_board_snapshot_and_stops(self):
-        board = {"asset": "marker.glb", "transform": {**IDENTITY, "position_m": [1, 0, 0]}}
-        self.scene_ok("edit", revision=0, edit={"board": board})
+        layout = (ROOT / "samples/board/layout.json").read_text(encoding="utf-8")
+        result = command("scene", "edit", self.project, "--expect", 0, payload=layout)
+        self.assertEqual(result.returncode, 0, result.stderr)
         result = subprocess.run(play_args(self.project, 1), capture_output=True, text=True,
                                 input='{"op":"inspect"}\n{"op":"stop"}\n', timeout=30)
         self.assertEqual(result.returncode, 0, result.stderr)
@@ -313,15 +314,8 @@ class CreatorProject(unittest.TestCase):
 
     @unittest.skipUnless(os.environ.get("NGEN_STARTER_BUILD"), "requires the built asset SDK and cooker graph")
     def test_fresh_source_archive_builds_cooks_tests_and_runs(self):
-        def run(*args, success=True):
-            result = subprocess.run(list(map(str, args)), capture_output=True, text=True, timeout=60)
-            self.assertEqual(result.returncode == 0, success, result.stdout + result.stderr)
-            return result
-
-        build = Path(os.environ["NGEN_STARTER_BUILD"])
-        configuration = os.environ["NGEN_STARTER_CONFIG"]
-        prefix = self.root / "engine prefix"
-        run("cmake", "--install", build, "--config", configuration, "--prefix", prefix)
+        run = self.native
+        prefix = self.install_sdk()
         (self.project / "asset-board.glb").write_bytes((self.project / "marker.glb").read_bytes())
         entity = {"transform": IDENTITY, "asset": "asset-board.glb"}
         self.scene_ok("edit", revision=0, edit={"board": entity})
@@ -339,11 +333,7 @@ class CreatorProject(unittest.TestCase):
         report = json.loads(run(os.environ["NGEN_ASSETC_EXE"], "inspect", asset).stdout)
         self.assertEqual(report["triangles"], 1)
 
-        def cook(src, output, success=True):
-            return run(sys.executable, ROOT / "tools/assetc/cook.py", "--assetc", os.environ["NGEN_ASSETC_EXE"],
-                       "--ktx", os.environ["NGEN_KTX_EXE"], "--probe", os.environ["NGEN_PACKAGE_PROBE"],
-                       "--source", src, "--output", output, success=success)
-
+        cook = self.cook
         cooked = self.root / "cooked board"
         scene = cooked / "scene.ngas"
         cook(asset, cooked)
@@ -357,19 +347,59 @@ class CreatorProject(unittest.TestCase):
         cook(project / "marker.glb", cooked, success=False)
         self.assertEqual(scene.read_bytes(), expected)
 
-        obj = self.root / "consumer build"
-        run("cmake", "-S", project, "-B", obj, "-G", "Ninja", f"-DCMAKE_BUILD_TYPE={configuration}",
-            f"-DCMAKE_TOOLCHAIN_FILE={os.environ['NGEN_STARTER_TOOLCHAIN']}",
-            # Conan can put the producer directory ahead of the install prefix.
-            f"-DCMAKE_PREFIX_PATH={build};{prefix}", f"-DNGEN_STARTER_SCENE={scene}")
-        run("cmake", "--build", obj, "--parallel", "2")
-        run("ctest", "--test-dir", obj, "--output-on-failure", "--no-tests=error")
+        obj = self.build_sample(project, prefix, scene)
         self.assertIn("piece moved 42 mm", run(obj / "ngen_starter", scene).stdout)
         scene.write_bytes(b"bad package")
         self.assertIn("scene:", run(obj / "ngen_starter", scene, success=False).stderr)
         (project / "main.cpp").write_text('#error controlled starter build failure\n', encoding="utf-8")
         self.assertIn("controlled starter build failure", run("cmake", "--build", obj, success=False).stdout)
         self.assertEqual(archive.read_bytes(), original)
+
+
+    def native(self, *args, success=True):
+        result = subprocess.run(list(map(str, args)), capture_output=True, text=True, timeout=60)
+        self.assertEqual(result.returncode == 0, success, result.stdout + result.stderr)
+        return result
+
+    def install_sdk(self):
+        prefix = self.root / "engine prefix"
+        self.native("cmake", "--install", os.environ["NGEN_STARTER_BUILD"],
+                    "--config", os.environ["NGEN_STARTER_CONFIG"], "--prefix", prefix)
+        return prefix
+
+    def cook(self, source, output, *, success=True):
+        return self.native(sys.executable, ROOT / "tools/assetc/cook.py",
+                           "--assetc", os.environ["NGEN_ASSETC_EXE"], "--ktx", os.environ["NGEN_KTX_EXE"],
+                           "--probe", os.environ["NGEN_PACKAGE_PROBE"], "--source", source, "--output", output,
+                           success=success)
+
+    def build_sample(self, project, prefix, scene):
+        obj = self.root / "consumer build"
+        self.native("cmake", "-S", project, "-B", obj, "-G", "Ninja",
+                    f"-DCMAKE_BUILD_TYPE={os.environ['NGEN_STARTER_CONFIG']}",
+                    f"-DCMAKE_TOOLCHAIN_FILE={os.environ['NGEN_STARTER_TOOLCHAIN']}",
+                    f"-DCMAKE_PREFIX_PATH={prefix}", f"-DNGEN_STARTER_SCENE={scene}")
+        self.native("cmake", "--build", obj, "--parallel", "2")
+        self.native("ctest", "--test-dir", obj, "--output-on-failure", "--no-tests=error")
+        return obj
+
+    @unittest.skipUnless(os.environ.get("NGEN_STARTER_BUILD"), "requires the built asset SDK and cooker graph")
+    def test_space_sample_rebuilds_and_runs_from_source_package(self):
+        prefix = self.install_sdk()
+        (self.project / "main.cpp").write_bytes((ROOT / "samples/docking/main.cpp").read_bytes())
+        archive = self.root / "docking.tar.gz"
+        self.native(sys.executable, CLI, "package", self.project, "--output", archive)
+        with tarfile.open(archive) as source:
+            source.extractall(self.root / "unpacked", filter="data")
+        project = self.root / "unpacked" / "starter"
+        self.native(sys.executable, CLI, "validate", project)
+        cooked = self.root / "cooked"
+        self.cook(project / "marker.glb", cooked)
+        scene = cooked / "scene.ngas"
+        obj = self.build_sample(project, prefix, scene)
+        result = self.native(obj / "ngen_starter", scene)
+        self.assertEqual(result.stdout.splitlines(),
+                         ["Tick 1: approach at 125 mm.", "Tick 2: docked at 200 mm."])
 
 
 if __name__ == "__main__":

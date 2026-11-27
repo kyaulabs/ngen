@@ -25,8 +25,8 @@ engine, game or MCP implementation.
 | Field | Value |
 |---|---|
 | Last verified step | **18 — [M5-F #21](https://github.com/kyaulabs/ngen/issues/21)**; saved headless Surveyors campaign. |
-| Next gate | **M5 integrated acceptance after step 18**; one-hour offline loop, invariant and recovery evidence, independent review, and recorded owner playthrough. |
-| Next numbered step | **19 — [C1-E #75](https://github.com/kyaulabs/ngen/issues/75)**; redistributable space/non-space samples and SDK documentation. |
+| Open gate | **M5 integrated acceptance**; the B4 technical gate and recorded owner playthrough with reload are verified. The independent gameplay/economy review is pending. |
+| Active numbered step | **19 — [C1-E #75](https://github.com/kyaulabs/ngen/issues/75)**; redistributable space/non-space samples and SDK documentation. |
 | Optional selections | M11 features and M12 settlement are not selected by this schedule. |
 
 Resume request: **“Read `docs/planning/execution-order.md` and continue from the
@@ -125,9 +125,14 @@ unrestricted shell, live shard or implicit network/spending/publication grant.
 gates and recorded owner playthrough. The [windowed voyage checkpoint](../evidence/M5/windowed-voyage.md)
 uses live controls and a streamed frontier landmark over the
 [saved native voyage](../evidence/M5/saved-voyage.md). The [one-hour B4 result](../evidence/M5/b4-soak-results.md)
-met the flight, memory and separate market-latency budgets. Independent
-gameplay/economy review and the recorded owner playthrough still gate M5.
-Teaching security rules is not a substitute for M8 enforcement.
+met the flight, memory and separate market-latency budgets. The owner playthrough
+and reload were verified locally; the recordings and save are not published.
+The independent gameplay/economy review still gates M5. Teaching security
+rules is not a substitute for M8 enforcement.
+
+**Sequencing exception:** The owner authorized step 19 while that review is
+pending. C1-E depends on C1-A–D, not M5 acceptance. This does not waive the
+review or permit step 22a or runnable multiplayer work.
 **After 20:** accept the independently used C1 workflow and supported sample/package
 results. **After 22:** accept C2's real protocol/authoring/build/play and abuse/cleanup
 checks. A scripted MCP client is protocol evidence, not fabricated AI-host usage.

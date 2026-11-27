@@ -1,0 +1,10 @@
+{
+  "board": {
+    "asset": "marker.glb",
+    "transform": {
+      "position_m": [1, 0, 0],
+      "rotation_xyzw": [0, 0, 0, 1],
+      "scale": [1, 1, 1]
+    }
+  }
+}
