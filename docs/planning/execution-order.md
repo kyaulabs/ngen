@@ -24,9 +24,9 @@ engine, game or MCP implementation.
 
 | Field | Value |
 |---|---|
-| Last verified step | **20 — [C1-F #76](https://github.com/kyaulabs/ngen/issues/76)**; [separate creator walkthrough](../evidence/C1/creator-acceptance.md). |
+| Last verified step | **21 — [C2-D #80](https://github.com/kyaulabs/ngen/issues/80)**; [owned board playtest](../evidence/C2/owned-playtest.md). |
 | Open gate | **M5 integrated acceptance**; the B4 technical gate and recorded owner playthrough with reload are verified. The independent gameplay/economy review is pending. |
-| Next numbered step | **21 — [C2-D #80](https://github.com/kyaulabs/ngen/issues/80)**; owned playtest control, subject to the separate authority and isolation entry gate. |
+| Next numbered step | **22 — [C2-E #81](https://github.com/kyaulabs/ngen/issues/81)**; integrated creator workflow and abuse containment over real MCP. |
 | Optional selections | M11 features and M12 settlement are not selected by this schedule. |
 
 Resume request: **“Read `docs/planning/execution-order.md` and continue from the
@@ -114,7 +114,7 @@ validation path or a shortcut to host/production authority.
 | 18 | [x] | [M5-F #21](https://github.com/kyaulabs/ngen/issues/21) | Run and save one bounded first-party faction/career quest through the playable loop. |
 | 19 | [x] | [C1-E #75](https://github.com/kyaulabs/ngen/issues/75) | Publish redistributable space/non-space samples and task-oriented SDK documentation. |
 | 20 | [x] | [C1-F #76](https://github.com/kyaulabs/ngen/issues/76) | Accept an independently used creator workflow and packaged non-space game. |
-| 21 | [ ] | [C2-D #80](https://github.com/kyaulabs/ngen/issues/80) | Inspect/control only an owned development playtest. |
+| 21 | [x] | [C2-D #80](https://github.com/kyaulabs/ngen/issues/80) | Inspect/control only an owned development playtest. |
 | 22 | [ ] | [C2-E #81](https://github.com/kyaulabs/ngen/issues/81) | Prove game creation and abuse containment through real MCP messages. |
 | 22a | [ ] | [M6 handoff #131](https://github.com/kyaulabs/ngen/issues/131) | Start runnable Space MMO development in its own repo against a pinned NGEN release. |
 
@@ -325,5 +325,6 @@ work advances. Do not use this log instead of the issue's complete acceptance.
 | 18 — M5-F | [PR #158](https://github.com/kyaulabs/ngen/pull/158); [saved Surveyors evidence](../evidence/M5/saved-survey.md) | Both headless routes kept ore and credits conserved on loss, recovery, sale and replay. See [integration CPU](https://github.com/kyaulabs/ngen/actions/runs/45542583248). This checkpoint was headless; see the integrated gate above for current status. |
 | 19 — C1-E | [PR #178](https://github.com/kyaulabs/ngen/pull/178); [sample guide](../../samples/README.md) | Both samples built and ran against an installed SDK and packaged their public sources, marker and license. The board layout passed owned play. [Integration CPU](https://github.com/kyaulabs/ngen/actions/runs/45917255343) passed 4/4. |
 | 20 — C1-F | [Creator acceptance](../evidence/C1/creator-acceptance.md); [bootstrap fix #181](https://github.com/kyaulabs/ngen/pull/181) | A separate, owner-approved Pi walkthrough reproduced the modified 64 mm board from its source package and verified the corrected toolchain setup in a fresh checkout and empty Conan cache. No independent human or M5 sign-off is claimed. |
+| 21 — C2-D | [PR #184](https://github.com/kyaulabs/ngen/pull/184); [owned playtest evidence](../evidence/C2/owned-playtest.md) | Separate board-only grant exercised start, inspect, reload and stop over stdio. Stale/foreign sessions were denied and teardown left the other client running. [Integration CPU](https://github.com/kyaulabs/ngen/actions/runs/46051254950) passed 4/4. No live control or full C2 acceptance. |
 
 [board]: https://github.com/orgs/kyaulabs/projects/4/views/3

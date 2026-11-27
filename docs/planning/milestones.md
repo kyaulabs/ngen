@@ -14,7 +14,7 @@ M1–M4 are accepted at their declared scope. M5's [windowed Surveyors soak](../
 | M11 | Optional selected graphics; individual benefit/platform/content gates remain. Creator tooling is mandatory C1/C2, not an optional visual feature. |
 | M12 | Optional settlement; separate legal/security/custody and explicit execution/release permission required. |
 | C1 | Source-built SDK, starter, authoring, owned play/reload and both redistributable samples accepted at the documented Linux scope. See the [separate creator walkthrough](../evidence/C1/creator-acceptance.md). |
-| C2 | Local discovery, scoped authoring and isolated jobs verified. Owned MCP playtest control and full workflow acceptance remain open. |
+| C2 | Local discovery, scoped authoring, isolated jobs and owned board playtest verified. Integrated workflow acceptance remains open. |
 
 The initial revised [NGEN kanban](https://github.com/orgs/kyaulabs/projects/4/views/3) contained **67 atomic issues and 67 unique cards across twelve milestones**. M4 now also includes particles (#97) and GPU motion vectors (#98). Eleven issues and two milestones were added; C1-D reuses former M11-F issue #55. [The tracker index](github-tracker.md) links every task and the immutable source revision. Original issue/card IDs, labels, assignees and states were preserved; milestones remain undated and issues unassigned. Historical M0–M3 evidence remains intact. Cards authorize no implementation, spending or deployment.
 
