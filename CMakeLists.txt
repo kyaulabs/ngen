@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.28)
-project(NGEN VERSION 0.20.2 LANGUAGES CXX)
+project(NGEN VERSION 0.21.0 LANGUAGES CXX)
 include(CTest)
 find_package(enkiTS CONFIG REQUIRED)
 find_package(Threads REQUIRED)
