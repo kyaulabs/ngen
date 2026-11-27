@@ -1,6 +1,6 @@
 # Creator MCP
 
-The optional Linux companion serves one locally granted starter project over stdio. It is read-only by default and does not install with the engine SDK or listen on the network. It cannot read arbitrary paths or start playtests. A separate launcher grant enables bounded offline jobs on a supported Linux host.
+The optional Linux companion serves one locally granted starter project over stdio. It is read-only by default and does not install with the engine SDK or listen on the network. It cannot read arbitrary paths. Separate launcher grants enable bounded editing, offline jobs, or an owned board playtest on a supported Linux host.
 
 ```sh
 python3 -m venv .venv-mcp
@@ -39,6 +39,34 @@ The adapter does not edit CMake files, write assets or active snapshots, or comp
 ## Opt-in offline jobs
 
 See the [creator jobs guide](creator-jobs.md) for the separate `--allow-jobs` grant, host prerequisites, fixed job operations, and cancellation. `--allow-edits` does not grant execution, and a job grant does not grant edits or playtest control.
+
+## Opt-in board playtest
+
+Use the existing [headless board playtest](creator-play.md) tools and Linux Bubblewrap prerequisites. Add `--allow-play` and provide trusted, absolute executable paths outside the granted project:
+
+```sh
+.venv-mcp/bin/python tools/creator_mcp.py --project /absolute/path/to/board \
+  --allow-play --play-assetc /absolute/path/to/assetc \
+  --play-ktx /absolute/path/to/ktx --play-probe /absolute/path/to/asset_package_probe \
+  --play-player /absolute/path/to/creator_player
+```
+
+The tools are not exposed without this grant. Neither `--allow-edits` nor `--allow-jobs` grants play; `--allow-play` does not grant those operations. The launcher must trust the checkout, executable inputs and host. The client cannot select a path, PID, binary, script, flight session or server. The board runtime uses staged scene data, not the project's C++ or CMake code. There is no unsandboxed fallback.
+
+Send each tool's arguments in `request`, using the project `handle` from `list_projects`:
+
+| Tool | Other request fields | Effect |
+|---|---|---|
+| `start_playtest` | `revision` | Start one board at the specified saved scene revision. Return an opaque `session` and generation 1. |
+| `inspect_playtest` | `session`, `generation` | Read a snapshot of the current board without applying saved edits. |
+| `reload_playtest` | `session`, `generation`, `revision` | Run the same checked board tick on a newer saved revision. Rejected scene data leaves the accepted snapshot active. |
+| `stop_playtest` | `session`, `generation` | Stop and reap the owned playtest. The handle cannot be reused. |
+
+Revisions and generations are JSON integers. A successful snapshot contains `generation`, `revision`, `tick`, `marker_mm`, `instances` and `asset_cooks`. The client sends the current generation back for each operation. Unknown projects/sessions, a stale generation and a second active start are denied. Invalid scene or cook inputs report `play_start_failed` or `play_rejected`; use the local CLI for detailed diagnostics. The MCP response does not forward worker logs, paths or project content.
+
+The companion admits one operation at a time and rejects overlap as `play_busy`. It reuses the CLI's 60-second cook deadline, 10-second native reply deadline, 300-second idle limit and 128-command budget. Closing stdio requests normal shutdown after any admitted operation. A failed retirement is not reported as stopped. The native sandbox has a cleared environment and private network/process namespaces. This is not a general untrusted-code service or a wall-clock guarantee for blocked host I/O. No signals are addressed by client input.
+
+To exercise the real play tools along with the default stdio suite, set `NGEN_MCP_PLAY_BUILD` to the absolute asset build directory and `NGEN_MCP_PLAY_KTX` to its configured KTX executable. Without those inputs the optional native play cases are skipped.
 
 The [official Python MCP SDK 2.3.0](https://github.com/modelcontextprotocol/python-sdk/releases/tag/v2.3.0) handles stdio and negotiation. The integration tests use revision `2026-07-28`. A separate SDK-only probe exercised `2025-11-25` over stdio; this is not a claim about any particular MCP host.
 

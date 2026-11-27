@@ -123,6 +123,19 @@ local archive, and it never runs project code. There is no dependency download,
 public release, shell access or playtest authority. The broader ADR is still
 Proposed.
 
+## C2-D review scope
+
+The owner authorized an opt-in MCP grant for the existing sandboxed board
+playtest only. Start, inspect, reload and stop use one launcher-selected project
+and process-local session/generation checks. A helper uses the existing CLI
+play logic with an independently opened description of the granted directory.
+Only trusted launcher-selected tools run; the native worker and cooker retain
+C1-D's private Bubblewrap staging and cleared environment. The launcher never
+accepts an attach target or executes project C++/CMake code. There is no cgroup
+job grant or automatic play grant from edit/job authority, and no live server,
+flagship runtime, arbitrary command or publication authority. ADR status stays
+Proposed.
+
 ## Evidence
 
 [Creator scope and acceptance](../planning/creator-toolchain.md), the current

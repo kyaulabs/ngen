@@ -19,6 +19,24 @@ from mcp.client import Client
 ROOT = Path(__file__).resolve().parents[1]
 SESSION_TIMEOUT = 30
 REQUEST_TIMEOUT = 12
+PLAY_BUILD = os.environ.get('NGEN_MCP_PLAY_BUILD')
+PLAY_KTX = os.environ.get('NGEN_MCP_PLAY_KTX')
+
+
+def board_transport(board, *extra, env=None):
+    build = Path(PLAY_BUILD)
+    return StdioServerParameters(command=sys.executable, args=[
+        str(ROOT / 'tools/creator_mcp.py'), '--project', str(board), '--allow-play',
+        '--play-assetc', str(build / 'assetc'), '--play-ktx', PLAY_KTX,
+        '--play-probe', str(build / 'asset_package_probe'),
+        '--play-player', str(build / 'creator_player'), *extra], env=env)
+
+
+def new_board(board):
+    cli = [sys.executable, ROOT / 'tools/project.py']
+    subprocess.run([*cli, 'new', board, '--name', 'play-board'], check=True, capture_output=True)
+    subprocess.run([*cli, 'scene', 'edit', board, '--expect', '0'], check=True, capture_output=True,
+                   input=(ROOT / 'samples/board/layout.json').read_bytes())
 
 
 class CreatorMcp(unittest.IsolatedAsyncioTestCase):
@@ -44,6 +62,7 @@ class CreatorMcp(unittest.IsolatedAsyncioTestCase):
                     self.assertTrue(tools['inspect_project'].annotations.read_only_hint)
                     self.assertTrue((await client.call_tool('edit_project', {'request': {}})).is_error)
                     self.assertTrue((await client.call_tool('start_job', {})).is_error)
+                    self.assertTrue((await client.call_tool('start_playtest', {})).is_error)
                     self.assertFalse((board / 'ngen-scene.json').exists())
                     listed = (await client.call_tool('list_projects', {})).structured_content
                     handle, = listed['handles']
@@ -51,6 +70,147 @@ class CreatorMcp(unittest.IsolatedAsyncioTestCase):
                     self.assertEqual(response.structured_content, {
                         'ok': True, 'project': {'name': 'test-board', 'schema': 1},
                         'scene': {'revision': 0, 'entities': 0, 'assets': []}, 'error': None})
+
+    @unittest.skipUnless(PLAY_BUILD and PLAY_KTX, 'requires Linux bubblewrap and the board tools')
+    async def test_granted_playtest_starts_checked_board(self):
+        with tempfile.TemporaryDirectory() as temp:
+            board = Path(temp) / 'board'
+            new_board(board)
+            # The grant plays scene data, never the project's source.
+            (board / 'main.cpp').write_text('#error must not run or build project code\n')
+            async with asyncio.timeout(SESSION_TIMEOUT):
+                async with Client(board_transport(board), mode='2026-07-28',
+                                  read_timeout_seconds=REQUEST_TIMEOUT) as client:
+                    handle, = (await client.call_tool('list_projects', {})).structured_content['handles']
+                    tools = {tool.name for tool in (await client.list_tools()).tools}
+                    self.assertEqual(tools, {'list_projects', 'inspect_project', 'start_playtest', 'inspect_playtest',
+                                             'reload_playtest', 'stop_playtest'})
+
+                    async def start(**changes):
+                        return await client.call_tool('start_playtest', {
+                            'request': {'handle': handle, 'revision': 1, **changes}})
+
+                    for rejected in ({'pid': os.getpid()}, {'target': 'production'}, {'path': str(board)},
+                                     {'revision': True}, {'revision': '1'}):
+                        self.assertTrue((await start(**rejected)).is_error)
+                    self.assertEqual((await start(handle='another-project')).structured_content['error'],
+                                     'unknown_project')
+                    self.assertEqual((await start(revision=2)).structured_content['error'], 'play_start_failed')
+                    response = await start()
+                    self.assertFalse(response.is_error, response.content)
+                    started = response.structured_content
+                    self.assertTrue(started['ok'], started)
+                    self.assertRegex(started['session'], r'^[0-9a-f]{32}$')
+                    self.assertEqual(started['snapshot'], {'generation': 1, 'revision': 1, 'tick': 1,
+                                                           'marker_mm': 1042, 'instances': 1, 'asset_cooks': 1})
+                    self.assertEqual((await start()).structured_content['error'], 'play_busy')
+
+    @unittest.skipUnless(PLAY_BUILD and PLAY_KTX, 'requires Linux bubblewrap and the board tools')
+    async def test_playtest_inspects_and_reloads_only_a_new_saved_revision(self):
+        with tempfile.TemporaryDirectory() as temp:
+            board = Path(temp) / 'board'
+            new_board(board)
+            async with asyncio.timeout(SESSION_TIMEOUT):
+                async with Client(board_transport(board), mode='2026-07-28',
+                                  read_timeout_seconds=REQUEST_TIMEOUT) as client:
+                    handle, = (await client.call_tool('list_projects', {})).structured_content['handles']
+
+                    async def call(tool, **request):
+                        result = await client.call_tool(tool, {'request': {'handle': handle, **request}})
+                        self.assertFalse(result.is_error, result.content)
+                        return result.structured_content
+
+                    first = await call('start_playtest', revision=1)
+                    owned = {'session': first['session'], 'generation': 1}
+                    self.assertEqual(await call('inspect_playtest', **owned), first)
+                    layout = json.loads((ROOT / 'samples/board/layout.json').read_bytes())
+                    layout['board']['transform']['position_m'][0] = 3
+                    subprocess.run([sys.executable, ROOT / 'tools/project.py', 'scene', 'edit', board,
+                                    '--expect', '1'], capture_output=True, check=True, input=json.dumps(layout).encode())
+                    self.assertEqual(await call('inspect_playtest', **owned), first)
+                    rejected = await call('reload_playtest', revision=3, **owned)
+                    self.assertFalse(rejected['ok'], rejected)
+                    self.assertEqual(await call('inspect_playtest', **owned), first)
+                    second = await call('reload_playtest', revision=2, **owned)
+                    self.assertEqual(second['snapshot'], {**first['snapshot'], 'generation': 2,
+                                                         'revision': 2, 'marker_mm': 3042})
+                    self.assertEqual((await call('inspect_playtest', **owned))['error'], 'stale_generation')
+                    self.assertEqual(await call('inspect_playtest', **(owned | {'generation': 2})), second)
+
+    @unittest.skipUnless(PLAY_BUILD and PLAY_KTX, 'requires Linux bubblewrap and the board tools')
+    async def test_playtest_stop_retires_only_its_own_session(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            board, scratch = root / 'board', root / 'stage'
+            new_board(board)
+            scratch.mkdir()
+            transport = board_transport(board, env={'TMPDIR': str(scratch)})
+            async with asyncio.timeout(SESSION_TIMEOUT):
+                async with Client(transport, mode='2026-07-28', read_timeout_seconds=REQUEST_TIMEOUT) as client:
+                    async with Client(transport, mode='2026-07-28', read_timeout_seconds=REQUEST_TIMEOUT) as foreign:
+                        async def start(peer):
+                            handle, = (await peer.call_tool('list_projects', {})).structured_content['handles']
+                            result = await peer.call_tool('start_playtest', {'request': {'handle': handle, 'revision': 1}})
+                            self.assertTrue(result.structured_content['ok'], result.content)
+                            return {'handle': handle, 'session': result.structured_content['session'], 'generation': 1}
+
+                        async def command(peer, tool, request):
+                            result = await peer.call_tool(tool, {'request': request})
+                            self.assertFalse(result.is_error, result.content)
+                            return result.structured_content
+
+                        primary, other = await start(client), await start(foreign)
+                        both = list(scratch.iterdir())
+                        self.assertEqual(len(both), 2)
+                        self.assertEqual((await command(client, 'stop_playtest', primary | {'session': other['session']}))
+                                         ['error'], 'unknown_session')
+                        self.assertEqual((await command(client, 'stop_playtest', primary | {'generation': 2}))
+                                         ['error'], 'stale_generation')
+                        stopped = await command(client, 'stop_playtest', primary)
+                        self.assertTrue(stopped['stopped'], stopped)
+                        self.assertEqual(len(list(scratch.iterdir())), 1)
+                        self.assertTrue((await command(foreign, 'inspect_playtest', other))['ok'])
+                        replacement = await start(client)
+                        self.assertNotEqual(replacement['session'], primary['session'])
+                        self.assertEqual((await command(client, 'inspect_playtest', primary))['error'], 'unknown_session')
+                self.assertEqual(list(scratch.iterdir()), [])  # EOF retired both remaining owned workers.
+
+    @unittest.skipUnless(PLAY_BUILD and PLAY_KTX, 'requires Linux bubblewrap and the board tools')
+    async def test_playtest_uses_the_granted_directory_after_rename(self):
+        with tempfile.TemporaryDirectory() as temp:
+            board, moved = Path(temp) / 'board', Path(temp) / 'moved'
+            new_board(board)
+            async with asyncio.timeout(SESSION_TIMEOUT):
+                async with Client(board_transport(board), mode='2026-07-28',
+                                  read_timeout_seconds=REQUEST_TIMEOUT) as client:
+                    handle, = (await client.call_tool('list_projects', {})).structured_content['handles']
+                    board.rename(moved)
+                    new_board(board)
+                    (board / 'marker.glb').unlink()  # The new path is not the granted project.
+                    first = await client.call_tool('start_playtest', {'request': {'handle': handle, 'revision': 1}})
+                    self.assertTrue(first.structured_content['ok'], first.content)
+                    self.assertEqual(first.structured_content['snapshot']['marker_mm'], 1042)
+                    with directory_lock(moved):  # The CLI captured the scene without retaining its read lock.
+                        self.assertFalse((board / 'marker.glb').exists())
+
+    def test_play_profile_cannot_be_enabled_by_paths_or_project_binaries(self):
+        cli = [sys.executable, ROOT / 'tools/creator_mcp.py']
+        with tempfile.TemporaryDirectory() as temp:
+            board = Path(temp) / 'board'
+            new_board(board)
+            outside = Path(temp) / 'launch-tool'
+            outside.touch(mode=0o700)
+            inside = board / 'launch-tool'
+            inside.touch(mode=0o700)
+            setup = [*cli, '--project', board]
+            for arguments, message in ((['--play-player', outside], b'require --allow-play'),
+                                       (['--allow-play'], b'requires all four'),
+                                       (['--allow-play', '--play-player', inside, '--play-assetc', outside,
+                                         '--play-probe', outside, '--play-ktx', outside], b'local board playtest profile')):
+                rejected = subprocess.run([*setup, *arguments], timeout=10, capture_output=True)
+                self.assertEqual(rejected.returncode, 2, rejected.stderr)
+                self.assertIn(message, rejected.stderr)
+                self.assertEqual(rejected.stdout, b'')
 
     async def test_scope_and_saved_scene(self):
         with tempfile.TemporaryDirectory() as temp:
