@@ -1,4 +1,12 @@
 ## 📜 Changelog
+### [0.21.0](https://github.com/kyaulabs/ngen/releases/tag/v0.21.0)
+
+#### 🚀 Features
+
+- **sdk:** Add board and docking creator samples ([b1c33c2](https://github.com/kyaulabs/ngen/commit/b1c33c2d4683fa992ff5a7e61e684eccbf084401))
+
+- **sdk:** Add board and docking creator samples (#178) ([0b81e8c](https://github.com/kyaulabs/ngen/commit/0b81e8c96a4b80f035b29ac29b766028e03a7957))
+
 ### [0.20.2](https://github.com/kyaulabs/ngen/releases/tag/v0.20.2)
 
 #### 🐛 Fixes

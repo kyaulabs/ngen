@@ -1,6 +1,6 @@
 # Milestones and atomic implementation tasks
 
-M1–M4 are accepted at their declared scope. M5's [windowed Surveyors soak](../evidence/M5/b4-soak-results.md) passed the one-hour technical budgets. The independent gameplay/economy review and recorded owner playthrough remain open; see the [execution order](execution-order.md). M3's private preview remains source-bound to `e45ba673`; public source is not a playable bundle.
+M1–M4 are accepted at their declared scope. M5's [windowed Surveyors soak](../evidence/M5/b4-soak-results.md) passed the one-hour technical budgets. The recorded owner playthrough and reload were verified privately. The independent gameplay/economy review remains open; see the [execution order](execution-order.md). M3's private preview remains source-bound to `e45ba673`; public source is not a playable bundle.
 
 | Scope | Current state |
 |---|---|
@@ -9,11 +9,11 @@ M1–M4 are accepted at their declared scope. M5's [windowed Surveyors soak](../
 | M2 | Accepted renderer/assets/inspector delivery, normal PR #9 merge `4b554cc`. |
 | M3 | Accepted offline flight/presentation/audio, normal PR #10 merge `03b76c72`; retained verification limits still apply. |
 | M4 | Accepted for the [bounded two-system crossing](../evidence/M4/flight-acceptance.md). |
-| M5 | Saved windowed loop and one-hour B4 technical soak verified. Independent gameplay/economy review and recorded owner playthrough remain open. |
+| M5 | Saved windowed loop, one-hour B4 technical soak and recorded owner playthrough verified. Independent gameplay/economy review remains open. |
 | M6–M10 / M13 | Planned, dependent on preceding integrated acceptance; no delivery or capacity claim. |
 | M11 | Optional selected graphics; individual benefit/platform/content gates remain. Creator tooling is mandatory C1/C2, not an optional visual feature. |
 | M12 | Optional settlement; separate legal/security/custody and explicit execution/release permission required. |
-| C1 | SDK, starter, CLI authoring and owned play/reload verified; samples and independent creator acceptance remain open. |
+| C1 | SDK, starter, CLI authoring, owned play/reload and both redistributable samples verified. Independent creator acceptance remains open. |
 | C2 | Local discovery, scoped authoring and isolated jobs verified. Owned MCP playtest control and full workflow acceptance remain open. |
 
 The initial revised [NGEN kanban](https://github.com/orgs/kyaulabs/projects/4/views/3) contained **67 atomic issues and 67 unique cards across twelve milestones**. M4 now also includes particles (#97) and GPU motion vectors (#98). Eleven issues and two milestones were added; C1-D reuses former M11-F issue #55. [The tracker index](github-tracker.md) links every task and the immutable source revision. Original issue/card IDs, labels, assignees and states were preserved; milestones remain undated and issues unassigned. Historical M0–M3 evidence remains intact. Cards authorize no implementation, spending or deployment.

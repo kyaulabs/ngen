@@ -24,9 +24,9 @@ engine, game or MCP implementation.
 
 | Field | Value |
 |---|---|
-| Last verified step | **18 — [M5-F #21](https://github.com/kyaulabs/ngen/issues/21)**; saved headless Surveyors campaign. |
-| Next gate | **M5 integrated acceptance after step 18**; one-hour offline loop, invariant and recovery evidence, independent review, and recorded owner playthrough. |
-| Next numbered step | **19 — [C1-E #75](https://github.com/kyaulabs/ngen/issues/75)**; redistributable space/non-space samples and SDK documentation. |
+| Last verified step | **19 — [C1-E #75](https://github.com/kyaulabs/ngen/issues/75)**; [redistributable board and docking samples](../../samples/README.md). |
+| Open gate | **M5 integrated acceptance**; the B4 technical gate and recorded owner playthrough with reload are verified. The independent gameplay/economy review is pending. |
+| Next numbered step | **20 — [C1-F #76](https://github.com/kyaulabs/ngen/issues/76)**; independent creator acceptance. |
 | Optional selections | M11 features and M12 settlement are not selected by this schedule. |
 
 Resume request: **“Read `docs/planning/execution-order.md` and continue from the
@@ -112,7 +112,7 @@ validation path or a shortcut to host/production authority.
 | 16 | [x] | [M5-E #20](https://github.com/kyaulabs/ngen/issues/20) | Permit the fixture market transaction through a docking state machine. |
 | 17 | [x] | [C2-C #79](https://github.com/kyaulabs/ngen/issues/79) | Run bounded authorized build/cook/test/package jobs. |
 | 18 | [x] | [M5-F #21](https://github.com/kyaulabs/ngen/issues/21) | Run and save one bounded first-party faction/career quest through the playable loop. |
-| 19 | [ ] | [C1-E #75](https://github.com/kyaulabs/ngen/issues/75) | Publish redistributable space/non-space samples and task-oriented SDK documentation. |
+| 19 | [x] | [C1-E #75](https://github.com/kyaulabs/ngen/issues/75) | Publish redistributable space/non-space samples and task-oriented SDK documentation. |
 | 20 | [ ] | [C1-F #76](https://github.com/kyaulabs/ngen/issues/76) | Accept an independently used creator workflow and packaged non-space game. |
 | 21 | [ ] | [C2-D #80](https://github.com/kyaulabs/ngen/issues/80) | Inspect/control only an owned development playtest. |
 | 22 | [ ] | [C2-E #81](https://github.com/kyaulabs/ngen/issues/81) | Prove game creation and abuse containment through real MCP messages. |
@@ -125,9 +125,14 @@ unrestricted shell, live shard or implicit network/spending/publication grant.
 gates and recorded owner playthrough. The [windowed voyage checkpoint](../evidence/M5/windowed-voyage.md)
 uses live controls and a streamed frontier landmark over the
 [saved native voyage](../evidence/M5/saved-voyage.md). The [one-hour B4 result](../evidence/M5/b4-soak-results.md)
-met the flight, memory and separate market-latency budgets. Independent
-gameplay/economy review and the recorded owner playthrough still gate M5.
-Teaching security rules is not a substitute for M8 enforcement.
+met the flight, memory and separate market-latency budgets. The owner playthrough
+and reload were verified locally; the recordings and save are not published.
+The independent gameplay/economy review still gates M5. Teaching security
+rules is not a substitute for M8 enforcement.
+
+**Sequencing exception:** The owner authorized step 19 while that review is
+pending. C1-E depends on C1-A–D, not M5 acceptance. This does not waive the
+review or permit step 22a or runnable multiplayer work.
 **After 20:** accept the independently used C1 workflow and supported sample/package
 results. **After 22:** accept C2's real protocol/authoring/build/play and abuse/cleanup
 checks. A scripted MCP client is protocol evidence, not fabricated AI-host usage.
@@ -317,6 +322,7 @@ work advances. Do not use this log instead of the issue's complete acceptance.
 | 15 — M5-D | [PR #149](https://github.com/kyaulabs/ngen/pull/149); [wreck/recovery evidence](../evidence/M5/wreck-recovery.md) | Loss and salvage kept surviving cargo with one owner under contention. Repeated recovery granted empty starters without sellable items. See [integration CPU](https://github.com/kyaulabs/ngen/actions/runs/45311770489). No durable wrecks or integrated M5 acceptance. |
 | 16 — M5-E | [PR #152](https://github.com/kyaulabs/ngen/pull/152); [docking market evidence](../evidence/M5/docking-market.md) | The current docked ticket alone admitted trade. Abort and departure closed access; re-docking preserved vessel, cargo and receipts. See [integration CPU](https://github.com/kyaulabs/ngen/actions/runs/45343735796). No live contacts or integrated M5 acceptance. |
 | 17 — C2-C | [PR #155](https://github.com/kyaulabs/ngen/pull/155); [owned job evidence](../evidence/C2/owned-jobs.md) | Real local stdio ran isolated cook/build/test/package. Stale and overlapping jobs were denied; cancelled work left no populated scope or archive. See [integration CPU](https://github.com/kyaulabs/ngen/actions/runs/45476150988). No playtest control or full C2 acceptance. |
-| 18 — M5-F | [PR #158](https://github.com/kyaulabs/ngen/pull/158); [saved Surveyors evidence](../evidence/M5/saved-survey.md) | Both headless routes kept ore and credits conserved on loss, recovery, sale and replay. See [integration CPU](https://github.com/kyaulabs/ngen/actions/runs/45542583248). Live integration, B4 soak, independent milestone review and owner playthrough remain open. |
+| 18 — M5-F | [PR #158](https://github.com/kyaulabs/ngen/pull/158); [saved Surveyors evidence](../evidence/M5/saved-survey.md) | Both headless routes kept ore and credits conserved on loss, recovery, sale and replay. See [integration CPU](https://github.com/kyaulabs/ngen/actions/runs/45542583248). This checkpoint was headless; see the integrated gate above for current status. |
+| 19 — C1-E | [PR #178](https://github.com/kyaulabs/ngen/pull/178); [sample guide](../../samples/README.md) | Both samples built and ran against an installed SDK and packaged their public sources, marker and license. The board layout passed owned play. [Integration CPU](https://github.com/kyaulabs/ngen/actions/runs/45917255343) passed 4/4. Independent creator acceptance is still open. |
 
 [board]: https://github.com/orgs/kyaulabs/projects/4/views/3
