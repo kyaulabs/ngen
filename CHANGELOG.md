@@ -1,4 +1,12 @@
 ## 📜 Changelog
+### [0.21.1](https://github.com/kyaulabs/ngen/releases/tag/v0.21.1)
+
+#### 🐛 Fixes
+
+- **docs:** Correct the Linux creator toolchain setup ([0da716f](https://github.com/kyaulabs/ngen/commit/0da716f3f12e02a51c6beb90d8c998810e58827a))
+
+- **docs:** Correct the Linux creator toolchain setup (#181) ([f983740](https://github.com/kyaulabs/ngen/commit/f98374049c388048e78d0aac6d5f53e8011d5b5e))
+
 ### [0.21.0](https://github.com/kyaulabs/ngen/releases/tag/v0.21.0)
 
 #### 🚀 Features
