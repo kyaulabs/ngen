@@ -7,8 +7,8 @@ Both samples are headless Linux C++20 projects. Neither needs graphics, accounts
 
 ## Create, build and run
 
-Install the [primary Linux toolchain](../docs/planning/build-review-infrastructure.md).
-From the root of the matching NGEN source release, prepare the installed SDK and tools once:
+Follow the [Linux toolchain setup](../docs/build-toolchain.md) in this source
+release. From its root, in the same shell, prepare the SDK and tools once:
 
 ```sh
 sh tools/prepare.sh asset-release

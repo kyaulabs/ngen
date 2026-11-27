@@ -9,7 +9,7 @@ To create, cook, run, and source-package a game first, follow the
 [board and space docking samples](../samples/README.md). This guide is for
 selecting SDK components and linking them from your own CMake project.
 
-With the [primary toolchain](planning/build-review-infrastructure.md) installed,
+With the [primary Linux toolchain](build-toolchain.md) installed,
 build a headless SDK and install it into a new, user-owned prefix:
 
 ```sh
