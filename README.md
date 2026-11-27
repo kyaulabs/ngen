@@ -11,7 +11,7 @@ platform and Windows compiler/runtime evidence at recorded revisions. Its first
 showcase is an offline spacecraft flight demonstration; the longer-term goal is
 a reusable engine and creator toolchain, alongside an authoritative PvPvE universe.
 
-**[0.9.0 is available as source only.](https://github.com/kyaulabs/ngen/releases/tag/v0.9.0)**
+**[Download a source release.](https://github.com/kyaulabs/ngen/releases)**
 It is not a downloadable playable game: the accepted private ship/scene assets,
 runtime bundles and recordings are not public release payloads.
 
@@ -49,21 +49,11 @@ configuration limits; see the [executive brief](docs/planning/executive-brief.md
 Start with the CPU-only harness. It needs no GPU, display, account, service or
 private scene. The first dependency build needs network access.
 
-The primary profile requires **Linux x86-64, Clang 23.1.4, Python 3.11+,
-Conan 2.34.0, CMake 4.4.5 and Ninja 1.13.2**, plus Git, a compatible C++ standard
-library and native build tools. Install the required Clang toolchain through
-your platform; an arbitrary system compiler is not the pinned primary profile.
-CI's Clang 18 compatibility lane is separate.
+Follow the [Linux build toolchain guide](docs/build-toolchain.md) bundled with
+this source version. Run the following from the root of that checkout or
+verified source extraction, using the same shell:
 
 ```sh
-git clone --branch v0.9.0 --depth 1 https://github.com/kyaulabs/ngen.git
-cd ngen
-
-python3 -m venv .venv
-. .venv/bin/activate
-python -m pip install 'conan==2.34.0' 'cmake==4.4.5' 'ninja==1.13.2'
-clang++ --version  # Must report the required primary compiler version.
-
 sh tools/prepare.sh release
 cmake --preset release
 cmake --build --preset release
@@ -71,15 +61,13 @@ ctest --preset release --output-on-failure
 ./build/release/sim_harness
 ```
 
-The release also provides a checked source tarball and SHA-256 inventory. See the
-[0.9.0 instructions](docs/releases/0.9.0.md) for download verification and
-the bounded crossing replay. Graphical execution additionally needs supported Vulkan
-hardware/drivers, the desktop audio path and a separately authorized compatible
-scene; the private flight scene is not included.
+Graphical execution additionally needs supported Vulkan hardware/drivers, the
+desktop audio path and a separately authorized compatible scene; the private
+flight scene is not included.
 
 `main` contains reviewed public delivery; `develop` integrates future work.
-Use the tagged checkout above for the published baseline, rather than assuming
-the development branch has the same behavior or requirements.
+Use the instructions bundled with your source version rather than assuming
+branches share the same behavior or toolchain.
 
 ## Direction
 
