@@ -1,4 +1,12 @@
 ## 📜 Changelog
+### [0.22.0](https://github.com/kyaulabs/ngen/releases/tag/v0.22.0)
+
+#### 🚀 Features
+
+- **mcp:** Control one owned board playtest ([707c0a4](https://github.com/kyaulabs/ngen/commit/707c0a48f419d62de74214af0bc2e39ac6ea7b6a))
+
+- **mcp:** Control one owned board playtest (#184) ([9f93fdc](https://github.com/kyaulabs/ngen/commit/9f93fdcff7cd4aa9e3628e3f126dfe7ebaab9bcb))
+
 ### [0.21.1](https://github.com/kyaulabs/ngen/releases/tag/v0.21.1)
 
 #### 🐛 Fixes
