@@ -1,4 +1,12 @@
 ## 📜 Changelog
+### [0.23.0](https://github.com/kyaulabs/ngen/releases/tag/v0.23.0)
+
+#### 🚀 Features
+
+- **mcp:** Verify the complete local creator workflow ([9347ce3](https://github.com/kyaulabs/ngen/commit/9347ce3a7f042d9f51af862e5e01e313e4a32392))
+
+- **mcp:** Verify the complete local creator workflow (#187) ([fcc47d0](https://github.com/kyaulabs/ngen/commit/fcc47d02d61adb9767ead7c5eb2c6528c29ede3b))
+
 ### [0.22.0](https://github.com/kyaulabs/ngen/releases/tag/v0.22.0)
 
 #### 🚀 Features
