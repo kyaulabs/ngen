@@ -191,7 +191,8 @@ class CreatorJobs(unittest.IsolatedAsyncioTestCase):
                             for pid in cgroup.with_name('cgroup.procs').read_text().split():
                                 try:
                                     starters += (Path('/proc', pid, 'comm').read_text().strip() == 'ngen_starter')
-                                except FileNotFoundError:
+                                except (FileNotFoundError, ProcessLookupError):
+                                    # The process may exit before open or between open and read.
                                     continue
                             if starters >= 2:
                                 break

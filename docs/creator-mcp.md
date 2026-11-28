@@ -1,6 +1,6 @@
 # Creator MCP
 
-The optional Linux companion serves one locally granted starter project over stdio. It is read-only by default and does not install with the engine SDK or listen on the network. It cannot read arbitrary paths. Separate launcher grants enable bounded editing, offline jobs, or an owned board playtest on a supported Linux host.
+The optional Linux companion serves one locally granted starter project over stdio. It is read-only by default and does not install with the engine SDK or listen on the network. It cannot read arbitrary paths. Separate launcher grants enable starter creation, bounded editing, offline jobs, or an owned board playtest on a supported Linux host.
 
 ```sh
 python3 -m venv .venv-mcp
@@ -13,6 +13,26 @@ Configure the client to launch that command with absolute interpreter and script
 Read `ngen://creator/project-schema` and `ngen://creator/sdk-guide` for the starter manifest and SDK workflow. Call `list_projects` for the opaque handle, then `inspect_project` with `{"handle":"…"}`. The handle lasts only for that process. Inspection returns the validated manifest name and schema, scene revision and entity count, and names and byte counts for referenced assets. It does not return source, asset contents, history, environment variables or absolute paths. With no saved scene, the revision is zero.
 
 Failed inspections return `ok: false` with `unknown_project`, `project_busy` or `invalid_project`. Use `tools/project.py validate` locally for detailed workspace diagnostics. The project document and asset reads use the existing creator limits; the SDK guide is capped at 16 KiB.
+
+## Opt-in creation
+
+Pass `--allow-create` with a launcher-selected, existing empty directory owned
+by the launcher user with mode `0700`. For example, set `workspace=$(mktemp -d)`
+and launch with `--project "$workspace" --allow-create`. Get its handle from
+`list_projects`, then call `create_project`:
+
+```json
+{"request":{"handle":"…","name":"my-board"}}
+```
+
+`name` is the starter manifest slug, not a path. The command initializes only
+the open directory, with the same files as `tools/project.py new`. It will not
+overwrite an existing file or admit a second root. A concurrent creator tool
+gets `project_busy`; a nonempty root gets `project_not_empty`. The initializer
+writes the manifest last under the creator lock and removes its own partial
+files after a write failure. This is not crash durability or a sandbox for
+concurrent direct filesystem writers. Creation grants neither edits nor jobs
+nor play; each must be selected separately by the launcher.
 
 ## Opt-in authoring
 
@@ -72,4 +92,13 @@ The [official Python MCP SDK 2.3.0](https://github.com/modelcontextprotocol/pyth
 
 ```sh
 PYTHONDONTWRITEBYTECODE=1 .venv-mcp/bin/python -m unittest tests.creator_mcp -v
+```
+
+For the [integrated board workflow](evidence/C2/creator-workflow.md), set the play
+inputs above and `NGEN_JOBS_FIXTURE` to the prepared [local job profile](creator-jobs.md),
+then run the optional stdio suite:
+
+```sh
+PYTHONDONTWRITEBYTECODE=1 .venv-mcp/bin/python -m unittest \
+  tests.creator_mcp tests.creator_jobs tests.creator_workflow -v
 ```

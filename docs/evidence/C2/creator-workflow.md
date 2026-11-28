@@ -1,0 +1,14 @@
+# C2-E integrated creator workflow
+
+A scripted client using the official Python MCP SDK 2.3.0 exercised the four separate launcher grants over real stdio (`2026-07-28`). The launcher chose a fresh empty owner-only directory, the prepared offline job profile, the fixed board tools and a private output directory. No model call, remote service, graphics session, private asset or general shell tool was used. AI-host usability was not tested.
+
+| Step | Result |
+|---|---|
+| Create | `create_project` initialized only the descriptor-anchored empty `0700` root. The grant did not add editing, jobs or play on its own. A nonempty or nonprivate root, invalid name, foreign handle, extra path and held lock were rejected. A 512-byte file limit produced an actual write failure; the empty root was restored. |
+| Edit, build and test | The client saved a 64 mm C++ move and a separate board scene. `cook`, `build` and `test` completed on the same captured revision. A request with the old fingerprint ran nothing. A synthetic launcher environment marker was absent from the test process and tool replies. |
+| Play and reload | The fixed headless player loaded the scene at 1 m (`1042 mm`), then reloaded the saved 2 m layout (`2042 mm`) with the same cook. It did not run the project's 64 mm C++ rule; the isolated job tested that code. A stale generation could not stop the playtest; the current generation stopped it and released staging. |
+| Package and cancel | The local archive held six source files, with the exact changed source, exported revision 2, public marker and original license. A burst of 16 overlapping start requests got `job_busy` while one test ran. Cancelling it produced no second archive or changes to the first. |
+
+The combined local run passed **17 stdio tests** on Linux x86-64 with Python 3.14.10, Bubblewrap 0.13.1 and systemd 262. Separately, **15 Release asset SDK CTests** passed with native board cases enabled. Red runs reproduced the missing creation grant and files made unreadable by a restrictive inherited umask; both behaviors passed after the fix. An existing cancellation probe now handles `ESRCH` as well as `ENOENT` when a process disappears between enumerating its cgroup and reading its comm. The real cancellation tests verify owned descendants and an empty or removed cgroup before accepting completion.
+
+The suite includes prompt-shaped GLB metadata, malformed and over-bound edits, denied paths and targets, stale identities, worker output flooding, isolated failure and cleanup checks. These results apply to the local, launcher-trusted Linux profiles and finite tested requests. They do not establish an MCP pre-parse frame cap, remote-client safety, a full sandbox audit, Windows support, or authority to run the Space MMO. The independent M5 gameplay/economy review is separate.

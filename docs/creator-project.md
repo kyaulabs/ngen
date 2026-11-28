@@ -59,6 +59,10 @@ supplied marker is the original test triangle from `tests/asset_cli.py`, not a
 ship asset. `Assets` is an explicit SDK component with the matching zlib build;
 the headless default still does not pull in asset or graphics dependencies.
 
+`new` creates an owner-only project directory and starter files. It refuses
+an existing destination. The [optional MCP companion](creator-mcp.md#opt-in-creation)
+uses the same initializer with an explicitly granted empty directory.
+
 `ngen-project.json` accepts exactly `schema: 1` and a `name` slug (a lowercase
 letter, followed by up to 39 lowercase letters, digits, or hyphens). Project
 operations report JSON success on stdout or failure on stderr with a nonzero

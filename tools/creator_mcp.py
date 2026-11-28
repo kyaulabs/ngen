@@ -87,6 +87,22 @@ Token = Annotated[str, Field(max_length=32)]
 Revision = Annotated[str, Field(max_length=64)]
 
 
+class CreateRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid", strict=True)
+    handle: Token
+    name: str = Field(max_length=40)
+
+
+class CreatedProject(TypedDict):
+    ok: bool
+    project: ProjectInfo | None
+    error: str | None
+
+
+def create_denied(error: str) -> CreatedProject:
+    return {"ok": False, "project": None, "error": error}
+
+
 SceneRevision = Annotated[int, Field(ge=1, le=creator_scene.MAX_REVISION)]
 
 
@@ -108,7 +124,7 @@ class ReloadPlaytest(PlaytestRequest):
 
 
 def serve(directory: int, allow_edits: bool, jobs: creator_jobs.Runner | None,
-          play: creator_play_session.Runner | None) -> None:
+          play: creator_play_session.Runner | None, *, allow_create: bool) -> None:
     granted_handle = secrets.token_hex(16)
     server = MCPServer("ngen-creator", subscriptions=False)
     read_only = ToolAnnotations(readOnlyHint=True, destructiveHint=False, openWorldHint=False)
@@ -155,6 +171,21 @@ def serve(directory: int, allow_edits: bool, jobs: creator_jobs.Runner | None,
             return denied("project_busy")
         except (OSError, ValueError):
             return denied("invalid_project")
+
+    if allow_create:
+        @server.tool(annotations=ToolAnnotations(readOnlyHint=False, destructiveHint=False, openWorldHint=False))
+        def create_project(request: CreateRequest) -> CreatedProject:
+            """Initialize the one launcher-selected empty private directory as a starter."""
+            if request.handle != granted_handle:
+                return create_denied("unknown_project")
+            try:
+                return {"ok": True, "project": project.initialize(directory, request.name), "error": None}
+            except creator_scene.Busy:
+                return create_denied("project_busy")
+            except project.ProjectNotEmpty:
+                return create_denied("project_not_empty")
+            except (OSError, ValueError):
+                return create_denied("invalid_project")
 
     if allow_edits:
         @server.tool(annotations=read_only)
@@ -259,6 +290,7 @@ def serve(directory: int, allow_edits: bool, jobs: creator_jobs.Runner | None,
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--project", type=Path, required=True, help="one absolute, explicitly granted starter root")
+    parser.add_argument("--allow-create", action="store_true", help="initialize the one empty private project root")
     parser.add_argument("--allow-edits", action="store_true", help="grant bounded local edits")
     parser.add_argument("--allow-jobs", action="store_true", help="grant bounded isolated jobs")
     parser.add_argument("--job-sdk", type=Path, help="audited, relocatable local SDK/dependency prefix")
@@ -298,7 +330,7 @@ def main() -> None:
                 parser.error("could not establish the local board playtest profile")
         elif any(tools.values()):
             parser.error("board playtest tool paths require --allow-play")
-        serve(directory, args.allow_edits, jobs, play)
+        serve(directory, args.allow_edits, jobs, play, allow_create=args.allow_create)
     finally:
         try:
             if play is not None:

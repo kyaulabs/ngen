@@ -63,6 +63,7 @@ class CreatorMcp(unittest.IsolatedAsyncioTestCase):
                     self.assertTrue((await client.call_tool('edit_project', {'request': {}})).is_error)
                     self.assertTrue((await client.call_tool('start_job', {})).is_error)
                     self.assertTrue((await client.call_tool('start_playtest', {})).is_error)
+                    self.assertTrue((await client.call_tool('create_project', {})).is_error)
                     self.assertFalse((board / 'ngen-scene.json').exists())
                     listed = (await client.call_tool('list_projects', {})).structured_content
                     handle, = listed['handles']
@@ -70,6 +71,67 @@ class CreatorMcp(unittest.IsolatedAsyncioTestCase):
                     self.assertEqual(response.structured_content, {
                         'ok': True, 'project': {'name': 'test-board', 'schema': 1},
                         'scene': {'revision': 0, 'entities': 0, 'assets': []}, 'error': None})
+
+    async def test_create_initializes_only_the_granted_empty_private_directory(self):
+        with tempfile.TemporaryDirectory() as temp:
+            board = Path(temp) / 'board'
+            board.mkdir(mode=0o700)
+            transport = StdioServerParameters(command='/bin/sh', args=[
+                '-c', 'umask 0777; exec "$@"', 'creator-fixture', sys.executable,
+                str(ROOT / 'tools/creator_mcp.py'), '--project', str(board), '--allow-create'])
+            async with asyncio.timeout(SESSION_TIMEOUT):
+                async with Client(transport, mode='2026-07-28', read_timeout_seconds=REQUEST_TIMEOUT) as client:
+                    handle, = (await client.call_tool('list_projects', {})).structured_content['handles']
+                    request = {'handle': handle, 'name': 'created-board'}
+
+                    async def create(**overrides):
+                        return await client.call_tool('create_project', {'request': request | overrides})
+
+                    tools = {tool.name for tool in (await client.list_tools()).tools}
+                    self.assertEqual(tools, {'list_projects', 'inspect_project', 'create_project'})
+                    self.assertTrue((await create(path='../outside')).is_error)
+                    self.assertEqual((await create(handle='elsewhere')).structured_content['error'], 'unknown_project')
+                    self.assertEqual((await create(name='../outside')).structured_content['error'], 'invalid_project')
+                    with directory_lock(board):
+                        self.assertEqual((await create()).structured_content['error'], 'project_busy')
+                    self.assertEqual(list(board.iterdir()), [])
+                    board.chmod(0o755)
+                    self.assertEqual((await create()).structured_content['error'], 'invalid_project')
+                    board.chmod(0o700)
+                    unrelated = board / '.keep'
+                    unrelated.write_text('keep this')
+                    self.assertEqual((await create()).structured_content['error'], 'project_not_empty')
+                    self.assertEqual(unrelated.read_text(), 'keep this')
+                    unrelated.unlink()
+                    created = (await create()).structured_content
+                    self.assertEqual(created, {'ok': True, 'project': {'name': 'created-board', 'schema': 1},
+                                               'error': None})
+                    self.assertTrue(all(path.stat().st_mode & 0o777 == 0o600 for path in board.iterdir()),
+                                    'the initialized files must be owner-readable even under a restrictive umask')
+                    files = {path.name: path.read_bytes() for path in board.iterdir()}
+                    self.assertEqual(set(files), {'ngen-project.json', 'LICENSE', 'CMakeLists.txt',
+                                                  'main.cpp', 'marker.glb'})
+                    inspected = (await client.call_tool('inspect_project', {'handle': handle})).structured_content
+                    self.assertEqual(inspected['project'], created['project'])
+                    self.assertEqual(inspected['scene']['revision'], 0)
+                    self.assertEqual((await create(name='replace-board')).structured_content['error'],
+                                     'project_not_empty')
+                    self.assertEqual({path.name: path.read_bytes() for path in board.iterdir()}, files)
+
+    @unittest.skipUnless(Path('/usr/bin/prlimit').is_file(), 'requires Linux prlimit')
+    async def test_create_removes_partial_files_after_an_actual_write_failure(self):
+        with tempfile.TemporaryDirectory() as temp:
+            board = Path(temp) / 'board'
+            board.mkdir(mode=0o700)
+            transport = StdioServerParameters(command='/usr/bin/prlimit', args=[
+                '--fsize=512:512', '--', sys.executable, '-B', str(ROOT / 'tools/creator_mcp.py'),
+                '--project', str(board), '--allow-create'])
+            async with asyncio.timeout(SESSION_TIMEOUT):
+                async with Client(transport, mode='2026-07-28', read_timeout_seconds=REQUEST_TIMEOUT) as client:
+                    handle, = (await client.call_tool('list_projects', {})).structured_content['handles']
+                    failed = await client.call_tool('create_project', {'request': {'handle': handle, 'name': 'board'}})
+                    self.assertEqual(failed.structured_content['error'], 'invalid_project')
+                    self.assertEqual(list(board.iterdir()), [])
 
     @unittest.skipUnless(PLAY_BUILD and PLAY_KTX, 'requires Linux bubblewrap and the board tools')
     async def test_granted_playtest_starts_checked_board(self):
