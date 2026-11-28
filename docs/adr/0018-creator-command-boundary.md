@@ -136,6 +136,14 @@ job grant or automatic play grant from edit/job authority, and no live server,
 flagship runtime, arbitrary command or publication authority. ADR status stays
 Proposed.
 
+## C2-E review scope
+
+The integrated fixture starts with an existing empty `0700` directory chosen
+by the launcher. `--allow-create` exposes only the shared starter initializer
+for that directory. It does not accept a workspace path from the client or
+change the edit, isolated job, or board play grants. The [stdio workflow evidence](../evidence/C2/creator-workflow.md)
+records the exercised local profile and limitations. ADR status stays Proposed.
+
 ## Evidence
 
 [Creator scope and acceptance](../planning/creator-toolchain.md), the current

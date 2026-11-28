@@ -1,6 +1,7 @@
 """Create, validate and source-package one standalone NGEN starter project."""
 
 import argparse
+from contextlib import suppress
 import fcntl
 import hashlib
 import io
@@ -8,7 +9,7 @@ import json
 import os
 from pathlib import Path
 import re
-import shutil
+import stat
 import struct
 import sys
 import tarfile
@@ -31,18 +32,55 @@ def project_name(name):
     return name
 
 
+class ProjectNotEmpty(ValueError):
+    pass
+
+
+def initialize(directory, name):
+    manifest = {"schema": 1, "name": project_name(name)}
+    templates = {file: ROOT / "tools/project_template" / file for file in
+                 ("CMakeLists.txt", "main.cpp", "marker.glb")}
+    templates["LICENSE"] = ROOT / "LICENSE"
+    files = {file: path.read_bytes() for file, path in templates.items()}
+    # Readers use the same lock; publish the manifest after the other files.
+    files[MANIFEST] = (json.dumps(manifest) + "\n").encode("utf-8")
+    with creator_scene.locked(directory, fcntl.LOCK_EX) as fd:
+        info = os.fstat(fd)
+        if info.st_uid != os.geteuid() or stat.S_IMODE(info.st_mode) != 0o700:
+            raise ValueError("initialization requires an owner-only project directory (0700)")
+        with os.scandir(fd) as entries:
+            if next(entries, None) is not None:
+                raise ProjectNotEmpty("project directory must be empty")
+        created = []
+        try:
+            for file, data in files.items():
+                target = os.open(file, os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW, 0o600, dir_fd=fd)
+                created.append(file)
+                with os.fdopen(target, "wb") as stream:
+                    os.fchmod(stream.fileno(), 0o600)
+                    stream.write(data)
+        except BaseException:
+            for file in reversed(created):
+                with suppress(FileNotFoundError):
+                    os.unlink(file, dir_fd=fd)
+            raise
+    return manifest
+
+
 def create(project, name):
     project_name(name)
-    project.mkdir()
+    project.mkdir(mode=0o700)
     try:
-        for file in ("CMakeLists.txt", "main.cpp", "marker.glb"):
-            shutil.copyfile(ROOT / "tools/project_template" / file, project / file)
-        shutil.copyfile(ROOT / "LICENSE", project / "LICENSE")
-        (project / MANIFEST).write_text(json.dumps({"schema": 1, "name": name}) + "\n", encoding="utf-8")
-    except OSError:
-        shutil.rmtree(project)
+        directory = os.open(project, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW)
+        try:
+            return initialize(directory, name)
+        finally:
+            os.close(directory)
+    except (OSError, ValueError):
+        # Never recursively remove an entry supplied by someone else.
+        with suppress(OSError):
+            project.rmdir()
         raise
-    return {"schema": 1, "name": name}
 
 
 def project_files(directory):
